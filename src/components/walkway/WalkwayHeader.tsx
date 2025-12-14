@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { WalkwayCharacter } from './WalkwayCharacter';
-import { useGameStore } from '@/store/gameStore';
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import { WalkwayCharacter } from "./WalkwayCharacter";
+import { useGameStore } from "@/store/gameStore";
 
 interface WalkwayHeaderProps {
   title: string;
@@ -22,10 +22,10 @@ export function WalkwayHeader({ title }: WalkwayHeaderProps) {
       setScrollProgress(progress);
     };
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener("scroll", handleScroll, { passive: true });
     handleScroll();
 
-    return () => window.removeEventListener('scroll', handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, [setScrollProgress]);
 
   const handleBackToHub = () => {
@@ -33,11 +33,11 @@ export function WalkwayHeader({ title }: WalkwayHeaderProps) {
     setTimeout(() => {
       restoreHubState();
       setIsTransitioning(false);
-      navigate('/');
+      navigate("/");
     }, 300);
   };
 
-  const menuItems = ['Story', 'Media', 'Projects', 'Network', 'Blueprints'];
+  const menuItems = ["Story", "Media", "Projects", "Network", "Blueprints"];
 
   return (
     <>
@@ -79,7 +79,7 @@ export function WalkwayHeader({ title }: WalkwayHeaderProps) {
           initial={{ scaleY: 0 }}
           animate={{ scaleY: 1 }}
           transition={{ delay: 0.2, duration: 0.4 }}
-          style={{ transformOrigin: 'bottom' }}
+          style={{ transformOrigin: "bottom" }}
         />
       </motion.header>
 
@@ -120,7 +120,7 @@ export function WalkwayHeader({ title }: WalkwayHeaderProps) {
                   onClick={handleBackToHub}
                   className="text-2xl tracking-widest uppercase text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  Back to Hub
+                  Back to Gallery
                 </button>
               </motion.li>
             </ul>
