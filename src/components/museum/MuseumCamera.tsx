@@ -3,9 +3,9 @@ import { useFrame, useThree } from '@react-three/fiber';
 import { useGameStore } from '@/store/gameStore';
 import * as THREE from 'three';
 
-const CAMERA_HEIGHT = 2.5;
-const CAMERA_DISTANCE = 5;
-const LERP_FACTOR = 0.05;
+const CAMERA_HEIGHT = 3;
+const CAMERA_DISTANCE = 6;
+const LERP_FACTOR = 0.04;
 
 export function MuseumCamera() {
   const { camera } = useThree();
@@ -20,19 +20,19 @@ export function MuseumCamera() {
 
   useFrame(() => {
     if (cameraLocked && lockedTargetPosition) {
-      // Lock camera to face the wall/frame
-      const framePos = new THREE.Vector3(...lockedTargetPosition);
+      // Lock camera to face the pedestal
+      const pedestalPos = new THREE.Vector3(...lockedTargetPosition);
       const charPos = new THREE.Vector3(...characterPosition);
       
-      // Position camera behind and above character, facing the frame
-      const dirToFrame = new THREE.Vector3().subVectors(framePos, charPos).normalize();
+      // Position camera behind and above character, facing the pedestal
+      const dirToPedestal = new THREE.Vector3().subVectors(pedestalPos, charPos).normalize();
       
       targetPosition.current.set(
-        charPos.x - dirToFrame.x * 3,
-        charPos.y + 2,
-        charPos.z - dirToFrame.z * 3
+        charPos.x - dirToPedestal.x * 4,
+        charPos.y + 2.5,
+        charPos.z - dirToPedestal.z * 4
       );
-      targetLookAt.current.copy(framePos);
+      targetLookAt.current.set(pedestalPos.x, pedestalPos.y + 1, pedestalPos.z);
     } else {
       // Normal third-person follow
       targetPosition.current.set(
@@ -47,13 +47,8 @@ export function MuseumCamera() {
       );
     }
 
-    // Smooth interpolation
+    // Smooth interpolation - works for both locking and unlocking
     camera.position.lerp(targetPosition.current, LERP_FACTOR);
-    
-    const currentLookAt = new THREE.Vector3();
-    camera.getWorldDirection(currentLookAt);
-    currentLookAt.add(camera.position);
-    currentLookAt.lerp(targetLookAt.current, LERP_FACTOR);
     camera.lookAt(targetLookAt.current);
   });
 

@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react';
+import { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { useKeyboardControls } from './useKeyboardControls';
 import { useGameStore } from '@/store/gameStore';
@@ -6,6 +6,7 @@ import * as THREE from 'three';
 
 const MOVE_SPEED = 0.08;
 const ROTATION_SPEED = 0.05;
+const CIRCLE_RADIUS = 1.5;
 
 export function Character() {
   const meshRef = useRef<THREE.Group>(null);
@@ -26,43 +27,8 @@ export function Character() {
 
   const keys = useKeyboardControls();
 
-  // Check portal collisions
-  useEffect(() => {
-    const checkPortalProximity = () => {
-      if (cameraLocked) return;
-
-      const charPos = new THREE.Vector3(...characterPosition);
-      
-      for (const portal of portals) {
-        const circlePos = new THREE.Vector3(...portal.circlePosition);
-        const distance = charPos.distanceTo(circlePos);
-        
-        if (distance < 1.5) {
-          if (activePortal?.id !== portal.id) {
-            setActivePortal(portal);
-            setCameraLocked(true, portal.framePosition);
-          }
-          return;
-        }
-      }
-      
-      if (activePortal) {
-        setActivePortal(null);
-        setCameraLocked(false);
-      }
-    };
-
-    checkPortalProximity();
-  }, [characterPosition, portals, activePortal, cameraLocked, setActivePortal, setCameraLocked]);
-
   useFrame((_, delta) => {
     if (!meshRef.current) return;
-
-    // Don't allow movement when camera is locked
-    if (cameraLocked) {
-      meshRef.current.position.set(...characterPosition);
-      return;
-    }
 
     const moveDirection = new THREE.Vector3();
     
@@ -90,11 +56,37 @@ export function Character() {
         characterPosition[2] + velocity.current.z,
       ];
 
-      // Simple boundary collision
-      newPos[0] = Math.max(-5.5, Math.min(5.5, newPos[0]));
-      newPos[2] = Math.max(-29, Math.min(4, newPos[2]));
+      // Boundary collision - updated for larger room
+      newPos[0] = Math.max(-7, Math.min(7, newPos[0]));
+      newPos[2] = Math.max(-35, Math.min(6, newPos[2]));
 
       setCharacterPosition(newPos);
+    }
+
+    // Check portal proximity
+    const charPos = new THREE.Vector3(...characterPosition);
+    let foundPortal = null;
+    
+    for (const portal of portals) {
+      const circlePos = new THREE.Vector3(...portal.circlePosition);
+      const distance = charPos.distanceTo(circlePos);
+      
+      if (distance < CIRCLE_RADIUS) {
+        foundPortal = portal;
+        break;
+      }
+    }
+
+    // Update portal state
+    if (foundPortal) {
+      if (activePortal?.id !== foundPortal.id) {
+        setActivePortal(foundPortal);
+        setCameraLocked(true, foundPortal.pedestalPosition);
+      }
+    } else if (activePortal) {
+      // Exited the circle - unlock camera
+      setActivePortal(null);
+      setCameraLocked(false);
     }
 
     meshRef.current.position.set(...characterPosition);
