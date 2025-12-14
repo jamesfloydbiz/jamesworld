@@ -1,12 +1,20 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useEffect } from 'react';
+import { MuseumScene } from '@/components/museum/MuseumScene';
+import { MuseumUI } from '@/components/ui/MuseumUI';
+import { useGameStore } from '@/store/gameStore';
 
 const Index = () => {
+  const { setIsTransitioning } = useGameStore();
+
+  useEffect(() => {
+    // Clear transition state on mount
+    setIsTransitioning(false);
+  }, [setIsTransitioning]);
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
+    <div className="fixed inset-0 bg-background">
+      <MuseumScene />
+      <MuseumUI />
     </div>
   );
 };
