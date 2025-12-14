@@ -5,12 +5,15 @@ import { useGameStore } from '@/store/gameStore';
 import * as THREE from 'three';
 
 const MOVE_SPEED = 0.08;
+const SPRINT_MULTIPLIER = 1.8;
 const ROTATION_SPEED = 0.05;
 const CIRCLE_RADIUS = 1.5;
 const CHARACTER_RADIUS = 0.3;
 const STANCHION_RADIUS = 0.25;
 const ROPE_COLLISION_RADIUS = 0.2;
-const FOOTPRINT_DURATION = 2000; // 2 seconds in ms
+const FOOTPRINT_DURATION = 2000;
+const JUMP_HEIGHT = 0.5;
+const JUMP_DURATION = 0.4;
 
 interface Footprint {
   id: number;
@@ -24,7 +27,6 @@ interface Footprint {
 function getStanchionPositions(portals: { pedestalPosition: [number, number, number] }[]) {
   const positions: [number, number][] = [];
   
-  // Perimeter stanchions (x, z only for 2D collision)
   const perimeter: [number, number][] = [
     [-8, 5], [-8, -2], [-8, -9], [-8, -16], [-8, -23], [-8, -30],
     [8, 5], [8, -2], [8, -9], [8, -16], [8, -23], [8, -30],
@@ -32,7 +34,6 @@ function getStanchionPositions(portals: { pedestalPosition: [number, number, num
   ];
   positions.push(...perimeter);
   
-  // Pedestal stanchions (4 corners around each pedestal)
   for (const portal of portals) {
     const [px, , pz] = portal.pedestalPosition;
     const offset = 1.8;
@@ -47,41 +48,33 @@ function getStanchionPositions(portals: { pedestalPosition: [number, number, num
   return positions;
 }
 
-// Get all rope segments for collision (each segment is [startX, startZ, endX, endZ])
 function getRopeSegments(portals: { pedestalPosition: [number, number, number] }[]) {
   const segments: [number, number, number, number][] = [];
   
-  // Perimeter ropes
   const perimeterRopes: [number, number, number, number][] = [
-    // Left side
     [-8, 5, -8, -2], [-8, -2, -8, -9], [-8, -9, -8, -16], 
     [-8, -16, -8, -23], [-8, -23, -8, -30],
-    // Right side
     [8, 5, 8, -2], [8, -2, 8, -9], [8, -9, 8, -16], 
     [8, -16, 8, -23], [8, -23, 8, -30],
-    // Back wall
     [-5, -35, 0, -35], [0, -35, 5, -35],
-    // Connect to back corners
     [-8, -30, -5, -35], [8, -30, 5, -35],
   ];
   segments.push(...perimeterRopes);
   
-  // Pedestal ropes (square around each pedestal)
   const offset = 1.8;
   for (const portal of portals) {
     const [px, , pz] = portal.pedestalPosition;
     segments.push(
-      [px - offset, pz - offset, px + offset, pz - offset], // front
-      [px + offset, pz - offset, px + offset, pz + offset], // right
-      [px + offset, pz + offset, px - offset, pz + offset], // back
-      [px - offset, pz + offset, px - offset, pz - offset], // left
+      [px - offset, pz - offset, px + offset, pz - offset],
+      [px + offset, pz - offset, px + offset, pz + offset],
+      [px + offset, pz + offset, px - offset, pz + offset],
+      [px - offset, pz + offset, px - offset, pz - offset],
     );
   }
   
   return segments;
 }
 
-// Find closest point on a line segment to a point
 function closestPointOnSegment(
   ax: number, az: number, 
   bx: number, bz: number, 
@@ -97,7 +90,7 @@ function closestPointOnSegment(
   return [ax + t * dx, az + t * dz];
 }
 
-// Footprints component
+// Footprints component - renders both left and right footprints
 function Footprints({ footprints }: { footprints: Footprint[] }) {
   const now = Date.now();
   
@@ -105,20 +98,22 @@ function Footprints({ footprints }: { footprints: Footprint[] }) {
     <group>
       {footprints.map((fp) => {
         const age = now - fp.timestamp;
-        const opacity = Math.max(0, 0.4 * (1 - age / FOOTPRINT_DURATION));
-        const offsetX = fp.isLeft ? -0.08 : 0.08;
+        const opacity = Math.max(0, 0.5 * (1 - age / FOOTPRINT_DURATION));
+        // Offset perpendicular to movement direction for left/right foot
+        const sideOffset = fp.isLeft ? -0.12 : 0.12;
         
         return (
           <mesh
             key={fp.id}
             position={[
-              fp.position[0] + Math.sin(fp.rotation) * offsetX,
+              fp.position[0] + Math.cos(fp.rotation) * sideOffset,
               0.01,
-              fp.position[2] + Math.cos(fp.rotation) * offsetX
+              fp.position[2] - Math.sin(fp.rotation) * sideOffset
             ]}
             rotation={[-Math.PI / 2, 0, fp.rotation]}
-            scale={[0.6, 1, 1]}
+            scale={[0.5, 1, 1]}
           >
+            {/* Scaled circle for oval footprint shape */}
             <circleGeometry args={[0.1, 16]} />
             <meshBasicMaterial color="#ffffff" opacity={opacity} transparent />
           </mesh>
@@ -143,10 +138,16 @@ export function Character() {
   const velocity = useRef(new THREE.Vector3());
   const targetRotation = useRef(0);
   
+  // Jump state
+  const isJumping = useRef(false);
+  const jumpTime = useRef(0);
+  const jumpStartY = useRef(0);
+  
   // Footprint tracking
   const footprints = useRef<Footprint[]>([]);
   const footprintId = useRef(0);
-  const prevLegPhase = useRef(0);
+  const lastFootprintTime = useRef(0);
+  const lastFootWasLeft = useRef(false);
   
   const { 
     characterPosition, 
@@ -171,6 +172,28 @@ export function Character() {
     // Clean up old footprints
     footprints.current = footprints.current.filter(fp => now - fp.timestamp < FOOTPRINT_DURATION);
 
+    // Handle jump initiation
+    if (keys.jump && !isJumping.current) {
+      isJumping.current = true;
+      jumpTime.current = 0;
+      jumpStartY.current = characterPosition[1];
+    }
+
+    // Update jump
+    let currentY = characterPosition[1];
+    if (isJumping.current) {
+      jumpTime.current += delta;
+      const jumpProgress = jumpTime.current / JUMP_DURATION;
+      
+      if (jumpProgress >= 1) {
+        isJumping.current = false;
+        currentY = jumpStartY.current;
+      } else {
+        // Parabolic jump arc
+        currentY = jumpStartY.current + JUMP_HEIGHT * Math.sin(jumpProgress * Math.PI);
+      }
+    }
+
     const moveDirection = new THREE.Vector3();
     
     if (keys.forward) moveDirection.z -= 1;
@@ -179,10 +202,20 @@ export function Character() {
     if (keys.right) moveDirection.x += 1;
 
     const isMoving = moveDirection.length() > 0;
+    const isSprinting = keys.sprint && isMoving;
     
-    // Smooth speed transition
+    // Speed calculation with sprint
+    const baseSpeed = isSprinting ? MOVE_SPEED * SPRINT_MULTIPLIER : MOVE_SPEED;
+    
+    // Immediate stop when keys released (fix for glitchy movement)
     const targetSpeed = isMoving ? 1 : 0;
-    currentSpeed.current = THREE.MathUtils.lerp(currentSpeed.current, targetSpeed, delta * 8);
+    const lerpFactor = isMoving ? delta * 10 : delta * 20; // Faster deceleration
+    currentSpeed.current = THREE.MathUtils.lerp(currentSpeed.current, targetSpeed, lerpFactor);
+    
+    // Force stop if very slow
+    if (currentSpeed.current < 0.01) {
+      currentSpeed.current = 0;
+    }
 
     if (isMoving) {
       moveDirection.normalize();
@@ -194,8 +227,8 @@ export function Character() {
       while (rotDiff < -Math.PI) rotDiff += Math.PI * 2;
       setCharacterRotation(characterRotation + rotDiff * ROTATION_SPEED * 60 * delta);
 
-      // Apply movement
-      velocity.current.copy(moveDirection).multiplyScalar(MOVE_SPEED);
+      // Apply movement with sprint
+      velocity.current.copy(moveDirection).multiplyScalar(baseSpeed * currentSpeed.current);
       
       let newX = characterPosition[0] + velocity.current.x;
       let newZ = characterPosition[2] + velocity.current.z;
@@ -204,7 +237,7 @@ export function Character() {
       newX = Math.max(-7, Math.min(7, newX));
       newZ = Math.max(-35, Math.min(6, newZ));
 
-      // Stanchion collision (posts)
+      // Stanchion collision
       for (const [sx, sz] of stanchionPositions) {
         const dx = newX - sx;
         const dz = newZ - sz;
@@ -212,7 +245,6 @@ export function Character() {
         const minDist = CHARACTER_RADIUS + STANCHION_RADIUS;
         
         if (dist < minDist && dist > 0) {
-          // Push character away from stanchion
           const pushX = (dx / dist) * minDist;
           const pushZ = (dz / dist) * minDist;
           newX = sx + pushX;
@@ -220,33 +252,53 @@ export function Character() {
         }
       }
 
-      // Rope collision (line segments - can be jumped over later)
-      for (const [ax, az, bx, bz] of ropeSegments) {
-        const [closestX, closestZ] = closestPointOnSegment(ax, az, bx, bz, newX, newZ);
-        const dx = newX - closestX;
-        const dz = newZ - closestZ;
-        const dist = Math.sqrt(dx * dx + dz * dz);
-        const minDist = CHARACTER_RADIUS + ROPE_COLLISION_RADIUS;
-        
-        if (dist < minDist && dist > 0) {
-          // Push character away from rope
-          const pushX = (dx / dist) * minDist;
-          const pushZ = (dz / dist) * minDist;
-          newX = closestX + pushX;
-          newZ = closestZ + pushZ;
+      // Rope collision (skip if jumping over)
+      if (!isJumping.current || currentY < 0.3) {
+        for (const [ax, az, bx, bz] of ropeSegments) {
+          const [closestX, closestZ] = closestPointOnSegment(ax, az, bx, bz, newX, newZ);
+          const dx = newX - closestX;
+          const dz = newZ - closestZ;
+          const dist = Math.sqrt(dx * dx + dz * dz);
+          const minDist = CHARACTER_RADIUS + ROPE_COLLISION_RADIUS;
+          
+          if (dist < minDist && dist > 0) {
+            const pushX = (dx / dist) * minDist;
+            const pushZ = (dz / dist) * minDist;
+            newX = closestX + pushX;
+            newZ = closestZ + pushZ;
+          }
         }
       }
 
-      const newPos: [number, number, number] = [newX, characterPosition[1], newZ];
+      const newPos: [number, number, number] = [newX, currentY, newZ];
       setCharacterPosition(newPos);
+      
+      // Add footprints while walking (per-foot, alternating)
+      const footprintInterval = isSprinting ? 120 : 200; // Faster footprints when sprinting
+      if (now - lastFootprintTime.current > footprintInterval) {
+        footprints.current.push({
+          id: footprintId.current++,
+          position: [newX, 0, newZ],
+          rotation: characterRotation,
+          timestamp: now,
+          isLeft: !lastFootWasLeft.current,
+        });
+        lastFootWasLeft.current = !lastFootWasLeft.current;
+        lastFootprintTime.current = now;
+      }
+    } else {
+      // Update Y position even when not moving (for jump landing)
+      if (currentY !== characterPosition[1]) {
+        setCharacterPosition([characterPosition[0], currentY, characterPosition[2]]);
+      }
     }
 
     // Check portal proximity
-    const charPos = new THREE.Vector3(...characterPosition);
+    const charPos = new THREE.Vector3(characterPosition[0], 0, characterPosition[2]);
     let foundPortal = null;
     
     for (const portal of portals) {
-      const circlePos = new THREE.Vector3(...portal.circlePosition);
+      const circlePos = new THREE.Vector3(portal.circlePosition[0], 0, portal.circlePosition[2]);
       const distance = charPos.distanceTo(circlePos);
       
       if (distance < CIRCLE_RADIUS) {
@@ -262,77 +314,57 @@ export function Character() {
         setCameraLocked(true, foundPortal.pedestalPosition);
       }
     } else if (activePortal) {
-      // Exited the circle - unlock camera
       setActivePortal(null);
       setCameraLocked(false);
     }
 
     // Update group position and rotation
-    groupRef.current.position.set(...characterPosition);
+    groupRef.current.position.set(characterPosition[0], currentY, characterPosition[2]);
     groupRef.current.rotation.y = characterRotation;
 
     // Animation
     const speed = currentSpeed.current;
+    const animSpeed = isSprinting ? 18 : 12; // Faster animation when sprinting
     
-    if (speed > 0.1) {
-      // Walk animation
-      walkPhase.current += delta * speed * 12;
+    // Jump animation - arms swing up
+    const jumpArmOffset = isJumping.current 
+      ? -Math.sin((jumpTime.current / JUMP_DURATION) * Math.PI) * 1.5 
+      : 0;
+    
+    if (speed > 0.05) {
+      // Walk/run animation
+      walkPhase.current += delta * speed * animSpeed;
       
-      const legSwing = Math.sin(walkPhase.current) * 0.5;
-      const armSwing = Math.sin(walkPhase.current) * 0.35;
-      const bodyBob = Math.abs(Math.sin(walkPhase.current * 2)) * 0.03;
-      
-      // Detect footstep moments (when leg crosses zero)
-      const currentLegPhase = Math.sin(walkPhase.current);
-      if (prevLegPhase.current > 0 && currentLegPhase <= 0) {
-        // Left foot step
-        footprints.current.push({
-          id: footprintId.current++,
-          position: [...characterPosition],
-          rotation: characterRotation,
-          timestamp: now,
-          isLeft: true,
-        });
-      }
-      if (prevLegPhase.current < 0 && currentLegPhase >= 0) {
-        // Right foot step
-        footprints.current.push({
-          id: footprintId.current++,
-          position: [...characterPosition],
-          rotation: characterRotation,
-          timestamp: now,
-          isLeft: false,
-        });
-      }
-      prevLegPhase.current = currentLegPhase;
+      const legSwing = Math.sin(walkPhase.current) * (isSprinting ? 0.7 : 0.5);
+      const armSwing = Math.sin(walkPhase.current) * (isSprinting ? 0.5 : 0.35);
+      const bodyBob = Math.abs(Math.sin(walkPhase.current * 2)) * (isSprinting ? 0.05 : 0.03);
       
       if (leftLegRef.current) leftLegRef.current.rotation.x = legSwing;
       if (rightLegRef.current) rightLegRef.current.rotation.x = -legSwing;
-      if (leftArmRef.current) leftArmRef.current.rotation.x = -armSwing;
-      if (rightArmRef.current) rightArmRef.current.rotation.x = armSwing;
+      if (leftArmRef.current) leftArmRef.current.rotation.x = -armSwing + jumpArmOffset;
+      if (rightArmRef.current) rightArmRef.current.rotation.x = armSwing + jumpArmOffset;
       if (torsoRef.current) torsoRef.current.position.y = 0.55 + bodyBob;
       if (headRef.current) headRef.current.position.y = 0.95 + bodyBob;
     } else {
-      // Idle breathing animation - doubled amplitude
+      // Idle breathing animation
       breathPhase.current += delta * 1.5;
       
       const breathScale = 1 + Math.sin(breathPhase.current) * 0.03;
       const armBreath = Math.sin(breathPhase.current) * 0.06;
       const headBob = Math.sin(breathPhase.current * 0.5) * 0.01;
       
-      // Smoothly blend limbs back to neutral
       if (leftLegRef.current) {
-        leftLegRef.current.rotation.x = THREE.MathUtils.lerp(leftLegRef.current.rotation.x, 0, delta * 5);
+        leftLegRef.current.rotation.x = THREE.MathUtils.lerp(leftLegRef.current.rotation.x, 0, delta * 8);
       }
       if (rightLegRef.current) {
-        rightLegRef.current.rotation.x = THREE.MathUtils.lerp(rightLegRef.current.rotation.x, 0, delta * 5);
+        rightLegRef.current.rotation.x = THREE.MathUtils.lerp(rightLegRef.current.rotation.x, 0, delta * 8);
       }
       if (leftArmRef.current) {
-        leftArmRef.current.rotation.x = THREE.MathUtils.lerp(leftArmRef.current.rotation.x, 0, delta * 5);
+        leftArmRef.current.rotation.x = THREE.MathUtils.lerp(leftArmRef.current.rotation.x, jumpArmOffset, delta * 8);
         leftArmRef.current.rotation.z = armBreath;
       }
       if (rightArmRef.current) {
-        rightArmRef.current.rotation.x = THREE.MathUtils.lerp(rightArmRef.current.rotation.x, 0, delta * 5);
+        rightArmRef.current.rotation.x = THREE.MathUtils.lerp(rightArmRef.current.rotation.x, jumpArmOffset, delta * 8);
         rightArmRef.current.rotation.z = -armBreath;
       }
       if (torsoRef.current) {
@@ -351,19 +383,19 @@ export function Character() {
     <>
       <Footprints footprints={footprints.current} />
       <group ref={groupRef} position={characterPosition}>
-        {/* Torso - shorter */}
+        {/* Torso */}
         <mesh ref={torsoRef} position={[0, 0.55, 0]} castShadow>
           <capsuleGeometry args={[0.15, 0.25, 8, 16]} />
           {whiteMaterial}
         </mesh>
         
-        {/* Head - 2.5x bigger, connected to torso */}
+        {/* Head */}
         <mesh ref={headRef} position={[0, 0.95, 0]} castShadow>
           <sphereGeometry args={[0.30, 16, 16]} />
           {whiteMaterial}
         </mesh>
         
-        {/* Left Arm - connected to top of torso */}
+        {/* Left Arm */}
         <group ref={leftArmRef} position={[-0.22, 0.70, 0]}>
           <mesh position={[0, -0.15, 0]} castShadow>
             <capsuleGeometry args={[0.04, 0.25, 6, 12]} />
@@ -371,7 +403,7 @@ export function Character() {
           </mesh>
         </group>
         
-        {/* Right Arm - connected to top of torso */}
+        {/* Right Arm */}
         <group ref={rightArmRef} position={[0.22, 0.70, 0]}>
           <mesh position={[0, -0.15, 0]} castShadow>
             <capsuleGeometry args={[0.04, 0.25, 6, 12]} />

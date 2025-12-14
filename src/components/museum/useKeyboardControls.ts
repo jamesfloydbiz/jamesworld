@@ -7,6 +7,8 @@ interface KeyState {
   right: boolean;
   interact: boolean;
   escape: boolean;
+  sprint: boolean;
+  jump: boolean;
 }
 
 export function useKeyboardControls(): KeyState {
@@ -17,6 +19,8 @@ export function useKeyboardControls(): KeyState {
     right: false,
     interact: false,
     escape: false,
+    sprint: false,
+    jump: false,
   });
 
   useEffect(() => {
@@ -32,6 +36,8 @@ export function useKeyboardControls(): KeyState {
         if (key === 'd' || key === 'arrowright') newState.right = true;
         if (key === 'enter') newState.interact = true;
         if (key === 'escape') newState.escape = true;
+        if (key === 'shift') newState.sprint = true;
+        if (key === ' ') newState.jump = true;
         
         return newState;
       });
@@ -49,6 +55,8 @@ export function useKeyboardControls(): KeyState {
         if (key === 'd' || key === 'arrowright') newState.right = false;
         if (key === 'enter') newState.interact = false;
         if (key === 'escape') newState.escape = false;
+        if (key === 'shift') newState.sprint = false;
+        if (key === ' ') newState.jump = false;
         
         return newState;
       });
@@ -62,6 +70,8 @@ export function useKeyboardControls(): KeyState {
         right: false,
         interact: false,
         escape: false,
+        sprint: false,
+        jump: false,
       });
     };
 
