@@ -9,6 +9,9 @@ import MediaPage from "./pages/MediaPage";
 import ProjectsPage from "./pages/ProjectsPage";
 import NetworkPage from "./pages/NetworkPage";
 import BlueprintsPage from "./pages/BlueprintsPage";
+import PoemsPage from "./pages/PoemsPage";
+import OpsPage from "./pages/OpsPage";
+import ResumePage from "./pages/ResumePage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -26,6 +29,9 @@ const App = () => (
           <Route path="/projects" element={<ProjectsPage />} />
           <Route path="/network" element={<NetworkPage />} />
           <Route path="/blueprints" element={<BlueprintsPage />} />
+          <Route path="/poems" element={<PoemsPage />} />
+          <Route path="/ops" element={<OpsPage />} />
+          <Route path="/resume" element={<ResumePage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

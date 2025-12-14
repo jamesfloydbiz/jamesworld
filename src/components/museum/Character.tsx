@@ -9,6 +9,7 @@ const ROTATION_SPEED = 0.05;
 const CIRCLE_RADIUS = 1.5;
 const CHARACTER_RADIUS = 0.3;
 const STANCHION_RADIUS = 0.25;
+const ROPE_COLLISION_RADIUS = 0.2;
 const FOOTPRINT_DURATION = 2000; // 2 seconds in ms
 
 interface Footprint {
@@ -44,6 +45,56 @@ function getStanchionPositions(portals: { pedestalPosition: [number, number, num
   }
   
   return positions;
+}
+
+// Get all rope segments for collision (each segment is [startX, startZ, endX, endZ])
+function getRopeSegments(portals: { pedestalPosition: [number, number, number] }[]) {
+  const segments: [number, number, number, number][] = [];
+  
+  // Perimeter ropes
+  const perimeterRopes: [number, number, number, number][] = [
+    // Left side
+    [-8, 5, -8, -2], [-8, -2, -8, -9], [-8, -9, -8, -16], 
+    [-8, -16, -8, -23], [-8, -23, -8, -30],
+    // Right side
+    [8, 5, 8, -2], [8, -2, 8, -9], [8, -9, 8, -16], 
+    [8, -16, 8, -23], [8, -23, 8, -30],
+    // Back wall
+    [-5, -35, 0, -35], [0, -35, 5, -35],
+    // Connect to back corners
+    [-8, -30, -5, -35], [8, -30, 5, -35],
+  ];
+  segments.push(...perimeterRopes);
+  
+  // Pedestal ropes (square around each pedestal)
+  const offset = 1.8;
+  for (const portal of portals) {
+    const [px, , pz] = portal.pedestalPosition;
+    segments.push(
+      [px - offset, pz - offset, px + offset, pz - offset], // front
+      [px + offset, pz - offset, px + offset, pz + offset], // right
+      [px + offset, pz + offset, px - offset, pz + offset], // back
+      [px - offset, pz + offset, px - offset, pz - offset], // left
+    );
+  }
+  
+  return segments;
+}
+
+// Find closest point on a line segment to a point
+function closestPointOnSegment(
+  ax: number, az: number, 
+  bx: number, bz: number, 
+  px: number, pz: number
+): [number, number] {
+  const dx = bx - ax;
+  const dz = bz - az;
+  const lenSq = dx * dx + dz * dz;
+  
+  if (lenSq === 0) return [ax, az];
+  
+  const t = Math.max(0, Math.min(1, ((px - ax) * dx + (pz - az) * dz) / lenSq));
+  return [ax + t * dx, az + t * dz];
 }
 
 // Footprints component
@@ -109,6 +160,7 @@ export function Character() {
   } = useGameStore();
 
   const stanchionPositions = getStanchionPositions(portals);
+  const ropeSegments = getRopeSegments(portals);
   const keys = useKeyboardControls();
 
   useFrame((_, delta) => {
@@ -152,7 +204,7 @@ export function Character() {
       newX = Math.max(-7, Math.min(7, newX));
       newZ = Math.max(-35, Math.min(6, newZ));
 
-      // Stanchion collision
+      // Stanchion collision (posts)
       for (const [sx, sz] of stanchionPositions) {
         const dx = newX - sx;
         const dz = newZ - sz;
@@ -165,6 +217,23 @@ export function Character() {
           const pushZ = (dz / dist) * minDist;
           newX = sx + pushX;
           newZ = sz + pushZ;
+        }
+      }
+
+      // Rope collision (line segments - can be jumped over later)
+      for (const [ax, az, bx, bz] of ropeSegments) {
+        const [closestX, closestZ] = closestPointOnSegment(ax, az, bx, bz, newX, newZ);
+        const dx = newX - closestX;
+        const dz = newZ - closestZ;
+        const dist = Math.sqrt(dx * dx + dz * dz);
+        const minDist = CHARACTER_RADIUS + ROPE_COLLISION_RADIUS;
+        
+        if (dist < minDist && dist > 0) {
+          // Push character away from rope
+          const pushX = (dx / dist) * minDist;
+          const pushZ = (dz / dist) * minDist;
+          newX = closestX + pushX;
+          newZ = closestZ + pushZ;
         }
       }
 
