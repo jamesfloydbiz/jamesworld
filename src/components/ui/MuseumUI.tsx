@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useGameStore } from '@/store/gameStore';
 import { useKeyboardControls } from '../museum/useKeyboardControls';
@@ -36,11 +36,13 @@ export function MuseumUI() {
     }
   }, [keys.interact, activePortal, navigate, saveHubState, setIsTransitioning, isTransitioning]);
 
-  // Handle Escape key for menu
+  // Handle Escape key for menu - only toggle on rising edge
+  const prevEscapeRef = useRef(false);
   useEffect(() => {
-    if (keys.escape) {
+    if (keys.escape && !prevEscapeRef.current) {
       setMenuOpen(!menuOpen);
     }
+    prevEscapeRef.current = keys.escape;
   }, [keys.escape, menuOpen, setMenuOpen]);
 
   return (

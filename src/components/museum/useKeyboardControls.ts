@@ -54,12 +54,25 @@ export function useKeyboardControls(): KeyState {
       });
     };
 
+    const handleBlur = () => {
+      setKeys({
+        forward: false,
+        backward: false,
+        left: false,
+        right: false,
+        interact: false,
+        escape: false,
+      });
+    };
+
     window.addEventListener('keydown', handleKeyDown);
     window.addEventListener('keyup', handleKeyUp);
+    window.addEventListener('blur', handleBlur);
 
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('keyup', handleKeyUp);
+      window.removeEventListener('blur', handleBlur);
     };
   }, []);
 
