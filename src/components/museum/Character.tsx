@@ -57,8 +57,8 @@ export function Character() {
       ];
 
       // Boundary collision - updated for larger room
-      newPos[0] = Math.max(-7, Math.min(7, newPos[0]));
-      newPos[2] = Math.max(-35, Math.min(6, newPos[2]));
+      newPos[0] = Math.max(-8, Math.min(8, newPos[0]));
+      newPos[2] = Math.max(-38, Math.min(6, newPos[2]));
 
       setCharacterPosition(newPos);
     }
@@ -95,20 +95,34 @@ export function Character() {
 
   return (
     <group ref={meshRef} position={characterPosition}>
-      {/* Abstract humanoid silhouette */}
+      {/* Abstract humanoid silhouette with rim lighting */}
       <mesh position={[0, 0.6, 0]} castShadow>
         <capsuleGeometry args={[0.2, 0.5, 8, 16]} />
-        <meshStandardMaterial color="#ffffff" roughness={0.8} />
+        <meshStandardMaterial 
+          color="#ffffff" 
+          roughness={0.6}
+          emissive="#ffffff"
+          emissiveIntensity={0.08}
+        />
       </mesh>
       {/* Head */}
       <mesh position={[0, 1.1, 0]} castShadow>
         <sphereGeometry args={[0.15, 16, 16]} />
-        <meshStandardMaterial color="#ffffff" roughness={0.8} />
+        <meshStandardMaterial 
+          color="#ffffff" 
+          roughness={0.6}
+          emissive="#ffffff"
+          emissiveIntensity={0.08}
+        />
       </mesh>
+      
+      {/* Rim light effect - back light */}
+      <pointLight position={[0, 0.8, -0.4]} intensity={0.3} distance={1.5} color="#ffffff" />
+      
       {/* Shadow on floor */}
       <mesh position={[0, 0.01, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-        <circleGeometry args={[0.3, 32]} />
-        <meshBasicMaterial color="#000000" opacity={0.3} transparent />
+        <circleGeometry args={[0.35, 32]} />
+        <meshBasicMaterial color="#000000" opacity={0.5} transparent />
       </mesh>
     </group>
   );
