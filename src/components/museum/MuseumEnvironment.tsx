@@ -3,6 +3,7 @@ import { FloorCircle } from './FloorCircle';
 import { Pedestal } from './Pedestal';
 import { StanchionRailing } from './StanchionRailing';
 import { CeilingLights } from './CeilingLights';
+import { Text } from '@react-three/drei';
 
 export function MuseumEnvironment() {
   const { portals } = useGameStore();
@@ -32,6 +33,38 @@ export function MuseumEnvironment() {
         <boxGeometry args={[22.4, 8, 0.2]} />
         <meshStandardMaterial color="#050505" roughness={0.95} />
       </mesh>
+
+      {/* Glowing JAMES FLOYD text on back wall */}
+      <Text
+        position={[0, 5, -39.8]}
+        fontSize={1.8}
+        color="#ffffff"
+        anchorX="center"
+        anchorY="middle"
+        letterSpacing={0.15}
+      >
+        JAMES FLOYD
+        <meshStandardMaterial 
+          color="#ffffff" 
+          emissive="#ffffff" 
+          emissiveIntensity={1.2} 
+        />
+      </Text>
+      <pointLight position={[0, 5, -38]} intensity={0.5} color="#ffffff" distance={8} />
+
+      {/* Soft spotlights on each pedestal */}
+      {portals.map((portal) => (
+        <spotLight
+          key={`spotlight-${portal.id}`}
+          position={[portal.pedestalPosition[0], 7, portal.pedestalPosition[2]]}
+          target-position={portal.pedestalPosition}
+          angle={0.4}
+          penumbra={0.8}
+          intensity={0.6}
+          color="#fffaf0"
+          castShadow
+        />
+      ))}
 
       {/* Front partial walls */}
       <mesh position={[-7, 4, 7]} receiveShadow>

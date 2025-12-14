@@ -3,8 +3,8 @@ import { useFrame, useThree } from '@react-three/fiber';
 import { useGameStore } from '@/store/gameStore';
 import * as THREE from 'three';
 
-const CAMERA_HEIGHT = 3;
-const CAMERA_DISTANCE = 6;
+const CAMERA_HEIGHT = 1.8;
+const CAMERA_DISTANCE = 7;
 const LERP_FACTOR = 0.04;
 
 export function MuseumCamera() {
@@ -42,7 +42,7 @@ export function MuseumCamera() {
       );
       targetLookAt.current.set(
         characterPosition[0],
-        characterPosition[1] + 0.5,
+        characterPosition[1] + 0.3,
         characterPosition[2]
       );
     }

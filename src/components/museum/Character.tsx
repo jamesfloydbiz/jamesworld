@@ -9,6 +9,15 @@ const ROTATION_SPEED = 0.05;
 const CIRCLE_RADIUS = 1.5;
 const CHARACTER_RADIUS = 0.3;
 const STANCHION_RADIUS = 0.25;
+const FOOTPRINT_DURATION = 2000; // 2 seconds in ms
+
+interface Footprint {
+  id: number;
+  position: [number, number, number];
+  rotation: number;
+  timestamp: number;
+  isLeft: boolean;
+}
 
 // Get all stanchion collision positions
 function getStanchionPositions(portals: { pedestalPosition: [number, number, number] }[]) {
@@ -37,6 +46,37 @@ function getStanchionPositions(portals: { pedestalPosition: [number, number, num
   return positions;
 }
 
+// Footprints component
+function Footprints({ footprints }: { footprints: Footprint[] }) {
+  const now = Date.now();
+  
+  return (
+    <group>
+      {footprints.map((fp) => {
+        const age = now - fp.timestamp;
+        const opacity = Math.max(0, 0.4 * (1 - age / FOOTPRINT_DURATION));
+        const offsetX = fp.isLeft ? -0.08 : 0.08;
+        
+        return (
+          <mesh
+            key={fp.id}
+            position={[
+              fp.position[0] + Math.sin(fp.rotation) * offsetX,
+              0.01,
+              fp.position[2] + Math.cos(fp.rotation) * offsetX
+            ]}
+            rotation={[-Math.PI / 2, 0, fp.rotation]}
+            scale={[0.6, 1, 1]}
+          >
+            <circleGeometry args={[0.1, 16]} />
+            <meshBasicMaterial color="#ffffff" opacity={opacity} transparent />
+          </mesh>
+        );
+      })}
+    </group>
+  );
+}
+
 export function Character() {
   const groupRef = useRef<THREE.Group>(null);
   const leftArmRef = useRef<THREE.Group>(null);
@@ -51,6 +91,11 @@ export function Character() {
   const currentSpeed = useRef(0);
   const velocity = useRef(new THREE.Vector3());
   const targetRotation = useRef(0);
+  
+  // Footprint tracking
+  const footprints = useRef<Footprint[]>([]);
+  const footprintId = useRef(0);
+  const prevLegPhase = useRef(0);
   
   const { 
     characterPosition, 
@@ -68,6 +113,11 @@ export function Character() {
 
   useFrame((_, delta) => {
     if (!groupRef.current) return;
+
+    const now = Date.now();
+    
+    // Clean up old footprints
+    footprints.current = footprints.current.filter(fp => now - fp.timestamp < FOOTPRINT_DURATION);
 
     const moveDirection = new THREE.Vector3();
     
@@ -163,19 +213,43 @@ export function Character() {
       const armSwing = Math.sin(walkPhase.current) * 0.35;
       const bodyBob = Math.abs(Math.sin(walkPhase.current * 2)) * 0.03;
       
+      // Detect footstep moments (when leg crosses zero)
+      const currentLegPhase = Math.sin(walkPhase.current);
+      if (prevLegPhase.current > 0 && currentLegPhase <= 0) {
+        // Left foot step
+        footprints.current.push({
+          id: footprintId.current++,
+          position: [...characterPosition],
+          rotation: characterRotation,
+          timestamp: now,
+          isLeft: true,
+        });
+      }
+      if (prevLegPhase.current < 0 && currentLegPhase >= 0) {
+        // Right foot step
+        footprints.current.push({
+          id: footprintId.current++,
+          position: [...characterPosition],
+          rotation: characterRotation,
+          timestamp: now,
+          isLeft: false,
+        });
+      }
+      prevLegPhase.current = currentLegPhase;
+      
       if (leftLegRef.current) leftLegRef.current.rotation.x = legSwing;
       if (rightLegRef.current) rightLegRef.current.rotation.x = -legSwing;
       if (leftArmRef.current) leftArmRef.current.rotation.x = -armSwing;
       if (rightArmRef.current) rightArmRef.current.rotation.x = armSwing;
-      if (torsoRef.current) torsoRef.current.position.y = 0.65 + bodyBob;
-      if (headRef.current) headRef.current.position.y = 1.15 + bodyBob;
+      if (torsoRef.current) torsoRef.current.position.y = 0.55 + bodyBob;
+      if (headRef.current) headRef.current.position.y = 0.95 + bodyBob;
     } else {
-      // Idle breathing animation
+      // Idle breathing animation - doubled amplitude
       breathPhase.current += delta * 1.5;
       
-      const breathScale = 1 + Math.sin(breathPhase.current) * 0.015;
-      const armBreath = Math.sin(breathPhase.current) * 0.03;
-      const headBob = Math.sin(breathPhase.current * 0.5) * 0.005;
+      const breathScale = 1 + Math.sin(breathPhase.current) * 0.03;
+      const armBreath = Math.sin(breathPhase.current) * 0.06;
+      const headBob = Math.sin(breathPhase.current * 0.5) * 0.01;
       
       // Smoothly blend limbs back to neutral
       if (leftLegRef.current) {
@@ -194,10 +268,10 @@ export function Character() {
       }
       if (torsoRef.current) {
         torsoRef.current.scale.y = breathScale;
-        torsoRef.current.position.y = 0.65;
+        torsoRef.current.position.y = 0.55;
       }
       if (headRef.current) {
-        headRef.current.position.y = 1.15 + headBob;
+        headRef.current.position.y = 0.95 + headBob;
       }
     }
   });
@@ -205,56 +279,59 @@ export function Character() {
   const whiteMaterial = <meshStandardMaterial color="#ffffff" roughness={0.8} />;
 
   return (
-    <group ref={groupRef} position={characterPosition}>
-      {/* Torso */}
-      <mesh ref={torsoRef} position={[0, 0.65, 0]} castShadow>
-        <capsuleGeometry args={[0.15, 0.35, 8, 16]} />
-        {whiteMaterial}
-      </mesh>
-      
-      {/* Head */}
-      <mesh ref={headRef} position={[0, 1.15, 0]} castShadow>
-        <sphereGeometry args={[0.12, 16, 16]} />
-        {whiteMaterial}
-      </mesh>
-      
-      {/* Left Arm */}
-      <group ref={leftArmRef} position={[-0.22, 0.8, 0]}>
-        <mesh position={[0, -0.15, 0]} castShadow>
-          <capsuleGeometry args={[0.04, 0.25, 6, 12]} />
+    <>
+      <Footprints footprints={footprints.current} />
+      <group ref={groupRef} position={characterPosition}>
+        {/* Torso - shorter */}
+        <mesh ref={torsoRef} position={[0, 0.55, 0]} castShadow>
+          <capsuleGeometry args={[0.15, 0.25, 8, 16]} />
           {whiteMaterial}
         </mesh>
-      </group>
-      
-      {/* Right Arm */}
-      <group ref={rightArmRef} position={[0.22, 0.8, 0]}>
-        <mesh position={[0, -0.15, 0]} castShadow>
-          <capsuleGeometry args={[0.04, 0.25, 6, 12]} />
+        
+        {/* Head - 2.5x bigger, connected to torso */}
+        <mesh ref={headRef} position={[0, 0.95, 0]} castShadow>
+          <sphereGeometry args={[0.30, 16, 16]} />
           {whiteMaterial}
         </mesh>
-      </group>
-      
-      {/* Left Leg */}
-      <group ref={leftLegRef} position={[-0.08, 0.35, 0]}>
-        <mesh position={[0, -0.15, 0]} castShadow>
-          <capsuleGeometry args={[0.05, 0.25, 6, 12]} />
-          {whiteMaterial}
+        
+        {/* Left Arm - connected to top of torso */}
+        <group ref={leftArmRef} position={[-0.22, 0.70, 0]}>
+          <mesh position={[0, -0.15, 0]} castShadow>
+            <capsuleGeometry args={[0.04, 0.25, 6, 12]} />
+            {whiteMaterial}
+          </mesh>
+        </group>
+        
+        {/* Right Arm - connected to top of torso */}
+        <group ref={rightArmRef} position={[0.22, 0.70, 0]}>
+          <mesh position={[0, -0.15, 0]} castShadow>
+            <capsuleGeometry args={[0.04, 0.25, 6, 12]} />
+            {whiteMaterial}
+          </mesh>
+        </group>
+        
+        {/* Left Leg */}
+        <group ref={leftLegRef} position={[-0.08, 0.35, 0]}>
+          <mesh position={[0, -0.15, 0]} castShadow>
+            <capsuleGeometry args={[0.05, 0.25, 6, 12]} />
+            {whiteMaterial}
+          </mesh>
+        </group>
+        
+        {/* Right Leg */}
+        <group ref={rightLegRef} position={[0.08, 0.35, 0]}>
+          <mesh position={[0, -0.15, 0]} castShadow>
+            <capsuleGeometry args={[0.05, 0.25, 6, 12]} />
+            {whiteMaterial}
+          </mesh>
+        </group>
+        
+        {/* Shadow on floor */}
+        <mesh position={[0, 0.01, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+          <circleGeometry args={[0.25, 32]} />
+          <meshBasicMaterial color="#000000" opacity={0.3} transparent />
         </mesh>
       </group>
-      
-      {/* Right Leg */}
-      <group ref={rightLegRef} position={[0.08, 0.35, 0]}>
-        <mesh position={[0, -0.15, 0]} castShadow>
-          <capsuleGeometry args={[0.05, 0.25, 6, 12]} />
-          {whiteMaterial}
-        </mesh>
-      </group>
-      
-      {/* Shadow on floor */}
-      <mesh position={[0, 0.01, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-        <circleGeometry args={[0.25, 32]} />
-        <meshBasicMaterial color="#000000" opacity={0.3} transparent />
-      </mesh>
-    </group>
+    </>
   );
 }
