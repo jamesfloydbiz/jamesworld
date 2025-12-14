@@ -7,7 +7,7 @@ interface PortalData {
   title: string;
   section: Section;
   route: string;
-  framePosition: [number, number, number];
+  pedestalPosition: [number, number, number];
   circlePosition: [number, number, number];
   order: number;
 }
@@ -56,8 +56,8 @@ const initialPortals: PortalData[] = [
     title: 'Story',
     section: 'Story',
     route: '/story',
-    framePosition: [-6.8, 2, -6],
-    circlePosition: [-4, 0.01, -6],
+    pedestalPosition: [-4, 0, -8],
+    circlePosition: [-4, 0.01, -4],
     order: 1,
   },
   {
@@ -65,8 +65,8 @@ const initialPortals: PortalData[] = [
     title: 'Media',
     section: 'Media',
     route: '/media',
-    framePosition: [6.8, 2, -6],
-    circlePosition: [4, 0.01, -6],
+    pedestalPosition: [4, 0, -8],
+    circlePosition: [4, 0.01, -4],
     order: 2,
   },
   {
@@ -74,7 +74,7 @@ const initialPortals: PortalData[] = [
     title: 'Projects',
     section: 'Projects',
     route: '/projects',
-    framePosition: [-6.8, 2, -16],
+    pedestalPosition: [-4, 0, -20],
     circlePosition: [-4, 0.01, -16],
     order: 3,
   },
@@ -83,7 +83,7 @@ const initialPortals: PortalData[] = [
     title: 'Network',
     section: 'Network',
     route: '/network',
-    framePosition: [6.8, 2, -16],
+    pedestalPosition: [4, 0, -20],
     circlePosition: [4, 0.01, -16],
     order: 4,
   },
@@ -92,7 +92,7 @@ const initialPortals: PortalData[] = [
     title: 'Blueprints',
     section: 'Blueprints',
     route: '/blueprints',
-    framePosition: [0, 2, -31.8],
+    pedestalPosition: [0, 0, -32],
     circlePosition: [0, 0.01, -28],
     order: 5,
   },
