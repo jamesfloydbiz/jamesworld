@@ -14,7 +14,6 @@ export default {
     },
     extend: {
       fontFamily: {
-        serif: ["'Playfair Display'", "serif"],
         mono: ["'Space Mono'", "monospace"],
       },
       colors: {
@@ -57,8 +56,6 @@ export default {
           gray: "hsl(var(--museum-gray))",
           white: "hsl(var(--museum-white))",
           frame: "hsl(var(--museum-frame))",
-          velvet: "hsl(var(--museum-velvet))",
-          chrome: "hsl(var(--museum-chrome))",
         },
       },
       borderRadius: {

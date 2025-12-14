@@ -2,11 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap');
 
 @layer base {
   :root {
-    /* JamesFloyds.world - Luxury VIP Gallery Theme */
+    /* JamesFloyds.world - Black Museum Theme */
     --background: 0 0% 0%;
     --foreground: 0 0% 100%;
 
@@ -25,7 +25,7 @@
     --muted: 0 0% 12%;
     --muted-foreground: 0 0% 60%;
 
-    --accent: 0 100% 27%;
+    --accent: 0 0% 15%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 62% 30%;
@@ -43,8 +43,6 @@
     --museum-gray: 0 0% 20%;
     --museum-white: 0 0% 100%;
     --museum-frame: 0 0% 95%;
-    --museum-velvet: 0 100% 27%;
-    --museum-chrome: 0 0% 80%;
 
     /* Walkway header */
     --walkway-height: 160px;
@@ -67,7 +65,7 @@
     margin: 0;
     padding: 0;
     overflow-x: hidden;
-    font-family: 'Playfair Display', serif;
+    font-family: 'Space Mono', monospace;
   }
 
   body {
@@ -78,11 +76,10 @@
 @layer components {
   .museum-ui {
     @apply fixed z-50 text-foreground;
-    font-family: 'Playfair Display', serif;
-    letter-spacing: 0.12em;
+    font-family: 'Space Mono', monospace;
+    letter-spacing: 0.05em;
     text-transform: uppercase;
-    font-size: 12px;
-    font-weight: 500;
+    font-size: 11px;
   }
 
   .walkway-header {

@@ -1,79 +1,51 @@
-import { useGameStore } from '@/store/gameStore';
-
 export function CeilingLights() {
-  const { portals } = useGameStore();
-  const ceilingHeight = 7.8;
+  // Grid of ceiling light panels
+  const lights: [number, number, number][] = [];
+  
+  // Create a grid pattern
+  for (let x = -6; x <= 6; x += 4) {
+    for (let z = -30; z <= 0; z += 6) {
+      lights.push([x, 7.9, z]);
+    }
+  }
 
   return (
     <group>
-      {/* Black ceiling */}
-      <mesh position={[0, ceilingHeight, -15]} rotation={[Math.PI / 2, 0, 0]}>
-        <planeGeometry args={[24, 52]} />
-        <meshStandardMaterial color="#0a0a0a" roughness={0.95} />
+      {/* Main ceiling - black */}
+      <mesh rotation={[Math.PI / 2, 0, 0]} position={[0, 8, -15]}>
+        <planeGeometry args={[22, 50]} />
+        <meshStandardMaterial color="#030303" roughness={1} />
       </mesh>
-
-      {/* Track lighting rails */}
-      {[-4, 0, 4].map((x, i) => (
-        <mesh key={i} position={[x, ceilingHeight - 0.1, -15]}>
-          <boxGeometry args={[0.08, 0.08, 45]} />
-          <meshStandardMaterial color="#1a1a1a" metalness={0.7} roughness={0.3} />
-        </mesh>
-      ))}
-
-      {/* Spotlight fixtures above each pedestal */}
-      {portals.map((portal) => (
-        <group key={portal.id} position={[portal.pedestalPosition[0], ceilingHeight - 0.3, portal.pedestalPosition[2]]}>
-          {/* Fixture housing */}
-          <mesh>
-            <cylinderGeometry args={[0.12, 0.08, 0.25, 16]} />
-            <meshStandardMaterial color="#1a1a1a" metalness={0.8} roughness={0.2} />
+      
+      {/* White square light panels */}
+      {lights.map((pos, i) => (
+        <group key={i} position={pos}>
+          {/* Light panel */}
+          <mesh rotation={[Math.PI / 2, 0, 0]}>
+            <planeGeometry args={[2, 2]} />
+            <meshBasicMaterial color="#ffffff" />
           </mesh>
           
-          {/* Light cone (visible light beam effect) */}
-          <mesh position={[0, -1.5, 0]}>
-            <coneGeometry args={[0.8, 3, 32, 1, true]} />
-            <meshBasicMaterial 
-              color="#ffffff" 
-              opacity={0.015} 
-              transparent 
-              side={2}
-            />
-          </mesh>
-          
-          {/* Actual spotlight */}
-          <spotLight
-            position={[0, 0, 0]}
-            target-position={[portal.pedestalPosition[0], 0, portal.pedestalPosition[2]]}
-            angle={0.25}
-            penumbra={0.6}
-            intensity={2.5}
+          {/* Actual light source */}
+          <pointLight 
+            position={[0, -0.5, 0]} 
+            intensity={0.8} 
+            color="#ffffff" 
             distance={12}
-            color="#fffaf0"
-            castShadow
-            shadow-mapSize={[512, 512]}
+            decay={2}
           />
         </group>
       ))}
-
-      {/* Ambient ceiling panels - subtle white glow */}
-      {[
-        [-6, -5], [-6, -15], [-6, -25], [-6, -35],
-        [6, -5], [6, -15], [6, -25], [6, -35],
-      ].map(([x, z], i) => (
-        <group key={i} position={[x, ceilingHeight - 0.15, z]}>
-          <mesh>
-            <boxGeometry args={[1.2, 0.08, 1.2]} />
-            <meshStandardMaterial color="#1a1a1a" roughness={0.9} />
-          </mesh>
-          {/* Light panel */}
-          <mesh position={[0, -0.05, 0]}>
-            <boxGeometry args={[0.9, 0.02, 0.9]} />
-            <meshBasicMaterial color="#ffffff" opacity={0.4} transparent />
-          </mesh>
-          {/* Subtle downlight */}
-          <pointLight position={[0, -0.5, 0]} intensity={0.15} distance={6} color="#ffffff" />
-        </group>
-      ))}
+      
+      {/* Ceiling frame/edge trim */}
+      <mesh position={[-10.9, 7.8, -15]}>
+        <boxGeometry args={[0.2, 0.4, 50]} />
+        <meshStandardMaterial color="#0a0a0a" roughness={0.8} />
+      </mesh>
+      <mesh position={[10.9, 7.8, -15]}>
+        <boxGeometry args={[0.2, 0.4, 50]} />
+        <meshStandardMaterial color="#0a0a0a" roughness={0.8} />
+      </mesh>
     </group>
   );
 }
