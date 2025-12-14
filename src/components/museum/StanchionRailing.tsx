@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { useGameStore } from '@/store/gameStore';
 
 interface StanchionProps {
   position: [number, number, number];
@@ -34,28 +35,46 @@ interface RopeSegmentProps {
 function RopeSegment({ start, end }: RopeSegmentProps) {
   const startVec = new THREE.Vector3(...start);
   const endVec = new THREE.Vector3(...end);
+  
+  // Calculate midpoint
   const midPoint = startVec.clone().add(endVec).multiplyScalar(0.5);
+  // Add slight sag
+  midPoint.y -= 0.08;
   
-  // Rope hangs down slightly in the middle
-  midPoint.y = 0.75;
-  
+  // Calculate length and direction
   const direction = endVec.clone().sub(startVec);
   const length = direction.length();
-  const angle = Math.atan2(direction.x, direction.z);
+  
+  // Calculate rotation to align cylinder horizontally between points
+  const up = new THREE.Vector3(0, 1, 0);
+  const quaternion = new THREE.Quaternion();
+  direction.normalize();
+  
+  // Create rotation that aligns Y-axis (cylinder default) with the direction
+  const axis = new THREE.Vector3().crossVectors(up, direction).normalize();
+  const angle = Math.acos(up.dot(direction));
+  
+  if (axis.length() > 0.001) {
+    quaternion.setFromAxisAngle(axis, angle);
+  } else if (direction.y < 0) {
+    quaternion.setFromAxisAngle(new THREE.Vector3(1, 0, 0), Math.PI);
+  }
+  
+  const euler = new THREE.Euler().setFromQuaternion(quaternion);
   
   return (
-    <group position={[midPoint.x, midPoint.y, midPoint.z]}>
-      <mesh rotation={[0, -angle, 0]}>
-        <cylinderGeometry args={[0.015, 0.015, length, 8]} />
-        <meshStandardMaterial color="#8B0000" roughness={0.8} />
-      </mesh>
-    </group>
+    <mesh position={[midPoint.x, midPoint.y, midPoint.z]} rotation={euler}>
+      <cylinderGeometry args={[0.015, 0.015, length, 8]} />
+      <meshStandardMaterial color="#8B0000" roughness={0.8} />
+    </mesh>
   );
 }
 
 export function StanchionRailing() {
-  // Stanchion positions along the perimeter
-  const stanchions: [number, number, number][] = [
+  const { portals } = useGameStore();
+  
+  // Perimeter stanchion positions
+  const perimeterStanchions: [number, number, number][] = [
     // Left side
     [-8, 0, 5],
     [-8, 0, -2],
@@ -76,8 +95,8 @@ export function StanchionRailing() {
     [5, 0, -35],
   ];
 
-  // Rope connections
-  const ropes: { start: [number, number, number]; end: [number, number, number] }[] = [
+  // Perimeter rope connections
+  const perimeterRopes: { start: [number, number, number]; end: [number, number, number] }[] = [
     // Left side ropes
     { start: [-8, 0.95, 5], end: [-8, 0.95, -2] },
     { start: [-8, 0.95, -2], end: [-8, 0.95, -9] },
@@ -98,13 +117,44 @@ export function StanchionRailing() {
     { start: [8, 0.95, -30], end: [5, 0.95, -35] },
   ];
 
+  // Generate pedestal stanchions and ropes
+  const pedestalStanchions: [number, number, number][] = [];
+  const pedestalRopes: { start: [number, number, number]; end: [number, number, number] }[] = [];
+  
+  const offset = 1.8;
+  const ropeHeight = 0.95;
+  
+  for (const portal of portals) {
+    const [px, , pz] = portal.pedestalPosition;
+    
+    // 4 corner stanchions
+    const corners: [number, number, number][] = [
+      [px - offset, 0, pz - offset],
+      [px + offset, 0, pz - offset],
+      [px + offset, 0, pz + offset],
+      [px - offset, 0, pz + offset],
+    ];
+    pedestalStanchions.push(...corners);
+    
+    // 4 rope segments connecting corners in a square
+    pedestalRopes.push(
+      { start: [px - offset, ropeHeight, pz - offset], end: [px + offset, ropeHeight, pz - offset] },
+      { start: [px + offset, ropeHeight, pz - offset], end: [px + offset, ropeHeight, pz + offset] },
+      { start: [px + offset, ropeHeight, pz + offset], end: [px - offset, ropeHeight, pz + offset] },
+      { start: [px - offset, ropeHeight, pz + offset], end: [px - offset, ropeHeight, pz - offset] },
+    );
+  }
+
+  const allStanchions = [...perimeterStanchions, ...pedestalStanchions];
+  const allRopes = [...perimeterRopes, ...pedestalRopes];
+
   return (
     <group>
-      {stanchions.map((pos, i) => (
-        <Stanchion key={i} position={pos} />
+      {allStanchions.map((pos, i) => (
+        <Stanchion key={`stanchion-${i}`} position={pos} />
       ))}
-      {ropes.map((rope, i) => (
-        <RopeSegment key={i} start={rope.start} end={rope.end} />
+      {allRopes.map((rope, i) => (
+        <RopeSegment key={`rope-${i}`} start={rope.start} end={rope.end} />
       ))}
     </group>
   );
