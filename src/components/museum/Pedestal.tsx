@@ -13,7 +13,7 @@ const modelConfigs: Record<string, { path: string; scale: number[]; yOffset: num
   'Story': { path: '/models/tree_gn.glb', scale: [0.4, 0.4, 0.4], yOffset: 0.5 },
   'Projects': { path: '/models/model_of_the_watt_steam_engine_with_animation.glb', scale: [1.2, 1.2, 1.2], yOffset: 0.6 },
   'Media': { path: '/models/movie_clipper.glb', scale: [0.2, 0.2, 0.2], yOffset: 2.0, floating: true, rotationY: Math.PI / 2 },
-  'Blueprints': { path: '/models/the_thinker_by_auguste_rodin.glb', scale: [1.5, 1.5, 1.5], yOffset: 0.5 },
+  'Blueprints': { path: '/models/the_thinker_by_auguste_rodin.glb', scale: [1.125, 1.125, 1.125], yOffset: 0.5 },
   'Network': { path: '/models/knowledge_network.glb', scale: [5.0, 5.0, 5.0], yOffset: 2.0 },
 };
 
