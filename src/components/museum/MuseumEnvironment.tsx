@@ -7,6 +7,7 @@ import { HallwayDoorway } from './HallwayDoorway';
 import { RedCarpet } from './RedCarpet';
 import { PictureHall } from './PictureHall';
 import { HallwayStanchions } from './HallwayStanchions';
+import { InfoPlacard } from './InfoPlacard';
 import { Text } from '@react-three/drei';
 
 export function MuseumEnvironment() {
@@ -109,7 +110,7 @@ export function MuseumEnvironment() {
       {/* Stanchion railings */}
       <StanchionRailing />
 
-      {/* Pedestals and floor circles */}
+      {/* Pedestals and floor circles with info placards */}
       {portals.map((portal) => (
         <group key={portal.id}>
           <Pedestal 
@@ -119,6 +120,15 @@ export function MuseumEnvironment() {
           <FloorCircle 
             position={portal.circlePosition} 
             portalId={portal.id} 
+          />
+          {/* Info placard positioned to the side of the circle */}
+          <InfoPlacard 
+            position={[
+              portal.circlePosition[0] + (portal.circlePosition[0] > 0 ? 1.5 : -1.5),
+              0,
+              portal.circlePosition[2]
+            ]} 
+            title={portal.title}
           />
         </group>
       ))}
