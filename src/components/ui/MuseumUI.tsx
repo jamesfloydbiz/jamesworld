@@ -113,7 +113,7 @@ export function MuseumUI() {
               exit={{ opacity: 0, y: 20 }}
             >
               <ul className="space-y-6">
-                {['Story', 'Media', 'Projects', 'Network', 'Blueprints'].map((item, i) => (
+                {['Story', 'Media', 'Projects', 'Network', 'Blueprints', 'Ops'].map((item, i) => (
                   <motion.li
                     key={item}
                     initial={{ opacity: 0, y: 10 }}
