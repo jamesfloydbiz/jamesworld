@@ -11,10 +11,10 @@ interface PedestalProps {
 // Model configurations for each section
 const modelConfigs: Record<string, { path: string; scale: number[]; yOffset: number; floating?: boolean; rotationY?: number }> = {
   'Story': { path: '/models/tree_gn.glb', scale: [0.4, 0.4, 0.4], yOffset: 0.5 },
-  'Projects': { path: '/models/model_of_the_watt_steam_engine_with_animation.glb', scale: [1.2, 1.2, 1.2], yOffset: 0.6 },
+  'Projects': { path: '/models/model_of_the_watt_steam_engine_with_animation.glb', scale: [1.2, 1.2, 1.2], yOffset: 0.3 },
   'Media': { path: '/models/movie_clipper.glb', scale: [0.2, 0.2, 0.2], yOffset: 2.0, floating: true, rotationY: Math.PI / 2 },
-  'Blueprints': { path: '/models/the_thinker_by_auguste_rodin.glb', scale: [1.125, 1.125, 1.125], yOffset: 0.5 },
-  'Network': { path: '/models/knowledge_network.glb', scale: [5.0, 5.0, 5.0], yOffset: 2.0 },
+  'Blueprints': { path: '/models/the_thinker_by_auguste_rodin.glb', scale: [1.125, 1.125, 1.125], yOffset: 0.5, rotationY: -2 * Math.PI / 3 },
+  'Network': { path: '/models/knowledge_network.glb', scale: [1.125, 1.125, 1.125], yOffset: 0.8 },
 };
 
 function ModelExhibit({ title }: { title: string }) {
@@ -31,7 +31,20 @@ function ModelExhibit({ title }: { title: string }) {
     );
   }
 
-  const { scene } = useGLTF(config.path);
+  // Use try-catch pattern for model loading
+  let scene: THREE.Group | null = null;
+  try {
+    const result = useGLTF(config.path);
+    scene = result.scene;
+  } catch (e) {
+    // Model failed to load, show fallback
+    return (
+      <mesh position={[0, 1.0, 0]} castShadow>
+        <dodecahedronGeometry args={[0.5, 0]} />
+        <meshStandardMaterial color="#ffffff" roughness={0.3} metalness={0.1} />
+      </mesh>
+    );
+  }
 
   // Floating animation for Media
   useFrame((state) => {
