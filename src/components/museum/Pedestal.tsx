@@ -33,8 +33,15 @@ function LoadedModel({ title, config }: { title: string; config: typeof modelCon
   const { scene } = useGLTF(config.path);
   
   useFrame((state) => {
-    if (config?.floating && groupRef.current) {
-      groupRef.current.position.y = config.yOffset + Math.sin(state.clock.elapsedTime * 2) * 0.1;
+    if (groupRef.current) {
+      // Floating animation
+      if (config?.floating) {
+        groupRef.current.position.y = config.yOffset + Math.sin(state.clock.elapsedTime * 2) * 0.1;
+      }
+      // Slow rotation for heart (Network)
+      if (title === 'Network') {
+        groupRef.current.rotation.y += 0.005;
+      }
     }
   });
 
