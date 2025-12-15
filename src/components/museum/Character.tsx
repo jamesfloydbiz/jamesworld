@@ -29,11 +29,12 @@ import { hallwayStanchionPositions, hallwayRopeSegments } from './HallwayStanchi
 function getStanchionPositions(portals: { pedestalPosition: [number, number, number] }[]) {
   const positions: [number, number][] = [];
   
-  // Main gallery perimeter - removed center back stanchion for doorway
+  // Main gallery perimeter - removed back stanchions near doorway
   const perimeter: [number, number][] = [
     [-8, 5], [-8, -2], [-8, -9], [-8, -16], [-8, -23], [-8, -30],
     [8, 5], [8, -2], [8, -9], [8, -16], [8, -23], [8, -30],
-    [-5, -35], [5, -35], // No center stanchion - doorway
+    // Moved stanchions away from doorway center
+    [-5, -35], [5, -35],
   ];
   positions.push(...perimeter);
   
@@ -243,17 +244,31 @@ export function Character() {
       let newX = characterPosition[0] + velocity.current.x;
       let newZ = characterPosition[2] + velocity.current.z;
 
-      // Boundary collision - extended for picture hall
-      // Main gallery: X -7 to 7, Z -35 to 6
-      // Picture hall: X -5.5 to 5.5, Z -65 to -40
-      if (newZ > -40) {
-        // In main gallery
+      // Boundary collision - extended for picture hall with doorway transition
+      // Main gallery: X -7 to 7, Z up to 6
+      // Doorway zone: X -1.8 to 1.8, Z -35 to -40
+      // Picture hall: X -5.5 to 5.5, Z -40 to -64
+      
+      const inDoorwayX = newX > -1.8 && newX < 1.8;
+      
+      if (newZ > -35) {
+        // Main gallery area
         newX = Math.max(-7, Math.min(7, newX));
-        newZ = Math.max(-35, Math.min(6, newZ));
+        newZ = Math.min(6, newZ);
+      } else if (newZ > -40) {
+        // Doorway transition zone
+        if (inDoorwayX) {
+          // Can pass through doorway
+          newX = Math.max(-1.8, Math.min(1.8, newX));
+        } else {
+          // Blocked by wall on sides
+          newZ = Math.max(-35, newZ);
+          newX = Math.max(-7, Math.min(7, newX));
+        }
       } else {
         // In hallway/picture hall
         newX = Math.max(-5.5, Math.min(5.5, newX));
-        newZ = Math.max(-64, Math.min(-40, newZ));
+        newZ = Math.max(-64, newZ);
       }
 
       // Stanchion collision
