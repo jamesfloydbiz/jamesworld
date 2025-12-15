@@ -88,6 +88,10 @@ export function MuseumUI() {
           </div>
         </div>
         <div className="flex items-center gap-2">
+          <span className="text-muted-foreground">Sprint</span>
+          <span className="border border-border px-2 py-1">Shift</span>
+        </div>
+        <div className="flex items-center gap-2">
           <span className="text-muted-foreground">Menu</span>
           <span className="border border-border px-2 py-1">ESC</span>
         </div>
@@ -113,7 +117,7 @@ export function MuseumUI() {
               exit={{ opacity: 0, y: 20 }}
             >
               <ul className="space-y-6">
-                {['Story', 'Media', 'Projects', 'Network', 'Blueprints', 'Ops'].map((item, i) => (
+                {['Story', 'Media', 'Projects', 'Network', 'Blueprints'].map((item, i) => (
                   <motion.li
                     key={item}
                     initial={{ opacity: 0, y: 10 }}

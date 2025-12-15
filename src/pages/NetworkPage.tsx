@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { WalkwayHeader } from '@/components/walkway/WalkwayHeader';
 import { ExternalLink, Mail } from 'lucide-react';
+import { useKeyboardScroll } from '@/hooks/useKeyboardScroll';
 
 const philosophies = [
   {
@@ -43,6 +44,7 @@ const connectOptions = [
 ];
 
 const NetworkPage = () => {
+  useKeyboardScroll();
   return (
     <div className="min-h-screen bg-background">
       <WalkwayHeader title="Network" />
