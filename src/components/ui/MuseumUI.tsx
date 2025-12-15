@@ -1,7 +1,6 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useGameStore } from '@/store/gameStore';
-import { useKeyboardControls } from '../museum/useKeyboardControls';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export function MuseumUI() {
@@ -14,36 +13,34 @@ export function MuseumUI() {
     setIsTransitioning,
     isTransitioning,
   } = useGameStore();
-  
-  const keys = useKeyboardControls();
 
   // Handle Enter key for portal interaction
+  const handleInteraction = useCallback(() => {
+    if (activePortal && !isTransitioning) {
+      setIsTransitioning(true);
+      saveHubState();
+      
+      // Transition animation
+      setTimeout(() => {
+        navigate(activePortal.route);
+      }, 400);
+    }
+  }, [activePortal, isTransitioning, navigate, saveHubState, setIsTransitioning]);
+
+  // Direct keyboard event listeners
   useEffect(() => {
-    const handleInteraction = () => {
-      if (activePortal && !isTransitioning) {
-        setIsTransitioning(true);
-        saveHubState();
-        
-        // Transition animation
-        setTimeout(() => {
-          navigate(activePortal.route);
-        }, 400);
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Enter' && activePortal && !isTransitioning) {
+        handleInteraction();
+      }
+      if (e.key === 'Escape') {
+        setMenuOpen(!menuOpen);
       }
     };
 
-    if (keys.interact && activePortal) {
-      handleInteraction();
-    }
-  }, [keys.interact, activePortal, navigate, saveHubState, setIsTransitioning, isTransitioning]);
-
-  // Handle Escape key for menu - only toggle on rising edge
-  const prevEscapeRef = useRef(false);
-  useEffect(() => {
-    if (keys.escape && !prevEscapeRef.current) {
-      setMenuOpen(!menuOpen);
-    }
-    prevEscapeRef.current = keys.escape;
-  }, [keys.escape, menuOpen, setMenuOpen]);
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [activePortal, isTransitioning, menuOpen, setMenuOpen, handleInteraction]);
 
   return (
     <>
