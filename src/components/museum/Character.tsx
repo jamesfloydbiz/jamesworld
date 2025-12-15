@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { useKeyboardControls } from './useKeyboardControls';
+import { useKeyboardControls, joystickState } from './useKeyboardControls';
 import { useGameStore } from '@/store/gameStore';
 import * as THREE from 'three';
 
@@ -207,12 +207,19 @@ export function Character() {
 
     const moveDirection = new THREE.Vector3();
     
+    // Keyboard input
     if (keys.forward) moveDirection.z -= 1;
     if (keys.backward) moveDirection.z += 1;
     if (keys.left) moveDirection.x -= 1;
     if (keys.right) moveDirection.x += 1;
+    
+    // Joystick input (mobile)
+    if (joystickState.active) {
+      moveDirection.x += joystickState.x;
+      moveDirection.z += joystickState.y;
+    }
 
-    const isMoving = moveDirection.length() > 0;
+    const isMoving = moveDirection.length() > 0.1;
     const isSprinting = keys.sprint && isMoving;
     
     // Speed calculation with sprint

@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { MuseumScene } from '@/components/museum/MuseumScene';
 import { MuseumUI } from '@/components/ui/MuseumUI';
+import { MobileJoystick } from '@/components/ui/MobileJoystick';
 import { useGameStore } from '@/store/gameStore';
 
 const Index = () => {
@@ -15,6 +16,7 @@ const Index = () => {
     <div className="fixed inset-0 bg-background">
       <MuseumScene />
       <MuseumUI />
+      <MobileJoystick />
     </div>
   );
 };
