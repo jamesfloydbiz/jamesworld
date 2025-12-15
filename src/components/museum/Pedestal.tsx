@@ -1,6 +1,6 @@
 import { useGLTF } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
-import { useRef } from 'react';
+import { useRef, Suspense } from 'react';
 import * as THREE from 'three';
 
 interface PedestalProps {
@@ -11,36 +11,32 @@ interface PedestalProps {
 // Model configurations for each section
 const modelConfigs: Record<string, { path: string; scale: number[]; yOffset: number; floating?: boolean; rotationY?: number }> = {
   'Story': { path: '/models/tree_gn.glb', scale: [0.4, 0.4, 0.4], yOffset: 0.5 },
-  'Projects': { path: '/models/model_of_the_watt_steam_engine_with_animation.glb', scale: [1.2, 1.2, 1.2], yOffset: 0.3 },
+  'Projects': { path: '/models/model_of_the_watt_steam_engine_with_animation.glb', scale: [0.6, 0.6, 0.6], yOffset: 0.3 },
   'Media': { path: '/models/movie_clipper.glb', scale: [0.2, 0.2, 0.2], yOffset: 2.0, floating: true, rotationY: Math.PI / 2 },
   'Blueprints': { path: '/models/the_thinker_by_auguste_rodin.glb', scale: [1.125, 1.125, 1.125], yOffset: 0.5, rotationY: Math.PI / 2 },
   'Network': { path: '/models/network.glb', scale: [1.125, 1.125, 1.125], yOffset: 0.8 },
 };
 
-function ModelExhibit({ title }: { title: string }) {
-  const config = modelConfigs[title];
+// Fallback placeholder for when model is loading or fails
+function ModelPlaceholder({ yOffset = 1.0 }: { yOffset?: number }) {
+  return (
+    <mesh position={[0, yOffset, 0]} castShadow>
+      <dodecahedronGeometry args={[0.5, 0]} />
+      <meshStandardMaterial color="#ffffff" roughness={0.3} metalness={0.1} />
+    </mesh>
+  );
+}
+
+// Inner component that loads the actual model
+function LoadedModel({ title, config }: { title: string; config: typeof modelConfigs[string] }) {
   const groupRef = useRef<THREE.Group>(null);
+  const { scene } = useGLTF(config.path);
   
-  // Always call useGLTF - use a fallback path if no config
-  const modelPath = config?.path || '/models/tree_gn.glb';
-  const { scene } = useGLTF(modelPath);
-  
-  // Always call useFrame - only execute logic when needed
   useFrame((state) => {
     if (config?.floating && groupRef.current) {
       groupRef.current.position.y = config.yOffset + Math.sin(state.clock.elapsedTime * 2) * 0.1;
     }
   });
-  
-  if (!config) {
-    // Default orb for unknown sections
-    return (
-      <mesh position={[0, 1.0, 0]} castShadow>
-        <dodecahedronGeometry args={[0.5, 0]} />
-        <meshStandardMaterial color="#ffffff" roughness={0.3} metalness={0.1} />
-      </mesh>
-    );
-  }
 
   return (
     <group ref={groupRef} position={[0, config.yOffset, 0]} rotation={[0, config.rotationY || 0, 0]}>
@@ -49,6 +45,20 @@ function ModelExhibit({ title }: { title: string }) {
         scale={config.scale}
       />
     </group>
+  );
+}
+
+function ModelExhibit({ title }: { title: string }) {
+  const config = modelConfigs[title];
+  
+  if (!config) {
+    return <ModelPlaceholder />;
+  }
+
+  return (
+    <Suspense fallback={<ModelPlaceholder yOffset={config.yOffset} />}>
+      <LoadedModel title={title} config={config} />
+    </Suspense>
   );
 }
 
