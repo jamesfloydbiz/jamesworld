@@ -4,51 +4,48 @@ import { ExternalLink } from 'lucide-react';
 
 const automations = [
   {
+    title: 'JamesFloyds.World V1',
+    description: 'A 3D avatar-like world to explore James life, complete with an entrance sequence like no other.',
+    status: 'Active',
+    cta: 'Explore',
+    link: 'https://james-world.lovable.app/',
+    external: true,
+  },
+  {
     title: 'Top YT Videos By Topic',
     description: 'Get the top 15 YouTube videos by views based on any input, sorted by length and recency.',
     status: 'Active',
-    cta: 'Try it now',
-    action: 'chatbot',
+    cta: 'Pictures coming soon',
   },
   {
     title: 'Network Automation',
     description: 'Automated network monitoring and management system for infrastructure optimization.',
     status: 'Active',
-    cta: 'Learn more',
-    link: '/network',
-    internal: true,
+    cta: 'Pictures coming soon',
   },
   {
     title: 'YT Video to Blog',
     description: "If it's on video, it might as well be a blog",
     status: 'Booming',
-    cta: 'View automation',
-    hasImage: true,
-    imagePlaceholder: 'YT Video to Blog workflow diagram',
+    cta: 'Pictures coming soon',
   },
   {
     title: 'Multi-Agent Blog Team',
     description: 'An experiment in multi-agent workflows that produces SEO designed blogs with QA',
     status: 'Active',
-    cta: 'View workflow',
-    hasImage: true,
-    imagePlaceholder: 'Multi-agent blog workflow diagram',
+    cta: 'Pictures coming soon',
   },
   {
     title: 'Organic YouTube to Calls Booked Dashboard',
     description: 'A dashboard that shows what videos correlate to site views, calls booked, etc. Remember, measurement is the first step to improvement.',
     status: 'Active',
-    cta: 'View dashboard',
-    hasImage: true,
-    imagePlaceholder: 'YouTube dashboard analytics',
+    cta: 'Pictures coming soon',
   },
   {
     title: 'AI Coded Calculators',
     description: 'Calculators coded with Claude Code for internal use at BetterWealth',
     status: 'Active',
-    cta: 'View calculators',
-    link: 'https://bwcalculators.netlify.app/thecenterofitall',
-    external: true,
+    cta: 'Pictures coming soon',
   },
 ];
 
@@ -95,13 +92,7 @@ const OpsPage = () => {
                   {automation.description}
                 </p>
                 
-                {automation.hasImage && (
-                  <div className="mb-4 bg-secondary aspect-video flex items-center justify-center text-muted-foreground text-xs border border-border">
-                    [Image: {automation.imagePlaceholder}]
-                  </div>
-                )}
-                
-                {automation.external && automation.link && (
+                {'external' in automation && automation.external && automation.link && (
                   <a
                     href={automation.link}
                     target="_blank"
@@ -112,22 +103,7 @@ const OpsPage = () => {
                   </a>
                 )}
                 
-                {automation.internal && automation.link && (
-                  <a
-                    href={automation.link}
-                    className="inline-flex items-center gap-2 text-sm hover:underline underline-offset-4"
-                  >
-                    {automation.cta} →
-                  </a>
-                )}
-                
-                {automation.action === 'chatbot' && (
-                  <button className="text-sm hover:underline underline-offset-4">
-                    {automation.cta} →
-                  </button>
-                )}
-                
-                {!automation.external && !automation.internal && !automation.action && (
+                {!('external' in automation && automation.external) && (
                   <span className="text-sm text-muted-foreground">
                     {automation.cta}
                   </span>
