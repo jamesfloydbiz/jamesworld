@@ -1,14 +1,56 @@
 import { useGLTF } from '@react-three/drei';
+import { useFrame } from '@react-three/fiber';
+import { useRef } from 'react';
+import * as THREE from 'three';
 
 interface PedestalProps {
   position: [number, number, number];
   title: string;
 }
 
-export function Pedestal({ position, title }: PedestalProps) {
-  const isBlueprints = title === 'Blueprints';
-  const { scene } = useGLTF('/models/tree_gn.glb');
+// Model configurations for each section
+const modelConfigs: Record<string, { path: string; scale: number[]; yOffset: number; floating?: boolean }> = {
+  'Blueprints': { path: '/models/tree_gn.glb', scale: [0.4, 0.4, 0.4], yOffset: 0.5 },
+  'Projects': { path: '/models/model_of_the_watt_steam_engine_with_animation.glb', scale: [0.3, 0.3, 0.3], yOffset: 0.6 },
+  'Media': { path: '/models/movie_clipper.glb', scale: [0.4, 0.4, 0.4], yOffset: 1.0, floating: true },
+  'Story': { path: '/models/the_thinker_by_auguste_rodin.glb', scale: [0.015, 0.015, 0.015], yOffset: 0.5 },
+  'Network': { path: '/models/knowledge_network.glb', scale: [0.5, 0.5, 0.5], yOffset: 1.0 },
+};
 
+function ModelExhibit({ title }: { title: string }) {
+  const config = modelConfigs[title];
+  const groupRef = useRef<THREE.Group>(null);
+  
+  if (!config) {
+    // Default orb for unknown sections
+    return (
+      <mesh position={[0, 1.0, 0]} castShadow>
+        <dodecahedronGeometry args={[0.5, 0]} />
+        <meshStandardMaterial color="#ffffff" roughness={0.3} metalness={0.1} />
+      </mesh>
+    );
+  }
+
+  const { scene } = useGLTF(config.path);
+
+  // Floating animation for Media
+  useFrame((state) => {
+    if (config.floating && groupRef.current) {
+      groupRef.current.position.y = config.yOffset + Math.sin(state.clock.elapsedTime * 2) * 0.1;
+    }
+  });
+
+  return (
+    <group ref={groupRef} position={[0, config.yOffset, 0]}>
+      <primitive 
+        object={scene.clone()} 
+        scale={config.scale}
+      />
+    </group>
+  );
+}
+
+export function Pedestal({ position, title }: PedestalProps) {
   return (
     <group position={position}>
       {/* Base platform - wide and short */}
@@ -24,22 +66,7 @@ export function Pedestal({ position, title }: PedestalProps) {
       </mesh>
       
       {/* Central exhibit object */}
-      {isBlueprints ? (
-        <primitive 
-          object={scene.clone()} 
-          position={[0, 0.5, 0]} 
-          scale={[0.4, 0.4, 0.4]}
-        />
-      ) : (
-        <mesh position={[0, 1.0, 0]} castShadow>
-          <dodecahedronGeometry args={[0.5, 0]} />
-          <meshStandardMaterial 
-            color="#ffffff" 
-            roughness={0.3} 
-            metalness={0.1}
-          />
-        </mesh>
-      )}
+      <ModelExhibit title={title} />
       
       {/* Title plaque */}
       <mesh position={[0, 0.35, 1.1]} rotation={[-0.2, 0, 0]}>
@@ -50,4 +77,9 @@ export function Pedestal({ position, title }: PedestalProps) {
   );
 }
 
+// Preload all models
 useGLTF.preload('/models/tree_gn.glb');
+useGLTF.preload('/models/model_of_the_watt_steam_engine_with_animation.glb');
+useGLTF.preload('/models/movie_clipper.glb');
+useGLTF.preload('/models/the_thinker_by_auguste_rodin.glb');
+useGLTF.preload('/models/knowledge_network.glb');
