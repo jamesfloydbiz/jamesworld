@@ -83,8 +83,8 @@ const initialPortals: PortalData[] = [
     title: 'Network',
     section: 'Network',
     route: '/network',
-    pedestalPosition: [4, 0, -20],
-    circlePosition: [4, 0.01, -16],
+    pedestalPosition: [-4, 0, -20],
+    circlePosition: [-4, 0.01, -16],
     order: 4,
   },
   {
@@ -92,8 +92,8 @@ const initialPortals: PortalData[] = [
     title: 'Blueprints',
     section: 'Blueprints',
     route: '/blueprints',
-    pedestalPosition: [-4, 0, -20],
-    circlePosition: [-4, 0.01, -16],
+    pedestalPosition: [4, 0, -20],
+    circlePosition: [4, 0.01, -16],
     order: 5,
   },
 ];
