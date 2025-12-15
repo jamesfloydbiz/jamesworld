@@ -1,4 +1,32 @@
 import { PictureFrame } from './PictureFrame';
+import { useGameStore } from '@/store/gameStore';
+import { useState, useEffect } from 'react';
+
+// CDN base URL - update OWNER/REPO with your GitHub details
+const CDN_BASE = 'https://cdn.jsdelivr.net/gh/JamesF0790/jamesfloyds.world@main/public/pictures/';
+
+// List of images in public/pictures
+const imageFiles = [
+  'IMG_0610.jpg',
+  'IMG_0611.jpg',
+  'IMG_0647.jpg',
+  'IMG_1311.jpeg',
+  'IMG_1341.jpeg',
+  'IMG_1975.jpg',
+  'IMG_1976.jpg',
+  'IMG_1977.jpg',
+  'IMG_1978.jpg',
+  'IMG_2001_Original.jpg',
+  'IMG_2158_Original.jpg',
+  'IMG_2488.jpeg',
+  'IMG_2610.jpeg',
+  'IMG_4347.jpeg',
+  'IMG_5430.jpeg',
+  'IMG_7136.jpeg',
+  'IMG_8740.jpg',
+  'IMG_8922.jpg',
+  'IMG_8927.jpg',
+];
 
 interface PictureData {
   id: string;
@@ -6,9 +34,10 @@ interface PictureData {
   height: number;
   position: [number, number, number];
   rotation?: [number, number, number];
+  imageUrl?: string;
 }
 
-// Reduced number of frames for performance - salon style arrangement
+// Salon style arrangement with images assigned
 const pictureArrangement: PictureData[] = [
   // Back wall - large central piece with surrounding smaller ones
   { id: 'main-1', width: 2.0, height: 2.5, position: [0, 3.5, -64.9], rotation: [0, 0, 0] },
@@ -36,7 +65,23 @@ const pictureArrangement: PictureData[] = [
   { id: 'right-5', width: 1.0, height: 0.8, position: [5.9, 1.4, -52], rotation: [0, -Math.PI / 2, 0] },
 ];
 
+// Assign images to frames
+const framesWithImages = pictureArrangement.map((frame, index) => ({
+  ...frame,
+  imageUrl: index < imageFiles.length ? CDN_BASE + imageFiles[index] : undefined,
+}));
+
 export function PictureHall() {
+  const { characterPosition } = useGameStore();
+  const [shouldLoad, setShouldLoad] = useState(false);
+  
+  // Load images when character approaches the hall (z < -38)
+  useEffect(() => {
+    if (characterPosition[2] < -38 && !shouldLoad) {
+      setShouldLoad(true);
+    }
+  }, [characterPosition, shouldLoad]);
+  
   return (
     <group>
       {/* Hall floor */}
@@ -69,14 +114,15 @@ export function PictureHall() {
         <meshStandardMaterial color="#0a0a0a" roughness={0.95} />
       </mesh>
       
-      {/* Picture frames on walls */}
-      {pictureArrangement.map((pic) => (
+      {/* Picture frames on walls - only load images when approaching */}
+      {framesWithImages.map((pic) => (
         <PictureFrame
           key={pic.id}
           position={pic.position}
           width={pic.width}
           height={pic.height}
           rotation={pic.rotation}
+          imageSrc={shouldLoad ? pic.imageUrl : undefined}
         />
       ))}
       
