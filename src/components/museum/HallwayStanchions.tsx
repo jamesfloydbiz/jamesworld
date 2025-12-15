@@ -73,6 +73,9 @@ export function HallwayStanchions() {
   ];
   
   const hallwayRopes: { start: [number, number, number]; end: [number, number, number] }[] = [
+    // Connect perimeter stanchions to hallway entrance
+    { start: [-5, 0.95, -35], end: [-2, 0.95, -38] },
+    { start: [5, 0.95, -35], end: [2, 0.95, -38] },
     // Left side ropes
     { start: [-2, 0.95, -38], end: [-2, 0.95, -44] },
     { start: [-2, 0.95, -44], end: [-2, 0.95, -50] },
@@ -104,6 +107,10 @@ export const hallwayStanchionPositions: [number, number][] = [
 ];
 
 export const hallwayRopeSegments: [number, number, number, number][] = [
+  // Connecting ropes from perimeter to hallway
+  [-5, -35, -2, -38], [5, -35, 2, -38],
+  // Left side
   [-2, -38, -2, -44], [-2, -44, -2, -50], [-2, -50, -2, -56], [-2, -56, -2, -62],
+  // Right side
   [2, -38, 2, -44], [2, -44, 2, -50], [2, -50, 2, -56], [2, -56, 2, -62],
 ];
