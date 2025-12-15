@@ -5,57 +5,83 @@ interface PictureData {
   width: number;
   height: number;
   position: [number, number, number];
+  rotation?: [number, number, number];
   imageSrc?: string;
 }
 
-// Salon-style arrangement - dense, asymmetric layout
-const pictureArrangement: PictureData[] = [
-  // Back wall - main display
-  // Large center piece
-  { id: 'main-1', width: 1.8, height: 2.4, position: [0, 3.5, -64.9] },
+// Helper to create wall-covering grid of frames
+function generateWallFrames(
+  wallX: number,
+  zStart: number,
+  zEnd: number,
+  yStart: number,
+  yEnd: number,
+  rotation: [number, number, number],
+  idPrefix: string
+): PictureData[] {
+  const frames: PictureData[] = [];
+  const frameSize = 0.9;
+  const gap = 0.15;
+  const step = frameSize + gap;
   
-  // Upper row
-  { id: 'top-1', width: 0.8, height: 0.6, position: [-3.5, 5.5, -64.9] },
-  { id: 'top-2', width: 1.2, height: 0.9, position: [-2.2, 5.8, -64.9] },
-  { id: 'top-3', width: 0.7, height: 1.0, position: [2.0, 5.5, -64.9] },
-  { id: 'top-4', width: 1.0, height: 0.7, position: [3.2, 5.7, -64.9] },
-  
-  // Upper-mid row left
-  { id: 'mid-l-1', width: 1.4, height: 1.1, position: [-3.8, 4.0, -64.9] },
-  { id: 'mid-l-2', width: 0.9, height: 1.3, position: [-2.0, 3.8, -64.9] },
-  
-  // Upper-mid row right  
-  { id: 'mid-r-1', width: 1.0, height: 1.4, position: [2.2, 4.0, -64.9] },
-  { id: 'mid-r-2', width: 1.3, height: 1.0, position: [3.8, 3.7, -64.9] },
-  
-  // Lower-mid row
-  { id: 'low-1', width: 0.7, height: 0.9, position: [-4.2, 2.0, -64.9] },
-  { id: 'low-2', width: 1.1, height: 0.8, position: [-2.8, 2.2, -64.9] },
-  { id: 'low-3', width: 0.6, height: 0.8, position: [-1.2, 1.8, -64.9] },
-  { id: 'low-4', width: 0.8, height: 0.6, position: [1.2, 2.0, -64.9] },
-  { id: 'low-5', width: 1.0, height: 1.2, position: [2.8, 2.3, -64.9] },
-  { id: 'low-6', width: 0.9, height: 0.7, position: [4.2, 1.9, -64.9] },
-  
-  // Bottom row
-  { id: 'bot-1', width: 0.6, height: 0.5, position: [-4.5, 0.9, -64.9] },
-  { id: 'bot-2', width: 0.8, height: 0.6, position: [-3.4, 1.0, -64.9] },
-  { id: 'bot-3', width: 0.5, height: 0.7, position: [-0.8, 0.8, -64.9] },
-  { id: 'bot-4', width: 0.7, height: 0.5, position: [0.8, 0.9, -64.9] },
-  { id: 'bot-5', width: 0.6, height: 0.6, position: [3.6, 0.9, -64.9] },
-  { id: 'bot-6', width: 0.5, height: 0.5, position: [4.5, 1.0, -64.9] },
-  
-  // Left wall pictures
-  { id: 'left-1', width: 1.2, height: 1.6, position: [-5.9, 3.5, -55] },
-  { id: 'left-2', width: 0.9, height: 1.1, position: [-5.9, 3.2, -58] },
-  { id: 'left-3', width: 1.0, height: 0.8, position: [-5.9, 2.0, -56] },
-  { id: 'left-4', width: 0.8, height: 1.2, position: [-5.9, 4.8, -57] },
-  
-  // Right wall pictures
-  { id: 'right-1', width: 1.4, height: 1.2, position: [5.9, 3.3, -55] },
-  { id: 'right-2', width: 0.8, height: 1.0, position: [5.9, 3.5, -58] },
-  { id: 'right-3', width: 1.1, height: 0.9, position: [5.9, 2.0, -56.5] },
-  { id: 'right-4', width: 0.7, height: 1.1, position: [5.9, 4.6, -57] },
-];
+  let id = 0;
+  for (let z = zStart; z >= zEnd; z -= step) {
+    for (let y = yStart; y <= yEnd; y += step) {
+      frames.push({
+        id: `${idPrefix}-${id++}`,
+        width: frameSize,
+        height: frameSize,
+        position: [wallX, y, z],
+        rotation,
+      });
+    }
+  }
+  return frames;
+}
+
+// Back wall - dense grid covering the wall
+const backWallFrames: PictureData[] = [];
+const backWallZ = -64.95;
+const frameSize = 0.85;
+const gap = 0.12;
+const step = frameSize + gap;
+
+let backId = 0;
+for (let x = -5; x <= 5; x += step) {
+  for (let y = 0.8; y <= 7; y += step) {
+    backWallFrames.push({
+      id: `back-${backId++}`,
+      width: frameSize,
+      height: frameSize,
+      position: [x, y, backWallZ],
+      rotation: [0, 0, 0],
+    });
+  }
+}
+
+// Left wall frames - facing right (rotate around Y)
+const leftWallFrames = generateWallFrames(
+  -5.95, // x position
+  -42, // zStart
+  -63, // zEnd
+  0.8, // yStart
+  7, // yEnd
+  [0, Math.PI / 2, 0], // rotation to face into the room
+  'left'
+);
+
+// Right wall frames - facing left
+const rightWallFrames = generateWallFrames(
+  5.95, // x position
+  -42, // zStart
+  -63, // zEnd
+  0.8, // yStart
+  7, // yEnd
+  [0, -Math.PI / 2, 0], // rotation to face into the room
+  'right'
+);
+
+const allFrames = [...backWallFrames, ...leftWallFrames, ...rightWallFrames];
 
 export function PictureHall() {
   return (
@@ -91,20 +117,14 @@ export function PictureHall() {
       </mesh>
       
       {/* Picture frames on walls */}
-      {pictureArrangement.map((pic) => (
+      {allFrames.map((pic) => (
         <group key={pic.id}>
           <PictureFrame
             position={pic.position}
             width={pic.width}
             height={pic.height}
+            rotation={pic.rotation}
             imageSrc={pic.imageSrc}
-          />
-          {/* Small spotlight for each picture */}
-          <pointLight
-            position={[pic.position[0], pic.position[1] + 1, pic.position[2] + 1]}
-            intensity={0.15}
-            color="#fffaf0"
-            distance={3}
           />
         </group>
       ))}
@@ -120,25 +140,26 @@ export function PictureHall() {
         castShadow
       />
       <spotLight
-        position={[-3, 7.5, -60]}
-        target-position={[-3, 3, -65]}
-        angle={0.4}
+        position={[-3, 7.5, -55]}
+        target-position={[-5.9, 3, -55]}
+        angle={0.5}
         penumbra={0.8}
         intensity={0.8}
         color="#fffaf0"
       />
       <spotLight
-        position={[3, 7.5, -60]}
-        target-position={[3, 3, -65]}
-        angle={0.4}
+        position={[3, 7.5, -55]}
+        target-position={[5.9, 3, -55]}
+        angle={0.5}
         penumbra={0.8}
         intensity={0.8}
         color="#fffaf0"
       />
       
       {/* Ambient hall lighting */}
-      <pointLight position={[0, 6, -50]} intensity={0.3} color="#ffd699" distance={15} />
-      <pointLight position={[0, 6, -60]} intensity={0.3} color="#ffd699" distance={15} />
+      <pointLight position={[0, 6, -45]} intensity={0.4} color="#ffd699" distance={20} />
+      <pointLight position={[0, 6, -55]} intensity={0.4} color="#ffd699" distance={20} />
+      <pointLight position={[0, 6, -62]} intensity={0.4} color="#ffd699" distance={20} />
     </group>
   );
 }
