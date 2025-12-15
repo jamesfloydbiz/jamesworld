@@ -14,7 +14,7 @@ const modelConfigs: Record<string, { path: string; scale: number[]; yOffset: num
   'Projects': { path: '/models/model_of_the_watt_steam_engine_with_animation.glb', scale: [0.9, 0.9, 0.9], yOffset: 0.3 },
   'Media': { path: '/models/movie_clipper.glb', scale: [0.2, 0.2, 0.2], yOffset: 2.0, floating: true, rotationY: Math.PI / 2 },
   'Blueprints': { path: '/models/the_thinker_by_auguste_rodin.glb', scale: [1.125, 1.125, 1.125], yOffset: 0.5, rotationY: Math.PI / 2 },
-  'Network': { path: '/models/pumping_heart_model.glb', scale: [0.1875, 0.1875, 0.1875], yOffset: 1.0 },
+  'Network': { path: '/models/pumping_heart_model.glb', scale: [0.012, 0.012, 0.012], yOffset: 1.0 },
 };
 
 // Fallback placeholder for when model is loading or fails
