@@ -2,31 +2,24 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface LoadingScreenProps {
-  isLoaded: boolean;
+  progress: number;
+  isFullyLoaded: boolean;
   onStart: () => void;
 }
 
-export function LoadingScreen({ isLoaded, onStart }: LoadingScreenProps) {
-  const [progress, setProgress] = useState(0);
+export function LoadingScreen({ progress, isFullyLoaded, onStart }: LoadingScreenProps) {
   const [showButton, setShowButton] = useState(false);
   
-  // Simulate loading progress synced with actual load state
+  // Show button when fully loaded
   useEffect(() => {
-    if (!isLoaded) {
-      // Increment progress slowly while loading
-      const interval = setInterval(() => {
-        setProgress(prev => Math.min(prev + 1, 90));
-      }, 50);
-      return () => clearInterval(interval);
-    } else {
-      // Complete the progress when loaded
-      setProgress(100);
-      setTimeout(() => setShowButton(true), 300);
+    if (isFullyLoaded && !showButton) {
+      const timer = setTimeout(() => setShowButton(true), 300);
+      return () => clearTimeout(timer);
     }
-  }, [isLoaded]);
+  }, [isFullyLoaded, showButton]);
 
   const strokeDasharray = 400; // Perimeter of the square (100 * 4)
-  const strokeDashoffset = strokeDasharray - (strokeDasharray * progress) / 100;
+  const strokeDashoffset = strokeDasharray - (strokeDasharray * Math.min(progress, 100)) / 100;
 
   return (
     <motion.div

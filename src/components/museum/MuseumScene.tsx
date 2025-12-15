@@ -1,5 +1,6 @@
 import { Canvas } from '@react-three/fiber';
-import { Suspense } from 'react';
+import { Suspense, useEffect } from 'react';
+import { useProgress } from '@react-three/drei';
 import { Character } from './Character';
 import { MuseumCamera } from './MuseumCamera';
 import { MuseumEnvironment } from './MuseumEnvironment';
@@ -18,13 +19,31 @@ function LoadingFallback() {
   );
 }
 
-export function MuseumScene() {
+// Progress tracker component that reports loading state
+function ProgressTracker({ onProgress }: { onProgress: (progress: number) => void }) {
+  const { progress } = useProgress();
+  
+  useEffect(() => {
+    onProgress(progress);
+  }, [progress, onProgress]);
+  
+  return null;
+}
+
+interface MuseumSceneProps {
+  onProgress?: (progress: number) => void;
+}
+
+export function MuseumScene({ onProgress }: MuseumSceneProps) {
   return (
     <Canvas
       shadows
+      dpr={[1, 1.5]}
+      performance={{ min: 0.5 }}
       camera={{ fov: 60, near: 0.1, far: 100, position: [0, 2, 5] }}
       style={{ background: '#000000' }}
     >
+      {onProgress && <ProgressTracker onProgress={onProgress} />}
       <fog attach="fog" args={['#000000', 15, 45]} />
       <MuseumLighting />
       <Suspense fallback={<LoadingFallback />}>
