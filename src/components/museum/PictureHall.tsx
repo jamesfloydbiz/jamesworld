@@ -2,8 +2,8 @@ import { PictureFrame } from './PictureFrame';
 import { useGameStore } from '@/store/gameStore';
 import { useState, useEffect } from 'react';
 
-// CDN base URL - update OWNER/REPO with your GitHub details
-const CDN_BASE = 'https://cdn.jsdelivr.net/gh/JamesF0790/jamesfloyds.world@main/public/pictures/';
+// Local path for images in public/pictures
+const IMAGE_BASE = '/pictures/';
 
 // List of images in public/pictures
 const imageFiles = [
@@ -68,7 +68,7 @@ const pictureArrangement: PictureData[] = [
 // Assign images to frames
 const framesWithImages = pictureArrangement.map((frame, index) => ({
   ...frame,
-  imageUrl: index < imageFiles.length ? CDN_BASE + imageFiles[index] : undefined,
+  imageUrl: index < imageFiles.length ? IMAGE_BASE + imageFiles[index] : undefined,
 }));
 
 export function PictureHall() {
