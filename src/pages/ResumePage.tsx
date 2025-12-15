@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { WalkwayHeader } from '@/components/walkway/WalkwayHeader';
 import { Link } from 'react-router-dom';
 import { ExternalLink, Mail, MapPin, Phone } from 'lucide-react';
+import { useKeyboardScroll } from '@/hooks/useKeyboardScroll';
 
 const skills = {
   'AI Tools': ['AI Agents', 'Prompt Engineering', 'Automations', 'N8N'],
@@ -77,6 +78,7 @@ const formatBold = (text: string) => {
 };
 
 const ResumePage = () => {
+  useKeyboardScroll();
   return (
     <div className="min-h-screen bg-background">
       <WalkwayHeader title="Resume" />

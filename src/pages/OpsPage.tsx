@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { WalkwayHeader } from '@/components/walkway/WalkwayHeader';
 import { ExternalLink } from 'lucide-react';
+import { useKeyboardScroll } from '@/hooks/useKeyboardScroll';
 
 const automations = [
   {
@@ -50,6 +51,7 @@ const automations = [
 ];
 
 const OpsPage = () => {
+  useKeyboardScroll();
   return (
     <div className="min-h-screen bg-background">
       <WalkwayHeader title="AI + Ops" />

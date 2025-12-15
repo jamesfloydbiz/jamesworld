@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { WalkwayHeader } from '@/components/walkway/WalkwayHeader';
 import { Link } from 'react-router-dom';
 import { ExternalLink } from 'lucide-react';
+import { useKeyboardScroll } from '@/hooks/useKeyboardScroll';
 
 const stats = [
   { label: 'Instagram Videos', value: '100+' },
@@ -67,6 +68,7 @@ const featuredContent = [
 ];
 
 const MediaPage = () => {
+  useKeyboardScroll();
   return (
     <div className="min-h-screen bg-background">
       <WalkwayHeader title="Media" />

@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { WalkwayHeader } from '@/components/walkway/WalkwayHeader';
 import { Link } from 'react-router-dom';
 import { ExternalLink } from 'lucide-react';
+import { useKeyboardScroll } from '@/hooks/useKeyboardScroll';
 
 const currentProjects = [
   {
@@ -54,6 +55,7 @@ const otherProjects = [
 ];
 
 const ProjectsPage = () => {
+  useKeyboardScroll();
   return (
     <div className="min-h-screen bg-background">
       <WalkwayHeader title="Projects" />

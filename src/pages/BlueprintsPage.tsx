@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { WalkwayHeader } from '@/components/walkway/WalkwayHeader';
 import { ExternalLink } from 'lucide-react';
+import { useKeyboardScroll } from '@/hooks/useKeyboardScroll';
 
 const frameworks = [
   {
@@ -39,6 +40,7 @@ const frameworks = [
 ];
 
 const BlueprintsPage = () => {
+  useKeyboardScroll();
   const [expandedCard, setExpandedCard] = useState<number | null>(null);
   const [showModal, setShowModal] = useState(false);
 

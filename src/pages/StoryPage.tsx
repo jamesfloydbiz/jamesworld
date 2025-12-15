@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { WalkwayHeader } from '@/components/walkway/WalkwayHeader';
+import { useKeyboardScroll } from '@/hooks/useKeyboardScroll';
 
 const timelineEvents = [
   {
@@ -39,6 +40,7 @@ const timelineEvents = [
 ];
 
 const StoryPage = () => {
+  useKeyboardScroll();
   return (
     <div className="min-h-screen bg-background">
       <WalkwayHeader title="Story" />
