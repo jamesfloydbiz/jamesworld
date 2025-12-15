@@ -11,10 +11,10 @@ interface PedestalProps {
 // Model configurations for each section
 const modelConfigs: Record<string, { path: string; scale: number[]; yOffset: number; floating?: boolean; rotationY?: number }> = {
   'Story': { path: '/models/tree_gn.glb', scale: [0.4, 0.4, 0.4], yOffset: 0.5 },
-  'Projects': { path: '/models/model_of_the_watt_steam_engine_with_animation.glb', scale: [0.6, 0.6, 0.6], yOffset: 0.3 },
+  'Projects': { path: '/models/model_of_the_watt_steam_engine_with_animation.glb', scale: [0.9, 0.9, 0.9], yOffset: 0.3 },
   'Media': { path: '/models/movie_clipper.glb', scale: [0.2, 0.2, 0.2], yOffset: 2.0, floating: true, rotationY: Math.PI / 2 },
   'Blueprints': { path: '/models/the_thinker_by_auguste_rodin.glb', scale: [1.125, 1.125, 1.125], yOffset: 0.5, rotationY: Math.PI / 2 },
-  'Network': { path: '/models/network.glb', scale: [1.125, 1.125, 1.125], yOffset: 0.8 },
+  'Network': { path: '/models/pumping_heart_model.glb', scale: [1.5, 1.5, 1.5], yOffset: 1.0 },
 };
 
 // Fallback placeholder for when model is loading or fails
@@ -94,4 +94,4 @@ useGLTF.preload('/models/tree_gn.glb');
 useGLTF.preload('/models/model_of_the_watt_steam_engine_with_animation.glb');
 useGLTF.preload('/models/movie_clipper.glb');
 useGLTF.preload('/models/the_thinker_by_auguste_rodin.glb');
-useGLTF.preload('/models/network.glb');
+useGLTF.preload('/models/pumping_heart_model.glb');
