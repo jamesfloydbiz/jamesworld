@@ -28,7 +28,7 @@ export function Pedestal({ position, title }: PedestalProps) {
         <primitive 
           object={scene.clone()} 
           position={[0, 0.5, 0]} 
-          scale={[0.8, 0.8, 0.8]}
+          scale={[0.4, 0.4, 0.4]}
         />
       ) : (
         <mesh position={[0, 1.0, 0]} castShadow>
