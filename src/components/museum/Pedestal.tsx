@@ -14,7 +14,7 @@ const modelConfigs: Record<string, { path: string; scale: number[]; yOffset: num
   'Projects': { path: '/models/model_of_the_watt_steam_engine_with_animation.glb', scale: [1.2, 1.2, 1.2], yOffset: 0.3 },
   'Media': { path: '/models/movie_clipper.glb', scale: [0.2, 0.2, 0.2], yOffset: 2.0, floating: true, rotationY: Math.PI / 2 },
   'Blueprints': { path: '/models/the_thinker_by_auguste_rodin.glb', scale: [1.125, 1.125, 1.125], yOffset: 0.5, rotationY: Math.PI / 2 },
-  'Network': { path: '/models/knowledge_network.glb', scale: [1.125, 1.125, 1.125], yOffset: 0.8 },
+  'Network': { path: '/models/network.glb', scale: [1.125, 1.125, 1.125], yOffset: 0.8 },
 };
 
 function ModelExhibit({ title }: { title: string }) {
@@ -84,4 +84,4 @@ useGLTF.preload('/models/tree_gn.glb');
 useGLTF.preload('/models/model_of_the_watt_steam_engine_with_animation.glb');
 useGLTF.preload('/models/movie_clipper.glb');
 useGLTF.preload('/models/the_thinker_by_auguste_rodin.glb');
-useGLTF.preload('/models/knowledge_network.glb');
+useGLTF.preload('/models/network.glb');

@@ -17,7 +17,7 @@ const timelineEvents = [
     title: 'Go Big',
     quote: 'Traveled the world, stood in front of a private airport with a sign, met the best.',
     hasImage: true,
-    imagePlaceholder: 'James standing by airport sign',
+    imageSrc: '/pictures/airport-sign-pic (1)',
   },
   {
     year: '2023',
@@ -34,7 +34,7 @@ const timelineEvents = [
     title: 'To The Moon',
     quote: 'Creation, kindness, and infinite games.',
     hasImage: true,
-    imagePlaceholder: 'Group photo with hand raised',
+    imageSrc: '/pictures/campfire-sparks.jpeg',
   },
 ];
 
@@ -83,9 +83,13 @@ const StoryPage = () => {
                       "{event.quote}"
                     </p>
                     
-                    {event.hasImage && (
-                      <div className="mt-4 bg-secondary aspect-video max-w-md flex items-center justify-center text-muted-foreground text-sm border border-border">
-                        [Image: {event.imagePlaceholder}]
+                    {event.hasImage && event.imageSrc && (
+                      <div className="mt-4 max-w-md overflow-hidden rounded border border-border">
+                        <img 
+                          src={event.imageSrc} 
+                          alt={event.title}
+                          className="w-full h-auto object-cover"
+                        />
                       </div>
                     )}
                   </div>
