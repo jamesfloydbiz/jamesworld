@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useRef, useEffect, useCallback } from 'react';
 
-interface KeyState {
+export interface KeyState {
   forward: boolean;
   backward: boolean;
   left: boolean;
@@ -11,8 +11,9 @@ interface KeyState {
   jump: boolean;
 }
 
+// Use refs instead of state to avoid re-renders and movement glitches
 export function useKeyboardControls(): KeyState {
-  const [keys, setKeys] = useState<KeyState>({
+  const keysRef = useRef<KeyState>({
     forward: false,
     backward: false,
     left: false,
@@ -23,58 +24,46 @@ export function useKeyboardControls(): KeyState {
     jump: false,
   });
 
+  const handleKeyDown = useCallback((e: KeyboardEvent) => {
+    const key = e.key.toLowerCase();
+    
+    if (key === 'w' || key === 'arrowup') keysRef.current.forward = true;
+    if (key === 's' || key === 'arrowdown') keysRef.current.backward = true;
+    if (key === 'a' || key === 'arrowleft') keysRef.current.left = true;
+    if (key === 'd' || key === 'arrowright') keysRef.current.right = true;
+    if (key === 'enter') keysRef.current.interact = true;
+    if (key === 'escape') keysRef.current.escape = true;
+    if (key === 'shift') keysRef.current.sprint = true;
+    if (key === ' ') keysRef.current.jump = true;
+  }, []);
+
+  const handleKeyUp = useCallback((e: KeyboardEvent) => {
+    const key = e.key.toLowerCase();
+    
+    if (key === 'w' || key === 'arrowup') keysRef.current.forward = false;
+    if (key === 's' || key === 'arrowdown') keysRef.current.backward = false;
+    if (key === 'a' || key === 'arrowleft') keysRef.current.left = false;
+    if (key === 'd' || key === 'arrowright') keysRef.current.right = false;
+    if (key === 'enter') keysRef.current.interact = false;
+    if (key === 'escape') keysRef.current.escape = false;
+    if (key === 'shift') keysRef.current.sprint = false;
+    if (key === ' ') keysRef.current.jump = false;
+  }, []);
+
+  const handleBlur = useCallback(() => {
+    keysRef.current = {
+      forward: false,
+      backward: false,
+      left: false,
+      right: false,
+      interact: false,
+      escape: false,
+      sprint: false,
+      jump: false,
+    };
+  }, []);
+
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      const key = e.key.toLowerCase();
-      
-      setKeys(prev => {
-        const newState = { ...prev };
-        
-        if (key === 'w' || key === 'arrowup') newState.forward = true;
-        if (key === 's' || key === 'arrowdown') newState.backward = true;
-        if (key === 'a' || key === 'arrowleft') newState.left = true;
-        if (key === 'd' || key === 'arrowright') newState.right = true;
-        if (key === 'enter') newState.interact = true;
-        if (key === 'escape') newState.escape = true;
-        if (key === 'shift') newState.sprint = true;
-        if (key === ' ') newState.jump = true;
-        
-        return newState;
-      });
-    };
-
-    const handleKeyUp = (e: KeyboardEvent) => {
-      const key = e.key.toLowerCase();
-      
-      setKeys(prev => {
-        const newState = { ...prev };
-        
-        if (key === 'w' || key === 'arrowup') newState.forward = false;
-        if (key === 's' || key === 'arrowdown') newState.backward = false;
-        if (key === 'a' || key === 'arrowleft') newState.left = false;
-        if (key === 'd' || key === 'arrowright') newState.right = false;
-        if (key === 'enter') newState.interact = false;
-        if (key === 'escape') newState.escape = false;
-        if (key === 'shift') newState.sprint = false;
-        if (key === ' ') newState.jump = false;
-        
-        return newState;
-      });
-    };
-
-    const handleBlur = () => {
-      setKeys({
-        forward: false,
-        backward: false,
-        left: false,
-        right: false,
-        interact: false,
-        escape: false,
-        sprint: false,
-        jump: false,
-      });
-    };
-
     window.addEventListener('keydown', handleKeyDown);
     window.addEventListener('keyup', handleKeyUp);
     window.addEventListener('blur', handleBlur);
@@ -84,7 +73,14 @@ export function useKeyboardControls(): KeyState {
       window.removeEventListener('keyup', handleKeyUp);
       window.removeEventListener('blur', handleBlur);
     };
-  }, []);
+  }, [handleKeyDown, handleKeyUp, handleBlur]);
 
-  return keys;
+  return keysRef.current;
 }
+
+// Joystick state - shared with touch controls
+export const joystickState = {
+  x: 0,
+  y: 0,
+  active: false,
+};
