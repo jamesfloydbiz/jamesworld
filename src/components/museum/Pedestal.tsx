@@ -1,9 +1,14 @@
+import { useGLTF } from '@react-three/drei';
+
 interface PedestalProps {
   position: [number, number, number];
   title: string;
 }
 
 export function Pedestal({ position, title }: PedestalProps) {
+  const isBlueprints = title === 'Blueprints';
+  const { scene } = useGLTF('/models/tree_gn.glb');
+
   return (
     <group position={position}>
       {/* Base platform - wide and short */}
@@ -18,15 +23,23 @@ export function Pedestal({ position, title }: PedestalProps) {
         <meshStandardMaterial color="#222222" roughness={0.85} />
       </mesh>
       
-      {/* Central exhibit object - abstract shape */}
-      <mesh position={[0, 1.0, 0]} castShadow>
-        <dodecahedronGeometry args={[0.5, 0]} />
-        <meshStandardMaterial 
-          color="#ffffff" 
-          roughness={0.3} 
-          metalness={0.1}
+      {/* Central exhibit object */}
+      {isBlueprints ? (
+        <primitive 
+          object={scene.clone()} 
+          position={[0, 0.5, 0]} 
+          scale={[0.8, 0.8, 0.8]}
         />
-      </mesh>
+      ) : (
+        <mesh position={[0, 1.0, 0]} castShadow>
+          <dodecahedronGeometry args={[0.5, 0]} />
+          <meshStandardMaterial 
+            color="#ffffff" 
+            roughness={0.3} 
+            metalness={0.1}
+          />
+        </mesh>
+      )}
       
       {/* Title plaque */}
       <mesh position={[0, 0.35, 1.1]} rotation={[-0.2, 0, 0]}>
@@ -36,3 +49,5 @@ export function Pedestal({ position, title }: PedestalProps) {
     </group>
   );
 }
+
+useGLTF.preload('/models/tree_gn.glb');
