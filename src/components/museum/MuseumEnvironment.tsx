@@ -33,19 +33,19 @@ export function MuseumEnvironment() {
       </mesh>
 
       {/* Back wall - split into two sections with doorway gap */}
-      {/* Left section */}
-      <mesh position={[-6.5, 4, -40]} receiveShadow>
-        <boxGeometry args={[9, 8, 0.2]} />
+      {/* Left section - spans from X=-11 to X=-1.2 (width 9.8, centered at -6.1) */}
+      <mesh position={[-6.1, 4, -40]} receiveShadow>
+        <boxGeometry args={[9.8, 8, 0.2]} />
         <meshStandardMaterial color="#050505" roughness={0.95} />
       </mesh>
-      {/* Right section */}
-      <mesh position={[6.5, 4, -40]} receiveShadow>
-        <boxGeometry args={[9, 8, 0.2]} />
+      {/* Right section - spans from X=1.2 to X=11 (width 9.8, centered at 6.1) */}
+      <mesh position={[6.1, 4, -40]} receiveShadow>
+        <boxGeometry args={[9.8, 8, 0.2]} />
         <meshStandardMaterial color="#050505" roughness={0.95} />
       </mesh>
-      {/* Top section above doorway */}
+      {/* Top section above doorway - matches archway width */}
       <mesh position={[0, 7, -40]} receiveShadow>
-        <boxGeometry args={[4.4, 2, 0.2]} />
+        <boxGeometry args={[2.4, 2, 0.2]} />
         <meshStandardMaterial color="#050505" roughness={0.95} />
       </mesh>
 
