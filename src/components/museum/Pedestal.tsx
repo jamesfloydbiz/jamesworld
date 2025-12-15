@@ -13,13 +13,24 @@ const modelConfigs: Record<string, { path: string; scale: number[]; yOffset: num
   'Story': { path: '/models/tree_gn.glb', scale: [0.4, 0.4, 0.4], yOffset: 0.5 },
   'Projects': { path: '/models/model_of_the_watt_steam_engine_with_animation.glb', scale: [1.2, 1.2, 1.2], yOffset: 0.3 },
   'Media': { path: '/models/movie_clipper.glb', scale: [0.2, 0.2, 0.2], yOffset: 2.0, floating: true, rotationY: Math.PI / 2 },
-  'Blueprints': { path: '/models/the_thinker_by_auguste_rodin.glb', scale: [1.125, 1.125, 1.125], yOffset: 0.5, rotationY: -2 * Math.PI / 3 },
+  'Blueprints': { path: '/models/the_thinker_by_auguste_rodin.glb', scale: [1.125, 1.125, 1.125], yOffset: 0.5, rotationY: Math.PI / 2 },
   'Network': { path: '/models/knowledge_network.glb', scale: [1.125, 1.125, 1.125], yOffset: 0.8 },
 };
 
 function ModelExhibit({ title }: { title: string }) {
   const config = modelConfigs[title];
   const groupRef = useRef<THREE.Group>(null);
+  
+  // Always call useGLTF - use a fallback path if no config
+  const modelPath = config?.path || '/models/tree_gn.glb';
+  const { scene } = useGLTF(modelPath);
+  
+  // Always call useFrame - only execute logic when needed
+  useFrame((state) => {
+    if (config?.floating && groupRef.current) {
+      groupRef.current.position.y = config.yOffset + Math.sin(state.clock.elapsedTime * 2) * 0.1;
+    }
+  });
   
   if (!config) {
     // Default orb for unknown sections
@@ -30,28 +41,6 @@ function ModelExhibit({ title }: { title: string }) {
       </mesh>
     );
   }
-
-  // Use try-catch pattern for model loading
-  let scene: THREE.Group | null = null;
-  try {
-    const result = useGLTF(config.path);
-    scene = result.scene;
-  } catch (e) {
-    // Model failed to load, show fallback
-    return (
-      <mesh position={[0, 1.0, 0]} castShadow>
-        <dodecahedronGeometry args={[0.5, 0]} />
-        <meshStandardMaterial color="#ffffff" roughness={0.3} metalness={0.1} />
-      </mesh>
-    );
-  }
-
-  // Floating animation for Media
-  useFrame((state) => {
-    if (config.floating && groupRef.current) {
-      groupRef.current.position.y = config.yOffset + Math.sin(state.clock.elapsedTime * 2) * 0.1;
-    }
-  });
 
   return (
     <group ref={groupRef} position={[0, config.yOffset, 0]} rotation={[0, config.rotationY || 0, 0]}>
