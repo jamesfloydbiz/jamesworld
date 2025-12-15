@@ -56,8 +56,8 @@ const initialPortals: PortalData[] = [
     title: 'Story',
     section: 'Story',
     route: '/story',
-    pedestalPosition: [-4, 0, -8],
-    circlePosition: [-4, 0.01, -4],
+    pedestalPosition: [0, 0, -32],
+    circlePosition: [0, 0.01, -28],
     order: 1,
   },
   {
@@ -92,8 +92,8 @@ const initialPortals: PortalData[] = [
     title: 'Blueprints',
     section: 'Blueprints',
     route: '/blueprints',
-    pedestalPosition: [0, 0, -32],
-    circlePosition: [0, 0.01, -28],
+    pedestalPosition: [-4, 0, -8],
+    circlePosition: [-4, 0.01, -4],
     order: 5,
   },
 ];
