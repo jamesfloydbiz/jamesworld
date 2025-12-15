@@ -23,16 +23,22 @@ interface Footprint {
   isLeft: boolean;
 }
 
+import { hallwayStanchionPositions, hallwayRopeSegments } from './HallwayStanchions';
+
 // Get all stanchion collision positions
 function getStanchionPositions(portals: { pedestalPosition: [number, number, number] }[]) {
   const positions: [number, number][] = [];
   
+  // Main gallery perimeter - removed center back stanchion for doorway
   const perimeter: [number, number][] = [
     [-8, 5], [-8, -2], [-8, -9], [-8, -16], [-8, -23], [-8, -30],
     [8, 5], [8, -2], [8, -9], [8, -16], [8, -23], [8, -30],
-    [-5, -35], [0, -35], [5, -35],
+    [-5, -35], [5, -35], // No center stanchion - doorway
   ];
   positions.push(...perimeter);
+  
+  // Hallway stanchions
+  positions.push(...hallwayStanchionPositions);
   
   for (const portal of portals) {
     const [px, , pz] = portal.pedestalPosition;
@@ -51,15 +57,19 @@ function getStanchionPositions(portals: { pedestalPosition: [number, number, num
 function getRopeSegments(portals: { pedestalPosition: [number, number, number] }[]) {
   const segments: [number, number, number, number][] = [];
   
+  // Main gallery perimeter ropes - no center back rope (doorway)
   const perimeterRopes: [number, number, number, number][] = [
     [-8, 5, -8, -2], [-8, -2, -8, -9], [-8, -9, -8, -16], 
     [-8, -16, -8, -23], [-8, -23, -8, -30],
     [8, 5, 8, -2], [8, -2, 8, -9], [8, -9, 8, -16], 
     [8, -16, 8, -23], [8, -23, 8, -30],
-    [-5, -35, 0, -35], [0, -35, 5, -35],
+    // Removed center back ropes for doorway
     [-8, -30, -5, -35], [8, -30, 5, -35],
   ];
   segments.push(...perimeterRopes);
+  
+  // Hallway ropes
+  segments.push(...hallwayRopeSegments);
   
   const offset = 1.8;
   for (const portal of portals) {
@@ -233,9 +243,18 @@ export function Character() {
       let newX = characterPosition[0] + velocity.current.x;
       let newZ = characterPosition[2] + velocity.current.z;
 
-      // Boundary collision
-      newX = Math.max(-7, Math.min(7, newX));
-      newZ = Math.max(-35, Math.min(6, newZ));
+      // Boundary collision - extended for picture hall
+      // Main gallery: X -7 to 7, Z -35 to 6
+      // Picture hall: X -5.5 to 5.5, Z -65 to -40
+      if (newZ > -40) {
+        // In main gallery
+        newX = Math.max(-7, Math.min(7, newX));
+        newZ = Math.max(-35, Math.min(6, newZ));
+      } else {
+        // In hallway/picture hall
+        newX = Math.max(-5.5, Math.min(5.5, newX));
+        newZ = Math.max(-64, Math.min(-40, newZ));
+      }
 
       // Stanchion collision
       for (const [sx, sz] of stanchionPositions) {

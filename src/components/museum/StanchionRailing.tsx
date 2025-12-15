@@ -73,7 +73,7 @@ function RopeSegment({ start, end }: RopeSegmentProps) {
 export function StanchionRailing() {
   const { portals } = useGameStore();
   
-  // Perimeter stanchion positions
+  // Perimeter stanchion positions - with gap for doorway
   const perimeterStanchions: [number, number, number][] = [
     // Left side
     [-8, 0, 5],
@@ -89,13 +89,12 @@ export function StanchionRailing() {
     [8, 0, -16],
     [8, 0, -23],
     [8, 0, -30],
-    // Back wall
+    // Back wall - split for doorway (removed center stanchion)
     [-5, 0, -35],
-    [0, 0, -35],
     [5, 0, -35],
   ];
 
-  // Perimeter rope connections
+  // Perimeter rope connections - adjusted for doorway gap
   const perimeterRopes: { start: [number, number, number]; end: [number, number, number] }[] = [
     // Left side ropes
     { start: [-8, 0.95, 5], end: [-8, 0.95, -2] },
@@ -109,10 +108,8 @@ export function StanchionRailing() {
     { start: [8, 0.95, -9], end: [8, 0.95, -16] },
     { start: [8, 0.95, -16], end: [8, 0.95, -23] },
     { start: [8, 0.95, -23], end: [8, 0.95, -30] },
-    // Back wall ropes
-    { start: [-5, 0.95, -35], end: [0, 0.95, -35] },
-    { start: [0, 0.95, -35], end: [5, 0.95, -35] },
-    // Connect to back corners
+    // Back wall ropes - no center rope (doorway gap)
+    // Connect to back corners only
     { start: [-8, 0.95, -30], end: [-5, 0.95, -35] },
     { start: [8, 0.95, -30], end: [5, 0.95, -35] },
   ];

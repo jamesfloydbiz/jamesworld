@@ -3,6 +3,10 @@ import { FloorCircle } from './FloorCircle';
 import { Pedestal } from './Pedestal';
 import { StanchionRailing } from './StanchionRailing';
 import { CeilingLights } from './CeilingLights';
+import { HallwayDoorway } from './HallwayDoorway';
+import { RedCarpet } from './RedCarpet';
+import { PictureHall } from './PictureHall';
+import { HallwayStanchions } from './HallwayStanchions';
 import { Text } from '@react-three/drei';
 
 export function MuseumEnvironment() {
@@ -28,16 +32,30 @@ export function MuseumEnvironment() {
         <meshStandardMaterial color="#050505" roughness={0.95} />
       </mesh>
 
-      {/* Back wall */}
-      <mesh position={[0, 4, -40]} receiveShadow>
-        <boxGeometry args={[22.4, 8, 0.2]} />
+      {/* Back wall - split into two sections with doorway gap */}
+      {/* Left section */}
+      <mesh position={[-6.5, 4, -40]} receiveShadow>
+        <boxGeometry args={[9, 8, 0.2]} />
+        <meshStandardMaterial color="#050505" roughness={0.95} />
+      </mesh>
+      {/* Right section */}
+      <mesh position={[6.5, 4, -40]} receiveShadow>
+        <boxGeometry args={[9, 8, 0.2]} />
+        <meshStandardMaterial color="#050505" roughness={0.95} />
+      </mesh>
+      {/* Top section above doorway */}
+      <mesh position={[0, 7, -40]} receiveShadow>
+        <boxGeometry args={[4.4, 2, 0.2]} />
         <meshStandardMaterial color="#050505" roughness={0.95} />
       </mesh>
 
-      {/* Glowing JAMES FLOYD text on back wall */}
+      {/* Doorway frame */}
+      <HallwayDoorway position={[0, 0, -40]} />
+
+      {/* Glowing JAMES FLOYD text on back wall - above doorway */}
       <Text
-        position={[0, 5, -39.8]}
-        fontSize={1.8}
+        position={[0, 7.5, -39.8]}
+        fontSize={1.2}
         color="#ffffff"
         anchorX="center"
         anchorY="middle"
@@ -50,7 +68,16 @@ export function MuseumEnvironment() {
           emissiveIntensity={1.2} 
         />
       </Text>
-      <pointLight position={[0, 5, -38]} intensity={0.5} color="#ffffff" distance={8} />
+      <pointLight position={[0, 7.5, -38]} intensity={0.5} color="#ffffff" distance={8} />
+
+      {/* Red carpet from main gallery through doorway to picture hall */}
+      <RedCarpet startZ={-35} endZ={-65} width={3} />
+
+      {/* Hallway stanchions along carpet */}
+      <HallwayStanchions />
+
+      {/* Picture Hall */}
+      <PictureHall />
 
       {/* Soft spotlights on each pedestal */}
       {portals.map((portal) => (
