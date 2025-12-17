@@ -17,7 +17,7 @@ const currentProjects = [
     title: 'AI + Ops',
     description: 'AI Agents, vibe coding, and Ops',
     status: 'Active',
-    cta: 'Explore AI',
+    cta: 'Explore Builds',
     link: '/ops',
     external: false,
   },
