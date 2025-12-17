@@ -2,14 +2,8 @@ import { PictureFrame } from './PictureFrame';
 import { useGameStore } from '@/store/gameStore';
 import { useState, useEffect } from 'react';
 
-// Local paths (default - works immediately)
-const IMAGE_BASE = '/pictures/';
-
-// For jsDelivr CDN (uncomment and update with your repo when GitHub is connected):
-// const IMAGE_BASE = 'https://cdn.jsdelivr.net/gh/[YOUR-GITHUB-USERNAME]/[YOUR-REPO-NAME]@main/public/pictures/';
-
-// Helper to encode filenames with special characters
-const encodeFilename = (filename: string) => encodeURIComponent(filename);
+// jsDelivr CDN for GitHub-hosted images
+const IMAGE_BASE = 'https://cdn.jsdelivr.net/gh/jamesfloydbiz/james-floyds-world@main/public/pictures/';
 
 // All images from public/pictures
 const imageFiles = [
@@ -128,9 +122,9 @@ export function PictureHall() {
   const { characterPosition } = useGameStore();
   const [shouldLoad, setShouldLoad] = useState(false);
   
-  // Load images when character approaches the hall (z < -38)
+  // Start loading images earlier (z < -20) so they're ready when entering hall
   useEffect(() => {
-    if (characterPosition[2] < -38 && !shouldLoad) {
+    if (characterPosition[2] < -20 && !shouldLoad) {
       setShouldLoad(true);
     }
   }, [characterPosition, shouldLoad]);
