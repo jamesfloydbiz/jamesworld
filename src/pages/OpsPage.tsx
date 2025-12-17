@@ -2,6 +2,10 @@ import { motion } from 'framer-motion';
 import { WalkwayHeader } from '@/components/walkway/WalkwayHeader';
 import { ExternalLink } from 'lucide-react';
 import { useKeyboardScroll } from '@/hooks/useKeyboardScroll';
+import { useState } from 'react';
+
+// For jsDelivr CDN, replace with: https://cdn.jsdelivr.net/gh/[username]/[repo]@main
+const IMAGE_BASE_URL = '';
 
 const automations = [
   {
@@ -22,19 +26,32 @@ const automations = [
     title: 'Network Automation',
     description: 'Automated network monitoring and management system for infrastructure optimization.',
     status: 'Active',
-    cta: 'Pictures coming soon',
+    images: [
+      '/ops-images/AI_Auto_Intro_1.png',
+      '/ops-images/AI_Auto_Intro2.png',
+      '/ops-images/AI_Auto_Intro_3.png',
+    ],
   },
   {
     title: 'YT Video to Blog',
     description: "If it's on video, it might as well be a blog",
     status: 'Booming',
-    cta: 'Pictures coming soon',
+    images: [
+      '/ops-images/Video_to_Blog.png',
+      '/ops-images/Video_to_Blog_2.png',
+      '/ops-images/Video_to_Blog_3.png',
+    ],
   },
   {
     title: 'Multi-Agent Blog Team',
     description: 'An experiment in multi-agent workflows that produces SEO designed blogs with QA',
     status: 'Active',
-    cta: 'Pictures coming soon',
+    images: [
+      '/ops-images/Multi-Agent1.png',
+      '/ops-images/MultiAgent2.png',
+      '/ops-images/MultiAgent3.png',
+      '/ops-images/MultiAgent4.png',
+    ],
   },
   {
     title: 'Organic YouTube to Calls Booked Dashboard',
@@ -49,6 +66,40 @@ const automations = [
     cta: 'Pictures coming soon',
   },
 ];
+
+const ImageGallery = ({ images }: { images: string[] }) => {
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
+  return (
+    <>
+      <div className="flex gap-2 overflow-x-auto pb-2 mb-3 scrollbar-thin">
+        {images.map((img, idx) => (
+          <img
+            key={idx}
+            src={`${IMAGE_BASE_URL}${img}`}
+            alt={`Screenshot ${idx + 1}`}
+            className="h-20 w-auto rounded border border-border cursor-pointer hover:border-foreground transition-colors flex-shrink-0"
+            loading="lazy"
+            onClick={() => setSelectedImage(img)}
+          />
+        ))}
+      </div>
+      
+      {selectedImage && (
+        <div 
+          className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4"
+          onClick={() => setSelectedImage(null)}
+        >
+          <img
+            src={`${IMAGE_BASE_URL}${selectedImage}`}
+            alt="Full size"
+            className="max-w-full max-h-full object-contain"
+          />
+        </div>
+      )}
+    </>
+  );
+};
 
 const OpsPage = () => {
   useKeyboardScroll();
@@ -90,6 +141,11 @@ const OpsPage = () => {
                     {automation.status}
                   </span>
                 </div>
+                
+                {'images' in automation && automation.images && (
+                  <ImageGallery images={automation.images} />
+                )}
+                
                 <p className="text-muted-foreground text-sm mb-4 leading-relaxed">
                   {automation.description}
                 </p>
@@ -105,7 +161,7 @@ const OpsPage = () => {
                   </a>
                 )}
                 
-                {!('external' in automation && automation.external) && (
+                {'cta' in automation && !('external' in automation && automation.external) && (
                   <span className="text-sm text-muted-foreground">
                     {automation.cta}
                   </span>
