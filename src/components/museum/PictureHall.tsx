@@ -2,8 +2,8 @@ import { PictureFrame } from './PictureFrame';
 import { useGameStore } from '@/store/gameStore';
 import { useState, useEffect } from 'react';
 
-// jsDelivr CDN for GitHub-hosted images
-const IMAGE_BASE = 'https://cdn.jsdelivr.net/gh/jamesfloydbiz/james-floyds-world@main/public/pictures/';
+// Local paths - served from public/pictures/
+const IMAGE_BASE = '/pictures/';
 
 // All images from public/pictures
 const imageFiles = [
