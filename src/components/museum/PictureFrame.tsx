@@ -75,8 +75,8 @@ export function PictureFrame({ position, width, height, imageSrc, rotation = [0,
   const frameDepth = 0.05;
   const frameWidth = 0.08;
   
-  // Gold frame color for hall of memories
-  const frameColor = '#c9a227';
+  // White frame color for hall of memories
+  const frameColor = '#ffffff';
   
   return (
     <group position={position} rotation={rotation}>
@@ -105,7 +105,7 @@ export function PictureFrame({ position, width, height, imageSrc, rotation = [0,
       {/* Inner frame accent */}
       <mesh position={[0, 0, 0.01]}>
         <boxGeometry args={[width + 0.02, height + 0.02, 0.02]} />
-        <meshStandardMaterial color="#8b7021" />
+        <meshStandardMaterial color="#e0e0e0" />
       </mesh>
       
       {/* Canvas background */}
