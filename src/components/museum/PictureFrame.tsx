@@ -1,5 +1,5 @@
 import { useTexture } from '@react-three/drei';
-import { useState, useEffect, Suspense } from 'react';
+import { useState, useEffect, Suspense, Component, ReactNode } from 'react';
 import * as THREE from 'three';
 
 interface PictureFrameProps {
@@ -8,6 +8,28 @@ interface PictureFrameProps {
   height: number;
   imageSrc?: string;
   rotation?: [number, number, number];
+}
+
+// Error boundary to catch useTexture errors
+class TextureErrorBoundary extends Component<
+  { children: ReactNode; fallback: ReactNode },
+  { hasError: boolean }
+> {
+  constructor(props: { children: ReactNode; fallback: ReactNode }) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return this.props.fallback;
+    }
+    return this.props.children;
+  }
 }
 
 // Component that loads and displays the image texture
@@ -23,10 +45,8 @@ function ImagePlane({ width, height, imageSrc }: { width: number; height: number
   let displayHeight = height;
   
   if (imageAspect > frameAspect) {
-    // Image is wider - fit to width
     displayHeight = width / imageAspect;
   } else {
-    // Image is taller - fit to height
     displayWidth = height * imageAspect;
   }
   
@@ -48,26 +68,18 @@ function PlaceholderPlane({ width, height }: { width: number; height: number }) 
   );
 }
 
-// Wrapper that handles loading state
+// Wrapper that handles loading state with error boundary
 function ImageWithFallback({ width, height, imageSrc }: { width: number; height: number; imageSrc?: string }) {
-  const [hasError, setHasError] = useState(false);
-  
-  useEffect(() => {
-    if (imageSrc) {
-      const img = new Image();
-      img.onerror = () => setHasError(true);
-      img.src = imageSrc;
-    }
-  }, [imageSrc]);
-  
-  if (!imageSrc || hasError) {
+  if (!imageSrc) {
     return <PlaceholderPlane width={width} height={height} />;
   }
   
   return (
-    <Suspense fallback={<PlaceholderPlane width={width} height={height} />}>
-      <ImagePlane width={width} height={height} imageSrc={imageSrc} />
-    </Suspense>
+    <TextureErrorBoundary fallback={<PlaceholderPlane width={width} height={height} />}>
+      <Suspense fallback={<PlaceholderPlane width={width} height={height} />}>
+        <ImagePlane width={width} height={height} imageSrc={imageSrc} />
+      </Suspense>
+    </TextureErrorBoundary>
   );
 }
 
