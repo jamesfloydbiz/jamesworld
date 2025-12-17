@@ -118,10 +118,10 @@ const pictureArrangement: PictureData[] = [
   { id: 'right-entrance-1', width: 1.2, height: 1.4, position: [5.9, 3.5, -42], rotation: [0, -Math.PI / 2, 0] },
 ];
 
-// Assign images to frames with proper encoding for special characters
+// Assign images to frames (no encoding needed for local paths)
 const framesWithImages = pictureArrangement.map((frame, index) => ({
   ...frame,
-  imageUrl: index < imageFiles.length ? IMAGE_BASE + encodeFilename(imageFiles[index]) : undefined,
+  imageUrl: index < imageFiles.length ? IMAGE_BASE + imageFiles[index] : undefined,
 }));
 
 export function PictureHall() {
