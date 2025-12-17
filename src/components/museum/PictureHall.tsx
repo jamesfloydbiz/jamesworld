@@ -2,8 +2,14 @@ import { PictureFrame } from './PictureFrame';
 import { useGameStore } from '@/store/gameStore';
 import { useState, useEffect } from 'react';
 
-// jsdelivr CDN base for images
-const IMAGE_BASE = 'https://cdn.jsdelivr.net/gh/jamesfloydl/jamesfloydl.github.io@main/pictures/';
+// Local paths (default - works immediately)
+const IMAGE_BASE = '/pictures/';
+
+// For jsDelivr CDN (uncomment and update with your repo when GitHub is connected):
+// const IMAGE_BASE = 'https://cdn.jsdelivr.net/gh/[YOUR-GITHUB-USERNAME]/[YOUR-REPO-NAME]@main/public/pictures/';
+
+// Helper to encode filenames with special characters
+const encodeFilename = (filename: string) => encodeURIComponent(filename);
 
 // All images from public/pictures
 const imageFiles = [
@@ -112,10 +118,10 @@ const pictureArrangement: PictureData[] = [
   { id: 'right-entrance-1', width: 1.2, height: 1.4, position: [5.9, 3.5, -42], rotation: [0, -Math.PI / 2, 0] },
 ];
 
-// Assign images to frames
+// Assign images to frames with proper encoding for special characters
 const framesWithImages = pictureArrangement.map((frame, index) => ({
   ...frame,
-  imageUrl: index < imageFiles.length ? IMAGE_BASE + imageFiles[index] : undefined,
+  imageUrl: index < imageFiles.length ? IMAGE_BASE + encodeFilename(imageFiles[index]) : undefined,
 }));
 
 export function PictureHall() {
