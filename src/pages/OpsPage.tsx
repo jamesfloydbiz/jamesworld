@@ -20,7 +20,10 @@ const automations = [
     title: 'Top YT Videos By Topic',
     description: 'Get the top 15 YouTube videos by views based on any input, sorted by length and recency.',
     status: 'Active',
-    cta: 'Pictures coming soon',
+    images: [
+      '/ops-images/youtube_most_viewed_vids_workflow.png',
+      '/ops-images/most_viewed_yt_vids_sheets.png',
+    ],
   },
   {
     title: 'Network Automation',
@@ -57,13 +60,20 @@ const automations = [
     title: 'Organic YouTube to Calls Booked Dashboard',
     description: 'A dashboard that shows what videos correlate to site views, calls booked, etc. Remember, measurement is the first step to improvement.',
     status: 'Active',
-    cta: 'Pictures coming soon',
+    images: [
+      '/ops-images/YT_Video_Views_Dashboard.png',
+      '/ops-images/YT_Video_Views_Dashboard2.png',
+      '/ops-images/YT_Video_Views_Dashboard3.png',
+      '/ops-images/YT_Video_Views_Dashboard4.png',
+    ],
   },
   {
     title: 'AI Coded Calculators',
     description: 'Calculators coded with Claude Code for internal use at BetterWealth',
     status: 'Active',
-    cta: 'Pictures coming soon',
+    cta: 'View Calculators',
+    link: 'https://jamesfloydl.github.io/BWCalculators/',
+    external: true,
   },
 ];
 
