@@ -61,7 +61,6 @@ const automations = [
     description: 'A dashboard that shows what videos correlate to site views, calls booked, etc. Remember, measurement is the first step to improvement.',
     status: 'Active',
     images: [
-      '/ops-images/YT_Video_Views_Dashboard.png',
       '/ops-images/YT_Video_Views_Dashboard2.png',
       '/ops-images/YT_Video_Views_Dashboard3.png',
       '/ops-images/YT_Video_Views_Dashboard4.png',
