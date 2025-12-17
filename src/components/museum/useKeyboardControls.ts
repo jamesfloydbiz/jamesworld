@@ -83,4 +83,7 @@ export const joystickState = {
   x: 0,
   y: 0,
   active: false,
+  sprint: false,
+  jump: false,
+  interact: false,
 };
