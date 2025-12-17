@@ -183,8 +183,8 @@ export function Character() {
     // Clean up old footprints
     footprints.current = footprints.current.filter(fp => now - fp.timestamp < FOOTPRINT_DURATION);
 
-    // Handle jump initiation
-    if (keys.jump && !isJumping.current) {
+    // Handle jump initiation (keyboard or mobile button)
+    if ((keys.jump || joystickState.jump) && !isJumping.current) {
       isJumping.current = true;
       jumpTime.current = 0;
       jumpStartY.current = characterPosition[1];
@@ -220,7 +220,7 @@ export function Character() {
     }
 
     const isMoving = moveDirection.length() > 0.1;
-    const isSprinting = keys.sprint && isMoving;
+    const isSprinting = (keys.sprint || joystickState.sprint) && isMoving;
     
     // Speed calculation with sprint
     const baseSpeed = isSprinting ? MOVE_SPEED * SPRINT_MULTIPLIER : MOVE_SPEED;

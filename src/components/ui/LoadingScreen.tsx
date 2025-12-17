@@ -66,8 +66,12 @@ export function LoadingScreen({ progress, isFullyLoaded, onStart }: LoadingScree
             <motion.button
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="absolute inset-0 flex items-center justify-center text-white text-2xl font-light tracking-widest hover:text-muted-foreground transition-colors cursor-pointer"
+              className="absolute inset-0 flex items-center justify-center text-white text-2xl font-light tracking-widest hover:text-muted-foreground transition-colors cursor-pointer select-none"
               onClick={onStart}
+              onTouchEnd={(e) => {
+                e.preventDefault();
+                onStart();
+              }}
             >
               GO
             </motion.button>
