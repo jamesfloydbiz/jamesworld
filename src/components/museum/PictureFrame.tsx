@@ -1,5 +1,4 @@
-import { useTexture } from '@react-three/drei';
-import { useState, useEffect, Suspense, Component, ReactNode } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import * as THREE from 'three';
 
 interface PictureFrameProps {
@@ -8,54 +7,6 @@ interface PictureFrameProps {
   height: number;
   imageSrc?: string;
   rotation?: [number, number, number];
-}
-
-// Error boundary to catch useTexture errors
-class TextureErrorBoundary extends Component<
-  { children: ReactNode; fallback: ReactNode },
-  { hasError: boolean }
-> {
-  constructor(props: { children: ReactNode; fallback: ReactNode }) {
-    super(props);
-    this.state = { hasError: false };
-  }
-
-  static getDerivedStateFromError() {
-    return { hasError: true };
-  }
-
-  render() {
-    if (this.state.hasError) {
-      return this.props.fallback;
-    }
-    return this.props.children;
-  }
-}
-
-// Component that loads and displays the image texture
-function ImagePlane({ width, height, imageSrc }: { width: number; height: number; imageSrc: string }) {
-  const texture = useTexture(imageSrc);
-  
-  // Calculate aspect ratio to preserve natural proportions
-  const img = texture.image as HTMLImageElement | undefined;
-  const imageAspect = img?.width && img?.height ? img.width / img.height : 1;
-  const frameAspect = width / height;
-  
-  let displayWidth = width;
-  let displayHeight = height;
-  
-  if (imageAspect > frameAspect) {
-    displayHeight = width / imageAspect;
-  } else {
-    displayWidth = height * imageAspect;
-  }
-  
-  return (
-    <mesh position={[0, 0, 0.006]}>
-      <planeGeometry args={[displayWidth * 0.95, displayHeight * 0.95]} />
-      <meshStandardMaterial map={texture} roughness={0.8} />
-    </mesh>
-  );
 }
 
 // Placeholder shown while loading or on error
@@ -68,18 +19,63 @@ function PlaceholderPlane({ width, height }: { width: number; height: number }) 
   );
 }
 
-// Wrapper that handles loading state with error boundary
-function ImageWithFallback({ width, height, imageSrc }: { width: number; height: number; imageSrc?: string }) {
-  if (!imageSrc) {
+// Component that loads texture manually with error handling
+function ImagePlane({ width, height, imageSrc }: { width: number; height: number; imageSrc: string }) {
+  const [texture, setTexture] = useState<THREE.Texture | null>(null);
+  const [error, setError] = useState(false);
+  const [dimensions, setDimensions] = useState({ displayWidth: width, displayHeight: height });
+
+  useEffect(() => {
+    if (!imageSrc) return;
+
+    const loader = new THREE.TextureLoader();
+    
+    loader.load(
+      imageSrc,
+      (loadedTexture) => {
+        // Calculate aspect ratio
+        const img = loadedTexture.image as HTMLImageElement;
+        if (img.width && img.height) {
+          const imageAspect = img.width / img.height;
+          const frameAspect = width / height;
+          
+          let displayWidth = width;
+          let displayHeight = height;
+          
+          if (imageAspect > frameAspect) {
+            displayHeight = width / imageAspect;
+          } else {
+            displayWidth = height * imageAspect;
+          }
+          
+          setDimensions({ displayWidth, displayHeight });
+        }
+        setTexture(loadedTexture);
+        setError(false);
+      },
+      undefined,
+      () => {
+        console.warn(`Failed to load texture: ${imageSrc}`);
+        setError(true);
+      }
+    );
+
+    return () => {
+      if (texture) {
+        texture.dispose();
+      }
+    };
+  }, [imageSrc, width, height]);
+
+  if (error || !texture) {
     return <PlaceholderPlane width={width} height={height} />;
   }
-  
+
   return (
-    <TextureErrorBoundary fallback={<PlaceholderPlane width={width} height={height} />}>
-      <Suspense fallback={<PlaceholderPlane width={width} height={height} />}>
-        <ImagePlane width={width} height={height} imageSrc={imageSrc} />
-      </Suspense>
-    </TextureErrorBoundary>
+    <mesh position={[0, 0, 0.006]}>
+      <planeGeometry args={[dimensions.displayWidth * 0.95, dimensions.displayHeight * 0.95]} />
+      <meshStandardMaterial map={texture} roughness={0.8} />
+    </mesh>
   );
 }
 
@@ -90,28 +86,33 @@ export function PictureFrame({ position, width, height, imageSrc, rotation = [0,
   // White frame color for hall of memories
   const frameColor = '#ffffff';
   
+  // Memoize materials for performance
+  const frameMaterial = useMemo(() => (
+    <meshStandardMaterial color={frameColor} metalness={0.6} roughness={0.3} />
+  ), []);
+  
   return (
     <group position={position} rotation={rotation}>
       {/* Frame - 4 sides */}
       {/* Top */}
       <mesh position={[0, height / 2 + frameWidth / 2, 0]}>
         <boxGeometry args={[width + frameWidth * 2, frameWidth, frameDepth]} />
-        <meshStandardMaterial color={frameColor} metalness={0.6} roughness={0.3} />
+        {frameMaterial}
       </mesh>
       {/* Bottom */}
       <mesh position={[0, -height / 2 - frameWidth / 2, 0]}>
         <boxGeometry args={[width + frameWidth * 2, frameWidth, frameDepth]} />
-        <meshStandardMaterial color={frameColor} metalness={0.6} roughness={0.3} />
+        {frameMaterial}
       </mesh>
       {/* Left */}
       <mesh position={[-width / 2 - frameWidth / 2, 0, 0]}>
         <boxGeometry args={[frameWidth, height, frameDepth]} />
-        <meshStandardMaterial color={frameColor} metalness={0.6} roughness={0.3} />
+        {frameMaterial}
       </mesh>
       {/* Right */}
       <mesh position={[width / 2 + frameWidth / 2, 0, 0]}>
         <boxGeometry args={[frameWidth, height, frameDepth]} />
-        <meshStandardMaterial color={frameColor} metalness={0.6} roughness={0.3} />
+        {frameMaterial}
       </mesh>
       
       {/* Inner frame accent */}
@@ -126,8 +127,8 @@ export function PictureFrame({ position, width, height, imageSrc, rotation = [0,
         <meshStandardMaterial color="#1a1a1a" />
       </mesh>
       
-      {/* Image with lazy loading */}
-      <ImageWithFallback width={width} height={height} imageSrc={imageSrc} />
+      {/* Image with manual loading */}
+      {imageSrc && <ImagePlane width={width} height={height} imageSrc={imageSrc} />}
     </group>
   );
 }
