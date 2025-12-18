@@ -1,12 +1,11 @@
 import { Canvas } from '@react-three/fiber';
-import { Suspense, useEffect } from 'react';
+import { Suspense, useEffect, useMemo } from 'react';
 import { useProgress } from '@react-three/drei';
 import { Character } from './Character';
 import { MuseumCamera } from './MuseumCamera';
 import { MuseumEnvironment } from './MuseumEnvironment';
 import { MuseumLighting } from './MuseumLighting';
 
-// Simple loading fallback - just some ambient light and floor
 function LoadingFallback() {
   return (
     <group>
@@ -19,7 +18,6 @@ function LoadingFallback() {
   );
 }
 
-// Progress tracker component that reports loading state
 function ProgressTracker({ onProgress }: { onProgress: (progress: number) => void }) {
   const { progress } = useProgress();
   
@@ -35,21 +33,26 @@ interface MuseumSceneProps {
 }
 
 export function MuseumScene({ onProgress }: MuseumSceneProps) {
+  const isMobile = useMemo(() => 
+    typeof window !== 'undefined' && 
+    ('ontouchstart' in window || navigator.maxTouchPoints > 0),
+  []);
+
   return (
     <Canvas
-      shadows
-      dpr={[1, 1.5]}
+      shadows={!isMobile}
+      dpr={isMobile ? [1, 1] : [1, 1.5]}
       performance={{ min: 0.5 }}
       camera={{ fov: 60, near: 0.1, far: 100, position: [0, 2, 5] }}
       style={{ background: '#000000' }}
     >
       {onProgress && <ProgressTracker onProgress={onProgress} />}
       <fog attach="fog" args={['#000000', 15, 45]} />
-      <MuseumLighting />
+      <MuseumLighting isMobile={isMobile} />
       <Suspense fallback={<LoadingFallback />}>
         <MuseumEnvironment />
       </Suspense>
-      <Character />
+      <Character isMobile={isMobile} />
       <MuseumCamera />
     </Canvas>
   );

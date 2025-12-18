@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { useKeyboardControls, joystickState } from './useKeyboardControls';
 import { useGameStore } from '@/store/gameStore';
@@ -14,6 +14,7 @@ const ROPE_COLLISION_RADIUS = 0.2;
 const FOOTPRINT_DURATION = 2000;
 const JUMP_HEIGHT = 0.5;
 const JUMP_DURATION = 0.4;
+const COLLISION_CHECK_RADIUS = 5; // Only check collisions within this radius
 
 interface Footprint {
   id: number;
@@ -25,20 +26,15 @@ interface Footprint {
 
 import { hallwayStanchionPositions, hallwayRopeSegments } from './HallwayStanchions';
 
-// Get all stanchion collision positions
 function getStanchionPositions(portals: { pedestalPosition: [number, number, number] }[]) {
   const positions: [number, number][] = [];
   
-  // Main gallery perimeter - removed back stanchions near doorway
   const perimeter: [number, number][] = [
     [-8, 5], [-8, -2], [-8, -9], [-8, -16], [-8, -23], [-8, -30],
     [8, 5], [8, -2], [8, -9], [8, -16], [8, -23], [8, -30],
-    // Moved stanchions away from doorway center
     [-5, -35], [5, -35],
   ];
   positions.push(...perimeter);
-  
-  // Hallway stanchions
   positions.push(...hallwayStanchionPositions);
   
   for (const portal of portals) {
@@ -58,18 +54,14 @@ function getStanchionPositions(portals: { pedestalPosition: [number, number, num
 function getRopeSegments(portals: { pedestalPosition: [number, number, number] }[]) {
   const segments: [number, number, number, number][] = [];
   
-  // Main gallery perimeter ropes - no center back rope (doorway)
   const perimeterRopes: [number, number, number, number][] = [
     [-8, 5, -8, -2], [-8, -2, -8, -9], [-8, -9, -8, -16], 
     [-8, -16, -8, -23], [-8, -23, -8, -30],
     [8, 5, 8, -2], [8, -2, 8, -9], [8, -9, 8, -16], 
     [8, -16, 8, -23], [8, -23, 8, -30],
-    // Removed center back ropes for doorway
     [-8, -30, -5, -35], [8, -30, 5, -35],
   ];
   segments.push(...perimeterRopes);
-  
-  // Hallway ropes
   segments.push(...hallwayRopeSegments);
   
   const offset = 1.8;
@@ -101,7 +93,7 @@ function closestPointOnSegment(
   return [ax + t * dx, az + t * dz];
 }
 
-// Footprints component - renders both left and right footprints
+// Footprints component - disabled on mobile
 function Footprints({ footprints }: { footprints: Footprint[] }) {
   const now = Date.now();
   
@@ -110,7 +102,6 @@ function Footprints({ footprints }: { footprints: Footprint[] }) {
       {footprints.map((fp) => {
         const age = now - fp.timestamp;
         const opacity = Math.max(0, 0.5 * (1 - age / FOOTPRINT_DURATION));
-        // Offset perpendicular to movement direction for left/right foot
         const sideOffset = fp.isLeft ? -0.12 : 0.12;
         
         return (
@@ -124,7 +115,6 @@ function Footprints({ footprints }: { footprints: Footprint[] }) {
             rotation={[-Math.PI / 2, 0, fp.rotation]}
             scale={[0.5, 1, 1]}
           >
-            {/* Scaled circle for oval footprint shape */}
             <circleGeometry args={[0.1, 16]} />
             <meshBasicMaterial color="#ffffff" opacity={opacity} transparent />
           </mesh>
@@ -134,7 +124,11 @@ function Footprints({ footprints }: { footprints: Footprint[] }) {
   );
 }
 
-export function Character() {
+interface CharacterProps {
+  isMobile?: boolean;
+}
+
+export function Character({ isMobile = false }: CharacterProps) {
   const groupRef = useRef<THREE.Group>(null);
   const leftArmRef = useRef<THREE.Group>(null);
   const rightArmRef = useRef<THREE.Group>(null);
@@ -149,16 +143,20 @@ export function Character() {
   const velocity = useRef(new THREE.Vector3());
   const targetRotation = useRef(0);
   
-  // Jump state
   const isJumping = useRef(false);
   const jumpTime = useRef(0);
   const jumpStartY = useRef(0);
   
-  // Footprint tracking
+  // Footprints disabled on mobile
   const footprints = useRef<Footprint[]>([]);
   const footprintId = useRef(0);
   const lastFootprintTime = useRef(0);
   const lastFootWasLeft = useRef(false);
+  
+  // Throttle store updates
+  const lastStoreUpdate = useRef(0);
+  const localPosition = useRef<[number, number, number]>([0, 0, 0]);
+  const localRotation = useRef(0);
   
   const { 
     characterPosition, 
@@ -171,27 +169,39 @@ export function Character() {
     setCameraLocked,
   } = useGameStore();
 
-  const stanchionPositions = getStanchionPositions(portals);
-  const ropeSegments = getRopeSegments(portals);
+  // Initialize local refs from store
+  if (localPosition.current[0] === 0 && localPosition.current[2] === 0) {
+    localPosition.current = [...characterPosition];
+    localRotation.current = characterRotation;
+  }
+
+  const stanchionPositions = useMemo(() => getStanchionPositions(portals), [portals]);
+  const ropeSegments = useMemo(() => getRopeSegments(portals), [portals]);
   const keys = useKeyboardControls();
+
+  // Memoize material
+  const whiteMaterial = useMemo(() => (
+    <meshStandardMaterial color="#ffffff" roughness={0.8} />
+  ), []);
 
   useFrame((_, delta) => {
     if (!groupRef.current) return;
 
     const now = Date.now();
     
-    // Clean up old footprints
-    footprints.current = footprints.current.filter(fp => now - fp.timestamp < FOOTPRINT_DURATION);
+    // Clean up old footprints (skip on mobile)
+    if (!isMobile) {
+      footprints.current = footprints.current.filter(fp => now - fp.timestamp < FOOTPRINT_DURATION);
+    }
 
-    // Handle jump initiation (keyboard or mobile button)
+    // Handle jump
     if ((keys.jump || joystickState.jump) && !isJumping.current) {
       isJumping.current = true;
       jumpTime.current = 0;
-      jumpStartY.current = characterPosition[1];
+      jumpStartY.current = localPosition.current[1];
     }
 
-    // Update jump
-    let currentY = characterPosition[1];
+    let currentY = localPosition.current[1];
     if (isJumping.current) {
       jumpTime.current += delta;
       const jumpProgress = jumpTime.current / JUMP_DURATION;
@@ -200,20 +210,17 @@ export function Character() {
         isJumping.current = false;
         currentY = jumpStartY.current;
       } else {
-        // Parabolic jump arc
         currentY = jumpStartY.current + JUMP_HEIGHT * Math.sin(jumpProgress * Math.PI);
       }
     }
 
     const moveDirection = new THREE.Vector3();
     
-    // Keyboard input
     if (keys.forward) moveDirection.z -= 1;
     if (keys.backward) moveDirection.z += 1;
     if (keys.left) moveDirection.x -= 1;
     if (keys.right) moveDirection.x += 1;
     
-    // Joystick input (mobile)
     if (joystickState.active) {
       moveDirection.x += joystickState.x;
       moveDirection.z += joystickState.y;
@@ -221,16 +228,12 @@ export function Character() {
 
     const isMoving = moveDirection.length() > 0.1;
     const isSprinting = (keys.sprint || joystickState.sprint) && isMoving;
-    
-    // Speed calculation with sprint
     const baseSpeed = isSprinting ? MOVE_SPEED * SPRINT_MULTIPLIER : MOVE_SPEED;
     
-    // Immediate stop when keys released (fix for glitchy movement)
     const targetSpeed = isMoving ? 1 : 0;
-    const lerpFactor = isMoving ? delta * 10 : delta * 20; // Faster deceleration
+    const lerpFactor = isMoving ? delta * 10 : delta * 20;
     currentSpeed.current = THREE.MathUtils.lerp(currentSpeed.current, targetSpeed, lerpFactor);
     
-    // Force stop if very slow
     if (currentSpeed.current < 0.01) {
       currentSpeed.current = 0;
     }
@@ -239,47 +242,44 @@ export function Character() {
       moveDirection.normalize();
       targetRotation.current = Math.atan2(moveDirection.x, moveDirection.z);
       
-      // Smooth rotation
-      let rotDiff = targetRotation.current - characterRotation;
+      let rotDiff = targetRotation.current - localRotation.current;
       while (rotDiff > Math.PI) rotDiff -= Math.PI * 2;
       while (rotDiff < -Math.PI) rotDiff += Math.PI * 2;
-      setCharacterRotation(characterRotation + rotDiff * ROTATION_SPEED * 60 * delta);
+      localRotation.current += rotDiff * ROTATION_SPEED * 60 * delta;
 
-      // Apply movement with sprint
       velocity.current.copy(moveDirection).multiplyScalar(baseSpeed * currentSpeed.current);
       
-      let newX = characterPosition[0] + velocity.current.x;
-      let newZ = characterPosition[2] + velocity.current.z;
+      let newX = localPosition.current[0] + velocity.current.x;
+      let newZ = localPosition.current[2] + velocity.current.z;
 
-      // Boundary collision - extended for picture hall with doorway transition
-      // Main gallery: X -7 to 7, Z up to 6
-      // Doorway zone: X -1.8 to 1.8, Z -35 to -40
-      // Picture hall: X -5.5 to 5.5, Z -40 to -64
-      
+      // Boundary collision
       const inDoorwayX = newX > -1.8 && newX < 1.8;
       
       if (newZ > -35) {
-        // Main gallery area
         newX = Math.max(-7, Math.min(7, newX));
         newZ = Math.min(6, newZ);
       } else if (newZ > -40) {
-        // Doorway transition zone
         if (inDoorwayX) {
-          // Can pass through doorway
           newX = Math.max(-1.8, Math.min(1.8, newX));
         } else {
-          // Blocked by wall on sides
           newZ = Math.max(-35, newZ);
           newX = Math.max(-7, Math.min(7, newX));
         }
       } else {
-        // In hallway/picture hall
         newX = Math.max(-5.5, Math.min(5.5, newX));
         newZ = Math.max(-64, newZ);
       }
 
-      // Stanchion collision
+      // Optimized collision: only check nearby stanchions
+      const charX = localPosition.current[0];
+      const charZ = localPosition.current[2];
+      
       for (const [sx, sz] of stanchionPositions) {
+        // Skip distant stanchions
+        const dxCheck = charX - sx;
+        const dzCheck = charZ - sz;
+        if (dxCheck * dxCheck + dzCheck * dzCheck > COLLISION_CHECK_RADIUS * COLLISION_CHECK_RADIUS) continue;
+        
         const dx = newX - sx;
         const dz = newZ - sz;
         const dist = Math.sqrt(dx * dx + dz * dz);
@@ -296,6 +296,14 @@ export function Character() {
       // Rope collision (skip if jumping over)
       if (!isJumping.current || currentY < 0.3) {
         for (const [ax, az, bx, bz] of ropeSegments) {
+          // Quick bounding check
+          const minX = Math.min(ax, bx) - COLLISION_CHECK_RADIUS;
+          const maxX = Math.max(ax, bx) + COLLISION_CHECK_RADIUS;
+          const minZ = Math.min(az, bz) - COLLISION_CHECK_RADIUS;
+          const maxZ = Math.max(az, bz) + COLLISION_CHECK_RADIUS;
+          
+          if (charX < minX || charX > maxX || charZ < minZ || charZ > maxZ) continue;
+          
           const [closestX, closestZ] = closestPointOnSegment(ax, az, bx, bz, newX, newZ);
           const dx = newX - closestX;
           const dz = newZ - closestZ;
@@ -311,31 +319,36 @@ export function Character() {
         }
       }
 
-      const newPos: [number, number, number] = [newX, currentY, newZ];
-      setCharacterPosition(newPos);
+      localPosition.current = [newX, currentY, newZ];
       
-      // Add footprints while walking (per-foot, alternating)
-      const footprintInterval = isSprinting ? 120 : 200; // Faster footprints when sprinting
-      if (now - lastFootprintTime.current > footprintInterval) {
-        footprints.current.push({
-          id: footprintId.current++,
-          position: [newX, 0, newZ],
-          rotation: characterRotation,
-          timestamp: now,
-          isLeft: !lastFootWasLeft.current,
-        });
-        lastFootWasLeft.current = !lastFootWasLeft.current;
-        lastFootprintTime.current = now;
+      // Footprints (skip on mobile)
+      if (!isMobile) {
+        const footprintInterval = isSprinting ? 120 : 200;
+        if (now - lastFootprintTime.current > footprintInterval) {
+          footprints.current.push({
+            id: footprintId.current++,
+            position: [newX, 0, newZ],
+            rotation: localRotation.current,
+            timestamp: now,
+            isLeft: !lastFootWasLeft.current,
+          });
+          lastFootWasLeft.current = !lastFootWasLeft.current;
+          lastFootprintTime.current = now;
+        }
       }
     } else {
-      // Update Y position even when not moving (for jump landing)
-      if (currentY !== characterPosition[1]) {
-        setCharacterPosition([characterPosition[0], currentY, characterPosition[2]]);
-      }
+      localPosition.current[1] = currentY;
+    }
+
+    // Throttle store updates (every 50ms instead of every frame)
+    if (now - lastStoreUpdate.current > 50) {
+      setCharacterPosition(localPosition.current);
+      setCharacterRotation(localRotation.current);
+      lastStoreUpdate.current = now;
     }
 
     // Check portal proximity
-    const charPos = new THREE.Vector3(characterPosition[0], 0, characterPosition[2]);
+    const charPos = new THREE.Vector3(localPosition.current[0], 0, localPosition.current[2]);
     let foundPortal = null;
     
     for (const portal of portals) {
@@ -348,7 +361,6 @@ export function Character() {
       }
     }
 
-    // Update portal state
     if (foundPortal) {
       if (activePortal?.id !== foundPortal.id) {
         setActivePortal(foundPortal);
@@ -360,20 +372,18 @@ export function Character() {
     }
 
     // Update group position and rotation
-    groupRef.current.position.set(characterPosition[0], currentY, characterPosition[2]);
-    groupRef.current.rotation.y = characterRotation;
+    groupRef.current.position.set(localPosition.current[0], currentY, localPosition.current[2]);
+    groupRef.current.rotation.y = localRotation.current;
 
     // Animation
     const speed = currentSpeed.current;
-    const animSpeed = isSprinting ? 18 : 12; // Faster animation when sprinting
+    const animSpeed = isSprinting ? 18 : 12;
     
-    // Jump animation - arms swing up
     const jumpArmOffset = isJumping.current 
       ? -Math.sin((jumpTime.current / JUMP_DURATION) * Math.PI) * 1.5 
       : 0;
     
     if (speed > 0.05) {
-      // Walk/run animation
       walkPhase.current += delta * speed * animSpeed;
       
       const legSwing = Math.sin(walkPhase.current) * (isSprinting ? 0.7 : 0.5);
@@ -387,7 +397,6 @@ export function Character() {
       if (torsoRef.current) torsoRef.current.position.y = 0.55 + bodyBob;
       if (headRef.current) headRef.current.position.y = 0.95 + bodyBob;
     } else {
-      // Idle breathing animation
       breathPhase.current += delta * 1.5;
       
       const breathScale = 1 + Math.sin(breathPhase.current) * 0.03;
@@ -418,27 +427,25 @@ export function Character() {
     }
   });
 
-  const whiteMaterial = <meshStandardMaterial color="#ffffff" roughness={0.8} />;
-
   return (
     <>
-      <Footprints footprints={footprints.current} />
+      {!isMobile && <Footprints footprints={footprints.current} />}
       <group ref={groupRef} position={characterPosition}>
         {/* Torso */}
-        <mesh ref={torsoRef} position={[0, 0.55, 0]} castShadow>
+        <mesh ref={torsoRef} position={[0, 0.55, 0]} castShadow={!isMobile}>
           <capsuleGeometry args={[0.15, 0.25, 8, 16]} />
           {whiteMaterial}
         </mesh>
         
         {/* Head */}
-        <mesh ref={headRef} position={[0, 0.95, 0]} castShadow>
+        <mesh ref={headRef} position={[0, 0.95, 0]} castShadow={!isMobile}>
           <sphereGeometry args={[0.30, 16, 16]} />
           {whiteMaterial}
         </mesh>
         
         {/* Left Arm */}
         <group ref={leftArmRef} position={[-0.22, 0.70, 0]}>
-          <mesh position={[0, -0.15, 0]} castShadow>
+          <mesh position={[0, -0.15, 0]} castShadow={!isMobile}>
             <capsuleGeometry args={[0.04, 0.25, 6, 12]} />
             {whiteMaterial}
           </mesh>
@@ -446,7 +453,7 @@ export function Character() {
         
         {/* Right Arm */}
         <group ref={rightArmRef} position={[0.22, 0.70, 0]}>
-          <mesh position={[0, -0.15, 0]} castShadow>
+          <mesh position={[0, -0.15, 0]} castShadow={!isMobile}>
             <capsuleGeometry args={[0.04, 0.25, 6, 12]} />
             {whiteMaterial}
           </mesh>
@@ -454,7 +461,7 @@ export function Character() {
         
         {/* Left Leg */}
         <group ref={leftLegRef} position={[-0.08, 0.35, 0]}>
-          <mesh position={[0, -0.15, 0]} castShadow>
+          <mesh position={[0, -0.15, 0]} castShadow={!isMobile}>
             <capsuleGeometry args={[0.05, 0.25, 6, 12]} />
             {whiteMaterial}
           </mesh>
@@ -462,7 +469,7 @@ export function Character() {
         
         {/* Right Leg */}
         <group ref={rightLegRef} position={[0.08, 0.35, 0]}>
-          <mesh position={[0, -0.15, 0]} castShadow>
+          <mesh position={[0, -0.15, 0]} castShadow={!isMobile}>
             <capsuleGeometry args={[0.05, 0.25, 6, 12]} />
             {whiteMaterial}
           </mesh>

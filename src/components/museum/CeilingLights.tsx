@@ -1,13 +1,22 @@
+import { useMemo } from 'react';
+
 export function CeilingLights() {
-  // Grid of ceiling light panels
-  const lights: [number, number, number][] = [];
+  const isMobile = typeof window !== 'undefined' && 
+    ('ontouchstart' in window || navigator.maxTouchPoints > 0);
   
-  // Create a grid pattern
-  for (let x = -6; x <= 6; x += 4) {
-    for (let z = -30; z <= 0; z += 6) {
-      lights.push([x, 7.9, z]);
+  // Reduce lights on mobile: from 24 to 6
+  const lights = useMemo(() => {
+    const positions: [number, number, number][] = [];
+    const spacing = isMobile ? 8 : 4;
+    const zSpacing = isMobile ? 12 : 6;
+    
+    for (let x = -6; x <= 6; x += spacing) {
+      for (let z = -30; z <= 0; z += zSpacing) {
+        positions.push([x, 7.9, z]);
+      }
     }
-  }
+    return positions;
+  }, [isMobile]);
 
   return (
     <group>
@@ -26,12 +35,12 @@ export function CeilingLights() {
             <meshBasicMaterial color="#ffffff" />
           </mesh>
           
-          {/* Actual light source */}
+          {/* Actual light source - lower intensity on mobile */}
           <pointLight 
             position={[0, -0.5, 0]} 
-            intensity={0.8} 
+            intensity={isMobile ? 1.2 : 0.8} 
             color="#ffffff" 
-            distance={12}
+            distance={isMobile ? 18 : 12}
             decay={2}
           />
         </group>
