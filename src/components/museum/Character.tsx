@@ -2,8 +2,8 @@ import { useRef, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { useKeyboardControls, joystickState } from './useKeyboardControls';
 import { useGameStore } from '@/store/gameStore';
+import { characterState } from './characterState';
 import * as THREE from 'three';
-
 const MOVE_SPEED = 0.08;
 const SPRINT_MULTIPLIER = 1.8;
 const ROTATION_SPEED = 0.05;
@@ -320,6 +320,9 @@ export function Character({ isMobile = false }: CharacterProps) {
       }
 
       localPosition.current = [newX, currentY, newZ];
+      // Update shared state for smooth camera following
+      characterState.position = localPosition.current;
+      characterState.rotation = localRotation.current;
       
       // Footprints (skip on mobile)
       if (!isMobile) {
@@ -338,6 +341,8 @@ export function Character({ isMobile = false }: CharacterProps) {
       }
     } else {
       localPosition.current[1] = currentY;
+      // Update shared state even when not moving (for jump)
+      characterState.position = localPosition.current;
     }
 
     // Throttle store updates (every 50ms instead of every frame)
