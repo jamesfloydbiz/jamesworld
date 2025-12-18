@@ -3,16 +3,17 @@ import { joystickState } from '@/components/museum/useKeyboardControls';
 import { useGameStore } from '@/store/gameStore';
 import { Menu } from 'lucide-react';
 
-const SPRINT_THRESHOLD = 0.7; // 70% of max radius triggers sprint
+const SPRINT_THRESHOLD = 0.7;
 
 export function MobileJoystick() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [knobPosition, setKnobPosition] = useState({ x: 0, y: 0 });
-  const [isActive, setIsActive] = useState(false);
+  const knobRef = useRef<HTMLDivElement>(null);
+  const sprintRingRef = useRef<HTMLDivElement>(null);
+  const containerRectRef = useRef<DOMRect | null>(null);
+  const isActiveRef = useRef(false);
   const [isMobile, setIsMobile] = useState(false);
   const { setMenuOpen, menuOpen } = useGameStore();
 
-  // Detect mobile/touch device
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile('ontouchstart' in window || navigator.maxTouchPoints > 0);
@@ -22,12 +23,24 @@ export function MobileJoystick() {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
+  const updateKnobPosition = useCallback((x: number, y: number, isSprinting: boolean) => {
+    if (knobRef.current) {
+      knobRef.current.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`;
+      knobRef.current.style.background = isActiveRef.current 
+        ? 'rgba(255, 255, 255, 0.6)' 
+        : 'rgba(255, 255, 255, 0.35)';
+    }
+    if (sprintRingRef.current) {
+      sprintRingRef.current.style.opacity = isSprinting ? '1' : '0';
+    }
+  }, []);
+
   const handleStart = useCallback((clientX: number, clientY: number) => {
     if (!containerRef.current) return;
-    setIsActive(true);
-    joystickState.active = true;
+    isActiveRef.current = true;
+    containerRectRef.current = containerRef.current.getBoundingClientRect();
     
-    const rect = containerRef.current.getBoundingClientRect();
+    const rect = containerRectRef.current;
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
     
@@ -41,19 +54,20 @@ export function MobileJoystick() {
       deltaX = (deltaX / distance) * maxRadius;
       deltaY = (deltaY / distance) * maxRadius;
     }
-    
-    setKnobPosition({ x: deltaX, y: deltaY });
     
     const normalizedDistance = distance / maxRadius;
     joystickState.x = deltaX / maxRadius;
     joystickState.y = deltaY / maxRadius;
+    joystickState.active = true;
     joystickState.sprint = normalizedDistance > SPRINT_THRESHOLD;
-  }, []);
+    
+    updateKnobPosition(deltaX, deltaY, joystickState.sprint);
+  }, [updateKnobPosition]);
 
   const handleMove = useCallback((clientX: number, clientY: number) => {
-    if (!containerRef.current || !isActive) return;
+    if (!containerRectRef.current || !isActiveRef.current) return;
     
-    const rect = containerRef.current.getBoundingClientRect();
+    const rect = containerRectRef.current;
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
     
@@ -67,25 +81,25 @@ export function MobileJoystick() {
       deltaX = (deltaX / distance) * maxRadius;
       deltaY = (deltaY / distance) * maxRadius;
     }
-    
-    setKnobPosition({ x: deltaX, y: deltaY });
     
     const normalizedDistance = Math.min(distance / maxRadius, 1);
     joystickState.x = deltaX / maxRadius;
     joystickState.y = deltaY / maxRadius;
     joystickState.sprint = normalizedDistance > SPRINT_THRESHOLD;
-  }, [isActive]);
+    
+    updateKnobPosition(deltaX, deltaY, joystickState.sprint);
+  }, [updateKnobPosition]);
 
   const handleEnd = useCallback(() => {
-    setIsActive(false);
-    setKnobPosition({ x: 0, y: 0 });
+    isActiveRef.current = false;
     joystickState.x = 0;
     joystickState.y = 0;
     joystickState.active = false;
     joystickState.sprint = false;
-  }, []);
+    
+    updateKnobPosition(0, 0, false);
+  }, [updateKnobPosition]);
 
-  // Touch events for joystick
   const onTouchStart = (e: React.TouchEvent) => {
     e.preventDefault();
     const touch = e.touches[0];
@@ -94,7 +108,7 @@ export function MobileJoystick() {
 
   const onTouchMove = (e: React.TouchEvent) => {
     e.preventDefault();
-    if (!isActive) return;
+    if (!isActiveRef.current) return;
     const touch = e.touches[0];
     handleMove(touch.clientX, touch.clientY);
   };
@@ -104,7 +118,6 @@ export function MobileJoystick() {
     handleEnd();
   };
 
-  // Jump button handlers
   const handleJumpStart = useCallback(() => {
     joystickState.jump = true;
   }, []);
@@ -113,7 +126,6 @@ export function MobileJoystick() {
     joystickState.jump = false;
   }, []);
 
-  // Enter/interact button handlers  
   const handleInteractStart = useCallback(() => {
     joystickState.interact = true;
   }, []);
@@ -122,9 +134,8 @@ export function MobileJoystick() {
     joystickState.interact = false;
   }, []);
 
-  // Mouse events (for testing on desktop)
   useEffect(() => {
-    if (!isActive) return;
+    if (!isActiveRef.current) return;
     
     const onMouseMove = (e: MouseEvent) => {
       handleMove(e.clientX, e.clientY);
@@ -141,9 +152,8 @@ export function MobileJoystick() {
       window.removeEventListener('mousemove', onMouseMove);
       window.removeEventListener('mouseup', onMouseUp);
     };
-  }, [isActive, handleMove, handleEnd]);
+  }, [handleMove, handleEnd]);
 
-  // Only show on mobile
   if (!isMobile) return null;
 
   const buttonStyle = {
@@ -151,17 +161,12 @@ export function MobileJoystick() {
     border: '2px solid rgba(255, 255, 255, 0.3)',
   };
 
-  const activeButtonStyle = {
-    background: 'rgba(255, 255, 255, 0.3)',
-    border: '2px solid rgba(255, 255, 255, 0.5)',
-  };
-
   return (
     <>
       {/* Menu button - top right */}
       <button
         className="fixed top-6 right-6 w-12 h-12 rounded-full z-50 flex items-center justify-center touch-none select-none"
-        style={menuOpen ? activeButtonStyle : buttonStyle}
+        style={menuOpen ? { background: 'rgba(255, 255, 255, 0.3)', border: '2px solid rgba(255, 255, 255, 0.5)' } : buttonStyle}
         onClick={() => setMenuOpen(!menuOpen)}
         onTouchEnd={(e) => {
           e.preventDefault();
@@ -184,28 +189,26 @@ export function MobileJoystick() {
         onTouchEnd={onTouchEnd}
         onMouseDown={(e) => handleStart(e.clientX, e.clientY)}
       >
-        {/* Inner knob */}
+        {/* Inner knob - DOM updated directly via ref */}
         <div
+          ref={knobRef}
           className="absolute w-12 h-12 rounded-full pointer-events-none"
           style={{
-            background: isActive 
-              ? 'rgba(255, 255, 255, 0.6)' 
-              : 'rgba(255, 255, 255, 0.35)',
+            background: 'rgba(255, 255, 255, 0.35)',
             left: '50%',
             top: '50%',
-            transform: `translate(calc(-50% + ${knobPosition.x}px), calc(-50% + ${knobPosition.y}px))`,
-            transition: isActive ? 'none' : 'transform 0.15s ease-out',
+            transform: 'translate(-50%, -50%)',
           }}
         />
         {/* Sprint indicator ring */}
-        {joystickState.sprint && (
-          <div
-            className="absolute inset-0 rounded-full pointer-events-none"
-            style={{
-              border: '2px solid rgba(255, 255, 255, 0.5)',
-            }}
-          />
-        )}
+        <div
+          ref={sprintRingRef}
+          className="absolute inset-0 rounded-full pointer-events-none transition-opacity duration-100"
+          style={{
+            border: '2px solid rgba(255, 255, 255, 0.5)',
+            opacity: 0,
+          }}
+        />
       </div>
 
       {/* Action buttons - bottom right */}
