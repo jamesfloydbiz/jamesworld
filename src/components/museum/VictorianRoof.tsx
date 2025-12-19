@@ -103,7 +103,7 @@ function GlassPanels({ z1, z2 }: GlassPanelProps) {
       
       result.push({
         position: [xMid, yMid - 0.02, zMid],
-        rotation: [Math.PI / 2 - tiltZ, 0, 0],
+        rotation: [Math.PI / 2, 0, tiltZ],
         width: xSpan * 0.95,
         height: zSpan * 0.95,
       });
