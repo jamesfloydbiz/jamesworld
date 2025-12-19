@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import { useState, useEffect, useRef } from 'react';
 
 interface MainMenuProps {
   onEnterGallery: () => void;
@@ -9,6 +10,37 @@ interface MainMenuProps {
 
 export function MainMenu({ onEnterGallery, galleryLoading, galleryProgress }: MainMenuProps) {
   const navigate = useNavigate();
+  const [displayProgress, setDisplayProgress] = useState(0);
+  const animationRef = useRef<number>();
+
+  // Smooth progress interpolation using lerp
+  useEffect(() => {
+    const lerp = (start: number, end: number, factor: number) => {
+      return start + (end - start) * factor;
+    };
+
+    const animate = () => {
+      setDisplayProgress(prev => {
+        const diff = galleryProgress - prev;
+        // Faster catch-up when far behind, slower when close
+        const speed = Math.max(0.08, Math.min(0.3, Math.abs(diff) / 50));
+        const next = lerp(prev, galleryProgress, speed);
+        // Snap to target when very close
+        if (Math.abs(galleryProgress - next) < 0.5) {
+          return galleryProgress;
+        }
+        return next;
+      });
+      animationRef.current = requestAnimationFrame(animate);
+    };
+
+    animationRef.current = requestAnimationFrame(animate);
+    return () => {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
+    };
+  }, [galleryProgress]);
 
   const menuItems = [
     { label: '3D Gallery', action: onEnterGallery, isGallery: true },
@@ -55,13 +87,13 @@ export function MainMenu({ onEnterGallery, galleryLoading, galleryProgress }: Ma
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 + index * 0.08, duration: 0.4 }}
             onClick={() => handleClick(item)}
-            disabled={item.isGallery && galleryLoading && galleryProgress < 100}
+            disabled={item.isGallery && galleryLoading && displayProgress < 100}
             className="relative text-lg md:text-xl tracking-[0.2em] text-white/70 hover:text-white transition-colors duration-300 disabled:opacity-40 disabled:cursor-not-allowed group"
           >
             {item.label.toUpperCase()}
-            {item.isGallery && galleryLoading && galleryProgress < 100 && (
+            {item.isGallery && galleryLoading && displayProgress < 100 && (
               <span className="ml-3 text-sm text-white/40">
-                {Math.round(galleryProgress)}%
+                {Math.round(displayProgress)}%
               </span>
             )}
             <span className="absolute -bottom-1 left-0 w-0 h-px bg-white group-hover:w-full transition-all duration-300" />

@@ -4,13 +4,56 @@ import { useGameStore } from '@/store/gameStore';
 import { joystickState } from '@/components/museum/useKeyboardControls';
 import { motion, AnimatePresence } from 'framer-motion';
 
+// Controls hint that fades out after 5 seconds
+function ControlsHint({ isMobile }: { isMobile: boolean }) {
+  const [visible, setVisible] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setVisible(false), 5000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (isMobile || !visible) return null;
+
+  return (
+    <motion.div
+      className="museum-ui bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-8"
+      initial={{ opacity: 1 }}
+      animate={{ opacity: 0 }}
+      transition={{ delay: 4, duration: 1 }}
+    >
+      <div className="flex items-center gap-2">
+        <span className="text-muted-foreground text-xs">Move</span>
+        <div className="flex gap-1">
+          <span className="border border-border/50 px-1.5 py-0.5 text-xs">↑</span>
+        </div>
+        <div className="flex gap-1">
+          <span className="border border-border/50 px-1.5 py-0.5 text-xs">←</span>
+          <span className="border border-border/50 px-1.5 py-0.5 text-xs">↓</span>
+          <span className="border border-border/50 px-1.5 py-0.5 text-xs">→</span>
+        </div>
+      </div>
+      <div className="flex items-center gap-2">
+        <span className="text-muted-foreground text-xs">Sprint</span>
+        <span className="border border-border/50 px-1.5 py-0.5 text-xs">Shift</span>
+      </div>
+      <div className="flex items-center gap-2">
+        <span className="text-muted-foreground text-xs">Exit</span>
+        <span className="border border-border/50 px-1.5 py-0.5 text-xs">ESC</span>
+      </div>
+      <div className="flex items-center gap-2">
+        <span className="text-muted-foreground text-xs">Enter</span>
+        <span className="border border-border/50 px-1.5 py-0.5 text-xs">↵</span>
+      </div>
+    </motion.div>
+  );
+}
+
 export function MuseumUI() {
   const navigate = useNavigate();
   const [isMobile, setIsMobile] = useState(false);
   const { 
     activePortal, 
-    menuOpen, 
-    setMenuOpen, 
     saveHubState,
     setIsTransitioning,
     isTransitioning,
@@ -39,20 +82,17 @@ export function MuseumUI() {
     }
   }, [activePortal, isTransitioning, navigate, saveHubState, setIsTransitioning]);
 
-  // Direct keyboard event listeners
+  // Direct keyboard event listeners (only Enter for portal interaction)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Enter' && activePortal && !isTransitioning) {
         handleInteraction();
       }
-      if (e.key === 'Escape') {
-        setMenuOpen(!menuOpen);
-      }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [activePortal, isTransitioning, menuOpen, setMenuOpen, handleInteraction]);
+  }, [activePortal, isTransitioning, handleInteraction]);
 
   // Mobile interact button listener
   useEffect(() => {
@@ -102,83 +142,8 @@ export function MuseumUI() {
         )}
       </AnimatePresence>
 
-      {/* Controls hint - desktop only */}
-      {!isMobile && (
-        <div className="museum-ui bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-8">
-          <div className="flex items-center gap-2">
-            <span className="text-muted-foreground">Move</span>
-            <div className="flex gap-1">
-              <span className="border border-border px-2 py-1">↑</span>
-            </div>
-            <div className="flex gap-1">
-              <span className="border border-border px-2 py-1">←</span>
-              <span className="border border-border px-2 py-1">↓</span>
-              <span className="border border-border px-2 py-1">→</span>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="text-muted-foreground">Sprint</span>
-            <span className="border border-border px-2 py-1">Shift</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="text-muted-foreground">Menu</span>
-            <span className="border border-border px-2 py-1">ESC</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="text-muted-foreground">Enter</span>
-            <span className="border border-border px-2 py-1">↵</span>
-          </div>
-        </div>
-      )}
-
-      {/* Menu */}
-      <AnimatePresence>
-        {menuOpen && (
-          <motion.div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-background/90"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => isMobile && setMenuOpen(false)}
-          >
-            <motion.nav
-              className="text-center"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 20 }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <ul className="space-y-6">
-                {['Story', 'Media', 'Projects', 'Network', 'Blueprints'].map((item, i) => (
-                  <motion.li
-                    key={item}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: i * 0.05 }}
-                  >
-                    <button
-                      onClick={() => {
-                        setMenuOpen(false);
-                        saveHubState();
-                        navigate(`/${item.toLowerCase()}`);
-                      }}
-                      className="text-2xl tracking-widest uppercase hover:text-muted-foreground transition-colors"
-                    >
-                      {item}
-                    </button>
-                  </motion.li>
-                ))}
-              </ul>
-              <button
-                onClick={() => setMenuOpen(false)}
-                className="mt-12 text-sm text-muted-foreground hover:text-foreground transition-colors"
-              >
-                {isMobile ? 'Tap to close' : 'Press ESC to close'}
-              </button>
-            </motion.nav>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Controls hint - desktop only, fades after 5 seconds */}
+      <ControlsHint isMobile={isMobile} />
     </>
   );
 }

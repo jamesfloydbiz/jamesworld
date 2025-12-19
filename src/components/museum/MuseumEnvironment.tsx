@@ -9,6 +9,8 @@ import { PictureHall } from './PictureHall';
 import { HallwayStanchions } from './HallwayStanchions';
 import { InfoPlacard } from './InfoPlacard';
 import { RoundedRoof } from './RoundedRoof';
+import { DustParticles } from './DustParticles';
+import { FloorGlow } from './FloorGlow';
 import { Text } from '@react-three/drei';
 
 export function MuseumEnvironment() {
@@ -60,17 +62,20 @@ export function MuseumEnvironment() {
       {/* Picture Hall */}
       <PictureHall />
 
-      {/* Soft spotlights on each pedestal */}
+      {/* Soft spotlights on each pedestal - improved falloff */}
       {portals.map((portal) => (
         <spotLight
           key={`spotlight-${portal.id}`}
-          position={[portal.pedestalPosition[0], 7, portal.pedestalPosition[2]]}
+          position={[portal.pedestalPosition[0], 8, portal.pedestalPosition[2]]}
           target-position={portal.pedestalPosition}
-          angle={0.4}
-          penumbra={0.8}
-          intensity={0.6}
+          angle={0.35}
+          penumbra={1}
+          intensity={0.8}
           color="#fffaf0"
           castShadow
+          shadow-mapSize={[512, 512]}
+          decay={2}
+          distance={12}
         />
       ))}
 
@@ -83,6 +88,12 @@ export function MuseumEnvironment() {
         <boxGeometry args={[6, 8, 0.2]} />
         <meshStandardMaterial color="#050505" roughness={0.95} />
       </mesh>
+
+      {/* Subtle floor glow */}
+      <FloorGlow />
+
+      {/* Dust particles for atmosphere */}
+      <DustParticles />
 
       {/* Ceiling lights */}
       <CeilingLights />
