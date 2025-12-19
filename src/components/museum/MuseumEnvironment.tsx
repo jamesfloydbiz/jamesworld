@@ -8,47 +8,54 @@ import { RedCarpet } from './RedCarpet';
 import { PictureHall } from './PictureHall';
 import { HallwayStanchions } from './HallwayStanchions';
 import { InfoPlacard } from './InfoPlacard';
+import { RoundedRoof } from './RoundedRoof';
 import { Text } from '@react-three/drei';
 
 export function MuseumEnvironment() {
   const { portals } = useGameStore();
 
+  // Walls closer to stanchions (stanchions at ±8, walls now at ±9)
+  const wallX = 9;
+
   return (
     <group>
-      {/* Floor - larger for pushed back walls */}
+      {/* Floor - adjusted for closer walls */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, -15]} receiveShadow>
-        <planeGeometry args={[22, 50]} />
+        <planeGeometry args={[wallX * 2, 50]} />
         <meshStandardMaterial color="#1a1a1a" roughness={0.85} />
       </mesh>
 
-      {/* Left wall - pushed back */}
-      <mesh position={[-11, 4, -15]} receiveShadow>
+      {/* Left wall - closer to stanchions */}
+      <mesh position={[-wallX, 4, -15]} receiveShadow>
         <boxGeometry args={[0.2, 8, 50]} />
         <meshStandardMaterial color="#050505" roughness={0.95} />
       </mesh>
 
-      {/* Right wall - pushed back */}
-      <mesh position={[11, 4, -15]} receiveShadow>
+      {/* Right wall - closer to stanchions */}
+      <mesh position={[wallX, 4, -15]} receiveShadow>
         <boxGeometry args={[0.2, 8, 50]} />
         <meshStandardMaterial color="#050505" roughness={0.95} />
       </mesh>
 
       {/* Back wall - split into two sections with doorway gap */}
-      {/* Left section - spans from X=-11 to X=-1.2 (width 9.8, centered at -6.1) */}
-      <mesh position={[-6.1, 4, -40]} receiveShadow>
-        <boxGeometry args={[9.8, 8, 0.2]} />
+      {/* Left section */}
+      <mesh position={[-5.1, 4, -40]} receiveShadow>
+        <boxGeometry args={[7.8, 8, 0.2]} />
         <meshStandardMaterial color="#050505" roughness={0.95} />
       </mesh>
-      {/* Right section - spans from X=1.2 to X=11 (width 9.8, centered at 6.1) */}
-      <mesh position={[6.1, 4, -40]} receiveShadow>
-        <boxGeometry args={[9.8, 8, 0.2]} />
+      {/* Right section */}
+      <mesh position={[5.1, 4, -40]} receiveShadow>
+        <boxGeometry args={[7.8, 8, 0.2]} />
         <meshStandardMaterial color="#050505" roughness={0.95} />
       </mesh>
-      {/* Top section above doorway - matches archway width */}
+      {/* Top section above doorway */}
       <mesh position={[0, 7, -40]} receiveShadow>
         <boxGeometry args={[2.4, 2, 0.2]} />
         <meshStandardMaterial color="#050505" roughness={0.95} />
       </mesh>
+
+      {/* Rounded roof/ceiling */}
+      <RoundedRoof width={wallX * 2} length={50} position={[0, 8, -15]} />
 
       {/* Doorway frame */}
       <HallwayDoorway position={[0, 0, -40]} />
@@ -94,13 +101,13 @@ export function MuseumEnvironment() {
         />
       ))}
 
-      {/* Front partial walls */}
-      <mesh position={[-7, 4, 7]} receiveShadow>
-        <boxGeometry args={[8, 8, 0.2]} />
+      {/* Front partial walls - adjusted */}
+      <mesh position={[-6, 4, 7]} receiveShadow>
+        <boxGeometry args={[6, 8, 0.2]} />
         <meshStandardMaterial color="#050505" roughness={0.95} />
       </mesh>
-      <mesh position={[7, 4, 7]} receiveShadow>
-        <boxGeometry args={[8, 8, 0.2]} />
+      <mesh position={[6, 4, 7]} receiveShadow>
+        <boxGeometry args={[6, 8, 0.2]} />
         <meshStandardMaterial color="#050505" roughness={0.95} />
       </mesh>
 

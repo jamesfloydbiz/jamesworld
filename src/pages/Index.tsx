@@ -1,29 +1,23 @@
-import { useEffect, useState, useCallback, useRef } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { MuseumScene } from '@/components/museum/MuseumScene';
 import { MuseumUI } from '@/components/ui/MuseumUI';
 import { MobileJoystick } from '@/components/ui/MobileJoystick';
-import { LoadingScreen } from '@/components/ui/LoadingScreen';
+import { MainMenu } from '@/components/ui/MainMenu';
 import { useGameStore } from '@/store/gameStore';
 import { AnimatePresence } from 'framer-motion';
-
-const MIN_LOADING_TIME = 1000; // Minimum time to show loading screen
 
 const Index = () => {
   const { setIsTransitioning } = useGameStore();
   const [progress, setProgress] = useState(0);
-  const [showScene, setShowScene] = useState(false);
-  const [minTimeElapsed, setMinTimeElapsed] = useState(false);
-  const startTimeRef = useRef(Date.now());
+  const [showGallery, setShowGallery] = useState(false);
+  const [preloadStarted, setPreloadStarted] = useState(false);
 
   useEffect(() => {
-    // Clear transition state on mount
     setIsTransitioning(false);
-    
-    // Ensure minimum loading time for smooth UX
+    // Start preloading the gallery after a short delay
     const timer = setTimeout(() => {
-      setMinTimeElapsed(true);
-    }, MIN_LOADING_TIME);
-    
+      setPreloadStarted(true);
+    }, 500);
     return () => clearTimeout(timer);
   }, [setIsTransitioning]);
 
@@ -31,26 +25,34 @@ const Index = () => {
     setProgress(loadProgress);
   }, []);
 
-  const handleStart = () => {
-    setShowScene(true);
+  const handleEnterGallery = () => {
+    if (progress >= 100) {
+      setShowGallery(true);
+    }
   };
 
-  // Loading is complete when assets are loaded AND minimum time has passed
-  const isFullyLoaded = progress >= 100 && minTimeElapsed;
-
   return (
-    <div className="fixed inset-0 bg-background">
-      {/* Always render the scene in background to preload */}
-      <div className={showScene ? 'opacity-100' : 'opacity-0'} style={{ position: 'absolute', inset: 0 }}>
-        <MuseumScene onProgress={handleProgress} />
-        <MuseumUI />
-        <MobileJoystick />
-      </div>
+    <div className="fixed inset-0 bg-black">
+      {/* Preload gallery in background (hidden) */}
+      {preloadStarted && (
+        <div 
+          className={showGallery ? 'opacity-100' : 'opacity-0 pointer-events-none'} 
+          style={{ position: 'absolute', inset: 0 }}
+        >
+          <MuseumScene onProgress={handleProgress} />
+          <MuseumUI />
+          <MobileJoystick />
+        </div>
+      )}
       
-      {/* Loading screen overlay */}
+      {/* Main menu */}
       <AnimatePresence>
-        {!showScene && (
-          <LoadingScreen progress={progress} isFullyLoaded={isFullyLoaded} onStart={handleStart} />
+        {!showGallery && (
+          <MainMenu 
+            onEnterGallery={handleEnterGallery}
+            galleryLoading={progress < 100}
+            galleryProgress={progress}
+          />
         )}
       </AnimatePresence>
     </div>
