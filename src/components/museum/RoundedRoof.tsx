@@ -12,16 +12,20 @@ export function RoundedRoof({
   width = 18, 
   length = 50, 
   position = [0, 0, -15],
-  curveRadius = 6
+  curveRadius = 4
 }: RoundedRoofProps) {
   const geometry = useMemo(() => {
     // Create a tunnel-like shape where walls curve into ceiling
-    // Curve starts 1/4 down from the top (at 75% of wall height)
+    // Curve starts halfway down the wall, peak only in middle 1/7
     const shape = new THREE.Shape();
     
     const halfWidth = width / 2;
     const wallHeight = 8; // Total height
-    const curveStartHeight = wallHeight * 0.75; // Curve starts 1/4 from top
+    const curveStartHeight = wallHeight * 0.5; // Curve starts halfway down
+    
+    // Peak is only in the middle 1/7 of the width
+    const peakWidth = halfWidth / 3.5; // 1/7 of total width = 1/3.5 of halfWidth
+    const peakHeight = curveStartHeight + curveRadius;
     
     // Start from bottom-left (floor level)
     shape.moveTo(-halfWidth, 0);
@@ -29,16 +33,24 @@ export function RoundedRoof({
     // Go up the left wall to where curve starts
     shape.lineTo(-halfWidth, curveStartHeight);
     
-    // Create the curved ceiling portion
-    // Arc from left side, up and over to right side
-    const segments = 32;
-    const curveHeight = wallHeight - curveStartHeight + curveRadius * 0.5;
+    // Curve from left wall to left edge of peak
+    const curveSegments = 16;
+    for (let i = 0; i <= curveSegments; i++) {
+      const t = i / curveSegments;
+      // Ease from wall to peak edge
+      const x = -halfWidth + (halfWidth - peakWidth) * t;
+      const y = curveStartHeight + (peakHeight - curveStartHeight) * Math.sin(t * Math.PI / 2);
+      shape.lineTo(x, y);
+    }
     
-    for (let i = 0; i <= segments; i++) {
-      const t = i / segments;
-      const angle = Math.PI * t; // 0 to PI (half circle)
-      const x = -halfWidth * Math.cos(angle);
-      const y = curveStartHeight + curveRadius * Math.sin(angle);
+    // Flat peak in the middle 1/7
+    shape.lineTo(peakWidth, peakHeight);
+    
+    // Curve from right edge of peak down to right wall
+    for (let i = 0; i <= curveSegments; i++) {
+      const t = i / curveSegments;
+      const x = peakWidth + (halfWidth - peakWidth) * t;
+      const y = peakHeight - (peakHeight - curveStartHeight) * Math.sin(t * Math.PI / 2);
       shape.lineTo(x, y);
     }
     

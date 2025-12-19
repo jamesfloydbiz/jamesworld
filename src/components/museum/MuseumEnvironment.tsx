@@ -50,23 +50,6 @@ export function MuseumEnvironment() {
       {/* Doorway frame */}
       <HallwayDoorway position={[0, 0, -40]} />
 
-      {/* Glowing JAMES FLOYD text on back wall - above doorway */}
-      <Text
-        position={[0, 7.5, -39.8]}
-        fontSize={1.2}
-        color="#ffffff"
-        anchorX="center"
-        anchorY="middle"
-        letterSpacing={0.15}
-      >
-        JAMES FLOYD
-        <meshStandardMaterial 
-          color="#ffffff" 
-          emissive="#ffffff" 
-          emissiveIntensity={1.2} 
-        />
-      </Text>
-      <pointLight position={[0, 7.5, -38]} intensity={0.5} color="#ffffff" distance={8} />
 
       {/* Red carpet from main gallery through doorway to picture hall */}
       <RedCarpet startZ={-35} endZ={-65} width={3} />
