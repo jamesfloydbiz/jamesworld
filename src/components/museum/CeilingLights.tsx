@@ -1,39 +1,41 @@
 import { useMemo } from 'react';
 
+// Match RoundedRoof.tsx geometry exactly
+const HALF_WIDTH = 9;
+const WALL_HEIGHT = 8;
+const CURVE_START_HEIGHT = WALL_HEIGHT * 0.5; // 4
+const CURVE_RADIUS = 4;
+const PEAK_WIDTH = HALF_WIDTH / 3.5;
+const PEAK_HEIGHT = CURVE_START_HEIGHT + CURVE_RADIUS; // 8
+
 // Calculate Y position on the curved roof given X position
 function getCurvedRoofY(x: number): number {
-  const halfWidth = 9;
-  const wallHeight = 8;
-  const curveStartHeight = wallHeight * 0.5;
-  const curveRadius = 4;
-  const peakWidth = halfWidth / 3.5;
-  const peakHeight = curveStartHeight + curveRadius;
-  
   const absX = Math.abs(x);
   
-  if (absX <= peakWidth) {
-    return peakHeight - 0.15;
+  if (absX <= PEAK_WIDTH) {
+    // Flat peak section
+    return PEAK_HEIGHT;
   } else {
-    const t = (absX - peakWidth) / (halfWidth - peakWidth);
-    const y = peakHeight - (peakHeight - curveStartHeight) * Math.sin(t * Math.PI / 2);
-    return y - 0.15;
+    // Curved section from peak down to wall
+    const t = (absX - PEAK_WIDTH) / (HALF_WIDTH - PEAK_WIDTH);
+    const y = PEAK_HEIGHT - (PEAK_HEIGHT - CURVE_START_HEIGHT) * Math.sin(t * Math.PI / 2);
+    return y;
   }
 }
 
-// Calculate the rotation angle to be tangent to the curve at a given X
-function getCurveTangentAngle(x: number): number {
-  const halfWidth = 9;
-  const peakWidth = halfWidth / 3.5;
+// Calculate the tilt angle for the light panel to lay flat against the curve
+function getCurveTiltAngle(x: number): number {
   const absX = Math.abs(x);
   
-  if (absX <= peakWidth) {
-    return 0; // Flat at peak, no rotation
+  if (absX <= PEAK_WIDTH) {
+    // Flat at peak - panel faces straight down
+    return 0;
   } else {
-    // Calculate the slope of the curve at this point
-    const t = (absX - peakWidth) / (halfWidth - peakWidth);
-    // Angle based on position along curve
-    const angle = (Math.PI / 2.5) * Math.sin(t * Math.PI / 2);
-    return x > 0 ? angle : -angle; // Tilt outward on each side
+    // Tilt inward based on curve slope
+    const t = (absX - PEAK_WIDTH) / (HALF_WIDTH - PEAK_WIDTH);
+    // Angle increases from 0 at peak to ~45° at wall edge
+    const angle = (Math.PI / 4) * Math.sin(t * Math.PI / 2);
+    return x > 0 ? -angle : angle; // Tilt inward on each side
   }
 }
 
@@ -45,20 +47,20 @@ export function CeilingLights() {
   const lightPanels = useMemo(() => {
     const panels: { 
       pos: [number, number, number]; 
-      rotX: number;
+      tiltX: number;
     }[] = [];
     
     const zSpacing = isMobile ? 8 : 5;
-    const xPositions = isMobile ? [0] : [-6, -3, 0, 3, 6];
+    const xPositions = isMobile ? [0] : [-5, -2.5, 0, 2.5, 5];
     
     for (let z = -35; z <= 5; z += zSpacing) {
       for (const x of xPositions) {
-        const y = getCurvedRoofY(x);
-        const rotX = getCurveTangentAngle(x);
+        const y = getCurvedRoofY(x) - 0.1; // Slightly below roof surface
+        const tiltX = getCurveTiltAngle(x);
         
         panels.push({
           pos: [x, y, z],
-          rotX
+          tiltX
         });
       }
     }
@@ -66,21 +68,21 @@ export function CeilingLights() {
     return panels;
   }, [isMobile]);
 
-  const panelSize = isMobile ? 2.2 : 1.8;
+  const panelSize = isMobile ? 2.2 : 1.5;
 
   return (
     <group>
       {lightPanels.map((panel, i) => (
-        <group key={i} position={panel.pos} rotation={[0, 0, panel.rotX]}>
-          {/* Light panel - rotated to follow curve */}
-          <mesh rotation={[-Math.PI / 2, 0, 0]}>
+        <group key={i} position={panel.pos}>
+          {/* Light panel - rotated to lay flat against curved roof */}
+          <mesh rotation={[-Math.PI / 2 + panel.tiltX, 0, 0]}>
             <planeGeometry args={[panelSize, panelSize]} />
             <meshBasicMaterial color="#ffffff" />
           </mesh>
           
           {/* Light source */}
           <pointLight 
-            position={[0, -0.3, 0]} 
+            position={[0, -0.5, 0]} 
             intensity={isMobile ? 0.8 : 0.5} 
             color="#ffffff" 
             distance={isMobile ? 15 : 10}

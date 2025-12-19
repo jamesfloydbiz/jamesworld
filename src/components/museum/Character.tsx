@@ -179,9 +179,9 @@ export function Character({ isMobile = false }: CharacterProps) {
   const ropeSegments = useMemo(() => getRopeSegments(portals), [portals]);
   const keys = useKeyboardControls();
 
-  // Memoize material
+  // Memoize material - subtle warm tint, smoother finish
   const whiteMaterial = useMemo(() => (
-    <meshStandardMaterial color="#ffffff" roughness={0.8} />
+    <meshStandardMaterial color="#faf8f5" roughness={0.6} />
   ), []);
 
   useFrame((_, delta) => {
