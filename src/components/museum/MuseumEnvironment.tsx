@@ -25,17 +25,7 @@ export function MuseumEnvironment() {
         <meshStandardMaterial color="#1a1a1a" roughness={0.85} />
       </mesh>
 
-      {/* Left wall - closer to stanchions */}
-      <mesh position={[-wallX, 4, -15]} receiveShadow>
-        <boxGeometry args={[0.2, 8, 50]} />
-        <meshStandardMaterial color="#050505" roughness={0.95} />
-      </mesh>
-
-      {/* Right wall - closer to stanchions */}
-      <mesh position={[wallX, 4, -15]} receiveShadow>
-        <boxGeometry args={[0.2, 8, 50]} />
-        <meshStandardMaterial color="#050505" roughness={0.95} />
-      </mesh>
+      {/* Walls removed - curved roof now connects to floor */}
 
       {/* Back wall - split into two sections with doorway gap */}
       {/* Left section */}
@@ -54,8 +44,8 @@ export function MuseumEnvironment() {
         <meshStandardMaterial color="#050505" roughness={0.95} />
       </mesh>
 
-      {/* Rounded roof/ceiling */}
-      <RoundedRoof width={wallX * 2} length={50} position={[0, 8, -15]} />
+      {/* Curved roof/ceiling - walls curve into ceiling */}
+      <RoundedRoof width={wallX * 2} length={50} position={[0, 0, -15]} curveRadius={7} />
 
       {/* Doorway frame */}
       <HallwayDoorway position={[0, 0, -40]} />

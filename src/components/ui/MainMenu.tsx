@@ -11,15 +11,14 @@ export function MainMenu({ onEnterGallery, galleryLoading, galleryProgress }: Ma
   const navigate = useNavigate();
 
   const menuItems = [
-    { label: 'Gallery', action: onEnterGallery, isGallery: true },
+    { label: '3D Gallery', action: onEnterGallery, isGallery: true },
     { label: 'Story', path: '/story' },
     { label: 'Projects', path: '/projects' },
-    { label: 'Blueprints', path: '/blueprints' },
-    { label: 'Ops', path: '/ops' },
     { label: 'Media', path: '/media' },
-    { label: 'Poems', path: '/poems' },
     { label: 'Network', path: '/network' },
+    { label: 'Blueprints', path: '/blueprints' },
     { label: 'Resume', path: '/resume' },
+    { label: 'Poems', path: '/poems' },
   ];
 
   const handleClick = (item: typeof menuItems[0]) => {
