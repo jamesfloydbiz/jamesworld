@@ -18,10 +18,10 @@ function Stanchion({ position }: StanchionProps) {
         <cylinderGeometry args={[0.03, 0.03, 0.9, 12]} />
         <meshStandardMaterial color="#1a1a1a" metalness={0.5} roughness={0.4} />
       </mesh>
-      {/* Top ball - white to match ropes */}
+      {/* Top ball - black to match posts */}
       <mesh position={[0, 0.98, 0]}>
         <sphereGeometry args={[0.06, 12, 12]} />
-        <meshStandardMaterial color="#e0e0e0" metalness={0.2} roughness={0.4} />
+        <meshStandardMaterial color="#1a1a1a" metalness={0.3} roughness={0.5} />
       </mesh>
     </group>
   );

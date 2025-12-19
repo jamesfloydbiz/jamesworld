@@ -10,6 +10,7 @@ import { HallwayStanchions } from './HallwayStanchions';
 import { InfoPlacard } from './InfoPlacard';
 import { RoundedRoof } from './RoundedRoof';
 import { ArchitecturalAccents } from './ArchitecturalAccents';
+import { VictorianRoof } from './VictorianRoof';
 
 export function MuseumEnvironment() {
   const { portals } = useGameStore();
@@ -46,6 +47,9 @@ export function MuseumEnvironment() {
 
       {/* Curved roof/ceiling - walls curve into ceiling */}
       <RoundedRoof width={wallX * 2} length={50} position={[0, 0, -15]} curveRadius={7} />
+      
+      {/* Victorian ribbed glass ceiling structure */}
+      <VictorianRoof />
 
       {/* Doorway frame */}
       <HallwayDoorway position={[0, 0, -40]} />

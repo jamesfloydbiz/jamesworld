@@ -79,7 +79,6 @@ function CrownMolding() {
 export function ArchitecturalAccents() {
   return (
     <group>
-      <Baseboards />
       <CrownMolding />
     </group>
   );
