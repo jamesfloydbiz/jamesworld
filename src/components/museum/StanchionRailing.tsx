@@ -18,10 +18,10 @@ function Stanchion({ position }: StanchionProps) {
         <cylinderGeometry args={[0.03, 0.03, 0.9, 12]} />
         <meshStandardMaterial color="#1a1a1a" metalness={0.5} roughness={0.4} />
       </mesh>
-      {/* Top ball */}
+      {/* Top ball - white to match ropes */}
       <mesh position={[0, 0.98, 0]}>
         <sphereGeometry args={[0.06, 12, 12]} />
-        <meshStandardMaterial color="#8B0000" metalness={0.4} roughness={0.5} />
+        <meshStandardMaterial color="#e0e0e0" metalness={0.2} roughness={0.4} />
       </mesh>
     </group>
   );
@@ -64,8 +64,8 @@ function RopeSegment({ start, end }: RopeSegmentProps) {
   
   return (
     <mesh position={[midPoint.x, midPoint.y, midPoint.z]} rotation={euler}>
-      <cylinderGeometry args={[0.015, 0.015, length, 8]} />
-      <meshStandardMaterial color="#8B0000" roughness={0.8} />
+      <cylinderGeometry args={[0.025, 0.025, length, 12]} />
+      <meshStandardMaterial color="#f0f0f0" metalness={0.15} roughness={0.5} />
     </mesh>
   );
 }

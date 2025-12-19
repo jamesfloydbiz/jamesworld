@@ -9,7 +9,7 @@ import { PictureHall } from './PictureHall';
 import { HallwayStanchions } from './HallwayStanchions';
 import { InfoPlacard } from './InfoPlacard';
 import { RoundedRoof } from './RoundedRoof';
-import { Text } from '@react-three/drei';
+import { ArchitecturalAccents } from './ArchitecturalAccents';
 
 export function MuseumEnvironment() {
   const { portals } = useGameStore();
@@ -89,6 +89,9 @@ export function MuseumEnvironment() {
 
       {/* Ceiling lights */}
       <CeilingLights />
+
+      {/* Architectural accents - baseboards and crown molding */}
+      <ArchitecturalAccents />
 
       {/* Stanchion railings */}
       <StanchionRailing />

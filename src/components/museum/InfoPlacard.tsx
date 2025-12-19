@@ -50,20 +50,20 @@ export function InfoPlacard({ position, title }: InfoPlacardProps) {
           <meshStandardMaterial color="#2a2a2a" metalness={0.3} roughness={0.7} />
         </mesh>
         
-        {/* Title text */}
+        {/* Title text - refined typography */}
         <Text
-          position={[0, 0, 0.02]}
-          fontSize={0.12}
+          position={[0, 0, 0.025]}
+          fontSize={0.11}
           color="#ffffff"
           anchorX="center"
           anchorY="middle"
-          letterSpacing={0.05}
+          letterSpacing={0.12}
         >
           {title.toUpperCase()}
           <meshStandardMaterial 
             color="#ffffff" 
             emissive="#ffffff" 
-            emissiveIntensity={0.3} 
+            emissiveIntensity={0.25} 
           />
         </Text>
       </group>
