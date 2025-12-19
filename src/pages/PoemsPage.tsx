@@ -3,6 +3,9 @@ import { WalkwayHeader } from '@/components/walkway/WalkwayHeader';
 import { useKeyboardScroll } from '@/hooks/useKeyboardScroll';
 
 const poems = [
+  'Weary Woman',
+  'The Wanderer',
+  'Madman',
   'Abundance',
   'Alone Again',
   'Contradictions',
@@ -13,7 +16,6 @@ const poems = [
   'Home',
   'Into the Darkness',
   'Love Begets Love',
-  'Madman',
   'Manhood',
   'No Sleep',
   'Ode to forever',
@@ -23,14 +25,10 @@ const poems = [
   'Sleep',
   'The Dance with Death',
   'The Fight...',
-  'The Wanderer',
   'The trials of Danger',
   'To Her',
   'To the Strivers',
-  'Weary Woman',
   'Wisdom is Pain',
-  'Dear Darkness',
-  'No Sleep (alternate)',
 ];
 
 const PoemsPage = () => {
@@ -63,8 +61,12 @@ const PoemsPage = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.8 + index * 0.03, duration: 0.4 }}
               >
-                <div className="bg-secondary aspect-square mb-3 flex items-center justify-center text-muted-foreground text-xs">
-                  [Image]
+                <div className="aspect-square mb-3 overflow-hidden">
+                  <img 
+                    src={`/poems/${poem}.png`} 
+                    alt={poem}
+                    className="w-full h-full object-cover"
+                  />
                 </div>
                 <p className="text-sm group-hover:underline underline-offset-4">
                   {poem}

@@ -11,29 +11,42 @@ interface RoundedRoofProps {
 export function RoundedRoof({ 
   width = 18, 
   length = 50, 
-  position = [0, 6.5, -15],
-  curveRadius = 9
+  position = [0, 0, -15],
+  curveRadius = 6
 }: RoundedRoofProps) {
   const geometry = useMemo(() => {
-    // Create a full curved ceiling that connects the walls
-    // Using an extruded arc shape
+    // Create a tunnel-like shape where walls curve into ceiling
+    // Curve starts 1/4 down from the top (at 75% of wall height)
     const shape = new THREE.Shape();
     
     const halfWidth = width / 2;
+    const wallHeight = 8; // Total height
+    const curveStartHeight = wallHeight * 0.75; // Curve starts 1/4 from top
     
-    // Start from bottom-left, curve up and over to bottom-right
+    // Start from bottom-left (floor level)
     shape.moveTo(-halfWidth, 0);
     
-    // Create a smooth arc from left wall to right wall
-    // Using quadratic curves for a smooth barrel vault effect
-    const segments = 24;
+    // Go up the left wall to where curve starts
+    shape.lineTo(-halfWidth, curveStartHeight);
+    
+    // Create the curved ceiling portion
+    // Arc from left side, up and over to right side
+    const segments = 32;
+    const curveHeight = wallHeight - curveStartHeight + curveRadius * 0.5;
+    
     for (let i = 0; i <= segments; i++) {
       const t = i / segments;
       const angle = Math.PI * t; // 0 to PI (half circle)
       const x = -halfWidth * Math.cos(angle);
-      const y = curveRadius * Math.sin(angle);
+      const y = curveStartHeight + curveRadius * Math.sin(angle);
       shape.lineTo(x, y);
     }
+    
+    // Go down the right wall
+    shape.lineTo(halfWidth, 0);
+    
+    // Close the shape along the floor
+    shape.lineTo(-halfWidth, 0);
     
     // Extrude settings
     const extrudeSettings = {
