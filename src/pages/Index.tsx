@@ -1,23 +1,25 @@
-import { useEffect, useState, useCallback } from 'react';
-import { MuseumScene } from '@/components/museum/MuseumScene';
-import { MuseumUI } from '@/components/ui/MuseumUI';
-import { MobileJoystick } from '@/components/ui/MobileJoystick';
+import { useEffect, useState, useCallback, lazy, Suspense } from 'react';
 import { MainMenu } from '@/components/ui/MainMenu';
 import { useGameStore } from '@/store/gameStore';
 import { AnimatePresence } from 'framer-motion';
+
+// Lazy load heavy 3D components so they don't block the menu
+const MuseumScene = lazy(() => import('@/components/museum/MuseumScene').then(m => ({ default: m.MuseumScene })));
+const MuseumUI = lazy(() => import('@/components/ui/MuseumUI').then(m => ({ default: m.MuseumUI })));
+const MobileJoystick = lazy(() => import('@/components/ui/MobileJoystick').then(m => ({ default: m.MobileJoystick })));
 
 const Index = () => {
   const { setIsTransitioning } = useGameStore();
   const [progress, setProgress] = useState(0);
   const [showGallery, setShowGallery] = useState(false);
-  const [preloadStarted, setPreloadStarted] = useState(false);
+  const [shouldLoadGallery, setShouldLoadGallery] = useState(false);
 
   useEffect(() => {
     setIsTransitioning(false);
-    // Start preloading the gallery after a short delay
+    // Delay gallery loading to ensure menu is interactive first
     const timer = setTimeout(() => {
-      setPreloadStarted(true);
-    }, 500);
+      setShouldLoadGallery(true);
+    }, 100);
     return () => clearTimeout(timer);
   }, [setIsTransitioning]);
 
@@ -44,19 +46,7 @@ const Index = () => {
 
   return (
     <div className="fixed inset-0 bg-black">
-      {/* Preload gallery in background (hidden) */}
-      {preloadStarted && (
-        <div 
-          className={showGallery ? 'opacity-100' : 'opacity-0 pointer-events-none'} 
-          style={{ position: 'absolute', inset: 0 }}
-        >
-          <MuseumScene onProgress={handleProgress} />
-          <MuseumUI />
-          <MobileJoystick />
-        </div>
-      )}
-      
-      {/* Main menu */}
+      {/* Main menu - always interactive */}
       <AnimatePresence>
         {!showGallery && (
           <MainMenu 
@@ -66,6 +56,20 @@ const Index = () => {
           />
         )}
       </AnimatePresence>
+
+      {/* Lazy load gallery in background */}
+      {shouldLoadGallery && (
+        <div 
+          className={showGallery ? 'opacity-100' : 'opacity-0 pointer-events-none'} 
+          style={{ position: 'absolute', inset: 0 }}
+        >
+          <Suspense fallback={null}>
+            <MuseumScene onProgress={handleProgress} />
+            <MuseumUI />
+            <MobileJoystick />
+          </Suspense>
+        </div>
+      )}
     </div>
   );
 };
