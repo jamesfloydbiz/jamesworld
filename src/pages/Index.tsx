@@ -21,6 +21,17 @@ const Index = () => {
     return () => clearTimeout(timer);
   }, [setIsTransitioning]);
 
+  // ESC key to return to menu
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && showGallery) {
+        setShowGallery(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [showGallery]);
+
   const handleProgress = useCallback((loadProgress: number) => {
     setProgress(loadProgress);
   }, []);
