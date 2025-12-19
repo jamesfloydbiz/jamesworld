@@ -9,8 +9,6 @@ import { PictureHall } from './PictureHall';
 import { HallwayStanchions } from './HallwayStanchions';
 import { InfoPlacard } from './InfoPlacard';
 import { RoundedRoof } from './RoundedRoof';
-import { DustParticles } from './DustParticles';
-import { FloorGlow } from './FloorGlow';
 import { Text } from '@react-three/drei';
 
 export function MuseumEnvironment() {
@@ -88,12 +86,6 @@ export function MuseumEnvironment() {
         <boxGeometry args={[6, 8, 0.2]} />
         <meshStandardMaterial color="#050505" roughness={0.95} />
       </mesh>
-
-      {/* Subtle floor glow */}
-      <FloorGlow />
-
-      {/* Dust particles for atmosphere */}
-      <DustParticles />
 
       {/* Ceiling lights */}
       <CeilingLights />
