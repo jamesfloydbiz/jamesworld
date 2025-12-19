@@ -9,7 +9,6 @@ import { PictureHall } from './PictureHall';
 import { HallwayStanchions } from './HallwayStanchions';
 import { InfoPlacard } from './InfoPlacard';
 import { RoundedRoof } from './RoundedRoof';
-import { ArchitecturalAccents } from './ArchitecturalAccents';
 import { VictorianRoof } from './VictorianRoof';
 
 export function MuseumEnvironment() {
@@ -93,9 +92,6 @@ export function MuseumEnvironment() {
 
       {/* Ceiling lights */}
       <CeilingLights />
-
-      {/* Architectural accents - baseboards and crown molding */}
-      <ArchitecturalAccents />
 
       {/* Stanchion railings */}
       <StanchionRailing />
