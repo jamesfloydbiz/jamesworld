@@ -12,97 +12,81 @@ function getCurvedRoofY(x: number): number {
   const absX = Math.abs(x);
   
   if (absX <= peakWidth) {
-    return peakHeight - 0.2;
+    return peakHeight - 0.15;
   } else {
     const t = (absX - peakWidth) / (halfWidth - peakWidth);
     const y = peakHeight - (peakHeight - curveStartHeight) * Math.sin(t * Math.PI / 2);
-    return y - 0.2;
+    return y - 0.15;
   }
 }
 
-// Geometric skylight component - creates a diamond/cross frame pattern
-function Skylight({ position, size = 2.5 }: { position: [number, number, number]; size?: number }) {
-  const frameThickness = 0.08;
-  const frameDepth = 0.15;
+// Calculate the rotation angle to be tangent to the curve at a given X
+function getCurveTangentAngle(x: number): number {
+  const halfWidth = 9;
+  const peakWidth = halfWidth / 3.5;
+  const absX = Math.abs(x);
   
-  return (
-    <group position={position}>
-      {/* Outer square frame */}
-      {/* Top */}
-      <mesh position={[0, 0, size / 2]}>
-        <boxGeometry args={[size, frameDepth, frameThickness]} />
-        <meshStandardMaterial color="#e0e0e0" />
-      </mesh>
-      {/* Bottom */}
-      <mesh position={[0, 0, -size / 2]}>
-        <boxGeometry args={[size, frameDepth, frameThickness]} />
-        <meshStandardMaterial color="#e0e0e0" />
-      </mesh>
-      {/* Left */}
-      <mesh position={[-size / 2, 0, 0]}>
-        <boxGeometry args={[frameThickness, frameDepth, size]} />
-        <meshStandardMaterial color="#e0e0e0" />
-      </mesh>
-      {/* Right */}
-      <mesh position={[size / 2, 0, 0]}>
-        <boxGeometry args={[frameThickness, frameDepth, size]} />
-        <meshStandardMaterial color="#e0e0e0" />
-      </mesh>
-      
-      {/* Inner cross/X pattern */}
-      {/* Diagonal 1 */}
-      <mesh rotation={[0, Math.PI / 4, 0]}>
-        <boxGeometry args={[size * 1.35, frameDepth, frameThickness * 0.8]} />
-        <meshStandardMaterial color="#d0d0d0" />
-      </mesh>
-      {/* Diagonal 2 */}
-      <mesh rotation={[0, -Math.PI / 4, 0]}>
-        <boxGeometry args={[size * 1.35, frameDepth, frameThickness * 0.8]} />
-        <meshStandardMaterial color="#d0d0d0" />
-      </mesh>
-      
-      {/* Center vertical beam */}
-      <mesh position={[0, -0.3, 0]}>
-        <boxGeometry args={[frameThickness, 0.5, frameThickness]} />
-        <meshStandardMaterial color="#c0c0c0" />
-      </mesh>
-      
-      {/* Light source */}
-      <pointLight 
-        position={[0, -0.5, 0]} 
-        intensity={0.6} 
-        color="#ffffff" 
-        distance={12}
-        decay={2}
-        castShadow
-        shadow-mapSize={[256, 256]}
-      />
-    </group>
-  );
+  if (absX <= peakWidth) {
+    return 0; // Flat at peak, no rotation
+  } else {
+    // Calculate the slope of the curve at this point
+    const t = (absX - peakWidth) / (halfWidth - peakWidth);
+    // Angle based on position along curve
+    const angle = (Math.PI / 2.5) * Math.sin(t * Math.PI / 2);
+    return x > 0 ? angle : -angle; // Tilt outward on each side
+  }
 }
 
 export function CeilingLights() {
   const isMobile = typeof window !== 'undefined' && 
     ('ontouchstart' in window || navigator.maxTouchPoints > 0);
   
-  // Position skylights along the center peak of the curved ceiling
-  const skylightPositions = useMemo(() => {
-    const positions: [number, number, number][] = [];
-    const zSpacing = isMobile ? 12 : 8;
+  // Create grid of light panels following the curved roof
+  const lightPanels = useMemo(() => {
+    const panels: { 
+      pos: [number, number, number]; 
+      rotX: number;
+    }[] = [];
     
-    // Center row of skylights
-    for (let z = -32; z <= 0; z += zSpacing) {
-      const y = getCurvedRoofY(0);
-      positions.push([0, y, z]);
+    const zSpacing = isMobile ? 8 : 5;
+    const xPositions = isMobile ? [0] : [-6, -3, 0, 3, 6];
+    
+    for (let z = -35; z <= 5; z += zSpacing) {
+      for (const x of xPositions) {
+        const y = getCurvedRoofY(x);
+        const rotX = getCurveTangentAngle(x);
+        
+        panels.push({
+          pos: [x, y, z],
+          rotX
+        });
+      }
     }
     
-    return positions;
+    return panels;
   }, [isMobile]);
+
+  const panelSize = isMobile ? 2.2 : 1.8;
 
   return (
     <group>
-      {skylightPositions.map((pos, i) => (
-        <Skylight key={i} position={pos} size={isMobile ? 2 : 2.5} />
+      {lightPanels.map((panel, i) => (
+        <group key={i} position={panel.pos} rotation={[0, 0, panel.rotX]}>
+          {/* Light panel - rotated to follow curve */}
+          <mesh rotation={[-Math.PI / 2, 0, 0]}>
+            <planeGeometry args={[panelSize, panelSize]} />
+            <meshBasicMaterial color="#ffffff" />
+          </mesh>
+          
+          {/* Light source */}
+          <pointLight 
+            position={[0, -0.3, 0]} 
+            intensity={isMobile ? 0.8 : 0.5} 
+            color="#ffffff" 
+            distance={isMobile ? 15 : 10}
+            decay={2}
+          />
+        </group>
       ))}
     </group>
   );
