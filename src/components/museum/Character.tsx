@@ -399,7 +399,7 @@ export function Character({ isMobile = false }: CharacterProps) {
       if (rightLegRef.current) rightLegRef.current.rotation.x = -legSwing;
       if (leftArmRef.current) leftArmRef.current.rotation.x = -armSwing + jumpArmOffset;
       if (rightArmRef.current) rightArmRef.current.rotation.x = armSwing + jumpArmOffset;
-      if (torsoRef.current) torsoRef.current.position.y = 0.55 + bodyBob;
+      if (torsoRef.current) torsoRef.current.position.y = 0.53 + bodyBob;
       if (headRef.current) headRef.current.position.y = 0.95 + bodyBob;
     } else {
       breathPhase.current += delta * 1.5;
@@ -424,7 +424,7 @@ export function Character({ isMobile = false }: CharacterProps) {
       }
       if (torsoRef.current) {
         torsoRef.current.scale.y = breathScale;
-        torsoRef.current.position.y = 0.55;
+        torsoRef.current.position.y = 0.53;
       }
       if (headRef.current) {
         headRef.current.position.y = 0.95 + headBob;
@@ -437,8 +437,8 @@ export function Character({ isMobile = false }: CharacterProps) {
       {!isMobile && <Footprints footprints={footprints.current} />}
       <group ref={groupRef} position={characterPosition}>
         {/* Torso */}
-        <mesh ref={torsoRef} position={[0, 0.55, 0]} castShadow={!isMobile}>
-          <capsuleGeometry args={[0.15, 0.25, 8, 16]} />
+        <mesh ref={torsoRef} position={[0, 0.53, 0]} castShadow={!isMobile}>
+          <capsuleGeometry args={[0.15, 0.20, 8, 16]} />
           {whiteMaterial}
         </mesh>
         
