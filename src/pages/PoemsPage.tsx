@@ -68,7 +68,7 @@ const PoemsPage = () => {
               >
                 <div className="aspect-square mb-3 overflow-hidden">
                   <img 
-                    src={`/poems/${poem}.png`} 
+                    src={`/poems/${encodeURIComponent(poem)}.png`} 
                     alt={poem}
                     className="w-full h-full object-cover"
                   />
@@ -113,7 +113,7 @@ const PoemsPage = () => {
                   {selectedPoem}
                 </h2>
                 <img 
-                  src={`/poems/${selectedPoem}.png`} 
+                  src={`/poems/${encodeURIComponent(selectedPoem)}.png`} 
                   alt={selectedPoem}
                   className="w-full h-auto"
                   onClick={() => setSelectedPoem(null)}
