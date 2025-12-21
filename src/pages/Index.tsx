@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback, lazy, Suspense } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { MainMenu } from '@/components/ui/MainMenu';
 import { useGameStore } from '@/store/gameStore';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -9,7 +10,8 @@ const MuseumUI = lazy(() => import('@/components/ui/MuseumUI').then(m => ({ defa
 const MobileJoystick = lazy(() => import('@/components/ui/MobileJoystick').then(m => ({ default: m.MobileJoystick })));
 
 const Index = () => {
-  const { setIsTransitioning } = useGameStore();
+  const navigate = useNavigate();
+  const { setIsTransitioning, menuOpen, setMenuOpen } = useGameStore();
   const [progress, setProgress] = useState(0);
   const [showGallery, setShowGallery] = useState(false);
   const [shouldLoadGallery, setShouldLoadGallery] = useState(false);
@@ -76,6 +78,57 @@ const Index = () => {
           </Suspense>
         </motion.div>
       )}
+
+      {/* Mobile menu overlay when in gallery */}
+      <AnimatePresence>
+        {showGallery && menuOpen && (
+          <motion.div 
+            className="fixed inset-0 bg-black/95 z-50 flex flex-col items-center justify-center gap-6"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <button 
+              onClick={() => setMenuOpen(false)}
+              className="absolute top-6 right-6 text-white/70 hover:text-white text-xl"
+            >
+              ✕
+            </button>
+            
+            {[
+              { label: 'Story', path: '/story' },
+              { label: 'Projects', path: '/projects' },
+              { label: 'Media', path: '/media' },
+              { label: 'Network', path: '/network' },
+              { label: 'Blueprints', path: '/blueprints' },
+              { label: 'Resume', path: '/resume' },
+              { label: 'Poems', path: '/poems' },
+            ].map((item) => (
+              <button
+                key={item.path}
+                onClick={() => {
+                  setMenuOpen(false);
+                  navigate(item.path);
+                }}
+                className="text-white/80 hover:text-white text-2xl tracking-widest uppercase transition-colors"
+              >
+                {item.label}
+              </button>
+            ))}
+            
+            <button
+              onClick={() => {
+                setMenuOpen(false);
+                setShowGallery(false);
+              }}
+              className="mt-8 text-white/50 hover:text-white text-lg tracking-widest uppercase transition-colors border border-white/30 px-6 py-2"
+            >
+              Exit Gallery
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

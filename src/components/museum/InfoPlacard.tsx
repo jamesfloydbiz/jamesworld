@@ -1,5 +1,3 @@
-import { Text } from '@react-three/drei';
-
 interface InfoPlacardProps {
   position: [number, number, number];
   title: string;
@@ -50,22 +48,11 @@ export function InfoPlacard({ position, title }: InfoPlacardProps) {
           <meshStandardMaterial color="#2a2a2a" metalness={0.3} roughness={0.7} />
         </mesh>
         
-        {/* Title text - refined typography */}
-        <Text
-          position={[0, 0, 0.025]}
-          fontSize={0.11}
-          color="#ffffff"
-          anchorX="center"
-          anchorY="middle"
-          letterSpacing={0.12}
-        >
-          {title.toUpperCase()}
-          <meshStandardMaterial 
-            color="#ffffff" 
-            emissive="#ffffff" 
-            emissiveIntensity={0.25} 
-          />
-        </Text>
+        {/* Simple white label plate instead of Text */}
+        <mesh position={[0, 0, 0.015]}>
+          <planeGeometry args={[0.5, 0.15]} />
+          <meshBasicMaterial color="#ffffff" transparent opacity={0.9} />
+        </mesh>
       </group>
     </group>
   );
