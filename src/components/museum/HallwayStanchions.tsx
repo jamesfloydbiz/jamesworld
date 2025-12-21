@@ -100,17 +100,7 @@ export function HallwayStanchions() {
   );
 }
 
-// Export collision data for Character.tsx
-export const hallwayStanchionPositions: [number, number][] = [
-  [-2, -38], [-2, -44], [-2, -50], [-2, -56], [-2, -62],
-  [2, -38], [2, -44], [2, -50], [2, -56], [2, -62],
-];
+// Export empty collision data for Character.tsx (hallway stanchions removed)
+export const hallwayStanchionPositions: [number, number][] = [];
 
-export const hallwayRopeSegments: [number, number, number, number][] = [
-  // Connecting ropes from perimeter to hallway
-  [-5, -35, -2, -38], [5, -35, 2, -38],
-  // Left side
-  [-2, -38, -2, -44], [-2, -44, -2, -50], [-2, -50, -2, -56], [-2, -56, -2, -62],
-  // Right side
-  [2, -38, 2, -44], [2, -44, 2, -50], [2, -50, 2, -56], [2, -56, 2, -62],
-];
+export const hallwayRopeSegments: [number, number, number, number][] = [];

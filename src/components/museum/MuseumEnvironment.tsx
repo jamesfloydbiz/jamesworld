@@ -4,9 +4,7 @@ import { Pedestal } from './Pedestal';
 import { StanchionRailing } from './StanchionRailing';
 import { CeilingLights } from './CeilingLights';
 import { HallwayDoorway } from './HallwayDoorway';
-import { RedCarpet } from './RedCarpet';
 import { PictureHall } from './PictureHall';
-import { HallwayStanchions } from './HallwayStanchions';
 import { InfoPlacard } from './InfoPlacard';
 import { RoundedRoof } from './RoundedRoof';
 import { VictorianRoof } from './VictorianRoof';
@@ -54,11 +52,6 @@ export function MuseumEnvironment() {
       <HallwayDoorway position={[0, 0, -40]} />
 
 
-      {/* Red carpet from main gallery through doorway to picture hall */}
-      <RedCarpet startZ={-35} endZ={-65} width={3} />
-
-      {/* Hallway stanchions along carpet */}
-      <HallwayStanchions />
 
       {/* Picture Hall */}
       <PictureHall />
