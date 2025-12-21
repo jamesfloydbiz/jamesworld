@@ -17,39 +17,37 @@ export function PictureHall() {
   
   return (
     <group>
-      {/* Hall floor - all black */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.01, -52.5]} receiveShadow>
+      {/* Hall floor - pure black, no lighting */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.01, -52.5]}>
         <planeGeometry args={[12, 25]} />
-        <meshStandardMaterial color="#050505" roughness={0.95} />
+        <meshBasicMaterial color="#000000" />
       </mesh>
       
-      {/* Left wall - black */}
-      <mesh position={[-6, 4, -52.5]} receiveShadow>
+      {/* Left wall - pure black */}
+      <mesh position={[-6, 4, -52.5]}>
         <boxGeometry args={[0.2, 8, 25]} />
-        <meshStandardMaterial color="#0a0a0a" roughness={0.95} />
+        <meshBasicMaterial color="#000000" />
       </mesh>
       
-      {/* Right wall - black */}
-      <mesh position={[6, 4, -52.5]} receiveShadow>
+      {/* Right wall - pure black */}
+      <mesh position={[6, 4, -52.5]}>
         <boxGeometry args={[0.2, 8, 25]} />
-        <meshStandardMaterial color="#0a0a0a" roughness={0.95} />
+        <meshBasicMaterial color="#000000" />
       </mesh>
       
-      {/* Back wall - black */}
-      <mesh position={[0, 4, -65]} receiveShadow>
+      {/* Back wall - pure black */}
+      <mesh position={[0, 4, -65]}>
         <boxGeometry args={[12.4, 8, 0.2]} />
-        <meshStandardMaterial color="#0a0a0a" roughness={0.95} />
+        <meshBasicMaterial color="#000000" />
       </mesh>
       
-      {/* Ceiling - black */}
+      {/* Ceiling - pure black */}
       <mesh position={[0, 8, -52.5]}>
         <boxGeometry args={[12, 0.2, 25]} />
-        <meshStandardMaterial color="#050505" roughness={0.95} />
+        <meshBasicMaterial color="#000000" />
       </mesh>
       
-      {/* Subtle lighting to see the space */}
-      <pointLight position={[0, 6, -50]} intensity={0.2} color="#ffffff" distance={25} />
-      <pointLight position={[0, 6, -60]} intensity={0.15} color="#ffffff" distance={25} />
+      {/* No lighting - pure void */}
     </group>
   );
 }

@@ -89,9 +89,9 @@ export function StanchionRailing() {
     [8, 0, -16],
     [8, 0, -23],
     [8, 0, -30],
-    // Back wall - split for doorway (removed center stanchion)
-    [-5, 0, -35],
-    [5, 0, -35],
+    // Back wall - at doorway edges (doorway is 2 units wide, centered at x=0)
+    [-1.2, 0, -40],  // Left edge of doorway
+    [1.2, 0, -40],   // Right edge of doorway
   ];
 
   // Perimeter rope connections - adjusted for doorway gap
@@ -108,10 +108,9 @@ export function StanchionRailing() {
     { start: [8, 0.95, -9], end: [8, 0.95, -16] },
     { start: [8, 0.95, -16], end: [8, 0.95, -23] },
     { start: [8, 0.95, -23], end: [8, 0.95, -30] },
-    // Back wall ropes - no center rope (doorway gap)
-    // Connect to back corners only
-    { start: [-8, 0.95, -30], end: [-5, 0.95, -35] },
-    { start: [8, 0.95, -30], end: [5, 0.95, -35] },
+    // Connect to doorway edge stanchions
+    { start: [-8, 0.95, -30], end: [-1.2, 0.95, -40] },
+    { start: [8, 0.95, -30], end: [1.2, 0.95, -40] },
   ];
 
   // Generate pedestal stanchions and ropes

@@ -1,5 +1,4 @@
-import * as THREE from 'three';
-import { useMemo } from 'react';
+import { Text } from '@react-three/drei';
 
 interface HallwayDoorwayProps {
   position: [number, number, number];
@@ -13,6 +12,19 @@ export function HallwayDoorway({ position }: HallwayDoorwayProps) {
   
   return (
     <group position={position}>
+      {/* Hall of Memories label */}
+      <Text
+        position={[0, doorHeight + 0.6, 0]}
+        fontSize={0.22}
+        color="#666666"
+        anchorX="center"
+        anchorY="middle"
+        letterSpacing={0.2}
+        font="/fonts/Inter-Regular.woff"
+      >
+        HALL OF MEMORIES
+      </Text>
+      
       {/* Left pillar */}
       <mesh position={[-doorWidth / 2 - 0.1, doorHeight / 2, 0]}>
         <boxGeometry args={[0.2, doorHeight, frameDepth]} />

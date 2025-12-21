@@ -53,6 +53,21 @@ const PicturesPage = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6, duration: 0.8 }}
         >
+          {/* Instagram link and caption */}
+          <div className="flex flex-col items-center mb-16 text-center">
+            <a 
+              href="https://instagram.com/jamesfloydsworld" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-white/60 hover:text-white transition-colors tracking-[0.25em] text-sm uppercase"
+            >
+              @jamesfloydsworld
+            </a>
+            <p className="text-white/30 text-sm mt-3 italic max-w-md">
+              where I publish the stories of my life for my kids
+            </p>
+          </div>
+          
           <div className="flex items-baseline gap-4 mb-12">
             <h1 className="text-3xl md:text-4xl tracking-widest uppercase">Hall of Memories</h1>
             <span className="px-3 py-1 bg-white/10 text-sm">
