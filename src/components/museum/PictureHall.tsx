@@ -18,9 +18,9 @@ export function PictureHall() {
   return (
     <group>
       {/* Hall floor - all black */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, -52.5]} receiveShadow>
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.01, -52.5]} receiveShadow>
         <planeGeometry args={[12, 25]} />
-        <meshStandardMaterial color="#0a0a0a" roughness={0.95} />
+        <meshStandardMaterial color="#050505" roughness={0.95} />
       </mesh>
       
       {/* Left wall - black */}
