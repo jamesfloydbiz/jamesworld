@@ -1,3 +1,5 @@
+import { Html } from '@react-three/drei';
+
 interface HallwayDoorwayProps {
   position: [number, number, number];
 }
@@ -10,11 +12,12 @@ export function HallwayDoorway({ position }: HallwayDoorwayProps) {
   
   return (
     <group position={position}>
-      {/* Hall of Memories label - simple 3D text using planes */}
-      <mesh position={[0, doorHeight + 0.5, 0.02]}>
-        <planeGeometry args={[2.5, 0.25]} />
-        <meshBasicMaterial color="#333333" transparent opacity={0.8} />
-      </mesh>
+      {/* Hall of Memories label using HTML overlay */}
+      <Html position={[0, doorHeight + 0.5, 0.02]} center>
+        <div className="text-white/90 text-sm tracking-[0.3em] uppercase whitespace-nowrap font-light select-none pointer-events-none">
+          Hall of Memories
+        </div>
+      </Html>
       
       {/* Left pillar */}
       <mesh position={[-doorWidth / 2 - 0.1, doorHeight / 2, 0]}>

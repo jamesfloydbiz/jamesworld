@@ -1,3 +1,5 @@
+import { Html } from '@react-three/drei';
+
 interface InfoPlacardProps {
   position: [number, number, number];
   title: string;
@@ -48,11 +50,12 @@ export function InfoPlacard({ position, title }: InfoPlacardProps) {
           <meshStandardMaterial color="#2a2a2a" metalness={0.3} roughness={0.7} />
         </mesh>
         
-        {/* Simple white label plate instead of Text */}
-        <mesh position={[0, 0, 0.015]}>
-          <planeGeometry args={[0.5, 0.15]} />
-          <meshBasicMaterial color="#ffffff" transparent opacity={0.9} />
-        </mesh>
+        {/* Title text using HTML overlay */}
+        <Html position={[0, 0, 0.03]} center>
+          <div className="text-white text-[10px] tracking-[0.15em] uppercase whitespace-nowrap font-light select-none pointer-events-none">
+            {title}
+          </div>
+        </Html>
       </group>
     </group>
   );
