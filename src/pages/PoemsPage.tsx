@@ -5,37 +5,37 @@ import { useKeyboardScroll } from '@/hooks/useKeyboardScroll';
 import { X } from 'lucide-react';
 
 const poems = [
-  'Weary Woman',
-  'The Wanderer',
-  'Madman',
-  'Abundance',
-  'Alone Again',
-  'Contradictions',
-  'Energy',
-  'Eyes',
-  'Flow',
-  'Hi Im James',
-  'Home',
-  'Into the Darkness',
-  'Love Begets Love',
-  'Manhood',
-  'No Sleep',
-  'Ode to forever',
-  'Off',
-  'Peace',
-  'Possibility',
-  'Sleep',
-  'The Dance with Death',
-  'The Fight...',
-  'The trials of Danger',
-  'To Her',
-  'To the Strivers',
-  'Wisdom is Pain',
+  { display: 'Weary Woman', file: 'WearyWoman' },
+  { display: 'The Wanderer', file: 'TheWanderer' },
+  { display: 'Madman', file: 'Madman' },
+  { display: 'Abundance', file: 'Abundance' },
+  { display: 'Alone Again', file: 'AloneAgain' },
+  { display: 'Contradictions', file: 'Contradictions' },
+  { display: 'Energy', file: 'Energy' },
+  { display: 'Eyes', file: 'Eyes' },
+  { display: 'Flow', file: 'Flow' },
+  { display: 'Hi Im James', file: 'HiImJames' },
+  { display: 'Home', file: 'Home' },
+  { display: 'Into the Darkness', file: 'IntotheDarkness' },
+  { display: 'Love Begets Love', file: 'LoveBegetsLove' },
+  { display: 'Manhood', file: 'Manhood' },
+  { display: 'No Sleep', file: 'NoSleep' },
+  { display: 'Ode to forever', file: 'Odetoforever' },
+  { display: 'Off', file: 'Off' },
+  { display: 'Peace', file: 'Peace' },
+  { display: 'Possibility', file: 'Possibility' },
+  { display: 'Sleep', file: 'Sleep' },
+  { display: 'The Dance with Death', file: 'TheDancewithDeath' },
+  { display: 'The Fight', file: 'TheFight' },
+  { display: 'The trials of Danger', file: 'ThetrialsofDanger' },
+  { display: 'To Her', file: 'ToHer' },
+  { display: 'To the Strivers', file: 'TotheStrivers' },
+  { display: 'Wisdom is Pain', file: 'WisdomisPain' },
 ];
 
 const PoemsPage = () => {
   useKeyboardScroll();
-  const [selectedPoem, setSelectedPoem] = useState<string | null>(null);
+  const [selectedPoem, setSelectedPoem] = useState<{ display: string; file: string } | null>(null);
 
   return (
     <div className="min-h-screen bg-background">
@@ -59,7 +59,7 @@ const PoemsPage = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {poems.map((poem, index) => (
               <motion.div
-                key={poem}
+                key={poem.file}
                 className="border border-border p-4 hover:border-foreground transition-colors cursor-pointer group"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -68,13 +68,16 @@ const PoemsPage = () => {
               >
                 <div className="aspect-square mb-3 overflow-hidden">
                   <img 
-                    src={`/poems/${encodeURIComponent(poem)}.png`} 
-                    alt={poem}
+                    src={`/poems/${poem.file}.png`} 
+                    alt={poem.display}
                     className="w-full h-full object-cover"
+                    loading={index < 9 ? 'eager' : 'lazy'}
+                    fetchPriority={index < 9 ? 'high' : 'auto'}
+                    decoding="async"
                   />
                 </div>
                 <p className="text-sm group-hover:underline underline-offset-4">
-                  {poem}
+                  {poem.display}
                 </p>
               </motion.div>
             ))}
@@ -110,11 +113,11 @@ const PoemsPage = () => {
                 exit={{ opacity: 0, y: 20 }}
               >
                 <h2 className="text-2xl tracking-widest uppercase mb-6 text-center">
-                  {selectedPoem}
+                  {selectedPoem.display}
                 </h2>
                 <img 
-                  src={`/poems/${encodeURIComponent(selectedPoem)}.png`} 
-                  alt={selectedPoem}
+                  src={`/poems/${selectedPoem.file}.png`} 
+                  alt={selectedPoem.display}
                   className="w-full h-auto"
                   onClick={() => setSelectedPoem(null)}
                 />
