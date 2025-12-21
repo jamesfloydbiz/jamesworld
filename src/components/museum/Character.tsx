@@ -32,7 +32,7 @@ function getStanchionPositions(portals: { pedestalPosition: [number, number, num
   const perimeter: [number, number][] = [
     [-8, 5], [-8, -2], [-8, -9], [-8, -16], [-8, -23], [-8, -30],
     [8, 5], [8, -2], [8, -9], [8, -16], [8, -23], [8, -30],
-    [-5, -35], [5, -35],
+    [-1.2, -40], [1.2, -40],  // At doorway edges
   ];
   positions.push(...perimeter);
   positions.push(...hallwayStanchionPositions);
@@ -59,7 +59,7 @@ function getRopeSegments(portals: { pedestalPosition: [number, number, number] }
     [-8, -16, -8, -23], [-8, -23, -8, -30],
     [8, 5, 8, -2], [8, -2, 8, -9], [8, -9, 8, -16], 
     [8, -16, 8, -23], [8, -23, 8, -30],
-    [-8, -30, -5, -35], [8, -30, 5, -35],
+    [-8, -30, -1.2, -40], [8, -30, 1.2, -40],  // Connect to doorway edges
   ];
   segments.push(...perimeterRopes);
   segments.push(...hallwayRopeSegments);
