@@ -26,7 +26,7 @@ const App = () => (
       <img 
         src="/logo.svg" 
         alt="JF" 
-        className="fixed top-4 left-4 w-10 h-10 opacity-30 z-50 pointer-events-none select-none"
+        className="fixed top-4 left-4 w-20 h-20 opacity-30 z-50 pointer-events-none select-none"
       />
       <BrowserRouter>
         <Routes>
