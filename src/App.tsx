@@ -22,6 +22,12 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
+      {/* Logo overlay - fixed top left on all pages */}
+      <img 
+        src="/logo.svg" 
+        alt="JF" 
+        className="fixed top-4 left-4 w-10 h-10 opacity-30 z-50 pointer-events-none select-none"
+      />
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
