@@ -68,8 +68,8 @@ export function LoadingScreen({ progress, isFullyLoaded, onStart }: LoadingScree
       <motion.div 
         className="relative w-48 h-48"
         animate={shrinkToCorner ? {
-          scale: 0.25,
-          x: 'calc(50vw - 56px)',
+          scale: 0.35,
+          x: 'calc(-50vw + 56px)',
           y: 'calc(-50vh + 56px)',
         } : {
           scale: 1,
@@ -86,7 +86,7 @@ export function LoadingScreen({ progress, isFullyLoaded, onStart }: LoadingScree
           viewBox="0 0 500 500"
           className="w-full h-full"
         >
-          {/* Background triangle (faint) */}
+          {/* Background triangle (faint) - full border */}
           <polygon
             points="250,90 375,315 125,315"
             fill="none"
@@ -94,16 +94,15 @@ export function LoadingScreen({ progress, isFullyLoaded, onStart }: LoadingScree
             strokeWidth="2"
             opacity="0.15"
           />
-          {/* Animated tracing triangle */}
+          {/* Animated tracing triangle - complete border */}
           <polygon
             points="250,90 375,315 125,315"
             fill="none"
             stroke="white"
-            strokeWidth="3"
+            strokeWidth="2"
             strokeDasharray={trianglePerimeter}
             strokeDashoffset={strokeDashoffset}
-            strokeLinecap="round"
-            strokeLinejoin="round"
+            strokeLinejoin="miter"
             style={{ transition: 'stroke-dashoffset 0.4s cubic-bezier(0.4, 0, 0.2, 1)' }}
           />
         </svg>
