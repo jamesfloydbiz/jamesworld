@@ -30,9 +30,10 @@ function ProgressTracker({ onProgress }: { onProgress: (progress: number) => voi
 
 interface MuseumSceneProps {
   onProgress?: (progress: number) => void;
+  showLabels?: boolean;
 }
 
-export function MuseumScene({ onProgress }: MuseumSceneProps) {
+export function MuseumScene({ onProgress, showLabels = true }: MuseumSceneProps) {
   const isMobile = useMemo(() => 
     typeof window !== 'undefined' && 
     ('ontouchstart' in window || navigator.maxTouchPoints > 0),
@@ -50,7 +51,7 @@ export function MuseumScene({ onProgress }: MuseumSceneProps) {
       <fog attach="fog" args={['#000000', 15, 45]} />
       <MuseumLighting isMobile={isMobile} />
       <Suspense fallback={<LoadingFallback />}>
-        <MuseumEnvironment />
+        <MuseumEnvironment showLabels={showLabels} />
       </Suspense>
       <Character isMobile={isMobile} />
       <MuseumCamera />
