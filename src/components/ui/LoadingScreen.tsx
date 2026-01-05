@@ -113,23 +113,24 @@ export function LoadingScreen({ progress, isFullyLoaded, onStart }: LoadingScree
             className="w-full h-full"
           >
             {/* Background triangle (faint) */}
-            <polygon
-              points="250,90 375,315 125,315"
+            <path
+              d="M250,90 L375,315 L125,315 Z"
               fill="none"
               stroke="hsl(var(--muted))"
               strokeWidth="2"
               opacity="0.15"
+              strokeLinejoin="miter"
             />
-            {/* Animated tracing triangle */}
-            <polygon
-              points="250,90 375,315 125,315"
+            {/* Animated tracing triangle - starts from top tip */}
+            <path
+              d="M250,90 L375,315 L125,315 Z"
               fill="none"
               stroke="white"
               strokeWidth="2"
               strokeDasharray={trianglePerimeter}
-              strokeDashoffset={strokeDashoffset}
+              strokeDashoffset={trianglePerimeter - (trianglePerimeter * Math.min(smoothProgress, 100)) / 100}
               strokeLinejoin="miter"
-              style={{ transition: 'stroke-dashoffset 0.4s cubic-bezier(0.4, 0, 0.2, 1)' }}
+              pathLength={trianglePerimeter}
             />
           </svg>
           
