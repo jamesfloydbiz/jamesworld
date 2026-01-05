@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface LoadingScreenProps {
@@ -9,39 +9,78 @@ interface LoadingScreenProps {
 
 export function LoadingScreen({ progress, isFullyLoaded, onStart }: LoadingScreenProps) {
   const [showLogo, setShowLogo] = useState(false);
-  const [triggerFadeOut, setTriggerFadeOut] = useState(false);
+  const [shrinkToCorner, setShrinkToCorner] = useState(false);
+  const [smoothProgress, setSmoothProgress] = useState(0);
+  const animationRef = useRef<number>();
+  
+  // Smooth progress interpolation using requestAnimationFrame
+  useEffect(() => {
+    const animate = () => {
+      setSmoothProgress(prev => {
+        const diff = progress - prev;
+        if (Math.abs(diff) < 0.1) return progress;
+        return prev + diff * 0.08; // Lerp factor for smooth catching up
+      });
+      animationRef.current = requestAnimationFrame(animate);
+    };
+    animationRef.current = requestAnimationFrame(animate);
+    return () => {
+      if (animationRef.current) cancelAnimationFrame(animationRef.current);
+    };
+  }, [progress]);
   
   // Show logo when triangle is complete
   useEffect(() => {
     if (isFullyLoaded && !showLogo) {
-      const timer = setTimeout(() => setShowLogo(true), 200);
+      const timer = setTimeout(() => setShowLogo(true), 300);
       return () => clearTimeout(timer);
     }
   }, [isFullyLoaded, showLogo]);
 
-  // Auto-fade out after logo appears
+  // Shrink to corner after logo appears
   useEffect(() => {
-    if (showLogo && !triggerFadeOut) {
-      const timer = setTimeout(() => {
-        setTriggerFadeOut(true);
-        onStart();
-      }, 1000);
+    if (showLogo && !shrinkToCorner) {
+      const timer = setTimeout(() => setShrinkToCorner(true), 600);
       return () => clearTimeout(timer);
     }
-  }, [showLogo, triggerFadeOut, onStart]);
+  }, [showLogo, shrinkToCorner]);
+
+  // Fade out after shrink animation completes
+  useEffect(() => {
+    if (shrinkToCorner) {
+      const timer = setTimeout(() => {
+        onStart();
+      }, 800);
+      return () => clearTimeout(timer);
+    }
+  }, [shrinkToCorner, onStart]);
 
   // Triangle perimeter for stroke animation
-  // Equilateral triangle with side length ~200 (points form triangle)
-  const trianglePerimeter = 600; // Approximate perimeter
-  const strokeDashoffset = trianglePerimeter - (trianglePerimeter * Math.min(progress, 100)) / 100;
+  const trianglePerimeter = 600;
+  const strokeDashoffset = trianglePerimeter - (trianglePerimeter * Math.min(smoothProgress, 100)) / 100;
 
   return (
     <motion.div
       className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-black"
       exit={{ opacity: 0 }}
-      transition={{ duration: 0.8, ease: 'easeInOut' }}
+      transition={{ duration: 0.5, ease: 'easeOut' }}
     >
-      <div className="relative w-48 h-48">
+      <motion.div 
+        className="relative w-48 h-48"
+        animate={shrinkToCorner ? {
+          scale: 0.25,
+          x: 'calc(50vw - 56px)',
+          y: 'calc(-50vh + 56px)',
+        } : {
+          scale: 1,
+          x: 0,
+          y: 0,
+        }}
+        transition={{ 
+          duration: 0.7, 
+          ease: [0.4, 0, 0.2, 1],
+        }}
+      >
         {/* SVG triangle that traces as it loads */}
         <svg
           viewBox="0 0 500 500"
@@ -65,7 +104,7 @@ export function LoadingScreen({ progress, isFullyLoaded, onStart }: LoadingScree
             strokeDashoffset={strokeDashoffset}
             strokeLinecap="round"
             strokeLinejoin="round"
-            style={{ transition: 'stroke-dashoffset 0.15s ease-out' }}
+            style={{ transition: 'stroke-dashoffset 0.4s cubic-bezier(0.4, 0, 0.2, 1)' }}
           />
         </svg>
         
@@ -76,7 +115,7 @@ export function LoadingScreen({ progress, isFullyLoaded, onStart }: LoadingScree
               className="absolute inset-0 flex items-center justify-center"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 0.5 }}
+              transition={{ duration: 0.4 }}
             >
               <svg
                 viewBox="0 0 500 500"
@@ -93,7 +132,7 @@ export function LoadingScreen({ progress, isFullyLoaded, onStart }: LoadingScree
             </motion.div>
           )}
         </AnimatePresence>
-      </div>
+      </motion.div>
       
       {/* Loading text - only show before logo */}
       {!showLogo && (
