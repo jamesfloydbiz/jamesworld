@@ -9,7 +9,11 @@ import { InfoPlacard } from './InfoPlacard';
 import { RoundedRoof } from './RoundedRoof';
 import { VictorianRoof } from './VictorianRoof';
 
-export function MuseumEnvironment() {
+interface MuseumEnvironmentProps {
+  showLabels?: boolean;
+}
+
+export function MuseumEnvironment({ showLabels = true }: MuseumEnvironmentProps) {
   const { portals } = useGameStore();
 
   // Walls closer to stanchions (stanchions at ±8, walls now at ±9)
@@ -108,6 +112,7 @@ export function MuseumEnvironment() {
               portal.circlePosition[2]
             ]} 
             title={portal.title}
+            showLabel={showLabels}
           />
         </group>
       ))}

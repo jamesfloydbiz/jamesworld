@@ -51,7 +51,7 @@ const Index = () => {
       {/* 3D Museum Scene - always loading/visible behind the loading screen */}
       <div className="absolute inset-0">
         <Suspense fallback={null}>
-          <MuseumScene onProgress={handleProgress} />
+          <MuseumScene onProgress={handleProgress} showLabels={!showLoading} />
           {!showLoading && (
             <>
               <MuseumUI />
