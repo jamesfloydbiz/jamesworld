@@ -51,6 +51,7 @@ export function MainMenu({ onEnterGallery, galleryLoading, galleryProgress }: Ma
     { label: 'Blueprints', path: '/blueprints' },
     { label: 'Resume', path: '/resume' },
     { label: 'Poems', path: '/poems' },
+    { label: 'Memories', path: '/pictures' },
   ];
 
   const handleClick = (item: typeof menuItems[0]) => {

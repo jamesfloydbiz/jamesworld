@@ -37,7 +37,7 @@ export function WalkwayHeader({ title }: WalkwayHeaderProps) {
     }, 300);
   };
 
-  const menuItems = ["Story", "Projects", "Media", "Network", "Blueprints", "Resume", "Poems"];
+  const menuItems = ["Story", "Projects", "Media", "Network", "Blueprints", "Resume", "Poems", "Memories"];
 
   return (
     <>
@@ -103,7 +103,7 @@ export function WalkwayHeader({ title }: WalkwayHeaderProps) {
                   <button
                     onClick={() => {
                       setMenuOpen(false);
-                      navigate(`/${item.toLowerCase()}`);
+                      navigate(item === "Memories" ? "/pictures" : `/${item.toLowerCase()}`);
                     }}
                     className="text-2xl tracking-widest uppercase hover:text-muted-foreground transition-colors"
                   >
