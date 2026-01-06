@@ -103,6 +103,7 @@ export function MuseumEnvironment({ showLabels = true }: MuseumEnvironmentProps)
             position={portal.circlePosition} 
             portalId={portal.id}
             title={portal.title}
+            showTitle={showLabels}
           />
         </group>
       ))}

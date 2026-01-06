@@ -8,9 +8,10 @@ interface FloorCircleProps {
   position: [number, number, number];
   portalId: string;
   title: string;
+  showTitle?: boolean;
 }
 
-export function FloorCircle({ position, portalId, title }: FloorCircleProps) {
+export function FloorCircle({ position, portalId, title, showTitle = true }: FloorCircleProps) {
   const ringRef = useRef<THREE.Mesh>(null);
   const outerRingRef = useRef<THREE.Mesh>(null);
   const thirdRingRef = useRef<THREE.Mesh>(null);
@@ -40,22 +41,24 @@ export function FloorCircle({ position, portalId, title }: FloorCircleProps) {
 
   return (
     <group position={position}>
-      {/* Floating title above circle */}
-      <Html
-        position={[0, 0.3, 0]}
-        center
-        style={{
-          pointerEvents: 'none',
-          userSelect: 'none',
-        }}
-      >
-        <div 
-          className="text-[10px] uppercase tracking-[0.2em] text-white/30 whitespace-nowrap"
-          style={{ fontFamily: 'inherit' }}
+      {/* Floating title above circle - only render when showTitle is true */}
+      {showTitle && (
+        <Html
+          position={[0, 0.3, 0]}
+          center
+          style={{
+            pointerEvents: 'none',
+            userSelect: 'none',
+          }}
         >
-          {title}
-        </div>
-      </Html>
+          <div 
+            className="text-[10px] uppercase tracking-[0.2em] text-white/30 whitespace-nowrap animate-fade-in"
+            style={{ fontFamily: 'inherit' }}
+          >
+            {title}
+          </div>
+        </Html>
+      )}
       
       {/* Base circle - thin elegant ring */}
       <mesh rotation={[-Math.PI / 2, 0, 0]}>
