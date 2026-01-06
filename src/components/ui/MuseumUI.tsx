@@ -4,27 +4,25 @@ import { useGameStore } from '@/store/gameStore';
 import { joystickState } from '@/components/museum/useKeyboardControls';
 import { motion, AnimatePresence } from 'framer-motion';
 
-// Permanent controls hint at bottom of screen
+// Minimal controls hint at bottom of screen
 function ControlsHint({ isMobile }: { isMobile: boolean }) {
   if (isMobile) return null;
 
   return (
-    <div className="museum-ui bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-6 opacity-50">
-      <div className="flex items-center gap-1.5">
-        <span className="text-muted-foreground text-[10px] uppercase tracking-wider">Move</span>
-        <span className="border border-border/40 px-1.5 py-0.5 text-[10px]">WASD</span>
+    <div className="museum-ui bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-8 opacity-30">
+      {/* Move - arrow key cross layout */}
+      <div className="flex flex-col items-center gap-0.5">
+        <div className="border border-foreground/20 w-5 h-5 flex items-center justify-center text-[9px] text-foreground/60">↑</div>
+        <div className="flex gap-0.5">
+          <div className="border border-foreground/20 w-5 h-5 flex items-center justify-center text-[9px] text-foreground/60">←</div>
+          <div className="border border-foreground/20 w-5 h-5 flex items-center justify-center text-[9px] text-foreground/60">↓</div>
+          <div className="border border-foreground/20 w-5 h-5 flex items-center justify-center text-[9px] text-foreground/60">→</div>
+        </div>
       </div>
-      <div className="flex items-center gap-1.5">
-        <span className="text-muted-foreground text-[10px] uppercase tracking-wider">Sprint</span>
-        <span className="border border-border/40 px-1.5 py-0.5 text-[10px]">Shift</span>
-      </div>
-      <div className="flex items-center gap-1.5">
-        <span className="text-muted-foreground text-[10px] uppercase tracking-wider">Interact</span>
-        <span className="border border-border/40 px-1.5 py-0.5 text-[10px]">Enter</span>
-      </div>
-      <div className="flex items-center gap-1.5">
-        <span className="text-muted-foreground text-[10px] uppercase tracking-wider">Menu</span>
-        <span className="border border-border/40 px-1.5 py-0.5 text-[10px]">ESC</span>
+      
+      {/* ESC for menu */}
+      <div className="flex flex-col items-center gap-1">
+        <div className="border border-foreground/20 px-2 py-1 text-[9px] text-foreground/60 tracking-wider">ESC</div>
       </div>
     </div>
   );
