@@ -1,14 +1,16 @@
 import { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { useGameStore } from '@/store/gameStore';
+import { Html } from '@react-three/drei';
 import * as THREE from 'three';
 
 interface FloorCircleProps {
   position: [number, number, number];
   portalId: string;
+  title: string;
 }
 
-export function FloorCircle({ position, portalId }: FloorCircleProps) {
+export function FloorCircle({ position, portalId, title }: FloorCircleProps) {
   const ringRef = useRef<THREE.Mesh>(null);
   const outerRingRef = useRef<THREE.Mesh>(null);
   const thirdRingRef = useRef<THREE.Mesh>(null);
@@ -38,6 +40,23 @@ export function FloorCircle({ position, portalId }: FloorCircleProps) {
 
   return (
     <group position={position}>
+      {/* Floating title above circle */}
+      <Html
+        position={[0, 0.3, 0]}
+        center
+        style={{
+          pointerEvents: 'none',
+          userSelect: 'none',
+        }}
+      >
+        <div 
+          className="text-[10px] uppercase tracking-[0.2em] text-white/30 whitespace-nowrap"
+          style={{ fontFamily: 'inherit' }}
+        >
+          {title}
+        </div>
+      </Html>
+      
       {/* Base circle - thin elegant ring */}
       <mesh rotation={[-Math.PI / 2, 0, 0]}>
         <ringGeometry args={[1.0, 1.06, 64]} />

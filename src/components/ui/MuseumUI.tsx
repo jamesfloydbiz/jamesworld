@@ -4,48 +4,29 @@ import { useGameStore } from '@/store/gameStore';
 import { joystickState } from '@/components/museum/useKeyboardControls';
 import { motion, AnimatePresence } from 'framer-motion';
 
-// Controls hint that fades out after 5 seconds
+// Permanent controls hint at bottom of screen
 function ControlsHint({ isMobile }: { isMobile: boolean }) {
-  const [visible, setVisible] = useState(true);
-
-  useEffect(() => {
-    const timer = setTimeout(() => setVisible(false), 5000);
-    return () => clearTimeout(timer);
-  }, []);
-
-  if (isMobile || !visible) return null;
+  if (isMobile) return null;
 
   return (
-    <motion.div
-      className="museum-ui bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-8"
-      initial={{ opacity: 1 }}
-      animate={{ opacity: 0 }}
-      transition={{ delay: 4, duration: 1 }}
-    >
-      <div className="flex items-center gap-2">
-        <span className="text-muted-foreground text-xs">Move</span>
-        <div className="flex gap-1">
-          <span className="border border-border/50 px-1.5 py-0.5 text-xs">↑</span>
-        </div>
-        <div className="flex gap-1">
-          <span className="border border-border/50 px-1.5 py-0.5 text-xs">←</span>
-          <span className="border border-border/50 px-1.5 py-0.5 text-xs">↓</span>
-          <span className="border border-border/50 px-1.5 py-0.5 text-xs">→</span>
-        </div>
+    <div className="museum-ui bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-6 opacity-50">
+      <div className="flex items-center gap-1.5">
+        <span className="text-muted-foreground text-[10px] uppercase tracking-wider">Move</span>
+        <span className="border border-border/40 px-1.5 py-0.5 text-[10px]">WASD</span>
       </div>
-      <div className="flex items-center gap-2">
-        <span className="text-muted-foreground text-xs">Sprint</span>
-        <span className="border border-border/50 px-1.5 py-0.5 text-xs">Shift</span>
+      <div className="flex items-center gap-1.5">
+        <span className="text-muted-foreground text-[10px] uppercase tracking-wider">Sprint</span>
+        <span className="border border-border/40 px-1.5 py-0.5 text-[10px]">Shift</span>
       </div>
-      <div className="flex items-center gap-2">
-        <span className="text-muted-foreground text-xs">Exit</span>
-        <span className="border border-border/50 px-1.5 py-0.5 text-xs">ESC</span>
+      <div className="flex items-center gap-1.5">
+        <span className="text-muted-foreground text-[10px] uppercase tracking-wider">Interact</span>
+        <span className="border border-border/40 px-1.5 py-0.5 text-[10px]">Enter</span>
       </div>
-      <div className="flex items-center gap-2">
-        <span className="text-muted-foreground text-xs">Enter</span>
-        <span className="border border-border/50 px-1.5 py-0.5 text-xs">↵</span>
+      <div className="flex items-center gap-1.5">
+        <span className="text-muted-foreground text-[10px] uppercase tracking-wider">Menu</span>
+        <span className="border border-border/40 px-1.5 py-0.5 text-[10px]">ESC</span>
       </div>
-    </motion.div>
+    </div>
   );
 }
 
