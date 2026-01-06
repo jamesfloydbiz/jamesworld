@@ -5,7 +5,6 @@ import { StanchionRailing } from './StanchionRailing';
 import { CeilingLights } from './CeilingLights';
 import { HallwayDoorway } from './HallwayDoorway';
 import { PictureHall } from './PictureHall';
-import { InfoPlacard } from './InfoPlacard';
 import { RoundedRoof } from './RoundedRoof';
 import { VictorianRoof } from './VictorianRoof';
 
@@ -93,7 +92,7 @@ export function MuseumEnvironment({ showLabels = true }: MuseumEnvironmentProps)
       {/* Stanchion railings */}
       <StanchionRailing />
 
-      {/* Pedestals and floor circles with info placards */}
+      {/* Pedestals and floor circles */}
       {portals.map((portal) => (
         <group key={portal.id}>
           <Pedestal 
@@ -104,16 +103,6 @@ export function MuseumEnvironment({ showLabels = true }: MuseumEnvironmentProps)
             position={portal.circlePosition} 
             portalId={portal.id}
             title={portal.title}
-          />
-          {/* Info placard positioned to the side of the circle */}
-          <InfoPlacard 
-            position={[
-              portal.circlePosition[0] + (portal.circlePosition[0] > 0 ? 1.5 : -1.5),
-              0,
-              portal.circlePosition[2]
-            ]} 
-            title={portal.title}
-            showLabel={showLabels}
           />
         </group>
       ))}

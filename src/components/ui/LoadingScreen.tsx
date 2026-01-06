@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 interface LoadingScreenProps {
@@ -8,10 +9,10 @@ interface LoadingScreenProps {
 }
 
 export function LoadingScreen({ progress, isFullyLoaded, onStart }: LoadingScreenProps) {
+  const navigate = useNavigate();
   const [showLogo, setShowLogo] = useState(false);
   const [fadeBackground, setFadeBackground] = useState(false);
   const [shrinkToCorner, setShrinkToCorner] = useState(false);
-  const [hideCompletely, setHideCompletely] = useState(false);
   const [smoothProgress, setSmoothProgress] = useState(0);
   const animationRef = useRef<number>();
   const hasCalledOnStart = useRef(false);
@@ -56,14 +57,6 @@ export function LoadingScreen({ progress, isFullyLoaded, onStart }: LoadingScree
     }
   }, [fadeBackground, shrinkToCorner]);
 
-  // Hide completely after shrink animation
-  useEffect(() => {
-    if (shrinkToCorner && !hideCompletely) {
-      const timer = setTimeout(() => setHideCompletely(true), 800);
-      return () => clearTimeout(timer);
-    }
-  }, [shrinkToCorner, hideCompletely]);
-
   // Call onStart when background fade completes
   useEffect(() => {
     if (fadeBackground && !hasCalledOnStart.current) {
@@ -89,17 +82,16 @@ export function LoadingScreen({ progress, isFullyLoaded, onStart }: LoadingScree
         transition={{ duration: 0.6, ease: 'easeOut' }}
       />
       
-      {/* Logo container - shrinks to corner then disappears */}
+      {/* Logo container - shrinks to corner and stays visible */}
       <motion.div
-        className="fixed inset-0 z-[100] flex items-center justify-center pointer-events-none"
+        className={`fixed inset-0 z-[100] flex items-center justify-center ${shrinkToCorner ? 'pointer-events-auto cursor-pointer' : 'pointer-events-none'}`}
+        onClick={() => shrinkToCorner && navigate('/')}
         animate={shrinkToCorner ? {
           x: 'calc(-50vw + 56px)',
           y: 'calc(-50vh + 56px)',
-          opacity: hideCompletely ? 0 : 1,
         } : {
           x: 0,
           y: 0,
-          opacity: 1,
         }}
         transition={{ 
           duration: 0.7, 

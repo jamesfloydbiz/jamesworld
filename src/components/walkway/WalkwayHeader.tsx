@@ -47,23 +47,13 @@ export function WalkwayHeader({ title }: WalkwayHeaderProps) {
         animate={{ y: 0 }}
         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
       >
-        {/* Title */}
-        <motion.div
-          className="absolute top-6 left-8 text-xs tracking-[0.3em] uppercase text-muted-foreground"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.4 }}
-        >
-          {title}
-        </motion.div>
-
-        {/* Menu button */}
+        {/* Menu button - subtle positioning */}
         <motion.button
-          className="absolute top-6 right-8 text-xs tracking-[0.2em] uppercase hover:text-muted-foreground transition-colors"
+          className="absolute top-6 right-8 text-[10px] tracking-[0.2em] uppercase text-muted-foreground/60 hover:text-foreground transition-colors"
           onClick={() => setMenuOpen(!menuOpen)}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.5 }}
+          transition={{ delay: 0.4 }}
         >
           Menu
         </motion.button>
@@ -73,9 +63,9 @@ export function WalkwayHeader({ title }: WalkwayHeaderProps) {
           <WalkwayCharacter progress={scrollProgress} />
         </div>
 
-        {/* Portal entrance animation */}
+        {/* Portal entrance arch - aligned with character start */}
         <motion.div
-          className="absolute bottom-6 left-[3%] w-6 h-10 border border-foreground/30 rounded-t-full"
+          className="absolute bottom-0 left-[5%] w-8 h-16 border border-foreground/20 rounded-t-full"
           initial={{ scaleY: 0 }}
           animate={{ scaleY: 1 }}
           transition={{ delay: 0.2, duration: 0.4 }}
