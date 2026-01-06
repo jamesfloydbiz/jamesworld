@@ -10,28 +10,26 @@ export function WalkwayCharacter({ progress }: WalkwayCharacterProps) {
 
   return (
     <motion.div
-      className="absolute bottom-1"
+      className="absolute top-1/2 -translate-y-1/2"
       style={{ left: `${xPosition}%` }}
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0, scale: 0.8 }}
+      animate={{ opacity: 1, scale: 1 }}
       transition={{ delay: 0.3, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
     >
-      {/* Simple character silhouette */}
+      {/* Proportional character matching 3D model - head ~27% of height */}
       <motion.svg
-        width="24"
-        height="40"
-        viewBox="0 0 24 40"
+        width="14"
+        height="26"
+        viewBox="0 0 14 26"
         fill="none"
         className="transform -translate-x-1/2"
-        animate={{ y: [0, -2, 0] }}
+        animate={{ y: [0, -1, 0] }}
         transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
       >
-        {/* Head */}
-        <circle cx="12" cy="6" r="5" fill="white" />
-        {/* Body */}
-        <ellipse cx="12" cy="22" rx="6" ry="12" fill="white" />
-        {/* Shadow */}
-        <ellipse cx="12" cy="38" rx="8" ry="2" fill="white" opacity="0.2" />
+        {/* Head - r=3.5, centered at y=3.5, ~27% of total height */}
+        <circle cx="7" cy="3.5" r="3.5" fill="white" />
+        {/* Body - capsule shape, rx=3.5 ry=8 */}
+        <ellipse cx="7" cy="16" rx="3.5" ry="8" fill="white" />
       </motion.svg>
     </motion.div>
   );

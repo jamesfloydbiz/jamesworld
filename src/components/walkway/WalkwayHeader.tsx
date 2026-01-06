@@ -43,13 +43,25 @@ export function WalkwayHeader({ title }: WalkwayHeaderProps) {
     <>
       <motion.header
         className="walkway-header"
-        initial={{ y: -160 }}
+        initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
       >
+        {/* Persistent logo - top left corner */}
+        <motion.button
+          onClick={handleBackToHub}
+          className="absolute top-4 left-6 w-8 h-8 opacity-60 hover:opacity-100 transition-opacity"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 0.6 }}
+          transition={{ delay: 0.3 }}
+          aria-label="Return to gallery"
+        >
+          <img src="/logo.svg" alt="Logo" className="w-full h-full" />
+        </motion.button>
+
         {/* Menu button - subtle positioning */}
         <motion.button
-          className="absolute top-6 right-8 text-[10px] tracking-[0.2em] uppercase text-muted-foreground/40 hover:text-foreground/80 transition-colors"
+          className="absolute top-4 right-6 text-[10px] tracking-[0.2em] uppercase text-muted-foreground/40 hover:text-foreground/80 transition-colors"
           onClick={() => setMenuOpen(!menuOpen)}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -64,14 +76,14 @@ export function WalkwayHeader({ title }: WalkwayHeaderProps) {
           <div className="walkway-rail-top" />
           
           {/* Track zone - character and doorway live here */}
-          <div className="relative h-10">
-            {/* Portal entrance arch - small, on the left edge of the track */}
+          <div className="relative h-8">
+            {/* Portal entrance arch - centered vertically between the two lines */}
             <motion.div
-              className="absolute bottom-0 left-[2%] w-5 h-8 border border-foreground/15 rounded-t-full"
+              className="absolute top-1/2 -translate-y-1/2 left-[2%] w-4 h-6 border border-foreground/15 rounded-t-full"
               initial={{ scaleY: 0 }}
               animate={{ scaleY: 1 }}
               transition={{ delay: 0.2, duration: 0.4 }}
-              style={{ transformOrigin: "bottom" }}
+              style={{ transformOrigin: "center" }}
             />
             
             {/* Character on the track */}
