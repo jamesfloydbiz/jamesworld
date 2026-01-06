@@ -15,6 +15,7 @@ const Index = () => {
   const [progress, setProgress] = useState(0);
   const [showLoading, setShowLoading] = useState(true);
   const [isFullyLoaded, setIsFullyLoaded] = useState(false);
+  const [showTitles, setShowTitles] = useState(false);
 
   useEffect(() => {
     setIsTransitioning(false);
@@ -46,12 +47,16 @@ const Index = () => {
     setShowLoading(false);
   };
 
+  const handleShrinkStart = useCallback(() => {
+    setShowTitles(true);
+  }, []);
+
   return (
     <div className="fixed inset-0 bg-black">
       {/* 3D Museum Scene - always loading/visible behind the loading screen */}
       <div className="absolute inset-0">
         <Suspense fallback={null}>
-          <MuseumScene onProgress={handleProgress} showLabels={!showLoading} />
+          <MuseumScene onProgress={handleProgress} showLabels={showTitles} />
           {!showLoading && (
             <>
               <MuseumUI />
@@ -66,6 +71,7 @@ const Index = () => {
         progress={progress} 
         isFullyLoaded={isFullyLoaded}
         onStart={handleStart}
+        onShrinkStart={handleShrinkStart}
       />
 
       {/* Mobile menu overlay when in gallery */}

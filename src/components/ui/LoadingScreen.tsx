@@ -6,25 +6,41 @@ interface LoadingScreenProps {
   progress: number;
   isFullyLoaded: boolean;
   onStart: () => void;
+  onShrinkStart?: () => void;
 }
 
-export function LoadingScreen({ progress, isFullyLoaded, onStart }: LoadingScreenProps) {
+export function LoadingScreen({ progress, isFullyLoaded, onStart, onShrinkStart }: LoadingScreenProps) {
   const navigate = useNavigate();
   const [showLogo, setShowLogo] = useState(false);
   const [fadeBackground, setFadeBackground] = useState(false);
   const [shrinkToCorner, setShrinkToCorner] = useState(false);
   const [smoothProgress, setSmoothProgress] = useState(0);
+  const [triangleComplete, setTriangleComplete] = useState(false);
   const animationRef = useRef<number>();
   const hasCalledOnStart = useRef(false);
+  const hasCalledOnShrinkStart = useRef(false);
+  const startTimeRef = useRef<number>(Date.now());
   
-  // Smooth progress interpolation using requestAnimationFrame
+  // Minimum animation duration for triangle trace (ms)
+  const MIN_TRIANGLE_DURATION = 1800;
+  
+  // Smooth progress interpolation with minimum duration enforcement
   useEffect(() => {
     const animate = () => {
+      const elapsed = Date.now() - startTimeRef.current;
+      const minProgressForTime = Math.min(100, (elapsed / MIN_TRIANGLE_DURATION) * 100);
+      
       setSmoothProgress(prev => {
-        const diff = progress - prev;
-        if (Math.abs(diff) < 0.1) return progress;
+        // Target is the minimum of actual progress and time-based progress
+        // This ensures smooth animation even if loading finishes early
+        const targetProgress = Math.min(progress, minProgressForTime);
+        const diff = targetProgress - prev;
+        
+        // Smooth interpolation
+        if (Math.abs(diff) < 0.1) return targetProgress;
         return prev + diff * 0.08;
       });
+      
       animationRef.current = requestAnimationFrame(animate);
     };
     animationRef.current = requestAnimationFrame(animate);
@@ -33,13 +49,22 @@ export function LoadingScreen({ progress, isFullyLoaded, onStart }: LoadingScree
     };
   }, [progress]);
   
-  // Show logo when triangle is complete
+  // Track when triangle is fully traced (both loaded AND visually complete)
   useEffect(() => {
-    if (isFullyLoaded && !showLogo) {
-      const timer = setTimeout(() => setShowLogo(true), 300);
+    if (smoothProgress >= 99.5 && isFullyLoaded && !triangleComplete) {
+      // Small delay to ensure visual completion
+      const timer = setTimeout(() => setTriangleComplete(true), 100);
       return () => clearTimeout(timer);
     }
-  }, [isFullyLoaded, showLogo]);
+  }, [smoothProgress, isFullyLoaded, triangleComplete]);
+  
+  // Show logo only when triangle is complete
+  useEffect(() => {
+    if (triangleComplete && !showLogo) {
+      const timer = setTimeout(() => setShowLogo(true), 200);
+      return () => clearTimeout(timer);
+    }
+  }, [triangleComplete, showLogo]);
 
   // Fade background after logo appears
   useEffect(() => {
@@ -52,10 +77,17 @@ export function LoadingScreen({ progress, isFullyLoaded, onStart }: LoadingScree
   // Shrink to corner as background fades
   useEffect(() => {
     if (fadeBackground && !shrinkToCorner) {
-      const timer = setTimeout(() => setShrinkToCorner(true), 100);
+      const timer = setTimeout(() => {
+        setShrinkToCorner(true);
+        // Call onShrinkStart when shrinking begins
+        if (onShrinkStart && !hasCalledOnShrinkStart.current) {
+          hasCalledOnShrinkStart.current = true;
+          onShrinkStart();
+        }
+      }, 100);
       return () => clearTimeout(timer);
     }
-  }, [fadeBackground, shrinkToCorner]);
+  }, [fadeBackground, shrinkToCorner, onShrinkStart]);
 
   // Call onStart when background fade completes
   useEffect(() => {
@@ -70,7 +102,6 @@ export function LoadingScreen({ progress, isFullyLoaded, onStart }: LoadingScree
 
   // Triangle perimeter for stroke animation
   const trianglePerimeter = 600;
-  const strokeDashoffset = trianglePerimeter - (trianglePerimeter * Math.min(smoothProgress, 100)) / 100;
 
   return (
     <>

@@ -85,13 +85,18 @@
   .walkway-header {
     height: var(--walkway-height);
     @apply fixed top-0 left-0 right-0 z-40 bg-background;
-    border-bottom: 1px solid hsl(var(--border));
+  }
+
+  .walkway-rail-top {
+    @apply absolute left-0 right-0;
+    height: 1px;
+    background: hsl(var(--museum-white) / 0.12);
   }
 
   .walkway-rail {
-    @apply absolute bottom-8 left-0 right-0;
-    height: 2px;
-    background: hsl(var(--museum-white) / 0.3);
+    @apply absolute left-0 right-0;
+    height: 1px;
+    background: hsl(var(--museum-white) / 0.25);
   }
 
   .page-transition-overlay {
