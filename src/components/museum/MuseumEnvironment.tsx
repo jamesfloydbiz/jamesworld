@@ -102,7 +102,8 @@ export function MuseumEnvironment({ showLabels = true }: MuseumEnvironmentProps)
           />
           <FloorCircle 
             position={portal.circlePosition} 
-            portalId={portal.id} 
+            portalId={portal.id}
+            title={portal.title}
           />
           {/* Info placard positioned to the side of the circle */}
           <InfoPlacard 

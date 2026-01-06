@@ -4,8 +4,8 @@ import { useGameStore } from '@/store/gameStore';
 import { characterState } from './characterState';
 import * as THREE from 'three';
 
-const CAMERA_HEIGHT = 1.8;
-const CAMERA_DISTANCE = 7;
+const CAMERA_HEIGHT = 1.2;
+const CAMERA_DISTANCE = 3.5;
 const LERP_FACTOR = 0.04;
 
 export function MuseumCamera() {
