@@ -45,7 +45,7 @@ const StoryPage = () => {
     <div className="min-h-screen bg-background">
       <WalkwayHeader title="Story" />
       
-      <main className="pt-[200px] px-6 md:px-8 pb-24">
+      <main className="pt-[140px] px-6 md:px-8 pb-24">
         <motion.div
           className="max-w-3xl mx-auto"
           initial={{ opacity: 0, y: 40 }}

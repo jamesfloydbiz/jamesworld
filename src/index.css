@@ -45,8 +45,8 @@
     --museum-frame: 0 0% 95%;
 
     /* Walkway header */
-    --walkway-height: 160px;
-    --walkway-height-mobile: 120px;
+    --walkway-height: 100px;
+    --walkway-height-mobile: 80px;
   }
 
   .dark {
