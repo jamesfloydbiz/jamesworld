@@ -40,6 +40,14 @@ export function ControlsHint() {
             <span className="text-[7px] text-white/50 tracking-[0.2em] uppercase">Move</span>
           </div>
 
+          {/* Shift key */}
+          <div className="flex flex-col items-center gap-1 w-14">
+            <div className="h-4 px-1.5 border border-white/60 flex items-center justify-center">
+              <span className="text-white/80 text-[8px] tracking-wide">⇧</span>
+            </div>
+            <span className="text-[7px] text-white/50 tracking-[0.2em] uppercase">Sprint</span>
+          </div>
+
           {/* ESC key */}
           <div className="flex flex-col items-center gap-1 w-14">
             <div className="h-4 px-1.5 border border-white/60 flex items-center justify-center">
