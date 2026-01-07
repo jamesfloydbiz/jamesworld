@@ -5,37 +5,58 @@ import { joystickState } from '@/components/museum/useKeyboardControls';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useIsMobile } from '@/hooks/use-mobile';
 
-// Elegant controls hint at bottom of screen - matching reference design
-function ControlsHint({ isSmallScreen }: { isSmallScreen: boolean }) {
+// Minimal controls hint - thin white lines, elegant spacing
+function ControlsHint() {
+  const isSmallScreen = useIsMobile();
+  
   if (isSmallScreen) return null;
 
   return (
-    <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[101] flex items-end gap-12 opacity-60 pointer-events-none">
-      {/* Move - arrow key cross layout */}
-      <div className="flex flex-col items-center gap-2">
-        <div className="flex flex-col items-center gap-[2px]">
-          <div className="border border-white/70 w-7 h-7 flex items-center justify-center text-[11px] text-white/90">↑</div>
-          <div className="flex gap-[2px]">
-            <div className="border border-white/70 w-7 h-7 flex items-center justify-center text-[11px] text-white/90">←</div>
-            <div className="border border-white/70 w-7 h-7 flex items-center justify-center text-[11px] text-white/90">↓</div>
-            <div className="border border-white/70 w-7 h-7 flex items-center justify-center text-[11px] text-white/90">→</div>
+    <motion.div 
+      className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[200] pointer-events-none"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 0.5, y: 0 }}
+      transition={{ duration: 0.6, delay: 0.5 }}
+    >
+      <div className="flex items-end gap-14">
+        {/* Arrow keys - cross layout */}
+        <div className="flex flex-col items-center gap-2">
+          <div className="flex flex-col items-center gap-px">
+            <div className="w-6 h-6 border border-white/60 flex items-center justify-center">
+              <span className="text-white/80 text-[10px]">↑</span>
+            </div>
+            <div className="flex gap-px">
+              <div className="w-6 h-6 border border-white/60 flex items-center justify-center">
+                <span className="text-white/80 text-[10px]">←</span>
+              </div>
+              <div className="w-6 h-6 border border-white/60 flex items-center justify-center">
+                <span className="text-white/80 text-[10px]">↓</span>
+              </div>
+              <div className="w-6 h-6 border border-white/60 flex items-center justify-center">
+                <span className="text-white/80 text-[10px]">→</span>
+              </div>
+            </div>
           </div>
+          <span className="text-[9px] text-white/50 tracking-[0.25em] uppercase">Move</span>
         </div>
-        <span className="text-[10px] text-white/60 tracking-[0.2em] uppercase">Move</span>
+
+        {/* ESC key */}
+        <div className="flex flex-col items-center gap-2">
+          <div className="h-6 px-2.5 border border-white/60 flex items-center justify-center">
+            <span className="text-white/80 text-[10px] tracking-wide">ESC</span>
+          </div>
+          <span className="text-[9px] text-white/50 tracking-[0.25em] uppercase">Menu</span>
+        </div>
+
+        {/* Enter key */}
+        <div className="flex flex-col items-center gap-2">
+          <div className="h-6 px-2.5 border border-white/60 flex items-center justify-center">
+            <span className="text-white/80 text-[10px]">↵</span>
+          </div>
+          <span className="text-[9px] text-white/50 tracking-[0.25em] uppercase">Enter</span>
+        </div>
       </div>
-      
-      {/* ESC for menu */}
-      <div className="flex flex-col items-center gap-2">
-        <div className="border border-white/70 px-3 py-1.5 text-[11px] text-white/90 tracking-wider">ESC</div>
-        <span className="text-[10px] text-white/60 tracking-[0.2em] uppercase">Menu</span>
-      </div>
-      
-      {/* Enter for details */}
-      <div className="flex flex-col items-center gap-2">
-        <div className="border border-white/70 px-3 py-1.5 text-[11px] text-white/90 tracking-wider">↵</div>
-        <span className="text-[10px] text-white/60 tracking-[0.2em] uppercase">Enter</span>
-      </div>
-    </div>
+    </motion.div>
   );
 }
 
@@ -128,8 +149,8 @@ export function MuseumUI() {
         )}
       </AnimatePresence>
 
-      {/* Controls hint - desktop only */}
-      <ControlsHint isSmallScreen={isSmallScreen} />
+      {/* Controls hint */}
+      <ControlsHint />
     </>
   );
 }
