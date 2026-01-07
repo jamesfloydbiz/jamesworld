@@ -113,15 +113,17 @@ export function LoadingScreen({ progress, isFullyLoaded, onStart, onShrinkStart 
         transition={{ duration: 0.6, ease: 'easeOut' }}
       />
       
-      {/* Logo container - changes from centered to corner position */}
+      {/* Logo container - shrinks to corner and stays visible */}
       <motion.div
-        className={`fixed z-[100] flex items-center justify-center pointer-events-none ${
-          shrinkToCorner 
-            ? 'top-6 left-6 w-16 h-16 pointer-events-auto cursor-pointer' 
-            : 'inset-0'
-        }`}
+        className={`fixed inset-0 z-[100] flex items-center justify-center ${shrinkToCorner ? 'pointer-events-auto cursor-pointer' : 'pointer-events-none'}`}
         onClick={() => shrinkToCorner && navigate('/')}
-        layout
+        animate={shrinkToCorner ? {
+          x: 'calc(-50vw + 56px)',
+          y: 'calc(-50vh + 56px)',
+        } : {
+          x: 0,
+          y: 0,
+        }}
         transition={{ 
           duration: 0.7, 
           ease: [0.4, 0, 0.2, 1],

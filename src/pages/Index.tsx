@@ -21,24 +21,11 @@ const Index = () => {
     setIsTransitioning(false);
   }, [setIsTransitioning]);
 
-  // Track when fully loaded - tolerant threshold + fail-safe timeout
+  // Track when fully loaded
   useEffect(() => {
-    // Tolerant: treat >= 99 as complete
-    if (progress >= 99 && !isFullyLoaded) {
+    if (progress >= 100 && !isFullyLoaded) {
       setIsFullyLoaded(true);
-      return;
     }
-    
-    // Fail-safe: if loading stalls, force completion after 12 seconds
-    const failsafeTimer = setTimeout(() => {
-      if (!isFullyLoaded) {
-        console.log('[Loading] Fail-safe triggered, forcing completion');
-        setProgress(100);
-        setIsFullyLoaded(true);
-      }
-    }, 12000);
-    
-    return () => clearTimeout(failsafeTimer);
   }, [progress, isFullyLoaded]);
 
   // ESC key to toggle menu when in gallery
