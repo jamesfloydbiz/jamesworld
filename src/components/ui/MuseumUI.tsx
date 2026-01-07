@@ -3,13 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import { useGameStore } from '@/store/gameStore';
 import { joystickState } from '@/components/museum/useKeyboardControls';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 // Elegant controls hint at bottom of screen - matching reference design
-function ControlsHint({ isMobile }: { isMobile: boolean }) {
-  if (isMobile) return null;
+function ControlsHint({ isSmallScreen }: { isSmallScreen: boolean }) {
+  if (isSmallScreen) return null;
 
   return (
-    <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[101] flex items-end gap-12 opacity-60">
+    <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[101] flex items-end gap-12 opacity-60 pointer-events-none">
       {/* Move - arrow key cross layout */}
       <div className="flex flex-col items-center gap-2">
         <div className="flex flex-col items-center gap-[2px]">
@@ -40,7 +41,8 @@ function ControlsHint({ isMobile }: { isMobile: boolean }) {
 
 export function MuseumUI() {
   const navigate = useNavigate();
-  const [isMobile, setIsMobile] = useState(false);
+  const isSmallScreen = useIsMobile(); // breakpoint-based (768px)
+  const [isTouchDevice, setIsTouchDevice] = useState(false);
   const { 
     activePortal, 
     saveHubState,
@@ -48,14 +50,9 @@ export function MuseumUI() {
     isTransitioning,
   } = useGameStore();
 
-  // Detect mobile/touch device
+  // Detect touch capability for mobile controls (joystick, interact button)
   useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile('ontouchstart' in window || navigator.maxTouchPoints > 0);
-    };
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+    setIsTouchDevice('ontouchstart' in window || navigator.maxTouchPoints > 0);
   }, []);
 
   // Handle Enter key for portal interaction
@@ -85,7 +82,7 @@ export function MuseumUI() {
 
   // Mobile interact button listener
   useEffect(() => {
-    if (!isMobile) return;
+    if (!isTouchDevice) return;
     
     const checkInteract = setInterval(() => {
       if (joystickState.interact && activePortal && !isTransitioning) {
@@ -95,7 +92,7 @@ export function MuseumUI() {
     }, 50);
 
     return () => clearInterval(checkInteract);
-  }, [isMobile, activePortal, isTransitioning, handleInteraction]);
+  }, [isTouchDevice, activePortal, isTransitioning, handleInteraction]);
 
   return (
     <>
@@ -122,7 +119,7 @@ export function MuseumUI() {
             exit={{ opacity: 0, y: 10 }}
           >
             <div className="text-lg mb-2 tracking-wider">{activePortal.title}</div>
-            {!isMobile && (
+            {!isSmallScreen && (
               <div className="text-muted-foreground text-xs">
                 Press <span className="text-foreground border border-border px-2 py-1 mx-1">Enter</span> to open
               </div>
@@ -131,8 +128,8 @@ export function MuseumUI() {
         )}
       </AnimatePresence>
 
-      {/* Controls hint - desktop only, fades after 5 seconds */}
-      <ControlsHint isMobile={isMobile} />
+      {/* Controls hint - desktop only */}
+      <ControlsHint isSmallScreen={isSmallScreen} />
     </>
   );
 }
