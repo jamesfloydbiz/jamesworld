@@ -4,25 +4,35 @@ import { useGameStore } from '@/store/gameStore';
 import { joystickState } from '@/components/museum/useKeyboardControls';
 import { motion, AnimatePresence } from 'framer-motion';
 
-// Minimal controls hint at bottom of screen
+// Elegant controls hint at bottom of screen - matching reference design
 function ControlsHint({ isMobile }: { isMobile: boolean }) {
   if (isMobile) return null;
 
   return (
-    <div className="museum-ui bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-8 opacity-30">
+    <div className="museum-ui bottom-8 left-1/2 -translate-x-1/2 flex items-end gap-12 opacity-40">
       {/* Move - arrow key cross layout */}
-      <div className="flex flex-col items-center gap-0.5">
-        <div className="border border-foreground/20 w-5 h-5 flex items-center justify-center text-[9px] text-foreground/60">↑</div>
-        <div className="flex gap-0.5">
-          <div className="border border-foreground/20 w-5 h-5 flex items-center justify-center text-[9px] text-foreground/60">←</div>
-          <div className="border border-foreground/20 w-5 h-5 flex items-center justify-center text-[9px] text-foreground/60">↓</div>
-          <div className="border border-foreground/20 w-5 h-5 flex items-center justify-center text-[9px] text-foreground/60">→</div>
+      <div className="flex flex-col items-center gap-2">
+        <div className="flex flex-col items-center gap-[2px]">
+          <div className="border border-white/50 w-7 h-7 flex items-center justify-center text-[11px] text-white/70">↑</div>
+          <div className="flex gap-[2px]">
+            <div className="border border-white/50 w-7 h-7 flex items-center justify-center text-[11px] text-white/70">←</div>
+            <div className="border border-white/50 w-7 h-7 flex items-center justify-center text-[11px] text-white/70">↓</div>
+            <div className="border border-white/50 w-7 h-7 flex items-center justify-center text-[11px] text-white/70">→</div>
+          </div>
         </div>
+        <span className="text-[10px] text-white/50 tracking-[0.2em] uppercase">Move</span>
       </div>
       
       {/* ESC for menu */}
-      <div className="flex flex-col items-center gap-1">
-        <div className="border border-foreground/20 px-2 py-1 text-[9px] text-foreground/60 tracking-wider">ESC</div>
+      <div className="flex flex-col items-center gap-2">
+        <div className="border border-white/50 px-3 py-1.5 text-[11px] text-white/70 tracking-wider">ESC</div>
+        <span className="text-[10px] text-white/50 tracking-[0.2em] uppercase">Menu</span>
+      </div>
+      
+      {/* Enter for details */}
+      <div className="flex flex-col items-center gap-2">
+        <div className="border border-white/50 px-3 py-1.5 text-[11px] text-white/70 tracking-wider">↵</div>
+        <span className="text-[10px] text-white/50 tracking-[0.2em] uppercase">Enter</span>
       </div>
     </div>
   );
