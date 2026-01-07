@@ -18,9 +18,9 @@ export function ControlsHint() {
       animate={{ opacity: 0.5, y: 0 }}
       transition={{ duration: 0.4 }}
     >
-      <div className="flex items-end gap-8">
+      <div className="flex items-end gap-10">
         {/* Arrow keys - cross layout */}
-        <div className="flex flex-col items-center gap-1">
+        <div className="flex flex-col items-center gap-1 w-14">
           <div className="flex flex-col items-center gap-px">
             <div className="w-4 h-4 border border-white/60 flex items-center justify-center">
               <span className="text-white/80 text-[8px]">↑</span>
@@ -41,7 +41,7 @@ export function ControlsHint() {
         </div>
 
         {/* ESC key */}
-        <div className="flex flex-col items-center gap-1">
+        <div className="flex flex-col items-center gap-1 w-14">
           <div className="h-4 px-1.5 border border-white/60 flex items-center justify-center">
             <span className="text-white/80 text-[8px] tracking-wide">ESC</span>
           </div>
@@ -49,7 +49,7 @@ export function ControlsHint() {
         </div>
 
         {/* Enter key */}
-        <div className="flex flex-col items-center gap-1">
+        <div className="flex flex-col items-center gap-1 w-14">
           <div className="h-4 px-1.5 border border-white/60 flex items-center justify-center">
             <span className="text-white/80 text-[8px]">↵</span>
           </div>
