@@ -9,30 +9,30 @@ function ControlsHint({ isMobile }: { isMobile: boolean }) {
   if (isMobile) return null;
 
   return (
-    <div className="museum-ui bottom-8 left-1/2 -translate-x-1/2 flex items-end gap-12 opacity-40">
+    <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[101] flex items-end gap-12 opacity-60">
       {/* Move - arrow key cross layout */}
       <div className="flex flex-col items-center gap-2">
         <div className="flex flex-col items-center gap-[2px]">
-          <div className="border border-white/50 w-7 h-7 flex items-center justify-center text-[11px] text-white/70">↑</div>
+          <div className="border border-white/70 w-7 h-7 flex items-center justify-center text-[11px] text-white/90">↑</div>
           <div className="flex gap-[2px]">
-            <div className="border border-white/50 w-7 h-7 flex items-center justify-center text-[11px] text-white/70">←</div>
-            <div className="border border-white/50 w-7 h-7 flex items-center justify-center text-[11px] text-white/70">↓</div>
-            <div className="border border-white/50 w-7 h-7 flex items-center justify-center text-[11px] text-white/70">→</div>
+            <div className="border border-white/70 w-7 h-7 flex items-center justify-center text-[11px] text-white/90">←</div>
+            <div className="border border-white/70 w-7 h-7 flex items-center justify-center text-[11px] text-white/90">↓</div>
+            <div className="border border-white/70 w-7 h-7 flex items-center justify-center text-[11px] text-white/90">→</div>
           </div>
         </div>
-        <span className="text-[10px] text-white/50 tracking-[0.2em] uppercase">Move</span>
+        <span className="text-[10px] text-white/60 tracking-[0.2em] uppercase">Move</span>
       </div>
       
       {/* ESC for menu */}
       <div className="flex flex-col items-center gap-2">
-        <div className="border border-white/50 px-3 py-1.5 text-[11px] text-white/70 tracking-wider">ESC</div>
-        <span className="text-[10px] text-white/50 tracking-[0.2em] uppercase">Menu</span>
+        <div className="border border-white/70 px-3 py-1.5 text-[11px] text-white/90 tracking-wider">ESC</div>
+        <span className="text-[10px] text-white/60 tracking-[0.2em] uppercase">Menu</span>
       </div>
       
       {/* Enter for details */}
       <div className="flex flex-col items-center gap-2">
-        <div className="border border-white/50 px-3 py-1.5 text-[11px] text-white/70 tracking-wider">↵</div>
-        <span className="text-[10px] text-white/50 tracking-[0.2em] uppercase">Enter</span>
+        <div className="border border-white/70 px-3 py-1.5 text-[11px] text-white/90 tracking-wider">↵</div>
+        <span className="text-[10px] text-white/60 tracking-[0.2em] uppercase">Enter</span>
       </div>
     </div>
   );
