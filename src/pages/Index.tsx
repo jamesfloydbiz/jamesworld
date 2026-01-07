@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useGameStore } from '@/store/gameStore';
 import { AnimatePresence, motion } from 'framer-motion';
 import { LoadingScreen } from '@/components/ui/LoadingScreen';
+import { ControlsHint } from '@/components/ui/MuseumUI';
 
 // Lazy load heavy 3D components
 const MuseumScene = lazy(() => import('@/components/museum/MuseumScene').then(m => ({ default: m.MuseumScene })));
@@ -73,6 +74,9 @@ const Index = () => {
         onStart={handleStart}
         onShrinkStart={handleShrinkStart}
       />
+
+      {/* Controls hint - appears when logo starts shrinking */}
+      {showTitles && <ControlsHint />}
 
       {/* Mobile menu overlay when in gallery */}
       <AnimatePresence>
