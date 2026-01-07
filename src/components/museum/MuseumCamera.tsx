@@ -4,7 +4,7 @@ import { useGameStore } from '@/store/gameStore';
 import { characterState } from './characterState';
 import * as THREE from 'three';
 
-const CAMERA_HEIGHT = 1.2;
+const CAMERA_HEIGHT = 1.6;
 const CAMERA_DISTANCE = 3.5;
 const LERP_FACTOR = 0.04;
 
@@ -45,7 +45,7 @@ export function MuseumCamera() {
       );
       targetLookAt.current.set(
         charPos[0],
-        charPos[1] + 0.3,
+        charPos[1] + 0.5,
         charPos[2]
       );
     }
