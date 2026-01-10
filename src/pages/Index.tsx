@@ -52,6 +52,9 @@ const Index = () => {
     setShowTitles(true);
   }, []);
 
+  // Unified flag: controls only appear when fully interactive
+  const controlsReady = showTitles && !showLoading;
+
   return (
     <div className="fixed inset-0 bg-black">
       {/* 3D Museum Scene - always loading/visible behind the loading screen */}
@@ -63,7 +66,7 @@ const Index = () => {
       </div>
 
       {/* Mobile controls - always mounted, visibility controlled via props */}
-      <MobileJoystick visible={showTitles} interactive={!showLoading} />
+      <MobileJoystick visible={controlsReady} interactive={controlsReady} />
 
       {/* Loading screen - rendered after mobile controls in DOM but visually on top initially */}
       <LoadingScreen

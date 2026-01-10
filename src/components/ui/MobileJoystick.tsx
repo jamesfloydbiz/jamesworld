@@ -131,6 +131,30 @@ export function MobileJoystick({ visible = true, interactive = true }: MobileJoy
     joystickState.interact = false;
   }, []);
 
+  // Reset all input state when returning from another tab/app
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        // Reset joystick state
+        joystickState.x = 0;
+        joystickState.y = 0;
+        joystickState.active = false;
+        joystickState.sprint = false;
+        joystickState.jump = false;
+        joystickState.interact = false;
+        isActiveRef.current = false;
+        
+        // Reset visual state
+        updateKnobPosition(0, 0, false);
+        setJumpPressed(false);
+        setEnterPressed(false);
+      }
+    };
+    
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+  }, [updateKnobPosition]);
+
   useEffect(() => {
     if (!isActiveRef.current) return;
     
@@ -182,6 +206,7 @@ export function MobileJoystick({ visible = true, interactive = true }: MobileJoy
             ? { background: 'transparent', border: '1px solid rgba(255, 255, 255, 0.5)' } 
             : buttonStyle)
         }}
+        onClick={() => setMenuOpen(!menuOpen)}
         onTouchEnd={(e) => {
           e.preventDefault();
           e.stopPropagation();
