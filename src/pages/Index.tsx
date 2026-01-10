@@ -62,16 +62,16 @@ const Index = () => {
         </Suspense>
       </div>
 
-      {/* Mobile controls - rendered outside Suspense for reliable display */}
-      {!showLoading && <MobileJoystick />}
-
       {/* Loading screen - always rendered, background fades independently */}
-      <LoadingScreen 
+      <LoadingScreen
         progress={progress} 
         isFullyLoaded={isFullyLoaded}
         onStart={handleStart}
         onShrinkStart={handleShrinkStart}
       />
+
+      {/* Mobile controls - rendered AFTER LoadingScreen for proper stacking */}
+      {!showLoading && <MobileJoystick />}
 
       {/* Controls hint - appears when logo starts shrinking */}
       {showTitles && <ControlsHint />}
