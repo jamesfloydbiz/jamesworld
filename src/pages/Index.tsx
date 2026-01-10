@@ -4,11 +4,11 @@ import { useGameStore } from '@/store/gameStore';
 import { AnimatePresence, motion } from 'framer-motion';
 import { LoadingScreen } from '@/components/ui/LoadingScreen';
 import { ControlsHint } from '@/components/ui/MuseumUI';
+import { MobileJoystick } from '@/components/ui/MobileJoystick';
 
 // Lazy load heavy 3D components
 const MuseumScene = lazy(() => import('@/components/museum/MuseumScene').then(m => ({ default: m.MuseumScene })));
 const MuseumUI = lazy(() => import('@/components/ui/MuseumUI').then(m => ({ default: m.MuseumUI })));
-const MobileJoystick = lazy(() => import('@/components/ui/MobileJoystick').then(m => ({ default: m.MobileJoystick })));
 
 const Index = () => {
   const navigate = useNavigate();
@@ -58,14 +58,12 @@ const Index = () => {
       <div className="absolute inset-0">
         <Suspense fallback={null}>
           <MuseumScene onProgress={handleProgress} showLabels={showTitles} />
-          {!showLoading && (
-            <>
-              <MuseumUI />
-              <MobileJoystick />
-            </>
-          )}
+          {!showLoading && <MuseumUI />}
         </Suspense>
       </div>
+
+      {/* Mobile controls - rendered outside Suspense for reliable display */}
+      {!showLoading && <MobileJoystick />}
 
       {/* Loading screen - always rendered, background fades independently */}
       <LoadingScreen 

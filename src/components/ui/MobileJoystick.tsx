@@ -5,22 +5,31 @@ import { Menu } from 'lucide-react';
 
 const SPRINT_THRESHOLD = 0.7;
 
+// Synchronous mobile detection - runs immediately, no flash of missing controls
+const checkIsMobile = () => {
+  if (typeof window === 'undefined') return false;
+  const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+  const isSmallScreen = window.innerWidth < 768;
+  return hasTouch || isSmallScreen;
+};
+
 export function MobileJoystick() {
   const containerRef = useRef<HTMLDivElement>(null);
   const knobRef = useRef<HTMLDivElement>(null);
   const sprintRingRef = useRef<HTMLDivElement>(null);
   const containerRectRef = useRef<DOMRect | null>(null);
   const isActiveRef = useRef(false);
-  const [isMobile, setIsMobile] = useState(false);
+  // Use lazy initializer for immediate detection on first render
+  const [isMobile, setIsMobile] = useState(() => checkIsMobile());
   const { setMenuOpen, menuOpen } = useGameStore();
 
+  // Keep resize listener as fallback for orientation changes or dev tools toggle
   useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile('ontouchstart' in window || navigator.maxTouchPoints > 0);
+    const handleResize = () => {
+      setIsMobile(checkIsMobile());
     };
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   const updateKnobPosition = useCallback((x: number, y: number, isSprinting: boolean) => {
