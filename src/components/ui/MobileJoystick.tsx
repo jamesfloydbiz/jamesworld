@@ -5,12 +5,20 @@ import { Menu } from 'lucide-react';
 
 const SPRINT_THRESHOLD = 0.7;
 
-// Synchronous mobile detection - runs immediately, no flash of missing controls
-const checkIsMobile = () => {
+// Robust mobile detection using multiple signals
+const checkIsMobile = (): boolean => {
   if (typeof window === 'undefined') return false;
+  
+  // Primary: CSS media query checks (most reliable)
+  const isNarrowScreen = window.matchMedia('(max-width: 767px)').matches;
+  const hasCoarsePointer = window.matchMedia('(pointer: coarse)').matches;
+  const hasNoHover = window.matchMedia('(hover: none)').matches;
+  
+  // Secondary: touch capability fallback
   const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-  const isSmallScreen = window.innerWidth < 768;
-  return hasTouch || isSmallScreen;
+  
+  // Enable if narrow screen OR touch-primary device
+  return isNarrowScreen || hasCoarsePointer || hasNoHover || hasTouch;
 };
 
 export function MobileJoystick() {
@@ -23,13 +31,19 @@ export function MobileJoystick() {
   const [isMobile, setIsMobile] = useState(() => checkIsMobile());
   const { setMenuOpen, menuOpen } = useGameStore();
 
-  // Keep resize listener as fallback for orientation changes or dev tools toggle
+  // Re-check on resize, orientation change, and visibility change (tab switch)
   useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(checkIsMobile());
+    const recheck = () => setIsMobile(checkIsMobile());
+    
+    window.addEventListener('resize', recheck);
+    window.addEventListener('orientationchange', recheck);
+    document.addEventListener('visibilitychange', recheck);
+    
+    return () => {
+      window.removeEventListener('resize', recheck);
+      window.removeEventListener('orientationchange', recheck);
+      document.removeEventListener('visibilitychange', recheck);
     };
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   const updateKnobPosition = useCallback((x: number, y: number, isSprinting: boolean) => {
@@ -172,24 +186,30 @@ export function MobileJoystick() {
 
   return (
     <>
-      {/* Menu button - top right */}
+      {/* Menu button - top right with safe area */}
       <button
-        className="fixed top-6 right-6 w-12 h-12 rounded-full z-50 flex items-center justify-center touch-none select-none"
-        style={menuOpen ? { background: 'rgba(255, 255, 255, 0.3)', border: '2px solid rgba(255, 255, 255, 0.5)' } : buttonStyle}
-        onClick={() => setMenuOpen(!menuOpen)}
+        className="fixed right-6 w-12 h-12 rounded-full z-[200] flex items-center justify-center touch-none select-none"
+        style={{
+          top: 'calc(1.5rem + env(safe-area-inset-top, 0px))',
+          ...(menuOpen 
+            ? { background: 'rgba(255, 255, 255, 0.3)', border: '2px solid rgba(255, 255, 255, 0.5)' } 
+            : buttonStyle)
+        }}
         onTouchEnd={(e) => {
           e.preventDefault();
+          e.stopPropagation();
           setMenuOpen(!menuOpen);
         }}
       >
         <Menu className="w-5 h-5 text-white/80" />
       </button>
 
-      {/* Joystick - bottom left */}
+      {/* Joystick - bottom left with safe area */}
       <div
         ref={containerRef}
-        className="fixed bottom-8 left-8 w-28 h-28 rounded-full z-50 touch-none select-none"
+        className="fixed left-8 w-28 h-28 rounded-full z-[200] touch-none select-none"
         style={{
+          bottom: 'calc(2rem + env(safe-area-inset-bottom, 0px))',
           background: 'rgba(255, 255, 255, 0.1)',
           border: '2px solid rgba(255, 255, 255, 0.2)',
         }}
@@ -220,8 +240,11 @@ export function MobileJoystick() {
         />
       </div>
 
-      {/* Action buttons - bottom right */}
-      <div className="fixed bottom-8 right-8 z-50 flex flex-col gap-4">
+      {/* Action buttons - bottom right with safe area */}
+      <div 
+        className="fixed right-8 z-[200] flex flex-col gap-4"
+        style={{ bottom: 'calc(2rem + env(safe-area-inset-bottom, 0px))' }}
+      >
         {/* Enter/Interact button */}
         <button
           className="w-14 h-14 rounded-full touch-none select-none flex items-center justify-center text-white/70 text-xs font-medium tracking-wider"
