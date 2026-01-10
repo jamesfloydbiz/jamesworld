@@ -1,50 +1,22 @@
-import { useRef, useEffect, useState, useCallback } from 'react';
+import { useRef, useEffect, useCallback } from 'react';
 import { joystickState } from '@/components/museum/useKeyboardControls';
 import { useGameStore } from '@/store/gameStore';
 import { Menu } from 'lucide-react';
 
 const SPRINT_THRESHOLD = 0.7;
 
-// Robust mobile detection using multiple signals
-const checkIsMobile = (): boolean => {
-  if (typeof window === 'undefined') return false;
-  
-  // Primary: CSS media query checks (most reliable)
-  const isNarrowScreen = window.matchMedia('(max-width: 767px)').matches;
-  const hasCoarsePointer = window.matchMedia('(pointer: coarse)').matches;
-  const hasNoHover = window.matchMedia('(hover: none)').matches;
-  
-  // Secondary: touch capability fallback
-  const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-  
-  // Enable if narrow screen OR touch-primary device
-  return isNarrowScreen || hasCoarsePointer || hasNoHover || hasTouch;
-};
+interface MobileJoystickProps {
+  visible?: boolean;
+  interactive?: boolean;
+}
 
-export function MobileJoystick() {
+export function MobileJoystick({ visible = true, interactive = true }: MobileJoystickProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const knobRef = useRef<HTMLDivElement>(null);
   const sprintRingRef = useRef<HTMLDivElement>(null);
   const containerRectRef = useRef<DOMRect | null>(null);
   const isActiveRef = useRef(false);
-  // Use lazy initializer for immediate detection on first render
-  const [isMobile, setIsMobile] = useState(() => checkIsMobile());
   const { setMenuOpen, menuOpen } = useGameStore();
-
-  // Re-check on resize, orientation change, and visibility change (tab switch)
-  useEffect(() => {
-    const recheck = () => setIsMobile(checkIsMobile());
-    
-    window.addEventListener('resize', recheck);
-    window.addEventListener('orientationchange', recheck);
-    document.addEventListener('visibilitychange', recheck);
-    
-    return () => {
-      window.removeEventListener('resize', recheck);
-      window.removeEventListener('orientationchange', recheck);
-      document.removeEventListener('visibilitychange', recheck);
-    };
-  }, []);
 
   const updateKnobPosition = useCallback((x: number, y: number, isSprinting: boolean) => {
     if (knobRef.current) {
@@ -177,20 +149,26 @@ export function MobileJoystick() {
     };
   }, [handleMove, handleEnd]);
 
-  if (!isMobile) return null;
-
   const buttonStyle = {
     background: 'rgba(255, 255, 255, 0.15)',
     border: '2px solid rgba(255, 255, 255, 0.3)',
   };
 
   return (
-    <>
+    <div 
+      className="mobile-controls-layer fixed inset-0 z-[200] pointer-events-none transform-gpu"
+      style={{
+        opacity: visible ? 1 : 0,
+        transition: 'opacity 0.4s ease-out',
+        willChange: 'opacity',
+      }}
+    >
       {/* Menu button - top right with safe area */}
       <button
-        className="fixed right-6 w-12 h-12 rounded-full z-[200] flex items-center justify-center touch-none select-none"
+        className="fixed right-6 w-12 h-12 rounded-full flex items-center justify-center touch-none select-none"
         style={{
           top: 'calc(1.5rem + env(safe-area-inset-top, 0px))',
+          pointerEvents: interactive ? 'auto' : 'none',
           ...(menuOpen 
             ? { background: 'rgba(255, 255, 255, 0.3)', border: '2px solid rgba(255, 255, 255, 0.5)' } 
             : buttonStyle)
@@ -207,11 +185,12 @@ export function MobileJoystick() {
       {/* Joystick - bottom left with safe area */}
       <div
         ref={containerRef}
-        className="fixed left-8 w-28 h-28 rounded-full z-[200] touch-none select-none"
+        className="fixed left-8 w-28 h-28 rounded-full touch-none select-none"
         style={{
           bottom: 'calc(2rem + env(safe-area-inset-bottom, 0px))',
           background: 'rgba(255, 255, 255, 0.1)',
           border: '2px solid rgba(255, 255, 255, 0.2)',
+          pointerEvents: interactive ? 'auto' : 'none',
         }}
         onTouchStart={onTouchStart}
         onTouchMove={onTouchMove}
@@ -242,8 +221,11 @@ export function MobileJoystick() {
 
       {/* Action buttons - bottom right with safe area */}
       <div 
-        className="fixed right-8 z-[200] flex flex-col gap-4"
-        style={{ bottom: 'calc(2rem + env(safe-area-inset-bottom, 0px))' }}
+        className="fixed right-8 flex flex-col gap-4"
+        style={{ 
+          bottom: 'calc(2rem + env(safe-area-inset-bottom, 0px))',
+          pointerEvents: interactive ? 'auto' : 'none',
+        }}
       >
         {/* Enter/Interact button */}
         <button
@@ -281,6 +263,6 @@ export function MobileJoystick() {
           JUMP
         </button>
       </div>
-    </>
+    </div>
   );
 }
