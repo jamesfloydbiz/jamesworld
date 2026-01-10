@@ -65,8 +65,8 @@ const Index = () => {
         </Suspense>
       </div>
 
-      {/* Mobile controls - always mounted, visibility controlled via props */}
-      <MobileJoystick visible={controlsReady} interactive={controlsReady} />
+      {/* Mobile controls - visible early, interactive once loading done */}
+      <MobileJoystick visible={showTitles} interactive={!showLoading} />
 
       {/* Loading screen - rendered after mobile controls in DOM but visually on top initially */}
       <LoadingScreen
