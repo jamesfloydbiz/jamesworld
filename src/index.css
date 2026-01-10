@@ -103,6 +103,13 @@
     @apply fixed inset-0 z-[100] pointer-events-none;
     background: hsl(var(--background));
   }
+
+  /* Hide mobile controls on desktop - CSS-based for reliability */
+  @media (min-width: 768px) and (pointer: fine) and (hover: hover) {
+    .mobile-controls-layer {
+      display: none !important;
+    }
+  }
 }
 
 @layer utilities {

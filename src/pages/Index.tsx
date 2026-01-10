@@ -62,7 +62,10 @@ const Index = () => {
         </Suspense>
       </div>
 
-      {/* Loading screen - always rendered, background fades independently */}
+      {/* Mobile controls - always mounted, visibility controlled via props */}
+      <MobileJoystick visible={showTitles} interactive={!showLoading} />
+
+      {/* Loading screen - rendered after mobile controls in DOM but visually on top initially */}
       <LoadingScreen
         progress={progress} 
         isFullyLoaded={isFullyLoaded}
@@ -70,17 +73,14 @@ const Index = () => {
         onShrinkStart={handleShrinkStart}
       />
 
-      {/* Mobile controls - rendered AFTER LoadingScreen for proper stacking */}
-      {!showLoading && <MobileJoystick />}
-
       {/* Controls hint - appears when logo starts shrinking */}
       {showTitles && <ControlsHint />}
 
-      {/* Mobile menu overlay when in gallery */}
+      {/* Mobile menu overlay when in gallery - z-[300] to be above mobile controls */}
       <AnimatePresence>
         {!showLoading && menuOpen && (
           <motion.div 
-            className="fixed inset-0 bg-black/95 z-50 flex flex-col items-center justify-center gap-6"
+            className="fixed inset-0 bg-black/95 z-[300] flex flex-col items-center justify-center gap-6"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
