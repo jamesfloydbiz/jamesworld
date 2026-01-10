@@ -1,4 +1,4 @@
-import { useRef, useEffect, useCallback } from 'react';
+import { useRef, useEffect, useCallback, useState } from 'react';
 import { joystickState } from '@/components/museum/useKeyboardControls';
 import { useGameStore } from '@/store/gameStore';
 import { Menu } from 'lucide-react';
@@ -16,7 +16,8 @@ export function MobileJoystick({ visible = true, interactive = true }: MobileJoy
   const sprintRingRef = useRef<HTMLDivElement>(null);
   const containerRectRef = useRef<DOMRect | null>(null);
   const isActiveRef = useRef(false);
-  const { setMenuOpen, menuOpen } = useGameStore();
+  const { setMenuOpen, menuOpen, activePortal } = useGameStore();
+  const [jumpPressed, setJumpPressed] = useState(false);
 
   const updateKnobPosition = useCallback((x: number, y: number, isSprinting: boolean) => {
     if (knobRef.current) {
@@ -42,7 +43,7 @@ export function MobileJoystick({ visible = true, interactive = true }: MobileJoy
     let deltaX = clientX - centerX;
     let deltaY = clientY - centerY;
     
-    const maxRadius = rect.width / 2 - 20;
+    const maxRadius = rect.width / 2 - 12;
     const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
     
     if (distance > maxRadius) {
@@ -69,7 +70,7 @@ export function MobileJoystick({ visible = true, interactive = true }: MobileJoy
     let deltaX = clientX - centerX;
     let deltaY = clientY - centerY;
     
-    const maxRadius = rect.width / 2 - 20;
+    const maxRadius = rect.width / 2 - 12;
     const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
     
     if (distance > maxRadius) {
@@ -150,8 +151,15 @@ export function MobileJoystick({ visible = true, interactive = true }: MobileJoy
   }, [handleMove, handleEnd]);
 
   const buttonStyle = {
-    background: 'rgba(255, 255, 255, 0.15)',
-    border: '2px solid rgba(255, 255, 255, 0.3)',
+    background: 'transparent',
+    border: '1px solid rgba(255, 255, 255, 0.25)',
+    transition: 'transform 0.1s ease-out, border-color 0.1s ease-out',
+  };
+
+  const buttonActiveStyle = {
+    background: 'transparent',
+    border: '1px solid rgba(255, 255, 255, 0.5)',
+    transform: 'scale(1.05)',
   };
 
   return (
@@ -165,12 +173,12 @@ export function MobileJoystick({ visible = true, interactive = true }: MobileJoy
     >
       {/* Menu button - top right with safe area */}
       <button
-        className="fixed right-6 w-12 h-12 rounded-full flex items-center justify-center touch-none select-none"
+        className="fixed right-6 w-10 h-10 rounded-full flex items-center justify-center touch-none select-none"
         style={{
           top: 'calc(1.5rem + env(safe-area-inset-top, 0px))',
           pointerEvents: interactive ? 'auto' : 'none',
           ...(menuOpen 
-            ? { background: 'rgba(255, 255, 255, 0.3)', border: '2px solid rgba(255, 255, 255, 0.5)' } 
+            ? { background: 'transparent', border: '1px solid rgba(255, 255, 255, 0.5)' } 
             : buttonStyle)
         }}
         onTouchEnd={(e) => {
@@ -179,17 +187,17 @@ export function MobileJoystick({ visible = true, interactive = true }: MobileJoy
           setMenuOpen(!menuOpen);
         }}
       >
-        <Menu className="w-5 h-5 text-white/80" />
+        <Menu className="w-4 h-4 text-white/70" />
       </button>
 
       {/* Joystick - bottom left with safe area */}
       <div
         ref={containerRef}
-        className="fixed left-8 w-28 h-28 rounded-full touch-none select-none"
+        className="fixed left-6 w-20 h-20 rounded-full touch-none select-none"
         style={{
           bottom: 'calc(2rem + env(safe-area-inset-bottom, 0px))',
-          background: 'rgba(255, 255, 255, 0.1)',
-          border: '2px solid rgba(255, 255, 255, 0.2)',
+          background: 'transparent',
+          border: '1px solid rgba(255, 255, 255, 0.25)',
           pointerEvents: interactive ? 'auto' : 'none',
         }}
         onTouchStart={onTouchStart}
@@ -197,15 +205,16 @@ export function MobileJoystick({ visible = true, interactive = true }: MobileJoy
         onTouchEnd={onTouchEnd}
         onMouseDown={(e) => handleStart(e.clientX, e.clientY)}
       >
-        {/* Inner knob - DOM updated directly via ref */}
+        {/* Inner knob - small dot, DOM updated directly via ref */}
         <div
           ref={knobRef}
-          className="absolute w-12 h-12 rounded-full pointer-events-none"
+          className="absolute w-6 h-6 rounded-full pointer-events-none"
           style={{
-            background: 'rgba(255, 255, 255, 0.35)',
+            background: 'rgba(255, 255, 255, 0.5)',
             left: '50%',
             top: '50%',
             transform: 'translate(-50%, -50%)',
+            transition: 'background 0.1s ease-out',
           }}
         />
         {/* Sprint indicator ring */}
@@ -213,7 +222,7 @@ export function MobileJoystick({ visible = true, interactive = true }: MobileJoy
           ref={sprintRingRef}
           className="absolute inset-0 rounded-full pointer-events-none transition-opacity duration-100"
           style={{
-            border: '2px solid rgba(255, 255, 255, 0.5)',
+            border: '1px solid rgba(255, 255, 255, 0.4)',
             opacity: 0,
           }}
         />
@@ -221,16 +230,21 @@ export function MobileJoystick({ visible = true, interactive = true }: MobileJoy
 
       {/* Action buttons - bottom right with safe area */}
       <div 
-        className="fixed right-8 flex flex-col gap-4"
+        className="fixed right-6 flex flex-col gap-3"
         style={{ 
           bottom: 'calc(2rem + env(safe-area-inset-bottom, 0px))',
           pointerEvents: interactive ? 'auto' : 'none',
         }}
       >
-        {/* Enter/Interact button */}
+        {/* Enter/Interact button - only visible when in a portal circle */}
         <button
-          className="w-14 h-14 rounded-full touch-none select-none flex items-center justify-center text-white/70 text-xs font-medium tracking-wider"
-          style={buttonStyle}
+          className="w-11 h-11 rounded-full touch-none select-none flex items-center justify-center text-white/70 text-[10px] font-mono tracking-wider uppercase"
+          style={{
+            ...(activePortal ? buttonStyle : {}),
+            opacity: activePortal ? 1 : 0,
+            pointerEvents: activePortal ? 'auto' : 'none',
+            transition: 'opacity 0.2s ease-out, transform 0.1s ease-out, border-color 0.1s ease-out',
+          }}
           onTouchStart={(e) => {
             e.preventDefault();
             handleInteractStart();
@@ -247,18 +261,26 @@ export function MobileJoystick({ visible = true, interactive = true }: MobileJoy
 
         {/* Jump button */}
         <button
-          className="w-14 h-14 rounded-full touch-none select-none flex items-center justify-center text-white/70 text-xs font-medium tracking-wider"
-          style={buttonStyle}
+          className="w-11 h-11 rounded-full touch-none select-none flex items-center justify-center text-white/70 text-[10px] font-mono tracking-wider uppercase"
+          style={jumpPressed ? buttonActiveStyle : buttonStyle}
           onTouchStart={(e) => {
             e.preventDefault();
+            setJumpPressed(true);
             handleJumpStart();
           }}
           onTouchEnd={(e) => {
             e.preventDefault();
+            setJumpPressed(false);
             handleJumpEnd();
           }}
-          onMouseDown={handleJumpStart}
-          onMouseUp={handleJumpEnd}
+          onMouseDown={() => {
+            setJumpPressed(true);
+            handleJumpStart();
+          }}
+          onMouseUp={() => {
+            setJumpPressed(false);
+            handleJumpEnd();
+          }}
         >
           JUMP
         </button>
