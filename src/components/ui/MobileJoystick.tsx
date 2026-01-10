@@ -18,6 +18,7 @@ export function MobileJoystick({ visible = true, interactive = true }: MobileJoy
   const isActiveRef = useRef(false);
   const { setMenuOpen, menuOpen, activePortal } = useGameStore();
   const [jumpPressed, setJumpPressed] = useState(false);
+  const [enterPressed, setEnterPressed] = useState(false);
 
   const updateKnobPosition = useCallback((x: number, y: number, isSprinting: boolean) => {
     if (knobRef.current) {
@@ -240,21 +241,31 @@ export function MobileJoystick({ visible = true, interactive = true }: MobileJoy
         <button
           className="w-11 h-11 rounded-full touch-none select-none flex items-center justify-center text-white/70 text-[10px] font-mono tracking-wider uppercase"
           style={{
-            ...(activePortal ? buttonStyle : {}),
+            ...(activePortal && enterPressed ? buttonActiveStyle : activePortal ? buttonStyle : {}),
             opacity: activePortal ? 1 : 0,
             pointerEvents: activePortal ? 'auto' : 'none',
             transition: 'opacity 0.2s ease-out, transform 0.1s ease-out, border-color 0.1s ease-out',
           }}
           onTouchStart={(e) => {
             e.preventDefault();
+            e.stopPropagation();
+            setEnterPressed(true);
             handleInteractStart();
           }}
           onTouchEnd={(e) => {
             e.preventDefault();
+            e.stopPropagation();
+            setEnterPressed(false);
             handleInteractEnd();
           }}
-          onMouseDown={handleInteractStart}
-          onMouseUp={handleInteractEnd}
+          onMouseDown={() => {
+            setEnterPressed(true);
+            handleInteractStart();
+          }}
+          onMouseUp={() => {
+            setEnterPressed(false);
+            handleInteractEnd();
+          }}
         >
           ENTER
         </button>

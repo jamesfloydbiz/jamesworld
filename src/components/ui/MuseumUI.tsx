@@ -110,10 +110,8 @@ export function MuseumUI() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [activePortal, isTransitioning, handleInteraction]);
 
-  // Mobile interact button listener
+  // Mobile interact button listener - always active to ensure reliability
   useEffect(() => {
-    if (!isTouchDevice) return;
-    
     const checkInteract = setInterval(() => {
       if (joystickState.interact && activePortal && !isTransitioning) {
         handleInteraction();
@@ -122,7 +120,7 @@ export function MuseumUI() {
     }, 50);
 
     return () => clearInterval(checkInteract);
-  }, [isTouchDevice, activePortal, isTransitioning, handleInteraction]);
+  }, [activePortal, isTransitioning, handleInteraction]);
 
   return (
     <>
