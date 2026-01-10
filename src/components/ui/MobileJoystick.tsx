@@ -131,28 +131,45 @@ export function MobileJoystick({ visible = true, interactive = true }: MobileJoy
     joystickState.interact = false;
   }, []);
 
-  // Reset all input state when returning from another tab/app
+  // Reset all input state when returning from another tab/app or regaining focus
   useEffect(() => {
+    const resetState = () => {
+      // Reset joystick state
+      joystickState.x = 0;
+      joystickState.y = 0;
+      joystickState.active = false;
+      joystickState.sprint = false;
+      joystickState.jump = false;
+      joystickState.interact = false;
+      isActiveRef.current = false;
+      
+      // Reset visual state
+      updateKnobPosition(0, 0, false);
+      setJumpPressed(false);
+      setEnterPressed(false);
+      
+      // Refresh container rect for safe area changes
+      if (containerRef.current) {
+        containerRectRef.current = containerRef.current.getBoundingClientRect();
+      }
+    };
+
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'visible') {
-        // Reset joystick state
-        joystickState.x = 0;
-        joystickState.y = 0;
-        joystickState.active = false;
-        joystickState.sprint = false;
-        joystickState.jump = false;
-        joystickState.interact = false;
-        isActiveRef.current = false;
-        
-        // Reset visual state
-        updateKnobPosition(0, 0, false);
-        setJumpPressed(false);
-        setEnterPressed(false);
+        resetState();
       }
     };
     
+    const handleFocus = () => {
+      resetState();
+    };
+    
     document.addEventListener('visibilitychange', handleVisibilityChange);
-    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('focus', handleFocus);
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('focus', handleFocus);
+    };
   }, [updateKnobPosition]);
 
   useEffect(() => {
@@ -187,21 +204,21 @@ export function MobileJoystick({ visible = true, interactive = true }: MobileJoy
     transform: 'scale(1.05)',
   };
 
+  // Common transition for opacity fade
+  const opacityStyle = {
+    opacity: visible ? 1 : 0,
+    transition: 'opacity 0.4s ease-out',
+  };
+
   return (
-    <div 
-      className="mobile-controls-layer fixed inset-0 z-[200] pointer-events-none transform-gpu"
-      style={{
-        opacity: visible ? 1 : 0,
-        transition: 'opacity 0.4s ease-out',
-        willChange: 'opacity',
-      }}
-    >
+    <>
       {/* Menu button - top right with safe area */}
       <button
-        className="fixed right-6 w-10 h-10 rounded-full flex items-center justify-center touch-none select-none"
+        className="mobile-controls-layer fixed right-6 w-10 h-10 rounded-full flex items-center justify-center touch-none select-none z-[200]"
         style={{
           top: 'calc(1.5rem + env(safe-area-inset-top, 0px))',
-          pointerEvents: interactive ? 'auto' : 'none',
+          pointerEvents: visible && interactive ? 'auto' : 'none',
+          ...opacityStyle,
           ...(menuOpen 
             ? { background: 'transparent', border: '1px solid rgba(255, 255, 255, 0.5)' } 
             : buttonStyle)
@@ -219,12 +236,13 @@ export function MobileJoystick({ visible = true, interactive = true }: MobileJoy
       {/* Joystick - bottom left with safe area */}
       <div
         ref={containerRef}
-        className="fixed left-6 w-20 h-20 rounded-full touch-none select-none"
+        className="mobile-controls-layer fixed left-6 w-20 h-20 rounded-full touch-none select-none z-[200]"
         style={{
           bottom: 'calc(2rem + env(safe-area-inset-bottom, 0px))',
           background: 'transparent',
           border: '1px solid rgba(255, 255, 255, 0.25)',
-          pointerEvents: interactive ? 'auto' : 'none',
+          pointerEvents: visible && interactive ? 'auto' : 'none',
+          ...opacityStyle,
         }}
         onTouchStart={onTouchStart}
         onTouchMove={onTouchMove}
@@ -256,10 +274,11 @@ export function MobileJoystick({ visible = true, interactive = true }: MobileJoy
 
       {/* Action buttons - bottom right with safe area */}
       <div 
-        className="fixed right-6 flex flex-col gap-3"
+        className="mobile-controls-layer fixed right-6 flex flex-col gap-3 z-[200]"
         style={{ 
           bottom: 'calc(2rem + env(safe-area-inset-bottom, 0px))',
-          pointerEvents: interactive ? 'auto' : 'none',
+          pointerEvents: visible && interactive ? 'auto' : 'none',
+          ...opacityStyle,
         }}
       >
         {/* Enter/Interact button - only visible when in a portal circle */}
@@ -268,7 +287,7 @@ export function MobileJoystick({ visible = true, interactive = true }: MobileJoy
           style={{
             ...(activePortal && enterPressed ? buttonActiveStyle : activePortal ? buttonStyle : {}),
             opacity: activePortal ? 1 : 0,
-            pointerEvents: activePortal ? 'auto' : 'none',
+            pointerEvents: activePortal && visible && interactive ? 'auto' : 'none',
             transition: 'opacity 0.2s ease-out, transform 0.1s ease-out, border-color 0.1s ease-out',
           }}
           onTouchStart={(e) => {
@@ -321,6 +340,6 @@ export function MobileJoystick({ visible = true, interactive = true }: MobileJoy
           JUMP
         </button>
       </div>
-    </div>
+    </>
   );
 }

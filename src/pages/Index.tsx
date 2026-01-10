@@ -50,6 +50,8 @@ const Index = () => {
 
   const handleShrinkStart = useCallback(() => {
     setShowTitles(true);
+    // Unlock interactivity immediately when controls become visible
+    setShowLoading(false);
   }, []);
 
   // Unified flag: controls only appear when fully interactive
