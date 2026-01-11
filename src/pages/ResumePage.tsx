@@ -30,7 +30,7 @@ const experience = [
   {
     title: 'Chief of Staff',
     company: 'BetterWealth',
-    period: 'Nov 2024 - Present',
+    period: 'Nov 2024 - Dec 2025',
     bullets: [
       'Brought ideas into reality and solved problems before and as they happened.',
       'Ran a successful overhaul of website, top of funnel, and search marketing and **doubled conversion rate**.',
