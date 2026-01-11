@@ -58,6 +58,33 @@ const ChartContainer = React.forwardRef<
 });
 ChartContainer.displayName = "Chart";
 
+// Sanitize CSS color values to prevent injection
+const sanitizeColor = (color: string): string => {
+  if (!color || typeof color !== 'string') {
+    return '';
+  }
+  // Allow only valid CSS color formats: hex, rgb, rgba, hsl, hsla, and named colors
+  const hexPattern = /^#[0-9A-Fa-f]{3,8}$/;
+  const rgbPattern = /^rgba?\(\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}\s*(,\s*(0|1|0?\.\d+))?\s*\)$/;
+  const hslPattern = /^hsla?\(\s*\d{1,3}(\.\d+)?\s*,?\s*\d{1,3}(\.\d+)?%?\s*,?\s*\d{1,3}(\.\d+)?%?\s*(,?\s*(0|1|0?\.\d+))?\s*\)$/;
+  // CSS named colors (common subset)
+  const namedColors = /^(transparent|currentcolor|inherit|initial|unset|black|white|red|green|blue|yellow|orange|purple|pink|gray|grey|brown|cyan|magenta)$/i;
+  
+  if (hexPattern.test(color) || rgbPattern.test(color) || hslPattern.test(color) || namedColors.test(color)) {
+    return color;
+  }
+  return ''; // Reject invalid/potentially malicious colors
+};
+
+// Sanitize CSS property key to prevent injection
+const sanitizeKey = (key: string): string => {
+  if (!key || typeof key !== 'string') {
+    return '';
+  }
+  // Only allow alphanumeric, hyphens, and underscores
+  return /^[a-zA-Z0-9_-]+$/.test(key) ? key : '';
+};
+
 const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
   const colorConfig = Object.entries(config).filter(([_, config]) => config.theme || config.color);
 
@@ -74,9 +101,12 @@ const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
 ${prefix} [data-chart=${id}] {
 ${colorConfig
   .map(([key, itemConfig]) => {
-    const color = itemConfig.theme?.[theme as keyof typeof itemConfig.theme] || itemConfig.color;
-    return color ? `  --color-${key}: ${color};` : null;
+    const sanitizedKey = sanitizeKey(key);
+    const rawColor = itemConfig.theme?.[theme as keyof typeof itemConfig.theme] || itemConfig.color;
+    const color = sanitizeColor(rawColor || '');
+    return sanitizedKey && color ? `  --color-${sanitizedKey}: ${color};` : null;
   })
+  .filter(Boolean)
   .join("\n")}
 }
 `,
