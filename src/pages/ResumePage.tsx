@@ -216,7 +216,7 @@ const ResumePage = () => {
             <Link to="/story" className="hover:underline underline-offset-4">My Story</Link>
             <Link to="/poems" className="hover:underline underline-offset-4">Poetry</Link>
             <Link to="/projects" className="hover:underline underline-offset-4">Projects</Link>
-            <Link to="/ops" className="hover:underline underline-offset-4">AI Automations</Link>
+            <Link to="/builds" className="hover:underline underline-offset-4">Builds</Link>
             <Link to="/media" className="hover:underline underline-offset-4">Media</Link>
           </motion.div>
           

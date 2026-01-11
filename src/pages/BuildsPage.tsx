@@ -110,11 +110,11 @@ const ImageGallery = ({ images }: { images: string[] }) => {
   );
 };
 
-const OpsPage = () => {
+const BuildsPage = () => {
   useKeyboardScroll();
   return (
     <div className="min-h-screen bg-background">
-      <WalkwayHeader title="AI + Ops" />
+      <WalkwayHeader title="Builds" />
       
       <main className="pt-[140px] px-6 md:px-8 pb-24">
         <motion.div
@@ -123,7 +123,7 @@ const OpsPage = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6, duration: 0.8 }}
         >
-          <h1 className="text-3xl md:text-4xl tracking-widest uppercase mb-4">AI Automations</h1>
+          <h1 className="text-3xl md:text-4xl tracking-widest uppercase mb-4">Builds</h1>
           <p className="text-muted-foreground mb-12 text-sm md:text-base">
             AI Agents, Vibe Coding, and Ops
           </p>
@@ -184,4 +184,4 @@ const OpsPage = () => {
   );
 };
 
-export default OpsPage;
+export default BuildsPage;
