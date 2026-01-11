@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Index from "./pages/Index";
 import StoryPage from "./pages/StoryPage";
 import MediaPage from "./pages/MediaPage";
@@ -11,7 +11,7 @@ import NetworkPage from "./pages/NetworkPage";
 import BlueprintsPage from "./pages/BlueprintsPage";
 import PoemsPage from "./pages/PoemsPage";
 import PicturesPage from "./pages/PicturesPage";
-import OpsPage from "./pages/OpsPage";
+import BuildsPage from "./pages/BuildsPage";
 import ResumePage from "./pages/ResumePage";
 import NotFound from "./pages/NotFound";
 
@@ -32,7 +32,8 @@ const App = () => (
           <Route path="/blueprints" element={<BlueprintsPage />} />
           <Route path="/poems" element={<PoemsPage />} />
           <Route path="/pictures" element={<PicturesPage />} />
-          <Route path="/ops" element={<OpsPage />} />
+          <Route path="/builds" element={<BuildsPage />} />
+          <Route path="/ops" element={<Navigate to="/builds" replace />} />
           <Route path="/resume" element={<ResumePage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
