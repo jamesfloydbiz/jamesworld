@@ -40,7 +40,7 @@ const experience = [
   },
   {
     title: 'Operations',
-    company: 'Jets and Capital',
+    company: 'Jets and Capital | 4 times per year',
     period: 'Sep 2023 - Present',
     bullets: [
       'Ran or supported event production at high-profile venues including Trump Doral Miami, Caesars Palace, The Intrepid Aircraft Carrier, and private jet hangars.',
