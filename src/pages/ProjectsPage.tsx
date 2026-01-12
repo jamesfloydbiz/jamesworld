@@ -22,12 +22,12 @@ const currentProjects = [
     external: false,
   },
   {
-    title: 'BetterWealth',
-    description: 'We keep, grow, and transfer wealth. 60k+ on YT.',
+    title: 'Resume',
+    description: 'My process of mastering leverage. Code, Capital, Collaboration, and Content.',
     status: 'Active',
-    cta: 'Check it out',
-    link: 'https://www.youtube.com/c/BetterWealth',
-    external: true,
+    cta: 'View Resume',
+    link: '/resume',
+    external: false,
   },
   {
     title: 'Deal-Making',
@@ -69,7 +69,7 @@ const ProjectsPage = () => {
         >
           <h1 className="text-3xl md:text-4xl tracking-widest uppercase mb-4">Projects</h1>
           <p className="text-muted-foreground mb-12 text-sm md:text-base">
-            Current initiatives and past work in building wealth education and systems
+            Current initiatives, and past work in building wealth, education, and systems
           </p>
           
           {/* Current Projects Grid */}
