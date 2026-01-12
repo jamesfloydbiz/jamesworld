@@ -30,6 +30,7 @@ const experience = [
   {
     title: 'Chief of Staff',
     company: 'BetterWealth',
+    companyLink: 'https://youtube.com/betterwealth',
     period: 'Nov 2024 - Dec 2025',
     bullets: [
       'Brought ideas into reality and solved problems before and as they happened.',
@@ -40,7 +41,9 @@ const experience = [
   },
   {
     title: 'Operations',
-    company: 'Jets and Capital | 4 times per year',
+    company: 'Jets and Capital',
+    companyLink: 'https://jetsandcapital.com',
+    companySuffix: ' | 4 times per year',
     period: 'Sep 2023 - Present',
     bullets: [
       'Ran or supported event production at high-profile venues including Trump Doral Miami, Caesars Palace, The Intrepid Aircraft Carrier, and private jet hangars.',
@@ -49,7 +52,9 @@ const experience = [
   },
   {
     title: 'Chief of Staff',
-    company: 'Keiretsu Forum NW, Keiretsu Capital, NW Angel Fund',
+    company: 'Keiretsu Forum',
+    companyLink: 'https://www.k4northwest.com/cpages/home',
+    companySuffix: ' NW, Keiretsu Capital, NW Angel Fund',
     period: 'Nov 2023 - Jun 2024',
     bullets: [
       'Supported the largest, most active angel investor community in the world with **$1B+** deployed.',
@@ -62,6 +67,8 @@ const experience = [
     title: 'Account Executive',
     company: 'Royal Management',
     period: 'Jul 2021 - Jul 2022',
+    companyLink: undefined,
+    companySuffix: undefined,
     bullets: [
       'Led the nation in sales and broke records.',
       'Recruited, hired, managed, and coached a team of **5-30 members** repeatedly.',
@@ -176,7 +183,23 @@ const ResumePage = () => {
                 >
                   <div className="flex flex-col md:flex-row md:items-baseline md:justify-between mb-2">
                     <h3 className="text-base">
-                      {job.title} <span className="text-muted-foreground">at {job.company}</span>
+                      {job.title}{' '}
+                      <span className="text-muted-foreground">
+                        at{' '}
+                        {job.companyLink ? (
+                          <a
+                            href={job.companyLink}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="hover:text-foreground hover:underline underline-offset-4"
+                          >
+                            {job.company}
+                          </a>
+                        ) : (
+                          job.company
+                        )}
+                        {job.companySuffix}
+                      </span>
                     </h3>
                     <span className="text-muted-foreground text-sm">{job.period}</span>
                   </div>
