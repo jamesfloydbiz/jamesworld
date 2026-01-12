@@ -12,7 +12,7 @@ interface PedestalProps {
 const modelConfigs: Record<string, { path: string; scale: number[]; yOffset: number; floating?: boolean; rotationY?: number }> = {
   'Story': { path: '/models/tree_gn.glb', scale: [0.4, 0.4, 0.4], yOffset: 0.5 },
   'Projects': { path: '/models/vulcan.glb', scale: [0.0649, 0.0649, 0.0649], yOffset: 0.5, rotationY: 0 },
-  'Media': { path: '/models/apollo_as_the_genius_of_the_arts.glb', scale: [0.0118, 0.0118, 0.0118], yOffset: 0.5, rotationY: 0 },
+  'Media': { path: '/models/apollo_as_the_genius_of_the_arts.glb', scale: [0.00169, 0.00169, 0.00169], yOffset: 1.8, rotationY: 0 },
   'Blueprints': { path: '/models/the_thinker_by_auguste_rodin.glb', scale: [1.125, 1.125, 1.125], yOffset: 0.5, rotationY: 0 },
   'Network': { path: '/models/pumping_heart_model.glb', scale: [0.012, 0.012, 0.012], yOffset: 1.0 },
 };
