@@ -11,7 +11,7 @@ interface PedestalProps {
 // Model configurations for each section
 const modelConfigs: Record<string, { path: string; scale: number[]; yOffset: number; floating?: boolean; rotationY?: number }> = {
   'Story': { path: '/models/tree_gn.glb', scale: [0.4, 0.4, 0.4], yOffset: 0.5 },
-  'Projects': { path: '/models/model_of_the_watt_steam_engine_with_animation.glb', scale: [0.9, 0.9, 0.9], yOffset: 0.3 },
+  'Projects': { path: '/models/vulcan.glb', scale: [1.125, 1.125, 1.125], yOffset: 0.5, rotationY: Math.PI },
   'Media': { path: '/models/movie_clipper.glb', scale: [0.2, 0.2, 0.2], yOffset: 2.0, floating: true, rotationY: Math.PI / 2 },
   'Blueprints': { path: '/models/the_thinker_by_auguste_rodin.glb', scale: [1.125, 1.125, 1.125], yOffset: 0.5, rotationY: 0 },
   'Network': { path: '/models/pumping_heart_model.glb', scale: [0.012, 0.012, 0.012], yOffset: 1.0 },
@@ -98,7 +98,7 @@ export function Pedestal({ position, title }: PedestalProps) {
 
 // Preload all models
 useGLTF.preload('/models/tree_gn.glb');
-useGLTF.preload('/models/model_of_the_watt_steam_engine_with_animation.glb');
+useGLTF.preload('/models/vulcan.glb');
 useGLTF.preload('/models/movie_clipper.glb');
 useGLTF.preload('/models/the_thinker_by_auguste_rodin.glb');
 useGLTF.preload('/models/pumping_heart_model.glb');
