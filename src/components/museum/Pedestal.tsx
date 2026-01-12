@@ -9,12 +9,12 @@ interface PedestalProps {
 }
 
 // Model configurations for each section
-const modelConfigs: Record<string, { path: string; scale: number[]; yOffset: number; floating?: boolean; rotationY?: number }> = {
+const modelConfigs: Record<string, { path: string; scale: number[]; yOffset: number; xOffset?: number; zOffset?: number; floating?: boolean; rotationY?: number }> = {
   'Story': { path: '/models/tree_gn.glb', scale: [0.4, 0.4, 0.4], yOffset: 0.5 },
   'Projects': { path: '/models/vulcan.glb', scale: [0.0649, 0.0649, 0.0649], yOffset: 0.5, rotationY: 0 },
   'Media': { path: '/models/apollo_as_the_genius_of_the_arts.glb', scale: [0.0021, 0.0021, 0.0021], yOffset: 1.8, rotationY: 0 },
   'Blueprints': { path: '/models/the_thinker_by_auguste_rodin.glb', scale: [1.125, 1.125, 1.125], yOffset: 0.5, rotationY: 0 },
-  'Network': { path: '/models/gilt_bronze_statuette_of_sakyamuni_buddha.glb', scale: [0.546, 0.546, 0.546], yOffset: 0.5, rotationY: Math.PI + (100 * Math.PI / 180) },
+  'Network': { path: '/models/gilt_bronze_statuette_of_sakyamuni_buddha.glb', scale: [0.546, 0.546, 0.546], yOffset: 0.5, xOffset: 0.5, rotationY: Math.PI + (100 * Math.PI / 180) },
 };
 
 // Fallback placeholder for when model is loading or fails
@@ -42,7 +42,7 @@ function LoadedModel({ title, config }: { title: string; config: typeof modelCon
   });
 
   return (
-    <group ref={groupRef} position={[0, config.yOffset, 0]} rotation={[0, config.rotationY || 0, 0]}>
+    <group ref={groupRef} position={[config.xOffset || 0, config.yOffset, config.zOffset || 0]} rotation={[0, config.rotationY || 0, 0]}>
       <primitive 
         object={scene.clone()} 
         scale={config.scale}
