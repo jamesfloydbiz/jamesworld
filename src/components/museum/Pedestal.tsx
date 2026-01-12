@@ -14,7 +14,7 @@ const modelConfigs: Record<string, { path: string; scale: number[]; yOffset: num
   'Projects': { path: '/models/vulcan.glb', scale: [0.0649, 0.0649, 0.0649], yOffset: 0.5, rotationY: 0 },
   'Media': { path: '/models/apollo_as_the_genius_of_the_arts.glb', scale: [0.0021, 0.0021, 0.0021], yOffset: 1.8, rotationY: 0 },
   'Blueprints': { path: '/models/the_thinker_by_auguste_rodin.glb', scale: [1.125, 1.125, 1.125], yOffset: 0.5, rotationY: 0 },
-  'Network': { path: '/models/gilt_bronze_statuette_of_sakyamuni_buddha.glb', scale: [1.092, 1.092, 1.092], yOffset: 1.0, rotationY: Math.PI / 2 },
+  'Network': { path: '/models/gilt_bronze_statuette_of_sakyamuni_buddha.glb', scale: [0.546, 0.546, 0.546], yOffset: 0.5, rotationY: Math.PI },
 };
 
 // Fallback placeholder for when model is loading or fails
