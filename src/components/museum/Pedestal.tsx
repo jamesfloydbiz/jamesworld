@@ -37,10 +37,10 @@ const modelConfigs: Record<
   },
   Network: {
     path: "/models/gilt_bronze_statuette_of_sakyamuni_buddha.glb",
-    scale: [0.3, 0.3, 0.3],
-    yOffset: 3,
+    scale: [0.4, 0.4, 0.4],
+    yOffset: 2.5,
     xOffset: 0,
-    rotationY: Math.PI + (70 * Math.PI) / 180,
+    rotationY: Math.PI + (100 * Math.PI) / 180,
   },
 };
 
