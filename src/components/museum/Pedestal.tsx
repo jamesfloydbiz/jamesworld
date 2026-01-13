@@ -40,7 +40,7 @@ const modelConfigs: Record<
     scale: [0.4, 0.4, 0.4],
     yOffset: 0.5,
     xOffset: 0,
-    rotationY: Math.Pi,
+    rotationY: Math.PI,
   },
 };
 
