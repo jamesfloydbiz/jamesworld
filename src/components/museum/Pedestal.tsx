@@ -1,7 +1,7 @@
-import { useGLTF } from '@react-three/drei';
-import { useFrame } from '@react-three/fiber';
-import { useRef, Suspense } from 'react';
-import * as THREE from 'three';
+import { useGLTF } from "@react-three/drei";
+import { useFrame } from "@react-three/fiber";
+import { useRef, Suspense } from "react";
+import * as THREE from "three";
 
 interface PedestalProps {
   position: [number, number, number];
@@ -9,12 +9,39 @@ interface PedestalProps {
 }
 
 // Model configurations for each section
-const modelConfigs: Record<string, { path: string; scale: number[]; yOffset: number; xOffset?: number; zOffset?: number; floating?: boolean; rotationY?: number }> = {
-  'Story': { path: '/models/tree_gn.glb', scale: [0.4, 0.4, 0.4], yOffset: 0.5 },
-  'Projects': { path: '/models/vulcan.glb', scale: [0.0649, 0.0649, 0.0649], yOffset: 0.5, rotationY: 0 },
-  'Media': { path: '/models/apollo_as_the_genius_of_the_arts.glb', scale: [0.0021, 0.0021, 0.0021], yOffset: 1.8, rotationY: 0 },
-  'Blueprints': { path: '/models/the_thinker_by_auguste_rodin.glb', scale: [1.125, 1.125, 1.125], yOffset: 0.5, rotationY: 0 },
-  'Network': { path: '/models/gilt_bronze_statuette_of_sakyamuni_buddha.glb', scale: [0.546, 0.546, 0.546], yOffset: 0.5, xOffset: 5.5, rotationY: Math.PI + (100 * Math.PI / 180) },
+const modelConfigs: Record<
+  string,
+  {
+    path: string;
+    scale: number[];
+    yOffset: number;
+    xOffset?: number;
+    zOffset?: number;
+    floating?: boolean;
+    rotationY?: number;
+  }
+> = {
+  Story: { path: "/models/tree_gn.glb", scale: [0.4, 0.4, 0.4], yOffset: 0.5 },
+  Projects: { path: "/models/vulcan.glb", scale: [0.0649, 0.0649, 0.0649], yOffset: 0.5, rotationY: 0 },
+  Media: {
+    path: "/models/apollo_as_the_genius_of_the_arts.glb",
+    scale: [0.0021, 0.0021, 0.0021],
+    yOffset: 1.8,
+    rotationY: 0,
+  },
+  Blueprints: {
+    path: "/models/the_thinker_by_auguste_rodin.glb",
+    scale: [1.125, 1.125, 1.125],
+    yOffset: 0.5,
+    rotationY: 0,
+  },
+  Network: {
+    path: "/models/gilt_bronze_statuette_of_sakyamuni_buddha.glb",
+    scale: [0.546, 0.546, 0.546],
+    yOffset: 0.5,
+    xOffset: 3.5,
+    rotationY: Math.PI + (100 * Math.PI) / 180,
+  },
 };
 
 // Fallback placeholder for when model is loading or fails
@@ -28,10 +55,10 @@ function ModelPlaceholder({ yOffset = 1.0 }: { yOffset?: number }) {
 }
 
 // Inner component that loads the actual model
-function LoadedModel({ title, config }: { title: string; config: typeof modelConfigs[string] }) {
+function LoadedModel({ title, config }: { title: string; config: (typeof modelConfigs)[string] }) {
   const groupRef = useRef<THREE.Group>(null);
   const { scene } = useGLTF(config.path);
-  
+
   useFrame((state) => {
     if (groupRef.current) {
       // Floating animation
@@ -42,18 +69,19 @@ function LoadedModel({ title, config }: { title: string; config: typeof modelCon
   });
 
   return (
-    <group ref={groupRef} position={[config.xOffset || 0, config.yOffset, config.zOffset || 0]} rotation={[0, config.rotationY || 0, 0]}>
-      <primitive 
-        object={scene.clone()} 
-        scale={config.scale}
-      />
+    <group
+      ref={groupRef}
+      position={[config.xOffset || 0, config.yOffset, config.zOffset || 0]}
+      rotation={[0, config.rotationY || 0, 0]}
+    >
+      <primitive object={scene.clone()} scale={config.scale} />
     </group>
   );
 }
 
 function ModelExhibit({ title }: { title: string }) {
   const config = modelConfigs[title];
-  
+
   if (!config) {
     return <ModelPlaceholder />;
   }
@@ -73,16 +101,16 @@ export function Pedestal({ position, title }: PedestalProps) {
         <boxGeometry args={[2.5, 0.3, 2.5]} />
         <meshStandardMaterial color="#1a1a1a" roughness={0.9} />
       </mesh>
-      
+
       {/* Elevated platform */}
       <mesh position={[0, 0.4, 0]} receiveShadow castShadow>
         <boxGeometry args={[2, 0.2, 2]} />
         <meshStandardMaterial color="#222222" roughness={0.85} />
       </mesh>
-      
+
       {/* Central exhibit object */}
       <ModelExhibit title={title} />
-      
+
       {/* Title plaque */}
       <mesh position={[0, 0.35, 1.1]} rotation={[-0.2, 0, 0]}>
         <boxGeometry args={[0.8, 0.15, 0.02]} />
@@ -93,8 +121,8 @@ export function Pedestal({ position, title }: PedestalProps) {
 }
 
 // Preload all models
-useGLTF.preload('/models/tree_gn.glb');
-useGLTF.preload('/models/vulcan.glb');
-useGLTF.preload('/models/apollo_as_the_genius_of_the_arts.glb');
-useGLTF.preload('/models/the_thinker_by_auguste_rodin.glb');
-useGLTF.preload('/models/gilt_bronze_statuette_of_sakyamuni_buddha.glb');
+useGLTF.preload("/models/tree_gn.glb");
+useGLTF.preload("/models/vulcan.glb");
+useGLTF.preload("/models/apollo_as_the_genius_of_the_arts.glb");
+useGLTF.preload("/models/the_thinker_by_auguste_rodin.glb");
+useGLTF.preload("/models/gilt_bronze_statuette_of_sakyamuni_buddha.glb");
