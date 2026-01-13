@@ -9,7 +9,7 @@ interface PedestalProps {
 }
 
 // Model configurations for each section
-const modelConfigs: Record<
+export const modelConfigs: Record<
   string,
   {
     path: string;
@@ -19,21 +19,24 @@ const modelConfigs: Record<
     zOffset?: number;
     floating?: boolean;
     rotationY?: number;
+    lightIntensity?: number;
   }
 > = {
-  Story: { path: "/models/tree_gn.glb", scale: [0.4, 0.4, 0.4], yOffset: 0.5 },
-  Projects: { path: "/models/vulcan.glb", scale: [0.0649, 0.0649, 0.0649], yOffset: 0.5, rotationY: 0 },
+  Story: { path: "/models/tree_gn.glb", scale: [0.4, 0.4, 0.4], yOffset: 0.5, lightIntensity: 1.2 },
+  Projects: { path: "/models/vulcan.glb", scale: [0.0649, 0.0649, 0.0649], yOffset: 0.5, rotationY: 0, lightIntensity: 1.0 },
   Media: {
     path: "/models/apollo_as_the_genius_of_the_arts.glb",
     scale: [0.0021, 0.0021, 0.0021],
     yOffset: 1.8,
     rotationY: 0,
+    lightIntensity: 0.9,
   },
   Blueprints: {
     path: "/models/the_thinker_by_auguste_rodin.glb",
     scale: [1.125, 1.125, 1.125],
     yOffset: 0.5,
     rotationY: 0,
+    lightIntensity: 1.4,
   },
   Network: {
     path: "/models/buddha.glb",
@@ -41,6 +44,7 @@ const modelConfigs: Record<
     yOffset: 0.5,
     xOffset: 0,
     rotationY: Math.PI,
+    lightIntensity: 0.5,
   },
 };
 

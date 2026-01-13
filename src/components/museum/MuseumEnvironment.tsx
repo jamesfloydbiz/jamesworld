@@ -1,6 +1,6 @@
 import { useGameStore } from '@/store/gameStore';
 import { FloorCircle } from './FloorCircle';
-import { Pedestal } from './Pedestal';
+import { Pedestal, modelConfigs } from './Pedestal';
 import { StanchionRailing } from './StanchionRailing';
 import { CeilingLights } from './CeilingLights';
 import { HallwayDoorway } from './HallwayDoorway';
@@ -59,22 +59,36 @@ export function MuseumEnvironment({ showLabels = true }: MuseumEnvironmentProps)
       {/* Picture Hall */}
       <PictureHall />
 
-      {/* Soft spotlights on each pedestal - improved falloff */}
-      {portals.map((portal) => (
-        <spotLight
-          key={`spotlight-${portal.id}`}
-          position={[portal.pedestalPosition[0], 8, portal.pedestalPosition[2]]}
-          target-position={portal.pedestalPosition}
-          angle={0.35}
-          penumbra={1}
-          intensity={0.8}
-          color="#fffaf0"
-          castShadow
-          shadow-mapSize={[512, 512]}
-          decay={2}
-          distance={12}
-        />
-      ))}
+      {/* Enhanced spotlights on each pedestal with per-model intensity */}
+      {portals.map((portal) => {
+        const config = modelConfigs[portal.title];
+        const intensity = config?.lightIntensity ?? 1.0;
+        return (
+          <group key={`lights-${portal.id}`}>
+            {/* Main spotlight */}
+            <spotLight
+              position={[portal.pedestalPosition[0], 8, portal.pedestalPosition[2]]}
+              target-position={portal.pedestalPosition}
+              angle={0.3}
+              penumbra={0.8}
+              intensity={intensity}
+              color="#fffaf0"
+              castShadow
+              shadow-mapSize={[512, 512]}
+              decay={2}
+              distance={15}
+            />
+            {/* Subtle accent point light at base */}
+            <pointLight
+              position={[portal.pedestalPosition[0], 1, portal.pedestalPosition[2]]}
+              intensity={0.15}
+              color="#fff5e6"
+              distance={4}
+              decay={2}
+            />
+          </group>
+        );
+      })}
 
       {/* Front partial walls - adjusted */}
       <mesh position={[-6, 4, 7]} receiveShadow>
