@@ -37,7 +37,7 @@ export function WalkwayHeader({ title }: WalkwayHeaderProps) {
     }, 300);
   };
 
-  const menuItems = ["Story", "Projects", "Media", "Network", "Blueprints", "Resume", "Poems", "Memories"];
+  const menuItems = ["Story", "Projects", "Content", "Network", "Blueprints", "Resume", "Poems", "Memories"];
 
   return (
     <>

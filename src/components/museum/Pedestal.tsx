@@ -23,12 +23,12 @@ export const modelConfigs: Record<
   }
 > = {
   Story: { path: "/models/tree_gn.glb", scale: [0.4, 0.4, 0.4], yOffset: 0.5, lightIntensity: 1.2 },
-  Projects: { path: "/models/vulcan.glb", scale: [0.0649, 0.0649, 0.0649], yOffset: 0.5, rotationY: 0, lightIntensity: 1.0 },
-  Media: {
+  Projects: { path: "/models/vulcan.glb", scale: [0.0649, 0.0649, 0.0649], yOffset: 0.5, rotationY: -Math.PI / 6, lightIntensity: 1.0 }, // counter-clockwise 30°
+  Content: {
     path: "/models/apollo_as_the_genius_of_the_arts.glb",
     scale: [0.0021, 0.0021, 0.0021],
     yOffset: 1.8,
-    rotationY: 0,
+    rotationY: Math.PI / 4, // clockwise 45°
     lightIntensity: 0.9,
   },
   Blueprints: {
@@ -43,8 +43,8 @@ export const modelConfigs: Record<
     scale: [0.4, 0.4, 0.4],
     yOffset: 0.5,
     xOffset: 0,
-    rotationY: Math.PI,
-    lightIntensity: 0.5,
+    rotationY: Math.PI - Math.PI / 6, // 180° - 30° = counter-clockwise 30°
+    lightIntensity: 1.0, // Increased from 0.5
   },
 };
 

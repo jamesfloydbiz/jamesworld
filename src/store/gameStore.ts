@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-export type Section = 'Story' | 'Media' | 'Projects' | 'Network' | 'Blueprints';
+export type Section = 'Story' | 'Content' | 'Projects' | 'Network' | 'Blueprints';
 
 interface PortalData {
   id: string;
@@ -61,10 +61,10 @@ const initialPortals: PortalData[] = [
     order: 1,
   },
   {
-    id: 'media',
-    title: 'Media',
-    section: 'Media',
-    route: '/media',
+    id: 'content',
+    title: 'Content',
+    section: 'Content',
+    route: '/content',
     pedestalPosition: [4, 0, -8],
     circlePosition: [4, 0.01, -4],
     order: 2,
