@@ -46,7 +46,7 @@ export function MainMenu({ onEnterGallery, galleryLoading, galleryProgress }: Ma
     { label: '3D Gallery', action: onEnterGallery, isGallery: true },
     { label: 'Story', path: '/story' },
     { label: 'Projects', path: '/projects' },
-    { label: 'Media', path: '/media' },
+    { label: 'Content', path: '/content' },
     { label: 'Network', path: '/network' },
     { label: 'Blueprints', path: '/blueprints' },
     { label: 'Resume', path: '/resume' },
