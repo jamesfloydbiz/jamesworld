@@ -36,7 +36,7 @@ const modelConfigs: Record<
     rotationY: 0,
   },
   Network: {
-    path: "/models/gilt_bronze_statuette_of_sakyamuni_buddha.glb",
+    path: "/models/buddha.glb",
     scale: [0.4, 0.4, 0.4],
     yOffset: 2.5,
     xOffset: 2.5,
@@ -125,4 +125,4 @@ useGLTF.preload("/models/tree_gn.glb");
 useGLTF.preload("/models/vulcan.glb");
 useGLTF.preload("/models/apollo_as_the_genius_of_the_arts.glb");
 useGLTF.preload("/models/the_thinker_by_auguste_rodin.glb");
-useGLTF.preload("/models/gilt_bronze_statuette_of_sakyamuni_buddha.glb");
+useGLTF.preload("/models/buddha.glb");
