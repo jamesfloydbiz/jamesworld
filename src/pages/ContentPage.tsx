@@ -31,12 +31,11 @@ const featuredContent = [
   },
   {
     type: 'Poem',
-    title: 'Dear Darkness',
+    title: 'Into the Darkness',
     description: 'Hello again Mr. Darkness, its good to see you',
     duration: '1 min read',
     stats: 'The scars make the man',
-    hasImage: true,
-    imagePlaceholder: 'Dear Darkness poem',
+    image: '/poems/IntotheDarkness.png',
   },
   {
     type: 'Instagram',
@@ -58,12 +57,11 @@ const featuredContent = [
   },
   {
     type: 'Poem',
-    title: 'No Sleep',
+    title: 'Madman',
     description: 'Evidence for confidence',
     duration: '1 min read',
     stats: 'Walk on, walk on...',
-    hasImage: true,
-    imagePlaceholder: 'No Sleep poem',
+    image: '/poems/Madman.png',
   },
 ];
 
@@ -121,9 +119,9 @@ const ContentPage = () => {
                   {content.description}
                 </p>
                 
-                {content.hasImage && (
-                  <div className="mb-4 bg-secondary aspect-video flex items-center justify-center text-muted-foreground text-xs border border-border">
-                    [Image: {content.imagePlaceholder}]
+                {content.image && (
+                  <div className="mb-4 aspect-video border border-border overflow-hidden">
+                    <img src={content.image} alt={content.title} className="w-full h-full object-cover" />
                   </div>
                 )}
                 
