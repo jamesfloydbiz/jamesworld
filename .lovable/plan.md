@@ -1,60 +1,39 @@
 
 
-## References Page — `/references`
+## Reorganize References Page Layout
 
-A scrapbook-style testimonials page: clean, spatial, museum-consistent. Placeholder content throughout, ready to swap in real quotes, videos, and images later.
+The current absolute-positioned clusters create too much empty space and feel scattered. The fix is to replace the cluster/absolute approach with a **CSS Grid layout** that packs items tightly in a two-column arrangement, matching the reference screenshots.
 
-### Layout Concept
+### Layout Structure
 
-A single-column flow with items scattered at varying widths and alignments, evoking a curated scrapbook pinned to a dark wall. Each item has a subtle border and generous whitespace. Items alternate between left-aligned, centered, and right-aligned to break the grid feeling while staying orderly.
+Based on the reference images (both your current page screenshots and the scrapbook photo):
 
-Three reference types:
-- **Text quote** — name, role/relationship, and quote text
-- **Image quote** — placeholder image with overlaid or adjacent quote
-- **Video clip** — placeholder video embed area with attribution
+- **Two-column grid** using `grid-template-columns` with items spanning 1 or 2 columns
+- Items sit close together with small, consistent gaps (around 16-24px)
+- No absolute positioning — use grid placement (`grid-column`, `grid-row`) for predictable, tight packing
+- Keep the subtle rotations for scrapbook feel
+- Items vary in size naturally based on content, not forced min-heights
 
-### Placeholder Data (~8-10 items)
+### Proposed Grid Arrangement
 
-| Type | Name | Relation | Quote snippet |
-|------|------|----------|---------------|
-| Text | Placeholder A | Former colleague | "James is the kind of person who..." |
-| Video | Placeholder B | Manager | Video testimonial placeholder |
-| Image | Placeholder C | Friend | Image with quote overlay |
-| Text | Placeholder D | Collaborator | "Working with James taught me..." |
-| Video | Placeholder E | Mentor | Video testimonial placeholder |
-| Text | Placeholder F | Client | "He brought clarity to..." |
-| Image | Placeholder G | Partner | Image with quote |
-| Text | Placeholder H | Team lead | "What stands out about James..." |
+```text
+Row 1:  [Text A - left col]          [Image C - right col]
+Row 2:  [Video B - spans center/right]
+Row 3:  [Text D - left col]          [Text F - right col]
+Row 4:  [Video E - left col]         [Text H - right col]
+Row 5:  [Image G - left col]         [Text H2 - right col]
+```
 
-### File Changes
+Items will naturally pack tight because grid handles sizing. Subtle rotations stay. No huge empty gaps.
 
-**1. Create `src/pages/ReferencesPage.tsx`**
-- Uses `WalkwayHeader` with title "References"
-- Uses `useKeyboardScroll` hook
-- Framer Motion staggered entry animations
-- Scrapbook layout: items at varying max-widths (`max-w-sm`, `max-w-md`, `max-w-lg`) with alternating alignment (`ml-auto`, `mr-auto`, `mx-auto`)
-- Each item wrapped in a bordered container with slight rotation via inline `transform: rotate(Xdeg)` for subtle scrapbook tilt (small values like -1deg to 2deg)
-- Text items: quote in italic, name and relation below
-- Image items: gray placeholder box (aspect-square or aspect-video) with quote text adjacent
-- Video items: dark placeholder box with play icon and attribution
+### Technical Changes
 
-**2. Update `src/App.tsx`**
-- Import `ReferencesPage`
-- Add route: `<Route path="/references" element={<ReferencesPage />} />`
+**File: `src/pages/ReferencesPage.tsx`** — Full rewrite of data structure and layout:
 
-**3. Update `src/components/walkway/WalkwayHeader.tsx`**
-- Add "References" to the `menuItems` array
-
-**4. Update `src/components/ui/MainMenu.tsx`**
-- Add "References" menu item
-
-**5. Update `src/pages/Index.tsx`**
-- Add "References" to mobile menu if present
-
-### Technical Notes
-- No new dependencies needed
-- Follows existing page patterns (WalkwayHeader, motion animations, keyboard scroll)
-- All content is placeholder — text quotes use generic attribution, image/video slots are styled empty containers
-- Subtle CSS rotations on items (alternating -1deg, 0.5deg, 1.5deg, -0.8deg) give the scrapbook feel without clutter
-- Monochrome palette consistent with museum theme
+- Remove `Cluster` type and absolute positioning
+- Change to a flat array of references, each with a `gridArea` or `gridColumn`/`gridRow` assignment
+- Replace the cluster container with a single `grid` container: `grid-cols-2`, `gap-4 md:gap-6`
+- Each card uses `position: relative` (not absolute), placed via grid properties
+- Keep `TextCard`, `ImageCard`, `VideoCard` components but remove absolute positioning from them
+- Cards keep their rotation transforms and border styling
 
