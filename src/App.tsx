@@ -13,6 +13,7 @@ import PoemsPage from "./pages/PoemsPage";
 import PicturesPage from "./pages/PicturesPage";
 import BuildsPage from "./pages/BuildsPage";
 import ResumePage from "./pages/ResumePage";
+import ReferencesPage from "./pages/ReferencesPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -35,6 +36,7 @@ const App = () => (
           <Route path="/builds" element={<BuildsPage />} />
           <Route path="/ops" element={<Navigate to="/builds" replace />} />
           <Route path="/resume" element={<ResumePage />} />
+          <Route path="/references" element={<ReferencesPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
