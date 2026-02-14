@@ -11,120 +11,82 @@ interface Reference {
   relation: string;
   quote: string;
   rotation: string;
-  /** CSS positioning within the cluster */
-  style: React.CSSProperties;
-  /** Width class */
-  width: string;
+  gridColumn?: string;
+  gridRow?: string;
 }
 
-// Each cluster is a group of overlapping items positioned together
-interface Cluster {
-  /** Min-height for the cluster container */
-  minHeight: string;
-  items: Reference[];
-}
-
-const clusters: Cluster[] = [
+const references: Reference[] = [
   {
-    minHeight: '420px',
-    items: [
-      {
-        type: 'text',
-        name: 'Placeholder A',
-        relation: 'Former Colleague',
-        quote: '"James is the kind of person who makes everyone around him better. His ability to see the whole picture while caring about the details is rare."',
-        rotation: '-1.2deg',
-        width: 'w-[340px] md:w-[400px]',
-        style: { top: '0', left: '0' },
-      },
-      {
-        type: 'image',
-        name: 'Placeholder C',
-        relation: 'Friend',
-        quote: '"He showed up when it mattered most."',
-        rotation: '2deg',
-        width: 'w-[260px] md:w-[300px]',
-        style: { top: '60px', right: '0' },
-      },
-    ],
+    type: 'text',
+    name: 'Placeholder A',
+    relation: 'Former Colleague',
+    quote: '"James is the kind of person who makes everyone around him better. His ability to see the whole picture while caring about the details is rare."',
+    rotation: '-1.2deg',
+    gridColumn: '1',
+    gridRow: '1 / 3',
   },
   {
-    minHeight: '380px',
-    items: [
-      {
-        type: 'video',
-        name: 'Placeholder B',
-        relation: 'Manager',
-        quote: 'Video testimonial',
-        rotation: '0.8deg',
-        width: 'w-[320px] md:w-[420px]',
-        style: { top: '0', left: '50%', transform: 'translateX(-50%)' },
-      },
-      {
-        type: 'text',
-        name: 'Placeholder D',
-        relation: 'Collaborator',
-        quote: '"Working with James taught me that ambition and generosity aren\'t opposites."',
-        rotation: '-1.5deg',
-        width: 'w-[280px] md:w-[320px]',
-        style: { top: '140px', left: '0' },
-      },
-    ],
+    type: 'image',
+    name: 'Placeholder C',
+    relation: 'Friend',
+    quote: '"He showed up when it mattered most."',
+    rotation: '2deg',
+    gridColumn: '2',
+    gridRow: '1',
   },
   {
-    minHeight: '440px',
-    items: [
-      {
-        type: 'text',
-        name: 'Placeholder F',
-        relation: 'Client',
-        quote: '"He brought clarity to a situation that felt impossible. Calm, direct, and always a step ahead."',
-        rotation: '1.1deg',
-        width: 'w-[300px] md:w-[360px]',
-        style: { top: '0', right: '5%' },
-      },
-      {
-        type: 'video',
-        name: 'Placeholder E',
-        relation: 'Mentor',
-        quote: 'Video testimonial',
-        rotation: '-0.6deg',
-        width: 'w-[280px] md:w-[360px]',
-        style: { top: '100px', left: '0' },
-      },
-      {
-        type: 'text',
-        name: 'Placeholder H',
-        relation: 'Team Lead',
-        quote: '"No noise, just results."',
-        rotation: '2.2deg',
-        width: 'w-[220px] md:w-[260px]',
-        style: { bottom: '0', right: '10%' },
-      },
-    ],
+    type: 'video',
+    name: 'Placeholder B',
+    relation: 'Manager',
+    quote: 'Video testimonial',
+    rotation: '0.8deg',
+    gridColumn: '2',
+    gridRow: '2 / 4',
   },
   {
-    minHeight: '360px',
-    items: [
-      {
-        type: 'image',
-        name: 'Placeholder G',
-        relation: 'Partner',
-        quote: '"Trust is earned. James earned it faster than anyone I\'ve worked with."',
-        rotation: '-1.8deg',
-        width: 'w-[280px] md:w-[340px]',
-        style: { top: '0', left: '10%' },
-      },
-      {
-        type: 'text',
-        name: 'Placeholder H',
-        relation: 'Team Lead',
-        quote: '"What stands out about James is how quietly effective he is — the kind of results that compound over time."',
-        rotation: '0.5deg',
-        width: 'w-[300px] md:w-[380px]',
-        style: { top: '80px', right: '0' },
-      },
-    ],
+    type: 'text',
+    name: 'Placeholder D',
+    relation: 'Collaborator',
+    quote: '"Working with James taught me that ambition and generosity aren\'t opposites."',
+    rotation: '-1.5deg',
+    gridColumn: '1',
+    gridRow: '3',
+  },
+  {
+    type: 'text',
+    name: 'Placeholder F',
+    relation: 'Client',
+    quote: '"He brought clarity to a situation that felt impossible. Calm, direct, and always a step ahead."',
+    rotation: '1.1deg',
+    gridColumn: '1',
+    gridRow: '4',
+  },
+  {
+    type: 'video',
+    name: 'Placeholder E',
+    relation: 'Mentor',
+    quote: 'Video testimonial',
+    rotation: '-0.6deg',
+    gridColumn: '2',
+    gridRow: '4',
+  },
+  {
+    type: 'image',
+    name: 'Placeholder G',
+    relation: 'Partner',
+    quote: '"Trust is earned. James earned it faster than anyone I\'ve worked with."',
+    rotation: '-1.8deg',
+    gridColumn: '1',
+    gridRow: '5',
+  },
+  {
+    type: 'text',
+    name: 'Placeholder H',
+    relation: 'Team Lead',
+    quote: '"What stands out about James is how quietly effective he is — the kind of results that compound over time."',
+    rotation: '0.5deg',
+    gridColumn: '2',
+    gridRow: '5',
   },
 ];
 
@@ -134,9 +96,12 @@ function TextCard({ item, index }: { item: Reference; index: number }) {
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-30px' }}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
-      className={`absolute ${item.width}`}
-      style={{ ...item.style, transform: `${item.style.transform || ''} rotate(${item.rotation})`.trim() }}
+      transition={{ duration: 0.5, delay: index * 0.08 }}
+      style={{
+        gridColumn: item.gridColumn,
+        gridRow: item.gridRow,
+        transform: `rotate(${item.rotation})`,
+      }}
     >
       <div className="border border-foreground/10 bg-background p-6 md:p-8 shadow-[0_2px_20px_-8px_hsl(var(--foreground)/0.08)]">
         <p className="text-foreground/80 italic text-base md:text-lg leading-relaxed font-light">
@@ -157,9 +122,12 @@ function ImageCard({ item, index }: { item: Reference; index: number }) {
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-30px' }}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
-      className={`absolute ${item.width}`}
-      style={{ ...item.style, transform: `${item.style.transform || ''} rotate(${item.rotation})`.trim() }}
+      transition={{ duration: 0.5, delay: index * 0.08 }}
+      style={{
+        gridColumn: item.gridColumn,
+        gridRow: item.gridRow,
+        transform: `rotate(${item.rotation})`,
+      }}
     >
       <div className="border border-foreground/10 bg-background shadow-[0_2px_20px_-8px_hsl(var(--foreground)/0.08)]">
         <div className="aspect-[4/3] bg-foreground/5 flex items-center justify-center">
@@ -183,9 +151,12 @@ function VideoCard({ item, index }: { item: Reference; index: number }) {
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-30px' }}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
-      className={`absolute ${item.width}`}
-      style={{ ...item.style, transform: `${item.style.transform || ''} rotate(${item.rotation})`.trim() }}
+      transition={{ duration: 0.5, delay: index * 0.08 }}
+      style={{
+        gridColumn: item.gridColumn,
+        gridRow: item.gridRow,
+        transform: `rotate(${item.rotation})`,
+      }}
     >
       <div className="border border-foreground/10 bg-background shadow-[0_2px_20px_-8px_hsl(var(--foreground)/0.08)]">
         <div className="aspect-video bg-foreground/[0.03] flex items-center justify-center">
@@ -221,7 +192,6 @@ export default function ReferencesPage() {
       <WalkwayHeader title="References" />
 
       <main className="pt-32 pb-24 px-6 md:px-12 lg:px-20">
-        {/* Page title */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -236,17 +206,15 @@ export default function ReferencesPage() {
           </p>
         </motion.div>
 
-        {/* Scrapbook clusters */}
-        <div className="max-w-5xl mx-auto flex flex-col gap-8 md:gap-4">
-          {clusters.map((cluster, ci) => (
-            <div
-              key={ci}
-              className="relative w-full"
-              style={{ minHeight: cluster.minHeight }}
-            >
-              {cluster.items.map((item, ii) => renderCard(item, ci * 3 + ii))}
-            </div>
-          ))}
+        <div
+          className="max-w-5xl mx-auto"
+          style={{
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr',
+            gap: '16px',
+          }}
+        >
+          {references.map((ref, i) => renderCard(ref, i))}
         </div>
       </main>
     </div>
