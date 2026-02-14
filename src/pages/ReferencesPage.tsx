@@ -10,103 +10,141 @@ interface Reference {
   name: string;
   relation: string;
   quote: string;
-  maxWidth: string;
-  align: string;
   rotation: string;
+  /** CSS positioning within the cluster */
+  style: React.CSSProperties;
+  /** Width class */
+  width: string;
 }
 
-const references: Reference[] = [
+// Each cluster is a group of overlapping items positioned together
+interface Cluster {
+  /** Min-height for the cluster container */
+  minHeight: string;
+  items: Reference[];
+}
+
+const clusters: Cluster[] = [
   {
-    type: 'text',
-    name: 'Placeholder A',
-    relation: 'Former Colleague',
-    quote: '"James is the kind of person who makes everyone around him better. His ability to see the whole picture while caring about the details is rare."',
-    maxWidth: 'max-w-md',
-    align: 'mr-auto',
-    rotation: '-1.2deg',
+    minHeight: '420px',
+    items: [
+      {
+        type: 'text',
+        name: 'Placeholder A',
+        relation: 'Former Colleague',
+        quote: '"James is the kind of person who makes everyone around him better. His ability to see the whole picture while caring about the details is rare."',
+        rotation: '-1.2deg',
+        width: 'w-[340px] md:w-[400px]',
+        style: { top: '0', left: '0' },
+      },
+      {
+        type: 'image',
+        name: 'Placeholder C',
+        relation: 'Friend',
+        quote: '"He showed up when it mattered most."',
+        rotation: '2deg',
+        width: 'w-[260px] md:w-[300px]',
+        style: { top: '60px', right: '0' },
+      },
+    ],
   },
   {
-    type: 'video',
-    name: 'Placeholder B',
-    relation: 'Manager',
-    quote: 'Video testimonial',
-    maxWidth: 'max-w-lg',
-    align: 'mx-auto',
-    rotation: '0.6deg',
+    minHeight: '380px',
+    items: [
+      {
+        type: 'video',
+        name: 'Placeholder B',
+        relation: 'Manager',
+        quote: 'Video testimonial',
+        rotation: '0.8deg',
+        width: 'w-[320px] md:w-[420px]',
+        style: { top: '0', left: '50%', transform: 'translateX(-50%)' },
+      },
+      {
+        type: 'text',
+        name: 'Placeholder D',
+        relation: 'Collaborator',
+        quote: '"Working with James taught me that ambition and generosity aren\'t opposites."',
+        rotation: '-1.5deg',
+        width: 'w-[280px] md:w-[320px]',
+        style: { top: '140px', left: '0' },
+      },
+    ],
   },
   {
-    type: 'image',
-    name: 'Placeholder C',
-    relation: 'Friend',
-    quote: '"He showed up when it mattered most. That says everything."',
-    maxWidth: 'max-w-sm',
-    align: 'ml-auto',
-    rotation: '1.5deg',
+    minHeight: '440px',
+    items: [
+      {
+        type: 'text',
+        name: 'Placeholder F',
+        relation: 'Client',
+        quote: '"He brought clarity to a situation that felt impossible. Calm, direct, and always a step ahead."',
+        rotation: '1.1deg',
+        width: 'w-[300px] md:w-[360px]',
+        style: { top: '0', right: '5%' },
+      },
+      {
+        type: 'video',
+        name: 'Placeholder E',
+        relation: 'Mentor',
+        quote: 'Video testimonial',
+        rotation: '-0.6deg',
+        width: 'w-[280px] md:w-[360px]',
+        style: { top: '100px', left: '0' },
+      },
+      {
+        type: 'text',
+        name: 'Placeholder H',
+        relation: 'Team Lead',
+        quote: '"No noise, just results."',
+        rotation: '2.2deg',
+        width: 'w-[220px] md:w-[260px]',
+        style: { bottom: '0', right: '10%' },
+      },
+    ],
   },
   {
-    type: 'text',
-    name: 'Placeholder D',
-    relation: 'Collaborator',
-    quote: '"Working with James taught me that ambition and generosity aren\'t opposites — they\'re the same thing when done right."',
-    maxWidth: 'max-w-md',
-    align: 'mx-auto',
-    rotation: '-0.5deg',
-  },
-  {
-    type: 'video',
-    name: 'Placeholder E',
-    relation: 'Mentor',
-    quote: 'Video testimonial',
-    maxWidth: 'max-w-md',
-    align: 'mr-auto',
-    rotation: '0.8deg',
-  },
-  {
-    type: 'text',
-    name: 'Placeholder F',
-    relation: 'Client',
-    quote: '"He brought clarity to a situation that felt impossible. Calm, direct, and always a step ahead."',
-    maxWidth: 'max-w-sm',
-    align: 'ml-auto',
-    rotation: '-1.8deg',
-  },
-  {
-    type: 'image',
-    name: 'Placeholder G',
-    relation: 'Partner',
-    quote: '"Trust is earned. James earned it faster than anyone I\'ve worked with."',
-    maxWidth: 'max-w-md',
-    align: 'mr-auto',
-    rotation: '1.1deg',
-  },
-  {
-    type: 'text',
-    name: 'Placeholder H',
-    relation: 'Team Lead',
-    quote: '"What stands out about James is how quietly effective he is. No noise, just results — and the kind that compound over time."',
-    maxWidth: 'max-w-lg',
-    align: 'mx-auto',
-    rotation: '-0.3deg',
+    minHeight: '360px',
+    items: [
+      {
+        type: 'image',
+        name: 'Placeholder G',
+        relation: 'Partner',
+        quote: '"Trust is earned. James earned it faster than anyone I\'ve worked with."',
+        rotation: '-1.8deg',
+        width: 'w-[280px] md:w-[340px]',
+        style: { top: '0', left: '10%' },
+      },
+      {
+        type: 'text',
+        name: 'Placeholder H',
+        relation: 'Team Lead',
+        quote: '"What stands out about James is how quietly effective he is — the kind of results that compound over time."',
+        rotation: '0.5deg',
+        width: 'w-[300px] md:w-[380px]',
+        style: { top: '80px', right: '0' },
+      },
+    ],
   },
 ];
 
 function TextCard({ item, index }: { item: Reference; index: number }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
+      initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-50px' }}
-      transition={{ duration: 0.6, delay: index * 0.05 }}
-      className={`${item.maxWidth} ${item.align} w-full`}
-      style={{ transform: `rotate(${item.rotation})` }}
+      viewport={{ once: true, margin: '-30px' }}
+      transition={{ duration: 0.5, delay: index * 0.1 }}
+      className={`absolute ${item.width}`}
+      style={{ ...item.style, transform: `${item.style.transform || ''} rotate(${item.rotation})`.trim() }}
     >
-      <div className="border border-foreground/10 p-8 md:p-10">
-        <p className="text-foreground/80 italic text-lg md:text-xl leading-relaxed font-light">
+      <div className="border border-foreground/10 bg-background p-6 md:p-8 shadow-[0_2px_20px_-8px_hsl(var(--foreground)/0.08)]">
+        <p className="text-foreground/80 italic text-base md:text-lg leading-relaxed font-light">
           {item.quote}
         </p>
-        <div className="mt-6 pt-4 border-t border-foreground/5">
-          <p className="text-sm tracking-[0.15em] uppercase text-foreground/50">{item.name}</p>
-          <p className="text-xs tracking-[0.1em] text-foreground/30 mt-1">{item.relation}</p>
+        <div className="mt-5 pt-3 border-t border-foreground/5">
+          <p className="text-xs tracking-[0.15em] uppercase text-foreground/50">{item.name}</p>
+          <p className="text-[10px] tracking-[0.1em] text-foreground/30 mt-0.5">{item.relation}</p>
         </div>
       </div>
     </motion.div>
@@ -116,22 +154,22 @@ function TextCard({ item, index }: { item: Reference; index: number }) {
 function ImageCard({ item, index }: { item: Reference; index: number }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
+      initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-50px' }}
-      transition={{ duration: 0.6, delay: index * 0.05 }}
-      className={`${item.maxWidth} ${item.align} w-full`}
-      style={{ transform: `rotate(${item.rotation})` }}
+      viewport={{ once: true, margin: '-30px' }}
+      transition={{ duration: 0.5, delay: index * 0.1 }}
+      className={`absolute ${item.width}`}
+      style={{ ...item.style, transform: `${item.style.transform || ''} rotate(${item.rotation})`.trim() }}
     >
-      <div className="border border-foreground/10">
+      <div className="border border-foreground/10 bg-background shadow-[0_2px_20px_-8px_hsl(var(--foreground)/0.08)]">
         <div className="aspect-[4/3] bg-foreground/5 flex items-center justify-center">
-          <span className="text-xs tracking-[0.2em] uppercase text-foreground/20">Image</span>
+          <span className="text-[10px] tracking-[0.2em] uppercase text-foreground/15">Image</span>
         </div>
-        <div className="p-6 md:p-8">
-          <p className="text-foreground/70 italic leading-relaxed">{item.quote}</p>
-          <div className="mt-4 pt-3 border-t border-foreground/5">
-            <p className="text-sm tracking-[0.15em] uppercase text-foreground/50">{item.name}</p>
-            <p className="text-xs tracking-[0.1em] text-foreground/30 mt-1">{item.relation}</p>
+        <div className="p-4 md:p-5">
+          <p className="text-foreground/60 italic text-sm leading-relaxed">{item.quote}</p>
+          <div className="mt-3 pt-2 border-t border-foreground/5">
+            <p className="text-xs tracking-[0.15em] uppercase text-foreground/50">{item.name}</p>
+            <p className="text-[10px] tracking-[0.1em] text-foreground/30 mt-0.5">{item.relation}</p>
           </div>
         </div>
       </div>
@@ -142,26 +180,37 @@ function ImageCard({ item, index }: { item: Reference; index: number }) {
 function VideoCard({ item, index }: { item: Reference; index: number }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
+      initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-50px' }}
-      transition={{ duration: 0.6, delay: index * 0.05 }}
-      className={`${item.maxWidth} ${item.align} w-full`}
-      style={{ transform: `rotate(${item.rotation})` }}
+      viewport={{ once: true, margin: '-30px' }}
+      transition={{ duration: 0.5, delay: index * 0.1 }}
+      className={`absolute ${item.width}`}
+      style={{ ...item.style, transform: `${item.style.transform || ''} rotate(${item.rotation})`.trim() }}
     >
-      <div className="border border-foreground/10">
-        <div className="aspect-video bg-foreground/[0.03] flex items-center justify-center relative">
-          <div className="w-12 h-12 rounded-full border border-foreground/20 flex items-center justify-center">
-            <Play className="w-5 h-5 text-foreground/30 ml-0.5" />
+      <div className="border border-foreground/10 bg-background shadow-[0_2px_20px_-8px_hsl(var(--foreground)/0.08)]">
+        <div className="aspect-video bg-foreground/[0.03] flex items-center justify-center">
+          <div className="w-10 h-10 rounded-full border border-foreground/15 flex items-center justify-center">
+            <Play className="w-4 h-4 text-foreground/25 ml-0.5" />
           </div>
         </div>
-        <div className="p-5">
-          <p className="text-sm tracking-[0.15em] uppercase text-foreground/50">{item.name}</p>
-          <p className="text-xs tracking-[0.1em] text-foreground/30 mt-1">{item.relation}</p>
+        <div className="p-4">
+          <p className="text-xs tracking-[0.15em] uppercase text-foreground/50">{item.name}</p>
+          <p className="text-[10px] tracking-[0.1em] text-foreground/30 mt-0.5">{item.relation}</p>
         </div>
       </div>
     </motion.div>
   );
+}
+
+function renderCard(item: Reference, index: number) {
+  switch (item.type) {
+    case 'text':
+      return <TextCard key={index} item={item} index={index} />;
+    case 'image':
+      return <ImageCard key={index} item={item} index={index} />;
+    case 'video':
+      return <VideoCard key={index} item={item} index={index} />;
+  }
 }
 
 export default function ReferencesPage() {
@@ -177,7 +226,7 @@ export default function ReferencesPage() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3, duration: 0.8 }}
-          className="max-w-2xl mx-auto text-center mb-20"
+          className="max-w-2xl mx-auto text-center mb-16"
         >
           <h1 className="text-3xl md:text-4xl font-light tracking-[0.2em] uppercase mb-4">
             References
@@ -187,18 +236,17 @@ export default function ReferencesPage() {
           </p>
         </motion.div>
 
-        {/* Scrapbook items */}
-        <div className="max-w-4xl mx-auto flex flex-col gap-12 md:gap-16">
-          {references.map((item, index) => {
-            switch (item.type) {
-              case 'text':
-                return <TextCard key={index} item={item} index={index} />;
-              case 'image':
-                return <ImageCard key={index} item={item} index={index} />;
-              case 'video':
-                return <VideoCard key={index} item={item} index={index} />;
-            }
-          })}
+        {/* Scrapbook clusters */}
+        <div className="max-w-5xl mx-auto flex flex-col gap-8 md:gap-4">
+          {clusters.map((cluster, ci) => (
+            <div
+              key={ci}
+              className="relative w-full"
+              style={{ minHeight: cluster.minHeight }}
+            >
+              {cluster.items.map((item, ii) => renderCard(item, ci * 3 + ii))}
+            </div>
+          ))}
         </div>
       </main>
     </div>
