@@ -105,6 +105,7 @@ const Index = () => {
               { label: 'Network', path: '/network' },
               { label: 'Blueprints', path: '/blueprints' },
               { label: 'Resume', path: '/resume' },
+              { label: 'References', path: '/references' },
               { label: 'Poems', path: '/poems' },
               { label: 'Memories', path: '/pictures' },
             ].map((item) => (
