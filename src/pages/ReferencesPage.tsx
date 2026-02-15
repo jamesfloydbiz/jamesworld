@@ -139,7 +139,6 @@ function TextCard({ item, index }: { item: Reference; index: number }) {
         </p>
         <div className="mt-5 pt-3 border-t border-foreground/5">
           <p className="text-xs tracking-[0.15em] uppercase text-foreground/50">{item.name}</p>
-          <p className="text-[10px] tracking-[0.1em] text-foreground/30 mt-0.5">{item.relation}</p>
         </div>
       </div>
     </motion.div>
@@ -166,7 +165,6 @@ function ImageCard({ item, index }: { item: Reference; index: number }) {
           <p className="text-foreground/60 italic text-sm leading-relaxed">{item.quote}</p>
           <div className="mt-3 pt-2 border-t border-foreground/5">
             <p className="text-xs tracking-[0.15em] uppercase text-foreground/50">{item.name}</p>
-            <p className="text-[10px] tracking-[0.1em] text-foreground/30 mt-0.5">{item.relation}</p>
           </div>
         </div>
       </div>
@@ -194,7 +192,6 @@ function VideoCard({ item, index }: { item: Reference; index: number }) {
         </div>
         <div className="p-4">
           <p className="text-xs tracking-[0.15em] uppercase text-foreground/50">{item.name}</p>
-          <p className="text-[10px] tracking-[0.1em] text-foreground/30 mt-0.5">{item.relation}</p>
         </div>
       </div>
     </motion.div>
