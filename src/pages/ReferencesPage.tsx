@@ -49,7 +49,7 @@ const references: Reference[] = [
   // Row 3
   {
     type: "text",
-    name: "Dom",
+    name: "Dom Rrufran",
     relation: "President of BetterWealth · Ex-NFL Player",
     quote: '"I was like — this kid is different. This kid is special."',
     rotation: "-1.5deg",
@@ -86,7 +86,7 @@ const references: Reference[] = [
   },
   {
     type: "text",
-    name: "Dom",
+    name: "Dom Rrufran",
     relation: "President of BetterWealth · Ex-NFL Player",
     quote: '"You lowkey inspire me with how hard you work, how much you work."',
     rotation: "-1.3deg",
@@ -109,7 +109,7 @@ const references: Reference[] = [
   // Row 7
   {
     type: "text",
-    name: "Dom",
+    name: "Dom Rrufran",
     relation: "President of BetterWealth · Ex-NFL Player",
     quote:
       "\"You just genuinely have that grit, and you're going to be special, you know that AND you're very coachable.\"",
@@ -225,7 +225,7 @@ export default function ReferencesPage() {
           className="max-w-2xl mx-auto text-center mb-16"
         >
           <h1 className="text-3xl md:text-4xl font-light tracking-[0.2em] uppercase mb-4">References</h1>
-          <p className="text-sm text-foreground/40 tracking-wide">What people think about James Floyd.</p>
+          <p className="text-sm text-foreground/40 tracking-wide">Words from people who've been there.</p>
         </motion.div>
 
         <div className="max-w-5xl mx-auto columns-1 md:columns-2 gap-4 space-y-4">
