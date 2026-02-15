@@ -124,6 +124,7 @@ const references: Reference[] = [
 function TextCard({ item, index }: { item: Reference; index: number }) {
   return (
     <motion.div
+      className="break-inside-avoid"
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-30px' }}
@@ -148,6 +149,7 @@ function TextCard({ item, index }: { item: Reference; index: number }) {
 function ImageCard({ item, index }: { item: Reference; index: number }) {
   return (
     <motion.div
+      className="break-inside-avoid"
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-30px' }}
@@ -175,6 +177,7 @@ function ImageCard({ item, index }: { item: Reference; index: number }) {
 function VideoCard({ item, index }: { item: Reference; index: number }) {
   return (
     <motion.div
+      className="break-inside-avoid"
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-30px' }}
@@ -231,7 +234,7 @@ export default function ReferencesPage() {
           </p>
         </motion.div>
 
-        <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="max-w-5xl mx-auto columns-1 md:columns-2 gap-4 space-y-4">
           {references.map((ref, i) => renderCard(ref, i))}
         </div>
       </main>
