@@ -11,64 +11,16 @@ interface Reference {
   relation: string;
   quote: string;
   rotation: string;
-  gridColumn?: string;
-  gridRow?: string;
 }
 
 const references: Reference[] = [
+  // Row 1
   {
     type: 'text',
     name: 'Austin Moss',
     relation: 'Austinmoss.com · 2026',
     quote: '"I\'ve got to know James Floyd over the past year and can vouch for his talent, creativity, work ethic, and connecting skills plus many more. I hope one of my partners in NYC finds this and gets a chance to work with you."',
     rotation: '-1.2deg',
-    gridColumn: '1',
-    gridRow: '1 / 3',
-  },
-  {
-    type: 'text',
-    name: 'Caleb Guilliams',
-    relation: 'BetterWealth · Dec 2025',
-    quote: '"James you have been a major blessing to me and to the team and I know I\'m not the only one who shares that."',
-    rotation: '2deg',
-    gridColumn: '2',
-    gridRow: '1',
-  },
-  {
-    type: 'text',
-    name: 'Caleb Guilliams',
-    relation: 'BetterWealth · Dec 2025',
-    quote: '"The growth that you\'ve had over the last year has been insane."',
-    rotation: '0.8deg',
-    gridColumn: '2',
-    gridRow: '2',
-  },
-  {
-    type: 'text',
-    name: 'Dom',
-    relation: 'President of BetterWealth · Ex-NFL Player',
-    quote: '"I was like — this kid is different. This kid is special."',
-    rotation: '-1.5deg',
-    gridColumn: '1',
-    gridRow: '3',
-  },
-  {
-    type: 'text',
-    name: 'Dom',
-    relation: 'President of BetterWealth · Ex-NFL Player',
-    quote: '"You lowkey inspire me with how hard you work, how much you work."',
-    rotation: '1.1deg',
-    gridColumn: '2',
-    gridRow: '3',
-  },
-  {
-    type: 'text',
-    name: 'Dom',
-    relation: 'President of BetterWealth · Ex-NFL Player',
-    quote: '"You just genuinely have that grit, and you\'re going to be special, you know that AND you\'re very coachable."',
-    rotation: '-0.6deg',
-    gridColumn: '1',
-    gridRow: '4',
   },
   {
     type: 'text',
@@ -76,62 +28,89 @@ const references: Reference[] = [
     relation: '',
     quote: '"James Floyd you know ball bro."',
     rotation: '1.4deg',
-    gridColumn: '2',
-    gridRow: '4',
   },
+  // Row 2
   {
     type: 'text',
-    name: 'Christian Davis',
-    relation: '',
-    quote: '"Honored to have a seat at your table sir!"',
-    rotation: '-0.9deg',
-    gridColumn: '1',
-    gridRow: '5',
+    name: 'Caleb Guilliams',
+    relation: 'BetterWealth · Dec 2025',
+    quote: '"James you have been a major blessing to me and to the team and I know I\'m not the only one who shares that."',
+    rotation: '2deg',
   },
   {
     type: 'text',
     name: 'Jordan Hutchinson',
     relation: '',
     quote: '"Love what you\'re building dude."',
-    rotation: '1.8deg',
-    gridColumn: '2',
-    gridRow: '5',
+    rotation: '-0.9deg',
   },
+  // Row 3
   {
     type: 'text',
-    name: 'Tim Nart',
-    relation: '',
-    quote: '"You\'re a Top bloke @jamesfloyd._ To many more."',
-    rotation: '-1.3deg',
-    gridColumn: '1',
-    gridRow: '6',
-  },
-  {
-    type: 'text',
-    name: 'Lauren Hansen',
-    relation: '',
-    quote: '"One of the coolest dudes in existence, cool to watch and learn from you and your pursuit of growth."',
-    rotation: '0.7deg',
-    gridColumn: '2',
-    gridRow: '6 / 8',
+    name: 'Dom',
+    relation: 'President of BetterWealth · Ex-NFL Player',
+    quote: '"I was like — this kid is different. This kid is special."',
+    rotation: '-1.5deg',
   },
   {
     type: 'text',
     name: 'Trinity Arl',
     relation: '',
     quote: '"James Floyd for president."',
-    rotation: '-1.6deg',
-    gridColumn: '1',
-    gridRow: '7',
+    rotation: '1.8deg',
+  },
+  // Row 4
+  {
+    type: 'text',
+    name: 'Lauren Hansen',
+    relation: '',
+    quote: '"One of the coolest dudes in existence, cool to watch and learn from you and your pursuit of growth."',
+    rotation: '0.7deg',
+  },
+  {
+    type: 'text',
+    name: 'Caleb Guilliams',
+    relation: 'BetterWealth · Dec 2025',
+    quote: '"The growth that you\'ve had over the last year has been insane."',
+    rotation: '-0.6deg',
+  },
+  // Row 5
+  {
+    type: 'text',
+    name: 'Christian Davis',
+    relation: '',
+    quote: '"Honored to have a seat at your table sir!"',
+    rotation: '1.1deg',
+  },
+  {
+    type: 'text',
+    name: 'Dom',
+    relation: 'President of BetterWealth · Ex-NFL Player',
+    quote: '"You lowkey inspire me with how hard you work, how much you work."',
+    rotation: '-1.3deg',
+  },
+  // Row 6
+  {
+    type: 'text',
+    name: 'Tim Nart',
+    relation: '',
+    quote: '"You\'re a Top bloke @jamesfloyd._ To many more."',
+    rotation: '0.8deg',
   },
   {
     type: 'text',
     name: 'Vanessa Dayana',
     relation: '',
     quote: '"Quedó cheverazo! Me encanta te admiro James, me inspiras a ser mejor persona."',
+    rotation: '-1.6deg',
+  },
+  // Row 7
+  {
+    type: 'text',
+    name: 'Dom',
+    relation: 'President of BetterWealth · Ex-NFL Player',
+    quote: '"You just genuinely have that grit, and you\'re going to be special, you know that AND you\'re very coachable."',
     rotation: '1.2deg',
-    gridColumn: '1',
-    gridRow: '8',
   },
   {
     type: 'text',
@@ -139,8 +118,6 @@ const references: Reference[] = [
     relation: '',
     quote: '"James supports it → it\'s worth supporting!!"',
     rotation: '-0.5deg',
-    gridColumn: '2',
-    gridRow: '8',
   },
 ];
 
@@ -152,8 +129,6 @@ function TextCard({ item, index }: { item: Reference; index: number }) {
       viewport={{ once: true, margin: '-30px' }}
       transition={{ duration: 0.5, delay: index * 0.08 }}
       style={{
-        gridColumn: item.gridColumn,
-        gridRow: item.gridRow,
         transform: `rotate(${item.rotation})`,
       }}
     >
@@ -178,8 +153,6 @@ function ImageCard({ item, index }: { item: Reference; index: number }) {
       viewport={{ once: true, margin: '-30px' }}
       transition={{ duration: 0.5, delay: index * 0.08 }}
       style={{
-        gridColumn: item.gridColumn,
-        gridRow: item.gridRow,
         transform: `rotate(${item.rotation})`,
       }}
     >
@@ -207,8 +180,6 @@ function VideoCard({ item, index }: { item: Reference; index: number }) {
       viewport={{ once: true, margin: '-30px' }}
       transition={{ duration: 0.5, delay: index * 0.08 }}
       style={{
-        gridColumn: item.gridColumn,
-        gridRow: item.gridRow,
         transform: `rotate(${item.rotation})`,
       }}
     >
@@ -260,14 +231,7 @@ export default function ReferencesPage() {
           </p>
         </motion.div>
 
-        <div
-          className="max-w-5xl mx-auto"
-          style={{
-            display: 'grid',
-            gridTemplateColumns: '1fr 1fr',
-            gap: '16px',
-          }}
-        >
+        <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-4">
           {references.map((ref, i) => renderCard(ref, i))}
         </div>
       </main>
