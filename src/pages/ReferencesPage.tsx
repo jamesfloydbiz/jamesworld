@@ -96,7 +96,7 @@ const references: Reference[] = [
     type: "text",
     name: "Tim Nart",
     relation: "",
-    quote: '"You\'re a Top bloke @jamesfloyd._ To many more."',
+    quote: '"You\'re a Top bloke James Floyd, To many more."',
     rotation: "0.8deg",
   },
   {
