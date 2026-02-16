@@ -21,19 +21,14 @@ export function LoadingScreen({ onStart, onShrinkStart }: LoadingScreenProps) {
   
   const INTRO_DURATION = 1800; // Fixed duration in ms
   
-  // Fixed-duration progress animation (no dependency on asset loading)
+  // Fixed-duration linear progress animation
   useEffect(() => {
     const animate = () => {
       const elapsed = Date.now() - startTimeRef.current;
-      const target = Math.min(100, (elapsed / INTRO_DURATION) * 100);
+      const progress = Math.min(100, (elapsed / INTRO_DURATION) * 100);
+      setSmoothProgress(progress);
       
-      setSmoothProgress(prev => {
-        const diff = target - prev;
-        if (Math.abs(diff) < 0.1) return target;
-        return prev + diff * 0.12;
-      });
-      
-      if (target < 100) {
+      if (progress < 100) {
         animationRef.current = requestAnimationFrame(animate);
       }
     };
