@@ -69,6 +69,39 @@ export function ControlsHint() {
   );
 }
 
+// One-time explore nudge that auto-dismisses
+export function ExploreHint() {
+  const [visible, setVisible] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setVisible(false), 3000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  return (
+    <AnimatePresence>
+      {visible && (
+        <motion.div
+          className="fixed bottom-20 left-1/2 -translate-x-1/2 z-[200] pointer-events-none flex flex-col items-center gap-1"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 0.6, y: 0 }}
+          exit={{ opacity: 0, y: -5 }}
+          transition={{ duration: 0.5 }}
+        >
+          <motion.span
+            className="text-white/70 text-lg"
+            animate={{ y: [0, -4, 0] }}
+            transition={{ duration: 1.2, repeat: Infinity }}
+          >
+            ↑
+          </motion.span>
+          <span className="text-white/50 text-[10px] tracking-[0.3em] uppercase">Explore</span>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
+
 export function MuseumUI() {
   const navigate = useNavigate();
   const isSmallScreen = useIsMobile(); // breakpoint-based (768px)
