@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useGameStore } from '@/store/gameStore';
 import { AnimatePresence, motion } from 'framer-motion';
 import { LoadingScreen } from '@/components/ui/LoadingScreen';
-import { ControlsHint, ExploreHint } from '@/components/ui/MuseumUI';
+import { ControlsHint } from '@/components/ui/MuseumUI';
 import { MobileJoystick } from '@/components/ui/MobileJoystick';
 
 // Lazy load heavy 3D components
@@ -13,12 +13,21 @@ const MuseumUI = lazy(() => import('@/components/ui/MuseumUI').then(m => ({ defa
 const Index = () => {
   const navigate = useNavigate();
   const { setIsTransitioning, menuOpen, setMenuOpen } = useGameStore();
+  const [progress, setProgress] = useState(0);
   const [showLoading, setShowLoading] = useState(true);
+  const [isFullyLoaded, setIsFullyLoaded] = useState(false);
   const [showTitles, setShowTitles] = useState(false);
 
   useEffect(() => {
     setIsTransitioning(false);
   }, [setIsTransitioning]);
+
+  // Track when fully loaded
+  useEffect(() => {
+    if (progress >= 100 && !isFullyLoaded) {
+      setIsFullyLoaded(true);
+    }
+  }, [progress, isFullyLoaded]);
 
   // ESC key to toggle menu when in gallery
   useEffect(() => {
@@ -31,21 +40,29 @@ const Index = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [showLoading, menuOpen, setMenuOpen]);
 
+  const handleProgress = useCallback((loadProgress: number) => {
+    setProgress(loadProgress);
+  }, []);
+
   const handleStart = () => {
     setShowLoading(false);
   };
 
   const handleShrinkStart = useCallback(() => {
     setShowTitles(true);
+    // Unlock interactivity immediately when controls become visible
     setShowLoading(false);
   }, []);
 
+  // Unified flag: controls only appear when fully interactive
+  const controlsReady = showTitles && !showLoading;
+
   return (
     <div className="fixed inset-0 bg-black">
-      {/* 3D Museum Scene */}
+      {/* 3D Museum Scene - always loading/visible behind the loading screen */}
       <div className="absolute inset-0">
         <Suspense fallback={null}>
-          <MuseumScene showLabels={showTitles} />
+          <MuseumScene onProgress={handleProgress} showLabels={showTitles} />
           {!showLoading && <MuseumUI />}
         </Suspense>
       </div>
@@ -55,12 +72,14 @@ const Index = () => {
 
       {/* Loading screen - rendered after mobile controls in DOM but visually on top initially */}
       <LoadingScreen
+        progress={progress} 
+        isFullyLoaded={isFullyLoaded}
         onStart={handleStart}
         onShrinkStart={handleShrinkStart}
       />
+
       {/* Controls hint - appears when logo starts shrinking */}
       {showTitles && <ControlsHint />}
-      {showTitles && <ExploreHint />}
 
       {/* Mobile menu overlay when in gallery - z-[300] to be above mobile controls */}
       <AnimatePresence>

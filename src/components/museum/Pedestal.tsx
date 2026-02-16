@@ -1,6 +1,6 @@
 import { useGLTF } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
-import { useRef, Suspense, useState } from "react";
+import { useRef, Suspense } from "react";
 import * as THREE from "three";
 
 interface PedestalProps {
@@ -29,7 +29,7 @@ export const modelConfigs: Record<
     yOffset: 0.5,
     rotationY: Math.PI / 3,
     lightIntensity: 1.0,
-  },
+  }, // clockwise 60°
   Content: {
     path: "/models/apollo_as_the_genius_of_the_arts.glb",
     scale: [0.0021, 0.0021, 0.0021],
@@ -49,118 +49,32 @@ export const modelConfigs: Record<
     scale: [0.4, 0.4, 0.4],
     yOffset: 0.5,
     xOffset: 0,
-    rotationY: Math.PI + Math.PI / 3,
+    rotationY: Math.PI + Math.PI / 3, // 180° + 60° = clockwise 60°
     lightIntensity: 1.0,
   },
 };
 
-const placeholderMaterial = new THREE.MeshStandardMaterial({
-  color: new THREE.Color("#e0e0e0"),
-  roughness: 0.4,
-  metalness: 0.15,
-});
-
-// Themed placeholder shapes per section
-function ThemedPlaceholder({ title, yOffset = 1.0 }: { title: string; yOffset?: number }) {
-  const groupRef = useRef<THREE.Group>(null);
-
-  useFrame((state) => {
-    if (groupRef.current) {
-      groupRef.current.rotation.y = state.clock.elapsedTime * 0.3;
-    }
-  });
-
-  const renderShape = () => {
-    switch (title) {
-      case "Story":
-        // Abstract tree: cylinder trunk + sphere canopy
-        return (
-          <>
-            <mesh position={[0, 0, 0]} castShadow material={placeholderMaterial}>
-              <cylinderGeometry args={[0.08, 0.12, 0.6, 8]} />
-            </mesh>
-            <mesh position={[0, 0.5, 0]} castShadow material={placeholderMaterial}>
-              <sphereGeometry args={[0.35, 12, 10]} />
-            </mesh>
-          </>
-        );
-      case "Projects":
-        // Octahedron: raw material being forged
-        return (
-          <mesh position={[0, 0.15, 0]} castShadow material={placeholderMaterial}>
-            <octahedronGeometry args={[0.45, 0]} />
-          </mesh>
-        );
-      case "Content":
-        // Cone: upward gesture, torch-like
-        return (
-          <mesh position={[0, 0.2, 0]} castShadow material={placeholderMaterial}>
-            <coneGeometry args={[0.3, 0.8, 8]} />
-          </mesh>
-        );
-      case "Blueprints":
-        // Abstract seated figure: box body + sphere head
-        return (
-          <>
-            <mesh position={[0, 0, 0]} castShadow material={placeholderMaterial}>
-              <boxGeometry args={[0.4, 0.5, 0.35]} />
-            </mesh>
-            <mesh position={[0, 0.4, 0]} castShadow material={placeholderMaterial}>
-              <sphereGeometry args={[0.18, 10, 8]} />
-            </mesh>
-          </>
-        );
-      case "Network":
-        // Low-poly sphere: stillness, wholeness
-        return (
-          <mesh position={[0, 0.15, 0]} castShadow material={placeholderMaterial}>
-            <sphereGeometry args={[0.4, 8, 6]} />
-          </mesh>
-        );
-      default:
-        return (
-          <mesh position={[0, 0.15, 0]} castShadow material={placeholderMaterial}>
-            <dodecahedronGeometry args={[0.4, 0]} />
-          </mesh>
-        );
-    }
-  };
-
+// Fallback placeholder for when model is loading or fails
+function ModelPlaceholder({ yOffset = 1.0 }: { yOffset?: number }) {
   return (
-    <group ref={groupRef} position={[0, yOffset, 0]}>
-      {renderShape()}
-    </group>
+    <mesh position={[0, yOffset, 0]} castShadow>
+      <dodecahedronGeometry args={[0.5, 0]} />
+      <meshStandardMaterial color="#ffffff" roughness={0.3} metalness={0.1} />
+    </mesh>
   );
 }
 
-// Inner component that loads the actual model with fade-in
+// Inner component that loads the actual model
 function LoadedModel({ title, config }: { title: string; config: (typeof modelConfigs)[string] }) {
   const groupRef = useRef<THREE.Group>(null);
   const { scene } = useGLTF(config.path);
-  const [opacity, setOpacity] = useState(0);
-  const clonedScene = useRef(scene.clone());
 
-  // Set all materials to transparent for fade-in
-  useFrame((state, delta) => {
+  useFrame((state) => {
     if (groupRef.current) {
+      // Floating animation
       if (config?.floating) {
         groupRef.current.position.y = config.yOffset + Math.sin(state.clock.elapsedTime * 2) * 0.1;
       }
-    }
-
-    // Fade in
-    if (opacity < 1) {
-      const newOpacity = Math.min(1, opacity + delta * 2.5); // ~400ms
-      setOpacity(newOpacity);
-      clonedScene.current.traverse((child) => {
-        if ((child as THREE.Mesh).isMesh) {
-          const mat = (child as THREE.Mesh).material as THREE.MeshStandardMaterial;
-          if (mat) {
-            mat.transparent = true;
-            mat.opacity = newOpacity;
-          }
-        }
-      });
     }
   });
 
@@ -170,7 +84,7 @@ function LoadedModel({ title, config }: { title: string; config: (typeof modelCo
       position={[config.xOffset || 0, config.yOffset, config.zOffset || 0]}
       rotation={[0, config.rotationY || 0, 0]}
     >
-      <primitive object={clonedScene.current} scale={config.scale} />
+      <primitive object={scene.clone()} scale={config.scale} />
     </group>
   );
 }
@@ -179,11 +93,11 @@ function ModelExhibit({ title }: { title: string }) {
   const config = modelConfigs[title];
 
   if (!config) {
-    return <ThemedPlaceholder title={title} />;
+    return <ModelPlaceholder />;
   }
 
   return (
-    <Suspense fallback={<ThemedPlaceholder title={title} yOffset={config.yOffset} />}>
+    <Suspense fallback={<ModelPlaceholder yOffset={config.yOffset} />}>
       <LoadedModel title={title} config={config} />
     </Suspense>
   );
@@ -192,7 +106,7 @@ function ModelExhibit({ title }: { title: string }) {
 export function Pedestal({ position, title }: PedestalProps) {
   return (
     <group position={position}>
-      {/* Base platform */}
+      {/* Base platform - wide and short */}
       <mesh position={[0, 0.15, 0]} receiveShadow castShadow>
         <boxGeometry args={[2.5, 0.3, 2.5]} />
         <meshStandardMaterial color="#1a1a1a" roughness={0.9} />
@@ -215,3 +129,10 @@ export function Pedestal({ position, title }: PedestalProps) {
     </group>
   );
 }
+
+// Preload all models
+useGLTF.preload("/models/tree_gn.glb");
+useGLTF.preload("/models/vulcan.glb");
+useGLTF.preload("/models/apollo_as_the_genius_of_the_arts.glb");
+useGLTF.preload("/models/the_thinker_by_auguste_rodin.glb");
+useGLTF.preload("/models/buddha.glb");
