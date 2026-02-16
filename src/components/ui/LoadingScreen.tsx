@@ -3,13 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 interface LoadingScreenProps {
-  progress: number;
-  isFullyLoaded: boolean;
   onStart: () => void;
   onShrinkStart?: () => void;
 }
 
-export function LoadingScreen({ progress, isFullyLoaded, onStart, onShrinkStart }: LoadingScreenProps) {
+export function LoadingScreen({ onStart, onShrinkStart }: LoadingScreenProps) {
   const navigate = useNavigate();
   const [showLogo, setShowLogo] = useState(false);
   const [fadeBackground, setFadeBackground] = useState(false);
@@ -21,44 +19,39 @@ export function LoadingScreen({ progress, isFullyLoaded, onStart, onShrinkStart 
   const hasCalledOnShrinkStart = useRef(false);
   const startTimeRef = useRef<number>(Date.now());
   
-  // Minimum animation duration for triangle trace (ms)
-  const MIN_TRIANGLE_DURATION = 1800;
+  const INTRO_DURATION = 1800; // Fixed duration in ms
   
-  // Smooth progress interpolation with minimum duration enforcement
+  // Fixed-duration progress animation (no dependency on asset loading)
   useEffect(() => {
     const animate = () => {
       const elapsed = Date.now() - startTimeRef.current;
-      const minProgressForTime = Math.min(100, (elapsed / MIN_TRIANGLE_DURATION) * 100);
+      const target = Math.min(100, (elapsed / INTRO_DURATION) * 100);
       
       setSmoothProgress(prev => {
-        // Target is the minimum of actual progress and time-based progress
-        // This ensures smooth animation even if loading finishes early
-        const targetProgress = Math.min(progress, minProgressForTime);
-        const diff = targetProgress - prev;
-        
-        // Smooth interpolation
-        if (Math.abs(diff) < 0.1) return targetProgress;
-        return prev + diff * 0.08;
+        const diff = target - prev;
+        if (Math.abs(diff) < 0.1) return target;
+        return prev + diff * 0.12;
       });
       
-      animationRef.current = requestAnimationFrame(animate);
+      if (target < 100) {
+        animationRef.current = requestAnimationFrame(animate);
+      }
     };
     animationRef.current = requestAnimationFrame(animate);
     return () => {
       if (animationRef.current) cancelAnimationFrame(animationRef.current);
     };
-  }, [progress]);
+  }, []);
   
-  // Track when triangle is fully traced (both loaded AND visually complete)
+  // Triangle complete when progress reaches end
   useEffect(() => {
-    if (smoothProgress >= 99.5 && isFullyLoaded && !triangleComplete) {
-      // Small delay to ensure visual completion
+    if (smoothProgress >= 99.5 && !triangleComplete) {
       const timer = setTimeout(() => setTriangleComplete(true), 100);
       return () => clearTimeout(timer);
     }
-  }, [smoothProgress, isFullyLoaded, triangleComplete]);
+  }, [smoothProgress, triangleComplete]);
   
-  // Show logo only when triangle is complete
+  // Show logo when triangle is complete
   useEffect(() => {
     if (triangleComplete && !showLogo) {
       const timer = setTimeout(() => setShowLogo(true), 200);
@@ -79,7 +72,6 @@ export function LoadingScreen({ progress, isFullyLoaded, onStart, onShrinkStart 
     if (fadeBackground && !shrinkToCorner) {
       const timer = setTimeout(() => {
         setShrinkToCorner(true);
-        // Call onShrinkStart when shrinking begins
         if (onShrinkStart && !hasCalledOnShrinkStart.current) {
           hasCalledOnShrinkStart.current = true;
           onShrinkStart();
@@ -100,12 +92,10 @@ export function LoadingScreen({ progress, isFullyLoaded, onStart, onShrinkStart 
     }
   }, [fadeBackground, onStart]);
 
-  // Triangle perimeter for stroke animation
   const trianglePerimeter = 600;
 
   return (
     <>
-      {/* Black background overlay - fades out independently */}
       <motion.div
         className="fixed inset-0 z-[99] bg-black pointer-events-none"
         initial={{ opacity: 1 }}
@@ -113,7 +103,6 @@ export function LoadingScreen({ progress, isFullyLoaded, onStart, onShrinkStart 
         transition={{ duration: 0.6, ease: 'easeOut' }}
       />
       
-      {/* Logo container - shrinks to corner and stays visible */}
       <motion.div
         className={`fixed inset-0 z-[100] flex items-center justify-center ${shrinkToCorner ? 'pointer-events-auto cursor-pointer' : 'pointer-events-none'}`}
         onClick={() => shrinkToCorner && navigate('/')}
@@ -124,29 +113,14 @@ export function LoadingScreen({ progress, isFullyLoaded, onStart, onShrinkStart 
           x: 0,
           y: 0,
         }}
-        transition={{ 
-          duration: 0.7, 
-          ease: [0.4, 0, 0.2, 1],
-        }}
+        transition={{ duration: 0.7, ease: [0.4, 0, 0.2, 1] }}
       >
         <motion.div 
           className="relative w-48 h-48"
-          animate={shrinkToCorner ? {
-            scale: 0.33,
-          } : {
-            scale: 1,
-          }}
-          transition={{ 
-            duration: 0.7, 
-            ease: [0.4, 0, 0.2, 1],
-          }}
+          animate={shrinkToCorner ? { scale: 0.33 } : { scale: 1 }}
+          transition={{ duration: 0.7, ease: [0.4, 0, 0.2, 1] }}
         >
-          {/* SVG triangle that traces as it loads */}
-          <svg
-            viewBox="0 0 500 500"
-            className="w-full h-full"
-          >
-            {/* Background triangle (faint) */}
+          <svg viewBox="0 0 500 500" className="w-full h-full">
             <path
               d="M250,90 L375,315 L125,315 Z"
               fill="none"
@@ -155,7 +129,6 @@ export function LoadingScreen({ progress, isFullyLoaded, onStart, onShrinkStart 
               opacity="0.15"
               strokeLinejoin="miter"
             />
-            {/* Animated tracing triangle - starts from top tip */}
             <path
               d="M250,90 L375,315 L125,315 Z"
               fill="none"
@@ -168,18 +141,13 @@ export function LoadingScreen({ progress, isFullyLoaded, onStart, onShrinkStart 
             />
           </svg>
           
-          {/* JF Logo appears when triangle is complete */}
           <motion.div
             className="absolute inset-0 flex items-center justify-center"
             initial={{ opacity: 0 }}
             animate={{ opacity: showLogo ? 1 : 0 }}
             transition={{ duration: 0.4 }}
           >
-            <svg
-              viewBox="0 0 500 500"
-              className="w-full h-full"
-            >
-              {/* JF letters from logo.svg */}
+            <svg viewBox="0 0 500 500" className="w-full h-full">
               <path d="M295.124 178.588V179.588H246.45L221.333 297.588H242.75L253.12 248.628H305.724V228.208H257.497L263.49 200.008H306.444H306.999V201.008H264.299L258.731 227.208H306.724V249.628H253.929L243.559 298.588H220.097L220.225 297.983L245.639 178.588H295.124Z" fill="white"/>
               <path d="M295.124 179.588H246.45L221.333 297.588H242.75L253.12 248.628H305.724V228.208H257.497L263.49 200.008H306.444L295.124 179.588Z" fill="white"/>
               <path d="M295.124 178.588V179.588L306.444 200.008H306.999L295.124 178.588Z" fill="white"/>
@@ -189,17 +157,6 @@ export function LoadingScreen({ progress, isFullyLoaded, onStart, onShrinkStart 
             </svg>
           </motion.div>
         </motion.div>
-        
-        {/* Loading text - only show before logo */}
-        {!showLogo && (
-          <motion.div 
-            className="absolute mt-32 text-muted-foreground text-sm tracking-wider"
-            animate={{ opacity: [0.5, 1, 0.5] }}
-            transition={{ duration: 1.5, repeat: Infinity }}
-          >
-            LOADING
-          </motion.div>
-        )}
       </motion.div>
     </>
   );
