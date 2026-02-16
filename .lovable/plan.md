@@ -1,39 +1,83 @@
+## New Landing Page with Dual Entry Points
 
+Replace the current Index page (which immediately loads the heavy 3D museum) with a lightweight landing page that gives visitors two clear paths: the immersive 3D museum or a quick portfolio view.
 
-## Reorganize References Page Layout
+### What Changes
 
-The current absolute-positioned clusters create too much empty space and feel scattered. The fix is to replace the cluster/absolute approach with a **CSS Grid layout** that packs items tightly in a two-column arrangement, matching the reference screenshots.
+**1. New file: `src/pages/LandingPage.tsx**`
 
-### Layout Structure
+A standalone, lightweight page with:
 
-Based on the reference images (both your current page screenshots and the scrapbook photo):
+- **SVG tree silhouette** as a faded background element -- stencil/screen-print style, built entirely in SVG (no image files)
+- **Film grain overlay** using a CSS pseudo-element with a subtle noise pattern
+- **Color palette**: dark bark brown (`#3D2817`), olive green (`#4A5D23`), light neutral background (`#F5F0E8`)
+- **Welcome text**: brief, warm intro -- something like "James Floyd" as heading plus a short line
+- **Two equal buttons**:
+  - "Experience the Museum" -- navigates to `/museum` (the current 3D experience with the loading page)
+  - "Quick Portfolio View" -- navigates to `/story` (or a dedicated portfolio route)
+- **Fade-in animation** using framer-motion (already installed), subtle and paced
+- **Mobile-responsive** via Tailwind breakpoints
+- **Zero heavy dependencies** -- no Three.js, no lazy loading, no 3D. Just React + framer-motion + Tailwind + an inline SVG
 
-- **Two-column grid** using `grid-template-columns` with items spanning 1 or 2 columns
-- Items sit close together with small, consistent gaps (around 16-24px)
-- No absolute positioning — use grid placement (`grid-column`, `grid-row`) for predictable, tight packing
-- Keep the subtle rotations for scrapbook feel
-- Items vary in size naturally based on content, not forced min-heights
+**2. Move current Index to `/museum` route**
 
-### Proposed Grid Arrangement
+- Rename `src/pages/Index.tsx` logic to serve at `/museum` instead of `/`
+- The 3D museum with its loading screen, joystick, etc. lives there unchanged
+
+**3. Update `src/App.tsx` routing**
+
+- `/` renders `LandingPage`
+- `/museum` renders the current `Index` (3D museum experience)
+- All other routes unchanged
+
+### Landing Page Layout
 
 ```text
-Row 1:  [Text A - left col]          [Image C - right col]
-Row 2:  [Video B - spans center/right]
-Row 3:  [Text D - left col]          [Text F - right col]
-Row 4:  [Video E - left col]         [Text H - right col]
-Row 5:  [Image G - left col]         [Text H2 - right col]
++------------------------------------------+
+|                                          |
+|          [faded tree SVG bg]             |
+|                                          |
+|           James Floyd                    |
+|     Builder. Creator. Explorer.          |
+|                                          |
+|   [Experience the Museum]                |
+|   [Quick Portfolio View]                 |
+|                                          |
++------------------------------------------+
 ```
 
-Items will naturally pack tight because grid handles sizing. Subtle rotations stay. No huge empty gaps.
+- Tree SVG is large, centered, very low opacity (~0.06-0.08), behind everything
+- Grain overlay covers entire page at low opacity
+- Content is vertically centered
+- Buttons are stacked, same size, same visual weight
+- Typography: Space Mono (already the project font)
 
-### Technical Changes
+### Technical Details
 
-**File: `src/pages/ReferencesPage.tsx`** — Full rewrite of data structure and layout:
+**LandingPage.tsx structure:**
 
-- Remove `Cluster` type and absolute positioning
-- Change to a flat array of references, each with a `gridArea` or `gridColumn`/`gridRow` assignment
-- Replace the cluster container with a single `grid` container: `grid-cols-2`, `gap-4 md:gap-6`
-- Each card uses `position: relative` (not absolute), placed via grid properties
-- Keep `TextCard`, `ImageCard`, `VideoCard` components but remove absolute positioning from them
-- Cards keep their rotation transforms and border styling
+- No state management needed (no zustand, no game store)
+- Uses `useNavigate` from react-router-dom for button clicks
+- SVG tree: a simple deciduous tree silhouette path, viewBox-based, scales naturally
+- Grain effect: CSS `background-image` with a tiny repeating noise pattern using a data URI or CSS gradient trick
+- Animations: `motion.div` wrappers with staggered `opacity` and `y` transitions, 0.4-0.6s duration
+- Colors applied via inline styles or scoped classes (not touching the global theme since this page has its own warm palette)
 
+**Routing changes in App.tsx:**
+
+- Add `import LandingPage from "./pages/LandingPage"`
+- Change `<Route path="/" element={<Index />} />` to `<Route path="/" element={<LandingPage />} />`
+- Add `<Route path="/museum" element={<Index />} />`
+
+**LoadingScreen.tsx** -- no changes needed, it still works within the museum route.
+
+### What Stays the Same
+
+- All existing pages and routes
+- The 3D museum experience (just moved to `/museum`)
+- Global styles, fonts, theme tokens
+- Game store, all components  
+  
+delete nothing. the entire experience will just be behind the 3d experience button including the loading page. behind the quick snapshot experience right now - build a very simple landing page with black background and white , with compelling copywriting about reaching out to me.  
+  
+keep the brand guidelines as a black bacground with white accents and use the brown and green sparingly but enough to make it feel homey, cozey, and analog, and natural
