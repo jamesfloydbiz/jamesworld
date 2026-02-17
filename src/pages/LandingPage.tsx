@@ -1,32 +1,91 @@
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
-const TreeSilhouette = () => (
+const TreeOfLife = () => (
   <svg
-    viewBox="0 0 800 1000"
+    viewBox="0 0 600 700"
     className="absolute inset-0 w-full h-full"
-    style={{ opacity: 0.04 }}
+    style={{ opacity: 0.06 }}
     preserveAspectRatio="xMidYMid meet"
     aria-hidden="true"
   >
-    <g fill="#4A5D23">
+    <g fill="none" stroke="#4A5D23" strokeWidth="1.2" strokeLinecap="round">
       {/* Trunk */}
-      <rect x="370" y="600" width="60" height="400" rx="6" />
-      {/* Roots */}
-      <path d="M370 950 Q300 980 260 1000 L340 1000 Z" />
-      <path d="M430 950 Q500 980 540 1000 L460 1000 Z" />
-      {/* Canopy layers — stencil style, overlapping organic shapes */}
-      <ellipse cx="400" cy="520" rx="180" ry="120" />
-      <ellipse cx="320" cy="460" rx="140" ry="100" />
-      <ellipse cx="480" cy="460" rx="140" ry="100" />
-      <ellipse cx="400" cy="400" rx="160" ry="110" />
-      <ellipse cx="340" cy="350" rx="120" ry="90" />
-      <ellipse cx="460" cy="350" rx="120" ry="90" />
-      <ellipse cx="400" cy="300" rx="130" ry="95" />
-      <ellipse cx="360" cy="250" rx="100" ry="80" />
-      <ellipse cx="440" cy="250" rx="100" ry="80" />
-      <ellipse cx="400" cy="200" rx="90" ry="70" />
-      <ellipse cx="400" cy="160" rx="60" ry="50" />
+      <path d="M300 700 L300 380" />
+      <path d="M296 700 L296 400" />
+      <path d="M304 700 L304 400" />
+
+      {/* Main branches — left */}
+      <path d="M300 380 Q260 340 200 280" />
+      <path d="M300 400 Q240 360 170 320" />
+      <path d="M300 420 Q250 400 180 380" />
+      <path d="M300 360 Q270 310 230 240" />
+      <path d="M300 340 Q280 280 260 200" />
+
+      {/* Main branches — right */}
+      <path d="M300 380 Q340 340 400 280" />
+      <path d="M300 400 Q360 360 430 320" />
+      <path d="M300 420 Q350 400 420 380" />
+      <path d="M300 360 Q330 310 370 240" />
+      <path d="M300 340 Q320 280 340 200" />
+
+      {/* Upper canopy branches — left */}
+      <path d="M230 240 Q200 200 160 160" />
+      <path d="M230 240 Q210 220 190 200" />
+      <path d="M200 280 Q160 240 130 200" />
+      <path d="M200 280 Q180 250 150 230" />
+      <path d="M260 200 Q240 160 220 120" />
+      <path d="M260 200 Q250 170 240 140" />
+      <path d="M170 320 Q140 290 120 260" />
+
+      {/* Upper canopy branches — right */}
+      <path d="M370 240 Q400 200 440 160" />
+      <path d="M370 240 Q390 220 410 200" />
+      <path d="M400 280 Q440 240 470 200" />
+      <path d="M400 280 Q420 250 450 230" />
+      <path d="M340 200 Q360 160 380 120" />
+      <path d="M340 200 Q350 170 360 140" />
+      <path d="M430 320 Q460 290 480 260" />
+
+      {/* Top crown */}
+      <path d="M300 340 Q300 280 300 200" />
+      <path d="M300 200 Q290 160 270 120" />
+      <path d="M300 200 Q310 160 330 120" />
+      <path d="M300 200 Q300 150 300 100" />
+
+      {/* Small twigs / leaves — left */}
+      <path d="M160 160 Q140 140 120 130" />
+      <path d="M160 160 Q150 145 140 120" />
+      <path d="M190 200 Q170 185 155 170" />
+      <path d="M130 200 Q110 180 100 165" />
+      <path d="M150 230 Q130 215 115 200" />
+      <path d="M220 120 Q200 100 185 85" />
+      <path d="M240 140 Q225 120 210 105" />
+      <path d="M120 260 Q100 240 90 225" />
+
+      {/* Small twigs / leaves — right */}
+      <path d="M440 160 Q460 140 480 130" />
+      <path d="M440 160 Q450 145 460 120" />
+      <path d="M410 200 Q430 185 445 170" />
+      <path d="M470 200 Q490 180 500 165" />
+      <path d="M450 230 Q470 215 485 200" />
+      <path d="M380 120 Q400 100 415 85" />
+      <path d="M360 140 Q375 120 390 105" />
+      <path d="M480 260 Q500 240 510 225" />
+
+      {/* Roots — spreading, organic */}
+      <path d="M300 700 Q260 720 200 740" />
+      <path d="M300 700 Q340 720 400 740" />
+      <path d="M296 700 Q250 730 180 760" />
+      <path d="M304 700 Q350 730 420 760" />
+      <path d="M300 700 Q280 740 240 780" />
+      <path d="M300 700 Q320 740 360 780" />
+      <path d="M200 740 Q170 750 140 760" />
+      <path d="M400 740 Q430 750 460 760" />
+      <path d="M180 760 Q150 775 130 790" />
+      <path d="M420 760 Q450 775 470 790" />
+      <path d="M240 780 Q220 795 200 810" />
+      <path d="M360 780 Q380 795 400 810" />
     </g>
   </svg>
 );
@@ -49,7 +108,7 @@ const LandingPage = () => {
   return (
     <div
       className="fixed inset-0 flex items-center justify-center overflow-hidden"
-      style={{ backgroundColor: '#0A0A0A' }}
+      style={{ backgroundColor: '#000000' }}
     >
       {/* Grain overlay */}
       <div
@@ -64,7 +123,7 @@ const LandingPage = () => {
       />
 
       {/* Tree background */}
-      <TreeSilhouette />
+      <TreeOfLife />
 
       {/* Content */}
       <motion.div
