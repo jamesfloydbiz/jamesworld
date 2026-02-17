@@ -34,8 +34,12 @@ const timelineEvents = [
     year: '2025',
     title: 'To The Moon',
     quote: 'Creation, kindness, and infinite games.',
-    hasImage: true,
-    imageSrc: '/pictures/campfire-sparks.jpeg',
+  },
+  {
+    year: '2026',
+    title: 'Being Written',
+    quote: 'The next chapter is unfolding.',
+    hasButton: true,
   },
 ];
 
@@ -93,6 +97,16 @@ const StoryPage = () => {
                           className="w-full h-auto object-cover"
                         />
                       </div>
+                    )}
+                    {(event as any).hasButton && (
+                      <a
+                        href="https://www.linkedin.com/in/jamesfloyd02/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-block mt-4 font-mono text-sm tracking-widest uppercase px-6 py-3 border border-border text-foreground hover:bg-accent transition-colors duration-300"
+                      >
+                        Join the Journey →
+                      </a>
                     )}
                   </div>
                 </motion.div>
