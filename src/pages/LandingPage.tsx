@@ -175,7 +175,7 @@ const LandingPage = () => {
               e.currentTarget.style.borderColor = '#3D2817';
             }}>
 
-            Load My 3D Experience       
+            Load 3D Experience       
           </button>
 
           <button
