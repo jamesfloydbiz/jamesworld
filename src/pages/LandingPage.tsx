@@ -153,8 +153,8 @@ const LandingPage = () => {
           className="font-mono text-sm md:text-base leading-relaxed mb-12 max-w-sm"
           style={{ color: 'rgba(245, 240, 232, 0.5)' }}>
 
-          Systems thinker, maker of things, and perpetual student. 
-          This is a small corner of the internet where my work lives.
+           James lives his life deeply. This is a small corner of the internet where he shares his work with the world.
+        
         </motion.p>
 
         <motion.div variants={fadeUp} className="flex flex-col gap-4 w-full max-w-xs">
