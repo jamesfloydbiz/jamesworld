@@ -155,7 +155,7 @@ const BuildsPage = () => {
                   <ImageGallery images={automation.images} />
                 )}
                 
-                <p className="text-muted-foreground text-sm mb-4 leading-relaxed">
+                <p className="text-muted-foreground text-sm mb-4 leading-relaxed whitespace-pre-line">
                   {automation.description}
                 </p>
                 
