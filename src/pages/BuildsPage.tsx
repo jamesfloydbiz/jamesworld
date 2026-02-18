@@ -27,7 +27,7 @@ const automations = [
   },
   {
     title: 'Network Automation',
-    description: 'Automated network monitoring and management system for infrastructure optimization.',
+    description: 'An AI Agent that chats with someone, gets to know them, then saves their information to a spreadsheet database. After that there is a second Agent workflow triggered by new additions or changes to the database. That second agent emails me introduction suggestions based on the data points.\n\nTLDR: Boardy AI before it existed.',
     status: 'Active',
     images: [
       '/ops-images/AI_Auto_Intro_1.png',
