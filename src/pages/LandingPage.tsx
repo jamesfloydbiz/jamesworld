@@ -1,14 +1,14 @@
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
-const TreeOfLife = () => (
-  <svg
-    viewBox="0 0 600 700"
-    className="absolute inset-0 w-full h-full"
-    style={{ opacity: 0.06 }}
-    preserveAspectRatio="xMidYMid meet"
-    aria-hidden="true"
-  >
+const TreeOfLife = () =>
+<svg
+  viewBox="0 0 600 700"
+  className="absolute inset-0 w-full h-full"
+  style={{ opacity: 0.06 }}
+  preserveAspectRatio="xMidYMid meet"
+  aria-hidden="true">
+
     <g fill="none" stroke="#4A5D23" strokeWidth="1.2" strokeLinecap="round">
       {/* Trunk */}
       <path d="M300 700 L300 380" />
@@ -87,19 +87,19 @@ const TreeOfLife = () => (
       <path d="M240 780 Q220 795 200 810" />
       <path d="M360 780 Q380 795 400 810" />
     </g>
-  </svg>
-);
+  </svg>;
+
 
 const stagger = {
   hidden: {},
   show: {
-    transition: { staggerChildren: 0.15, delayChildren: 0.3 },
-  },
+    transition: { staggerChildren: 0.15, delayChildren: 0.3 }
+  }
 };
 
 const fadeUp = {
   hidden: { opacity: 0, y: 16 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: 'easeOut' } },
+  show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: 'easeOut' } }
 };
 
 const LandingPage = () => {
@@ -108,8 +108,8 @@ const LandingPage = () => {
   return (
     <div
       className="fixed inset-0 flex items-center justify-center overflow-hidden"
-      style={{ backgroundColor: '#000000' }}
-    >
+      style={{ backgroundColor: '#000000' }}>
+
       {/* Grain overlay */}
       <div
         className="absolute inset-0 pointer-events-none z-10"
@@ -118,9 +118,9 @@ const LandingPage = () => {
           backgroundRepeat: 'repeat',
           backgroundSize: '128px 128px',
           opacity: 0.08,
-          mixBlendMode: 'overlay',
-        }}
-      />
+          mixBlendMode: 'overlay'
+        }} />
+
 
       {/* Tree background */}
       <TreeOfLife />
@@ -130,29 +130,29 @@ const LandingPage = () => {
         className="relative z-20 flex flex-col items-center text-center px-6 max-w-lg"
         variants={stagger}
         initial="hidden"
-        animate="show"
-      >
+        animate="show">
+
         <motion.h1
           variants={fadeUp}
           className="font-mono text-4xl md:text-5xl tracking-tight mb-3"
-          style={{ color: '#F5F0E8' }}
-        >
+          style={{ color: '#F5F0E8' }}>
+
           James Floyd
         </motion.h1>
 
         <motion.p
           variants={fadeUp}
           className="font-mono text-sm md:text-base tracking-widest uppercase mb-2"
-          style={{ color: '#4A5D23' }}
-        >
+          style={{ color: '#4A5D23' }}>
+
           Builder · Creator · Explorer
         </motion.p>
 
         <motion.p
           variants={fadeUp}
           className="font-mono text-sm md:text-base leading-relaxed mb-12 max-w-sm"
-          style={{ color: 'rgba(245, 240, 232, 0.5)' }}
-        >
+          style={{ color: 'rgba(245, 240, 232, 0.5)' }}>
+
           Systems thinker, maker of things, and perpetual student. 
           This is a small corner of the internet where my work lives.
         </motion.p>
@@ -164,7 +164,7 @@ const LandingPage = () => {
             style={{
               color: '#F5F0E8',
               borderColor: '#3D2817',
-              backgroundColor: 'rgba(61, 40, 23, 0.15)',
+              backgroundColor: 'rgba(61, 40, 23, 0.15)'
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.backgroundColor = 'rgba(61, 40, 23, 0.35)';
@@ -173,9 +173,9 @@ const LandingPage = () => {
             onMouseLeave={(e) => {
               e.currentTarget.style.backgroundColor = 'rgba(61, 40, 23, 0.15)';
               e.currentTarget.style.borderColor = '#3D2817';
-            }}
-          >
-            Experience the Museum
+            }}>
+
+            Load My 3D Experience       
           </button>
 
           <button
@@ -184,15 +184,15 @@ const LandingPage = () => {
             style={{
               color: '#F5F0E8',
               borderColor: 'rgba(245, 240, 232, 0.15)',
-              backgroundColor: 'transparent',
+              backgroundColor: 'transparent'
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.borderColor = 'rgba(245, 240, 232, 0.4)';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.borderColor = 'rgba(245, 240, 232, 0.15)';
-            }}
-          >
+            }}>
+
             Quick Portfolio View
           </button>
         </motion.div>
@@ -200,13 +200,13 @@ const LandingPage = () => {
         <motion.p
           variants={fadeUp}
           className="font-mono text-xs mt-16"
-          style={{ color: 'rgba(74, 93, 35, 0.5)' }}
-        >
+          style={{ color: 'rgba(74, 93, 35, 0.5)' }}>
+
           ↑ Both paths lead somewhere worth going.
         </motion.p>
       </motion.div>
-    </div>
-  );
+    </div>);
+
 };
 
 export default LandingPage;
