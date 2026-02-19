@@ -13,10 +13,8 @@ function Reveal({ children, className = '', delay = 0 }: {children: React.ReactN
       initial={{ opacity: 0, y: 20 }}
       animate={isInView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.6, ease: 'easeOut', delay }}>
-
       {children}
     </motion.div>);
-
 }
 
 /* ─── Ticker Strip ─── */
@@ -29,11 +27,45 @@ function Ticker({ items, dark = false, reverse = false }: {items: string[];dark?
         className="whitespace-nowrap font-mono text-[10px] tracking-[0.25em] uppercase"
         animate={{ x: reverse ? ['0%', '-33.33%'] : ['-33.33%', '0%'] }}
         transition={{ duration: 50, repeat: Infinity, ease: 'linear' }}>
-
         {doubled}
       </motion.div>
     </div>);
+}
 
+/* ─── Logos Scroll Bar ─── */
+const logos = [
+  { src: '/logos/loeb_nyc.png', alt: 'Loeb NYC' },
+  { src: '/logos/blue_devil.png', alt: 'Blue Devil' },
+  { src: '/logos/jacob_green.png', alt: 'Jacob Green Charity Golf' },
+  { src: '/logos/jets.png', alt: 'Jets & Capital' },
+  { src: '/logos/keiretsu.png', alt: 'Keiretsu Forum' },
+  { src: '/logos/betterwealth.png', alt: 'BetterWealth' },
+  { src: '/logos/champions.jpg', alt: 'Champions of Change' },
+  { src: '/logos/sounders.png', alt: 'Seattle Sounders' },
+  { src: '/logos/seahawks.png', alt: 'Seahawks' },
+];
+
+function LogosBar() {
+  const logosRow = [...logos, ...logos, ...logos];
+  return (
+    <div className="w-full overflow-hidden py-6 border-y border-black/10 bg-[#f5f0e8]">
+      <motion.div
+        className="flex items-center gap-12 whitespace-nowrap"
+        animate={{ x: ['0%', '-33.33%'] }}
+        transition={{ duration: 40, repeat: Infinity, ease: 'linear' }}>
+        {logosRow.map((logo, i) => (
+          <img
+            key={`${logo.alt}-${i}`}
+            src={logo.src}
+            alt={logo.alt}
+            className="h-10 w-auto grayscale opacity-70 hover:opacity-100 transition-opacity duration-300 flex-shrink-0"
+            style={{ mixBlendMode: 'multiply' }}
+            loading="lazy"
+          />
+        ))}
+      </motion.div>
+    </div>
+  );
 }
 
 /* ─── Photo Card ─── */
@@ -46,11 +78,9 @@ function PhotoCard({ src, caption }: {src: string;caption: string;}) {
           alt={caption}
           className="w-full h-auto grayscale transition-transform duration-[800ms] ease-out group-hover:scale-[1.03]"
           loading="lazy" />
-
       </div>
       <p className="mt-3 text-[11px] italic font-serif text-[#555]">{caption}</p>
     </div>);
-
 }
 
 /* ─── Walking Character (moves with scroll like other pages) ─── */
@@ -58,7 +88,6 @@ function WalkingCharacter({ progress }: { progress: number }) {
   const xPosition = 5 + progress * 90;
   return (
     <div className="relative h-[32px] bg-[#f5f0e8] border-y border-black/10 overflow-hidden">
-      {/* Portal entrance arch */}
       <div className="absolute top-1/2 -translate-y-1/2 left-[2%] w-4 h-6 border border-black/15 rounded-t-full" />
       <div className="absolute top-1/2 -translate-y-1/2" style={{ left: `${xPosition}%` }}>
         <svg width="14" height="26" viewBox="0 0 14 26" fill="none" className="-translate-x-1/2">
@@ -71,18 +100,18 @@ function WalkingCharacter({ progress }: { progress: number }) {
 
 /* ─── Site Links Section ─── */
 const siteLinks = [
-{ label: 'Story', path: '/story', desc: 'The full narrative — where it started, how it unfolded.' },
-{ label: 'Projects', path: '/projects', desc: 'What I\'ve built and been part of building.' },
-{ label: 'Builds', path: '/builds', desc: 'AI automations and operational systems I\'ve designed.' },
-{ label: 'Content', path: '/content', desc: 'Writing, videos, and things I\'ve published.' },
-{ label: 'Network', path: '/network', desc: 'The values that made the path, and how to get in touch.' },
-{ label: 'Blueprints', path: '/blueprints', desc: 'Frameworks and playbooks for doing things differently.' },
-{ label: 'Resume', path: '/resume', desc: 'The traditional view — roles, timelines, outcomes.' },
-{ label: 'References', path: '/references', desc: 'What others have said about me' },
-{ label: 'Poems', path: '/poems', desc: 'Thoughts that needed a different format.' },
-{ label: 'Memories', path: '/pictures', desc: 'Snapshots from the road.' },
-{ label: 'Museum', path: '/museum', desc: 'The 3D gallery — walk through the world.' }];
-
+  { label: 'Story', path: '/story', desc: 'The full narrative — where it started, how it unfolded.' },
+  { label: 'Projects', path: '/projects', desc: 'What I\'ve built and been part of building.' },
+  { label: 'Builds', path: '/builds', desc: 'AI automations and operational systems I\'ve designed.' },
+  { label: 'Content', path: '/content', desc: 'Writing, videos, and things I\'ve published.' },
+  { label: 'Network', path: '/network', desc: 'The values that made the path, and how to get in touch.' },
+  { label: 'Blueprints', path: '/blueprints', desc: 'Frameworks and playbooks for doing things differently.' },
+  { label: 'Resume', path: '/resume', desc: 'The traditional view — roles, timelines, outcomes.' },
+  { label: 'References', path: '/references', desc: 'What others have said about me' },
+  { label: 'Poems', path: '/poems', desc: 'Thoughts that needed a different format.' },
+  { label: 'Memories', path: '/pictures', desc: 'Snapshots from the road.' },
+  { label: 'Museum', path: '/museum', desc: 'The 3D gallery — walk through the world.' },
+];
 
 /* ─── Main Page ─── */
 const PortfolioPage = () => {
@@ -126,7 +155,6 @@ const PortfolioPage = () => {
         <button
           onClick={() => setMenuOpen(!menuOpen)}
           className="font-mono text-[10px] tracking-[0.25em] uppercase text-[#888] hover:text-[#1a1a1a] transition-colors">
-
           Menu
         </button>
       </nav>
@@ -139,7 +167,6 @@ const PortfolioPage = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}>
-
           <div className="text-center space-y-5">
             {['Story', 'Projects', 'Content', 'Network', 'Blueprints', 'Resume', 'References', 'Poems', 'Memories'].map((item) =>
           <div key={item}>
@@ -149,7 +176,6 @@ const PortfolioPage = () => {
                 navigate(item === 'Memories' ? '/pictures' : `/${item.toLowerCase()}`);
               }}
               className="text-xl tracking-[0.15em] uppercase hover:text-[#4A5D23] transition-colors font-serif">
-
                   {item}
                 </button>
               </div>
@@ -158,7 +184,6 @@ const PortfolioPage = () => {
               <button
               onClick={() => {setMenuOpen(false);handleBackToHub();}}
               className="text-sm tracking-[0.15em] uppercase text-[#888] hover:text-[#1a1a1a] transition-colors">
-
                 Back to Gallery
               </button>
             </div>
@@ -172,7 +197,7 @@ const PortfolioPage = () => {
       {/* ─── CONTENT ─── */}
       <main className="relative z-10 pt-[44px]">
 
-        {/* Walking character strip (moves with scroll) */}
+        {/* Walking character strip */}
         <WalkingCharacter progress={scrollProgress} />
 
         {/* ═══ 1. MASTHEAD / HERO ═══ */}
@@ -213,7 +238,6 @@ const PortfolioPage = () => {
                 className="w-full h-auto grayscale"
                 animate={{ scale: [1, 1.02, 1] }}
                 transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }} />
-
             </div>
           </Reveal>
 
@@ -226,7 +250,6 @@ const PortfolioPage = () => {
                 rel="noopener noreferrer"
                 className="px-6 py-3 border border-black/20 text-[12px] tracking-[0.2em] uppercase transition-colors hover:bg-black/5"
                 style={{ color: '#4A5D23' }}>
-
                 Follow the Journey →
               </a>
               <a
@@ -235,7 +258,6 @@ const PortfolioPage = () => {
                 rel="noopener noreferrer"
                 className="px-6 py-3 border border-black/20 text-[12px] tracking-[0.2em] uppercase transition-colors hover:bg-black/5"
                 style={{ color: '#6B4C3B' }}>
-
                 Work or Connect →
               </a>
             </div>
@@ -244,13 +266,13 @@ const PortfolioPage = () => {
           <div className="w-full h-px bg-black/10 mt-10" />
         </section>
 
-        {/* ═══ 2. CITIES TICKER ═══ */}
+        {/* ═══ 2. CITIES TICKER (right-to-left) ═══ */}
         <Ticker
           items={['San Diego', 'Singapore', 'Hong Kong', 'Tokyo', 'Bangkok', 'Macleod Ganj', 'Dhaka', 'Chichén Itzá', 'Quito', 'New York', 'Los Angeles', 'Vancouver', 'Chicago', 'Miami', 'San Francisco', 'Palm Beach', 'Austin']}
-          dark />
+          dark
+          reverse />
 
-
-        {/* ═══ 3. THE STORY ═══ */}
+        {/* ═══ 3. THE STORY + IN THE FIELD PHOTOS ═══ */}
         <section className="px-5 md:px-12 py-16 max-w-5xl mx-auto">
           <Reveal>
             <p className="font-mono text-[9px] tracking-[0.3em] uppercase text-[#888] mb-8">§ The Story</p>
@@ -272,8 +294,7 @@ const PortfolioPage = () => {
               headline: 'The Now',
               sub: 'They come to me now.',
               body: 'Now I have an extensive network of family offices, investors, creators, and everybody in between. I have done events around the United States for thousands of people, and worked with some of the most high-profile people and companies in the world. People from every walk of life reach out to get connected to people in my network, get advice on life, business, and health, and to work with me.'
-            }].
-            map((col, i) =>
+            }].map((col, i) =>
             <Reveal key={col.headline} delay={i * 0.15}>
                 <div className="px-0 md:px-10 first:md:pl-0 last:md:pr-0 py-6 md:py-0">
                   <h3 className="text-xl font-bold tracking-wide mb-2 px-[10px]" style={{ fontFamily: "'Playfair Display', serif" }}>
@@ -288,22 +309,26 @@ const PortfolioPage = () => {
             )}
           </div>
 
-          {/* Mini gallery row replacing pull quote */}
+          {/* In the Field photos — directly under the story */}
           <Reveal delay={0.5}>
             <div className="mt-12 pt-8 border-t border-black/10">
-              <div className="grid grid-cols-4 gap-3">
-                <div className="overflow-hidden">
-                  <img src="/pictures/IMG_1341.jpeg" alt="" className="w-full h-24 object-cover grayscale hover:scale-[1.03] transition-transform duration-700" />
-                </div>
-                <div className="overflow-hidden">
-                  <img src="/pictures/IMG_2488.jpeg" alt="" className="w-full h-24 object-cover grayscale hover:scale-[1.03] transition-transform duration-700" />
-                </div>
-                <div className="overflow-hidden">
-                  <img src="/pictures/IMG_7136.jpeg" alt="" className="w-full h-24 object-cover grayscale hover:scale-[1.03] transition-transform duration-700" />
-                </div>
-                <div className="overflow-hidden">
-                  <img src="/pictures/IMG_5430.jpeg" alt="" className="w-full h-24 object-cover grayscale hover:scale-[1.03] transition-transform duration-700" />
-                </div>
+              <p className="font-mono text-[9px] tracking-[0.3em] uppercase text-[#888] mb-6">In the Field</p>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {[
+                  '/pictures/IMG_0647.jpg',
+                  '/pictures/IMG_1311.jpeg',
+                  '/pictures/IMG_1978_Original.jpg',
+                  '/pictures/IMG_4347.jpeg',
+                ].map((src, i) => (
+                  <div key={src} className="overflow-hidden">
+                    <img
+                      src={src}
+                      alt="In the field"
+                      className="w-full h-auto grayscale hover:scale-[1.03] transition-transform duration-700"
+                      loading="lazy"
+                    />
+                  </div>
+                ))}
               </div>
             </div>
           </Reveal>
@@ -311,92 +336,109 @@ const PortfolioPage = () => {
 
         <div className="w-full h-px bg-black/10" />
 
-        {/* ═══ 4. THE NUMBERS ═══ */}
+        {/* ═══ 4. LOGOS BAR ("Rooms I've Been In") ═══ */}
+        <section className="max-w-5xl mx-auto">
+          <Reveal>
+            <p className="font-mono text-[9px] tracking-[0.3em] uppercase text-[#888] px-5 md:px-12 pt-12 pb-4">Rooms I've Been In</p>
+          </Reveal>
+        </section>
+        <LogosBar />
+
+        <div className="w-full h-px bg-black/10" />
+
+        {/* ═══ 5. NOTABLE DISPATCHES ═══ */}
         <section className="px-5 md:px-12 py-16 max-w-5xl mx-auto">
           <Reveal>
-            <p className="font-mono text-[9px] tracking-[0.3em] uppercase text-[#888] mb-10">§ By the Numbers</p>
+            <p className="font-mono text-[9px] tracking-[0.3em] uppercase text-[#888] mb-10">§ Notable Dispatches</p>
           </Reveal>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-0 divide-x divide-black/10">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-0 md:divide-x md:divide-black/10">
             {[
-            { num: '2,000', label: 'Attendees · Keiretsu Capital Expo' },
-            { num: '$2T+', label: 'AUM in the room · Jets & Capital, NYC' },
-            { num: '12+', label: 'Countries lived and worked in' },
-            { num: '∞', label: 'Connections made and counting' }].
-            map((stat, i) =>
-            <Reveal key={stat.num} delay={i * 0.1}>
-                <div className="text-center px-4 py-4">
-                  <p className="text-3xl md:text-5xl font-black leading-none" style={{ fontFamily: "'Playfair Display', serif" }}>
-                    {stat.num}
-                  </p>
-                  <p className="mt-2 font-mono text-[8px] md:text-[9px] tracking-[0.2em] uppercase text-[#888]">
-                    {stat.label}
+              {
+                headline: "The Expo That Shouldn\u2019t Have Worked",
+                body: "Two thousand people showed up to an event I organized in under six weeks. No venue locked, no speakers confirmed, just a conviction that the right people would show if someone had the nerve to ask. They did. Capital flowed. Deals closed. And nobody asked how old I was until it was over."
+              },
+              {
+                headline: "A Letter to a Stranger in Singapore",
+                body: "I wrote a cold letter to someone I\u2019d never met \u2014 a family office patriarch in Singapore \u2014 and hand-delivered it to his front desk. Three weeks later I was sitting in his private library talking about legacy, mortality, and what money can\u2019t fix. That conversation changed my operating system."
+              },
+              {
+                headline: "The Night in the Amazon",
+                body: "Deep in the Ecuadorian Amazon with no cell service and a shaman who didn\u2019t speak English, I sat in ceremony for twelve hours. No shortcuts. No narration. Just silence and everything I\u2019d been avoiding. I came out lighter. Not enlightened \u2014 just honest for the first time in a while."
+              },
+            ].map((dispatch, i) => (
+              <Reveal key={dispatch.headline} delay={i * 0.15}>
+                <div className="px-0 md:px-10 first:md:pl-0 last:md:pr-0 py-6 md:py-0">
+                  <h3 className="text-lg font-bold tracking-wide mb-3" style={{ fontFamily: "'Playfair Display', serif" }}>
+                    {dispatch.headline}
+                  </h3>
+                  <p className="text-[15px] leading-[1.7] text-[#444]" style={{ fontFamily: "'EB Garamond', serif" }}>
+                    {dispatch.body}
                   </p>
                 </div>
               </Reveal>
-            )}
+            ))}
           </div>
         </section>
 
         <div className="w-full h-px bg-black/10" />
 
-        {/* ═══ 5. CREDIBILITY TICKER ═══ */}
-        <Reveal>
-          <p className="font-mono text-[9px] tracking-[0.3em] uppercase text-[#888] px-5 md:px-12 pt-12 pb-4">Rooms I've Been In</p>
-        </Reveal>
-        <Ticker
-          items={['Keiretsu Forum', 'Jets & Capital', 'BetterWealth', 'Art Basel', 'Superbowl', 'F1 Grand Prix', 'The Amazon Jungle', 'The Golden Temple', 'Phoenix Marketing']}
-          reverse />
-
-
-        {/* ═══ 6. PHOTO GRID ═══ */}
+        {/* ═══ 6. MESSAGE FROM JAMES ═══ */}
         <section className="px-5 md:px-12 py-16 max-w-5xl mx-auto">
           <Reveal>
-            <p className="font-mono text-[9px] tracking-[0.3em] uppercase text-[#888] mb-10">§ In the Field</p>
+            <p className="font-mono text-[9px] tracking-[0.3em] uppercase text-[#888] mb-10">§ A Message from James</p>
           </Reveal>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <Reveal><PhotoCard src="/pictures/IMG_0647.jpg" caption="In the field" /></Reveal>
-            <Reveal delay={0.1}><PhotoCard src="/pictures/IMG_1311.jpeg" caption="In the field" /></Reveal>
-            <Reveal delay={0.2}><PhotoCard src="/pictures/IMG_1978_Original.jpg" caption="In the field" /></Reveal>
-            <Reveal delay={0.3}><PhotoCard src="/pictures/IMG_4347.jpeg" caption="In the field" /></Reveal>
-          </div>
+          <Reveal delay={0.1}>
+            <div className="max-w-2xl mx-auto md:pl-12 border-l-2 border-black/10">
+              <p className="text-lg italic text-[#555] mb-6" style={{ fontFamily: "'EB Garamond', serif" }}>
+                Dear reader,
+              </p>
+              <p className="text-[15px] leading-[1.8] text-[#444] mb-4" style={{ fontFamily: "'EB Garamond', serif" }}>
+                If you've scrolled this far, you're probably not the type to skim. Good. Most of what I've built came from that same impulse — to go deeper when everyone else moves on.
+              </p>
+              <p className="text-[15px] leading-[1.8] text-[#444] mb-4" style={{ fontFamily: "'EB Garamond', serif" }}>
+                This page isn't a pitch. It's a signal. I built this world because I believe the best relationships start with clarity — knowing who someone is before you ever sit down together. So here it is. The mess, the wins, the philosophy, the work.
+              </p>
+              <p className="text-[15px] leading-[1.8] text-[#444] mb-6" style={{ fontFamily: "'EB Garamond', serif" }}>
+                If something here resonates, reach out. Not because you need something — but because you're curious. That's always been enough for me.
+              </p>
+              <p className="text-sm font-bold tracking-[0.1em] uppercase" style={{ fontFamily: "'Playfair Display', serif" }}>
+                — James Floyd
+              </p>
+            </div>
+          </Reveal>
         </section>
 
         <div className="w-full h-px bg-black/10" />
 
-        {/* ═══ 7. CTA CLOSE ═══ */}
-        <section className="px-5 md:px-12 py-20 text-center max-w-5xl mx-auto">
+        {/* ═══ 7. CTA — OLD-TIMEY CLASSIFIED AD ═══ */}
+        <section className="px-5 md:px-12 py-20 max-w-5xl mx-auto flex justify-center">
           <Reveal>
-            <p className="font-mono text-[9px] tracking-[0.3em] uppercase text-[#888] mb-8">§ Get in Touch</p>
-          </Reveal>
-          <Reveal delay={0.1}>
-            <p className="text-xl md:text-2xl italic text-[#444] max-w-xl mx-auto leading-relaxed" style={{ fontFamily: "'EB Garamond', serif" }}>
-              Whether you're building, investing, or just figuring out your next move —
-            </p>
-          </Reveal>
-          <Reveal delay={0.2}>
-            <p className="mt-4 text-3xl md:text-4xl font-black tracking-[0.05em] uppercase" style={{ fontFamily: "'Playfair Display', serif" }}>
-              Let's Talk.
-            </p>
-          </Reveal>
-          <Reveal delay={0.3}>
-            <div className="mt-8 space-y-3">
-              <div>
-                <a href="https://www.instagram.com/jamesfloyd02/" target="_blank" rel="noopener noreferrer"
-                className="text-sm tracking-[0.1em] transition-colors hover:underline" style={{ color: '#4A5D23' }}>
-                  → Follow the Journey
-                </a>
+            <div className="border-2 border-black/80 p-8 md:p-12 max-w-lg text-center" style={{ background: '#f5f0e8' }}>
+              <div className="border border-black/30 p-6 md:p-8">
+                <p className="font-mono text-[8px] tracking-[0.4em] uppercase text-[#888] mb-3">— Classified —</p>
+                <h3 className="text-2xl md:text-3xl font-black tracking-[0.05em] uppercase mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
+                  Seeking: Curious Minds
+                </h3>
+                <div className="w-12 h-px bg-black/30 mx-auto mb-4" />
+                <p className="text-[14px] leading-[1.7] text-[#444] mb-6 italic" style={{ fontFamily: "'EB Garamond', serif" }}>
+                  Builders, investors, creators, and those who refuse to stay in one lane. If you are any of the above and wish to correspond, the publisher welcomes your inquiry.
+                </p>
+                <div className="space-y-2">
+                  <a href="https://www.instagram.com/jamesfloyd02/" target="_blank" rel="noopener noreferrer"
+                    className="block text-[11px] tracking-[0.2em] uppercase transition-colors hover:underline" style={{ color: '#4A5D23' }}>
+                    ✦ Follow the Journey — Instagram
+                  </a>
+                  <a href="https://www.linkedin.com/in/jamesfloyd02/" target="_blank" rel="noopener noreferrer"
+                    className="block text-[11px] tracking-[0.2em] uppercase transition-colors hover:underline" style={{ color: '#6B4C3B' }}>
+                    ✦ Work or Connect — LinkedIn
+                  </a>
+                </div>
+                <p className="mt-6 font-mono text-[7px] tracking-[0.3em] uppercase text-[#aaa]">
+                  Replies answered personally · No intermediaries
+                </p>
               </div>
-              <div>
-                <a href="https://www.linkedin.com/in/jamesfloyd02/" target="_blank" rel="noopener noreferrer"
-                className="text-sm tracking-[0.1em] transition-colors hover:underline" style={{ color: '#6B4C3B' }}>
-                  → Work or Connect
-                </a>
-              </div>
-              <p className="mt-4 font-mono text-[8px] tracking-[0.25em] uppercase text-[#aaa]">
-                Life → Instagram · Business → LinkedIn
-              </p>
             </div>
           </Reveal>
         </section>
@@ -415,7 +457,6 @@ const PortfolioPage = () => {
                 <button
                 onClick={() => navigate(link.path)}
                 className="w-full text-left px-0 md:px-6 py-4 first:md:pl-0 group border-b border-black/5 md:border-b-0">
-
                   <span className="text-sm font-bold tracking-[0.1em] uppercase group-hover:text-[#4A5D23] transition-colors" style={{ fontFamily: "'Playfair Display', serif" }}>
                     {link.label} →
                   </span>
@@ -436,7 +477,6 @@ const PortfolioPage = () => {
         </footer>
       </main>
     </div>);
-
 };
 
 export default PortfolioPage;
