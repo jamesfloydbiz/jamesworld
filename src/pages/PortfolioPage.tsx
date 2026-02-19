@@ -356,16 +356,16 @@ const PortfolioPage = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-0 md:divide-x md:divide-black/10">
             {[
             {
-              headline: "The Expo That Shouldn\u2019t Have Worked",
+              headline: "48 Hours, 500 Guests",
               body: "When Trump's arrival forced a 500-person gala to completely restructure with 24 hours notice, I wrote the cold-call scripts, rallied the team, and helped turn what could have been a disaster into what guests called 'double the fun.' Chaos is just an opportunity with bad PR."
             },
             {
-              headline: "A Letter to a Stranger in Singapore",
-              body: "I wrote a cold letter to someone I\u2019d never met \u2014 a family office patriarch in Singapore \u2014 and hand-delivered it to his front desk. Three weeks later I was sitting in his private library talking about legacy, mortality, and what money can\u2019t fix. That conversation changed my operating system."
+              headline: "The Elder in the Amazon",
+              body: "Deep in the Amazon, I spent a day working alongside a 94-year-old tribal elder — farming, listening, communicating entirely in Spanish. No agenda. No pitch. Just presence. She never left that jungle, and she had more peace than anyone I'd met in any boardroom. That day redefined what success means to me."
             },
             {
-              headline: "The Night in the Amazon",
-              body: "Deep in the Ecuadorian Amazon with no cell service and a shaman who didn\u2019t speak English, I sat in ceremony for twelve hours. No shortcuts. No narration. Just silence and everything I\u2019d been avoiding. I came out lighter. Not enlightened \u2014 just honest for the first time in a while."
+              headline: "No, Not That Island",
+              body: "A cold email. A yes. A weekend on an island with one of the most connected builders in the world — his family, his inner circle, employee number three at a company you've definitely heard of. We hiked, cold plunged, and talked for hours. But what I left with wasn't a contact or a deal. It was a complete rewrite of how I see myself and how I tell my story. Play long-term games with long-term people. The people who've wronged you don't deserve a sentence. Abundance is the only lens worth looking through."
             }].
             map((dispatch, i) =>
             <Reveal key={dispatch.headline} delay={i * 0.15}>
