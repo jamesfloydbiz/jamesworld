@@ -179,7 +179,7 @@ const LandingPage = () => {
           </button>
 
           <button
-            onClick={() => navigate('/story')}
+            onClick={() => navigate('/portfolio')}
             className="font-mono text-sm tracking-widest uppercase px-8 py-4 border transition-all duration-300 hover:scale-[1.02]"
             style={{
               color: '#F5F0E8',
