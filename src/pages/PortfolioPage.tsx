@@ -186,8 +186,7 @@ const PortfolioPage = () => {
           <div className="w-full h-px bg-black/15 my-4" />
 
           <Reveal delay={0.1}>
-            <p className="text-center font-mono text-[9px] tracking-[0.3em] uppercase text-[#888]">EST. 2002 · TWIN #1 · CONNECTING · CREATING · LIVING
-
+            <p className="text-center font-mono text-[9px] tracking-[0.3em] uppercase text-[#888]">EST. 2002 · {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }).toUpperCase()} · CONNECTING · CREATING · LIVING
             </p>
           </Reveal>
 
@@ -356,11 +355,11 @@ const PortfolioPage = () => {
             <p className="font-mono text-[9px] tracking-[0.3em] uppercase text-[#888] mb-10">§ In the Field</p>
           </Reveal>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <Reveal><PhotoCard src="/pictures/IMG_8922.jpg" caption="Austin, Texas · Living it up" /></Reveal>
-            <Reveal delay={0.1}><PhotoCard src="/pictures/Jets_&_Capital_Miami_BTS_Day_0-83.jpeg" caption="Jets & Capital · Trump Doral · Miami" /></Reveal>
-            <Reveal delay={0.2}><PhotoCard src="/pictures/IMG_1341.jpeg" caption="On the road" /></Reveal>
-            <Reveal delay={0.3}><PhotoCard src="/pictures/IMG_2610.jpeg" caption="Connecting" /></Reveal>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <Reveal><PhotoCard src="/pictures/IMG_0647.jpg" caption="In the field" /></Reveal>
+            <Reveal delay={0.1}><PhotoCard src="/pictures/IMG_1311.jpeg" caption="In the field" /></Reveal>
+            <Reveal delay={0.2}><PhotoCard src="/pictures/IMG_1978_Original.jpg" caption="In the field" /></Reveal>
+            <Reveal delay={0.3}><PhotoCard src="/pictures/IMG_4347.jpeg" caption="In the field" /></Reveal>
           </div>
         </section>
 
