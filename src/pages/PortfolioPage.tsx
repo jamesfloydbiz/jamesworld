@@ -109,7 +109,7 @@ const PortfolioPage = () => {
       <nav className="fixed top-0 left-0 right-0 z-40 h-[44px] flex items-center justify-between px-5 border-b border-black/10" style={{ background: '#f5f0e8' }}>
         <button onClick={handleBackToHub} className="flex items-center" aria-label="Home">
           <div className="w-7 h-7 bg-black rounded-none flex items-center justify-center">
-            <img src="/logo.svg" alt="JF" className="w-5 h-5" />
+            <img src="/images/JF_logo_transparent.png" alt="JF" className="w-5 h-5 invert" />
           </div>
         </button>
         <button
@@ -423,7 +423,7 @@ const PortfolioPage = () => {
           <span className="font-mono text-[8px] tracking-[0.25em] uppercase text-[#888]">The Times of James</span>
           <span className="font-mono text-[8px] tracking-[0.25em] uppercase text-[#aaa] hidden md:inline">Maniacal innovator. Unbeaten path.</span>
           <div className="w-5 h-5 bg-black flex items-center justify-center">
-            <img src="/logo.svg" alt="JF" className="w-4 h-4" />
+            <img src="/images/JF_logo_transparent.png" alt="JF" className="w-4 h-4 invert" />
           </div>
         </footer>
       </main>
