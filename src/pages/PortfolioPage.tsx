@@ -251,21 +251,21 @@ const PortfolioPage = () => {
               {
                 headline: 'The Before',
                 sub: 'No safety net. No map.',
-                body: 'Food stamps. No college degree. A new city where I knew no one. Most would have gone home. I decided to figure it out.',
+                body: 'In 2020 I drove down to San Diego with everything I owned packed into a green 2002 Subaru Outback. I had no income, no connections, and no dreams.',
               },
               {
                 headline: 'The Leap',
                 sub: 'Cold emails. Obsession. The world opens.',
-                body: 'A sales job attacked maniacally. Handwritten notes, cold outreach, gifts. Self-taught across fields. Then — one room at a time — the world started opening up across a dozen countries.',
+                body: 'When I hit the bottom I was laying on the carpet of my depressing apartment watching the fan go in circles. I joined a sales job, did 20,000 conversations and built ~40 sales people. Over the next few years of my life I sent cold emails, handwritten notes, and gifts. I sent myself around the world, and talked to the wisest people I could get access to all the while trying everything new I could.',
               },
               {
                 headline: 'The Now',
                 sub: 'They come to me now.',
-                body: 'Events for thousands. Rooms with some of the most influential investors on the planet. People from every walk of life reach out for advice on how to live, build, and invest.',
+                body: 'Now I have an extensive network of family offices, investors, creators, and everybody in between. I have done events around the United States for thousands of people, and worked with some of the most high-profile people and companies in the world. People from every walk of life reach out to get connected to people in my network, get advice on life, business, and health, and to work with me.',
               },
             ].map((col, i) => (
               <Reveal key={col.headline} delay={i * 0.15}>
-                <div className="px-0 md:px-8 first:md:pl-0 last:md:pr-0 py-6 md:py-0">
+                <div className="px-0 md:px-10 first:md:pl-0 last:md:pr-0 py-6 md:py-0">
                   <h3 className="text-xl font-bold tracking-wide mb-2" style={{ fontFamily: "'Playfair Display', serif" }}>
                     {col.headline}
                   </h3>
