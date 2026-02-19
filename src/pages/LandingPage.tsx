@@ -153,7 +153,7 @@ const LandingPage = () => {
           className="font-mono text-sm md:text-base leading-relaxed mb-12 max-w-sm"
           style={{ color: 'rgba(245, 240, 232, 0.5)' }}>
 
-           James lives his life deeply. This is a small corner of the internet where he shares his work with the world.
+             James Floyd is best described by his name. This is a corner of the internet where he shares his work with the world.
         
         </motion.p>
 
