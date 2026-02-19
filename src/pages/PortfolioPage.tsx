@@ -2,26 +2,6 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, useInView } from 'framer-motion';
 
-/* ─── Walking Character ─── */
-function WalkingCharacter() {
-  return (
-    <div className="fixed top-[44px] left-0 right-0 z-30 h-[32px] bg-[#f5f0e8] border-y border-black/10 overflow-hidden">
-      <motion.div
-        className="absolute top-1/2 -translate-y-1/2"
-        animate={{ x: ['0vw', '95vw', '0vw'] }}
-        transition={{ duration: 28, repeat: Infinity, ease: 'linear' }}
-      >
-        <svg width="20" height="28" viewBox="0 0 20 28" fill="none">
-          <circle cx="10" cy="5" r="4" fill="#1a1a1a" />
-          <rect x="7" y="10" width="6" height="10" rx="2" fill="#1a1a1a" />
-          <rect x="6" y="20" width="3" height="6" rx="1" fill="#1a1a1a" />
-          <rect x="11" y="20" width="3" height="6" rx="1" fill="#1a1a1a" />
-        </svg>
-      </motion.div>
-    </div>
-  );
-}
-
 /* ─── Scroll Reveal Wrapper ─── */
 function Reveal({ children, className = '', delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -48,7 +28,7 @@ function Ticker({ items, dark = false, reverse = false }: { items: string[]; dar
       <motion.div
         className="whitespace-nowrap font-mono text-[10px] tracking-[0.25em] uppercase"
         animate={{ x: reverse ? ['0%', '-33.33%'] : ['-33.33%', '0%'] }}
-        transition={{ duration: 40, repeat: Infinity, ease: 'linear' }}
+        transition={{ duration: 50, repeat: Infinity, ease: 'linear' }}
       >
         {doubled}
       </motion.div>
@@ -68,10 +48,41 @@ function PhotoCard({ src, caption }: { src: string; caption: string }) {
           loading="lazy"
         />
       </div>
-      <p className="mt-2 text-[11px] italic font-serif text-[#555]">{caption}</p>
+      <p className="mt-3 text-[11px] italic font-serif text-[#555]">{caption}</p>
     </div>
   );
 }
+
+/* ─── Walking Character (static, scrolls with page) ─── */
+function WalkingCharacter() {
+  return (
+    <div className="relative h-[32px] bg-[#f5f0e8] border-y border-black/10 overflow-hidden">
+      <div className="absolute top-1/2 -translate-y-1/2 left-[12%]">
+        <svg width="20" height="28" viewBox="0 0 20 28" fill="none">
+          <circle cx="10" cy="5" r="4" fill="#1a1a1a" />
+          <rect x="7" y="10" width="6" height="10" rx="2" fill="#1a1a1a" />
+          <rect x="6" y="20" width="3" height="6" rx="1" fill="#1a1a1a" />
+          <rect x="11" y="20" width="3" height="6" rx="1" fill="#1a1a1a" />
+        </svg>
+      </div>
+    </div>
+  );
+}
+
+/* ─── Site Links Section ─── */
+const siteLinks = [
+  { label: 'Story', path: '/story', desc: 'The full narrative — where it started, how it unfolded.' },
+  { label: 'Projects', path: '/projects', desc: 'What I\'ve built and been part of building.' },
+  { label: 'Builds', path: '/builds', desc: 'AI automations and operational systems I\'ve designed.' },
+  { label: 'Content', path: '/content', desc: 'Writing, videos, and things I\'ve published.' },
+  { label: 'Network', path: '/network', desc: 'The people and rooms that shaped the path.' },
+  { label: 'Blueprints', path: '/blueprints', desc: 'Frameworks and playbooks for doing things differently.' },
+  { label: 'Resume', path: '/resume', desc: 'The traditional view — roles, timelines, outcomes.' },
+  { label: 'References', path: '/references', desc: 'What others have said.' },
+  { label: 'Poems', path: '/poems', desc: 'Thoughts that needed a different format.' },
+  { label: 'Memories', path: '/pictures', desc: 'Snapshots from the road.' },
+  { label: 'Museum', path: '/museum', desc: 'The 3D gallery — walk through the world.' },
+];
 
 /* ─── Main Page ─── */
 const PortfolioPage = () => {
@@ -94,13 +105,12 @@ const PortfolioPage = () => {
         backgroundRepeat: 'repeat',
       }} />
 
-      {/* ─── NAV ─── */}
+      {/* ─── NAV (fixed) ─── */}
       <nav className="fixed top-0 left-0 right-0 z-40 h-[44px] flex items-center justify-between px-5 border-b border-black/10" style={{ background: '#f5f0e8' }}>
-        <button onClick={handleBackToHub} className="flex items-center gap-1" aria-label="Home">
-          <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-            <polygon points="14,2 26,26 2,26" fill="#1a1a1a" />
-            <text x="14" y="22" textAnchor="middle" fill="#f5f0e8" fontSize="9" fontWeight="bold" fontFamily="serif">JF</text>
-          </svg>
+        <button onClick={handleBackToHub} className="flex items-center" aria-label="Home">
+          <div className="w-7 h-7 bg-black rounded-none flex items-center justify-center">
+            <img src="/logo.svg" alt="JF" className="w-5 h-5" />
+          </div>
         </button>
         <button
           onClick={() => setMenuOpen(!menuOpen)}
@@ -109,9 +119,6 @@ const PortfolioPage = () => {
           Menu
         </button>
       </nav>
-
-      {/* Walking character strip */}
-      <WalkingCharacter />
 
       {/* ─── MENU OVERLAY ─── */}
       {menuOpen && (
@@ -138,10 +145,7 @@ const PortfolioPage = () => {
             ))}
             <div className="pt-4">
               <button
-                onClick={() => {
-                  setMenuOpen(false);
-                  handleBackToHub();
-                }}
+                onClick={() => { setMenuOpen(false); handleBackToHub(); }}
                 className="text-sm tracking-[0.15em] uppercase text-[#888] hover:text-[#1a1a1a] transition-colors"
               >
                 Back to Gallery
@@ -155,10 +159,13 @@ const PortfolioPage = () => {
       )}
 
       {/* ─── CONTENT ─── */}
-      <main className="relative z-10 pt-[76px]">
+      <main className="relative z-10 pt-[44px]">
+
+        {/* Walking character strip (scrolls with page, not fixed) */}
+        <WalkingCharacter />
 
         {/* ═══ 1. MASTHEAD / HERO ═══ */}
-        <section className="px-5 md:px-12 pt-12 pb-8">
+        <section className="px-5 md:px-12 pt-12 pb-8 max-w-5xl mx-auto">
           <Reveal>
             <h1 className="text-center text-[clamp(2.5rem,8vw,6rem)] leading-[0.9] tracking-[0.04em] uppercase font-black" style={{ fontFamily: "'Playfair Display', serif" }}>
               The Times of James
@@ -169,7 +176,7 @@ const PortfolioPage = () => {
 
           <Reveal delay={0.1}>
             <p className="text-center font-mono text-[9px] tracking-[0.3em] uppercase text-[#888]">
-              Est. San Diego · Vol. I · Connecting · Creating · Living
+              Est. 2002 · Edition One · Connecting · Creating · Living
             </p>
           </Reveal>
 
@@ -182,14 +189,14 @@ const PortfolioPage = () => {
           </Reveal>
 
           <Reveal delay={0.3}>
-            <p className="mt-4 text-lg md:text-xl italic text-[#555] max-w-2xl leading-relaxed" style={{ fontFamily: "'EB Garamond', serif" }}>
-              "Maniacal innovator who took the unbeaten path to connecting, creating, and living."
+            <p className="mt-4 text-lg md:text-xl text-[#555] max-w-2xl leading-relaxed" style={{ fontFamily: "'EB Garamond', serif" }}>
+              Maniacal innovator who went off the beaten path to connecting, creating, and living.
             </p>
           </Reveal>
 
           {/* Hero image */}
           <Reveal delay={0.4}>
-            <div className="mt-8 max-w-3xl overflow-hidden">
+            <div className="mt-8 overflow-hidden">
               <motion.img
                 src="/pictures/Jets_&_Capital_Miami_BTS_Day_0-58.jpeg"
                 alt="James Floyd"
@@ -229,12 +236,12 @@ const PortfolioPage = () => {
 
         {/* ═══ 2. CITIES TICKER ═══ */}
         <Ticker
-          items={['San Diego', 'Singapore', 'Hong Kong', 'Tokyo', 'Bangkok', 'Mumbai', 'Dhaka', 'Mexico City', 'Quito', 'New York', 'Los Angeles', 'Vancouver', 'Chicago', 'Miami', 'San Francisco']}
+          items={['San Diego', 'Singapore', 'Hong Kong', 'Tokyo', 'Bangkok', 'Macleod Ganj', 'Dhaka', 'Chichén Itzá', 'Quito', 'New York', 'Los Angeles', 'Vancouver', 'Chicago', 'Miami', 'San Francisco', 'Palm Beach', 'Austin']}
           dark
         />
 
         {/* ═══ 3. THE STORY ═══ */}
-        <section className="px-5 md:px-12 py-16">
+        <section className="px-5 md:px-12 py-16 max-w-5xl mx-auto">
           <Reveal>
             <p className="font-mono text-[9px] tracking-[0.3em] uppercase text-[#888] mb-8">§ The Story</p>
           </Reveal>
@@ -258,12 +265,12 @@ const PortfolioPage = () => {
               },
             ].map((col, i) => (
               <Reveal key={col.headline} delay={i * 0.15}>
-                <div className="px-0 md:px-6 first:md:pl-0 last:md:pr-0 py-6 md:py-0">
-                  <h3 className="text-xl font-bold tracking-wide mb-1" style={{ fontFamily: "'Playfair Display', serif" }}>
+                <div className="px-0 md:px-8 first:md:pl-0 last:md:pr-0 py-6 md:py-0">
+                  <h3 className="text-xl font-bold tracking-wide mb-2" style={{ fontFamily: "'Playfair Display', serif" }}>
                     {col.headline}
                   </h3>
-                  <p className="text-xs font-mono tracking-[0.15em] uppercase text-[#888] mb-3">{col.sub}</p>
-                  <p className="text-sm leading-relaxed text-[#444]" style={{ fontFamily: "'EB Garamond', serif" }}>
+                  <p className="text-xs font-mono tracking-[0.15em] uppercase text-[#888] mb-4">{col.sub}</p>
+                  <p className="text-[15px] leading-[1.7] text-[#444]" style={{ fontFamily: "'EB Garamond', serif" }}>
                     {col.body}
                   </p>
                 </div>
@@ -271,12 +278,23 @@ const PortfolioPage = () => {
             ))}
           </div>
 
-          {/* Pull quote */}
+          {/* Mini gallery row replacing pull quote */}
           <Reveal delay={0.5}>
             <div className="mt-12 pt-8 border-t border-black/10">
-              <blockquote className="text-center text-xl md:text-2xl italic text-[#333] max-w-3xl mx-auto leading-relaxed" style={{ fontFamily: "'EB Garamond', serif" }}>
-                "I speak the languages of many — and connect the ones who don't speak the same."
-              </blockquote>
+              <div className="grid grid-cols-4 gap-3">
+                <div className="overflow-hidden">
+                  <img src="/pictures/IMG_1341.jpeg" alt="" className="w-full h-24 object-cover grayscale hover:scale-[1.03] transition-transform duration-700" />
+                </div>
+                <div className="overflow-hidden">
+                  <img src="/pictures/IMG_2488.jpeg" alt="" className="w-full h-24 object-cover grayscale hover:scale-[1.03] transition-transform duration-700" />
+                </div>
+                <div className="overflow-hidden">
+                  <img src="/pictures/IMG_7136.jpeg" alt="" className="w-full h-24 object-cover grayscale hover:scale-[1.03] transition-transform duration-700" />
+                </div>
+                <div className="overflow-hidden">
+                  <img src="/pictures/IMG_5430.jpeg" alt="" className="w-full h-24 object-cover grayscale hover:scale-[1.03] transition-transform duration-700" />
+                </div>
+              </div>
             </div>
           </Reveal>
         </section>
@@ -284,7 +302,7 @@ const PortfolioPage = () => {
         <div className="w-full h-px bg-black/10" />
 
         {/* ═══ 4. THE NUMBERS ═══ */}
-        <section className="px-5 md:px-12 py-16">
+        <section className="px-5 md:px-12 py-16 max-w-5xl mx-auto">
           <Reveal>
             <p className="font-mono text-[9px] tracking-[0.3em] uppercase text-[#888] mb-10">§ By the Numbers</p>
           </Reveal>
@@ -317,19 +335,19 @@ const PortfolioPage = () => {
           <p className="font-mono text-[9px] tracking-[0.3em] uppercase text-[#888] px-5 md:px-12 pt-12 pb-4">Rooms I've Been In</p>
         </Reveal>
         <Ticker
-          items={['Keiretsu Forum', 'Jets & Capital', 'BetterWealth', 'Keiretsu Capital Expo', 'Aircraft Carrier NYC']}
+          items={['Keiretsu Forum', 'Jets & Capital', 'BetterWealth', 'Art Basel', 'Superbowl', 'F1 Grand Prix', 'The Amazon Jungle', 'The Golden Temple', 'Phoenix Marketing']}
           reverse
         />
 
         {/* ═══ 6. PHOTO GRID ═══ */}
-        <section className="px-5 md:px-12 py-16">
+        <section className="px-5 md:px-12 py-16 max-w-5xl mx-auto">
           <Reveal>
             <p className="font-mono text-[9px] tracking-[0.3em] uppercase text-[#888] mb-10">§ In the Field</p>
           </Reveal>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Reveal><PhotoCard src="/pictures/IMG_8922.jpg" caption="Keiretsu Capital Expo · 2,000 Attendees" /></Reveal>
-            <Reveal delay={0.1}><PhotoCard src="/pictures/Jets_&_Capital_Miami_BTS_Day_0-83.jpeg" caption="Jets & Capital · Aircraft Carrier · NYC" /></Reveal>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <Reveal><PhotoCard src="/pictures/IMG_8922.jpg" caption="Austin, Texas · Living it up" /></Reveal>
+            <Reveal delay={0.1}><PhotoCard src="/pictures/Jets_&_Capital_Miami_BTS_Day_0-83.jpeg" caption="Jets & Capital · Trump Doral · Miami" /></Reveal>
             <Reveal delay={0.2}><PhotoCard src="/pictures/IMG_1341.jpeg" caption="On the road" /></Reveal>
             <Reveal delay={0.3}><PhotoCard src="/pictures/IMG_2610.jpeg" caption="Connecting" /></Reveal>
           </div>
@@ -337,8 +355,35 @@ const PortfolioPage = () => {
 
         <div className="w-full h-px bg-black/10" />
 
-        {/* ═══ 7. CTA CLOSE ═══ */}
-        <section className="px-5 md:px-12 py-20 text-center">
+        {/* ═══ 7. EXPLORE THE WORLD ═══ */}
+        <section className="px-5 md:px-12 py-16 max-w-5xl mx-auto">
+          <Reveal>
+            <p className="font-mono text-[9px] tracking-[0.3em] uppercase text-[#888] mb-10">§ Explore</p>
+          </Reveal>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-0 divide-y md:divide-y-0 md:divide-x divide-black/10">
+            {siteLinks.map((link, i) => (
+              <Reveal key={link.path} delay={i * 0.04}>
+                <button
+                  onClick={() => navigate(link.path)}
+                  className="w-full text-left px-0 md:px-6 py-4 first:md:pl-0 group border-b border-black/5 md:border-b-0"
+                >
+                  <span className="text-sm font-bold tracking-[0.1em] uppercase group-hover:text-[#4A5D23] transition-colors" style={{ fontFamily: "'Playfair Display', serif" }}>
+                    {link.label} →
+                  </span>
+                  <span className="block mt-1 text-[13px] text-[#777]" style={{ fontFamily: "'EB Garamond', serif" }}>
+                    {link.desc}
+                  </span>
+                </button>
+              </Reveal>
+            ))}
+          </div>
+        </section>
+
+        <div className="w-full h-px bg-black/10" />
+
+        {/* ═══ 8. CTA CLOSE ═══ */}
+        <section className="px-5 md:px-12 py-20 text-center max-w-5xl mx-auto">
           <Reveal>
             <p className="font-mono text-[9px] tracking-[0.3em] uppercase text-[#888] mb-8">§ Get in Touch</p>
           </Reveal>
@@ -355,24 +400,14 @@ const PortfolioPage = () => {
           <Reveal delay={0.3}>
             <div className="mt-8 space-y-3">
               <div>
-                <a
-                  href="https://www.instagram.com/jamesfloyd02/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm tracking-[0.1em] transition-colors hover:underline"
-                  style={{ color: '#4A5D23' }}
-                >
+                <a href="https://www.instagram.com/jamesfloyd02/" target="_blank" rel="noopener noreferrer"
+                  className="text-sm tracking-[0.1em] transition-colors hover:underline" style={{ color: '#4A5D23' }}>
                   → Follow the Journey
                 </a>
               </div>
               <div>
-                <a
-                  href="https://www.linkedin.com/in/jamesfloyd02/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm tracking-[0.1em] transition-colors hover:underline"
-                  style={{ color: '#6B4C3B' }}
-                >
+                <a href="https://www.linkedin.com/in/jamesfloyd02/" target="_blank" rel="noopener noreferrer"
+                  className="text-sm tracking-[0.1em] transition-colors hover:underline" style={{ color: '#6B4C3B' }}>
                   → Work or Connect
                 </a>
               </div>
@@ -383,14 +418,13 @@ const PortfolioPage = () => {
           </Reveal>
         </section>
 
-        {/* ═══ 8. FOOTER ═══ */}
-        <footer className="border-t border-black/10 px-5 md:px-12 py-6 flex items-center justify-between">
+        {/* ═══ 9. FOOTER ═══ */}
+        <footer className="border-t border-black/10 px-5 md:px-12 py-6 flex items-center justify-between max-w-5xl mx-auto">
           <span className="font-mono text-[8px] tracking-[0.25em] uppercase text-[#888]">The Times of James</span>
           <span className="font-mono text-[8px] tracking-[0.25em] uppercase text-[#aaa] hidden md:inline">Maniacal innovator. Unbeaten path.</span>
-          <svg width="20" height="20" viewBox="0 0 28 28" fill="none">
-            <polygon points="14,2 26,26 2,26" fill="#1a1a1a" />
-            <text x="14" y="22" textAnchor="middle" fill="#f5f0e8" fontSize="9" fontWeight="bold" fontFamily="serif">JF</text>
-          </svg>
+          <div className="w-5 h-5 bg-black flex items-center justify-center">
+            <img src="/logo.svg" alt="JF" className="w-4 h-4" />
+          </div>
         </footer>
       </main>
     </div>
