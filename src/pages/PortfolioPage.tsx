@@ -366,7 +366,7 @@ const PortfolioPage = () => {
             <Reveal key={link.path} delay={i * 0.04}>
                 <button
                 onClick={() => navigate(link.path)}
-                className="w-full text-left px-0 md:px-6 py-4 first:md:pl-0 group border-b border-black/5 md:border-b-0">
+                className="w-full text-left px-0 py-4 first:md:pl-0 group border-b border-black/5 md:border-b-0 md:px-[10px]">
 
                   <span className="text-sm font-bold tracking-[0.1em] uppercase group-hover:text-[#4A5D23] transition-colors" style={{ fontFamily: "'Playfair Display', serif" }}>
                     {link.label} →
