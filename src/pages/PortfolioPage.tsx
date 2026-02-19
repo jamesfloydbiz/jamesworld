@@ -75,7 +75,7 @@ const siteLinks = [
 { label: 'Projects', path: '/projects', desc: 'What I\'ve built and been part of building.' },
 { label: 'Builds', path: '/builds', desc: 'AI automations and operational systems I\'ve designed.' },
 { label: 'Content', path: '/content', desc: 'Writing, videos, and things I\'ve published.' },
-{ label: 'Network', path: '/network', desc: 'The people and rooms that shaped the path.' },
+{ label: 'Network', path: '/network', desc: 'The values that made the path, and how to get in touch.' },
 { label: 'Blueprints', path: '/blueprints', desc: 'Frameworks and playbooks for doing things differently.' },
 { label: 'Resume', path: '/resume', desc: 'The traditional view — roles, timelines, outcomes.' },
 { label: 'References', path: '/references', desc: 'What others have said.' },
