@@ -366,34 +366,7 @@ const PortfolioPage = () => {
 
         <div className="w-full h-px bg-black/10" />
 
-        {/* ═══ 7. EXPLORE THE WORLD ═══ */}
-        <section className="px-5 md:px-12 py-16 max-w-5xl mx-auto">
-          <Reveal>
-            <p className="font-mono text-[9px] tracking-[0.3em] uppercase text-[#888] mb-10">§ Explore</p>
-          </Reveal>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-0 divide-y md:divide-y-0 md:divide-x divide-black/10">
-            {siteLinks.map((link, i) =>
-            <Reveal key={link.path} delay={i * 0.04}>
-                <button
-                onClick={() => navigate(link.path)}
-                className="w-full text-left px-0 md:px-6 py-4 first:md:pl-0 group border-b border-black/5 md:border-b-0">
-
-                  <span className="text-sm font-bold tracking-[0.1em] uppercase group-hover:text-[#4A5D23] transition-colors" style={{ fontFamily: "'Playfair Display', serif" }}>
-                    {link.label} →
-                  </span>
-                  <span className="block mt-1 text-[13px] text-[#777]" style={{ fontFamily: "'EB Garamond', serif" }}>
-                    {link.desc}
-                  </span>
-                </button>
-              </Reveal>
-            )}
-          </div>
-        </section>
-
-        <div className="w-full h-px bg-black/10" />
-
-        {/* ═══ 8. CTA CLOSE ═══ */}
+        {/* ═══ 7. CTA CLOSE ═══ */}
         <section className="px-5 md:px-12 py-20 text-center max-w-5xl mx-auto">
           <Reveal>
             <p className="font-mono text-[9px] tracking-[0.3em] uppercase text-[#888] mb-8">§ Get in Touch</p>
@@ -427,6 +400,33 @@ const PortfolioPage = () => {
               </p>
             </div>
           </Reveal>
+        </section>
+
+        <div className="w-full h-px bg-black/10" />
+
+        {/* ═══ 8. EXPLORE THE WORLD ═══ */}
+        <section className="px-5 md:px-12 py-16 max-w-5xl mx-auto">
+          <Reveal>
+            <p className="font-mono text-[9px] tracking-[0.3em] uppercase text-[#888] mb-10">§ Explore</p>
+          </Reveal>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-0 divide-y md:divide-y-0 md:divide-x divide-black/10">
+            {siteLinks.map((link, i) =>
+            <Reveal key={link.path} delay={i * 0.04}>
+                <button
+                onClick={() => navigate(link.path)}
+                className="w-full text-left px-0 md:px-6 py-4 first:md:pl-0 group border-b border-black/5 md:border-b-0">
+
+                  <span className="text-sm font-bold tracking-[0.1em] uppercase group-hover:text-[#4A5D23] transition-colors" style={{ fontFamily: "'Playfair Display', serif" }}>
+                    {link.label} →
+                  </span>
+                  <span className="block mt-1 text-[13px] text-[#777]" style={{ fontFamily: "'EB Garamond', serif" }}>
+                    {link.desc}
+                  </span>
+                </button>
+              </Reveal>
+            )}
+          </div>
         </section>
 
         {/* ═══ 9. FOOTER ═══ */}
