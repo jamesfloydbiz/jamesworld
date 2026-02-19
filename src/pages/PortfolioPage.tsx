@@ -41,7 +41,7 @@ const logos = [
   { src: '/logos/keiretsu.png', alt: 'Keiretsu Forum' },
   { src: '/logos/betterwealth.png', alt: 'BetterWealth' },
   { src: '/logos/champions.jpg', alt: 'Champions of Change' },
-  { src: '/logos/sounders.png', alt: 'Seattle Sounders' },
+  { src: '/logos/sounders_fc.png', alt: 'Seattle Sounders' },
   { src: '/logos/seahawks.png', alt: 'Seahawks' },
 ];
 
@@ -51,7 +51,7 @@ function LogosBar() {
     <div className="w-full overflow-hidden py-6 border-y border-black/10 bg-[#f5f0e8]">
       <motion.div
         className="flex items-center gap-12 whitespace-nowrap"
-        animate={{ x: ['0%', '-33.33%'] }}
+        animate={{ x: ['-33.33%', '0%'] }}
         transition={{ duration: 40, repeat: Infinity, ease: 'linear' }}>
         {logosRow.map((logo, i) => (
           <img
@@ -315,18 +315,19 @@ const PortfolioPage = () => {
               <p className="font-mono text-[9px] tracking-[0.3em] uppercase text-[#888] mb-6">In the Field</p>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {[
-                  '/pictures/IMG_0647.jpg',
-                  '/pictures/IMG_1311.jpeg',
-                  '/pictures/IMG_1978_Original.jpg',
-                  '/pictures/IMG_4347.jpeg',
-                ].map((src, i) => (
-                  <div key={src} className="overflow-hidden">
+                  { src: '/pictures/IMG_0647.jpg', caption: 'Private Security for Byron Donald' },
+                  { src: '/pictures/IMG_1311.jpeg', caption: 'Campfires, songs, and quality conversations' },
+                  { src: '/pictures/IMG_1978_Original.jpg', caption: 'Jets and Capital Miami' },
+                  { src: '/pictures/IMG_4347.jpeg', caption: 'Relationships with extraordinary people produce exponential returns' },
+                ].map((photo, i) => (
+                  <div key={photo.src} className="overflow-hidden">
                     <img
-                      src={src}
-                      alt="In the field"
-                      className="w-full h-auto grayscale hover:scale-[1.03] transition-transform duration-700"
+                      src={photo.src}
+                      alt={photo.caption}
+                      className={`w-full grayscale hover:scale-[1.03] transition-transform duration-700 ${i === 1 ? 'h-[280px] md:h-[320px] object-cover object-center' : 'h-[280px] md:h-[320px] object-cover'}`}
                       loading="lazy"
                     />
+                    <p className="mt-2 text-[10px] italic font-serif text-[#555] leading-snug">{photo.caption}</p>
                   </div>
                 ))}
               </div>
