@@ -369,7 +369,7 @@ const PortfolioPage = () => {
             }].
             map((dispatch, i) =>
             <Reveal key={dispatch.headline} delay={i * 0.15}>
-                <div className="px-0 md:px-10 first:md:pl-0 last:md:pr-0 py-6 md:py-0">
+                <div className="px-0 first:md:pl-0 last:md:pr-0 py-6 md:py-0 md:px-[10px]">
                   <h3 className="text-lg font-bold tracking-wide mb-3" style={{ fontFamily: "'Playfair Display', serif" }}>
                     {dispatch.headline}
                   </h3>
