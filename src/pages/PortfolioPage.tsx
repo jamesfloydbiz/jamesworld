@@ -218,14 +218,14 @@ const PortfolioPage = () => {
           <div className="w-full h-px bg-black/10 my-6" />
 
           <Reveal delay={0.2}>
-            <h2 className="text-[clamp(1.5rem,4vw,3rem)] leading-[1.1] tracking-[0.02em] font-bold max-w-4xl" style={{ fontFamily: "'Playfair Display', serif" }}>
+            <h2 className="text-[clamp(1.5rem,4vw,3rem)] leading-[1.1] tracking-[0.02em] font-bold max-w-4xl text-center mx-auto" style={{ fontFamily: "'Playfair Display', serif" }}>
               Winging It at the Highest Level
             </h2>
           </Reveal>
 
           <Reveal delay={0.3}>
-            <p className="mt-4 text-lg md:text-xl text-[#555] max-w-2xl leading-relaxed" style={{ fontFamily: "'EB Garamond', serif" }}>
-              Maniacal innovator who went off the beaten path to connecting, creating, and living.
+            <p className="mt-4 text-lg md:text-xl text-[#555] max-w-4xl leading-relaxed text-center mx-auto" style={{ fontFamily: "'EB Garamond', serif" }}>
+              Maniacal innovator who went off the beaten path to connecting, creating, and living — building at the intersection of people, ideas, and conviction.
             </p>
           </Reveal>
 
