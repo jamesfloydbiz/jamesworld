@@ -269,7 +269,7 @@ const PortfolioPage = () => {
                   <h3 className="text-xl font-bold tracking-wide mb-2" style={{ fontFamily: "'Playfair Display', serif" }}>
                     {col.headline}
                   </h3>
-                  <p className="text-xs font-mono tracking-[0.15em] uppercase text-[#888] mb-4">{col.sub}</p>
+                  <p className="text-xs font-mono tracking-[0.15em] uppercase text-[#888] mb-4 px-[10px]">{col.sub}</p>
                   <p className="text-[15px] leading-[1.7] text-[#444] py-[5px] px-[10px]" style={{ fontFamily: "'EB Garamond', serif" }}>
                     {col.body}
                   </p>
