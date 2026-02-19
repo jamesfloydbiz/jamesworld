@@ -357,7 +357,7 @@ const PortfolioPage = () => {
             {[
             {
               headline: "The Expo That Shouldn\u2019t Have Worked",
-              body: "Two thousand people showed up to an event I organized in under six weeks. No venue locked, no speakers confirmed, just a conviction that the right people would show if someone had the nerve to ask. They did. Capital flowed. Deals closed. And nobody asked how old I was until it was over."
+              body: "When Trump's arrival forced a 500-person gala to completely restructure with 24 hours notice, I wrote the cold-call scripts, rallied the team, and helped turn what could have been a disaster into what guests called 'double the fun.' Chaos is just an opportunity with bad PR."
             },
             {
               headline: "A Letter to a Stranger in Singapore",
