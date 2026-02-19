@@ -78,7 +78,7 @@ const siteLinks = [
 { label: 'Network', path: '/network', desc: 'The values that made the path, and how to get in touch.' },
 { label: 'Blueprints', path: '/blueprints', desc: 'Frameworks and playbooks for doing things differently.' },
 { label: 'Resume', path: '/resume', desc: 'The traditional view — roles, timelines, outcomes.' },
-{ label: 'References', path: '/references', desc: 'What others have said.' },
+{ label: 'References', path: '/references', desc: 'What others have said about me' },
 { label: 'Poems', path: '/poems', desc: 'Thoughts that needed a different format.' },
 { label: 'Memories', path: '/pictures', desc: 'Snapshots from the road.' },
 { label: 'Museum', path: '/museum', desc: 'The 3D gallery — walk through the world.' }];
