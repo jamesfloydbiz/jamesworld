@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, useInView } from 'framer-motion';
 
@@ -53,20 +53,20 @@ function PhotoCard({ src, caption }: {src: string;caption: string;}) {
 
 }
 
-/* ─── Walking Character (static, scrolls with page) ─── */
-function WalkingCharacter() {
+/* ─── Walking Character (moves with scroll like other pages) ─── */
+function WalkingCharacter({ progress }: { progress: number }) {
+  const xPosition = 5 + progress * 90;
   return (
     <div className="relative h-[32px] bg-[#f5f0e8] border-y border-black/10 overflow-hidden">
-      <div className="absolute top-1/2 -translate-y-1/2 left-[12%]">
-        <svg width="20" height="28" viewBox="0 0 20 28" fill="none">
-          <circle cx="10" cy="5" r="4" fill="#1a1a1a" />
-          <rect x="7" y="10" width="6" height="10" rx="2" fill="#1a1a1a" />
-          <rect x="6" y="20" width="3" height="6" rx="1" fill="#1a1a1a" />
-          <rect x="11" y="20" width="3" height="6" rx="1" fill="#1a1a1a" />
+      {/* Portal entrance arch */}
+      <div className="absolute top-1/2 -translate-y-1/2 left-[2%] w-4 h-6 border border-black/15 rounded-t-full" />
+      <div className="absolute top-1/2 -translate-y-1/2" style={{ left: `${xPosition}%` }}>
+        <svg width="14" height="26" viewBox="0 0 14 26" fill="none" className="-translate-x-1/2">
+          <circle cx="7" cy="3.5" r="3.5" fill="#1a1a1a" />
+          <ellipse cx="7" cy="16" rx="3.5" ry="8" fill="#1a1a1a" />
         </svg>
       </div>
     </div>);
-
 }
 
 /* ─── Site Links Section ─── */
@@ -88,9 +88,22 @@ const siteLinks = [
 const PortfolioPage = () => {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [scrollProgress, setScrollProgress] = useState(0);
 
   useEffect(() => {
     window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = docHeight > 0 ? Math.min(1, scrollTop / docHeight) : 0;
+      setScrollProgress(progress);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const handleBackToHub = () => {
@@ -108,9 +121,7 @@ const PortfolioPage = () => {
       {/* ─── NAV (fixed) ─── */}
       <nav className="fixed top-0 left-0 right-0 z-40 h-[44px] flex items-center justify-between px-5 border-b border-black/10" style={{ background: '#f5f0e8' }}>
         <button onClick={handleBackToHub} className="flex items-center" aria-label="Home">
-          <div className="w-7 h-7 bg-black rounded-none flex items-center justify-center">
-            <img src="/images/JF_logo_transparent.png" alt="JF" className="w-5 h-5 invert" />
-          </div>
+          <img src="/images/JF_logo_transparent-2.png" alt="JF" className="w-7 h-7" />
         </button>
         <button
           onClick={() => setMenuOpen(!menuOpen)}
@@ -161,8 +172,8 @@ const PortfolioPage = () => {
       {/* ─── CONTENT ─── */}
       <main className="relative z-10 pt-[44px]">
 
-        {/* Walking character strip (scrolls with page, not fixed) */}
-        <WalkingCharacter />
+        {/* Walking character strip (moves with scroll) */}
+        <WalkingCharacter progress={scrollProgress} />
 
         {/* ═══ 1. MASTHEAD / HERO ═══ */}
         <section className="px-5 md:px-12 pt-12 pb-8 max-w-5xl mx-auto">
@@ -422,9 +433,7 @@ const PortfolioPage = () => {
         <footer className="border-t border-black/10 px-5 md:px-12 py-6 flex items-center justify-between max-w-5xl mx-auto">
           <span className="font-mono text-[8px] tracking-[0.25em] uppercase text-[#888]">The Times of James</span>
           <span className="font-mono text-[8px] tracking-[0.25em] uppercase text-[#aaa] hidden md:inline">Maniacal innovator. Unbeaten path.</span>
-          <div className="w-5 h-5 bg-black flex items-center justify-center">
-            <img src="/images/JF_logo_transparent.png" alt="JF" className="w-4 h-4 invert" />
-          </div>
+          <img src="/images/JF_logo_transparent-2.png" alt="JF" className="w-5 h-5" />
         </footer>
       </main>
     </div>);
