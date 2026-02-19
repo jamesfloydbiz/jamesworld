@@ -350,7 +350,7 @@ const PortfolioPage = () => {
         {/* ═══ 5. NOTABLE DISPATCHES ═══ */}
         <section className="px-5 md:px-12 py-16 max-w-5xl mx-auto">
           <Reveal>
-            <p className="font-mono text-[9px] tracking-[0.3em] uppercase text-[#888] mb-10">§ Notable Dispatches</p>
+            <p className="font-mono text-[9px] tracking-[0.3em] uppercase text-[#888] mb-10">§ Field Notes</p>
           </Reveal>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-0 md:divide-x md:divide-black/10">
