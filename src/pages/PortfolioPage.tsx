@@ -175,8 +175,8 @@ const PortfolioPage = () => {
           <div className="w-full h-px bg-black/15 my-4" />
 
           <Reveal delay={0.1}>
-            <p className="text-center font-mono text-[9px] tracking-[0.3em] uppercase text-[#888]">
-              Est. 2002 · Edition One · Connecting · Creating · Living
+            <p className="text-center font-mono text-[9px] tracking-[0.3em] uppercase text-[#888]">EST. 2002 · TWIN #1 · CONNECTING · CREATING · LIVING
+
             </p>
           </Reveal>
 
@@ -366,7 +366,7 @@ const PortfolioPage = () => {
             <Reveal key={link.path} delay={i * 0.04}>
                 <button
                 onClick={() => navigate(link.path)}
-                className="w-full text-left px-0 py-4 first:md:pl-0 group border-b border-black/5 md:border-b-0 md:px-[10px]">
+                className="w-full text-left px-0 md:px-6 py-4 first:md:pl-0 group border-b border-black/5 md:border-b-0">
 
                   <span className="text-sm font-bold tracking-[0.1em] uppercase group-hover:text-[#4A5D23] transition-colors" style={{ fontFamily: "'Playfair Display', serif" }}>
                     {link.label} →
