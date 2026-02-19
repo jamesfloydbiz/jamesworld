@@ -184,7 +184,7 @@ const PortfolioPage = () => {
 
           <Reveal delay={0.2}>
             <h2 className="text-[clamp(1.5rem,4vw,3rem)] leading-[1.1] tracking-[0.02em] font-bold max-w-4xl" style={{ fontFamily: "'Playfair Display', serif" }}>
-              The Man Who Showed Up With Nothing
+              Winging It at the Highest Level
             </h2>
           </Reveal>
 
