@@ -266,7 +266,7 @@ const PortfolioPage = () => {
             map((col, i) =>
             <Reveal key={col.headline} delay={i * 0.15}>
                 <div className="px-0 md:px-10 first:md:pl-0 last:md:pr-0 py-6 md:py-0">
-                  <h3 className="text-xl font-bold tracking-wide mb-2" style={{ fontFamily: "'Playfair Display', serif" }}>
+                  <h3 className="text-xl font-bold tracking-wide mb-2 px-[10px]" style={{ fontFamily: "'Playfair Display', serif" }}>
                     {col.headline}
                   </h3>
                   <p className="text-xs font-mono tracking-[0.15em] uppercase text-[#888] mb-4 px-[10px]">{col.sub}</p>
