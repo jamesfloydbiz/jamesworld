@@ -1,83 +1,71 @@
-## New Landing Page with Dual Entry Points
+## Portfolio Page Restructure
 
-Replace the current Index page (which immediately loads the heavy 3D museum) with a lightweight landing page that gives visitors two clear paths: the immersive 3D museum or a quick portfolio view.
+This plan reorganizes the portfolio page with seven coordinated changes to strengthen the newspaper aesthetic and add two new editorial sections.
 
-### What Changes
+---
 
-**1. New file: `src/pages/LandingPage.tsx**`
+### 1. Consolidate Photos Under the Story
 
-A standalone, lightweight page with:
+- Remove the current mini gallery (4 small thumbnails under the story columns)
+- Remove the standalone "In the Field" photo grid section (section 6)
+- Place the four "In the Field" photos (IMG_0647, IMG_1311, IMG_1978_Original, IMG_4347) directly under the story in a 1x4 / 4-column grid with the "In the Field" label
+- Photos will use `object-contain` or auto height so they display fully without cropping
 
-- **SVG tree silhouette** as a faded background element -- stencil/screen-print style, built entirely in SVG (no image files)
-- **Film grain overlay** using a CSS pseudo-element with a subtle noise pattern
-- **Color palette**: dark bark brown (`#3D2817`), olive green (`#4A5D23`), light neutral background (`#F5F0E8`)
-- **Welcome text**: brief, warm intro -- something like "James Floyd" as heading plus a short line
-- **Two equal buttons**:
-  - "Experience the Museum" -- navigates to `/museum` (the current 3D experience with the loading page)
-  - "Quick Portfolio View" -- navigates to `/story` (or a dedicated portfolio route)
-- **Fade-in animation** using framer-motion (already installed), subtle and paced
-- **Mobile-responsive** via Tailwind breakpoints
-- **Zero heavy dependencies** -- no Three.js, no lazy loading, no 3D. Just React + framer-motion + Tailwind + an inline SVG
+### 2. Delete the Numbers Section
 
-**2. Move current Index to `/museum` route**
+- Remove the entire "By the Numbers" section (2,000 / $2T+ / 12+ / infinity stats grid) and its trailing divider
 
-- Rename `src/pages/Index.tsx` logic to serve at `/museum` instead of `/`
-- The 3D museum with its loading screen, joystick, etc. lives there unchanged
+### 3. Reverse the Cities Ticker Direction
 
-**3. Update `src/App.tsx` routing**
+- The cities ticker currently scrolls left-to-right. Change it to scroll right-to-left by toggling the `reverse` prop to `true`
 
-- `/` renders `LandingPage`
-- `/museum` renders the current `Index` (3D museum experience)
-- All other routes unchanged
+### 4. Replace "Rooms I've Been In" With a Logos Bar
 
-### Landing Page Layout
+- Remove the text-based ticker
+- Copy the 9 uploaded logo images into `public/logos/`
+- Create a horizontally auto-scrolling logo strip with small logos (approx 40-50px height), grayscale, with transparent backgrounds
+- Logos: Loeb NYC, Blue Devil, Jacob Green Charity Golf, Jets & Capital, Keiretsu Forum, BetterWealth, Champions of Change, Seattle Sounders, Seahawks
+- Keep the "Rooms I've Been In" label above it
+- Ensure the photos have transparent backgrounds so the logos are 'flush' against the background
 
-```text
-+------------------------------------------+
-|                                          |
-|          [faded tree SVG bg]             |
-|                                          |
-|           James Floyd                    |
-|     Builder. Creator. Explorer.          |
-|                                          |
-|   [Experience the Museum]                |
-|   [Quick Portfolio View]                 |
-|                                          |
-+------------------------------------------+
-```
+### 5. Add "Notable Dispatches" Section
 
-- Tree SVG is large, centered, very low opacity (~0.06-0.08), behind everything
-- Grain overlay covers entire page at low opacity
-- Content is vertically centered
-- Buttons are stacked, same size, same visual weight
-- Typography: Space Mono (already the project font)
+- Insert a new section after the logos bar
+- Label: "Notable Dispatches" or "Field Notes"
+- 3-column newspaper-style grid (stacks on mobile)
+- Each column contains one short, punchy one-paragraph story
+- Placeholder content will be added for James to replace with real dispatches
+- Styled with EB Garamond body text, Playfair Display sub-headlines, consistent with the broadsheet aesthetic
+
+### 6. Add "Message from James" Section
+
+- Insert after Notable Dispatches, before the Get in Touch CTA
+- Styled like a publisher's letter / editor's note
+- Warm, direct tone with a personal message
+- Placeholder text for James to customize
+- Slightly indented, italic lead-in, distinguished from the rest of the page with subtle typographic treatment  
+
+
+7. Change the style of the CTA to be more like an old timey news paper ad
+
+---
+
+### Resulting Page Order
+
+1. Nav + Walking Character
+2. Masthead / Hero
+3. Cities Ticker (now right-to-left)
+4. The Story (3 columns) + In the Field photos underneath
+5. Logos Bar ("Rooms I've Been In")
+6. Notable Dispatches (3-column grid)
+7. Message from James (publisher's letter)
+8. Get in Touch CTA
+9. Explore (site directory)
+10. Footer
 
 ### Technical Details
 
-**LandingPage.tsx structure:**
-
-- No state management needed (no zustand, no game store)
-- Uses `useNavigate` from react-router-dom for button clicks
-- SVG tree: a simple deciduous tree silhouette path, viewBox-based, scales naturally
-- Grain effect: CSS `background-image` with a tiny repeating noise pattern using a data URI or CSS gradient trick
-- Animations: `motion.div` wrappers with staggered `opacity` and `y` transitions, 0.4-0.6s duration
-- Colors applied via inline styles or scoped classes (not touching the global theme since this page has its own warm palette)
-
-**Routing changes in App.tsx:**
-
-- Add `import LandingPage from "./pages/LandingPage"`
-- Change `<Route path="/" element={<Index />} />` to `<Route path="/" element={<LandingPage />} />`
-- Add `<Route path="/museum" element={<Index />} />`
-
-**LoadingScreen.tsx** -- no changes needed, it still works within the museum route.
-
-### What Stays the Same
-
-- All existing pages and routes
-- The 3D museum experience (just moved to `/museum`)
-- Global styles, fonts, theme tokens
-- Game store, all components  
-  
-delete nothing. the entire experience will just be behind the 3d experience button including the loading page. behind the quick snapshot experience right now - build a very simple landing page with black background and white , with compelling copywriting about reaching out to me.  
-  
-keep the brand guidelines as a black bacground with white accents and use the brown and green sparingly but enough to make it feel homey, cozey, and analog, and natural
+- 9 logo images copied from user-uploads to `public/logos/`
+- Logos bar uses CSS animation (duplicate content for seamless loop) similar to existing Ticker pattern but with images instead of text
+- No new dependencies required
+- All new sections use existing Reveal animation wrapper and established typography classes
