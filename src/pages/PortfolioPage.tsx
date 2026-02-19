@@ -34,16 +34,16 @@ function Ticker({ items, dark = false, reverse = false }: {items: string[];dark?
 
 /* ─── Logos Scroll Bar ─── */
 const logos = [
-  { src: '/logos/loeb_nyc.png', alt: 'Loeb NYC' },
-  { src: '/logos/blue_devil.png', alt: 'Blue Devil' },
-  { src: '/logos/jacob_green.png', alt: 'Jacob Green Charity Golf' },
-  { src: '/logos/jets.png', alt: 'Jets & Capital' },
-  { src: '/logos/keiretsu.png', alt: 'Keiretsu Forum' },
-  { src: '/logos/betterwealth.png', alt: 'BetterWealth' },
-  { src: '/logos/champions.jpg', alt: 'Champions of Change' },
-  { src: '/logos/sounders_fc.png', alt: 'Seattle Sounders' },
-  { src: '/logos/seahawks.png', alt: 'Seahawks' },
-];
+{ src: '/logos/loeb_nyc.png', alt: 'Loeb NYC' },
+{ src: '/logos/blue_devil.png', alt: 'Blue Devil' },
+{ src: '/logos/jacob_green.png', alt: 'Jacob Green Charity Golf' },
+{ src: '/logos/jets.png', alt: 'Jets & Capital' },
+{ src: '/logos/keiretsu.png', alt: 'Keiretsu Forum' },
+{ src: '/logos/betterwealth.png', alt: 'BetterWealth' },
+{ src: '/logos/champions.jpg', alt: 'Champions of Change' },
+{ src: '/logos/sounders_fc.png', alt: 'Seattle Sounders' },
+{ src: '/logos/seahawks.png', alt: 'Seahawks' }];
+
 
 function LogosBar() {
   const logosRow = [...logos, ...logos, ...logos];
@@ -53,19 +53,19 @@ function LogosBar() {
         className="flex items-center gap-12 whitespace-nowrap"
         animate={{ x: ['-33.33%', '0%'] }}
         transition={{ duration: 40, repeat: Infinity, ease: 'linear' }}>
-        {logosRow.map((logo, i) => (
-          <img
-            key={`${logo.alt}-${i}`}
-            src={logo.src}
-            alt={logo.alt}
-            className="h-10 w-auto grayscale opacity-70 hover:opacity-100 transition-opacity duration-300 flex-shrink-0"
-            style={{ mixBlendMode: 'multiply' }}
-            loading="lazy"
-          />
-        ))}
+        {logosRow.map((logo, i) =>
+        <img
+          key={`${logo.alt}-${i}`}
+          src={logo.src}
+          alt={logo.alt}
+          className="h-10 w-auto grayscale opacity-70 hover:opacity-100 transition-opacity duration-300 flex-shrink-0"
+          style={{ mixBlendMode: 'multiply' }}
+          loading="lazy" />
+
+        )}
       </motion.div>
-    </div>
-  );
+    </div>);
+
 }
 
 /* ─── Photo Card ─── */
@@ -84,7 +84,7 @@ function PhotoCard({ src, caption }: {src: string;caption: string;}) {
 }
 
 /* ─── Walking Character (moves with scroll like other pages) ─── */
-function WalkingCharacter({ progress }: { progress: number }) {
+function WalkingCharacter({ progress }: {progress: number;}) {
   const xPosition = 5 + progress * 90;
   return (
     <div className="relative h-[32px] bg-[#f5f0e8] border-y border-black/10 overflow-hidden">
@@ -100,18 +100,18 @@ function WalkingCharacter({ progress }: { progress: number }) {
 
 /* ─── Site Links Section ─── */
 const siteLinks = [
-  { label: 'Story', path: '/story', desc: 'The full narrative — where it started, how it unfolded.' },
-  { label: 'Projects', path: '/projects', desc: 'What I\'ve built and been part of building.' },
-  { label: 'Builds', path: '/builds', desc: 'AI automations and operational systems I\'ve designed.' },
-  { label: 'Content', path: '/content', desc: 'Writing, videos, and things I\'ve published.' },
-  { label: 'Network', path: '/network', desc: 'The values that made the path, and how to get in touch.' },
-  { label: 'Blueprints', path: '/blueprints', desc: 'Frameworks and playbooks for doing things differently.' },
-  { label: 'Resume', path: '/resume', desc: 'The traditional view — roles, timelines, outcomes.' },
-  { label: 'References', path: '/references', desc: 'What others have said about me' },
-  { label: 'Poems', path: '/poems', desc: 'Thoughts that needed a different format.' },
-  { label: 'Memories', path: '/pictures', desc: 'Snapshots from the road.' },
-  { label: 'Museum', path: '/museum', desc: 'The 3D gallery — walk through the world.' },
-];
+{ label: 'Story', path: '/story', desc: 'The full narrative — where it started, how it unfolded.' },
+{ label: 'Projects', path: '/projects', desc: 'What I\'ve built and been part of building.' },
+{ label: 'Builds', path: '/builds', desc: 'AI automations and operational systems I\'ve designed.' },
+{ label: 'Content', path: '/content', desc: 'Writing, videos, and things I\'ve published.' },
+{ label: 'Network', path: '/network', desc: 'The values that made the path, and how to get in touch.' },
+{ label: 'Blueprints', path: '/blueprints', desc: 'Frameworks and playbooks for doing things differently.' },
+{ label: 'Resume', path: '/resume', desc: 'The traditional view — roles, timelines, outcomes.' },
+{ label: 'References', path: '/references', desc: 'What others have said about me' },
+{ label: 'Poems', path: '/poems', desc: 'Thoughts that needed a different format.' },
+{ label: 'Memories', path: '/pictures', desc: 'Snapshots from the road.' },
+{ label: 'Museum', path: '/museum', desc: 'The 3D gallery — walk through the world.' }];
+
 
 /* ─── Main Page ─── */
 const PortfolioPage = () => {
@@ -315,21 +315,21 @@ const PortfolioPage = () => {
               <p className="font-mono text-[9px] tracking-[0.3em] uppercase text-[#888] mb-6">In the Field</p>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {[
-                  { src: '/pictures/IMG_0647.jpg', caption: 'Private Security for Byron Donald' },
-                  { src: '/pictures/IMG_1311.jpeg', caption: 'Campfires, songs, and quality conversations' },
-                  { src: '/pictures/IMG_1978_Original.jpg', caption: 'Jets and Capital Miami' },
-                  { src: '/pictures/IMG_4347.jpeg', caption: 'Relationships with extraordinary people produce exponential returns' },
-                ].map((photo, i) => (
-                  <div key={photo.src} className="overflow-hidden">
+                { src: '/pictures/IMG_0647.jpg', caption: 'Private Security for Byron Donald' },
+                { src: '/pictures/IMG_1311.jpeg', caption: 'Campfires, songs, and quality conversations' },
+                { src: '/pictures/IMG_1978_Original.jpg', caption: 'Jets and Capital Miami' },
+                { src: '/pictures/IMG_4347.jpeg', caption: 'Relationships with extraordinary people produce exponential returns' }].
+                map((photo, i) =>
+                <div key={photo.src} className="overflow-hidden">
                     <img
-                      src={photo.src}
-                      alt={photo.caption}
-                      className={`w-full grayscale hover:scale-[1.03] transition-transform duration-700 ${i === 1 ? 'h-[280px] md:h-[320px] object-cover object-center' : 'h-[280px] md:h-[320px] object-cover'}`}
-                      loading="lazy"
-                    />
+                    src={photo.src}
+                    alt={photo.caption}
+                    className={`w-full grayscale hover:scale-[1.03] transition-transform duration-700 ${i === 1 ? 'h-[280px] md:h-[320px] object-cover object-center' : 'h-[280px] md:h-[320px] object-cover'}`}
+                    loading="lazy" />
+
                     <p className="mt-2 text-[10px] italic font-serif text-[#555] leading-snug">{photo.caption}</p>
                   </div>
-                ))}
+                )}
               </div>
             </div>
           </Reveal>
@@ -340,7 +340,7 @@ const PortfolioPage = () => {
         {/* ═══ 4. LOGOS BAR ("Rooms I've Been In") ═══ */}
         <section className="max-w-5xl mx-auto">
           <Reveal>
-            <p className="font-mono text-[9px] tracking-[0.3em] uppercase text-[#888] px-5 md:px-12 pt-12 pb-4">Rooms I've Been In</p>
+            <p className="font-mono text-[9px] tracking-[0.3em] uppercase text-[#888] px-5 md:px-12 pt-12 pb-4">Organizations I Have Worked With  </p>
           </Reveal>
         </section>
         <LogosBar />
@@ -355,20 +355,20 @@ const PortfolioPage = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-0 md:divide-x md:divide-black/10">
             {[
-              {
-                headline: "The Expo That Shouldn\u2019t Have Worked",
-                body: "Two thousand people showed up to an event I organized in under six weeks. No venue locked, no speakers confirmed, just a conviction that the right people would show if someone had the nerve to ask. They did. Capital flowed. Deals closed. And nobody asked how old I was until it was over."
-              },
-              {
-                headline: "A Letter to a Stranger in Singapore",
-                body: "I wrote a cold letter to someone I\u2019d never met \u2014 a family office patriarch in Singapore \u2014 and hand-delivered it to his front desk. Three weeks later I was sitting in his private library talking about legacy, mortality, and what money can\u2019t fix. That conversation changed my operating system."
-              },
-              {
-                headline: "The Night in the Amazon",
-                body: "Deep in the Ecuadorian Amazon with no cell service and a shaman who didn\u2019t speak English, I sat in ceremony for twelve hours. No shortcuts. No narration. Just silence and everything I\u2019d been avoiding. I came out lighter. Not enlightened \u2014 just honest for the first time in a while."
-              },
-            ].map((dispatch, i) => (
-              <Reveal key={dispatch.headline} delay={i * 0.15}>
+            {
+              headline: "The Expo That Shouldn\u2019t Have Worked",
+              body: "Two thousand people showed up to an event I organized in under six weeks. No venue locked, no speakers confirmed, just a conviction that the right people would show if someone had the nerve to ask. They did. Capital flowed. Deals closed. And nobody asked how old I was until it was over."
+            },
+            {
+              headline: "A Letter to a Stranger in Singapore",
+              body: "I wrote a cold letter to someone I\u2019d never met \u2014 a family office patriarch in Singapore \u2014 and hand-delivered it to his front desk. Three weeks later I was sitting in his private library talking about legacy, mortality, and what money can\u2019t fix. That conversation changed my operating system."
+            },
+            {
+              headline: "The Night in the Amazon",
+              body: "Deep in the Ecuadorian Amazon with no cell service and a shaman who didn\u2019t speak English, I sat in ceremony for twelve hours. No shortcuts. No narration. Just silence and everything I\u2019d been avoiding. I came out lighter. Not enlightened \u2014 just honest for the first time in a while."
+            }].
+            map((dispatch, i) =>
+            <Reveal key={dispatch.headline} delay={i * 0.15}>
                 <div className="px-0 md:px-10 first:md:pl-0 last:md:pr-0 py-6 md:py-0">
                   <h3 className="text-lg font-bold tracking-wide mb-3" style={{ fontFamily: "'Playfair Display', serif" }}>
                     {dispatch.headline}
@@ -378,7 +378,7 @@ const PortfolioPage = () => {
                   </p>
                 </div>
               </Reveal>
-            ))}
+            )}
           </div>
         </section>
 
@@ -428,11 +428,11 @@ const PortfolioPage = () => {
                 </p>
                 <div className="space-y-2">
                   <a href="https://www.instagram.com/jamesfloyd02/" target="_blank" rel="noopener noreferrer"
-                    className="block text-[11px] tracking-[0.2em] uppercase transition-colors hover:underline" style={{ color: '#4A5D23' }}>
+                  className="block text-[11px] tracking-[0.2em] uppercase transition-colors hover:underline" style={{ color: '#4A5D23' }}>
                     ✦ Follow the Journey — Instagram
                   </a>
                   <a href="https://www.linkedin.com/in/jamesfloyd02/" target="_blank" rel="noopener noreferrer"
-                    className="block text-[11px] tracking-[0.2em] uppercase transition-colors hover:underline" style={{ color: '#6B4C3B' }}>
+                  className="block text-[11px] tracking-[0.2em] uppercase transition-colors hover:underline" style={{ color: '#6B4C3B' }}>
                     ✦ Work or Connect — LinkedIn
                   </a>
                 </div>
