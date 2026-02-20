@@ -365,7 +365,7 @@ const PortfolioPage = () => {
             },
             {
               headline: "No, Not That Island",
-              body: "A cold email. A yes. A weekend on an island with one of the most connected builders in the world — his family, his inner circle, employee number three at a company you've definitely heard of. We hiked, cold plunged, and talked for hours. But what I left with wasn't a contact or a deal. It was a complete rewrite of how I see myself and how I tell my story. Play long-term games with long-term people. The people who've wronged you don't deserve a sentence. Abundance is the only lens worth looking through."
+              body: "A cold email. A yes. A weekend on an island with one of the most connected builders in the world. We hiked, cold plunged, and talked for hours. It was a breakthrough, where I realized nobody is a hero, so just make yourself yours."
             }].
             map((dispatch, i) =>
             <Reveal key={dispatch.headline} delay={i * 0.15}>
@@ -392,17 +392,23 @@ const PortfolioPage = () => {
 
           <Reveal delay={0.1}>
             <div className="max-w-2xl mx-auto md:pl-12 border-l-2 border-black/10">
-              <p className="text-lg italic text-[#555] mb-6" style={{ fontFamily: "'EB Garamond', serif" }}>
-                Dear reader,
+              <p className="text-[15px] leading-[1.8] text-[#444] mb-4" style={{ fontFamily: "'EB Garamond', serif" }}>
+                If you've scrolled this far, you are curious. Me too.
               </p>
               <p className="text-[15px] leading-[1.8] text-[#444] mb-4" style={{ fontFamily: "'EB Garamond', serif" }}>
-                If you've scrolled this far, you're probably not the type to skim. Good. Most of what I've built came from that same impulse — to go deeper when everyone else moves on.
+                There's a lot more to know about me than what I can fit here, so let me concisely communicate what you need to know.
               </p>
               <p className="text-[15px] leading-[1.8] text-[#444] mb-4" style={{ fontFamily: "'EB Garamond', serif" }}>
-                This page isn't a pitch. It's a signal. I built this world because I believe the best relationships start with clarity — knowing who someone is before you ever sit down together. So here it is. The mess, the wins, the philosophy, the work.
+                My greatest strength is the depth at which I care. About others and about myself.
+              </p>
+              <p className="text-[15px] leading-[1.8] text-[#444] mb-4" style={{ fontFamily: "'EB Garamond', serif" }}>
+                Including you.
+              </p>
+              <p className="text-[15px] leading-[1.8] text-[#444] mb-4" style={{ fontFamily: "'EB Garamond', serif" }}>
+                My network is vast, my experience even more so, but I can't promise to lead you where you want to go. I also can't follow you because you do not know where I want to go.
               </p>
               <p className="text-[15px] leading-[1.8] text-[#444] mb-6" style={{ fontFamily: "'EB Garamond', serif" }}>
-                If something here resonates, reach out. Not because you need something — but because you're curious. That's always been enough for me.
+                I will however, walk alongside you. It would be an honor if you joined the ranks of people who have walked alongside me.
               </p>
               <p className="text-sm font-bold tracking-[0.1em] uppercase" style={{ fontFamily: "'Playfair Display', serif" }}>
                 — James Floyd
