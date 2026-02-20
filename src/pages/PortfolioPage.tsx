@@ -462,6 +462,7 @@ const PortfolioPage = () => {
           </Reveal>
 
           <div className="relative">
+            <div className="hidden md:block absolute top-0 bottom-0 left-0 w-px bg-black/10" />
             <div className="hidden md:block absolute top-0 bottom-0 left-1/2 w-px bg-black/10" />
             <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
               {siteLinks.map((link, i) =>
