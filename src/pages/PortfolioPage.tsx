@@ -203,7 +203,7 @@ const PortfolioPage = () => {
         {/* ═══ 1. MASTHEAD / HERO ═══ */}
         <section className="px-5 md:px-12 pt-12 pb-8 max-w-5xl mx-auto">
           <Reveal>
-            <h1 className="text-center text-[clamp(2.5rem,8vw,6rem)] leading-[0.9] tracking-[0.04em] uppercase font-black" style={{ fontFamily: "'Playfair Display', serif" }}>
+            <h1 className="text-center text-[clamp(1.8rem,8vw,6rem)] leading-[0.9] tracking-[0.04em] uppercase font-black whitespace-nowrap" style={{ fontFamily: "'Playfair Display', serif" }}>
               The Times of James
             </h1>
           </Reveal>
@@ -369,7 +369,7 @@ const PortfolioPage = () => {
             }].
             map((dispatch, i) =>
             <Reveal key={dispatch.headline} delay={i * 0.15}>
-                <div className="px-0 first:md:pl-0 last:md:pr-0 py-6 md:py-0 md:px-[10px] p-[10px]">
+                <div className="py-6 md:py-0 pl-[10px] pr-[10px]">
                   <h3 className="text-lg font-bold tracking-wide mb-3" style={{ fontFamily: "'Playfair Display', serif" }}>
                     {dispatch.headline}
                   </h3>
@@ -466,7 +466,7 @@ const PortfolioPage = () => {
             <Reveal key={link.path} delay={i * 0.04}>
                 <button
                 onClick={() => navigate(link.path)}
-                className="w-full text-left px-0 md:px-10 py-4 first:md:pl-0 group border-b border-black/5 md:border-b-0">
+                className="w-full text-left pl-[10px] pr-[10px] py-4 group border-b border-black/5 md:border-b-0">
                   <span className="text-sm font-bold tracking-[0.1em] uppercase group-hover:text-[#4A5D23] transition-colors" style={{ fontFamily: "'Playfair Display', serif" }}>
                     {link.label} →
                   </span>
