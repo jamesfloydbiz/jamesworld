@@ -2,41 +2,41 @@ import { WalkwayHeader } from '@/components/walkway/WalkwayHeader';
 import { useKeyboardScroll } from '@/hooks/useKeyboardScroll';
 import { motion } from 'framer-motion';
 
-const pictures = [
-  'IMG_1311.jpeg',
-  'IMG_1341.jpeg',
-  'IMG_2488.jpeg',
-  'IMG_4347.jpeg',
-  'IMG_5430.jpeg',
-  'IMG_7136.jpeg',
-  'Jets_&_Capital_Miami_BTS_Day_0-58.jpeg',
-  'Jets_&_Capital_Miami_BTS_Day_0-83.jpeg',
-  'campfire-sparks.jpeg',
-  'IMG_0610.jpg',
-  'IMG_0611.jpg',
-  'IMG_0647.jpg',
-  'IMG_1975.jpg',
-  'IMG_1976.jpg',
-  'IMG_1977.jpg',
-  'IMG_1978.jpg',
-  'IMG_2001_Original.jpg',
-  'IMG_2158_Original.jpg',
-  'IMG_8740.jpg',
-  'IMG_8922.jpg',
-  'IMG_8927.jpg',
-  'IMG_9384.jpg',
-  'IMG_9707.jpg',
-  'IMG_9749.jpg',
-  '75140DD1-DBC5-4F23-82B7-EA44DCC2780A.jpg',
-  '18766491-0c6d-4bf2-a4e4-35dd80ff985c.jpg',
-  '20250619_092213_Original.jpg',
-  '20250619_140938_Original.jpg',
-  '20250619_141040_Original.jpg',
-  'IMG_9029.png',
-  'IMG_9032.png',
-  'IMG_9451.png',
-  'IMG_9577.png',
-  'IMG_9714.png',
+const pictures: { file: string; alt: string }[] = [
+  { file: 'IMG_1311.jpeg', alt: 'James Floyd at campfire gathering with friends' },
+  { file: 'IMG_1341.jpeg', alt: 'James Floyd outdoor adventure moment' },
+  { file: 'IMG_2488.jpeg', alt: 'James Floyd networking event candid' },
+  { file: 'IMG_4347.jpeg', alt: 'James Floyd building relationships with extraordinary people' },
+  { file: 'IMG_5430.jpeg', alt: 'James Floyd travel exploration snapshot' },
+  { file: 'IMG_7136.jpeg', alt: 'James Floyd creative lifestyle moment' },
+  { file: 'Jets_&_Capital_Miami_BTS_Day_0-58.jpeg', alt: 'James Floyd behind the scenes at Jets and Capital Miami event' },
+  { file: 'Jets_&_Capital_Miami_BTS_Day_0-83.jpeg', alt: 'James Floyd at Jets and Capital Miami networking' },
+  { file: 'campfire-sparks.jpeg', alt: 'Campfire sparks flying into the night sky' },
+  { file: 'IMG_0610.jpg', alt: 'James Floyd candid portrait' },
+  { file: 'IMG_0611.jpg', alt: 'James Floyd lifestyle capture' },
+  { file: 'IMG_0647.jpg', alt: 'James Floyd providing private security for Byron Donald' },
+  { file: 'IMG_1975.jpg', alt: 'James Floyd at a professional event' },
+  { file: 'IMG_1976.jpg', alt: 'James Floyd connecting with industry leaders' },
+  { file: 'IMG_1977.jpg', alt: 'James Floyd event candid shot' },
+  { file: 'IMG_1978.jpg', alt: 'James Floyd at Jets and Capital Miami' },
+  { file: 'IMG_2001_Original.jpg', alt: 'James Floyd exploring new horizons' },
+  { file: 'IMG_2158_Original.jpg', alt: 'James Floyd adventure travel moment' },
+  { file: 'IMG_8740.jpg', alt: 'James Floyd personal milestone memory' },
+  { file: 'IMG_8922.jpg', alt: 'James Floyd creative work session' },
+  { file: 'IMG_8927.jpg', alt: 'James Floyd in the field' },
+  { file: 'IMG_9384.jpg', alt: 'James Floyd outdoor lifestyle moment' },
+  { file: 'IMG_9707.jpg', alt: 'James Floyd world travel snapshot' },
+  { file: 'IMG_9749.jpg', alt: 'James Floyd meaningful connection moment' },
+  { file: '75140DD1-DBC5-4F23-82B7-EA44DCC2780A.jpg', alt: 'James Floyd spontaneous life capture' },
+  { file: '18766491-0c6d-4bf2-a4e4-35dd80ff985c.jpg', alt: 'James Floyd candid memory' },
+  { file: '20250619_092213_Original.jpg', alt: 'James Floyd morning adventure 2025' },
+  { file: '20250619_140938_Original.jpg', alt: 'James Floyd afternoon exploration 2025' },
+  { file: '20250619_141040_Original.jpg', alt: 'James Floyd scenic travel moment 2025' },
+  { file: 'IMG_9029.png', alt: 'James Floyd digital creation screenshot' },
+  { file: 'IMG_9032.png', alt: 'James Floyd builder workspace' },
+  { file: 'IMG_9451.png', alt: 'James Floyd project highlight' },
+  { file: 'IMG_9577.png', alt: 'James Floyd innovation moment' },
+  { file: 'IMG_9714.png', alt: 'James Floyd creative vision capture' },
 ];
 
 const PicturesPage = () => {
@@ -70,7 +70,7 @@ const PicturesPage = () => {
           
           <div className="flex items-baseline gap-4 mb-12">
             <h1 className="text-3xl md:text-4xl tracking-widest uppercase">Hall of Memories</h1>
-            <span className="px-3 py-1 bg-white/10 text-sm">
+            <span className="px-3 py-1 bg-white/10 text-sm" aria-label={`${pictures.length} photo memories`}>
               {pictures.length} moments
             </span>
           </div>
@@ -79,7 +79,7 @@ const PicturesPage = () => {
           <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-4">
             {pictures.map((picture, index) => (
               <motion.div
-                key={picture}
+                key={picture.file}
                 className="break-inside-avoid mb-4"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -87,8 +87,8 @@ const PicturesPage = () => {
               >
                 <div className="border-2 border-white p-2 bg-black">
                   <img 
-                    src={`/pictures/${picture}`} 
-                    alt={`Memory ${index + 1}`}
+                    src={`/pictures/${picture.file}`} 
+                    alt={picture.alt}
                     className="w-full h-auto grayscale"
                     loading={index < 12 ? 'eager' : 'lazy'}
                     fetchPriority={index < 12 ? 'high' : 'auto'}

@@ -56,7 +56,7 @@ export function WalkwayHeader({ title }: WalkwayHeaderProps) {
           transition={{ delay: 0.3 }}
           aria-label="Return to gallery"
         >
-          <img src="/logo.svg" alt="Logo" className="w-full h-full" />
+          <img src="/logo.svg" alt="James Floyd logo - return to home" className="w-full h-full" />
         </motion.button>
 
         {/* Menu button - subtle positioning */}

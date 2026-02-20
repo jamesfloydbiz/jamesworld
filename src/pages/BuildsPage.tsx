@@ -76,7 +76,7 @@ const automations = [
   },
 ];
 
-const ImageGallery = ({ images }: { images: string[] }) => {
+const ImageGallery = ({ images, title }: { images: string[]; title: string }) => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   return (
@@ -86,7 +86,7 @@ const ImageGallery = ({ images }: { images: string[] }) => {
           <img
             key={idx}
             src={`${IMAGE_BASE_URL}${img}`}
-            alt={`Screenshot ${idx + 1}`}
+            alt={`${title} workflow screenshot ${idx + 1}`}
             className="h-20 w-auto rounded border border-border cursor-pointer hover:border-foreground transition-colors flex-shrink-0"
             loading="lazy"
             onClick={() => setSelectedImage(img)}
@@ -101,7 +101,7 @@ const ImageGallery = ({ images }: { images: string[] }) => {
         >
           <img
             src={`${IMAGE_BASE_URL}${selectedImage}`}
-            alt="Full size"
+            alt={`${title} workflow detail view`}
             className="max-w-full max-h-full object-contain"
           />
         </div>
@@ -152,7 +152,7 @@ const BuildsPage = () => {
                 </div>
                 
                 {'images' in automation && automation.images && (
-                  <ImageGallery images={automation.images} />
+                  <ImageGallery images={automation.images} title={automation.title} />
                 )}
                 
                 <p className="text-muted-foreground text-sm mb-4 leading-relaxed whitespace-pre-line">
