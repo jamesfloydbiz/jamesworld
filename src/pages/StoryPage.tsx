@@ -93,14 +93,14 @@ const StoryPage = () => {
                       <div className="mt-4 max-w-md overflow-hidden rounded border border-border">
                         <img 
                           src={event.imageSrc} 
-                          alt={event.title}
+                          alt={`James Floyd - ${event.title}`}
                           className="w-full h-auto object-cover"
                         />
                       </div>
                     )}
                     {(event as any).hasButton && (
                       <a
-                        href="https://www.linkedin.com/in/jamesfloyd02/"
+                        href="https://www.linkedin.com/in/jamesfloydl/"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-block mt-4 font-mono text-sm tracking-widest uppercase px-6 py-3 border border-border text-foreground hover:bg-accent transition-colors duration-300"

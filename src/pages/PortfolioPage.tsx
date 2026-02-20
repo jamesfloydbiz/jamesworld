@@ -150,7 +150,7 @@ const PortfolioPage = () => {
       {/* ─── NAV (fixed) ─── */}
       <nav className="fixed top-0 left-0 right-0 z-40 h-[44px] flex items-center justify-between px-5 border-b border-black/10" style={{ background: '#f5f0e8' }}>
         <button onClick={handleBackToHub} className="flex items-center" aria-label="Home">
-          <img src="/images/JF_logo_transparent-2.png" alt="JF" className="w-7 h-7" />
+          <img src="/images/JF_logo_transparent-2.png" alt="James Floyd logo" className="w-7 h-7" />
         </button>
         <button
           onClick={() => setMenuOpen(!menuOpen)}
@@ -234,7 +234,7 @@ const PortfolioPage = () => {
             <div className="mt-8 overflow-hidden">
               <motion.img
                 src="/pictures/Jets_&_Capital_Miami_BTS_Day_0-58.jpeg"
-                alt="James Floyd"
+                alt="James Floyd at Jets and Capital Miami networking event"
                 className="w-full h-auto grayscale"
                 animate={{ scale: [1, 1.02, 1] }}
                 transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }} />
@@ -245,7 +245,7 @@ const PortfolioPage = () => {
           <Reveal delay={0.5}>
             <div className="mt-8 flex flex-wrap gap-4">
               <a
-                href="https://www.instagram.com/jamesfloyd02/"
+                href="https://www.instagram.com/jamesfloydsworld"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="px-6 py-3 border border-black/20 text-[12px] tracking-[0.2em] uppercase transition-colors hover:bg-black/5"
@@ -253,7 +253,7 @@ const PortfolioPage = () => {
                 Follow the Journey →
               </a>
               <a
-                href="https://www.linkedin.com/in/jamesfloyd02/"
+                href="https://www.linkedin.com/in/jamesfloydl/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="px-6 py-3 border border-black/20 text-[12px] tracking-[0.2em] uppercase transition-colors hover:bg-black/5"
@@ -436,11 +436,11 @@ const PortfolioPage = () => {
                   Builders, investors, creators, and those who refuse to stay in one lane. If you are any of the above and wish to correspond, the publisher welcomes your inquiry.
                 </p>
                 <div className="space-y-2">
-                  <a href="https://www.instagram.com/jamesfloyd02/" target="_blank" rel="noopener noreferrer"
+                  <a href="https://www.instagram.com/jamesfloydsworld" target="_blank" rel="noopener noreferrer"
                   className="block text-[11px] tracking-[0.2em] uppercase transition-colors hover:underline" style={{ color: '#4A5D23' }}>
                     ✦ Follow the Journey — Instagram
                   </a>
-                  <a href="https://www.linkedin.com/in/jamesfloyd02/" target="_blank" rel="noopener noreferrer"
+                  <a href="https://www.linkedin.com/in/jamesfloydl/" target="_blank" rel="noopener noreferrer"
                   className="block text-[11px] tracking-[0.2em] uppercase transition-colors hover:underline" style={{ color: '#6B4C3B' }}>
                     ✦ Work or Connect — LinkedIn
                   </a>
@@ -487,7 +487,7 @@ const PortfolioPage = () => {
         <footer className="border-t border-black/10 px-5 md:px-12 py-6 flex items-center justify-between max-w-5xl mx-auto">
           <span className="font-mono text-[8px] tracking-[0.25em] uppercase text-[#888]">The Times of James</span>
           <span className="font-mono text-[8px] tracking-[0.25em] uppercase text-[#aaa] hidden md:inline">Connecting — Creating — Living</span>
-          <img src="/images/JF_logo_transparent-2.png" alt="JF" className="w-5 h-5" />
+          <img src="/images/JF_logo_transparent-2.png" alt="James Floyd logo" className="w-5 h-5" />
         </footer>
       </main>
     </div>);
