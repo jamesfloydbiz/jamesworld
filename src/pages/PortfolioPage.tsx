@@ -462,13 +462,13 @@ const PortfolioPage = () => {
           </Reveal>
 
           <div className="relative">
-            
+            <div className="hidden md:block absolute top-0 bottom-0 left-1/2 -translate-x-px w-px bg-black/10 z-10" />
             <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
               {siteLinks.map((link, i) =>
               <Reveal key={link.path} delay={i * 0.04}>
                   <button
                   onClick={() => navigate(link.path)}
-                  className={`w-full text-left pl-[10px] pr-[10px] py-4 group border-b border-black/5 md:border-b-0 ${i % 2 === 0 ? 'md:border-r md:border-r-black/10' : 'md:border-l md:border-l-black/10'}`}>
+                  className="w-full text-left pl-[10px] pr-[10px] py-4 group border-b border-black/5 md:border-b-0">
                     <span className="text-sm font-bold tracking-[0.1em] uppercase group-hover:text-[#4A5D23] transition-colors" style={{ fontFamily: "'Playfair Display', serif" }}>
                       {link.label} →
                     </span>
