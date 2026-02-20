@@ -1,76 +1,39 @@
 
 
-## SEO Overhaul and Social Link Consistency
+## Create `llms.txt` for AI Discoverability
 
-### 1. Standardize all social links
+The `llms.txt` standard is a way to help LLMs (and AI-powered search) understand who you are and what your site contains. It acts like a structured "about me" file that AI crawlers can read. This will help you surface for relevant queries about your name, expertise, and work.
 
-Currently the site has mixed LinkedIn and Instagram URLs:
-- LinkedIn: some pages use `/in/jamesfloyd02/`, others use `/in/jamesfloydl/`
-- Instagram: some pages use `/jamesfloyd02/`, others use `/jamesfloydsworld`
+### What gets created
 
-All links will be unified to:
-- LinkedIn: `https://www.linkedin.com/in/jamesfloydl/`
-- Instagram: `https://www.instagram.com/jamesfloydsworld`
+**File: `public/llms.txt`**
 
-**Files affected:**
-- `src/pages/PortfolioPage.tsx` (4 links: 2 LinkedIn, 2 Instagram)
-- `src/pages/StoryPage.tsx` (1 LinkedIn link)
+A structured text file following the llms.txt convention with:
 
-### 2. Descriptive alt text for all images
+- **Identity block**: James Floyd -- builder, creator, entrepreneur, intrapreneur, speaker, event producer, connector
+- **FAQ-style Q&A schema** covering key discovery queries:
+  - "Who is James Floyd?" 
+  - "What does James Floyd do?"
+  - "What events has James Floyd produced?"
+  - "Is James Floyd available for speaking?"
+  - "What AI tools does James Floyd build?"
+  - "How do I connect with James Floyd?"
+  - "What is James Floyd's experience?"
+  - "Where has James Floyd worked?"
+  - "What is JamesFloyds.World?"
+- **Links**: LinkedIn, Instagram, site URL
+- **Keywords**: entrepreneur, intrapreneur, speaker, event production, AI automation, networking, builder, creator
 
-Replace generic alt text with keyword-rich, descriptive alternatives:
+Answers will be drawn from the existing resume, story, and portfolio data already on the site (BetterWealth, Jets and Capital, Keiretsu Forum, sales records, AI builds, etc.)
 
-**PortfolioPage.tsx:**
-- Hero image: `"James Floyd"` becomes `"James Floyd at Jets and Capital Miami networking event"`
-- Nav logo: `"JF"` becomes `"James Floyd logo"`
-- Footer logo: same
-- In the Field photos: already use captions as alt (good)
-- Logos bar: already has org names (good)
+**File: `public/robots.txt`**
 
-**PicturesPage.tsx:**
-- `"Memory ${index + 1}"` becomes descriptive text per image (e.g., filename-based context or a descriptive map)
-
-**BuildsPage.tsx:**
-- `"Screenshot ${idx + 1}"` becomes `"{automation title} workflow screenshot {idx + 1}"`
-- `"Full size"` becomes `"{automation title} workflow detail view"`
-
-**StoryPage.tsx:**
-- `alt={event.title}` is acceptable but will be expanded to `"James Floyd - {event.title}"`
-
-**ContentPage.tsx:**
-- `alt={content.title}` is fine
-
-**LandingPage.tsx:**
-- No images needing alt text (SVG is `aria-hidden`)
-
-**WalkwayHeader.tsx:**
-- `"Logo"` becomes `"James Floyd logo - return to home"`
-
-### 3. Improve `index.html` meta tags
-
-Add missing SEO essentials:
-- Update `<title>` to `"James Floyd | Builder, Creator, Explorer"`
-- Update `<meta name="description">` to a keyword-rich summary matching LinkedIn/Instagram bio tone
-- Add `<meta property="og:url">` pointing to `https://jamesworld.lovable.app`
-- Add `<meta property="og:image">` using the hero image or logo
-- Add `<link rel="canonical">` tag
-- Add `<meta name="author">` and `<meta name="keywords">`
-- Update OG and Twitter titles/descriptions to match
-
-### 4. Add `robots.txt` sitemap reference
-
-Add a `Sitemap:` directive to `public/robots.txt` pointing to a future sitemap URL.
-
----
+Add a reference line so crawlers know the file exists.
 
 ### Technical details
 
-**Files to modify:**
-- `index.html` -- meta tags overhaul
-- `src/pages/PortfolioPage.tsx` -- 4 social link fixes, 3 alt text improvements
-- `src/pages/StoryPage.tsx` -- 1 LinkedIn link fix, alt text improvement
-- `src/pages/PicturesPage.tsx` -- descriptive alt text map for ~35 images
-- `src/pages/BuildsPage.tsx` -- contextual alt text for screenshots
-- `src/components/walkway/WalkwayHeader.tsx` -- logo alt text
-- `public/robots.txt` -- sitemap directive
+**New file:** `public/llms.txt`  
+**Modified file:** `public/robots.txt` -- add `llms.txt` reference
+
+No code changes to React components. This is purely a static asset addition.
 
