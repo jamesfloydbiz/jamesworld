@@ -203,7 +203,7 @@ const PortfolioPage = () => {
         {/* ═══ 1. MASTHEAD / HERO ═══ */}
         <section className="px-5 md:px-12 pt-12 pb-8 max-w-5xl mx-auto">
           <Reveal>
-            <h1 className="text-center text-[clamp(1.8rem,8vw,6rem)] leading-[0.9] tracking-[0.04em] uppercase font-black whitespace-nowrap" style={{ fontFamily: "'Playfair Display', serif" }}>
+            <h1 className="text-center text-[clamp(1.8rem,7vw,5.5rem)] leading-[0.9] tracking-[0.04em] uppercase font-black whitespace-nowrap" style={{ fontFamily: "'Playfair Display', serif" }}>
               The Times of James
             </h1>
           </Reveal>
