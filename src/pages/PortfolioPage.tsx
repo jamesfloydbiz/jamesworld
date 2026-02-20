@@ -369,7 +369,7 @@ const PortfolioPage = () => {
             }].
             map((dispatch, i) =>
             <Reveal key={dispatch.headline} delay={i * 0.15}>
-                <div className="px-0 first:md:pl-0 last:md:pr-0 py-6 md:py-0 md:px-[10px]">
+                <div className="px-0 first:md:pl-0 last:md:pr-0 py-6 md:py-0 md:px-[10px] p-[10px]">
                   <h3 className="text-lg font-bold tracking-wide mb-3" style={{ fontFamily: "'Playfair Display', serif" }}>
                     {dispatch.headline}
                   </h3>
@@ -392,6 +392,9 @@ const PortfolioPage = () => {
 
           <Reveal delay={0.1}>
             <div className="max-w-2xl mx-auto md:pl-12 border-l-2 border-black/10">
+              <p className="text-lg italic text-[#555] mb-6" style={{ fontFamily: "'EB Garamond', serif" }}>
+                Dear reader,
+              </p>
               <p className="text-[15px] leading-[1.8] text-[#444] mb-4" style={{ fontFamily: "'EB Garamond', serif" }}>
                 If you've scrolled this far, you are curious. Me too.
               </p>
@@ -426,7 +429,7 @@ const PortfolioPage = () => {
               <div className="border border-black/30 p-6 md:p-8">
                 <p className="font-mono text-[8px] tracking-[0.4em] uppercase text-[#888] mb-3">— Classified —</p>
                 <h3 className="text-2xl md:text-3xl font-black tracking-[0.05em] uppercase mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
-                  Seeking: Curious Minds
+                  Seeking: Curiosity
                 </h3>
                 <div className="w-12 h-px bg-black/30 mx-auto mb-4" />
                 <p className="text-[14px] leading-[1.7] text-[#444] mb-6 italic" style={{ fontFamily: "'EB Garamond', serif" }}>
@@ -463,7 +466,7 @@ const PortfolioPage = () => {
             <Reveal key={link.path} delay={i * 0.04}>
                 <button
                 onClick={() => navigate(link.path)}
-                className="w-full text-left px-0 md:px-6 py-4 first:md:pl-0 group border-b border-black/5 md:border-b-0">
+                className="w-full text-left px-0 md:px-10 py-4 first:md:pl-0 group border-b border-black/5 md:border-b-0">
                   <span className="text-sm font-bold tracking-[0.1em] uppercase group-hover:text-[#4A5D23] transition-colors" style={{ fontFamily: "'Playfair Display', serif" }}>
                     {link.label} →
                   </span>
@@ -479,7 +482,7 @@ const PortfolioPage = () => {
         {/* ═══ 9. FOOTER ═══ */}
         <footer className="border-t border-black/10 px-5 md:px-12 py-6 flex items-center justify-between max-w-5xl mx-auto">
           <span className="font-mono text-[8px] tracking-[0.25em] uppercase text-[#888]">The Times of James</span>
-          <span className="font-mono text-[8px] tracking-[0.25em] uppercase text-[#aaa] hidden md:inline">Maniacal innovator. Unbeaten path.</span>
+          <span className="font-mono text-[8px] tracking-[0.25em] uppercase text-[#aaa] hidden md:inline">Connecting — Creating — Living</span>
           <img src="/images/JF_logo_transparent-2.png" alt="JF" className="w-5 h-5" />
         </footer>
       </main>
