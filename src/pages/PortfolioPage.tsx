@@ -401,17 +401,17 @@ const PortfolioPage = () => {
               <p className="text-[15px] leading-[1.8] text-[#444] mb-4" style={{ fontFamily: "'EB Garamond', serif" }}>There's a lot more to know about me than what I can fit here, so here is what you need to know.
 
               </p>
-              <p className="text-[15px] leading-[1.8] text-[#444] mb-4" style={{ fontFamily: "'EB Garamond', serif" }}>
-                His greatest strength is the depth at which he cares. About others and about himself.
+              <p className="text-[15px] leading-[1.8] text-[#444] mb-4" style={{ fontFamily: "'EB Garamond', serif" }}>My greatest strength is the depth at which I care. About others and about myself.
+
               </p>
               <p className="text-[15px] leading-[1.8] text-[#444] mb-4" style={{ fontFamily: "'EB Garamond', serif" }}>
                 Including you.
               </p>
-              <p className="text-[15px] leading-[1.8] text-[#444] mb-4" style={{ fontFamily: "'EB Garamond', serif" }}>
-                His network is vast, his experience even more so, but he can't promise to lead you where you want to go. He also can't follow you because you do not know where he wants to go.
+              <p className="text-[15px] leading-[1.8] text-[#444] mb-4" style={{ fontFamily: "'EB Garamond', serif" }}>My network is vast, and my experience even more so, but I can't promise to lead you where you want to go. I also can't follow you, because you do not know where I want to go.
+
               </p>
-              <p className="text-[15px] leading-[1.8] text-[#444] mb-6" style={{ fontFamily: "'EB Garamond', serif" }}>
-                He will however, walk alongside you. It would be an honor if you joined the ranks of people who have walked alongside him.
+              <p className="text-[15px] leading-[1.8] text-[#444] mb-6" style={{ fontFamily: "'EB Garamond', serif" }}>I will however, walk alongside you. It would be an honor if you joined the ranks of people who have walked alongside me.
+
               </p>
               <p className="text-sm font-bold tracking-[0.1em] uppercase" style={{ fontFamily: "'Playfair Display', serif" }}>
                 — James Floyd
