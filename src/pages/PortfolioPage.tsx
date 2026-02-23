@@ -101,13 +101,13 @@ function WalkingCharacter({ progress }: {progress: number;}) {
 /* ─── Site Links Section ─── */
 const siteLinks = [
 { label: 'Story', path: '/story', desc: 'The full narrative — where it started, how it unfolded.' },
-{ label: 'Projects', path: '/projects', desc: 'What I\'ve built and been part of building.' },
-{ label: 'Builds', path: '/builds', desc: 'AI automations and operational systems I\'ve designed.' },
-{ label: 'Content', path: '/content', desc: 'Writing, videos, and things I\'ve published.' },
+{ label: 'Projects', path: '/projects', desc: 'What James has built and been part of building.' },
+{ label: 'Builds', path: '/builds', desc: 'AI automations and operational systems James has designed.' },
+{ label: 'Content', path: '/content', desc: 'Writing, videos, and things James has published.' },
 { label: 'Network', path: '/network', desc: 'The values that made the path, and how to get in touch.' },
 { label: 'Blueprints', path: '/blueprints', desc: 'Frameworks and playbooks for doing things differently.' },
 { label: 'Resume', path: '/resume', desc: 'The traditional view — roles, timelines, outcomes.' },
-{ label: 'References', path: '/references', desc: 'What others have said about me' },
+{ label: 'References', path: '/references', desc: 'What others have said about James.' },
 { label: 'Poems', path: '/poems', desc: 'Thoughts that needed a different format.' },
 { label: 'Memories', path: '/pictures', desc: 'Snapshots from the road.' },
 { label: 'Museum', path: '/museum', desc: 'The 3D gallery — walk through the world.' }];
@@ -225,7 +225,7 @@ const PortfolioPage = () => {
 
           <Reveal delay={0.3}>
             <p className="mt-4 text-lg md:text-xl text-[#555] max-w-4xl leading-relaxed text-center mx-auto" style={{ fontFamily: "'EB Garamond', serif" }}>
-              A maniacal innovator who went off the beaten path to connecting, creating, and living.
+              A maniacal innovator who went off the beaten path — connecting, creating, and living.
             </p>
           </Reveal>
 
@@ -283,17 +283,17 @@ const PortfolioPage = () => {
             {
               headline: 'The Before',
               sub: 'No safety net. No map.',
-              body: 'In 2020 I drove down to San Diego with everything I owned packed into a green 2002 Subaru Outback. I had no income, no connections, and no dreams.'
+              body: 'In 2020 James drove down to San Diego with everything he owned packed into a green 2002 Subaru Outback. He had no income, no connections, and no dreams.'
             },
             {
               headline: 'The Leap',
               sub: 'Cold emails. Obsession. The world opens.',
-              body: 'When I hit the bottom I was laying on the carpet of my depressing apartment watching the fan go in circles. I joined a sales job, did 20,000 conversations and built ~40 sales people. Over the next few years of my life I sent cold emails, handwritten notes, and gifts. I sent myself around the world, and talked to the wisest people I could get access to all the while trying everything new I could.'
+              body: 'When James hit the bottom he was laying on the carpet of his depressing apartment watching the fan go in circles. He joined a sales job, did 20,000 conversations and built ~40 sales people. Over the next few years of his life he sent cold emails, handwritten notes, and gifts. He sent himself around the world, and talked to the wisest people he could get access to all the while trying everything new he could.'
             },
             {
               headline: 'The Now',
               sub: 'They come to me now.',
-              body: 'Now I have an extensive network of family offices, investors, creators, and everybody in between. I have done events around the United States for thousands of people, and worked with some of the most high-profile people and companies in the world. People from every walk of life reach out to get connected to people in my network, get advice on life, business, and health, and to work with me.'
+              body: 'Now James has an extensive network of family offices, investors, creators, and everybody in between. He has done events around the United States for thousands of people, and worked with some of the most high-profile people and companies in the world. People from every walk of life reach out to get connected to people in his network, get advice on life, business, and health, and to work with him.'
             }].map((col, i) =>
             <Reveal key={col.headline} delay={i * 0.15}>
                 <div className="px-0 md:px-10 first:md:pl-0 last:md:pr-0 py-6 md:py-0">
@@ -340,7 +340,7 @@ const PortfolioPage = () => {
         {/* ═══ 4. LOGOS BAR ("Rooms I've Been In") ═══ */}
         <section className="max-w-5xl mx-auto">
           <Reveal>
-            <p className="font-mono text-[9px] tracking-[0.3em] uppercase text-[#888] px-5 md:px-12 pt-12 pb-4">Organizations I Have Worked With  </p>
+            <p className="font-mono text-[9px] tracking-[0.3em] uppercase text-[#888] px-5 md:px-12 pt-12 pb-4">Organizations James Has Worked With</p>
           </Reveal>
         </section>
         <LogosBar />
@@ -357,15 +357,15 @@ const PortfolioPage = () => {
             {[
             {
               headline: "48 Hours, 500 Guests",
-              body: "When Trump's arrival forced a 500-person gala to completely restructure with 24 hours notice, I wrote the cold-call scripts, rallied the team, and helped turn what could have been a disaster into what guests called 'double the fun.' Chaos is just an opportunity with bad PR."
+              body: "When Trump's arrival forced a 500-person gala to completely restructure with 24 hours notice, James wrote the cold-call scripts, rallied the team, and helped turn what could have been a disaster into what guests called 'double the fun.' Chaos is just an opportunity with bad PR."
             },
             {
               headline: "The Elder in the Amazon",
-              body: "Deep in the Amazon, I spent a day working alongside a 94-year-old tribal elder — farming, listening, communicating entirely in Spanish. No agenda. No pitch. Just presence. She never left that jungle, and she had more peace than anyone I'd met in any boardroom. That day redefined what success means to me."
+              body: "Deep in the Amazon, James spent a day working alongside a 94-year-old tribal elder — farming, listening, communicating entirely in Spanish. No agenda. No pitch. Just presence. She never left that jungle, and she had more peace than anyone he'd met in any boardroom. That day redefined what success means to him."
             },
             {
               headline: "No, Not That Island",
-              body: "A cold email. A yes. A weekend on an island with one of the most connected builders in the world. We hiked, cold plunged, and talked for hours. It was a breakthrough, where I realized nobody is a hero, so just make yourself yours."
+              body: "A cold email. A yes. A weekend on an island with one of the most connected builders in the world. They hiked, cold plunged, and talked for hours. It was a breakthrough, where James realized nobody is a hero, so just make yourself yours."
             }].
             map((dispatch, i) =>
             <Reveal key={dispatch.headline} delay={i * 0.15}>
@@ -396,22 +396,22 @@ const PortfolioPage = () => {
                 Dear reader,
               </p>
               <p className="text-[15px] leading-[1.8] text-[#444] mb-4" style={{ fontFamily: "'EB Garamond', serif" }}>
-                If you've scrolled this far, you are curious. Me too.
+                If you've scrolled this far, you are curious. James is too.
               </p>
               <p className="text-[15px] leading-[1.8] text-[#444] mb-4" style={{ fontFamily: "'EB Garamond', serif" }}>
-                There's a lot more to know about me than what I can fit here, so let me concisely communicate what you need to know.
+                There's a lot more to know about James than what can fit here, so here is what you need to know.
               </p>
               <p className="text-[15px] leading-[1.8] text-[#444] mb-4" style={{ fontFamily: "'EB Garamond', serif" }}>
-                My greatest strength is the depth at which I care. About others and about myself.
+                His greatest strength is the depth at which he cares. About others and about himself.
               </p>
               <p className="text-[15px] leading-[1.8] text-[#444] mb-4" style={{ fontFamily: "'EB Garamond', serif" }}>
                 Including you.
               </p>
               <p className="text-[15px] leading-[1.8] text-[#444] mb-4" style={{ fontFamily: "'EB Garamond', serif" }}>
-                My network is vast, my experience even more so, but I can't promise to lead you where you want to go. I also can't follow you because you do not know where I want to go.
+                His network is vast, his experience even more so, but he can't promise to lead you where you want to go. He also can't follow you because you do not know where he wants to go.
               </p>
               <p className="text-[15px] leading-[1.8] text-[#444] mb-6" style={{ fontFamily: "'EB Garamond', serif" }}>
-                I will however, walk alongside you. It would be an honor if you joined the ranks of people who have walked alongside me.
+                He will however, walk alongside you. It would be an honor if you joined the ranks of people who have walked alongside him.
               </p>
               <p className="text-sm font-bold tracking-[0.1em] uppercase" style={{ fontFamily: "'Playfair Display', serif" }}>
                 — James Floyd
