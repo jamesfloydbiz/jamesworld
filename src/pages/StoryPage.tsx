@@ -34,6 +34,8 @@ const timelineEvents = [
     year: '2025',
     title: 'To The Moon',
     quote: 'Creation, kindness, and infinite games.',
+    hasImage: true,
+    imageSrc: '/pictures/Jets_&_Capital_Miami_BTS_Day_0-58.jpeg',
   },
   {
     year: '2026',
@@ -79,25 +81,28 @@ const StoryPage = () => {
                     {event.year.slice(2)}
                   </div>
                   
-                  <div className="space-y-3">
+                  <div>
+                    {event.hasImage && event.imageSrc && (
+                      <div className={`float-right ml-4 mb-2 w-28 md:w-36 hover:rotate-0 transition-transform duration-300 ${
+                        event.year === '2025' ? '-rotate-2' : 'rotate-2'
+                      }`}>
+                        <div className="border-2 border-border p-1 bg-secondary shadow-lg">
+                          <img 
+                            src={event.imageSrc} 
+                            alt={`James Floyd - ${event.title}`}
+                            className="w-full h-auto object-cover grayscale"
+                          />
+                        </div>
+                      </div>
+                    )}
                     <div className="flex items-baseline gap-4">
                       <span className="text-muted-foreground text-sm">{event.year}</span>
                       <h2 className="text-xl md:text-2xl tracking-wide">{event.title}</h2>
                     </div>
                     
-                    <p className="text-muted-foreground italic leading-relaxed">
+                    <p className="text-muted-foreground italic leading-relaxed mt-3">
                       "{event.quote}"
                     </p>
-                    
-                    {event.hasImage && event.imageSrc && (
-                      <div className="mt-4 max-w-md overflow-hidden rounded border border-border">
-                        <img 
-                          src={event.imageSrc} 
-                          alt={`James Floyd - ${event.title}`}
-                          className="w-full h-auto object-cover"
-                        />
-                      </div>
-                    )}
                     {(event as any).hasButton && (
                       <a
                         href="https://www.linkedin.com/in/jamesfloydl/"
