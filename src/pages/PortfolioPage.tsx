@@ -224,8 +224,8 @@ const PortfolioPage = () => {
           </Reveal>
 
           <Reveal delay={0.3}>
-            <p className="mt-4 text-lg md:text-xl text-[#555] max-w-4xl leading-relaxed text-center mx-auto" style={{ fontFamily: "'EB Garamond', serif" }}>
-              A maniacal innovator who went off the beaten path — connecting, creating, and living.
+            <p className="mt-4 text-lg md:text-xl text-[#555] max-w-4xl leading-relaxed text-center mx-auto" style={{ fontFamily: "'EB Garamond', serif" }}>A maniacal innovator who went off the beaten path to connect, create, and live.
+
             </p>
           </Reveal>
 
