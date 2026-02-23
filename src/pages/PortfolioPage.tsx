@@ -395,11 +395,11 @@ const PortfolioPage = () => {
               <p className="text-lg italic text-[#555] mb-6" style={{ fontFamily: "'EB Garamond', serif" }}>
                 Dear reader,
               </p>
-              <p className="text-[15px] leading-[1.8] text-[#444] mb-4" style={{ fontFamily: "'EB Garamond', serif" }}>
-                If you've scrolled this far, you are curious. James is too.
+              <p className="text-[15px] leading-[1.8] text-[#444] mb-4" style={{ fontFamily: "'EB Garamond', serif" }}>If you've scrolled this far, you are curious. I am too.
+
               </p>
-              <p className="text-[15px] leading-[1.8] text-[#444] mb-4" style={{ fontFamily: "'EB Garamond', serif" }}>
-                There's a lot more to know about James than what can fit here, so here is what you need to know.
+              <p className="text-[15px] leading-[1.8] text-[#444] mb-4" style={{ fontFamily: "'EB Garamond', serif" }}>There's a lot more to know about me than what I can fit here, so here is what you need to know.
+
               </p>
               <p className="text-[15px] leading-[1.8] text-[#444] mb-4" style={{ fontFamily: "'EB Garamond', serif" }}>
                 His greatest strength is the depth at which he cares. About others and about himself.
