@@ -16,7 +16,7 @@ const frameworks = [
     step: 2,
     title: 'Books',
     short: "James' Recs",
-    long: '4000 weeks, The Third Door, Make No Small Plans, Iron John, Winners take All',
+    long: '4000 Weeks, The Third Door, Make No Small Plans, Iron John, Winners Take All, The Lessons of History by Ariel and Will Durant',
   },
   {
     step: 3,
@@ -27,9 +27,9 @@ const frameworks = [
   },
   {
     step: 4,
-    title: 'Tech',
-    short: "James' Stack",
-    long: 'ViewStats, N8N, Lovable, GSuite, ChatGPT, Windows, WhisprFlow, Meshy.Ai, LinkedIn Analytics',
+    title: 'Health',
+    short: 'No excuses.',
+    long: 'Move — pushups, pullups, farmer\'s carries, rucking, walking, Russian twists, pike pushups, pistol squats.\n\nEat — high protein, enough fiber. Tip: put spinach in a lot of things.\n\nSleep — sleep early, wake early.',
   },
   {
     step: 5,
