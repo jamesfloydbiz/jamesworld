@@ -1,27 +1,39 @@
 
 
-## Blueprints Page — Black & White Side-View Shelf
+## Create `llms.txt` for AI Discoverability
 
-### What changes
+The `llms.txt` standard is a way to help LLMs (and AI-powered search) understand who you are and what your site contains. It acts like a structured "about me" file that AI crawlers can read. This will help you surface for relevant queries about your name, expertise, and work.
 
-**1. Recolor all SVG illustrations to black and white only**
-Strip all color (browns, pinks, greens, blues). Use only white, grays, and black — matching the site's museum palette. Strokes in white/light gray, fills in dark gray/black.
+### What gets created
 
-**2. Redraw illustrations from a horizontal side-view perspective**
-Everything viewed straight-on as if you're standing in front of the shelf at eye level:
+**File: `public/llms.txt`**
 
-- **Record Player**: Side profile — you see the edge of the turntable, the platter as a thin horizontal line, the tonearm sticking up, the cabinet edge. Not a top-down view.
-- **Books**: Already correct (spines facing out) — just recolor to grayscale.
-- **Blueprint Scroll**: A rolled-up scroll lying on its side, viewed from the end so you see the circular cross-section, with the edge of the paper visible.
-- **Health (bottles + bowl)**: Side-view silhouettes — bottles with labels as flat rectangles, bowl seen from the side (half-circle). All grayscale.
-- **Piggy Bank**: Side profile silhouette — classic piggy shape in white/gray outline on black.
+A structured text file following the llms.txt convention with:
 
-**3. Objects sit flush on the shelf**
-Ensure every SVG's bottom edge aligns with the shelf plank. No floating. Objects have weight — items rest on the baseline of each SVG's viewBox.
+- **Identity block**: James Floyd -- builder, creator, entrepreneur, intrapreneur, speaker, event producer, connector
+- **FAQ-style Q&A schema** covering key discovery queries:
+  - "Who is James Floyd?" 
+  - "What does James Floyd do?"
+  - "What events has James Floyd produced?"
+  - "Is James Floyd available for speaking?"
+  - "What AI tools does James Floyd build?"
+  - "How do I connect with James Floyd?"
+  - "What is James Floyd's experience?"
+  - "Where has James Floyd worked?"
+  - "What is JamesFloyds.World?"
+- **Links**: LinkedIn, Instagram, site URL
+- **Keywords**: entrepreneur, intrapreneur, speaker, event production, AI automation, networking, builder, creator
 
-**4. Shelf planks go grayscale**
-Replace the brown wood gradient with a subtle gray gradient (consistent with the museum aesthetic).
+Answers will be drawn from the existing resume, story, and portfolio data already on the site (BetterWealth, Jets and Capital, Keiretsu Forum, sales records, AI builds, etc.)
 
-### File changes
-- `src/pages/BlueprintsPage.tsx` — rewrite all 5 SVG components + shelf plank styles
+**File: `public/robots.txt`**
+
+Add a reference line so crawlers know the file exists.
+
+### Technical details
+
+**New file:** `public/llms.txt`  
+**Modified file:** `public/robots.txt` -- add `llms.txt` reference
+
+No code changes to React components. This is purely a static asset addition.
 
