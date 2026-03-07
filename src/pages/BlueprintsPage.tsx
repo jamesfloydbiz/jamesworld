@@ -34,143 +34,147 @@ const shelfItems = [
   },
 ];
 
-/* ── SVG Illustrations — Side-view, grayscale ── */
+/* ── SVG Illustrations — Thin white line art ── */
+
+const S = { fill: 'none', stroke: 'hsl(0 0% 70%)', strokeWidth: 1 } as const;
+const Sd = { fill: 'none', stroke: 'hsl(0 0% 40%)', strokeWidth: 0.6 } as const;
 
 const RecordPlayer = () => (
-  <svg viewBox="0 0 120 100" className="w-full h-full">
-    {/* Cabinet side profile */}
-    <rect x="15" y="25" width="90" height="55" fill="hsl(0 0% 8%)" stroke="hsl(0 0% 25%)" strokeWidth="0.8" />
-    {/* Top edge / lid */}
-    <rect x="15" y="22" width="90" height="4" fill="hsl(0 0% 15%)" stroke="hsl(0 0% 25%)" strokeWidth="0.5" />
-    {/* Platter seen from side — thin horizontal line */}
-    <rect x="20" y="38" width="80" height="1.5" fill="hsl(0 0% 30%)" rx="0.5" />
-    {/* Vinyl disc edge — thin dark line on platter */}
-    <rect x="25" y="36" width="60" height="2" fill="hsl(0 0% 5%)" rx="0.5" />
-    {/* Vinyl label edge */}
-    <rect x="50" y="36" width="10" height="2" fill="hsl(0 0% 20%)" rx="0.5" />
-    {/* Tonearm — vertical post */}
-    <rect x="88" y="26" width="2" height="10" fill="hsl(0 0% 40%)" rx="0.5" />
-    {/* Tonearm — arm extending left */}
-    <line x1="89" y1="28" x2="65" y2="33" stroke="hsl(0 0% 50%)" strokeWidth="1.2" strokeLinecap="round" className="origin-[89px_28px] transition-transform duration-300 group-hover:-rotate-3" />
-    {/* Cartridge at end of arm */}
-    <rect x="63" y="32" width="4" height="2.5" rx="0.5" fill="hsl(0 0% 45%)" className="origin-[89px_28px] transition-transform duration-300 group-hover:-rotate-3" />
-    {/* Cabinet feet */}
-    <rect x="18" y="80" width="6" height="4" fill="hsl(0 0% 12%)" rx="1" />
-    <rect x="96" y="80" width="6" height="4" fill="hsl(0 0% 12%)" rx="1" />
-    {/* Front panel detail lines */}
-    <line x1="20" y1="50" x2="100" y2="50" stroke="hsl(0 0% 15%)" strokeWidth="0.3" />
-    <line x1="20" y1="65" x2="100" y2="65" stroke="hsl(0 0% 15%)" strokeWidth="0.3" />
+  <svg viewBox="0 0 120 80" className="w-full h-full">
+    {/* Cabinet */}
+    <rect x="10" y="10" width="100" height="60" {...S} rx="1" />
+    {/* Lid line */}
+    <line x1="10" y1="18" x2="110" y2="18" {...Sd} />
+    {/* Platter */}
+    <line x1="20" y1="34" x2="85" y2="34" {...Sd} />
+    {/* Vinyl disc */}
+    <line x1="25" y1="32" x2="80" y2="32" {...S} />
+    {/* Vinyl label */}
+    <line x1="48" y1="32" x2="58" y2="32" stroke="hsl(0 0% 50%)" strokeWidth={0.8} fill="none" />
+    {/* Tonearm post */}
+    <line x1="95" y1="20" x2="95" y2="30" {...S} />
+    {/* Tonearm */}
+    <line x1="95" y1="24" x2="62" y2="30" {...S} strokeLinecap="round" />
     {/* Knob */}
-    <circle cx="30" cy="57" r="3" fill="hsl(0 0% 12%)" stroke="hsl(0 0% 30%)" strokeWidth="0.5" />
-    <circle cx="30" cy="57" r="1" fill="hsl(0 0% 35%)" />
+    <circle cx="28" cy="52" r="3" {...S} />
+    {/* Knob dot */}
+    <circle cx="28" cy="52" r="0.8" fill="hsl(0 0% 70%)" stroke="none" />
+    {/* Panel line */}
+    <line x1="15" y1="45" x2="105" y2="45" {...Sd} />
+    {/* Feet */}
+    <line x1="16" y1="70" x2="24" y2="70" {...Sd} />
+    <line x1="96" y1="70" x2="104" y2="70" {...Sd} />
   </svg>
 );
 
 const BookSpines = () => (
-  <svg viewBox="0 0 140 100" className="w-full h-full">
-    {/* Book 1 - tall thin */}
-    <rect x="8" y="10" width="14" height="85" rx="1" fill="hsl(0 0% 12%)" stroke="hsl(0 0% 25%)" strokeWidth="0.5" />
-    <text x="15" y="55" fill="hsl(0 0% 55%)" fontSize="3.5" textAnchor="middle" transform="rotate(-90 15 55)" letterSpacing="1" fontFamily="monospace">4000 WEEKS</text>
-    {/* Book 2 - medium */}
-    <rect x="25" y="20" width="18" height="75" rx="1" fill="hsl(0 0% 18%)" stroke="hsl(0 0% 28%)" strokeWidth="0.5" />
-    <text x="34" y="58" fill="hsl(0 0% 50%)" fontSize="3" textAnchor="middle" transform="rotate(-90 34 58)" letterSpacing="0.8" fontFamily="monospace">THIRD DOOR</text>
-    {/* Book 3 - thick */}
-    <rect x="46" y="15" width="20" height="80" rx="1" fill="hsl(0 0% 8%)" stroke="hsl(0 0% 22%)" strokeWidth="0.5" />
-    <text x="56" y="55" fill="hsl(0 0% 60%)" fontSize="3" textAnchor="middle" transform="rotate(-90 56 55)" letterSpacing="0.5" fontFamily="monospace">IRON JOHN</text>
-    {/* Book 4 - slim */}
-    <rect x="69" y="22" width="12" height="73" rx="1" fill="hsl(0 0% 15%)" stroke="hsl(0 0% 25%)" strokeWidth="0.5" />
-    <text x="75" y="58" fill="hsl(0 0% 50%)" fontSize="2.8" textAnchor="middle" transform="rotate(-90 75 58)" letterSpacing="0.5" fontFamily="monospace">WINNERS</text>
-    {/* Book 5 - medium thick */}
-    <rect x="84" y="12" width="22" height="83" rx="1" fill="hsl(0 0% 20%)" stroke="hsl(0 0% 30%)" strokeWidth="0.5" />
-    <text x="95" y="52" fill="hsl(0 0% 55%)" fontSize="2.5" textAnchor="middle" transform="rotate(-90 95 52)" letterSpacing="0.3" fontFamily="monospace">LESSONS OF HISTORY</text>
-    {/* Book 6 - leaning */}
-    <rect x="108" y="18" width="16" height="77" rx="1" fill="hsl(0 0% 10%)" stroke="hsl(0 0% 22%)" strokeWidth="0.5" transform="rotate(5 116 56)" />
-    <text x="116" y="55" fill="hsl(0 0% 50%)" fontSize="2.5" textAnchor="middle" transform="rotate(-85 116 55)" letterSpacing="0.5" fontFamily="monospace">NO SMALL PLANS</text>
+  <svg viewBox="0 0 140 80" className="w-full h-full">
+    {/* Book 1 */}
+    <rect x="8" y="2" width="14" height="78" {...S} rx="0.5" />
+    <text x="15" y="45" fill="hsl(0 0% 60%)" fontSize="3.2" textAnchor="middle" transform="rotate(-90 15 45)" letterSpacing="1" fontFamily="monospace">4000 WEEKS</text>
+    {/* Book 2 */}
+    <rect x="25" y="10" width="18" height="70" {...S} rx="0.5" />
+    <text x="34" y="48" fill="hsl(0 0% 60%)" fontSize="2.8" textAnchor="middle" transform="rotate(-90 34 48)" letterSpacing="0.8" fontFamily="monospace">THIRD DOOR</text>
+    {/* Book 3 */}
+    <rect x="46" y="5" width="20" height="75" {...S} rx="0.5" />
+    <text x="56" y="45" fill="hsl(0 0% 60%)" fontSize="2.8" textAnchor="middle" transform="rotate(-90 56 45)" letterSpacing="0.5" fontFamily="monospace">IRON JOHN</text>
+    {/* Book 4 */}
+    <rect x="69" y="12" width="12" height="68" {...S} rx="0.5" />
+    <text x="75" y="48" fill="hsl(0 0% 60%)" fontSize="2.6" textAnchor="middle" transform="rotate(-90 75 48)" letterSpacing="0.5" fontFamily="monospace">WINNERS</text>
+    {/* Book 5 */}
+    <rect x="84" y="4" width="22" height="76" {...S} rx="0.5" />
+    <text x="95" y="42" fill="hsl(0 0% 60%)" fontSize="2.3" textAnchor="middle" transform="rotate(-90 95 42)" letterSpacing="0.3" fontFamily="monospace">LESSONS OF HISTORY</text>
+    {/* Book 6 — leaning */}
+    <rect x="108" y="8" width="16" height="72" {...S} rx="0.5" transform="rotate(5 116 44)" />
+    <text x="116" y="44" fill="hsl(0 0% 60%)" fontSize="2.3" textAnchor="middle" transform="rotate(-85 116 44)" letterSpacing="0.5" fontFamily="monospace">NO SMALL PLANS</text>
   </svg>
 );
 
 const BlueprintScroll = () => (
-  <svg viewBox="0 0 100 100" className="w-full h-full">
-    {/* Scroll body — lying on its side, viewed from the end */}
-    {/* Main cylinder body */}
-    <rect x="20" y="40" width="60" height="30" fill="hsl(0 0% 12%)" stroke="hsl(0 0% 25%)" strokeWidth="0.5" />
-    {/* Circular end — the cross-section */}
-    <ellipse cx="80" cy="55" rx="8" ry="15" fill="hsl(0 0% 15%)" stroke="hsl(0 0% 30%)" strokeWidth="0.8" />
-    <ellipse cx="80" cy="55" rx="5" ry="10" fill="hsl(0 0% 8%)" stroke="hsl(0 0% 20%)" strokeWidth="0.3" />
-    {/* Paper edge visible — curling out from end */}
-    <path d="M 20 42 Q 12 40 10 35 Q 9 30 14 28" fill="none" stroke="hsl(0 0% 40%)" strokeWidth="0.8" />
-    <path d="M 20 68 Q 12 70 10 75 Q 9 78 14 80" fill="none" stroke="hsl(0 0% 35%)" strokeWidth="0.6" />
-    {/* Surface lines suggesting blueprint grid */}
-    <line x1="25" y1="48" x2="75" y2="48" stroke="hsl(0 0% 18%)" strokeWidth="0.3" />
-    <line x1="25" y1="55" x2="75" y2="55" stroke="hsl(0 0% 18%)" strokeWidth="0.3" />
-    <line x1="25" y1="62" x2="75" y2="62" stroke="hsl(0 0% 18%)" strokeWidth="0.3" />
-    {/* Rubber band / clip holding it */}
-    <rect x="45" y="38" width="3" height="34" rx="1" fill="hsl(0 0% 30%)" opacity="0.6" />
+  <svg viewBox="0 0 100 80" className="w-full h-full">
+    {/* Cylinder body */}
+    <rect x="15" y="25" width="60" height="30" {...S} rx="1" />
+    {/* End circle */}
+    <ellipse cx="75" cy="40" rx="7" ry="15" {...S} />
+    <ellipse cx="75" cy="40" rx="4" ry="9" {...Sd} />
+    {/* Paper curl top */}
+    <path d="M 15 27 Q 8 25 7 20 Q 6 16 10 14" {...S} strokeLinecap="round" />
+    {/* Paper curl bottom */}
+    <path d="M 15 53 Q 8 55 7 60 Q 6 64 10 66" {...Sd} strokeLinecap="round" />
+    {/* Grid lines on surface */}
+    <line x1="20" y1="33" x2="70" y2="33" {...Sd} />
+    <line x1="20" y1="40" x2="70" y2="40" {...Sd} />
+    <line x1="20" y1="47" x2="70" y2="47" {...Sd} />
+    {/* Band */}
+    <line x1="42" y1="25" x2="42" y2="55" {...Sd} />
+    <line x1="45" y1="25" x2="45" y2="55" {...Sd} />
   </svg>
 );
 
 const HealthItems = () => (
-  <svg viewBox="0 0 130 100" className="w-full h-full">
-    {/* Supplement bottle 1 — side view, tall */}
-    <rect x="5" y="28" width="16" height="42" rx="2" fill="hsl(0 0% 15%)" stroke="hsl(0 0% 30%)" strokeWidth="0.5" />
-    <rect x="7" y="24" width="12" height="6" rx="1" fill="hsl(0 0% 22%)" stroke="hsl(0 0% 30%)" strokeWidth="0.3" />
-    {/* Label */}
-    <rect x="7" y="38" width="12" height="16" fill="hsl(0 0% 25%)" />
-    <line x1="9" y1="43" x2="17" y2="43" stroke="hsl(0 0% 40%)" strokeWidth="0.4" />
-    <line x1="9" y1="46" x2="17" y2="46" stroke="hsl(0 0% 40%)" strokeWidth="0.4" />
-    <line x1="9" y1="49" x2="15" y2="49" stroke="hsl(0 0% 40%)" strokeWidth="0.4" />
+  <svg viewBox="0 0 130 80" className="w-full h-full">
+    {/* Bottle 1 — tall */}
+    <rect x="5" y="12" width="16" height="48" {...S} rx="1.5" />
+    <rect x="7" y="8" width="12" height="6" {...Sd} rx="1" />
+    {/* Label lines */}
+    <line x1="9" y1="28" x2="17" y2="28" {...Sd} />
+    <line x1="9" y1="32" x2="17" y2="32" {...Sd} />
+    <line x1="9" y1="36" x2="15" y2="36" {...Sd} />
 
-    {/* Supplement bottle 2 — shorter, wider */}
-    <rect x="26" y="38" width="18" height="32" rx="2" fill="hsl(0 0% 10%)" stroke="hsl(0 0% 25%)" strokeWidth="0.5" />
-    <rect x="29" y="34" width="12" height="6" rx="1" fill="hsl(0 0% 18%)" stroke="hsl(0 0% 25%)" strokeWidth="0.3" />
-    {/* Label */}
-    <rect x="28" y="46" width="14" height="12" fill="hsl(0 0% 20%)" />
-    <line x1="30" y1="50" x2="40" y2="50" stroke="hsl(0 0% 35%)" strokeWidth="0.4" />
-    <line x1="30" y1="53" x2="38" y2="53" stroke="hsl(0 0% 35%)" strokeWidth="0.4" />
+    {/* Bottle 2 — short wide */}
+    <rect x="26" y="24" width="18" height="36" {...S} rx="1.5" />
+    <rect x="29" y="20" width="12" height="6" {...Sd} rx="1" />
+    {/* Label lines */}
+    <line x1="30" y1="36" x2="40" y2="36" {...Sd} />
+    <line x1="30" y1="40" x2="38" y2="40" {...Sd} />
 
-    {/* Supplement bottle 3 — slim */}
-    <rect x="49" y="32" width="12" height="38" rx="2" fill="hsl(0 0% 18%)" stroke="hsl(0 0% 28%)" strokeWidth="0.5" />
-    <rect x="50" y="28" width="10" height="6" rx="1" fill="hsl(0 0% 24%)" stroke="hsl(0 0% 28%)" strokeWidth="0.3" />
-    {/* Label */}
-    <rect x="50" y="42" width="10" height="14" fill="hsl(0 0% 22%)" />
+    {/* Bottle 3 — slim */}
+    <rect x="49" y="18" width="12" height="42" {...S} rx="1.5" />
+    <rect x="50" y="14" width="10" height="6" {...Sd} rx="1" />
 
-    {/* Bowl — side view: half-circle silhouette */}
-    <path d="M 75 70 Q 75 48 95 48 Q 115 48 115 70 Z" fill="hsl(0 0% 10%)" stroke="hsl(0 0% 28%)" strokeWidth="0.8" />
-    {/* Bowl rim */}
-    <line x1="73" y1="70" x2="117" y2="70" stroke="hsl(0 0% 30%)" strokeWidth="1" />
-    {/* Greens peeking over the top */}
-    <ellipse cx="85" cy="48" rx="4" ry="5" fill="hsl(0 0% 22%)" />
-    <ellipse cx="95" cy="46" rx="5" ry="6" fill="hsl(0 0% 18%)" />
-    <ellipse cx="105" cy="48" rx="4" ry="5" fill="hsl(0 0% 25%)" />
-    <ellipse cx="90" cy="44" rx="3" ry="4" fill="hsl(0 0% 15%)" />
-    <ellipse cx="100" cy="44" rx="3" ry="5" fill="hsl(0 0% 20%)" />
+    {/* Bowl — side view arc */}
+    <path d="M 75 60 Q 75 38 95 38 Q 115 38 115 60" {...S} strokeLinecap="round" />
+    {/* Rim */}
+    <line x1="73" y1="60" x2="117" y2="60" {...S} />
+    {/* Greens — small arcs above rim */}
+    <path d="M 82 38 Q 84 30 88 32" {...Sd} strokeLinecap="round" />
+    <path d="M 92 36 Q 95 28 98 30" {...Sd} strokeLinecap="round" />
+    <path d="M 102 38 Q 105 30 108 33" {...Sd} strokeLinecap="round" />
   </svg>
 );
 
 const PiggyBank = () => (
-  <svg viewBox="0 0 100 100" className="w-full h-full">
-    {/* Body — side profile silhouette */}
-    <ellipse cx="50" cy="55" rx="28" ry="20" fill="hsl(0 0% 12%)" stroke="hsl(0 0% 30%)" strokeWidth="0.8" />
+  <svg viewBox="0 0 100 80" className="w-full h-full">
+    {/* Body */}
+    <ellipse cx="50" cy="45" rx="28" ry="20" {...S} />
     {/* Snout */}
-    <ellipse cx="76" cy="52" rx="7" ry="5" fill="hsl(0 0% 15%)" stroke="hsl(0 0% 30%)" strokeWidth="0.6" />
-    <circle cx="75" cy="50.5" r="1" fill="hsl(0 0% 35%)" />
-    <circle cx="78.5" cy="50.5" r="1" fill="hsl(0 0% 35%)" />
+    <ellipse cx="76" cy="42" rx="7" ry="5" {...S} />
+    {/* Nostrils */}
+    <circle cx="74" cy="41" r="1" {...Sd} />
+    <circle cx="78" cy="41" r="1" {...Sd} />
     {/* Eye */}
-    <circle cx="66" cy="45" r="2" fill="hsl(0 0% 35%)" />
-    <circle cx="66" cy="45" r="0.8" fill="hsl(0 0% 80%)" />
+    <circle cx="66" cy="36" r="2" {...S} />
+    <circle cx="66" cy="36" r="0.6" fill="hsl(0 0% 70%)" stroke="none" />
     {/* Ears */}
-    <ellipse cx="40" cy="37" rx="6" ry="4" fill="hsl(0 0% 15%)" stroke="hsl(0 0% 25%)" strokeWidth="0.5" transform="rotate(-20 40 37)" />
-    <ellipse cx="52" cy="35" rx="6" ry="4" fill="hsl(0 0% 15%)" stroke="hsl(0 0% 25%)" strokeWidth="0.5" transform="rotate(10 52 35)" />
-    {/* Legs — side view, two visible */}
-    <rect x="34" y="72" width="7" height="12" rx="1.5" fill="hsl(0 0% 12%)" stroke="hsl(0 0% 25%)" strokeWidth="0.5" />
-    <rect x="60" y="72" width="7" height="12" rx="1.5" fill="hsl(0 0% 12%)" stroke="hsl(0 0% 25%)" strokeWidth="0.5" />
+    <path d="M 38 28 Q 34 20 40 22 Q 44 24 42 28" {...S} strokeLinecap="round" />
+    <path d="M 50 26 Q 48 18 54 20 Q 58 22 54 26" {...S} strokeLinecap="round" />
+    {/* Legs */}
+    <line x1="36" y1="62" x2="36" y2="72" {...S} strokeLinecap="round" />
+    <line x1="42" y1="63" x2="42" y2="72" {...S} strokeLinecap="round" />
+    <line x1="58" y1="63" x2="58" y2="72" {...S} strokeLinecap="round" />
+    <line x1="64" y1="62" x2="64" y2="72" {...S} strokeLinecap="round" />
+    {/* Hooves */}
+    <line x1="34" y1="72" x2="38" y2="72" {...Sd} />
+    <line x1="40" y1="72" x2="44" y2="72" {...Sd} />
+    <line x1="56" y1="72" x2="60" y2="72" {...Sd} />
+    <line x1="62" y1="72" x2="66" y2="72" {...Sd} />
     {/* Coin slot */}
-    <rect x="44" y="36" width="12" height="1.5" rx="0.5" fill="hsl(0 0% 25%)" />
-    {/* Coin dropping in */}
-    <ellipse cx="50" cy="30" rx="4" ry="5" fill="none" stroke="hsl(0 0% 40%)" strokeWidth="0.8" />
-    <text x="50" y="32" fill="hsl(0 0% 40%)" fontSize="4.5" textAnchor="middle" fontFamily="monospace">$</text>
-    {/* Tail curl */}
-    <path d="M 23 48 Q 16 44 17 37 Q 18 31 22 35" fill="none" stroke="hsl(0 0% 28%)" strokeWidth="1.5" strokeLinecap="round" />
+    <line x1="44" y1="26" x2="56" y2="26" {...S} />
+    {/* Coin */}
+    <circle cx="50" cy="20" r="4" {...Sd} />
+    <text x="50" y="22" fill="hsl(0 0% 50%)" fontSize="4" textAnchor="middle" fontFamily="monospace">$</text>
+    {/* Tail */}
+    <path d="M 23 40 Q 16 36 17 30 Q 18 25 22 28" fill="none" stroke="hsl(0 0% 50%)" strokeWidth={1} strokeLinecap="round" />
   </svg>
 );
 
@@ -210,14 +214,14 @@ const BlueprintsPage = () => {
         >
           <h1 className="text-3xl md:text-4xl tracking-widest uppercase mb-2">Blueprints</h1>
           <p className="text-muted-foreground text-xs mb-12 tracking-wide">
-            The inputs and frameworks. Click to explore.
+            A personal operating system, allegedly.
           </p>
 
           {/* Bookshelf */}
           <div className="relative">
             {/* Top Shelf */}
             <div className="relative mb-0">
-              <div className="flex items-end justify-center gap-6 md:gap-12 px-4 pb-0 min-h-[140px] md:min-h-[180px]">
+              <div className="flex items-end justify-center gap-6 md:gap-12 px-4 pb-0 min-h-[120px] md:min-h-[150px]">
                 {topShelf.map((item, i) => {
                   const Illustration = illustrationMap[item.id];
                   return (
@@ -227,10 +231,9 @@ const BlueprintsPage = () => {
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.6 + i * 0.15, duration: 0.5 }}
-                      whileHover={{ y: -4 }}
                       onClick={() => handleItemClick(item.id, item.link)}
                     >
-                      <div className={`${item.id === 'books' ? 'w-[160px] md:w-[220px]' : 'w-[120px] md:w-[160px]'} h-[110px] md:h-[140px]`}>
+                      <div className={`${item.id === 'books' ? 'w-[160px] md:w-[220px]' : 'w-[120px] md:w-[160px]'} h-[100px] md:h-[130px]`}>
                         <Illustration />
                       </div>
                       <motion.span
@@ -243,14 +246,13 @@ const BlueprintsPage = () => {
                   );
                 })}
               </div>
-              {/* Shelf plank — grayscale */}
-              <div className="h-[6px]" style={{ background: 'linear-gradient(180deg, hsl(0 0% 18%) 0%, hsl(0 0% 10%) 100%)' }} />
-              <div className="h-[3px]" style={{ background: 'linear-gradient(180deg, hsl(0 0% 6%) 0%, transparent 100%)' }} />
+              {/* Shelf plank — thin white line */}
+              <div className="h-px bg-foreground/20" />
             </div>
 
             {/* Bottom Shelf */}
-            <div className="relative mt-6">
-              <div className="flex items-end justify-center gap-4 md:gap-10 px-4 pb-0 min-h-[140px] md:min-h-[180px]">
+            <div className="relative mt-8">
+              <div className="flex items-end justify-center gap-4 md:gap-10 px-4 pb-0 min-h-[120px] md:min-h-[150px]">
                 {bottomShelf.map((item, i) => {
                   const Illustration = illustrationMap[item.id];
                   return (
@@ -260,10 +262,9 @@ const BlueprintsPage = () => {
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.9 + i * 0.15, duration: 0.5 }}
-                      whileHover={{ y: -4 }}
                       onClick={() => handleItemClick(item.id, item.link)}
                     >
-                      <div className={`${item.id === 'health' ? 'w-[140px] md:w-[200px]' : 'w-[100px] md:w-[140px]'} h-[100px] md:h-[140px]`}>
+                      <div className={`${item.id === 'health' ? 'w-[140px] md:w-[200px]' : 'w-[100px] md:w-[140px]'} h-[100px] md:h-[130px]`}>
                         <Illustration />
                       </div>
                       <motion.span
@@ -276,9 +277,8 @@ const BlueprintsPage = () => {
                   );
                 })}
               </div>
-              {/* Shelf plank — grayscale */}
-              <div className="h-[6px]" style={{ background: 'linear-gradient(180deg, hsl(0 0% 18%) 0%, hsl(0 0% 10%) 100%)' }} />
-              <div className="h-[3px]" style={{ background: 'linear-gradient(180deg, hsl(0 0% 6%) 0%, transparent 100%)' }} />
+              {/* Shelf plank — thin white line */}
+              <div className="h-px bg-foreground/20" />
             </div>
           </div>
 
