@@ -1,39 +1,27 @@
 
 
-## Create `llms.txt` for AI Discoverability
+## Blueprints Page — Thin Line Art + Shelf Fix
 
-The `llms.txt` standard is a way to help LLMs (and AI-powered search) understand who you are and what your site contains. It acts like a structured "about me" file that AI crawlers can read. This will help you surface for relevant queries about your name, expertise, and work.
+### Changes
 
-### What gets created
+**1. Redraw all SVG illustrations as thin white line art**
+Replace every filled shape with `fill="none" stroke="white" strokeWidth` outlines — matching the Tree of Life SVG style on the landing page. Pure wireframe/line-drawing aesthetic. No fills, no grays, just thin white strokes on black.
 
-**File: `public/llms.txt`**
+- **Record Player**: Outline of cabinet edge, platter line, tonearm — all `stroke="white"` or `stroke="hsl(0 0% 60%)"`, no fills
+- **Book Spines**: Rectangles as outlines only, text labels in white
+- **Blueprint Scroll**: Cylinder outline, paper curl lines only
+- **Health Items**: Bottle and bowl outlines, no filled shapes
+- **Piggy Bank**: Side profile as a single continuous path outline
 
-A structured text file following the llms.txt convention with:
+**2. Fix vertical alignment — objects sit ON the shelf**
+Remove `whileHover={{ y: -4 }}` float and ensure SVG viewBoxes are designed so the bottom edge of every object touches the shelf plank. Use `items-end` with precise viewBox coordinates so objects rest flush against the baseline.
 
-- **Identity block**: James Floyd -- builder, creator, entrepreneur, intrapreneur, speaker, event producer, connector
-- **FAQ-style Q&A schema** covering key discovery queries:
-  - "Who is James Floyd?" 
-  - "What does James Floyd do?"
-  - "What events has James Floyd produced?"
-  - "Is James Floyd available for speaking?"
-  - "What AI tools does James Floyd build?"
-  - "How do I connect with James Floyd?"
-  - "What is James Floyd's experience?"
-  - "Where has James Floyd worked?"
-  - "What is JamesFloyds.World?"
-- **Links**: LinkedIn, Instagram, site URL
-- **Keywords**: entrepreneur, intrapreneur, speaker, event production, AI automation, networking, builder, creator
+**3. Restore the joke subtitle**
+Replace current subtitle ("The inputs and frameworks. Click to explore.") with the original joke. Since the exact text was lost in rewrites and you left the field blank — could you type it here? If it was something like "A personal operating system for the barely functional" or similar, let me know and I'll use it verbatim.
 
-Answers will be drawn from the existing resume, story, and portfolio data already on the site (BetterWealth, Jets and Capital, Keiretsu Forum, sales records, AI builds, etc.)
+**4. Keep shelf planks as thin white lines**
+Replace the gradient shelf planks with a single thin white horizontal line — consistent with the line-art approach.
 
-**File: `public/robots.txt`**
-
-Add a reference line so crawlers know the file exists.
-
-### Technical details
-
-**New file:** `public/llms.txt`  
-**Modified file:** `public/robots.txt` -- add `llms.txt` reference
-
-No code changes to React components. This is purely a static asset addition.
+### File
+- `src/pages/BlueprintsPage.tsx` — rewrite SVG components + shelf styling
 
