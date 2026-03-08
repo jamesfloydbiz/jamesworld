@@ -72,6 +72,8 @@ export function MainMenu({ onEnterGallery, galleryLoading, galleryProgress }: Ma
   const handleClick = (item: typeof menuItems[0]) => {
     if (item.isGallery) {
       item.action?.();
+    } else if (item.children) {
+      setExpandedItem(expandedItem === item.label ? null : item.label);
     } else if (item.path) {
       navigate(item.path);
     }
