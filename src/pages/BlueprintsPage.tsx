@@ -38,34 +38,37 @@ const shelfItems = [
 const S = { fill: 'none', stroke: 'hsl(0 0% 70%)', strokeWidth: 1 } as const;
 const Sd = { fill: 'none', stroke: 'hsl(0 0% 40%)', strokeWidth: 0.6 } as const;
 
-/* ── Record Player with animated music notes ── */
-const RecordPlayer = ({ hovered }: { hovered: boolean }) => (
-  <svg viewBox="0 0 120 90" className="w-full h-full">
-    {/* Base */}
-    <rect x="10" y="20" width="100" height="60" {...S} rx="1" />
-    {/* Open lid — angled line behind */}
-    <line x1="10" y1="20" x2="5" y2="5" {...S} />
-    <line x1="110" y1="20" x2="105" y2="5" {...S} />
-    <line x1="5" y1="5" x2="105" y2="5" {...Sd} />
-    {/* Platter circle */}
-    <circle cx="55" cy="48" r="22" {...S} />
-    <circle cx="55" cy="48" r="16" {...Sd} />
-    <circle cx="55" cy="48" r="10" {...Sd} />
-    {/* Label */}
-    <circle cx="55" cy="48" r="4" {...S} />
-    <circle cx="55" cy="48" r="1.5" fill="hsl(0 0% 70%)" stroke="none" />
+/* ── Gramophone with animated music notes ── */
+const Gramophone = ({ hovered }: { hovered: boolean }) => (
+  <svg viewBox="0 0 100 90" className="w-full h-full">
+    {/* Base platform */}
+    <rect x="25" y="78" width="50" height="6" {...S} rx="1" />
+    {/* Cabinet body */}
+    <rect x="30" y="58" width="40" height="22" {...S} rx="1" />
+    {/* Crank handle on side */}
+    <line x1="70" y1="68" x2="78" y2="68" {...Sd} strokeLinecap="round" />
+    <circle cx="80" cy="68" r="2" {...Sd} />
     {/* Tonearm post */}
-    <circle cx="92" cy="28" r="2.5" {...S} />
-    {/* Tonearm */}
-    <line x1="92" y1="28" x2="68" y2="40" {...S} strokeLinecap="round" />
-    {/* Cartridge */}
-    <line x1="68" y1="40" x2="65" y2="42" {...S} strokeWidth={1.5} strokeLinecap="round" />
-    {/* Animated music notes */}
+    <line x1="50" y1="58" x2="50" y2="42" {...S} strokeLinecap="round" />
+    {/* Tonearm elbow */}
+    <line x1="50" y1="42" x2="55" y2="38" {...Sd} strokeLinecap="round" />
+    {/* Horn neck */}
+    <path d="M 55 38 Q 58 32 60 26" {...S} strokeLinecap="round" />
+    {/* Horn bell — flared opening */}
+    <path d="M 60 26 Q 52 18 42 10" {...S} strokeLinecap="round" />
+    <path d="M 60 26 Q 68 18 78 14" {...S} strokeLinecap="round" />
+    {/* Horn rim arc */}
+    <path d="M 42 10 Q 60 4 78 14" {...S} strokeLinecap="round" />
+    {/* Inner horn detail */}
+    <path d="M 48 16 Q 60 12 72 17" {...Sd} strokeLinecap="round" />
+    {/* Turntable disc on top of cabinet */}
+    <ellipse cx="50" cy="58" rx="14" ry="3" {...Sd} />
+    {/* Animated music notes floating from horn */}
     {hovered && (
       <>
-        <text className="animate-music-note-1" x="35" y="30" fill="hsl(0 0% 70%)" fontSize="10" fontFamily="serif">♪</text>
-        <text className="animate-music-note-2" x="50" y="25" fill="hsl(0 0% 55%)" fontSize="8" fontFamily="serif">♫</text>
-        <text className="animate-music-note-3" x="65" y="28" fill="hsl(0 0% 65%)" fontSize="9" fontFamily="serif">♪</text>
+        <text className="animate-music-note-1" x="50" y="12" fill="hsl(0 0% 70%)" fontSize="8" fontFamily="serif">♪</text>
+        <text className="animate-music-note-2" x="62" y="8" fill="hsl(0 0% 55%)" fontSize="7" fontFamily="serif">♫</text>
+        <text className="animate-music-note-3" x="72" y="10" fill="hsl(0 0% 65%)" fontSize="8" fontFamily="serif">♪</text>
       </>
     )}
   </svg>
@@ -88,63 +91,58 @@ const BookSpines = () => (
   </svg>
 );
 
-/* ── Mental Models — connected node network ── */
-const NodeNetwork = () => (
-  <svg viewBox="0 0 100 80" className="w-full h-full">
-    {/* Connections */}
-    <line x1="30" y1="20" x2="70" y2="15" {...Sd} />
-    <line x1="30" y1="20" x2="50" y2="45" {...Sd} />
-    <line x1="70" y1="15" x2="50" y2="45" {...Sd} />
-    <line x1="50" y1="45" x2="25" y2="65" {...Sd} />
-    <line x1="50" y1="45" x2="75" y2="60" {...Sd} />
-    <line x1="25" y1="65" x2="75" y2="60" {...Sd} />
-    <line x1="70" y1="15" x2="85" y2="35" {...Sd} />
-    <line x1="85" y1="35" x2="75" y2="60" {...Sd} />
-    <line x1="30" y1="20" x2="15" y2="42" {...Sd} />
-    <line x1="15" y1="42" x2="25" y2="65" {...Sd} />
-    {/* Nodes */}
-    <circle cx="30" cy="20" r="4" {...S} />
-    <circle cx="70" cy="15" r="4" {...S} />
-    <circle cx="50" cy="45" r="5" {...S} />
-    <circle cx="25" cy="65" r="3.5" {...S} />
-    <circle cx="75" cy="60" r="3.5" {...S} />
-    <circle cx="85" cy="35" r="3" {...S} />
-    <circle cx="15" cy="42" r="3" {...S} />
-    {/* Center node highlight */}
-    <circle cx="50" cy="45" r="2" fill="hsl(0 0% 50%)" stroke="none" />
+/* ── Mental Models — Swinging Sticks Perpetual Motion ── */
+const SwingingSticks = () => (
+  <svg viewBox="0 0 100 90" className="w-full h-full">
+    {/* Base */}
+    <rect x="30" y="82" width="40" height="4" {...S} rx="1" />
+    {/* Vertical post */}
+    <line x1="50" y1="82" x2="50" y2="40" {...S} strokeLinecap="round" />
+    {/* Pivot point */}
+    <circle cx="50" cy="40" r="2" {...S} />
+    {/* Long arm — swings one direction */}
+    <g className="animate-swing-stick-1" style={{ transformOrigin: '50px 40px' }}>
+      <line x1="50" y1="40" x2="50" y2="8" stroke="hsl(0 0% 70%)" strokeWidth={1.2} strokeLinecap="round" />
+      <circle cx="50" cy="8" r="3" {...S} />
+    </g>
+    {/* Short arm — swings opposite direction */}
+    <g className="animate-swing-stick-2" style={{ transformOrigin: '50px 40px' }}>
+      <line x1="50" y1="40" x2="50" y2="60" stroke="hsl(0 0% 70%)" strokeWidth={1.2} strokeLinecap="round" />
+      <circle cx="50" cy="60" r="2.5" {...S} />
+    </g>
   </svg>
 );
 
-/* ── Health — bottles + bowl with apple, banana, broccoli ── */
-const HealthItems = () => (
-  <svg viewBox="0 0 130 80" className="w-full h-full">
-    {/* Bottle 1 */}
-    <rect x="5" y="12" width="16" height="58" {...S} rx="1.5" />
-    <rect x="7" y="8" width="12" height="6" {...Sd} rx="1" />
-    <line x1="9" y1="28" x2="17" y2="28" {...Sd} />
-    <line x1="9" y1="32" x2="17" y2="32" {...Sd} />
+/* ── Health — Woven fruit basket ── */
+const FruitBasket = () => (
+  <svg viewBox="0 0 120 90" className="w-full h-full">
+    {/* Basket body */}
+    <path d="M 20 50 Q 20 86 60 86 Q 100 86 100 50" {...S} strokeLinecap="round" />
+    <line x1="18" y1="50" x2="102" y2="50" {...S} />
+    {/* Basket handle */}
+    <path d="M 35 50 Q 60 20 85 50" {...S} strokeLinecap="round" />
+    {/* Weave lines horizontal */}
+    <path d="M 24 60 Q 60 58 96 60" {...Sd} />
+    <path d="M 28 70 Q 60 68 92 70" {...Sd} />
+    <path d="M 34 78 Q 60 77 86 78" {...Sd} />
+    {/* Weave lines vertical */}
+    <line x1="45" y1="50" x2="42" y2="84" {...Sd} />
+    <line x1="60" y1="50" x2="60" y2="86" {...Sd} />
+    <line x1="75" y1="50" x2="78" y2="84" {...Sd} />
 
-    {/* Bottle 2 */}
-    <rect x="26" y="24" width="18" height="46" {...S} rx="1.5" />
-    <rect x="29" y="20" width="12" height="6" {...Sd} rx="1" />
+    {/* Apple — sitting above rim left */}
+    <circle cx="42" cy="42" r="7" {...S} />
+    <line x1="42" y1="35" x2="42" y2="30" {...Sd} strokeLinecap="round" />
+    <path d="M 42 31 Q 47 28 49 31" {...Sd} strokeLinecap="round" />
 
-    {/* Bowl */}
-    <path d="M 60 70 Q 60 48 80 48 Q 100 48 100 70" {...S} strokeLinecap="round" />
-    <line x1="58" y1="70" x2="102" y2="70" {...S} />
+    {/* Banana — crescent center */}
+    <path d="M 55 38 Q 66 28 75 36 Q 66 32 55 42 Z" {...S} strokeLinecap="round" />
 
-    {/* Apple — circle with stem and leaf */}
-    <circle cx="72" cy="42" r="6" {...S} />
-    <line x1="72" y1="36" x2="72" y2="32" {...Sd} strokeLinecap="round" />
-    <path d="M 72 33 Q 76 30 78 33" {...Sd} strokeLinecap="round" />
-
-    {/* Banana — crescent */}
-    <path d="M 82 38 Q 92 32 96 40 Q 92 38 82 42 Z" {...S} strokeLinecap="round" />
-
-    {/* Broccoli — small tree floret */}
-    <line x1="88" y1="52" x2="88" y2="44" {...Sd} strokeLinecap="round" />
-    <circle cx="84" cy="42" r="3" {...S} />
-    <circle cx="88" cy="40" r="3" {...S} />
-    <circle cx="92" cy="42" r="3" {...S} />
+    {/* Broccoli — small tree floret right */}
+    <line x1="80" y1="48" x2="80" y2="40" {...Sd} strokeLinecap="round" />
+    <circle cx="75" cy="38" r="3.5" {...S} />
+    <circle cx="80" cy="36" r="3.5" {...S} />
+    <circle cx="85" cy="38" r="3.5" {...S} />
   </svg>
 );
 
@@ -184,10 +182,10 @@ const PiggyBank = () => (
 );
 
 const illustrationMap: Record<string, React.FC<{ hovered?: boolean }>> = {
-  music: RecordPlayer,
+  music: Gramophone,
   books: BookSpines,
-  models: NodeNetwork,
-  health: HealthItems,
+  models: SwingingSticks,
+  health: FruitBasket,
   money: PiggyBank,
 };
 
