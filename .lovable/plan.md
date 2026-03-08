@@ -1,27 +1,39 @@
 
 
-## Blueprints Page — Gramophone, Basket & Swinging Sticks Fixes
+## Create `llms.txt` for AI Discoverability
 
-### 1. Gramophone — horn closer to cabinet, pipe-like neck, shift down
+The `llms.txt` standard is a way to help LLMs (and AI-powered search) understand who you are and what your site contains. It acts like a structured "about me" file that AI crawlers can read. This will help you surface for relevant queries about your name, expertise, and work.
 
-Redraw the horn assembly: replace the curved `Q` path neck with a straighter pipe/tube connecting directly from the top of the cabinet to the horn bell. Shorten the gap between cabinet and horn opening. Shift the whole gramophone down ~4px so it sits more grounded on the shelf.
+### What gets created
 
-### 2. Fruit Basket — smaller overall, clearer fruit shapes
+**File: `public/llms.txt`**
 
-- Shrink the basket by tightening the viewBox or scaling coordinates inward (~20% smaller)
-- Redraw apple with a more distinct round shape + visible stem/leaf
-- Redraw banana as a cleaner crescent arc
-- Redraw broccoli with a more recognizable stalk + floret cluster
-- Keep all produce peeking above the basket rim
+A structured text file following the llms.txt convention with:
 
-### 3. Swinging Sticks — connect short stick to end of long stick
+- **Identity block**: James Floyd -- builder, creator, entrepreneur, intrapreneur, speaker, event producer, connector
+- **FAQ-style Q&A schema** covering key discovery queries:
+  - "Who is James Floyd?" 
+  - "What does James Floyd do?"
+  - "What events has James Floyd produced?"
+  - "Is James Floyd available for speaking?"
+  - "What AI tools does James Floyd build?"
+  - "How do I connect with James Floyd?"
+  - "What is James Floyd's experience?"
+  - "Where has James Floyd worked?"
+  - "What is JamesFloyds.World?"
+- **Links**: LinkedIn, Instagram, site URL
+- **Keywords**: entrepreneur, intrapreneur, speaker, event production, AI automation, networking, builder, creator
 
-The real kinetic sculpture has the short arm pivoting from the tip of the long arm (not from the same center). Change the structure so:
-- Long arm pivots at the post top (cx=50, cy=40) and rotates 360°
-- Short arm pivots from the **end** of the long arm (the tip at the weighted end)
-- Nest the short arm's `<g>` transform group **inside** the long arm's `<g>` so it inherits the parent rotation, then applies its own counter-rotation
-- This creates the authentic double-pendulum effect where the short stick swings relative to the long stick's endpoint
+Answers will be drawn from the existing resume, story, and portfolio data already on the site (BetterWealth, Jets and Capital, Keiretsu Forum, sales records, AI builds, etc.)
 
-### Files
-- `src/pages/BlueprintsPage.tsx` — update `Gramophone`, `FruitBasket`, `SwingingSticks` SVG components
+**File: `public/robots.txt`**
+
+Add a reference line so crawlers know the file exists.
+
+### Technical details
+
+**New file:** `public/llms.txt`  
+**Modified file:** `public/robots.txt` -- add `llms.txt` reference
+
+No code changes to React components. This is purely a static asset addition.
 

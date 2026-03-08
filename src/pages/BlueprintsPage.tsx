@@ -40,40 +40,39 @@ const Sd = { fill: 'none', stroke: 'hsl(0 0% 40%)', strokeWidth: 0.6 } as const;
 
 /* ── Gramophone with animated music notes ── */
 const Gramophone = ({ hovered }: { hovered: boolean }) => (
-  <svg viewBox="0 0 100 90" className="w-full h-full">
+  <svg viewBox="0 0 100 94" className="w-full h-full">
     {/* Base platform */}
-    <rect x="25" y="78" width="50" height="6" {...S} rx="1" />
+    <rect x="25" y="82" width="50" height="6" {...S} rx="1" />
     {/* Cabinet body */}
-    <rect x="30" y="58" width="40" height="22" {...S} rx="1" />
+    <rect x="30" y="62" width="40" height="22" {...S} rx="1" />
     {/* Crank handle on side */}
-    <line x1="70" y1="68" x2="78" y2="68" {...Sd} strokeLinecap="round" />
-    <circle cx="80" cy="68" r="2" {...Sd} />
-    {/* Tonearm post */}
-    <line x1="50" y1="58" x2="50" y2="42" {...S} strokeLinecap="round" />
-    {/* Tonearm elbow */}
-    <line x1="50" y1="42" x2="55" y2="38" {...Sd} strokeLinecap="round" />
-    {/* Horn neck */}
-    <path d="M 55 38 Q 58 32 60 26" {...S} strokeLinecap="round" />
-    {/* Horn bell — flared opening */}
-    <path d="M 60 26 Q 52 18 42 10" {...S} strokeLinecap="round" />
-    <path d="M 60 26 Q 68 18 78 14" {...S} strokeLinecap="round" />
-    {/* Horn rim arc */}
-    <path d="M 42 10 Q 60 4 78 14" {...S} strokeLinecap="round" />
-    {/* Inner horn detail */}
-    <path d="M 48 16 Q 60 12 72 17" {...Sd} strokeLinecap="round" />
+    <line x1="70" y1="72" x2="78" y2="72" {...Sd} strokeLinecap="round" />
+    <circle cx="80" cy="72" r="2" {...Sd} />
     {/* Turntable disc on top of cabinet */}
-    <ellipse cx="50" cy="58" rx="14" ry="3" {...Sd} />
+    <ellipse cx="50" cy="62" rx="14" ry="3" {...Sd} />
+    {/* Pipe neck — straight tube from cabinet top to horn */}
+    <line x1="50" y1="59" x2="50" y2="44" {...S} strokeLinecap="round" />
+    {/* Pipe elbow — short bend into horn */}
+    <path d="M 50 44 Q 52 40 56 38" {...S} strokeLinecap="round" />
+    {/* Horn bell — flared opening, closer to cabinet */}
+    <path d="M 56 38 Q 48 30 38 22" {...S} strokeLinecap="round" />
+    <path d="M 56 38 Q 64 30 74 26" {...S} strokeLinecap="round" />
+    {/* Horn rim arc */}
+    <path d="M 38 22 Q 56 16 74 26" {...S} strokeLinecap="round" />
+    {/* Inner horn detail */}
+    <path d="M 44 26 Q 56 22 68 28" {...Sd} strokeLinecap="round" />
     {/* Animated music notes floating from horn */}
     {hovered && (
       <>
-        <text className="animate-music-note-1" x="50" y="12" fill="hsl(0 0% 70%)" fontSize="8" fontFamily="serif">♪</text>
-        <text className="animate-music-note-2" x="62" y="8" fill="hsl(0 0% 55%)" fontSize="7" fontFamily="serif">♫</text>
-        <text className="animate-music-note-3" x="72" y="10" fill="hsl(0 0% 65%)" fontSize="8" fontFamily="serif">♪</text>
+        <text className="animate-music-note-1" x="46" y="20" fill="hsl(0 0% 70%)" fontSize="8" fontFamily="serif">♪</text>
+        <text className="animate-music-note-2" x="58" y="16" fill="hsl(0 0% 55%)" fontSize="7" fontFamily="serif">♫</text>
+        <text className="animate-music-note-3" x="68" y="22" fill="hsl(0 0% 65%)" fontSize="8" fontFamily="serif">♪</text>
       </>
     )}
   </svg>
 );
 
+/* ── Mental Models — Swinging Sticks Perpetual Motion (double pendulum) ── */
 const BookSpines = () => (
   <svg viewBox="0 0 140 80" className="w-full h-full">
     <rect x="8" y="2" width="14" height="78" {...S} rx="0.5" />
@@ -91,7 +90,6 @@ const BookSpines = () => (
   </svg>
 );
 
-/* ── Mental Models — Swinging Sticks Perpetual Motion ── */
 const SwingingSticks = () => (
   <svg viewBox="0 0 100 90" className="w-full h-full">
     {/* Base */}
@@ -100,49 +98,50 @@ const SwingingSticks = () => (
     <line x1="50" y1="82" x2="50" y2="40" {...S} strokeLinecap="round" />
     {/* Pivot point */}
     <circle cx="50" cy="40" r="2" {...S} />
-    {/* Long arm — swings one direction */}
+    {/* Long arm — rotates around pivot; short arm nested inside at tip */}
     <g className="animate-swing-stick-1" style={{ transformOrigin: '50px 40px' }}>
       <line x1="50" y1="40" x2="50" y2="8" stroke="hsl(0 0% 70%)" strokeWidth={1.2} strokeLinecap="round" />
-      <circle cx="50" cy="8" r="3" {...S} />
-    </g>
-    {/* Short arm — swings opposite direction */}
-    <g className="animate-swing-stick-2" style={{ transformOrigin: '50px 40px' }}>
-      <line x1="50" y1="40" x2="50" y2="60" stroke="hsl(0 0% 70%)" strokeWidth={1.2} strokeLinecap="round" />
-      <circle cx="50" cy="60" r="2.5" {...S} />
+      <circle cx="50" cy="8" r="2.5" {...S} />
+      {/* Short arm — pivots from the tip of the long arm */}
+      <g className="animate-swing-stick-2" style={{ transformOrigin: '50px 8px' }}>
+        <line x1="50" y1="8" x2="50" y2="22" stroke="hsl(0 0% 70%)" strokeWidth={1} strokeLinecap="round" />
+        <circle cx="50" cy="22" r="2" {...S} />
+      </g>
     </g>
   </svg>
 );
 
 /* ── Health — Woven fruit basket ── */
 const FruitBasket = () => (
-  <svg viewBox="0 0 120 90" className="w-full h-full">
-    {/* Basket body */}
-    <path d="M 20 50 Q 20 86 60 86 Q 100 86 100 50" {...S} strokeLinecap="round" />
-    <line x1="18" y1="50" x2="102" y2="50" {...S} />
+  <svg viewBox="0 0 100 80" className="w-full h-full">
+    {/* Basket body — smaller */}
+    <path d="M 25 42 Q 25 74 50 74 Q 75 74 75 42" {...S} strokeLinecap="round" />
+    <line x1="23" y1="42" x2="77" y2="42" {...S} />
     {/* Basket handle */}
-    <path d="M 35 50 Q 60 20 85 50" {...S} strokeLinecap="round" />
+    <path d="M 35 42 Q 50 22 65 42" {...S} strokeLinecap="round" />
     {/* Weave lines horizontal */}
-    <path d="M 24 60 Q 60 58 96 60" {...Sd} />
-    <path d="M 28 70 Q 60 68 92 70" {...Sd} />
-    <path d="M 34 78 Q 60 77 86 78" {...Sd} />
+    <path d="M 28 50 Q 50 49 72 50" {...Sd} />
+    <path d="M 30 58 Q 50 57 70 58" {...Sd} />
+    <path d="M 34 66 Q 50 65 66 66" {...Sd} />
     {/* Weave lines vertical */}
-    <line x1="45" y1="50" x2="42" y2="84" {...Sd} />
-    <line x1="60" y1="50" x2="60" y2="86" {...Sd} />
-    <line x1="75" y1="50" x2="78" y2="84" {...Sd} />
+    <line x1="42" y1="42" x2="40" y2="72" {...Sd} />
+    <line x1="50" y1="42" x2="50" y2="74" {...Sd} />
+    <line x1="58" y1="42" x2="60" y2="72" {...Sd} />
 
-    {/* Apple — sitting above rim left */}
-    <circle cx="42" cy="42" r="7" {...S} />
-    <line x1="42" y1="35" x2="42" y2="30" {...Sd} strokeLinecap="round" />
-    <path d="M 42 31 Q 47 28 49 31" {...Sd} strokeLinecap="round" />
+    {/* Apple — round with stem and leaf */}
+    <circle cx="38" cy="35" r="6" {...S} />
+    <line x1="38" y1="29" x2="38" y2="25" {...Sd} strokeLinecap="round" />
+    <path d="M 38 26 Q 42 23 44 26" {...Sd} strokeLinecap="round" />
 
-    {/* Banana — crescent center */}
-    <path d="M 55 38 Q 66 28 75 36 Q 66 32 55 42 Z" {...S} strokeLinecap="round" />
+    {/* Banana — clean crescent */}
+    <path d="M 50 32 Q 58 24 64 30" {...S} strokeLinecap="round" />
+    <path d="M 50 32 Q 56 28 64 30" {...Sd} strokeLinecap="round" />
 
-    {/* Broccoli — small tree floret right */}
-    <line x1="80" y1="48" x2="80" y2="40" {...Sd} strokeLinecap="round" />
-    <circle cx="75" cy="38" r="3.5" {...S} />
-    <circle cx="80" cy="36" r="3.5" {...S} />
-    <circle cx="85" cy="38" r="3.5" {...S} />
+    {/* Broccoli — stalk + florets */}
+    <line x1="68" y1="42" x2="68" y2="34" {...Sd} strokeLinecap="round" />
+    <circle cx="64" cy="32" r="3" {...S} />
+    <circle cx="68" cy="30" r="3" {...S} />
+    <circle cx="72" cy="32" r="3" {...S} />
   </svg>
 );
 
