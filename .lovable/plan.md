@@ -1,25 +1,39 @@
 
 
-## Blueprints Page — Three Illustration Redesigns + Shelf Fix
+## Create `llms.txt` for AI Discoverability
 
-### Changes to `src/pages/BlueprintsPage.tsx`
+The `llms.txt` standard is a way to help LLMs (and AI-powered search) understand who you are and what your site contains. It acts like a structured "about me" file that AI crawlers can read. This will help you surface for relevant queries about your name, expertise, and work.
 
-**1. Record Player → Gramophone (ref: image-19)**
-Replace the flat turntable with a gramophone line drawing: rectangular base, horn/bell curving upward, tonearm connecting base to horn. Same thin white stroke style. Keep the hover music note animation (♪ floating up from the horn).
+### What gets created
 
-**2. Health → Fruit Basket (ref: image-20)**
-Replace bottles + bowl with a woven basket outline containing recognizable line-art produce: apple (circle + stem + leaf), banana (crescent), broccoli (floret tree shape), plus a few round shapes for variety. Basket has a handle arc and cross-hatched weave lines. All resting on the shelf baseline.
+**File: `public/llms.txt`**
 
-**3. Mental Models → Swinging Sticks Perpetual Motion Machine (ref: image-21)**
-Replace the node network with a kinetic sculpture: a flat rectangular base, two thin stick/arm elements pivoting from a central point, swinging in opposite arcs. Use CSS keyframe animation to continuously rotate both arms in a smooth perpetual loop — one arm swings clockwise while the other swings counter-clockwise, creating the mesmerizing pendulum effect. No hover trigger needed — runs automatically on load.
+A structured text file following the llms.txt convention with:
 
-**4. Piggy Bank baseline fix**
-Ensure viewBox and leg coordinates place hooves flush at the very bottom of the SVG so the piggy sits directly on the shelf line.
+- **Identity block**: James Floyd -- builder, creator, entrepreneur, intrapreneur, speaker, event producer, connector
+- **FAQ-style Q&A schema** covering key discovery queries:
+  - "Who is James Floyd?" 
+  - "What does James Floyd do?"
+  - "What events has James Floyd produced?"
+  - "Is James Floyd available for speaking?"
+  - "What AI tools does James Floyd build?"
+  - "How do I connect with James Floyd?"
+  - "What is James Floyd's experience?"
+  - "Where has James Floyd worked?"
+  - "What is JamesFloyds.World?"
+- **Links**: LinkedIn, Instagram, site URL
+- **Keywords**: entrepreneur, intrapreneur, speaker, event production, AI automation, networking, builder, creator
 
-**5. Verify all items rest on shelf**
-After implementation, take screenshots to confirm every object touches the shelf plank.
+Answers will be drawn from the existing resume, story, and portfolio data already on the site (BetterWealth, Jets and Capital, Keiretsu Forum, sales records, AI builds, etc.)
 
-### Files
-- `src/pages/BlueprintsPage.tsx` — rewrite RecordPlayer, HealthItems, NodeNetwork SVGs
-- `src/index.css` — add swinging-sticks keyframe animation
+**File: `public/robots.txt`**
+
+Add a reference line so crawlers know the file exists.
+
+### Technical details
+
+**New file:** `public/llms.txt`  
+**Modified file:** `public/robots.txt` -- add `llms.txt` reference
+
+No code changes to React components. This is purely a static asset addition.
 
