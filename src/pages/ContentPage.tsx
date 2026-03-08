@@ -56,12 +56,13 @@ const featuredContent = [
     external: true,
   },
   {
-    type: 'Poem',
-    title: 'Madman',
-    description: 'Evidence for confidence',
-    duration: '1 min read',
-    stats: 'Walk on, walk on...',
-    image: '/poems/Madman.png',
+    type: 'Substack',
+    title: "James' Updates and Essays",
+    description: 'read, talk, read, talk → write',
+    duration: '',
+    stats: '',
+    link: 'https://jamesfloyd.substack.com',
+    external: true,
   },
 ];
 
