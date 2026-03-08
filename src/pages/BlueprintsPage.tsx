@@ -73,6 +73,23 @@ const Gramophone = ({ hovered }: { hovered: boolean }) => (
 );
 
 /* ── Mental Models — Swinging Sticks Perpetual Motion (double pendulum) ── */
+const BookSpines = () => (
+  <svg viewBox="0 0 140 80" className="w-full h-full">
+    <rect x="8" y="2" width="14" height="78" {...S} rx="0.5" />
+    <text x="15" y="45" fill="hsl(0 0% 60%)" fontSize="3.2" textAnchor="middle" transform="rotate(-90 15 45)" letterSpacing="1" fontFamily="monospace">4000 WEEKS</text>
+    <rect x="25" y="10" width="18" height="70" {...S} rx="0.5" />
+    <text x="34" y="48" fill="hsl(0 0% 60%)" fontSize="2.8" textAnchor="middle" transform="rotate(-90 34 48)" letterSpacing="0.8" fontFamily="monospace">THIRD DOOR</text>
+    <rect x="46" y="5" width="20" height="75" {...S} rx="0.5" />
+    <text x="56" y="45" fill="hsl(0 0% 60%)" fontSize="2.8" textAnchor="middle" transform="rotate(-90 56 45)" letterSpacing="0.5" fontFamily="monospace">IRON JOHN</text>
+    <rect x="69" y="12" width="12" height="68" {...S} rx="0.5" />
+    <text x="75" y="48" fill="hsl(0 0% 60%)" fontSize="2.6" textAnchor="middle" transform="rotate(-90 75 48)" letterSpacing="0.5" fontFamily="monospace">WINNERS</text>
+    <rect x="84" y="4" width="22" height="76" {...S} rx="0.5" />
+    <text x="95" y="42" fill="hsl(0 0% 60%)" fontSize="2.3" textAnchor="middle" transform="rotate(-90 95 42)" letterSpacing="0.3" fontFamily="monospace">LESSONS OF HISTORY</text>
+    <rect x="108" y="8" width="16" height="72" {...S} rx="0.5" transform="rotate(5 116 44)" />
+    <text x="116" y="44" fill="hsl(0 0% 60%)" fontSize="2.3" textAnchor="middle" transform="rotate(-85 116 44)" letterSpacing="0.5" fontFamily="monospace">NO SMALL PLANS</text>
+  </svg>
+);
+
 const SwingingSticks = () => (
   <svg viewBox="0 0 100 90" className="w-full h-full">
     {/* Base */}
