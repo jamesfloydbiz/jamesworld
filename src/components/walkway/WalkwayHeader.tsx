@@ -12,6 +12,7 @@ export function WalkwayHeader({ title }: WalkwayHeaderProps) {
   const navigate = useNavigate();
   const { scrollProgress, setScrollProgress, restoreHubState, setIsTransitioning } = useGameStore();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [hoveredItem, setHoveredItem] = useState<string | null>(null);
 
   // Track scroll progress
   useEffect(() => {
@@ -37,7 +38,28 @@ export function WalkwayHeader({ title }: WalkwayHeaderProps) {
     }, 300);
   };
 
-  const menuItems = ["Story", "Projects", "Content", "Network", "Blueprints", "Resume", "References", "Poems", "Memories"];
+  const menuItems = [
+    { label: "Story", path: "/story" },
+    { 
+      label: "Projects", 
+      path: "/projects",
+      subItems: [
+        { label: "Portfolio", path: "/portfolio" },
+        { label: "Resume", path: "/resume" },
+        { label: "References", path: "/references" }
+      ]
+    },
+    { 
+      label: "Content", 
+      path: "/content",
+      subItems: [
+        { label: "Poems", path: "/poems" },
+        { label: "Memories", path: "/pictures" }
+      ]
+    },
+    { label: "Network", path: "/network" },
+    { label: "Blueprints", path: "/blueprints" },
+  ];
 
   return (
     <>
@@ -108,30 +130,61 @@ export function WalkwayHeader({ title }: WalkwayHeaderProps) {
               <ul className="space-y-6">
                 {menuItems.map((item, i) => (
                   <motion.li
-                    key={item}
+                    key={item.label}
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: i * 0.05 }}
+                    onMouseEnter={() => setHoveredItem(item.label)}
+                    onMouseLeave={() => setHoveredItem(null)}
+                    className="flex flex-col items-center"
                   >
                     <button
                       onClick={() => {
                         setMenuOpen(false);
-                        navigate(item === "Memories" ? "/pictures" : `/${item.toLowerCase()}`);
+                        navigate(item.path);
                       }}
                       className="text-2xl tracking-widest uppercase hover:text-muted-foreground transition-colors"
                     >
-                      {item}
+                      {item.label}
                     </button>
+                    <AnimatePresence>
+                      {item.subItems && hoveredItem === item.label && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: "auto" }}
+                          exit={{ opacity: 0, height: 0 }}
+                          transition={{ duration: 0.3, ease: "easeInOut" }}
+                          className="overflow-hidden"
+                        >
+                          <div className="py-2 space-y-4 mt-2 flex flex-col items-center">
+                            {item.subItems.map(sub => (
+                              <button
+                                key={sub.label}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setMenuOpen(false);
+                                  navigate(sub.path);
+                                }}
+                                className="text-[1.1rem] tracking-wider uppercase text-muted-foreground/60 hover:text-foreground transition-colors"
+                              >
+                                {sub.label}
+                              </button>
+                            ))}
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </motion.li>
                 ))}
                 <motion.li
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: menuItems.length * 0.05 }}
+                  className="pt-6"
                 >
                   <button
                     onClick={handleBackToHub}
-                    className="text-2xl tracking-widest uppercase text-muted-foreground hover:text-foreground transition-colors"
+                    className="text-xl tracking-widest uppercase text-muted-foreground hover:text-foreground transition-colors"
                   >
                     Back to Gallery
                   </button>
