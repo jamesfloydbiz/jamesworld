@@ -45,15 +45,29 @@ export function MainMenu({ onEnterGallery, galleryLoading, galleryProgress }: Ma
   const menuItems = [
     { label: '3D Gallery', action: onEnterGallery, isGallery: true },
     { label: 'Story', path: '/story' },
-    { label: 'Projects', path: '/projects' },
-    { label: 'Content', path: '/content' },
+    { 
+      label: 'Projects', 
+      path: '/portfolio',
+      children: [
+        { label: 'Portfolio', path: '/portfolio' },
+        { label: 'Resume', path: '/resume' },
+        { label: 'References', path: '/references' },
+      ]
+    },
+    { 
+      label: 'Content', 
+      path: '/content',
+      children: [
+        { label: 'Essays & Updates', path: '/content' },
+        { label: 'Poems', path: '/poems' },
+        { label: 'Memories', path: '/pictures' },
+      ]
+    },
     { label: 'Network', path: '/network' },
     { label: 'Blueprints', path: '/blueprints' },
-    { label: 'Resume', path: '/resume' },
-    { label: 'References', path: '/references' },
-    { label: 'Poems', path: '/poems' },
-    { label: 'Memories', path: '/pictures' },
   ];
+
+  const [expandedItem, setExpandedItem] = useState<string | null>(null);
 
   const handleClick = (item: typeof menuItems[0]) => {
     if (item.isGallery) {
