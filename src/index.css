@@ -147,3 +147,23 @@
     }
   }
 }
+
+/* Music note float animations for Blueprints page */
+@keyframes musicNoteFloat1 {
+  0% { opacity: 0; transform: translate(0, 0) rotate(0deg); }
+  20% { opacity: 1; }
+  100% { opacity: 0; transform: translate(-8px, -25px) rotate(-15deg); }
+}
+@keyframes musicNoteFloat2 {
+  0% { opacity: 0; transform: translate(0, 0) rotate(0deg); }
+  30% { opacity: 1; }
+  100% { opacity: 0; transform: translate(5px, -30px) rotate(10deg); }
+}
+@keyframes musicNoteFloat3 {
+  0% { opacity: 0; transform: translate(0, 0) rotate(0deg); }
+  25% { opacity: 1; }
+  100% { opacity: 0; transform: translate(-3px, -22px) rotate(-8deg); }
+}
+.animate-music-note-1 { animation: musicNoteFloat1 1.5s ease-out infinite; }
+.animate-music-note-2 { animation: musicNoteFloat2 1.8s ease-out 0.3s infinite; }
+.animate-music-note-3 { animation: musicNoteFloat3 1.6s ease-out 0.6s infinite; }

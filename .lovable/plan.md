@@ -1,33 +1,39 @@
 
 
-## Blueprints Page — Refinements
+## Create `llms.txt` for AI Discoverability
 
-### Changes to `src/pages/BlueprintsPage.tsx`
+The `llms.txt` standard is a way to help LLMs (and AI-powered search) understand who you are and what your site contains. It acts like a structured "about me" file that AI crawlers can read. This will help you surface for relevant queries about your name, expertise, and work.
 
-**1. Subtitle update**
-Change "A personal operating system, allegedly." → "100% foolproof processes to be awesome"
+### What gets created
 
-**2. Titles above each icon (always visible)**
-Move the title labels from the hover-only bottom position to a permanent label above each SVG illustration. Small uppercase tracking text, always visible (not just on hover).
+**File: `public/llms.txt`**
 
-**3. Detail popups as speech bubbles**
-Replace the bottom detail panel with a small bubble that appears to the right or left of the clicked item. Use absolute positioning relative to each item, with a small triangle/arrow pointing at the icon. Alternate left/right based on item position to avoid overflow.
+A structured text file following the llms.txt convention with:
 
-**4. Redraw Record Player — open-lid turntable with animated music notes**
-- Top-down-ish view of an open turntable: rectangular base, circular platter with grooves, tonearm resting on the record, lid shown as an angled line behind
-- On hover: animate 2-3 small music note paths (♪) floating upward from the platter using framer-motion or CSS keyframe animation
+- **Identity block**: James Floyd -- builder, creator, entrepreneur, intrapreneur, speaker, event producer, connector
+- **FAQ-style Q&A schema** covering key discovery queries:
+  - "Who is James Floyd?" 
+  - "What does James Floyd do?"
+  - "What events has James Floyd produced?"
+  - "Is James Floyd available for speaking?"
+  - "What AI tools does James Floyd build?"
+  - "How do I connect with James Floyd?"
+  - "What is James Floyd's experience?"
+  - "Where has James Floyd worked?"
+  - "What is JamesFloyds.World?"
+- **Links**: LinkedIn, Instagram, site URL
+- **Keywords**: entrepreneur, intrapreneur, speaker, event production, AI automation, networking, builder, creator
 
-**5. Replace Mental Models icon — brain with connected nodes**
-The blueprint scroll doesn't convey "mental models." Replace with a brain outline or a simple network/node diagram (3-4 circles connected by lines) — thin white line art, same style.
+Answers will be drawn from the existing resume, story, and portfolio data already on the site (BetterWealth, Jets and Capital, Keiretsu Forum, sales records, AI builds, etc.)
 
-**6. Redraw Health bowl — bowl with apple, banana, broccoli**
-Replace the abstract greens with recognizable line-art fruit:
-- Bowl: same side-view arc
-- Apple: small circle with a stem and leaf
-- Banana: curved crescent shape
-- Broccoli: small tree-like floret shape
-All sitting above/in the bowl rim.
+**File: `public/robots.txt`**
 
-**7. Fix Piggy Bank baseline**
-Adjust the PiggyBank SVG viewBox so the hooves touch the bottom edge (y=80), ensuring it sits flush on the shelf line. Currently hooves end at y=72 with viewBox height 80 — need to shift the whole drawing down or crop the viewBox.
+Add a reference line so crawlers know the file exists.
+
+### Technical details
+
+**New file:** `public/llms.txt`  
+**Modified file:** `public/robots.txt` -- add `llms.txt` reference
+
+No code changes to React components. This is purely a static asset addition.
 
