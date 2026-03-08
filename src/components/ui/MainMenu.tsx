@@ -99,23 +99,52 @@ export function MainMenu({ onEnterGallery, galleryLoading, galleryProgress }: Ma
       {/* Menu Items */}
       <nav className="flex flex-col items-center gap-4">
         {menuItems.map((item, index) => (
-          <motion.button
-            key={item.label}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 + index * 0.08, duration: 0.4 }}
-            onClick={() => handleClick(item)}
-            disabled={item.isGallery && galleryLoading && displayProgress < 100}
-            className="relative text-lg md:text-xl tracking-[0.2em] text-white/70 hover:text-white transition-colors duration-300 disabled:opacity-40 disabled:cursor-not-allowed group"
-          >
-            {item.label.toUpperCase()}
-            {item.isGallery && galleryLoading && displayProgress < 100 && (
-              <span className="ml-3 text-sm text-white/40">
-                {Math.round(displayProgress)}%
-              </span>
-            )}
-            <span className="absolute -bottom-1 left-0 w-0 h-px bg-white group-hover:w-full transition-all duration-300" />
-          </motion.button>
+          <div key={item.label}>
+            <motion.button
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 + index * 0.08, duration: 0.4 }}
+              onClick={() => handleClick(item)}
+              disabled={item.isGallery && galleryLoading && displayProgress < 100}
+              className="relative text-lg md:text-xl tracking-[0.2em] text-white/70 hover:text-white transition-colors duration-300 disabled:opacity-40 disabled:cursor-not-allowed group"
+            >
+              {item.label.toUpperCase()}
+              {item.isGallery && galleryLoading && displayProgress < 100 && (
+                <span className="ml-3 text-sm text-white/40">
+                  {Math.round(displayProgress)}%
+                </span>
+              )}
+              {item.children && (
+                <span className="ml-2 text-xs text-white/40">
+                  {expandedItem === item.label ? '−' : '+'}
+                </span>
+              )}
+              <span className="absolute -bottom-1 left-0 w-0 h-px bg-white group-hover:w-full transition-all duration-300" />
+            </motion.button>
+
+            {/* Submenu */}
+            <AnimatePresence>
+              {item.children && expandedItem === item.label && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="flex flex-col items-center gap-2 mt-2 pl-4"
+                >
+                  {item.children.map((child) => (
+                    <button
+                      key={child.label}
+                      onClick={() => navigate(child.path)}
+                      className="text-sm md:text-base tracking-[0.15em] text-white/50 hover:text-white/90 transition-colors duration-300"
+                    >
+                      {child.label.toUpperCase()}
+                    </button>
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
         ))}
       </nav>
 
