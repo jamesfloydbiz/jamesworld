@@ -58,6 +58,29 @@ const Index = () => {
   // Unified flag: controls only appear when fully interactive
   const controlsReady = showTitles && !showLoading;
 
+  const menuItems = [
+    { label: 'Story', path: '/story' },
+    { 
+      label: 'Projects', 
+      path: '/projects',
+      subItems: [
+        { label: 'Portfolio', path: '/portfolio' },
+        { label: 'Resume', path: '/resume' },
+        { label: 'References', path: '/references' }
+      ]
+    },
+    { 
+      label: 'Content', 
+      path: '/content',
+      subItems: [
+        { label: 'Poems', path: '/poems' },
+        { label: 'Memories', path: '/pictures' }
+      ]
+    },
+    { label: 'Network', path: '/network' },
+    { label: 'Blueprints', path: '/blueprints' },
+  ];
+
   return (
     <div className="fixed inset-0 bg-black">
       {/* 3D Museum Scene - always loading/visible behind the loading screen */}
