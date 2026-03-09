@@ -140,6 +140,29 @@ const PortfolioPage = () => {
     navigate('/');
   };
 
+  const menuItems = [
+    { label: "Story", path: "/story" },
+    { 
+      label: "Projects", 
+      path: "/projects",
+      subItems: [
+        { label: "Portfolio", path: "/portfolio" },
+        { label: "Resume", path: "/resume" },
+        { label: "References", path: "/references" }
+      ]
+    },
+    { 
+      label: "Content", 
+      path: "/content",
+      subItems: [
+        { label: "Poems", path: "/poems" },
+        { label: "Memories", path: "/pictures" }
+      ]
+    },
+    { label: "Network", path: "/network" },
+    { label: "Blueprints", path: "/blueprints" },
+  ];
+
   return (
     <div className="relative min-h-screen font-serif text-[#1a1a1a]" style={{ background: '#f5f0e8' }}>
       {/* Grain overlay */}
