@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion, useInView } from 'framer-motion';
+import { motion, useInView, AnimatePresence } from 'framer-motion';
 
 /* ─── Scroll Reveal Wrapper ─── */
 function Reveal({ children, className = '', delay = 0 }: {children: React.ReactNode;className?: string;delay?: number;}) {
