@@ -122,27 +122,54 @@ const Index = () => {
               ✕
             </button>
             
-            {[
-              { label: 'Story', path: '/story' },
-              { label: 'Projects', path: '/projects' },
-              { label: 'Content', path: '/content' },
-              { label: 'Network', path: '/network' },
-              { label: 'Blueprints', path: '/blueprints' },
-              { label: 'Resume', path: '/resume' },
-              { label: 'References', path: '/references' },
-              { label: 'Poems', path: '/poems' },
-              { label: 'Memories', path: '/pictures' },
-            ].map((item) => (
-              <button
+            
+            {menuItems.map((item, i) => (
+              <motion.div
                 key={item.path}
-                onClick={() => {
-                  setMenuOpen(false);
-                  navigate(item.path);
-                }}
-                className="text-white/80 hover:text-white text-2xl tracking-widest uppercase transition-colors"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.05 }}
+                onMouseEnter={() => setHoveredItem(item.label)}
+                onMouseLeave={() => setHoveredItem(null)}
+                className="flex flex-col items-center"
               >
-                {item.label}
-              </button>
+                <button
+                  onClick={() => {
+                    setMenuOpen(false);
+                    navigate(item.path);
+                  }}
+                  className="text-white/80 hover:text-white text-2xl tracking-widest uppercase transition-colors"
+                >
+                  {item.label}
+                </button>
+                <AnimatePresence>
+                  {item.subItems && hoveredItem === item.label && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.3, ease: "easeInOut" }}
+                      className="overflow-hidden"
+                    >
+                      <div className="py-2 space-y-4 mt-2 flex flex-col items-center">
+                        {item.subItems.map(sub => (
+                          <button
+                            key={sub.label}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setMenuOpen(false);
+                              navigate(sub.path);
+                            }}
+                            className="text-[1.1rem] tracking-wider uppercase text-white/50 hover:text-white/80 transition-colors"
+                          >
+                            {sub.label}
+                          </button>
+                        ))}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
             ))}
           </motion.div>
         )}
