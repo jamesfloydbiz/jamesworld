@@ -117,6 +117,7 @@ const siteLinks = [
 const PortfolioPage = () => {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   const [scrollProgress, setScrollProgress] = useState(0);
 
   useEffect(() => {
