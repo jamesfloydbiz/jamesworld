@@ -10,6 +10,12 @@ import { MobileJoystick } from '@/components/ui/MobileJoystick';
 const MuseumScene = lazy(() => import('@/components/museum/MuseumScene').then(m => ({ default: m.MuseumScene })));
 const MuseumUI = lazy(() => import('@/components/ui/MuseumUI').then(m => ({ default: m.MuseumUI })));
 
+interface MenuItem {
+  label: string;
+  path: string;
+  subItems?: { label: string; path: string }[];
+}
+
 const Index = () => {
   const navigate = useNavigate();
   const { setIsTransitioning, menuOpen, setMenuOpen } = useGameStore();
