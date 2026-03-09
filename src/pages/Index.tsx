@@ -17,6 +17,7 @@ const Index = () => {
   const [showLoading, setShowLoading] = useState(true);
   const [isFullyLoaded, setIsFullyLoaded] = useState(false);
   const [showTitles, setShowTitles] = useState(false);
+  const [hoveredItem, setHoveredItem] = useState<string | null>(null);
 
   useEffect(() => {
     setIsTransitioning(false);
