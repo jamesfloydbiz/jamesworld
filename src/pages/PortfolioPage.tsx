@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion, useInView } from 'framer-motion';
+import { motion, useInView, AnimatePresence } from 'framer-motion';
 
 /* ─── Scroll Reveal Wrapper ─── */
 function Reveal({ children, className = '', delay = 0 }: {children: React.ReactNode;className?: string;delay?: number;}) {
@@ -117,6 +117,7 @@ const siteLinks = [
 const PortfolioPage = () => {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   const [scrollProgress, setScrollProgress] = useState(0);
 
   useEffect(() => {
@@ -139,6 +140,29 @@ const PortfolioPage = () => {
     navigate('/');
   };
 
+  const menuItems = [
+    { label: "Story", path: "/story" },
+    { 
+      label: "Projects", 
+      path: "/projects",
+      subItems: [
+        { label: "Portfolio", path: "/portfolio" },
+        { label: "Resume", path: "/resume" },
+        { label: "References", path: "/references" }
+      ]
+    },
+    { 
+      label: "Content", 
+      path: "/content",
+      subItems: [
+        { label: "Poems", path: "/poems" },
+        { label: "Memories", path: "/pictures" }
+      ]
+    },
+    { label: "Network", path: "/network" },
+    { label: "Blueprints", path: "/blueprints" },
+  ];
+
   return (
     <div className="relative min-h-screen font-serif text-[#1a1a1a]" style={{ background: '#f5f0e8' }}>
       {/* Grain overlay */}
@@ -160,39 +184,89 @@ const PortfolioPage = () => {
       </nav>
 
       {/* ─── MENU OVERLAY ─── */}
-      {menuOpen &&
-      <motion.div
-        className="fixed inset-0 z-50 flex items-center justify-center"
-        style={{ background: '#f5f0e8' }}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}>
-          <div className="text-center space-y-5">
-            {['Story', 'Projects', 'Content', 'Network', 'Blueprints', 'Resume', 'References', 'Poems', 'Memories'].map((item) =>
-          <div key={item}>
-                <button
-              onClick={() => {
-                setMenuOpen(false);
-                navigate(item === 'Memories' ? '/pictures' : `/${item.toLowerCase()}`);
-              }}
-              className="text-xl tracking-[0.15em] uppercase hover:text-[#4A5D23] transition-colors font-serif">
-                  {item}
-                </button>
-              </div>
-          )}
-            <div className="pt-4">
+      <AnimatePresence>
+        {menuOpen && (
+          <motion.div
+            className="fixed inset-0 z-50 flex items-center justify-center"
+            style={{ background: '#f5f0e8' }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <nav className="text-center">
+              <ul className="space-y-6">
+                {menuItems.map((item, i) => (
+                  <motion.li
+                    key={item.label}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: i * 0.05 }}
+                    onMouseEnter={() => setHoveredItem(item.label)}
+                    onMouseLeave={() => setHoveredItem(null)}
+                    className="flex flex-col items-center"
+                  >
+                    <button
+                      onClick={() => {
+                        setMenuOpen(false);
+                        navigate(item.path);
+                      }}
+                      className="text-xl tracking-[0.15em] uppercase hover:text-[#4A5D23] transition-colors font-serif"
+                    >
+                      {item.label}
+                    </button>
+                    <AnimatePresence>
+                      {item.subItems && hoveredItem === item.label && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: "auto" }}
+                          exit={{ opacity: 0, height: 0 }}
+                          transition={{ duration: 0.3, ease: "easeInOut" }}
+                          className="overflow-hidden"
+                        >
+                          <div className="py-2 space-y-4 mt-2 flex flex-col items-center">
+                            {item.subItems.map(sub => (
+                              <button
+                                key={sub.label}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setMenuOpen(false);
+                                  navigate(sub.path);
+                                }}
+                                className="text-[1.1rem] tracking-wider uppercase text-[#888]/70 hover:text-[#4A5D23] transition-colors"
+                              >
+                                {sub.label}
+                              </button>
+                            ))}
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </motion.li>
+                ))}
+                <motion.li
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: menuItems.length * 0.05 }}
+                  className="pt-6"
+                >
+                  <button
+                    onClick={() => {setMenuOpen(false);handleBackToHub();}}
+                    className="text-sm tracking-[0.15em] uppercase text-[#888] hover:text-[#1a1a1a] transition-colors"
+                  >
+                    Back to Gallery
+                  </button>
+                </motion.li>
+              </ul>
               <button
-              onClick={() => {setMenuOpen(false);handleBackToHub();}}
-              className="text-sm tracking-[0.15em] uppercase text-[#888] hover:text-[#1a1a1a] transition-colors">
-                Back to Gallery
+                onClick={() => setMenuOpen(false)}
+                className="mt-12 text-xs text-[#999] hover:text-[#1a1a1a] transition-colors"
+              >
+                Close
               </button>
-            </div>
-            <button onClick={() => setMenuOpen(false)} className="mt-8 text-xs text-[#999] hover:text-[#1a1a1a] transition-colors">
-              Close
-            </button>
-          </div>
-        </motion.div>
-      }
+            </nav>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* ─── CONTENT ─── */}
       <main className="relative z-10 pt-[44px]">
