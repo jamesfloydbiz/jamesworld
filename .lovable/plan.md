@@ -1,39 +1,45 @@
 
 
-## Create `llms.txt` for AI Discoverability
+# Museum Loading Optimization Plan
 
-The `llms.txt` standard is a way to help LLMs (and AI-powered search) understand who you are and what your site contains. It acts like a structured "about me" file that AI crawlers can read. This will help you surface for relevant queries about your name, expertise, and work.
+## Current State
+- 5 GLB models loaded eagerly via `useGLTF.preload()` at module level (tree, vulcan, apollo, thinker, buddha)
+- No compression applied — raw GLB files served as-is
+- No Draco or meshopt decompression configured
+- FCP is ~8.5s (dev mode, but still slow)
+- All 5 models start downloading simultaneously on page load
 
-### What gets created
+## Optimizations
 
-**File: `public/llms.txt`**
+### 1. Compress GLB files with Draco (biggest win)
+- Use `gltf-transform` CLI to Draco-compress all 5 models offline, reducing file sizes by 50-80%
+- Run: `npx @gltf-transform/cli optimize input.glb output.glb --compress draco`
+- Replace original files in `/public/models/`
+- Add `DRACOLoader` to the `useGLTF` calls via drei's built-in Draco support
 
-A structured text file following the llms.txt convention with:
+### 2. Enable Draco decoding in code
+- Import and configure `useGLTF` with Draco decoder path (Google's CDN-hosted decoder)
+- One-line change: `useGLTF.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.7/')`
+- This tells three.js to decompress the Draco-encoded models on the client
 
-- **Identity block**: James Floyd -- builder, creator, entrepreneur, intrapreneur, speaker, event producer, connector
-- **FAQ-style Q&A schema** covering key discovery queries:
-  - "Who is James Floyd?" 
-  - "What does James Floyd do?"
-  - "What events has James Floyd produced?"
-  - "Is James Floyd available for speaking?"
-  - "What AI tools does James Floyd build?"
-  - "How do I connect with James Floyd?"
-  - "What is James Floyd's experience?"
-  - "Where has James Floyd worked?"
-  - "What is JamesFloyds.World?"
-- **Links**: LinkedIn, Instagram, site URL
-- **Keywords**: entrepreneur, intrapreneur, speaker, event production, AI automation, networking, builder, creator
+### 3. Prioritized / staggered loading
+- Remove all `useGLTF.preload()` calls from module level
+- Instead, preload only the 2 nearest models first (Story + Projects, which the user sees immediately)
+- Defer the remaining 3 models to load after the scene is interactive
+- This gets the user into the museum faster
 
-Answers will be drawn from the existing resume, story, and portfolio data already on the site (BetterWealth, Jets and Capital, Keiretsu Forum, sales records, AI builds, etc.)
+### 4. Add caching headers via Vite config
+- Configure Vite's static asset serving to set long `Cache-Control` headers for `/models/*.glb`
+- After first visit, models load from browser cache instantly
 
-**File: `public/robots.txt`**
+## Implementation Steps
+1. Run `gltf-transform` to Draco-compress all 5 GLB files (replacing originals)
+2. Add `useGLTF.setDecoderPath(...)` call in `Pedestal.tsx`
+3. Replace bulk `useGLTF.preload()` with prioritized loading — preload 2 nearest models immediately, defer remaining 3 via `setTimeout` or `requestIdleCallback`
+4. Verify models still render correctly after compression
 
-Add a reference line so crawlers know the file exists.
-
-### Technical details
-
-**New file:** `public/llms.txt`  
-**Modified file:** `public/robots.txt` -- add `llms.txt` reference
-
-No code changes to React components. This is purely a static asset addition.
+## Expected Impact
+- **50-80% smaller model downloads** (Draco compression)
+- **Faster time-to-interactive** (staggered loading)
+- **Instant repeat visits** (cache headers)
 
