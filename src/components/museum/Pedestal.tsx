@@ -130,9 +130,28 @@ export function Pedestal({ position, title }: PedestalProps) {
   );
 }
 
-// Preload all models
+// Enable Draco decoding for compressed models
+useGLTF.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.7/');
+
+// Priority preload: nearest models first (Story + Projects)
 useGLTF.preload("/models/tree_gn.glb");
 useGLTF.preload("/models/vulcan.glb");
-useGLTF.preload("/models/apollo_as_the_genius_of_the_arts.glb");
-useGLTF.preload("/models/the_thinker_by_auguste_rodin.glb");
-useGLTF.preload("/models/buddha.glb");
+
+// Defer remaining models
+if (typeof window !== 'undefined') {
+  const deferredModels = [
+    "/models/apollo_as_the_genius_of_the_arts.glb",
+    "/models/the_thinker_by_auguste_rodin.glb",
+    "/models/buddha.glb",
+  ];
+  
+  if ('requestIdleCallback' in window) {
+    window.requestIdleCallback(() => {
+      deferredModels.forEach((m) => useGLTF.preload(m));
+    });
+  } else {
+    setTimeout(() => {
+      deferredModels.forEach((m) => useGLTF.preload(m));
+    }, 2000);
+  }
+}
