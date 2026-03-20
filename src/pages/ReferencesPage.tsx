@@ -74,7 +74,7 @@ const references: Reference[] = [
     relation: 'Curating experiences, community & connection',
     quote: '"James, you are a superstar. Your hard work and willingness to go above and beyond will take you a LONG WAY. So great meeting you & see you in NY!"',
     rotation: '-0.6deg',
-    link: 'https://www.linkedin.com/in/jamesfloyd',
+    link: 'https://www.linkedin.com/feed/update/urn:li:activity:7440506144126640128/?dashCommentUrn=urn%3Ali%3Afsd_comment%3A%287440769299981451264%2Curn%3Ali%3AugcPost%3A7440441841042415616%29',
   },
   {
     type: 'text',
