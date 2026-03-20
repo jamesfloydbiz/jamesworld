@@ -104,7 +104,7 @@ const references: Reference[] = [
     relation: 'Gathering extraordinary people & angel investing · x-Google, Meta',
     quote: '"james - you were the mvp"',
     rotation: '-1.6deg',
-    link: 'https://www.linkedin.com/in/jamesfloyd',
+    link: 'https://www.linkedin.com/feed/update/urn:li:activity:7440506144126640128/?dashCommentUrn=urn%3Ali%3Afsd_comment%3A%287440769299981451264%2Curn%3Ali%3AugcPost%3A7440441841042415616%29',
   },
   {
     type: 'text',
