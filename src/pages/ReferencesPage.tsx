@@ -29,7 +29,7 @@ const references: Reference[] = [
     relation: 'Family Office Advisor · Investor Relations at Jets & Capital',
     quote: '"James Floyd is your guy. The best by a wide margin at driving the intersection between function, execution, and relationship."',
     rotation: '1.4deg',
-    link: 'https://www.linkedin.com/in/jamesfloyd',
+    link: 'https://www.linkedin.com/feed/update/urn:li:activity:7440506144126640128/?dashCommentUrn=urn%3Ali%3Afsd_comment%3A%287440769299981451264%2Curn%3Ali%3AugcPost%3A7440441841042415616%29',
     context: 'Commented organically on a job posting',
   },
   {
