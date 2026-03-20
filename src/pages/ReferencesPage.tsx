@@ -89,7 +89,7 @@ const references: Reference[] = [
     relation: 'Ex Pro Tennis Player · Ex IB @ Citi',
     quote: '"James killed it!! If anyone wants to learn how to stand out in a volunteer crowd, reach out to James Floyd."',
     rotation: '-1.3deg',
-    link: 'https://www.linkedin.com/in/jamesfloyd',
+    link: 'https://www.linkedin.com/feed/update/urn:li:activity:7440506144126640128/?dashCommentUrn=urn%3Ali%3Afsd_comment%3A%287440769299981451264%2Curn%3Ali%3AugcPost%3A7440441841042415616%29',
   },
   {
     type: 'text',
