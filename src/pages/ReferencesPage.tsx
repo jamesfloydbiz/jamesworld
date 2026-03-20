@@ -11,6 +11,8 @@ interface Reference {
   relation: string;
   quote: string;
   rotation: string;
+  link?: string;
+  context?: string;
 }
 
 const references: Reference[] = [
