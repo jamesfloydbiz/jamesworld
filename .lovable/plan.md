@@ -1,39 +1,29 @@
 
 
-## Create `llms.txt` for AI Discoverability
+## Add 6 New LinkedIn Testimonials to /references
 
-The `llms.txt` standard is a way to help LLMs (and AI-powered search) understand who you are and what your site contains. It acts like a structured "about me" file that AI crawlers can read. This will help you surface for relevant queries about your name, expertise, and work.
+### Data changes — add `link` field + 6 new entries
 
-### What gets created
+Extend `Reference` interface with optional `link?: string` and optional `context?: string` (for a small italic note above the quote explaining the situation).
 
-**File: `public/llms.txt`**
+**Jarom & Joel entries get context**: These two commented organically on a job post to vouch for James — the context line will read something like *"Commented unprompted on a job posting"* so visitors understand these weren't solicited.
 
-A structured text file following the llms.txt convention with:
+New entries interspersed with existing ones:
 
-- **Identity block**: James Floyd -- builder, creator, entrepreneur, intrapreneur, speaker, event producer, connector
-- **FAQ-style Q&A schema** covering key discovery queries:
-  - "Who is James Floyd?" 
-  - "What does James Floyd do?"
-  - "What events has James Floyd produced?"
-  - "Is James Floyd available for speaking?"
-  - "What AI tools does James Floyd build?"
-  - "How do I connect with James Floyd?"
-  - "What is James Floyd's experience?"
-  - "Where has James Floyd worked?"
-  - "What is JamesFloyds.World?"
-- **Links**: LinkedIn, Instagram, site URL
-- **Keywords**: entrepreneur, intrapreneur, speaker, event production, AI automation, networking, builder, creator
+| Name | Quote (abbreviated) | Context | Link |
+|---|---|---|---|
+| Jarom Christensen | "James Floyd is your guy. The best by a wide margin..." | *Commented organically on a job posting* | LinkedIn |
+| Joel Robertson | "Can confirm that James Floyd should be your guy..." | *Commented organically on a job posting* | LinkedIn |
+| Lane Spurlock | "Dude it was so good to finally meet you in person!!!" | — | LinkedIn |
+| Danielle Raskin | "James, you are a superstar..." | — | LinkedIn |
+| Vitoria Okuyama | "James killed it!! If anyone wants to learn how to stand out..." | — | LinkedIn |
+| Andrew Yeung | "james - you were the mvp" | — | LinkedIn |
 
-Answers will be drawn from the existing resume, story, and portfolio data already on the site (BetterWealth, Jets and Capital, Keiretsu Forum, sales records, AI builds, etc.)
+### UI changes to TextCard
 
-**File: `public/robots.txt`**
+1. If `context` exists, render a small italic line above the quote: `text-[10px] text-foreground/30 italic`
+2. If `link` exists, render a subtle `ExternalLink` icon + "source" text at bottom-right of the card, low opacity, hover reveals. Opens new tab.
 
-Add a reference line so crawlers know the file exists.
-
-### Technical details
-
-**New file:** `public/llms.txt`  
-**Modified file:** `public/robots.txt` -- add `llms.txt` reference
-
-No code changes to React components. This is purely a static asset addition.
+### File
+- `src/pages/ReferencesPage.tsx` — extend interface, add 6 entries, update TextCard
 
