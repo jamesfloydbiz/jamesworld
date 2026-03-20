@@ -16,7 +16,6 @@ interface Reference {
 }
 
 const references: Reference[] = [
-  // Row 1
   {
     type: 'text',
     name: 'Austin Moss',
@@ -26,12 +25,13 @@ const references: Reference[] = [
   },
   {
     type: 'text',
-    name: 'Cooper Swanson',
-    relation: '',
-    quote: '"James Floyd you know ball bro."',
+    name: 'Jarom Christensen',
+    relation: 'Family Office Advisor · Investor Relations at Jets & Capital',
+    quote: '"James Floyd is your guy. The best by a wide margin at driving the intersection between function, execution, and relationship."',
     rotation: '1.4deg',
+    link: 'https://www.linkedin.com/in/jamesfloyd',
+    context: 'Commented organically on a job posting',
   },
-  // Row 2
   {
     type: 'text',
     name: 'Caleb Guilliams',
@@ -41,12 +41,13 @@ const references: Reference[] = [
   },
   {
     type: 'text',
-    name: 'Jordan Hutchinson',
-    relation: '',
-    quote: '"Love what you\'re building dude."',
+    name: 'Joel Robertson',
+    relation: 'Content Manager at BetterWealth',
+    quote: '"Can confirm that James Floyd should be your guy. He\'s made for this kind of job."',
     rotation: '-0.9deg',
+    link: 'https://www.linkedin.com/in/jamesfloyd',
+    context: 'Commented organically on a job posting',
   },
-  // Row 3
   {
     type: 'text',
     name: 'Dom',
@@ -56,12 +57,12 @@ const references: Reference[] = [
   },
   {
     type: 'text',
-    name: 'Trinity Arl',
-    relation: '',
-    quote: '"James Floyd for president."',
+    name: 'Lane Spurlock',
+    relation: 'Founder · PlayHouse · anata · Deal Partner',
+    quote: '"Dude it was so good to finally meet you in person!!!! Your amazing dude and killing it."',
     rotation: '1.8deg',
+    link: 'https://www.linkedin.com/in/jamesfloyd',
   },
-  // Row 4
   {
     type: 'text',
     name: 'Lauren Hansen',
@@ -71,12 +72,12 @@ const references: Reference[] = [
   },
   {
     type: 'text',
-    name: 'Caleb Guilliams',
-    relation: 'BetterWealth · Dec 2025',
-    quote: '"The growth that you\'ve had over the last year has been insane."',
+    name: 'Danielle Raskin',
+    relation: 'Curating experiences, community & connection',
+    quote: '"James, you are a superstar. Your hard work and willingness to go above and beyond will take you a LONG WAY. So great meeting you & see you in NY!"',
     rotation: '-0.6deg',
+    link: 'https://www.linkedin.com/in/jamesfloyd',
   },
-  // Row 5
   {
     type: 'text',
     name: 'Christian Davis',
@@ -86,12 +87,12 @@ const references: Reference[] = [
   },
   {
     type: 'text',
-    name: 'Dom',
-    relation: 'President of BetterWealth · Ex-NFL Player',
-    quote: '"You lowkey inspire me with how hard you work, how much you work."',
+    name: 'Vitoria Okuyama',
+    relation: 'Ex Pro Tennis Player · Ex IB @ Citi',
+    quote: '"James killed it!! If anyone wants to learn how to stand out in a volunteer crowd, reach out to James Floyd."',
     rotation: '-1.3deg',
+    link: 'https://www.linkedin.com/in/jamesfloyd',
   },
-  // Row 6
   {
     type: 'text',
     name: 'Tim Nart',
@@ -101,18 +102,60 @@ const references: Reference[] = [
   },
   {
     type: 'text',
-    name: 'Vanessa Dayana',
-    relation: '',
-    quote: '"Quedó cheverazo! Me encanta te admiro James, me inspiras a ser mejor persona."',
+    name: 'Andrew Yeung',
+    relation: 'Gathering extraordinary people & angel investing · x-Google, Meta',
+    quote: '"james - you were the mvp"',
     rotation: '-1.6deg',
+    link: 'https://www.linkedin.com/in/jamesfloyd',
   },
-  // Row 7
   {
     type: 'text',
     name: 'Dom',
     relation: 'President of BetterWealth · Ex-NFL Player',
     quote: '"You just genuinely have that grit, and you\'re going to be special, you know that AND you\'re very coachable."',
     rotation: '1.2deg',
+  },
+  {
+    type: 'text',
+    name: 'Caleb Guilliams',
+    relation: 'BetterWealth · Dec 2025',
+    quote: '"The growth that you\'ve had over the last year has been insane."',
+    rotation: '-0.5deg',
+  },
+  {
+    type: 'text',
+    name: 'Cooper Swanson',
+    relation: '',
+    quote: '"James Floyd you know ball bro."',
+    rotation: '1.4deg',
+  },
+  {
+    type: 'text',
+    name: 'Jordan Hutchinson',
+    relation: '',
+    quote: '"Love what you\'re building dude."',
+    rotation: '-0.9deg',
+  },
+  {
+    type: 'text',
+    name: 'Trinity Arl',
+    relation: '',
+    quote: '"James Floyd for president."',
+    rotation: '1.8deg',
+  },
+  {
+    type: 'text',
+    name: 'Vanessa Dayana',
+    relation: '',
+    quote: '"Quedó cheverazo! Me encanta te admiro James, me inspiras a ser mejor persona."',
+    rotation: '-1.6deg',
+  },
+  {
+    type: 'text',
+    name: 'Dom',
+    relation: 'President of BetterWealth · Ex-NFL Player',
+    quote: '"You lowkey inspire me with how hard you work, how much you work."',
+    rotation: '-1.3deg',
   },
   {
     type: 'text',
