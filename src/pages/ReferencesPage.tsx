@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { WalkwayHeader } from '@/components/walkway/WalkwayHeader';
 import { useKeyboardScroll } from '@/hooks/useKeyboardScroll';
-import { Play } from 'lucide-react';
+import { Play, ExternalLink } from 'lucide-react';
 
 type RefType = 'text' | 'image' | 'video';
 
