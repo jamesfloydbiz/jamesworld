@@ -178,12 +178,28 @@ function TextCard({ item, index }: { item: Reference; index: number }) {
       }}
     >
       <div className="border border-foreground/10 bg-background p-6 md:p-8 shadow-[0_2px_20px_-8px_hsl(var(--foreground)/0.08)]">
+        {item.context && (
+          <p className="text-[10px] text-foreground/30 italic mb-2 tracking-wide">{item.context}</p>
+        )}
         <p className="text-foreground/80 italic text-base md:text-lg leading-relaxed font-light">
           {item.quote}
         </p>
-        <div className="mt-5 pt-3 border-t border-foreground/5">
-          <p className="text-xs tracking-[0.15em] uppercase text-foreground/50">{item.name}</p>
-          <p className="text-[10px] tracking-[0.1em] text-foreground/30 mt-0.5">{item.relation}</p>
+        <div className="mt-5 pt-3 border-t border-foreground/5 flex items-end justify-between">
+          <div>
+            <p className="text-xs tracking-[0.15em] uppercase text-foreground/50">{item.name}</p>
+            <p className="text-[10px] tracking-[0.1em] text-foreground/30 mt-0.5">{item.relation}</p>
+          </div>
+          {item.link && (
+            <a
+              href={item.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1 text-[10px] text-foreground/25 hover:text-foreground/60 transition-colors"
+            >
+              <ExternalLink size={10} />
+              <span>source</span>
+            </a>
+          )}
         </div>
       </div>
     </motion.div>
