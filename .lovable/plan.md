@@ -1,29 +1,34 @@
 
 
-## Add 6 New LinkedIn Testimonials to /references
+## Add Context to All Reference Cards + Rename Dom
 
-### Data changes — add `link` field + 6 new entries
+### Changes to `src/pages/ReferencesPage.tsx`
 
-Extend `Reference` interface with optional `link?: string` and optional `context?: string` (for a small italic note above the quote explaining the situation).
+**1. Rename all "Dom" entries to "Dom Rrufran"** (3 occurrences: lines 51, 111, 153)
 
-**Jarom & Joel entries get context**: These two commented organically on a job post to vouch for James — the context line will read something like *"Commented unprompted on a job posting"* so visitors understand these weren't solicited.
+**2. Add/update `context` field on every card** with the relationship description + ", Friend" appended:
 
-New entries interspersed with existing ones:
+| Name | Context |
+|---|---|
+| Austin Moss | Met through Jets and Capital, Friend |
+| Jarom Christensen | Worked together on Jets and Capital + a few deals, Friend |
+| Caleb Guilliams (×2) | Worked for him at Betterwealth, Friend |
+| Joel Robertson | Worked with him at Betterwealth, Friend |
+| Dom Rrufran (×3) | Worked for him at Betterwealth, Friend |
+| Lane Spurlock | Friend I met off the internet |
+| Lauren Hansen (×2) | Worked with her at Jets and Capital, Friend |
+| Danielle Raskin | Worked for her at SXSW Secret Garden Party, Friend |
+| Christian Davis | Worked with him at Jets and Capital, Friend |
+| Vitoria Okuyama | Worked for her at SXSW Secret Garden Party, Friend |
+| Andrew Yeung | Worked for him at SXSW Secret Garden Party, Friend |
+| Tim Nart | Worked with him at Jets and Capital, Friend |
+| Cooper Swanson | Friend |
+| Jordan Hutchinson | Worked for him at Jets and Capital, Friend |
+| Trinity Arl | Friend |
+| Vanessa Dayana | Friend from Ecuador |
 
-| Name | Quote (abbreviated) | Context | Link |
-|---|---|---|---|
-| Jarom Christensen | "James Floyd is your guy. The best by a wide margin..." | *Commented organically on a job posting* | LinkedIn |
-| Joel Robertson | "Can confirm that James Floyd should be your guy..." | *Commented organically on a job posting* | LinkedIn |
-| Lane Spurlock | "Dude it was so good to finally meet you in person!!!" | — | LinkedIn |
-| Danielle Raskin | "James, you are a superstar..." | — | LinkedIn |
-| Vitoria Okuyama | "James killed it!! If anyone wants to learn how to stand out..." | — | LinkedIn |
-| Andrew Yeung | "james - you were the mvp" | — | LinkedIn |
-
-### UI changes to TextCard
-
-1. If `context` exists, render a small italic line above the quote: `text-[10px] text-foreground/30 italic`
-2. If `link` exists, render a subtle `ExternalLink` icon + "source" text at bottom-right of the card, low opacity, hover reveals. Opens new tab.
+**Note**: Jarom and Joel currently have `context: 'Commented organically on a job posting'` — this will be replaced with the new context above per the user's instructions.
 
 ### File
-- `src/pages/ReferencesPage.tsx` — extend interface, add 6 entries, update TextCard
+- `src/pages/ReferencesPage.tsx` — update all entries in the `references` array
 
