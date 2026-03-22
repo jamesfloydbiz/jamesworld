@@ -22,6 +22,7 @@ const references: Reference[] = [
     relation: 'Austinmoss.com · 2026',
     quote: '"I\'ve got to know James Floyd over the past year and can vouch for his talent, creativity, work ethic, and connecting skills plus many more. I hope one of my partners in NYC finds this and gets a chance to work with you."',
     rotation: '-1.2deg',
+    context: 'Met through Jets and Capital, Friend',
   },
   {
     type: 'text',
@@ -29,7 +30,7 @@ const references: Reference[] = [
     relation: 'Family Office Advisor · Investor Relations at Jets & Capital',
     quote: '"James Floyd is your guy. The best by a wide margin at driving the intersection between function, execution, and relationship."',
     rotation: '1.4deg',
-    context: 'Commented organically on a job posting',
+    context: 'Worked together on Jets and Capital + a few deals, Friend',
   },
   {
     type: 'text',
@@ -37,6 +38,7 @@ const references: Reference[] = [
     relation: 'BetterWealth · Dec 2025',
     quote: '"James you have been a major blessing to me and to the team and I know I\'m not the only one who shares that."',
     rotation: '2deg',
+    context: 'Worked for him at Betterwealth, Friend',
   },
   {
     type: 'text',
@@ -44,14 +46,15 @@ const references: Reference[] = [
     relation: 'Content Manager at BetterWealth',
     quote: '"Can confirm that James Floyd should be your guy. He\'s made for this kind of job."',
     rotation: '-0.9deg',
-    context: 'Commented organically on a job posting',
+    context: 'Worked with him at Betterwealth, Friend',
   },
   {
     type: 'text',
-    name: 'Dom',
+    name: 'Dom Rrufran',
     relation: 'President of BetterWealth · Ex-NFL Player',
     quote: '"I was like — this kid is different. This kid is special."',
     rotation: '-1.5deg',
+    context: 'Worked for him at Betterwealth, Friend',
   },
   {
     type: 'text',
@@ -60,6 +63,7 @@ const references: Reference[] = [
     quote: '"Dude it was so good to finally meet you in person!!!! Your amazing dude and killing it."',
     rotation: '1.8deg',
     link: 'https://www.linkedin.com/in/jamesfloyd',
+    context: 'Friend I met off the internet',
   },
   {
     type: 'text',
@@ -67,6 +71,7 @@ const references: Reference[] = [
     relation: '',
     quote: '"One of the coolest dudes in existence, cool to watch and learn from you and your pursuit of growth."',
     rotation: '0.7deg',
+    context: 'Worked with her at Jets and Capital, Friend',
   },
   {
     type: 'text',
@@ -75,6 +80,7 @@ const references: Reference[] = [
     quote: '"James, you are a superstar. Your hard work and willingness to go above and beyond will take you a LONG WAY. So great meeting you & see you in NY!"',
     rotation: '-0.6deg',
     link: 'https://www.linkedin.com/feed/update/urn:li:activity:7440506144126640128/?dashCommentUrn=urn%3Ali%3Afsd_comment%3A%287440769299981451264%2Curn%3Ali%3AugcPost%3A7440441841042415616%29',
+    context: 'Worked for her at SXSW Secret Garden Party, Friend',
   },
   {
     type: 'text',
@@ -82,6 +88,7 @@ const references: Reference[] = [
     relation: '',
     quote: '"Honored to have a seat at your table sir!"',
     rotation: '1.1deg',
+    context: 'Worked with him at Jets and Capital, Friend',
   },
   {
     type: 'text',
@@ -90,6 +97,7 @@ const references: Reference[] = [
     quote: '"James killed it!! If anyone wants to learn how to stand out in a volunteer crowd, reach out to James Floyd."',
     rotation: '-1.3deg',
     link: 'https://www.linkedin.com/feed/update/urn:li:activity:7440506144126640128/?dashCommentUrn=urn%3Ali%3Afsd_comment%3A%287440769299981451264%2Curn%3Ali%3AugcPost%3A7440441841042415616%29',
+    context: 'Worked for her at SXSW Secret Garden Party, Friend',
   },
   {
     type: 'text',
@@ -97,6 +105,7 @@ const references: Reference[] = [
     relation: '',
     quote: '"You\'re a Top bloke @jamesfloyd._ To many more."',
     rotation: '0.8deg',
+    context: 'Worked with him at Jets and Capital, Friend',
   },
   {
     type: 'text',
@@ -105,13 +114,15 @@ const references: Reference[] = [
     quote: '"james - you were the mvp"',
     rotation: '-1.6deg',
     link: 'https://www.linkedin.com/feed/update/urn:li:activity:7440506144126640128/?dashCommentUrn=urn%3Ali%3Afsd_comment%3A%287440769299981451264%2Curn%3Ali%3AugcPost%3A7440441841042415616%29',
+    context: 'Worked for him at SXSW Secret Garden Party, Friend',
   },
   {
     type: 'text',
-    name: 'Dom',
+    name: 'Dom Rrufran',
     relation: 'President of BetterWealth · Ex-NFL Player',
     quote: '"You just genuinely have that grit, and you\'re going to be special, you know that AND you\'re very coachable."',
     rotation: '1.2deg',
+    context: 'Worked for him at Betterwealth, Friend',
   },
   {
     type: 'text',
@@ -119,6 +130,7 @@ const references: Reference[] = [
     relation: 'BetterWealth · Dec 2025',
     quote: '"The growth that you\'ve had over the last year has been insane."',
     rotation: '-0.5deg',
+    context: 'Worked for him at Betterwealth, Friend',
   },
   {
     type: 'text',
@@ -126,6 +138,7 @@ const references: Reference[] = [
     relation: '',
     quote: '"James Floyd you know ball bro."',
     rotation: '1.4deg',
+    context: 'Friend',
   },
   {
     type: 'text',
@@ -133,6 +146,7 @@ const references: Reference[] = [
     relation: '',
     quote: '"Love what you\'re building dude."',
     rotation: '-0.9deg',
+    context: 'Worked for him at Jets and Capital, Friend',
   },
   {
     type: 'text',
@@ -140,6 +154,7 @@ const references: Reference[] = [
     relation: '',
     quote: '"James Floyd for president."',
     rotation: '1.8deg',
+    context: 'Friend',
   },
   {
     type: 'text',
@@ -147,13 +162,15 @@ const references: Reference[] = [
     relation: '',
     quote: '"Quedó cheverazo! Me encanta te admiro James, me inspiras a ser mejor persona."',
     rotation: '-1.6deg',
+    context: 'Friend from Ecuador',
   },
   {
     type: 'text',
-    name: 'Dom',
+    name: 'Dom Rrufran',
     relation: 'President of BetterWealth · Ex-NFL Player',
     quote: '"You lowkey inspire me with how hard you work, how much you work."',
     rotation: '-1.3deg',
+    context: 'Worked for him at Betterwealth, Friend',
   },
   {
     type: 'text',
@@ -161,6 +178,7 @@ const references: Reference[] = [
     relation: '',
     quote: '"James supports it → it\'s worth supporting!!"',
     rotation: '-0.5deg',
+    context: 'Worked with her at Jets and Capital, Friend',
   },
 ];
 
