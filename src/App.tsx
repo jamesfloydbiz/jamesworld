@@ -39,6 +39,7 @@ const App = () => (
           <Route path="/pictures" element={<PicturesPage />} />
           <Route path="/builds" element={<BuildsPage />} />
           <Route path="/ops" element={<Navigate to="/builds" replace />} />
+          <Route path="/poetry" element={<Navigate to="/poems" replace />} />
           <Route path="/resume" element={<ResumePage />} />
           <Route path="/references" element={<ReferencesPage />} />
           <Route path="*" element={<NotFound />} />
