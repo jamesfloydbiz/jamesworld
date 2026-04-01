@@ -307,10 +307,10 @@ export default function ReferencesPage() {
             Words from people who've been there.
           </p>
           <button
-            data-tally-open="wol1Mg"
+            data-tally-open="b5rlk0"
             data-tally-layout="modal"
-            data-tally-width="500"
-            data-tally-auto-close="3000"
+            data-tally-overlay="1"
+            data-tally-auto-close="0"
             className="mt-6 px-5 py-2 text-[11px] tracking-[0.2em] uppercase border border-foreground/15 text-foreground/50 hover:text-foreground/80 hover:border-foreground/30 transition-all duration-300"
           >
             Vouch for James
