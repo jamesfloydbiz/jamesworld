@@ -306,6 +306,15 @@ export default function ReferencesPage() {
           <p className="text-sm text-foreground/40 tracking-wide">
             Words from people who've been there.
           </p>
+          <button
+            data-tally-open="wol1Mg"
+            data-tally-layout="modal"
+            data-tally-width="500"
+            data-tally-auto-close="3000"
+            className="mt-6 px-5 py-2 text-[11px] tracking-[0.2em] uppercase border border-foreground/15 text-foreground/50 hover:text-foreground/80 hover:border-foreground/30 transition-all duration-300"
+          >
+            Vouch for James
+          </button>
         </motion.div>
 
         <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-4">
