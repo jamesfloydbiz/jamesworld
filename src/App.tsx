@@ -11,6 +11,7 @@ import ContentPage from "./pages/ContentPage";
 import ProjectsPage from "./pages/ProjectsPage";
 import NetworkPage from "./pages/NetworkPage";
 import BlueprintsPage from "./pages/BlueprintsPage";
+import MentalModelsPage from "./pages/MentalModelsPage";
 import PoemsPage from "./pages/PoemsPage";
 import PicturesPage from "./pages/PicturesPage";
 import BuildsPage from "./pages/BuildsPage";
@@ -35,6 +36,7 @@ const App = () => (
           <Route path="/projects" element={<ProjectsPage />} />
           <Route path="/network" element={<NetworkPage />} />
           <Route path="/blueprints" element={<BlueprintsPage />} />
+          <Route path="/blueprints/mental-models" element={<MentalModelsPage />} />
           <Route path="/poems" element={<PoemsPage />} />
           <Route path="/pictures" element={<PicturesPage />} />
           <Route path="/builds" element={<BuildsPage />} />

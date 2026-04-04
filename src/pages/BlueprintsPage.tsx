@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { WalkwayHeader } from '@/components/walkway/WalkwayHeader';
 import { ExternalLink } from 'lucide-react';
@@ -20,7 +21,7 @@ const shelfItems = [
     id: 'models',
     title: 'Mental Models',
     description: 'Naval said collect them, and collect them I did.',
-    link: 'https://x.com/jamesfloydbiz',
+    internalRoute: '/blueprints/mental-models',
   },
   {
     id: 'health',
@@ -197,10 +198,15 @@ const getBubblePosition = (index: number, total: number) => {
 
 const BlueprintsPage = () => {
   useKeyboardScroll();
+  const navigate = useNavigate();
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
 
-  const handleItemClick = (id: string, link?: string) => {
+  const handleItemClick = (id: string, link?: string, internalRoute?: string) => {
+    if (internalRoute) {
+      navigate(internalRoute);
+      return;
+    }
     if (link) {
       window.open(link, '_blank', 'noopener,noreferrer');
       return;
@@ -230,7 +236,7 @@ const BlueprintsPage = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: delayBase + i * 0.15, duration: 0.5 }}
-        onClick={() => handleItemClick(item.id, item.link)}
+        onClick={() => handleItemClick(item.id, item.link, (item as any).internalRoute)}
         onMouseEnter={() => setHoveredItem(item.id)}
         onMouseLeave={() => setHoveredItem(null)}
       >
