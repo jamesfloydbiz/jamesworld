@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { WalkwayHeader } from '@/components/walkway/WalkwayHeader';
 import { ExternalLink } from 'lucide-react';
@@ -20,7 +21,7 @@ const shelfItems = [
     id: 'models',
     title: 'Mental Models',
     description: 'Naval said collect them, and collect them I did.',
-    link: 'https://x.com/jamesfloydbiz',
+    internalRoute: '/blueprints/mental-models',
   },
   {
     id: 'health',
