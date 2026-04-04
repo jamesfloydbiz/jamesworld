@@ -5,14 +5,12 @@ import { useKeyboardScroll } from '@/hooks/useKeyboardScroll';
 import { REFERENCE_LIST } from '@/components/mental-models/data';
 import DecideMode from '@/components/mental-models/DecideMode';
 import SpotItMode from '@/components/mental-models/SpotItMode';
-import TeachItMode from '@/components/mental-models/TeachItMode';
 
-type Mode = 'decide' | 'spot' | 'teach';
+type Mode = 'decide' | 'spot';
 
 const TABS: { key: Mode; label: string }[] = [
   { key: 'decide', label: 'Decide' },
   { key: 'spot', label: 'Spot It' },
-  { key: 'teach', label: 'Teach It' },
 ];
 
 const MentalModelsPage = () => {
@@ -63,7 +61,6 @@ const MentalModelsPage = () => {
           <div className="min-h-[400px]">
             {mode === 'decide' && <DecideMode />}
             {mode === 'spot' && <SpotItMode />}
-            {mode === 'teach' && <TeachItMode />}
           </div>
 
           {/* Reference list */}
