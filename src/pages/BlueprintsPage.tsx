@@ -236,7 +236,7 @@ const BlueprintsPage = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: delayBase + i * 0.15, duration: 0.5 }}
-        onClick={() => handleItemClick(item.id, item.link)}
+        onClick={() => handleItemClick(item.id, item.link, (item as any).internalRoute)}
         onMouseEnter={() => setHoveredItem(item.id)}
         onMouseLeave={() => setHoveredItem(null)}
       >
