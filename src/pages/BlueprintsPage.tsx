@@ -198,10 +198,15 @@ const getBubblePosition = (index: number, total: number) => {
 
 const BlueprintsPage = () => {
   useKeyboardScroll();
+  const navigate = useNavigate();
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
 
-  const handleItemClick = (id: string, link?: string) => {
+  const handleItemClick = (id: string, link?: string, internalRoute?: string) => {
+    if (internalRoute) {
+      navigate(internalRoute);
+      return;
+    }
     if (link) {
       window.open(link, '_blank', 'noopener,noreferrer');
       return;
