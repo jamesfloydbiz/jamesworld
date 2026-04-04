@@ -37,7 +37,7 @@ const MentalModelsPage = () => {
 
           {/* Subheader */}
           <p className="text-foreground/25 text-[11px] mb-10">
-            11 models. 3 modes. The goal is not to know them — it's to use them automatically.
+            11 models. 2 modes. The goal is not to know them — it's to use them automatically.
           </p>
 
           {/* Tabs */}
