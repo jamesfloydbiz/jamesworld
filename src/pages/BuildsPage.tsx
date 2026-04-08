@@ -153,6 +153,8 @@ const BuildsPage = () => {
                   <span className={`text-xs px-2 py-1 ${
                     automation.status === 'Booming' 
                       ? 'bg-primary text-primary-foreground' 
+                      : automation.status === 'Archive'
+                      ? 'bg-secondary/50 text-foreground/50'
                       : 'bg-secondary text-foreground'
                   }`}>
                     {automation.status}
