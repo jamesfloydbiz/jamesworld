@@ -9,6 +9,14 @@ const IMAGE_BASE_URL = '';
 
 const automations = [
   {
+    title: 'JamesFloyds.World V2',
+    description: 'The original interactive 3D museum experience — a navigable world built in WebGL with character movement and spatial sections.',
+    status: 'Archive',
+    cta: 'Explore',
+    link: '/museum',
+    external: false,
+  },
+  {
     title: 'JamesFloyds.World V1',
     description: 'A 3D avatar-like world to explore James life, complete with an entrance sequence like no other.',
     status: 'Active',
