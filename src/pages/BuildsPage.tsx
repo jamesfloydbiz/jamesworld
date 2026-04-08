@@ -3,6 +3,8 @@ import { WalkwayHeader } from '@/components/walkway/WalkwayHeader';
 import { ExternalLink } from 'lucide-react';
 import { useKeyboardScroll } from '@/hooks/useKeyboardScroll';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 
 // For jsDelivr CDN, replace with: https://cdn.jsdelivr.net/gh/[username]/[repo]@main
 const IMAGE_BASE_URL = '';
@@ -180,10 +182,8 @@ const BuildsPage = () => {
                   </a>
                 )}
                 
-                {'cta' in automation && !('external' in automation && automation.external) && (
-                  <span className="text-sm text-muted-foreground">
-                    {automation.cta}
-                  </span>
+                {'link' in automation && automation.link && !automation.external && (
+                  <InternalLink to={automation.link} label={automation.cta || 'View'} />
                 )}
               </motion.div>
             ))}
