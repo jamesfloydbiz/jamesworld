@@ -119,6 +119,18 @@ const ImageGallery = ({ images, title }: { images: string[]; title: string }) =>
   );
 };
 
+const InternalLink = ({ to, label }: { to: string; label: string }) => {
+  const navigate = useNavigate();
+  return (
+    <button
+      onClick={() => navigate(to)}
+      className="inline-flex items-center gap-2 text-sm hover:underline underline-offset-4"
+    >
+      {label} →
+    </button>
+  );
+};
+
 const BuildsPage = () => {
   useKeyboardScroll();
   return (
