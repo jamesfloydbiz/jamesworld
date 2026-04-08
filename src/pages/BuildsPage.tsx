@@ -3,11 +3,20 @@ import { WalkwayHeader } from '@/components/walkway/WalkwayHeader';
 import { ExternalLink } from 'lucide-react';
 import { useKeyboardScroll } from '@/hooks/useKeyboardScroll';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 // For jsDelivr CDN, replace with: https://cdn.jsdelivr.net/gh/[username]/[repo]@main
 const IMAGE_BASE_URL = '';
 
 const automations = [
+  {
+    title: 'JamesFloyds.World V2',
+    description: 'The original interactive 3D museum experience — a navigable world built in WebGL with character movement and spatial sections.',
+    status: 'Archive',
+    cta: 'Explore',
+    link: '/museum',
+    external: false,
+  },
   {
     title: 'JamesFloyds.World V1',
     description: 'A 3D avatar-like world to explore James life, complete with an entrance sequence like no other.',
@@ -110,6 +119,18 @@ const ImageGallery = ({ images, title }: { images: string[]; title: string }) =>
   );
 };
 
+const InternalLink = ({ to, label }: { to: string; label: string }) => {
+  const navigate = useNavigate();
+  return (
+    <button
+      onClick={() => navigate(to)}
+      className="inline-flex items-center gap-2 text-sm hover:underline underline-offset-4"
+    >
+      {label} →
+    </button>
+  );
+};
+
 const BuildsPage = () => {
   useKeyboardScroll();
   return (
@@ -145,6 +166,8 @@ const BuildsPage = () => {
                   <span className={`text-xs px-2 py-1 ${
                     automation.status === 'Booming' 
                       ? 'bg-primary text-primary-foreground' 
+                      : automation.status === 'Archive'
+                      ? 'bg-secondary/50 text-foreground/50'
                       : 'bg-secondary text-foreground'
                   }`}>
                     {automation.status}
@@ -170,10 +193,8 @@ const BuildsPage = () => {
                   </a>
                 )}
                 
-                {'cta' in automation && !('external' in automation && automation.external) && (
-                  <span className="text-sm text-muted-foreground">
-                    {automation.cta}
-                  </span>
+                {'link' in automation && automation.link && !automation.external && (
+                  <InternalLink to={automation.link} label={automation.cta || 'View'} />
                 )}
               </motion.div>
             ))}

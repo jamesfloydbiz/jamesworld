@@ -17,6 +17,7 @@ import PicturesPage from "./pages/PicturesPage";
 import BuildsPage from "./pages/BuildsPage";
 import ResumePage from "./pages/ResumePage";
 import ReferencesPage from "./pages/ReferencesPage";
+import MapPage from "./pages/MapPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -29,6 +30,7 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<LandingPage />} />
+          <Route path="/map" element={<MapPage />} />
           <Route path="/museum" element={<Index />} />
           <Route path="/story" element={<StoryPage />} />
           <Route path="/portfolio" element={<PortfolioPage />} />
