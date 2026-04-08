@@ -4,7 +4,6 @@ import { ExternalLink } from 'lucide-react';
 import { useKeyboardScroll } from '@/hooks/useKeyboardScroll';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
 
 // For jsDelivr CDN, replace with: https://cdn.jsdelivr.net/gh/[username]/[repo]@main
 const IMAGE_BASE_URL = '';
