@@ -30,6 +30,7 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<LandingPage />} />
+          <Route path="/map" element={<MapPage />} />
           <Route path="/museum" element={<Index />} />
           <Route path="/story" element={<StoryPage />} />
           <Route path="/portfolio" element={<PortfolioPage />} />
