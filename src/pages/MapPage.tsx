@@ -196,7 +196,6 @@ const ContourLines = () => (
     <path d="M875 365 Q895 345 925 360 Q945 375 960 358" strokeWidth={0.4} opacity={0.14} />
     <ellipse cx={750} cy={540} rx={55} ry={28} transform="rotate(12 750 540)" strokeWidth={0.5} opacity={0.15} />
     <ellipse cx={750} cy={540} rx={30} ry={14} transform="rotate(12 750 540)" strokeWidth={0.4} opacity={0.12} />
-    {/* Wandering cross-map contour lines */}
     <path d="M50 350 Q150 320 250 340 Q350 360 450 330 Q550 300 650 320 Q750 340 900 310" strokeWidth={0.6} opacity={0.18} />
     <path d="M100 420 Q200 400 320 410 Q440 425 560 400 Q680 380 800 410 Q880 425 960 405" strokeWidth={0.5} opacity={0.15} />
     <path d="M80 150 Q180 130 300 160 Q400 180 500 150 Q600 120 750 160 Q850 180 950 150" strokeWidth={0.6} opacity={0.2} />
@@ -340,11 +339,25 @@ const TrailPaths = () => (
 /* ─── Crease lines — fold marks ─── */
 const CreaseLines = () => (
   <g fill="none" stroke="#9e8e6e" strokeWidth={0.6}>
-    <path d="M500 15 Q498 200 502 400 Q500 550 500 640" opacity={0.08} />
-    <path d="M15 325 Q200 322 500 328 Q800 324 985 325" opacity={0.06} />
-    <path d="M200 12 Q198 180 205 350 Q200 500 198 640" opacity={0.04} />
+    <path d="M500 15 Q498 200 502 400 Q500 550 500 640" opacity={0.12} />
+    <path d="M15 325 Q200 322 500 328 Q800 324 985 325" opacity={0.1} />
+    <path d="M200 12 Q198 180 205 350 Q200 500 198 640" opacity={0.06} />
+    {/* Extra crease - diagonal fold */}
+    <path d="M50 50 Q300 200 500 325 Q700 450 950 600" opacity={0.04} strokeWidth={0.4} />
   </g>
 );
+
+/* ─── Character cursor SVG as data URI ─── */
+const CHARACTER_CURSOR = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='26' viewBox='0 0 14 26'%3E%3Ccircle cx='7' cy='3.5' r='3.5' fill='%232a2218'/%3E%3Cellipse cx='7' cy='16' rx='3.5' ry='8' fill='%232a2218'/%3E%3C/svg%3E") 7 26, crosshair`;
+
+/* ─── Footstep type ─── */
+interface Footstep {
+  id: number;
+  x: number;
+  y: number;
+  rotation: number;
+  opacity: number;
+}
 
 /* ─── Main Component ─── */
 const MapPage = () => {
@@ -352,6 +365,10 @@ const MapPage = () => {
   const compassHeading = useCompassHeading();
   const [hoveredLandmark, setHoveredLandmark] = useState<string | null>(null);
   const [showContent, setShowContent] = useState(false);
+  const [footsteps, setFootsteps] = useState<Footstep[]>([]);
+  const footstepIdRef = useRef(0);
+  const lastFootstepPos = useRef({ x: 0, y: 0 });
+  const [isOnMap, setIsOnMap] = useState(false);
 
   // 3D tilt
   const containerRef = useRef<HTMLDivElement>(null);
@@ -400,14 +417,40 @@ const MapPage = () => {
     }
   }, [fadeBackground]);
 
+  // Fade out footsteps over time
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setFootsteps(prev => {
+        const updated = prev
+          .map(f => ({ ...f, opacity: f.opacity - 0.015 }))
+          .filter(f => f.opacity > 0);
+        return updated;
+      });
+    }, 50);
+    return () => clearInterval(interval);
+  }, []);
+
   const handleMouseMove = useCallback((e: React.MouseEvent) => {
     if (!containerRef.current) return;
     const rect = containerRef.current.getBoundingClientRect();
     const nx = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
     const ny = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
-    // Inverted: mouse right → map tilts left (paper-in-hand feel)
     mouseTarget.current = { x: -nx * 3, y: ny * 3 };
-  }, []);
+
+    // Add footsteps — every 40px of movement
+    const dx = e.clientX - lastFootstepPos.current.x;
+    const dy = e.clientY - lastFootstepPos.current.y;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    if (dist > 40 && isOnMap) {
+      const angle = Math.atan2(dy, dx) * (180 / Math.PI) + 90;
+      footstepIdRef.current += 1;
+      setFootsteps(prev => [
+        ...prev.slice(-20), // keep max 20
+        { id: footstepIdRef.current, x: e.clientX, y: e.clientY, rotation: angle, opacity: 0.15 },
+      ]);
+      lastFootstepPos.current = { x: e.clientX, y: e.clientY };
+    }
+  }, [isOnMap]);
 
   useEffect(() => {
     const tick = () => {
@@ -427,8 +470,8 @@ const MapPage = () => {
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 overflow-hidden cursor-crosshair"
-      style={{ backgroundColor: '#1a1510' }}
+      className="fixed inset-0 overflow-hidden"
+      style={{ backgroundColor: '#000000', cursor: isOnMap ? CHARACTER_CURSOR : 'crosshair' }}
       onMouseMove={handleMouseMove}
     >
       {/* Grain overlay — multiply blend for parchment */}
@@ -442,6 +485,25 @@ const MapPage = () => {
           mixBlendMode: 'multiply',
         }}
       />
+
+      {/* Footsteps */}
+      {footsteps.map(f => (
+        <div
+          key={f.id}
+          className="fixed pointer-events-none z-20"
+          style={{
+            left: f.x - 4,
+            top: f.y - 6,
+            opacity: f.opacity,
+            transform: `rotate(${f.rotation}deg)`,
+          }}
+        >
+          <svg width="8" height="12" viewBox="0 0 8 12">
+            <ellipse cx="4" cy="4" rx="2.5" ry="3.5" fill="#2a2218" opacity="0.4" />
+            <circle cx="4" cy="10" r="1.5" fill="#2a2218" opacity="0.3" />
+          </svg>
+        </div>
+      ))}
 
       {/* Logo entrance */}
       <AnimatePresence>
@@ -518,6 +580,8 @@ const MapPage = () => {
         <div
           ref={svgWrapperRef}
           style={{ willChange: 'transform', transformStyle: 'preserve-3d' }}
+          onMouseEnter={() => setIsOnMap(true)}
+          onMouseLeave={() => setIsOnMap(false)}
         >
           <svg
             viewBox="0 0 1000 650"
@@ -532,7 +596,7 @@ const MapPage = () => {
                   values="0.4 0 0 0 0
                           0.35 0 0 0 0
                           0.15 0 0 0 0
-                          0 0 0 0.15 0" />
+                          0 0 0 0.18 0" />
               </filter>
               {/* Stain filter — organic splotches */}
               <filter id="stain" x="0%" y="0%" width="100%" height="100%">
@@ -541,7 +605,16 @@ const MapPage = () => {
                   values="0.54 0 0 0 0
                           0.42 0 0 0 0
                           0.28 0 0 0 0
-                          0 0 0 0.15 0" />
+                          0 0 0 0.2 0" />
+              </filter>
+              {/* Water damage filter */}
+              <filter id="water-damage" x="0%" y="0%" width="100%" height="100%">
+                <feTurbulence type="fractalNoise" baseFrequency="0.015" numOctaves="2" seed="7" stitchTiles="stitch" result="water" />
+                <feColorMatrix type="matrix" in="water" result="waterTint"
+                  values="0.3 0 0 0 0
+                          0.25 0 0 0 0
+                          0.15 0 0 0 0
+                          0 0 0 0.1 0" />
               </filter>
               {/* Hatching patterns */}
               <pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
@@ -550,58 +623,78 @@ const MapPage = () => {
               <pattern id="hatch-cross" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(-30)">
                 <line x1={0} y1={0} x2={0} y2={5} stroke="#3d3525" strokeWidth={0.25} opacity={0.15} />
               </pattern>
-              {/* Edge burn gradients — rectangular vignette */}
-              <linearGradient id="burn-top" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#3a2a15" stopOpacity="0.6" />
-                <stop offset="100%" stopColor="#3a2a15" stopOpacity="0" />
-              </linearGradient>
-              <linearGradient id="burn-bottom" x1="0" y1="1" x2="0" y2="0">
-                <stop offset="0%" stopColor="#3a2a15" stopOpacity="0.6" />
-                <stop offset="100%" stopColor="#3a2a15" stopOpacity="0" />
-              </linearGradient>
-              <linearGradient id="burn-left" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0%" stopColor="#3a2a15" stopOpacity="0.5" />
-                <stop offset="100%" stopColor="#3a2a15" stopOpacity="0" />
-              </linearGradient>
-              <linearGradient id="burn-right" x1="1" y1="0" x2="0" y2="0">
-                <stop offset="0%" stopColor="#3a2a15" stopOpacity="0.5" />
-                <stop offset="100%" stopColor="#3a2a15" stopOpacity="0" />
-              </linearGradient>
-              {/* Ring stain gradients */}
-              <radialGradient id="ring1" cx="30%" cy="25%" r="12%">
-                <stop offset="70%" stopColor="#8b7355" stopOpacity="0" />
-                <stop offset="85%" stopColor="#8b7355" stopOpacity="0.08" />
-                <stop offset="100%" stopColor="#8b7355" stopOpacity="0" />
-              </radialGradient>
-              <radialGradient id="ring2" cx="75%" cy="70%" r="10%">
-                <stop offset="70%" stopColor="#8b7355" stopOpacity="0" />
-                <stop offset="85%" stopColor="#8b7355" stopOpacity="0.06" />
-                <stop offset="100%" stopColor="#8b7355" stopOpacity="0" />
-              </radialGradient>
-            </defs>
-
-            {/* 1. Parchment base fill */}
-            <defs>
+              {/* Parchment gradient with dark edges that blend to black */}
               <linearGradient id="parchment" x1="0" y1="0" x2="1" y2="1">
                 <stop offset="0%" stopColor="#d4c5a0" />
                 <stop offset="50%" stopColor="#cbb994" />
                 <stop offset="100%" stopColor="#c4b48a" />
               </linearGradient>
+              {/* Edge burn gradients — fading to black for site consistency */}
+              <linearGradient id="burn-top" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#000000" stopOpacity="0.85" />
+                <stop offset="100%" stopColor="#000000" stopOpacity="0" />
+              </linearGradient>
+              <linearGradient id="burn-bottom" x1="0" y1="1" x2="0" y2="0">
+                <stop offset="0%" stopColor="#000000" stopOpacity="0.85" />
+                <stop offset="100%" stopColor="#000000" stopOpacity="0" />
+              </linearGradient>
+              <linearGradient id="burn-left" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stopColor="#000000" stopOpacity="0.8" />
+                <stop offset="100%" stopColor="#000000" stopOpacity="0" />
+              </linearGradient>
+              <linearGradient id="burn-right" x1="1" y1="0" x2="0" y2="0">
+                <stop offset="0%" stopColor="#000000" stopOpacity="0.8" />
+                <stop offset="100%" stopColor="#000000" stopOpacity="0" />
+              </linearGradient>
+              {/* Corner darkening */}
+              <radialGradient id="corner-tl" cx="0%" cy="0%" r="50%">
+                <stop offset="0%" stopColor="#000000" stopOpacity="0.5" />
+                <stop offset="100%" stopColor="#000000" stopOpacity="0" />
+              </radialGradient>
+              <radialGradient id="corner-br" cx="100%" cy="100%" r="50%">
+                <stop offset="0%" stopColor="#000000" stopOpacity="0.4" />
+                <stop offset="100%" stopColor="#000000" stopOpacity="0" />
+              </radialGradient>
+              {/* Ring stain gradients */}
+              <radialGradient id="ring1" cx="30%" cy="25%" r="12%">
+                <stop offset="70%" stopColor="#8b7355" stopOpacity="0" />
+                <stop offset="85%" stopColor="#8b7355" stopOpacity="0.1" />
+                <stop offset="100%" stopColor="#8b7355" stopOpacity="0" />
+              </radialGradient>
+              <radialGradient id="ring2" cx="75%" cy="70%" r="10%">
+                <stop offset="70%" stopColor="#8b7355" stopOpacity="0" />
+                <stop offset="85%" stopColor="#8b7355" stopOpacity="0.08" />
+                <stop offset="100%" stopColor="#8b7355" stopOpacity="0" />
+              </radialGradient>
+              <radialGradient id="ring3" cx="55%" cy="15%" r="8%">
+                <stop offset="60%" stopColor="#7a6545" stopOpacity="0" />
+                <stop offset="80%" stopColor="#7a6545" stopOpacity="0.07" />
+                <stop offset="100%" stopColor="#7a6545" stopOpacity="0" />
+              </radialGradient>
             </defs>
+
+            {/* 1. Parchment base fill */}
             <rect x={10} y={10} width={980} height={630} fill="url(#parchment)" />
 
-            {/* 2. Edge-darkening burn rects */}
-            <rect x={10} y={10} width={980} height={120} fill="url(#burn-top)" />
-            <rect x={10} y={520} width={980} height={120} fill="url(#burn-bottom)" />
-            <rect x={10} y={10} width={120} height={630} fill="url(#burn-left)" />
-            <rect x={870} y={10} width={120} height={630} fill="url(#burn-right)" />
+            {/* 2. Edge-darkening burn rects — fading to black */}
+            <rect x={10} y={10} width={980} height={160} fill="url(#burn-top)" />
+            <rect x={10} y={480} width={980} height={160} fill="url(#burn-bottom)" />
+            <rect x={10} y={10} width={160} height={630} fill="url(#burn-left)" />
+            <rect x={830} y={10} width={160} height={630} fill="url(#burn-right)" />
+            {/* Corner darkening */}
+            <rect x={10} y={10} width={980} height={630} fill="url(#corner-tl)" />
+            <rect x={10} y={10} width={980} height={630} fill="url(#corner-br)" />
 
             {/* 3. Stain overlay */}
             <rect x={10} y={10} width={980} height={630} filter="url(#stain)" opacity={0.8} />
 
+            {/* Water damage overlay */}
+            <rect x={10} y={10} width={980} height={630} filter="url(#water-damage)" opacity={0.6} />
+
             {/* 4. Ring stains */}
             <rect x={10} y={10} width={980} height={630} fill="url(#ring1)" />
             <rect x={10} y={10} width={980} height={630} fill="url(#ring2)" />
+            <rect x={10} y={10} width={980} height={630} fill="url(#ring3)" />
 
             {/* 5. Background hatching fill */}
             <rect x={15} y={15} width={970} height={620} fill="url(#hatch)" />
