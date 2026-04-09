@@ -35,7 +35,7 @@ const LANDMARKS = [
     id: 'story',
     route: '/story',
     label: 'Story',
-    descriptor: 'A worn paperback near the fire',
+    descriptor: 'A biography told as a timeline',
     x: 280,
     y: 190,
   },
@@ -43,7 +43,7 @@ const LANDMARKS = [
     id: 'projects',
     route: '/projects',
     label: 'Projects',
-    descriptor: 'A pack leaning against a pine',
+    descriptor: 'Active work and initiatives',
     x: 680,
     y: 260,
   },
@@ -51,7 +51,7 @@ const LANDMARKS = [
     id: 'network',
     route: '/network',
     label: 'Network',
-    descriptor: 'A ridgeline lookout point',
+    descriptor: 'Connect and reach out',
     x: 160,
     y: 420,
   },
@@ -59,7 +59,7 @@ const LANDMARKS = [
     id: 'content',
     route: '/content',
     label: 'Content',
-    descriptor: 'An open journal on a flat rock',
+    descriptor: 'Writing, media, and archive',
     x: 520,
     y: 480,
   },
@@ -67,8 +67,8 @@ const LANDMARKS = [
     id: 'blueprints',
     route: '/blueprints',
     label: 'Blueprints',
-    descriptor: 'Blueprint paper pinned to bark',
-    x: 780,
+    descriptor: 'Systems, models, and processes',
+    x: 790,
     y: 500,
   },
 ];
@@ -112,6 +112,10 @@ const LandmarkIcon = ({ id }: { id: string }) => {
           <ellipse cx={0} cy={10} rx={18} ry={5} fill="none" stroke={stroke} strokeWidth={0.6} opacity={0.4} />
           <rect x={-14} y={-6} width={12} height={16} rx={1} fill="none" stroke={stroke} strokeWidth={sw} transform="rotate(-5)" />
           <rect x={2} y={-6} width={12} height={16} rx={1} fill="none" stroke={stroke} strokeWidth={sw} transform="rotate(5)" />
+          {/* Spiral binding between pages */}
+          {Array.from({ length: 6 }).map((_, i) => (
+            <ellipse key={`sp-${i}`} cx={-1} cy={-4 + i * 3} rx={1.8} ry={1} fill="none" stroke={stroke} strokeWidth={0.4} opacity={0.5} />
+          ))}
           <line x1={-10} y1={0} x2={-4} y2={0} stroke={stroke} strokeWidth={0.4} opacity={0.5} />
           <line x1={-10} y1={3} x2={-5} y2={3} stroke={stroke} strokeWidth={0.4} opacity={0.5} />
           <line x1={-10} y1={6} x2={-6} y2={6} stroke={stroke} strokeWidth={0.4} opacity={0.5} />
@@ -352,45 +356,75 @@ const CreaseLines = () => (
     <path d="M300 80 Q320 78 340 82 Q360 85 380 80" stroke="#8a7a5e" strokeWidth={0.3} opacity={0.06} />
     <path d="M600 560 Q630 555 660 560 Q690 565 720 558" stroke="#8a7a5e" strokeWidth={0.3} opacity={0.06} />
 
-    {/* Edge wrinkles — crinkled paper edges */}
+    {/* Edge wrinkles — crinkled paper edges, doubled and varied */}
     {/* Top edge wrinkles */}
     <path d="M80 14 Q85 18 95 13 Q105 17 115 12" stroke="#9e8e6e" strokeWidth={0.5} opacity={0.12} />
+    <path d="M180 13 Q188 17 198 14" stroke="#9e8e6e" strokeWidth={0.35} opacity={0.08} />
+    <path d="M280 12 Q290 18 305 11 Q315 16 325 13" stroke="#9e8e6e" strokeWidth={0.45} opacity={0.1} />
     <path d="M400 12 Q410 16 420 11 Q430 15 440 12" stroke="#9e8e6e" strokeWidth={0.4} opacity={0.1} />
+    <path d="M560 14 Q568 18 578 13" stroke="#9e8e6e" strokeWidth={0.3} opacity={0.07} />
+    <path d="M680 13 Q690 17 700 12 Q708 16 718 14" stroke="#9e8e6e" strokeWidth={0.4} opacity={0.09} />
     <path d="M750 13 Q758 17 768 12 Q775 16 785 13" stroke="#9e8e6e" strokeWidth={0.4} opacity={0.09} />
+    <path d="M900 12 Q910 16 920 13" stroke="#9e8e6e" strokeWidth={0.35} opacity={0.08} />
     {/* Bottom edge wrinkles */}
+    <path d="M100 637 Q108 633 118 638" stroke="#9e8e6e" strokeWidth={0.35} opacity={0.08} />
     <path d="M200 636 Q210 632 220 637 Q230 633 240 638" stroke="#9e8e6e" strokeWidth={0.5} opacity={0.11} />
+    <path d="M380 637 Q395 632 410 637" stroke="#9e8e6e" strokeWidth={0.4} opacity={0.09} />
     <path d="M550 637 Q560 633 570 638 Q580 634 590 637" stroke="#9e8e6e" strokeWidth={0.4} opacity={0.1} />
+    <path d="M700 636 Q712 631 725 636 Q735 632 745 637" stroke="#9e8e6e" strokeWidth={0.45} opacity={0.1} />
     <path d="M850 635 Q858 631 868 636" stroke="#9e8e6e" strokeWidth={0.4} opacity={0.09} />
+    <path d="M940 636 Q948 633 958 637" stroke="#9e8e6e" strokeWidth={0.3} opacity={0.07} />
     {/* Left edge wrinkles */}
+    <path d="M13 80 Q17 85 12 95" stroke="#9e8e6e" strokeWidth={0.35} opacity={0.08} />
     <path d="M13 150 Q17 155 12 165 Q16 175 13 180" stroke="#9e8e6e" strokeWidth={0.4} opacity={0.1} />
+    <path d="M14 260 Q18 268 12 278" stroke="#9e8e6e" strokeWidth={0.35} opacity={0.07} />
+    <path d="M13 340 Q17 348 12 358 Q16 365 13 370" stroke="#9e8e6e" strokeWidth={0.4} opacity={0.09} />
     <path d="M14 400 Q18 408 12 418 Q16 425 14 430" stroke="#9e8e6e" strokeWidth={0.4} opacity={0.09} />
+    <path d="M13 520 Q17 528 12 538" stroke="#9e8e6e" strokeWidth={0.35} opacity={0.08} />
+    <path d="M14 590 Q18 595 12 605" stroke="#9e8e6e" strokeWidth={0.3} opacity={0.07} />
     {/* Right edge wrinkles */}
+    <path d="M987 120 Q983 128 988 138" stroke="#9e8e6e" strokeWidth={0.35} opacity={0.08} />
     <path d="M987 200 Q983 208 988 218 Q984 225 987 230" stroke="#9e8e6e" strokeWidth={0.4} opacity={0.1} />
+    <path d="M986 300 Q982 308 987 318" stroke="#9e8e6e" strokeWidth={0.35} opacity={0.07} />
+    <path d="M987 380 Q983 388 988 398 Q984 405 987 410" stroke="#9e8e6e" strokeWidth={0.4} opacity={0.09} />
     <path d="M986 450 Q982 458 987 468 Q983 475 986 480" stroke="#9e8e6e" strokeWidth={0.4} opacity={0.09} />
+    <path d="M987 540 Q983 548 988 558" stroke="#9e8e6e" strokeWidth={0.35} opacity={0.08} />
   </g>
 );
 
 /* ─── Edge rips — small tears along map border ─── */
 const EdgeRips = () => (
   <g style={{ pointerEvents: 'none' as const }}>
-    {/* Small rips — irregular notches cut into the map edge */}
-    {/* Top edge rips */}
+    {/* Top edge rips — varied sizes and angles */}
     <path d="M180 10 L183 18 L178 16 L182 22 L176 18 L180 10" fill="#000000" stroke="none" opacity={0.7} />
+    <path d="M320 10 L324 20 L319 17 L323 25 L317 20 L320 10" fill="#000000" stroke="none" opacity={0.55} />
+    <path d="M520 10 L521 14 L518 13 L520 17 L516 14 L520 10" fill="#000000" stroke="none" opacity={0.5} />
     <path d="M620 10 L622 15 L618 14 L621 19 L616 16 L620 10" fill="#000000" stroke="none" opacity={0.6} />
+    <path d="M850 10 L853 21 L848 18 L852 26 L845 20 L850 10" fill="#000000" stroke="none" opacity={0.65} />
+    <path d="M440 10 L442 16 L439 15 L441 10" fill="#000000" stroke="none" opacity={0.4} />
     {/* Bottom edge rips */}
+    <path d="M120 640 L123 631 L118 634 L122 627 L116 632 L120 640" fill="#000000" stroke="none" opacity={0.6} />
     <path d="M320 640 L323 632 L318 634 L322 628 L316 633 L320 640" fill="#000000" stroke="none" opacity={0.7} />
+    <path d="M580 640 L582 636 L579 637 L581 633 L577 636 L580 640" fill="#000000" stroke="none" opacity={0.45} />
     <path d="M780 640 L782 635 L778 636 L781 631 L776 634 L780 640" fill="#000000" stroke="none" opacity={0.6} />
+    <path d="M920 640 L924 630 L919 633 L923 626 L917 631 L920 640" fill="#000000" stroke="none" opacity={0.55} />
     {/* Left edge rips */}
+    <path d="M10 130 L17 128 L15 132 L21 129 L17 134 L10 130" fill="#000000" stroke="none" opacity={0.55} />
     <path d="M10 280 L18 277 L16 282 L22 278 L18 284 L10 280" fill="#000000" stroke="none" opacity={0.65} />
+    <path d="M10 380 L14 378 L13 381 L10 380" fill="#000000" stroke="none" opacity={0.35} />
     <path d="M10 500 L15 498 L14 502 L19 499 L16 504 L10 500" fill="#000000" stroke="none" opacity={0.55} />
+    <path d="M10 580 L20 577 L17 582 L24 579 L19 585 L10 580" fill="#000000" stroke="none" opacity={0.5} />
     {/* Right edge rips */}
+    <path d="M990 100 L983 98 L985 102 L979 99 L983 104 L990 100" fill="#000000" stroke="none" opacity={0.5} />
     <path d="M990 180 L982 177 L984 182 L978 179 L982 184 L990 180" fill="#000000" stroke="none" opacity={0.65} />
+    <path d="M990 320 L986 318 L987 321 L990 320" fill="#000000" stroke="none" opacity={0.35} />
     <path d="M990 420 L985 418 L986 422 L981 419 L984 424 L990 420" fill="#000000" stroke="none" opacity={0.55} />
-    {/* Corner wear — small missing triangles */}
-    <path d="M10 10 L10 18 L18 10 Z" fill="#000000" opacity={0.5} />
-    <path d="M990 10 L990 16 L984 10 Z" fill="#000000" opacity={0.4} />
-    <path d="M10 640 L10 634 L16 640 Z" fill="#000000" opacity={0.45} />
-    <path d="M990 640 L990 636 L986 640 Z" fill="#000000" opacity={0.35} />
+    <path d="M990 560 L981 557 L984 562 L977 559 L982 565 L990 560" fill="#000000" stroke="none" opacity={0.6} />
+    {/* Corner wear — varied triangles */}
+    <path d="M10 10 L10 22 L22 10 Z" fill="#000000" opacity={0.5} />
+    <path d="M990 10 L990 18 L982 10 Z" fill="#000000" opacity={0.4} />
+    <path d="M10 640 L10 632 L18 640 Z" fill="#000000" opacity={0.45} />
+    <path d="M990 640 L990 634 L984 640 Z" fill="#000000" opacity={0.35} />
   </g>
 );
 
@@ -619,8 +653,7 @@ const MapPage = () => {
               transition={{ duration: 0.6, ease: 'easeOut' }}
             />
             <motion.div
-              className={`fixed inset-0 z-[100] flex items-center justify-center ${shrinkToCorner ? 'pointer-events-auto cursor-pointer' : 'pointer-events-none'}`}
-              onClick={() => shrinkToCorner && navigate('/')}
+              className="fixed inset-0 z-[100] flex items-center justify-center pointer-events-none"
               animate={shrinkToCorner ? {
                 x: 'calc(-50vw + 64px)',
                 y: 'calc(-50vh + 48px)',
@@ -628,7 +661,8 @@ const MapPage = () => {
               transition={{ duration: 0.7, ease: [0.4, 0, 0.2, 1] }}
             >
               <motion.div
-                className="relative w-48 h-48"
+                className={`relative w-48 h-48 ${shrinkToCorner ? 'pointer-events-auto cursor-pointer' : ''}`}
+                onClick={() => shrinkToCorner && navigate('/')}
                 animate={shrinkToCorner ? { scale: 0.33 } : { scale: 1 }}
                 transition={{ duration: 0.7, ease: [0.4, 0, 0.2, 1] }}
               >
@@ -802,10 +836,10 @@ const MapPage = () => {
               >
                 {/* Clickable hit area */}
                 <rect
-                  x={-20}
-                  y={-26}
-                  width={40}
-                  height={52}
+                  x={-28}
+                  y={-36}
+                  width={56}
+                  height={72}
                   fill="transparent"
                   className="cursor-pointer"
                   style={{ pointerEvents: 'all' }}
@@ -813,7 +847,7 @@ const MapPage = () => {
                   onMouseLeave={() => setHoveredLandmark(null)}
                   onClick={() => navigate(lm.route)}
                 />
-                <g opacity={hoveredLandmark === lm.id ? 1 : 0.7} style={{ transition: 'opacity 0.3s ease', pointerEvents: 'none' }} transform="scale(1.25)">
+                <g opacity={hoveredLandmark === lm.id ? 1 : 0.7} style={{ transition: 'opacity 0.3s ease', pointerEvents: 'none' }} transform="scale(1.875)">
                   <LandmarkIcon id={lm.id} />
                 </g>
                 <text
