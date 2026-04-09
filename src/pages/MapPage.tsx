@@ -377,24 +377,36 @@ const CreaseLines = () => (
 /* ─── Edge rips — small tears along map border ─── */
 const EdgeRips = () => (
   <g style={{ pointerEvents: 'none' as const }}>
-    {/* Small rips — irregular notches cut into the map edge */}
-    {/* Top edge rips */}
+    {/* Top edge rips — varied sizes and angles */}
     <path d="M180 10 L183 18 L178 16 L182 22 L176 18 L180 10" fill="#000000" stroke="none" opacity={0.7} />
+    <path d="M320 10 L324 20 L319 17 L323 25 L317 20 L320 10" fill="#000000" stroke="none" opacity={0.55} />
+    <path d="M520 10 L521 14 L518 13 L520 17 L516 14 L520 10" fill="#000000" stroke="none" opacity={0.5} />
     <path d="M620 10 L622 15 L618 14 L621 19 L616 16 L620 10" fill="#000000" stroke="none" opacity={0.6} />
+    <path d="M850 10 L853 21 L848 18 L852 26 L845 20 L850 10" fill="#000000" stroke="none" opacity={0.65} />
+    <path d="M440 10 L442 16 L439 15 L441 10" fill="#000000" stroke="none" opacity={0.4} />
     {/* Bottom edge rips */}
+    <path d="M120 640 L123 631 L118 634 L122 627 L116 632 L120 640" fill="#000000" stroke="none" opacity={0.6} />
     <path d="M320 640 L323 632 L318 634 L322 628 L316 633 L320 640" fill="#000000" stroke="none" opacity={0.7} />
+    <path d="M580 640 L582 636 L579 637 L581 633 L577 636 L580 640" fill="#000000" stroke="none" opacity={0.45} />
     <path d="M780 640 L782 635 L778 636 L781 631 L776 634 L780 640" fill="#000000" stroke="none" opacity={0.6} />
+    <path d="M920 640 L924 630 L919 633 L923 626 L917 631 L920 640" fill="#000000" stroke="none" opacity={0.55} />
     {/* Left edge rips */}
+    <path d="M10 130 L17 128 L15 132 L21 129 L17 134 L10 130" fill="#000000" stroke="none" opacity={0.55} />
     <path d="M10 280 L18 277 L16 282 L22 278 L18 284 L10 280" fill="#000000" stroke="none" opacity={0.65} />
+    <path d="M10 380 L14 378 L13 381 L10 380" fill="#000000" stroke="none" opacity={0.35} />
     <path d="M10 500 L15 498 L14 502 L19 499 L16 504 L10 500" fill="#000000" stroke="none" opacity={0.55} />
+    <path d="M10 580 L20 577 L17 582 L24 579 L19 585 L10 580" fill="#000000" stroke="none" opacity={0.5} />
     {/* Right edge rips */}
+    <path d="M990 100 L983 98 L985 102 L979 99 L983 104 L990 100" fill="#000000" stroke="none" opacity={0.5} />
     <path d="M990 180 L982 177 L984 182 L978 179 L982 184 L990 180" fill="#000000" stroke="none" opacity={0.65} />
+    <path d="M990 320 L986 318 L987 321 L990 320" fill="#000000" stroke="none" opacity={0.35} />
     <path d="M990 420 L985 418 L986 422 L981 419 L984 424 L990 420" fill="#000000" stroke="none" opacity={0.55} />
-    {/* Corner wear — small missing triangles */}
-    <path d="M10 10 L10 18 L18 10 Z" fill="#000000" opacity={0.5} />
-    <path d="M990 10 L990 16 L984 10 Z" fill="#000000" opacity={0.4} />
-    <path d="M10 640 L10 634 L16 640 Z" fill="#000000" opacity={0.45} />
-    <path d="M990 640 L990 636 L986 640 Z" fill="#000000" opacity={0.35} />
+    <path d="M990 560 L981 557 L984 562 L977 559 L982 565 L990 560" fill="#000000" stroke="none" opacity={0.6} />
+    {/* Corner wear — varied triangles */}
+    <path d="M10 10 L10 22 L22 10 Z" fill="#000000" opacity={0.5} />
+    <path d="M990 10 L990 18 L982 10 Z" fill="#000000" opacity={0.4} />
+    <path d="M10 640 L10 632 L18 640 Z" fill="#000000" opacity={0.45} />
+    <path d="M990 640 L990 634 L984 640 Z" fill="#000000" opacity={0.35} />
   </g>
 );
 
