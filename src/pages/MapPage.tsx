@@ -194,43 +194,43 @@ const CompassRose = ({ heading }: { heading: number | null }) => {
 const ContourLines = () => (
   <g fill="none" stroke="#2a2a1a">
     {/* Cluster 1 — upper left, broad elevation */}
-    <ellipse cx={200} cy={200} rx={85} ry={52} transform="rotate(-15 200 200)" strokeWidth={0.6} opacity={0.14} />
-    <ellipse cx={200} cy={200} rx={62} ry={36} transform="rotate(-15 200 200)" strokeWidth={0.5} opacity={0.12} />
-    <ellipse cx={200} cy={200} rx={38} ry={20} transform="rotate(-12 200 200)" strokeWidth={0.4} opacity={0.1} />
+    <ellipse cx={200} cy={200} rx={85} ry={52} transform="rotate(-15 200 200)" strokeWidth={0.6} opacity={0.28} />
+    <ellipse cx={200} cy={200} rx={62} ry={36} transform="rotate(-15 200 200)" strokeWidth={0.5} opacity={0.24} />
+    <ellipse cx={200} cy={200} rx={38} ry={20} transform="rotate(-12 200 200)" strokeWidth={0.4} opacity={0.2} />
     {/* Cluster 2 — center right, tighter peak */}
-    <ellipse cx={700} cy={300} rx={95} ry={58} transform="rotate(10 700 300)" strokeWidth={0.7} opacity={0.16} />
-    <ellipse cx={700} cy={300} rx={68} ry={40} transform="rotate(10 700 300)" strokeWidth={0.5} opacity={0.13} />
-    <ellipse cx={700} cy={300} rx={42} ry={24} transform="rotate(8 700 300)" strokeWidth={0.4} opacity={0.1} />
-    <ellipse cx={700} cy={300} rx={18} ry={9} transform="rotate(8 700 300)" strokeWidth={0.4} opacity={0.08} />
+    <ellipse cx={700} cy={300} rx={95} ry={58} transform="rotate(10 700 300)" strokeWidth={0.7} opacity={0.32} />
+    <ellipse cx={700} cy={300} rx={68} ry={40} transform="rotate(10 700 300)" strokeWidth={0.5} opacity={0.26} />
+    <ellipse cx={700} cy={300} rx={42} ry={24} transform="rotate(8 700 300)" strokeWidth={0.4} opacity={0.2} />
+    <ellipse cx={700} cy={300} rx={18} ry={9} transform="rotate(8 700 300)" strokeWidth={0.4} opacity={0.16} />
     {/* Cluster 3 — lower center */}
-    <ellipse cx={450} cy={500} rx={105} ry={48} transform="rotate(-8 450 500)" strokeWidth={0.6} opacity={0.14} />
-    <ellipse cx={450} cy={500} rx={72} ry={32} transform="rotate(-8 450 500)" strokeWidth={0.5} opacity={0.11} />
-    <ellipse cx={450} cy={500} rx={40} ry={16} transform="rotate(-6 450 500)" strokeWidth={0.4} opacity={0.09} />
+    <ellipse cx={450} cy={500} rx={105} ry={48} transform="rotate(-8 450 500)" strokeWidth={0.6} opacity={0.28} />
+    <ellipse cx={450} cy={500} rx={72} ry={32} transform="rotate(-8 450 500)" strokeWidth={0.5} opacity={0.22} />
+    <ellipse cx={450} cy={500} rx={40} ry={16} transform="rotate(-6 450 500)" strokeWidth={0.4} opacity={0.18} />
     {/* Cluster 4 — upper right, subtle plateau */}
-    <ellipse cx={820} cy={140} rx={70} ry={35} transform="rotate(20 820 140)" strokeWidth={0.5} opacity={0.1} />
-    <ellipse cx={820} cy={140} rx={45} ry={20} transform="rotate(22 820 140)" strokeWidth={0.4} opacity={0.08} />
+    <ellipse cx={820} cy={140} rx={70} ry={35} transform="rotate(20 820 140)" strokeWidth={0.5} opacity={0.2} />
+    <ellipse cx={820} cy={140} rx={45} ry={20} transform="rotate(22 820 140)" strokeWidth={0.4} opacity={0.16} />
     {/* Cluster 5 — lower left saddle */}
-    <ellipse cx={130} cy={520} rx={60} ry={30} transform="rotate(-5 130 520)" strokeWidth={0.5} opacity={0.11} />
-    <ellipse cx={130} cy={520} rx={35} ry={16} transform="rotate(-5 130 520)" strokeWidth={0.4} opacity={0.09} />
+    <ellipse cx={130} cy={520} rx={60} ry={30} transform="rotate(-5 130 520)" strokeWidth={0.5} opacity={0.22} />
+    <ellipse cx={130} cy={520} rx={35} ry={16} transform="rotate(-5 130 520)" strokeWidth={0.4} opacity={0.18} />
     {/* Cluster 6 — mid-upper */}
-    <path d="M380 160 Q420 140 460 155 Q500 170 540 150 Q560 142 580 155" strokeWidth={0.5} opacity={0.1} />
-    <path d="M390 175 Q430 155 470 170 Q510 185 545 168" strokeWidth={0.4} opacity={0.08} />
+    <path d="M380 160 Q420 140 460 155 Q500 170 540 150 Q560 142 580 155" strokeWidth={0.5} opacity={0.2} />
+    <path d="M390 175 Q430 155 470 170 Q510 185 545 168" strokeWidth={0.4} opacity={0.16} />
     {/* Cluster 7 — far right valley */}
-    <path d="M870 350 Q890 330 920 345 Q940 360 960 340" strokeWidth={0.5} opacity={0.12} />
-    <path d="M875 365 Q895 345 925 360 Q945 375 960 358" strokeWidth={0.4} opacity={0.09} />
+    <path d="M870 350 Q890 330 920 345 Q940 360 960 340" strokeWidth={0.5} opacity={0.24} />
+    <path d="M875 365 Q895 345 925 360 Q945 375 960 358" strokeWidth={0.4} opacity={0.18} />
     {/* Cluster 8 — lower right */}
-    <ellipse cx={750} cy={540} rx={55} ry={28} transform="rotate(12 750 540)" strokeWidth={0.5} opacity={0.1} />
-    <ellipse cx={750} cy={540} rx={30} ry={14} transform="rotate(12 750 540)" strokeWidth={0.4} opacity={0.08} />
+    <ellipse cx={750} cy={540} rx={55} ry={28} transform="rotate(12 750 540)" strokeWidth={0.5} opacity={0.2} />
+    <ellipse cx={750} cy={540} rx={30} ry={14} transform="rotate(12 750 540)" strokeWidth={0.4} opacity={0.16} />
 
     {/* Wandering cross-map contour lines */}
-    <path d="M50 350 Q150 320 250 340 Q350 360 450 330 Q550 300 650 320 Q750 340 900 310" strokeWidth={0.6} opacity={0.12} />
-    <path d="M100 420 Q200 400 320 410 Q440 425 560 400 Q680 380 800 410 Q880 425 960 405" strokeWidth={0.5} opacity={0.1} />
-    <path d="M80 150 Q180 130 300 160 Q400 180 500 150 Q600 120 750 160 Q850 180 950 150" strokeWidth={0.6} opacity={0.13} />
-    <path d="M120 550 Q250 530 380 560 Q500 580 630 540 Q750 510 900 550" strokeWidth={0.5} opacity={0.1} />
-    <path d="M40 260 Q140 240 260 265 Q380 285 480 255 Q580 230 700 260 Q800 280 920 250" strokeWidth={0.4} opacity={0.09} />
-    <path d="M60 480 Q180 460 300 485 Q420 505 540 475 Q660 450 780 480 Q880 500 960 470" strokeWidth={0.5} opacity={0.11} />
-    <path d="M30 100 Q150 85 280 105 Q400 125 520 95 Q640 70 780 100 Q880 115 970 90" strokeWidth={0.4} opacity={0.08} />
-    <path d="M50 600 Q200 585 350 610 Q500 630 650 595 Q800 570 950 600" strokeWidth={0.4} opacity={0.08} />
+    <path d="M50 350 Q150 320 250 340 Q350 360 450 330 Q550 300 650 320 Q750 340 900 310" strokeWidth={0.6} opacity={0.24} />
+    <path d="M100 420 Q200 400 320 410 Q440 425 560 400 Q680 380 800 410 Q880 425 960 405" strokeWidth={0.5} opacity={0.2} />
+    <path d="M80 150 Q180 130 300 160 Q400 180 500 150 Q600 120 750 160 Q850 180 950 150" strokeWidth={0.6} opacity={0.26} />
+    <path d="M120 550 Q250 530 380 560 Q500 580 630 540 Q750 510 900 550" strokeWidth={0.5} opacity={0.2} />
+    <path d="M40 260 Q140 240 260 265 Q380 285 480 255 Q580 230 700 260 Q800 280 920 250" strokeWidth={0.4} opacity={0.18} />
+    <path d="M60 480 Q180 460 300 485 Q420 505 540 475 Q660 450 780 480 Q880 500 960 470" strokeWidth={0.5} opacity={0.22} />
+    <path d="M30 100 Q150 85 280 105 Q400 125 520 95 Q640 70 780 100 Q880 115 970 90" strokeWidth={0.4} opacity={0.16} />
+    <path d="M50 600 Q200 585 350 610 Q500 630 650 595 Q800 570 950 600" strokeWidth={0.4} opacity={0.16} />
   </g>
 );
 
@@ -239,13 +239,13 @@ const TerrainHatching = () => (
   <g stroke="#1a1a0e">
     {/* Diagonal hatching clusters */}
     {[
-      { cx: 100, cy: 300, r: 60, op: 0.06 },
-      { cx: 850, cy: 150, r: 50, op: 0.05 },
-      { cx: 500, cy: 580, r: 70, op: 0.06 },
-      { cx: 350, cy: 120, r: 45, op: 0.05 },
-      { cx: 750, cy: 480, r: 55, op: 0.06 },
-      { cx: 920, cy: 400, r: 45, op: 0.05 },
-      { cx: 60, cy: 550, r: 40, op: 0.04 },
+      { cx: 100, cy: 300, r: 60, op: 0.12 },
+      { cx: 850, cy: 150, r: 50, op: 0.1 },
+      { cx: 500, cy: 580, r: 70, op: 0.12 },
+      { cx: 350, cy: 120, r: 45, op: 0.1 },
+      { cx: 750, cy: 480, r: 55, op: 0.12 },
+      { cx: 920, cy: 400, r: 45, op: 0.1 },
+      { cx: 60, cy: 550, r: 40, op: 0.08 },
     ].map(({ cx, cy, r, op }, ci) =>
       Array.from({ length: 14 }).map((_, i) => {
         const offset = (i - 7) * 7;
@@ -278,7 +278,7 @@ const TerrainHatching = () => (
             x2={cx + r * 0.5}
             y2={cy + offset + r * 0.5}
             strokeWidth={0.3}
-            opacity={0.04}
+            opacity={0.08}
           />
         );
       })
@@ -292,7 +292,7 @@ const TerrainHatching = () => (
       { x: 820, y: 120 }, { x: 835, y: 128 },
       { x: 150, y: 400 }, { x: 165, y: 408 }, { x: 140, y: 412 },
     ].map(({ x, y }, i) => (
-      <path key={`hill-${i}`} d={`M${x-8} ${y} Q${x} ${y-6} ${x+8} ${y}`} fill="none" strokeWidth={0.5} opacity={0.1} />
+      <path key={`hill-${i}`} d={`M${x-8} ${y} Q${x} ${y-6} ${x+8} ${y}`} fill="none" strokeWidth={0.5} opacity={0.2} />
     ))}
 
     {/* Forest dot clusters — near Projects/pine and scattered */}
@@ -310,7 +310,7 @@ const TerrainHatching = () => (
       { cx: 880, cy: 320 }, { cx: 888, cy: 325 }, { cx: 875, cy: 330 },
       { cx: 120, cy: 480 }, { cx: 128, cy: 485 }, { cx: 115, cy: 490 },
     ].map(({ cx, cy }, i) => (
-      <circle key={`dot-${i}`} cx={cx} cy={cy} r={1.2} fill="#1a1a0e" stroke="none" opacity={0.08} />
+      <circle key={`dot-${i}`} cx={cx} cy={cy} r={1.2} fill="#1a1a0e" stroke="none" opacity={0.16} />
     ))}
 
     {/* Ridge line marks — short parallel dashes */}
@@ -325,14 +325,14 @@ const TerrainHatching = () => (
       { x: 470, y: 515, angle: -8 },
       { x: 480, y: 520, angle: -8 },
     ].map(({ x, y, angle }, i) => (
-      <line key={`ridge-${i}`} x1={x} y1={y} x2={x + 10} y2={y} strokeWidth={0.5} opacity={0.1} transform={`rotate(${angle} ${x+5} ${y})`} />
+      <line key={`ridge-${i}`} x1={x} y1={y} x2={x + 10} y2={y} strokeWidth={0.5} opacity={0.2} transform={`rotate(${angle} ${x+5} ${y})`} />
     ))}
   </g>
 );
 
 /* ─── Elevation marks ─── */
 const ElevationMarks = () => (
-  <g fill="#F5F0E8" fontFamily="monospace" fontSize={5} opacity={0.15}>
+  <g fill="#F5F0E8" fontFamily="monospace" fontSize={5} opacity={0.3}>
     <text x={220} y={215}>2,847</text>
     <text x={710} y={285}>3,102</text>
     <text x={460} y={490}>1,956</text>
@@ -356,22 +356,22 @@ const MapBorder = () => (
 const TrailPaths = () => (
   <g fill="none" stroke="#2a2a1a" strokeWidth={0.8}>
     {/* Story → Projects */}
-    <path d="M295 200 Q340 210 400 225 Q480 240 550 250 Q600 255 665 260" strokeDasharray="3 5" opacity={0.1} />
+    <path d="M295 200 Q340 210 400 225 Q480 240 550 250 Q600 255 665 260" strokeDasharray="3 5" opacity={0.2} />
     {/* Story → Network */}
-    <path d="M265 205 Q240 250 220 300 Q200 340 180 380 Q170 400 165 415" strokeDasharray="3 5" opacity={0.09} />
+    <path d="M265 205 Q240 250 220 300 Q200 340 180 380 Q170 400 165 415" strokeDasharray="3 5" opacity={0.18} />
     {/* Network → Content */}
-    <path d="M180 430 Q230 445 290 460 Q360 475 420 480 Q470 482 510 480" strokeDasharray="3 5" opacity={0.1} />
+    <path d="M180 430 Q230 445 290 460 Q360 475 420 480 Q470 482 510 480" strokeDasharray="3 5" opacity={0.2} />
     {/* Content → Blueprints */}
-    <path d="M540 485 Q580 490 630 495 Q680 498 720 500 Q750 502 770 500" strokeDasharray="3 5" opacity={0.09} />
+    <path d="M540 485 Q580 490 630 495 Q680 498 720 500 Q750 502 770 500" strokeDasharray="3 5" opacity={0.18} />
     {/* Projects → Blueprints */}
-    <path d="M690 275 Q710 320 730 370 Q750 410 760 450 Q770 475 775 495" strokeDasharray="3 5" opacity={0.1} />
+    <path d="M690 275 Q710 320 730 370 Q750 410 760 450 Q770 475 775 495" strokeDasharray="3 5" opacity={0.2} />
     {/* Story → Content (long trail) */}
-    <path d="M285 210 Q300 260 330 320 Q370 380 420 430 Q460 460 510 475" strokeDasharray="2 6" opacity={0.07} />
+    <path d="M285 210 Q300 260 330 320 Q370 380 420 430 Q460 460 510 475" strokeDasharray="2 6" opacity={0.14} />
 
     {/* River — main channel */}
-    <path d="M300 50 Q310 120 280 200 Q260 280 290 360 Q320 440 350 550 Q370 600 380 650" stroke="#1a2a2a" strokeWidth={0.8} opacity={0.08} />
+    <path d="M300 50 Q310 120 280 200 Q260 280 290 360 Q320 440 350 550 Q370 600 380 650" stroke="#1a2a2a" strokeWidth={0.8} opacity={0.16} />
     {/* Tributary fork */}
-    <path d="M290 360 Q250 380 220 420 Q195 460 180 520 Q170 560 165 620" stroke="#1a2a2a" strokeWidth={0.5} opacity={0.06} />
+    <path d="M290 360 Q250 380 220 420 Q195 460 180 520 Q170 560 165 620" stroke="#1a2a2a" strokeWidth={0.5} opacity={0.12} />
   </g>
 );
 
@@ -396,10 +396,10 @@ const MapPage = () => {
   const [fadeBackground, setFadeBackground] = useState(false);
   const [shrinkToCorner, setShrinkToCorner] = useState(false);
 
-  // Logo animation sequence
+  // Logo animation sequence — fast
   useEffect(() => {
     const startTime = Date.now();
-    const duration = 1200;
+    const duration = 600;
     const animate = () => {
       const elapsed = Date.now() - startTime;
       const p = Math.min(100, (elapsed / duration) * 100);
@@ -411,22 +411,21 @@ const MapPage = () => {
 
   useEffect(() => {
     if (logoProgress >= 99.5 && !logoComplete) {
-      const t = setTimeout(() => setLogoComplete(true), 100);
-      return () => clearTimeout(t);
+      setLogoComplete(true);
     }
   }, [logoProgress, logoComplete]);
 
   useEffect(() => {
     if (logoComplete) {
-      const t = setTimeout(() => setFadeBackground(true), 400);
+      const t = setTimeout(() => setFadeBackground(true), 200);
       return () => clearTimeout(t);
     }
   }, [logoComplete]);
 
   useEffect(() => {
     if (fadeBackground) {
-      const t1 = setTimeout(() => setShrinkToCorner(true), 100);
-      const t2 = setTimeout(() => { setShowContent(true); }, 500);
+      const t1 = setTimeout(() => setShrinkToCorner(true), 50);
+      const t2 = setTimeout(() => { setShowContent(true); }, 300);
       return () => { clearTimeout(t1); clearTimeout(t2); };
     }
   }, [fadeBackground]);
@@ -487,8 +486,8 @@ const MapPage = () => {
               className={`fixed inset-0 z-[100] flex items-center justify-center ${shrinkToCorner ? 'pointer-events-auto cursor-pointer' : 'pointer-events-none'}`}
               onClick={() => shrinkToCorner && navigate('/')}
               animate={shrinkToCorner ? {
-                x: 'calc(-50vw + 56px)',
-                y: 'calc(-50vh + 56px)',
+                x: 'calc(-50vw + 64px)',
+                y: 'calc(-50vh + 48px)',
               } : { x: 0, y: 0 }}
               transition={{ duration: 0.7, ease: [0.4, 0, 0.2, 1] }}
             >
@@ -547,7 +546,7 @@ const MapPage = () => {
         <svg
           ref={svgRef}
           viewBox="0 0 1000 650"
-          className="w-[90vw] h-[90vh] max-w-[90vw] max-h-[90vh]"
+          className="w-[80vw] h-[80vh] max-w-[80vw] max-h-[80vh]"
           preserveAspectRatio="xMidYMid meet"
           style={{ willChange: 'transform' }}
         >
@@ -563,11 +562,11 @@ const MapPage = () => {
             </filter>
             {/* Hatching pattern — primary diagonal */}
             <pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
-              <line x1={0} y1={0} x2={0} y2={6} stroke="#1a1a0e" strokeWidth={0.3} opacity={0.08} />
+              <line x1={0} y1={0} x2={0} y2={6} stroke="#1a1a0e" strokeWidth={0.3} opacity={0.16} />
             </pattern>
             {/* Hatching pattern — cross angle for forest areas */}
             <pattern id="hatch-cross" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(-30)">
-              <line x1={0} y1={0} x2={0} y2={5} stroke="#1a1a0e" strokeWidth={0.25} opacity={0.06} />
+              <line x1={0} y1={0} x2={0} y2={5} stroke="#1a1a0e" strokeWidth={0.25} opacity={0.12} />
             </pattern>
             {/* Vignette radial gradient */}
             <radialGradient id="vignette" cx="50%" cy="50%" r="55%" fx="50%" fy="50%">
