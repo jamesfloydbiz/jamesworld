@@ -1,72 +1,69 @@
 
+Checklist:
+1. Fix blocked interactions first
+2. Update icon hover descriptions to describe destination pages
+3. Refine Content icon into a spiral notebook
+4. Reposition Blueprints icon to align with its pole
+5. Scale all landmark icons and labels up by 50%
+6. Double and vary edge rips/wrinkles for less uniform paper wear
 
-## Make the Map Feel Like Weathered Paper — Tactile & 3D
+What I found:
+- The `/map` page is a single inline SVG in `src/pages/MapPage.tsx`.
+- Landmark labels/descriptions come from the `LANDMARKS` array and are currently object metaphors like “A worn paperback near the fire.”
+- The click issue is not just the icon hitbox: the intro logo wrapper becomes full-screen and `pointer-events-auto` after the animation, so it can still sit above the map and block clicks in the center/top-left.
+- The Story route itself is correct (`/story`), so this is an interaction-layer problem, not a routing problem.
 
-### The Vision
+Implementation plan:
 
-The reference images show warm parchment tones, ink staining, crease marks, and edge wear. The current map is dark SVG on black. The core shift: give the map rectangle a **warm parchment base fill** so terrain marks read as ink-on-paper rather than faint marks on void. Then add aging artifacts (stains, creases, edge darkening) and replace the flat parallax with a **CSS perspective tilt** that makes the map lean away from the cursor like paper held in hand.
+1. Fix mouse interaction before anything else
+- Keep the corner logo clickable, but remove fullscreen click interception after the intro.
+- Restrict interactivity to the actual small logo element instead of the entire fullscreen wrapper.
+- Ensure the map wrapper/SVG never has any overlay layer above landmark hit targets.
+- Keep only the landmark hit areas clickable, with non-interactive terrain/sign/weathering layers explicitly ignoring pointer events.
 
-### Changes — `src/pages/MapPage.tsx`
+2. Replace icon descriptions with page-based descriptions
+- Update each `LANDMARKS.descriptor` so the hover text describes the actual destination page experience:
+  - Story: biography/timeline page
+  - Projects: active initiatives/work
+  - Network: connect/contact page
+  - Content: writing/media/archive page
+  - Blueprints: systems/mental models/processes page
+- Keep the tone understated and aligned with the site.
 
-**1. Parchment base fill**
+3. Refine the Content icon
+- Keep the open notebook concept, but add a subtle spiral binding centered between the two pages.
+- Make it feel field-journal / notebook, not playful or cartoonish.
+- Preserve SVG simplicity for fast load.
 
-Replace the black void inside the map border with a warm parchment rectangle: `#d4c5a0` at full opacity (or a linear gradient from `#d4c5a0` to `#c4b48a` for slight unevenness). This single change transforms everything — all existing terrain marks, contour lines, hatching, and trails will now read as dark ink on aged paper.
+4. Re-align Blueprints with its pole
+- Move the paper drawing so it visually lines up with the tack/pole it’s supposed to be attached to.
+- Adjust only the icon drawing or the landmark coordinates as needed, without disturbing the overall map composition.
 
-**2. Stain & aging overlays (SVG, no images)**
+5. Increase landmark scale by 50%
+- Increase icon size from the current scaled state to the requested larger size.
+- Increase label and tooltip sizing proportionally so hierarchy stays balanced.
+- Revisit hitbox dimensions so the clickable area remains precise around the icon only.
 
-Add inside `<defs>`:
-- A second `feTurbulence` filter (`id="stain"`) with lower `baseFrequency` (~0.008) and high contrast via `feColorMatrix` — produces organic splotch shapes. Apply as a rect overlay in sepia (`#8b7355`) at ~0.15 opacity to simulate water/coffee stains.
-- 2-3 radial gradients simulating ring stains (circular, off-center, very faint).
-- A few `<path>` crease lines — long, subtle, slightly irregular strokes across the map in `#9e8e6e` at low opacity, as if the paper was folded.
+6. Increase edge wear and paper realism
+- Double the number of rips and wrinkles around the perimeter.
+- Make them irregular: mixed angles, lengths, spacing, and severity.
+- Add more non-uniform edge creases and fine grain so the paper feels older and less mechanically repeated.
+- Keep it restrained and tactile, not distressed for effect.
 
-**3. Edge darkening (burn effect)**
+Technical notes:
+- Main file: `src/pages/MapPage.tsx`
+- Likely key edits:
+  - Intro logo wrapper pointer-events behavior
+  - `LANDMARKS` descriptors and possibly positions
+  - `LandmarkIcon` cases for `content` and `blueprints`
+  - Landmark hitbox sizing near lines ~797–840
+  - `CreaseLines` and `EdgeRips` components
+- I would preserve the inline-SVG approach and avoid adding libraries so load remains fast.
 
-Replace the current simple radial vignette with a **rectangular vignette** — four linear gradients (top, bottom, left, right) fading from `#6b5a3a` to transparent, creating darkened edges like aged paper that's browned at the margins. More authentic than radial.
-
-**4. Boost terrain contrast**
-
-With a light parchment background, the existing terrain strokes (`#2a2a1a`, `#1a1a0e`) will naturally pop much harder. Reduce some opacities slightly (contour lines from 0.28 → 0.2, hatching from 0.12 → 0.1) so they feel like faded ink rather than fresh marker. The river stroke shifts to a deeper blue-brown (`#3a4a4a`).
-
-**5. 3D perspective tilt (paper-in-hand effect)**
-
-Replace the current flat `translate(Xpx, Ypx)` parallax with a **CSS `perspective` + `rotateX/rotateY` transform**. The map tilts *away* from the mouse (inverted — mouse goes right, map tilts left). Implementation:
-
-```
-container: perspective: 1200px
-SVG wrapper: transform: rotateX(Ydeg) rotateY(Xdeg)
-```
-
-Where X/Y are ±3° max, derived from mouse position. Keep the existing `requestAnimationFrame` lerp loop — just change the output from `translate` to `rotateX/rotateY`. This creates a subtle 3D paper-held-by-someone effect with zero performance cost.
-
-**6. Adjust icon/text colors for parchment**
-
-Landmark icons, labels, border, title, compass, and elevation marks shift from `#F5F0E8` (light cream on black) to `#2a2218` (dark ink on parchment). The golden accent `#B8860B` stays. Tooltip backgrounds shift to `rgba(42,34,24,0.85)` with light text.
-
-**7. Grain overlay tuning**
-
-The existing HTML grain overlay (z-30 div) gets a `mixBlendMode: 'multiply'` instead of `'overlay'` to work with the light parchment. Opacity bumped to 0.12 for visible paper texture.
-
-### Layer order (bottom to top)
-
-1. Parchment fill rect
-2. Edge-darkening gradient rects (4 sides)
-3. Stain overlay rect (feTurbulence splotches)
-4. Ring stain circles (2-3)
-5. Background hatching fill
-6. Contour lines
-7. Terrain hatching (hills, forests, ridges)
-8. Trail paths + river
-9. Crease lines (2-3)
-10. Paper grain filter rect
-11. Elevation marks
-12. Map border
-13. Title cartouche
-14. Landmarks + tooltips
-15. Compass rose
-
-### File
-
-| File | Action |
-|---|---|
-| `src/pages/MapPage.tsx` | Major edit — parchment base, stain filters, crease marks, 3D tilt, color inversion |
-
+Expected result:
+- Story and other top-left/center landmarks become reliably clickable.
+- Hover descriptions feel like page previews rather than object captions.
+- Content reads as a spiral-bound notebook.
+- Blueprints sits correctly on its pole.
+- Icons are more legible.
+- The map edge feels more naturally torn, wrinkled, and tactile while staying classy.
