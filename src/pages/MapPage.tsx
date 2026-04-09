@@ -129,13 +129,10 @@ const LandmarkIcon = ({ id }: { id: string }) => {
       );
     case 'blueprints':
       return (
-        <g>
-          {/* Post/pole — starts below paper, goes down */}
+        <g transform="translate(0, -10)">
           <line x1={0} y1={-6} x2={0} y2={18} stroke="#3d3020" strokeWidth={2} />
-          {/* Blueprint paper on top of post */}
           <rect x={-10} y={-22} width={20} height={20} rx={0} fill="none" stroke={stroke} strokeWidth={sw} />
           <circle cx={0} cy={-22} r={2} fill="#8B6914" stroke="#8B6914" strokeWidth={0.5} />
-          {/* Grid lines */}
           <line x1={-6} y1={-16} x2={6} y2={-16} stroke={stroke} strokeWidth={0.3} opacity={0.4} />
           <line x1={-6} y1={-10} x2={6} y2={-10} stroke={stroke} strokeWidth={0.3} opacity={0.4} />
           <line x1={-3} y1={-18} x2={-3} y2={-4} stroke={stroke} strokeWidth={0.3} opacity={0.4} />
