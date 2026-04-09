@@ -595,6 +595,9 @@ const MapPage = () => {
           <TrailPaths />
           <ElevationMarks />
 
+          {/* Paper grain texture overlay — above terrain, below landmarks */}
+          <rect x={10} y={10} width={980} height={630} filter="url(#paper-grain)" />
+
           {/* Title cartouche */}
           <g opacity={0.3}>
             <rect x={380} y={20} width={240} height={30} fill="none" stroke="#F5F0E8" strokeWidth={0.6} />
