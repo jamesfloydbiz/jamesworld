@@ -192,52 +192,141 @@ const CompassRose = ({ heading }: { heading: number | null }) => {
 
 /* ─── Topographic contour lines ─── */
 const ContourLines = () => (
-  <g opacity={0.12} fill="none" stroke="#4A5D23" strokeWidth={0.6}>
-    {/* Elevation rings — cluster 1 (upper left) */}
-    <ellipse cx={200} cy={200} rx={80} ry={50} transform="rotate(-15 200 200)" />
-    <ellipse cx={200} cy={200} rx={60} ry={35} transform="rotate(-15 200 200)" />
-    <ellipse cx={200} cy={200} rx={40} ry={22} transform="rotate(-15 200 200)" />
-    {/* Cluster 2 (center right) */}
-    <ellipse cx={700} cy={300} rx={90} ry={55} transform="rotate(10 700 300)" />
-    <ellipse cx={700} cy={300} rx={65} ry={38} transform="rotate(10 700 300)" />
-    <ellipse cx={700} cy={300} rx={40} ry={22} transform="rotate(10 700 300)" />
-    <ellipse cx={700} cy={300} rx={20} ry={10} transform="rotate(10 700 300)" />
-    {/* Cluster 3 (lower center) */}
-    <ellipse cx={450} cy={500} rx={100} ry={45} transform="rotate(-8 450 500)" />
-    <ellipse cx={450} cy={500} rx={70} ry={30} transform="rotate(-8 450 500)" />
-    <ellipse cx={450} cy={500} rx={40} ry={16} transform="rotate(-8 450 500)" />
-    {/* Wandering contour paths */}
-    <path d="M50 350 Q150 320 250 340 Q350 360 450 330 Q550 300 650 320" />
-    <path d="M100 420 Q200 400 320 410 Q440 420 560 400 Q680 380 800 410" />
-    <path d="M80 150 Q180 130 300 160 Q400 180 500 150 Q600 120 750 160" />
-    <path d="M120 550 Q250 530 380 560 Q500 580 630 540 Q750 510 900 550" />
+  <g fill="none" stroke="#2a2a1a">
+    {/* Cluster 1 — upper left, broad elevation */}
+    <ellipse cx={200} cy={200} rx={85} ry={52} transform="rotate(-15 200 200)" strokeWidth={0.6} opacity={0.14} />
+    <ellipse cx={200} cy={200} rx={62} ry={36} transform="rotate(-15 200 200)" strokeWidth={0.5} opacity={0.12} />
+    <ellipse cx={200} cy={200} rx={38} ry={20} transform="rotate(-12 200 200)" strokeWidth={0.4} opacity={0.1} />
+    {/* Cluster 2 — center right, tighter peak */}
+    <ellipse cx={700} cy={300} rx={95} ry={58} transform="rotate(10 700 300)" strokeWidth={0.7} opacity={0.16} />
+    <ellipse cx={700} cy={300} rx={68} ry={40} transform="rotate(10 700 300)" strokeWidth={0.5} opacity={0.13} />
+    <ellipse cx={700} cy={300} rx={42} ry={24} transform="rotate(8 700 300)" strokeWidth={0.4} opacity={0.1} />
+    <ellipse cx={700} cy={300} rx={18} ry={9} transform="rotate(8 700 300)" strokeWidth={0.4} opacity={0.08} />
+    {/* Cluster 3 — lower center */}
+    <ellipse cx={450} cy={500} rx={105} ry={48} transform="rotate(-8 450 500)" strokeWidth={0.6} opacity={0.14} />
+    <ellipse cx={450} cy={500} rx={72} ry={32} transform="rotate(-8 450 500)" strokeWidth={0.5} opacity={0.11} />
+    <ellipse cx={450} cy={500} rx={40} ry={16} transform="rotate(-6 450 500)" strokeWidth={0.4} opacity={0.09} />
+    {/* Cluster 4 — upper right, subtle plateau */}
+    <ellipse cx={820} cy={140} rx={70} ry={35} transform="rotate(20 820 140)" strokeWidth={0.5} opacity={0.1} />
+    <ellipse cx={820} cy={140} rx={45} ry={20} transform="rotate(22 820 140)" strokeWidth={0.4} opacity={0.08} />
+    {/* Cluster 5 — lower left saddle */}
+    <ellipse cx={130} cy={520} rx={60} ry={30} transform="rotate(-5 130 520)" strokeWidth={0.5} opacity={0.11} />
+    <ellipse cx={130} cy={520} rx={35} ry={16} transform="rotate(-5 130 520)" strokeWidth={0.4} opacity={0.09} />
+    {/* Cluster 6 — mid-upper */}
+    <path d="M380 160 Q420 140 460 155 Q500 170 540 150 Q560 142 580 155" strokeWidth={0.5} opacity={0.1} />
+    <path d="M390 175 Q430 155 470 170 Q510 185 545 168" strokeWidth={0.4} opacity={0.08} />
+    {/* Cluster 7 — far right valley */}
+    <path d="M870 350 Q890 330 920 345 Q940 360 960 340" strokeWidth={0.5} opacity={0.12} />
+    <path d="M875 365 Q895 345 925 360 Q945 375 960 358" strokeWidth={0.4} opacity={0.09} />
+    {/* Cluster 8 — lower right */}
+    <ellipse cx={750} cy={540} rx={55} ry={28} transform="rotate(12 750 540)" strokeWidth={0.5} opacity={0.1} />
+    <ellipse cx={750} cy={540} rx={30} ry={14} transform="rotate(12 750 540)" strokeWidth={0.4} opacity={0.08} />
+
+    {/* Wandering cross-map contour lines */}
+    <path d="M50 350 Q150 320 250 340 Q350 360 450 330 Q550 300 650 320 Q750 340 900 310" strokeWidth={0.6} opacity={0.12} />
+    <path d="M100 420 Q200 400 320 410 Q440 425 560 400 Q680 380 800 410 Q880 425 960 405" strokeWidth={0.5} opacity={0.1} />
+    <path d="M80 150 Q180 130 300 160 Q400 180 500 150 Q600 120 750 160 Q850 180 950 150" strokeWidth={0.6} opacity={0.13} />
+    <path d="M120 550 Q250 530 380 560 Q500 580 630 540 Q750 510 900 550" strokeWidth={0.5} opacity={0.1} />
+    <path d="M40 260 Q140 240 260 265 Q380 285 480 255 Q580 230 700 260 Q800 280 920 250" strokeWidth={0.4} opacity={0.09} />
+    <path d="M60 480 Q180 460 300 485 Q420 505 540 475 Q660 450 780 480 Q880 500 960 470" strokeWidth={0.5} opacity={0.11} />
+    <path d="M30 100 Q150 85 280 105 Q400 125 520 95 Q640 70 780 100 Q880 115 970 90" strokeWidth={0.4} opacity={0.08} />
+    <path d="M50 600 Q200 585 350 610 Q500 630 650 595 Q800 570 950 600" strokeWidth={0.4} opacity={0.08} />
   </g>
 );
 
 /* ─── Hatching pattern terrain ─── */
 const TerrainHatching = () => (
-  <g opacity={0.06} stroke="#3D2817" strokeWidth={0.4}>
+  <g stroke="#1a1a0e">
     {/* Diagonal hatching clusters */}
     {[
-      { cx: 100, cy: 300, r: 60 },
-      { cx: 850, cy: 150, r: 50 },
-      { cx: 500, cy: 580, r: 70 },
-      { cx: 350, cy: 120, r: 45 },
-      { cx: 750, cy: 480, r: 55 },
-    ].map(({ cx, cy, r }, ci) =>
-      Array.from({ length: 12 }).map((_, i) => {
-        const offset = (i - 6) * 8;
+      { cx: 100, cy: 300, r: 60, op: 0.06 },
+      { cx: 850, cy: 150, r: 50, op: 0.05 },
+      { cx: 500, cy: 580, r: 70, op: 0.06 },
+      { cx: 350, cy: 120, r: 45, op: 0.05 },
+      { cx: 750, cy: 480, r: 55, op: 0.06 },
+      { cx: 920, cy: 400, r: 45, op: 0.05 },
+      { cx: 60, cy: 550, r: 40, op: 0.04 },
+    ].map(({ cx, cy, r, op }, ci) =>
+      Array.from({ length: 14 }).map((_, i) => {
+        const offset = (i - 7) * 7;
         return (
           <line
-            key={`${ci}-${i}`}
+            key={`h-${ci}-${i}`}
             x1={cx + offset - r * 0.5}
             y1={cy - r * 0.5}
             x2={cx + offset + r * 0.5}
             y2={cy + r * 0.5}
+            strokeWidth={0.4}
+            opacity={op}
           />
         );
       })
     )}
+
+    {/* Cross-hatching in lower areas (perpendicular overlay) */}
+    {[
+      { cx: 500, cy: 580, r: 55 },
+      { cx: 100, cy: 300, r: 45 },
+    ].map(({ cx, cy, r }, ci) =>
+      Array.from({ length: 10 }).map((_, i) => {
+        const offset = (i - 5) * 8;
+        return (
+          <line
+            key={`xh-${ci}-${i}`}
+            x1={cx - r * 0.5}
+            y1={cy + offset - r * 0.5}
+            x2={cx + r * 0.5}
+            y2={cy + offset + r * 0.5}
+            strokeWidth={0.3}
+            opacity={0.04}
+          />
+        );
+      })
+    )}
+
+    {/* Hill marks — short curved strokes ⌢ */}
+    {[
+      { x: 220, y: 180 }, { x: 235, y: 188 }, { x: 210, y: 192 },
+      { x: 700, y: 270 }, { x: 715, y: 278 }, { x: 690, y: 282 }, { x: 705, y: 290 },
+      { x: 455, y: 470 }, { x: 440, y: 478 }, { x: 465, y: 482 },
+      { x: 820, y: 120 }, { x: 835, y: 128 },
+      { x: 150, y: 400 }, { x: 165, y: 408 }, { x: 140, y: 412 },
+    ].map(({ x, y }, i) => (
+      <path key={`hill-${i}`} d={`M${x-8} ${y} Q${x} ${y-6} ${x+8} ${y}`} fill="none" strokeWidth={0.5} opacity={0.1} />
+    ))}
+
+    {/* Forest dot clusters — near Projects/pine and scattered */}
+    {[
+      // Dense cluster near Projects (680, 260)
+      { cx: 650, cy: 240 }, { cx: 655, cy: 248 }, { cx: 660, cy: 235 },
+      { cx: 668, cy: 245 }, { cx: 645, cy: 252 }, { cx: 672, cy: 255 },
+      { cx: 658, cy: 260 }, { cx: 665, cy: 230 }, { cx: 648, cy: 228 },
+      { cx: 675, cy: 238 }, { cx: 642, cy: 242 }, { cx: 670, cy: 248 },
+      // Scattered elsewhere
+      { cx: 300, cy: 180 }, { cx: 308, cy: 185 }, { cx: 295, cy: 190 },
+      { cx: 310, cy: 175 }, { cx: 303, cy: 195 },
+      { cx: 550, cy: 350 }, { cx: 558, cy: 355 }, { cx: 545, cy: 360 },
+      { cx: 560, cy: 345 }, { cx: 553, cy: 365 }, { cx: 548, cy: 340 },
+      { cx: 880, cy: 320 }, { cx: 888, cy: 325 }, { cx: 875, cy: 330 },
+      { cx: 120, cy: 480 }, { cx: 128, cy: 485 }, { cx: 115, cy: 490 },
+    ].map(({ cx, cy }, i) => (
+      <circle key={`dot-${i}`} cx={cx} cy={cy} r={1.2} fill="#1a1a0e" stroke="none" opacity={0.08} />
+    ))}
+
+    {/* Ridge line marks — short parallel dashes */}
+    {[
+      { x: 180, y: 210, angle: -15 },
+      { x: 190, y: 215, angle: -15 },
+      { x: 200, y: 220, angle: -15 },
+      { x: 720, y: 310, angle: 10 },
+      { x: 730, y: 315, angle: 10 },
+      { x: 740, y: 320, angle: 10 },
+      { x: 460, y: 510, angle: -8 },
+      { x: 470, y: 515, angle: -8 },
+      { x: 480, y: 520, angle: -8 },
+    ].map(({ x, y, angle }, i) => (
+      <line key={`ridge-${i}`} x1={x} y1={y} x2={x + 10} y2={y} strokeWidth={0.5} opacity={0.1} transform={`rotate(${angle} ${x+5} ${y})`} />
+    ))}
   </g>
 );
 
@@ -249,6 +338,9 @@ const ElevationMarks = () => (
     <text x={460} y={490}>1,956</text>
     <text x={130} y={380}>2,201</text>
     <text x={800} y={420}>2,688</text>
+    <text x={830} y={130}>2,440</text>
+    <text x={140} y={530}>1,780</text>
+    <text x={560} y={360}>2,115</text>
   </g>
 );
 
@@ -260,11 +352,26 @@ const MapBorder = () => (
   </g>
 );
 
-/* ─── River / trail paths ─── */
+/* ─── Trail paths connecting landmarks ─── */
 const TrailPaths = () => (
-  <g fill="none" opacity={0.1}>
-    <path d="M50 200 Q150 180 250 220 Q350 260 400 300 Q450 340 500 380 Q550 420 600 440 Q700 480 850 460" stroke="#4A5D23" strokeWidth={1} strokeDasharray="4 6" />
-    <path d="M300 50 Q310 120 280 200 Q260 280 290 360 Q320 440 350 550 Q370 600 380 650" stroke="#3D6B8E" strokeWidth={0.8} opacity={0.6} />
+  <g fill="none" stroke="#2a2a1a" strokeWidth={0.8}>
+    {/* Story → Projects */}
+    <path d="M295 200 Q340 210 400 225 Q480 240 550 250 Q600 255 665 260" strokeDasharray="3 5" opacity={0.1} />
+    {/* Story → Network */}
+    <path d="M265 205 Q240 250 220 300 Q200 340 180 380 Q170 400 165 415" strokeDasharray="3 5" opacity={0.09} />
+    {/* Network → Content */}
+    <path d="M180 430 Q230 445 290 460 Q360 475 420 480 Q470 482 510 480" strokeDasharray="3 5" opacity={0.1} />
+    {/* Content → Blueprints */}
+    <path d="M540 485 Q580 490 630 495 Q680 498 720 500 Q750 502 770 500" strokeDasharray="3 5" opacity={0.09} />
+    {/* Projects → Blueprints */}
+    <path d="M690 275 Q710 320 730 370 Q750 410 760 450 Q770 475 775 495" strokeDasharray="3 5" opacity={0.1} />
+    {/* Story → Content (long trail) */}
+    <path d="M285 210 Q300 260 330 320 Q370 380 420 430 Q460 460 510 475" strokeDasharray="2 6" opacity={0.07} />
+
+    {/* River — main channel */}
+    <path d="M300 50 Q310 120 280 200 Q260 280 290 360 Q320 440 350 550 Q370 600 380 650" stroke="#1a2a2a" strokeWidth={0.8} opacity={0.08} />
+    {/* Tributary fork */}
+    <path d="M290 360 Q250 380 220 420 Q195 460 180 520 Q170 560 165 620" stroke="#1a2a2a" strokeWidth={0.5} opacity={0.06} />
   </g>
 );
 
