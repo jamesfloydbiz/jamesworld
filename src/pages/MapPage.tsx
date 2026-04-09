@@ -35,7 +35,7 @@ const LANDMARKS = [
     id: 'story',
     route: '/story',
     label: 'Story',
-    descriptor: 'A worn paperback near the fire',
+    descriptor: 'A biography told as a timeline',
     x: 280,
     y: 190,
   },
@@ -43,7 +43,7 @@ const LANDMARKS = [
     id: 'projects',
     route: '/projects',
     label: 'Projects',
-    descriptor: 'A pack leaning against a pine',
+    descriptor: 'Active work and initiatives',
     x: 680,
     y: 260,
   },
@@ -51,7 +51,7 @@ const LANDMARKS = [
     id: 'network',
     route: '/network',
     label: 'Network',
-    descriptor: 'A ridgeline lookout point',
+    descriptor: 'Connect and reach out',
     x: 160,
     y: 420,
   },
@@ -59,7 +59,7 @@ const LANDMARKS = [
     id: 'content',
     route: '/content',
     label: 'Content',
-    descriptor: 'An open journal on a flat rock',
+    descriptor: 'Writing, media, and archive',
     x: 520,
     y: 480,
   },
@@ -67,8 +67,8 @@ const LANDMARKS = [
     id: 'blueprints',
     route: '/blueprints',
     label: 'Blueprints',
-    descriptor: 'Blueprint paper pinned to bark',
-    x: 780,
+    descriptor: 'Systems, models, and processes',
+    x: 790,
     y: 500,
   },
 ];
@@ -112,6 +112,10 @@ const LandmarkIcon = ({ id }: { id: string }) => {
           <ellipse cx={0} cy={10} rx={18} ry={5} fill="none" stroke={stroke} strokeWidth={0.6} opacity={0.4} />
           <rect x={-14} y={-6} width={12} height={16} rx={1} fill="none" stroke={stroke} strokeWidth={sw} transform="rotate(-5)" />
           <rect x={2} y={-6} width={12} height={16} rx={1} fill="none" stroke={stroke} strokeWidth={sw} transform="rotate(5)" />
+          {/* Spiral binding between pages */}
+          {Array.from({ length: 6 }).map((_, i) => (
+            <ellipse key={`sp-${i}`} cx={-1} cy={-4 + i * 3} rx={1.8} ry={1} fill="none" stroke={stroke} strokeWidth={0.4} opacity={0.5} />
+          ))}
           <line x1={-10} y1={0} x2={-4} y2={0} stroke={stroke} strokeWidth={0.4} opacity={0.5} />
           <line x1={-10} y1={3} x2={-5} y2={3} stroke={stroke} strokeWidth={0.4} opacity={0.5} />
           <line x1={-10} y1={6} x2={-6} y2={6} stroke={stroke} strokeWidth={0.4} opacity={0.5} />
@@ -619,8 +623,7 @@ const MapPage = () => {
               transition={{ duration: 0.6, ease: 'easeOut' }}
             />
             <motion.div
-              className={`fixed inset-0 z-[100] flex items-center justify-center ${shrinkToCorner ? 'pointer-events-auto cursor-pointer' : 'pointer-events-none'}`}
-              onClick={() => shrinkToCorner && navigate('/')}
+              className="fixed inset-0 z-[100] flex items-center justify-center pointer-events-none"
               animate={shrinkToCorner ? {
                 x: 'calc(-50vw + 64px)',
                 y: 'calc(-50vh + 48px)',
@@ -628,7 +631,8 @@ const MapPage = () => {
               transition={{ duration: 0.7, ease: [0.4, 0, 0.2, 1] }}
             >
               <motion.div
-                className="relative w-48 h-48"
+                className={`relative w-48 h-48 ${shrinkToCorner ? 'pointer-events-auto cursor-pointer' : ''}`}
+                onClick={() => shrinkToCorner && navigate('/')}
                 animate={shrinkToCorner ? { scale: 0.33 } : { scale: 1 }}
                 transition={{ duration: 0.7, ease: [0.4, 0, 0.2, 1] }}
               >
@@ -802,10 +806,10 @@ const MapPage = () => {
               >
                 {/* Clickable hit area */}
                 <rect
-                  x={-20}
-                  y={-26}
-                  width={40}
-                  height={52}
+                  x={-28}
+                  y={-36}
+                  width={56}
+                  height={72}
                   fill="transparent"
                   className="cursor-pointer"
                   style={{ pointerEvents: 'all' }}
@@ -813,7 +817,7 @@ const MapPage = () => {
                   onMouseLeave={() => setHoveredLandmark(null)}
                   onClick={() => navigate(lm.route)}
                 />
-                <g opacity={hoveredLandmark === lm.id ? 1 : 0.7} style={{ transition: 'opacity 0.3s ease', pointerEvents: 'none' }} transform="scale(1.25)">
+                <g opacity={hoveredLandmark === lm.id ? 1 : 0.7} style={{ transition: 'opacity 0.3s ease', pointerEvents: 'none' }} transform="scale(1.875)">
                   <LandmarkIcon id={lm.id} />
                 </g>
                 <text
