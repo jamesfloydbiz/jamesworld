@@ -551,21 +551,40 @@ const MapPage = () => {
           preserveAspectRatio="xMidYMid meet"
           style={{ willChange: 'transform' }}
         >
-          {/* Paper texture filter */}
           <defs>
-            <filter id="paper-grain">
-              <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" result="noise" />
-              <feColorMatrix type="saturate" values="0" in="noise" result="gray" />
-              <feBlend in="SourceGraphic" in2="gray" mode="multiply" />
+            {/* Paper grain filter — sepia-tinted noise */}
+            <filter id="paper-grain" x="0%" y="0%" width="100%" height="100%">
+              <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="5" stitchTiles="stitch" result="noise" />
+              <feColorMatrix type="matrix" in="noise" result="tinted"
+                values="0.16 0 0 0 0
+                        0.14 0 0 0 0
+                        0.06 0 0 0 0
+                        0 0 0 0.06 0" />
             </filter>
-            {/* Hatching pattern */}
+            {/* Hatching pattern — primary diagonal */}
             <pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
-              <line x1={0} y1={0} x2={0} y2={6} stroke="#3D2817" strokeWidth={0.3} opacity={0.08} />
+              <line x1={0} y1={0} x2={0} y2={6} stroke="#1a1a0e" strokeWidth={0.3} opacity={0.08} />
             </pattern>
+            {/* Hatching pattern — cross angle for forest areas */}
+            <pattern id="hatch-cross" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(-30)">
+              <line x1={0} y1={0} x2={0} y2={5} stroke="#1a1a0e" strokeWidth={0.25} opacity={0.06} />
+            </pattern>
+            {/* Vignette radial gradient */}
+            <radialGradient id="vignette" cx="50%" cy="50%" r="55%" fx="50%" fy="50%">
+              <stop offset="0%" stopColor="#000000" stopOpacity="0" />
+              <stop offset="70%" stopColor="#000000" stopOpacity="0" />
+              <stop offset="100%" stopColor="#000000" stopOpacity="0.6" />
+            </radialGradient>
           </defs>
 
           {/* Background hatching fill */}
           <rect x={15} y={15} width={970} height={620} fill="url(#hatch)" />
+          {/* Cross-hatch in forest areas */}
+          <rect x={600} y={200} width={180} height={120} fill="url(#hatch-cross)" />
+          <rect x={260} y={150} width={120} height={90} fill="url(#hatch-cross)" />
+
+          {/* Vignette overlay — sits above base fill */}
+          <rect x={10} y={10} width={980} height={630} fill="url(#vignette)" opacity={0.35} />
 
           {/* Map border */}
           <MapBorder />
