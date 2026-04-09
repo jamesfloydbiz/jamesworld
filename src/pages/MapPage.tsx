@@ -555,18 +555,18 @@ const MapPage = () => {
             <filter id="paper-grain" x="0%" y="0%" width="100%" height="100%">
               <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="5" stitchTiles="stitch" result="noise" />
               <feColorMatrix type="matrix" in="noise" result="tinted"
-                values="0.16 0 0 0 0
-                        0.14 0 0 0 0
-                        0.06 0 0 0 0
-                        0 0 0 0.06 0" />
+                values="0.32 0 0 0 0
+                        0.28 0 0 0 0
+                        0.12 0 0 0 0
+                        0 0 0 0.12 0" />
             </filter>
             {/* Hatching pattern — primary diagonal */}
             <pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
-              <line x1={0} y1={0} x2={0} y2={6} stroke="#1a1a0e" strokeWidth={0.3} opacity={0.16} />
+              <line x1={0} y1={0} x2={0} y2={6} stroke="#1a1a0e" strokeWidth={0.3} opacity={0.32} />
             </pattern>
             {/* Hatching pattern — cross angle for forest areas */}
             <pattern id="hatch-cross" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(-30)">
-              <line x1={0} y1={0} x2={0} y2={5} stroke="#1a1a0e" strokeWidth={0.25} opacity={0.12} />
+              <line x1={0} y1={0} x2={0} y2={5} stroke="#1a1a0e" strokeWidth={0.25} opacity={0.24} />
             </pattern>
             {/* Vignette radial gradient */}
             <radialGradient id="vignette" cx="50%" cy="50%" r="55%" fx="50%" fy="50%">
@@ -598,9 +598,9 @@ const MapPage = () => {
           <rect x={10} y={10} width={980} height={630} filter="url(#paper-grain)" />
 
           {/* Title cartouche */}
-          <g opacity={0.3}>
-            <rect x={380} y={20} width={240} height={30} fill="none" stroke="#F5F0E8" strokeWidth={0.6} />
-            <text x={500} y={40} textAnchor="middle" fill="#F5F0E8" fontSize={9} fontFamily="monospace" letterSpacing={4}>
+          <g opacity={0.35}>
+            <rect x={370} y={18} width={260} height={34} fill="none" stroke="#F5F0E8" strokeWidth={0.6} />
+            <text x={500} y={41} textAnchor="middle" fill="#F5F0E8" fontSize={10} fontFamily="monospace" letterSpacing={4}>
               JAMES FLOYD'S WORLD
             </text>
           </g>
