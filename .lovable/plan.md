@@ -1,70 +1,72 @@
 
 
-## Add Rich Terrain to the Map — "Rained on once"
+## Make the Map Feel Like Weathered Paper — Tactile & 3D
 
-### What changes
+### The Vision
 
-**Single file**: `src/pages/MapPage.tsx`
+The reference images show warm parchment tones, ink staining, crease marks, and edge wear. The current map is dark SVG on black. The core shift: give the map rectangle a **warm parchment base fill** so terrain marks read as ink-on-paper rather than faint marks on void. Then add aging artifacts (stains, creases, edge darkening) and replace the flat parallax with a **CSS perspective tilt** that makes the map lean away from the cursor like paper held in hand.
 
-All existing structure (landmarks, compass, parallax, logo transition, navigation) stays untouched. We're adding terrain density and atmosphere to the SVG.
+### Changes — `src/pages/MapPage.tsx`
 
-### 1. SVG Filter Definitions — expand `<defs>`
+**1. Parchment base fill**
 
-Add three new filters/elements:
+Replace the black void inside the map border with a warm parchment rectangle: `#d4c5a0` at full opacity (or a linear gradient from `#d4c5a0` to `#c4b48a` for slight unevenness). This single change transforms everything — all existing terrain marks, contour lines, hatching, and trails will now read as dark ink on aged paper.
 
-- **Paper grain filter** (`feTurbulence` + `feColorMatrix` + `feBlend`) — applied as a full-map overlay rect at ~0.06 opacity in sepia tones, not white. Gives the entire map rectangle a worn-paper feel.
-- **Vignette** — radial gradient from transparent center to black edges, applied as a rect over the map interior. Subtle — `opacity: 0.4`. Makes the edges feel like they curl inward.
-- **Additional hatching patterns** — a second cross-hatch pattern at a different angle for forest/terrain variation.
+**2. Stain & aging overlays (SVG, no images)**
 
-### 2. Contour Lines — dramatically expand `ContourLines`
+Add inside `<defs>`:
+- A second `feTurbulence` filter (`id="stain"`) with lower `baseFrequency` (~0.008) and high contrast via `feColorMatrix` — produces organic splotch shapes. Apply as a rect overlay in sepia (`#8b7355`) at ~0.15 opacity to simulate water/coffee stains.
+- 2-3 radial gradients simulating ring stains (circular, off-center, very faint).
+- A few `<path>` crease lines — long, subtle, slightly irregular strokes across the map in `#9e8e6e` at low opacity, as if the paper was folded.
 
-Current: 3 ellipse clusters + 4 wandering paths at `opacity={0.12}` in `#4A5D23`.
+**3. Edge darkening (burn effect)**
 
-Replace with: **8-10 contour clusters** spread across the full map, using `#2a2a1a` (dark olive-sepia) instead of `#4A5D23`. Varying stroke widths (0.4–0.8), varying opacities (0.08–0.18). Add irregularity — use `<path>` with organic curves instead of perfect ellipses for some clusters. More wandering cross-map contour lines (6-8 total) at different elevations.
+Replace the current simple radial vignette with a **rectangular vignette** — four linear gradients (top, bottom, left, right) fading from `#6b5a3a` to transparent, creating darkened edges like aged paper that's browned at the margins. More authentic than radial.
 
-### 3. Terrain Hatching — expand `TerrainHatching`
+**4. Boost terrain contrast**
 
-Current: 5 diagonal-line clusters at `opacity={0.06}`.
+With a light parchment background, the existing terrain strokes (`#2a2a1a`, `#1a1a0e`) will naturally pop much harder. Reduce some opacities slightly (contour lines from 0.28 → 0.2, hatching from 0.12 → 0.1) so they feel like faded ink rather than fresh marker. The river stroke shifts to a deeper blue-brown (`#3a4a4a`).
 
-Replace with: **12-15 hatching clusters** in `#1a1a0e`, including:
-- Hill marks (short curved strokes like `⌢` repeated in clusters — classic cartographic hill shading)
-- Forest dot clusters (small circles, 1-2px, scattered in groups of 8-15 near the Projects/pine landmark area and scattered elsewhere)
-- Ridge line marks (short parallel dashes along elevation lines)
-- Cross-hatching in lower-elevation areas (two overlapping diagonal patterns)
+**5. 3D perspective tilt (paper-in-hand effect)**
 
-### 4. Trail Paths — expand `TrailPaths`
+Replace the current flat `translate(Xpx, Ypx)` parallax with a **CSS `perspective` + `rotateX/rotateY` transform**. The map tilts *away* from the mouse (inverted — mouse goes right, map tilts left). Implementation:
 
-Current: 1 dashed trail + 1 faint river.
+```
+container: perspective: 1200px
+SVG wrapper: transform: rotateX(Ydeg) rotateY(Xdeg)
+```
 
-Replace with: **Faint trail paths connecting all 5 landmarks** — dashed/dotted lines in `#2a2a1a` at low opacity (0.08-0.12). Trails should meander organically (cubic bezier curves), not straight lines. Keep the existing river but add a small tributary fork. Trail style: `strokeDasharray="3 5"` for a worn, intermittent path look.
+Where X/Y are ±3° max, derived from mouse position. Keep the existing `requestAnimationFrame` lerp loop — just change the output from `translate` to `rotateX/rotateY`. This creates a subtle 3D paper-held-by-someone effect with zero performance cost.
 
-### 5. Vignette overlay
+**6. Adjust icon/text colors for parchment**
 
-A `<rect>` filled with a radial gradient: transparent at center, fading to `#000000` at edges. Positioned inside the map border. `opacity: 0.35`.
+Landmark icons, labels, border, title, compass, and elevation marks shift from `#F5F0E8` (light cream on black) to `#2a2218` (dark ink on parchment). The golden accent `#B8860B` stays. Tooltip backgrounds shift to `rgba(42,34,24,0.85)` with light text.
 
-### 6. Paper texture overlay rect
+**7. Grain overlay tuning**
 
-A full-map `<rect>` with the `feTurbulence` paper-grain filter applied, using sepia-tinted noise (`#2a2a1a` color matrix) at very low opacity. Sits above terrain but below landmarks.
-
-### 7. Color corrections
-
-- Contour lines: `#4A5D23` → `#2a2a1a`
-- Hatching strokes: `#3D2817` → `#1a1a0e`
-- Trail paths: `#4A5D23` → `#2a2a1a`
-- River keeps its blue-gray but drops to lower opacity
-- All icons and labels stay exactly as they are
+The existing HTML grain overlay (z-30 div) gets a `mixBlendMode: 'multiply'` instead of `'overlay'` to work with the light parchment. Opacity bumped to 0.12 for visible paper texture.
 
 ### Layer order (bottom to top)
 
-1. Background hatching fill
-2. Vignette radial gradient
-3. Contour lines
-4. Terrain hatching (hills, forests, ridges)
-5. Trail paths
-6. Paper grain texture overlay
-7. Elevation marks
-8. Map border
-9. Title cartouche
-10. Landmarks + tooltips
-11. Compass rose
+1. Parchment fill rect
+2. Edge-darkening gradient rects (4 sides)
+3. Stain overlay rect (feTurbulence splotches)
+4. Ring stain circles (2-3)
+5. Background hatching fill
+6. Contour lines
+7. Terrain hatching (hills, forests, ridges)
+8. Trail paths + river
+9. Crease lines (2-3)
+10. Paper grain filter rect
+11. Elevation marks
+12. Map border
+13. Title cartouche
+14. Landmarks + tooltips
+15. Compass rose
+
+### File
+
+| File | Action |
+|---|---|
+| `src/pages/MapPage.tsx` | Major edit — parchment base, stain filters, crease marks, 3D tilt, color inversion |
 
