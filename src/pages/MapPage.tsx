@@ -90,15 +90,17 @@ const LandmarkIcon = ({ id }: { id: string }) => {
     case 'projects':
       return (
         <g>
-          {/* Tree trunk behind backpack */}
-          <line x1={10} y1={-20} x2={10} y2={14} stroke="#3d3020" strokeWidth={sw} />
-          <path d="M4 -8 L10 -16 L16 -8" fill="none" stroke="#3d3020" strokeWidth={sw} />
-          <path d="M5 -2 L10 -10 L15 -2" fill="none" stroke="#3d3020" strokeWidth={sw} />
-          {/* Backpack leaning against tree — shifted left and tilted */}
-          <g transform="rotate(-12, 0, 6)">
-            <rect x={-10} y={-4} width={14} height={16} rx={3} fill="none" stroke={stroke} strokeWidth={sw} />
-            <path d="M-6 -4 Q-6 -10 -3 -10 Q0 -10 0 -4" fill="none" stroke={stroke} strokeWidth={sw} />
-            <line x1={-5} y1={4} x2={1} y2={4} stroke={stroke} strokeWidth={0.6} />
+          {/* Tall tree trunk */}
+          <line x1={10} y1={-28} x2={10} y2={14} stroke="#3d3020" strokeWidth={sw} />
+          {/* Three branch tiers */}
+          <path d="M3 -12 L10 -22 L17 -12" fill="none" stroke="#3d3020" strokeWidth={sw} />
+          <path d="M4 -6 L10 -16 L16 -6" fill="none" stroke="#3d3020" strokeWidth={sw} />
+          <path d="M5 0 L10 -10 L15 0" fill="none" stroke="#3d3020" strokeWidth={sw} />
+          {/* Backpack leaning right against tree */}
+          <g transform="rotate(12, 4, 6)">
+            <rect x={-4} y={-4} width={14} height={16} rx={3} fill="none" stroke={stroke} strokeWidth={sw} />
+            <path d="M0 -4 Q0 -10 3 -10 Q6 -10 6 -4" fill="none" stroke={stroke} strokeWidth={sw} />
+            <line x1={1} y1={4} x2={7} y2={4} stroke={stroke} strokeWidth={0.6} />
           </g>
         </g>
       );
@@ -128,17 +130,16 @@ const LandmarkIcon = ({ id }: { id: string }) => {
     case 'blueprints':
       return (
         <g>
-          {/* Post/pole centered */}
-          <line x1={0} y1={-22} x2={0} y2={16} stroke="#3d3020" strokeWidth={2} />
-          {/* Blueprint paper centered on post, tacked at top */}
-          <rect x={-10} y={-14} width={20} height={24} rx={0} fill="none" stroke={stroke} strokeWidth={sw} />
-          <circle cx={0} cy={-14} r={2} fill="#8B6914" stroke="#8B6914" strokeWidth={0.5} />
+          {/* Post/pole — starts below paper, goes down */}
+          <line x1={0} y1={-6} x2={0} y2={18} stroke="#3d3020" strokeWidth={2} />
+          {/* Blueprint paper on top of post */}
+          <rect x={-10} y={-22} width={20} height={20} rx={0} fill="none" stroke={stroke} strokeWidth={sw} />
+          <circle cx={0} cy={-22} r={2} fill="#8B6914" stroke="#8B6914" strokeWidth={0.5} />
           {/* Grid lines */}
-          <line x1={-6} y1={-6} x2={6} y2={-6} stroke={stroke} strokeWidth={0.3} opacity={0.4} />
-          <line x1={-6} y1={0} x2={6} y2={0} stroke={stroke} strokeWidth={0.3} opacity={0.4} />
-          <line x1={-6} y1={6} x2={6} y2={6} stroke={stroke} strokeWidth={0.3} opacity={0.4} />
-          <line x1={-3} y1={-10} x2={-3} y2={8} stroke={stroke} strokeWidth={0.3} opacity={0.4} />
-          <line x1={3} y1={-10} x2={3} y2={8} stroke={stroke} strokeWidth={0.3} opacity={0.4} />
+          <line x1={-6} y1={-16} x2={6} y2={-16} stroke={stroke} strokeWidth={0.3} opacity={0.4} />
+          <line x1={-6} y1={-10} x2={6} y2={-10} stroke={stroke} strokeWidth={0.3} opacity={0.4} />
+          <line x1={-3} y1={-18} x2={-3} y2={-4} stroke={stroke} strokeWidth={0.3} opacity={0.4} />
+          <line x1={3} y1={-18} x2={3} y2={-4} stroke={stroke} strokeWidth={0.3} opacity={0.4} />
         </g>
       );
     default:
