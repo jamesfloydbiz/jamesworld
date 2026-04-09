@@ -136,12 +136,12 @@ const LandmarkIcon = ({ id }: { id: string }) => {
   }
 };
 
-/* ─── Compass Rose — dark ink ─── */
+/* ─── Compass Rose — dark ink, reduced opacity ─── */
 const CompassRose = ({ heading }: { heading: number | null }) => {
   const rotation = heading != null ? -heading : 0;
   const ink = '#2a2218';
   return (
-    <g transform="translate(900, 580)">
+    <g transform="translate(900, 580)" opacity={0.75}>
       <circle cx={0} cy={0} r={36} fill="none" stroke={ink} strokeWidth={0.8} opacity={0.5} />
       <circle cx={0} cy={0} r={32} fill="none" stroke={ink} strokeWidth={0.4} opacity={0.35} />
       {Array.from({ length: 16 }).map((_, i) => {
@@ -336,14 +336,74 @@ const TrailPaths = () => (
   </g>
 );
 
-/* ─── Crease lines — fold marks ─── */
+/* ─── Crease lines — fold marks, more prominent ─── */
 const CreaseLines = () => (
-  <g fill="none" stroke="#9e8e6e" strokeWidth={0.6}>
-    <path d="M500 15 Q498 200 502 400 Q500 550 500 640" opacity={0.12} />
-    <path d="M15 325 Q200 322 500 328 Q800 324 985 325" opacity={0.1} />
-    <path d="M200 12 Q198 180 205 350 Q200 500 198 640" opacity={0.06} />
-    {/* Extra crease - diagonal fold */}
-    <path d="M50 50 Q300 200 500 325 Q700 450 950 600" opacity={0.04} strokeWidth={0.4} />
+  <g fill="none">
+    {/* Main vertical fold */}
+    <path d="M500 15 Q498 200 502 400 Q500 550 500 640" stroke="#9e8e6e" strokeWidth={0.8} opacity={0.15} />
+    {/* Horizontal fold */}
+    <path d="M15 325 Q200 322 500 328 Q800 324 985 325" stroke="#9e8e6e" strokeWidth={0.7} opacity={0.12} />
+    {/* Secondary vertical */}
+    <path d="M200 12 Q198 180 205 350 Q200 500 198 640" stroke="#9e8e6e" strokeWidth={0.5} opacity={0.08} />
+    {/* Diagonal fold */}
+    <path d="M50 50 Q300 200 500 325 Q700 450 950 600" stroke="#8a7a5e" strokeWidth={0.5} opacity={0.06} />
+    {/* Wrinkle lines — short irregular creases */}
+    <path d="M150 100 Q160 105 175 98" stroke="#9e8e6e" strokeWidth={0.4} opacity={0.1} />
+    <path d="M720 180 Q735 175 745 182" stroke="#9e8e6e" strokeWidth={0.4} opacity={0.08} />
+    <path d="M380 550 Q400 545 415 552" stroke="#9e8e6e" strokeWidth={0.4} opacity={0.09} />
+    <path d="M850 480 Q860 475 875 480" stroke="#9e8e6e" strokeWidth={0.3} opacity={0.07} />
+    <path d="M90 380 Q110 375 125 382" stroke="#9e8e6e" strokeWidth={0.4} opacity={0.08} />
+    {/* Long gentle wrinkle */}
+    <path d="M300 80 Q320 78 340 82 Q360 85 380 80" stroke="#8a7a5e" strokeWidth={0.3} opacity={0.06} />
+    <path d="M600 560 Q630 555 660 560 Q690 565 720 558" stroke="#8a7a5e" strokeWidth={0.3} opacity={0.06} />
+  </g>
+);
+
+/* ─── Title Cartouche with nails — wooden sign style ─── */
+const TitleCartouche = () => (
+  <g>
+    {/* Sign background — slightly tilted for character */}
+    <g transform="translate(500, 35) rotate(-1.5)">
+      {/* Wood grain texture lines on sign */}
+      <rect x={-148} y={-20} width={296} height={40} rx={2} fill="#b8a67a" stroke="#2a2218" strokeWidth={1} />
+      {/* Wood grain lines */}
+      <line x1={-145} y1={-12} x2={145} y2={-12} stroke="#9e8e6e" strokeWidth={0.3} opacity={0.4} />
+      <line x1={-140} y1={-4} x2={142} y2={-4} stroke="#a0906a" strokeWidth={0.2} opacity={0.3} />
+      <line x1={-145} y1={4} x2={145} y2={4} stroke="#9e8e6e" strokeWidth={0.3} opacity={0.35} />
+      <line x1={-142} y1={12} x2={140} y2={12} stroke="#a0906a" strokeWidth={0.2} opacity={0.25} />
+      {/* Knot hole */}
+      <ellipse cx={-110} cy={3} rx={4} ry={3} fill="none" stroke="#8a7a5e" strokeWidth={0.5} opacity={0.4} />
+      <ellipse cx={-110} cy={3} rx={2} ry={1.5} fill="#8a7a5e" opacity={0.15} />
+
+      {/* Title text — carved/engraved look */}
+      <text x={0} y={6} textAnchor="middle" fill="#2a2218" fontSize={12.5} fontFamily="monospace" letterSpacing={4} opacity={0.8}>
+        JAMES FLOYD'S WORLD
+      </text>
+
+      {/* Nails — top left */}
+      <circle cx={-135} cy={-10} r={3} fill="#5a5040" stroke="#3a3020" strokeWidth={0.5} />
+      <circle cx={-135} cy={-10} r={1.5} fill="#7a7060" />
+      <circle cx={-135} cy={-10.5} r={0.6} fill="#9a9080" opacity={0.6} />
+
+      {/* Nails — top right */}
+      <circle cx={135} cy={-10} r={3} fill="#5a5040" stroke="#3a3020" strokeWidth={0.5} />
+      <circle cx={135} cy={-10} r={1.5} fill="#7a7060" />
+      <circle cx={135} cy={-10.5} r={0.6} fill="#9a9080" opacity={0.6} />
+
+      {/* Nails — bottom left */}
+      <circle cx={-135} cy={10} r={2.5} fill="#5a5040" stroke="#3a3020" strokeWidth={0.5} />
+      <circle cx={-135} cy={10} r={1.2} fill="#7a7060" />
+      <circle cx={-135} cy={9.5} r={0.5} fill="#9a9080" opacity={0.5} />
+
+      {/* Nails — bottom right */}
+      <circle cx={135} cy={10} r={2.5} fill="#5a5040" stroke="#3a3020" strokeWidth={0.5} />
+      <circle cx={135} cy={10} r={1.2} fill="#7a7060" />
+      <circle cx={135} cy={9.5} r={0.5} fill="#9a9080" opacity={0.5} />
+
+      {/* Directional arrows like hiking sign */}
+      <text x={-142} y={7} fill="#2a2218" fontSize={8} fontFamily="monospace" opacity={0.4}>‹</text>
+      <text x={140} y={7} fill="#2a2218" fontSize={8} fontFamily="monospace" opacity={0.4}>›</text>
+    </g>
   </g>
 );
 
@@ -369,6 +429,7 @@ const MapPage = () => {
   const footstepIdRef = useRef(0);
   const lastFootstepPos = useRef({ x: 0, y: 0 });
   const [isOnMap, setIsOnMap] = useState(false);
+  const mousePos = useRef({ x: 0, y: 0 });
 
   // 3D tilt
   const containerRef = useRef<HTMLDivElement>(null);
@@ -422,7 +483,7 @@ const MapPage = () => {
     const interval = setInterval(() => {
       setFootsteps(prev => {
         const updated = prev
-          .map(f => ({ ...f, opacity: f.opacity - 0.015 }))
+          .map(f => ({ ...f, opacity: f.opacity - 0.012 }))
           .filter(f => f.opacity > 0);
         return updated;
       });
@@ -436,17 +497,21 @@ const MapPage = () => {
     const nx = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
     const ny = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
     mouseTarget.current = { x: -nx * 3, y: ny * 3 };
+    mousePos.current = { x: e.clientX, y: e.clientY };
 
-    // Add footsteps — every 40px of movement
+    // Add footsteps — offset behind the cursor (trailing)
     const dx = e.clientX - lastFootstepPos.current.x;
     const dy = e.clientY - lastFootstepPos.current.y;
     const dist = Math.sqrt(dx * dx + dy * dy);
-    if (dist > 40 && isOnMap) {
+    if (dist > 30 && isOnMap) {
       const angle = Math.atan2(dy, dx) * (180 / Math.PI) + 90;
+      // Place footstep behind cursor
+      const behindX = e.clientX - dx * 0.3;
+      const behindY = e.clientY - dy * 0.3;
       footstepIdRef.current += 1;
       setFootsteps(prev => [
-        ...prev.slice(-20), // keep max 20
-        { id: footstepIdRef.current, x: e.clientX, y: e.clientY, rotation: angle, opacity: 0.15 },
+        ...prev.slice(-24),
+        { id: footstepIdRef.current, x: behindX, y: behindY, rotation: angle, opacity: 0.12 },
       ]);
       lastFootstepPos.current = { x: e.clientX, y: e.clientY };
     }
@@ -486,7 +551,7 @@ const MapPage = () => {
         }}
       />
 
-      {/* Footsteps */}
+      {/* Footsteps — trailing behind character */}
       {footsteps.map(f => (
         <div
           key={f.id}
@@ -589,14 +654,23 @@ const MapPage = () => {
             preserveAspectRatio="xMidYMid meet"
           >
             <defs>
-              {/* Paper grain filter */}
+              {/* Paper grain filter — increased graininess */}
               <filter id="paper-grain" x="0%" y="0%" width="100%" height="100%">
-                <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="5" stitchTiles="stitch" result="noise" />
+                <feTurbulence type="fractalNoise" baseFrequency="0.06" numOctaves="6" stitchTiles="stitch" result="noise" />
                 <feColorMatrix type="matrix" in="noise" result="tinted"
-                  values="0.4 0 0 0 0
-                          0.35 0 0 0 0
-                          0.15 0 0 0 0
-                          0 0 0 0.18 0" />
+                  values="0.45 0 0 0 0
+                          0.38 0 0 0 0
+                          0.18 0 0 0 0
+                          0 0 0 0.22 0" />
+              </filter>
+              {/* Fine grain overlay — second layer for more texture */}
+              <filter id="fine-grain" x="0%" y="0%" width="100%" height="100%">
+                <feTurbulence type="fractalNoise" baseFrequency="0.15" numOctaves="3" seed="99" stitchTiles="stitch" result="fine" />
+                <feColorMatrix type="matrix" in="fine" result="fineTint"
+                  values="0.3 0 0 0 0
+                          0.25 0 0 0 0
+                          0.12 0 0 0 0
+                          0 0 0 0.08 0" />
               </filter>
               {/* Stain filter — organic splotches */}
               <filter id="stain" x="0%" y="0%" width="100%" height="100%">
@@ -623,36 +697,36 @@ const MapPage = () => {
               <pattern id="hatch-cross" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(-30)">
                 <line x1={0} y1={0} x2={0} y2={5} stroke="#3d3525" strokeWidth={0.25} opacity={0.15} />
               </pattern>
-              {/* Parchment gradient with dark edges that blend to black */}
+              {/* Parchment gradient */}
               <linearGradient id="parchment" x1="0" y1="0" x2="1" y2="1">
                 <stop offset="0%" stopColor="#d4c5a0" />
                 <stop offset="50%" stopColor="#cbb994" />
                 <stop offset="100%" stopColor="#c4b48a" />
               </linearGradient>
-              {/* Edge burn gradients — fading to black for site consistency */}
+              {/* Edge burn gradients — 50% reduced (was 0.85/0.8, now 0.42/0.4) */}
               <linearGradient id="burn-top" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#000000" stopOpacity="0.85" />
+                <stop offset="0%" stopColor="#000000" stopOpacity="0.42" />
                 <stop offset="100%" stopColor="#000000" stopOpacity="0" />
               </linearGradient>
               <linearGradient id="burn-bottom" x1="0" y1="1" x2="0" y2="0">
-                <stop offset="0%" stopColor="#000000" stopOpacity="0.85" />
+                <stop offset="0%" stopColor="#000000" stopOpacity="0.42" />
                 <stop offset="100%" stopColor="#000000" stopOpacity="0" />
               </linearGradient>
               <linearGradient id="burn-left" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0%" stopColor="#000000" stopOpacity="0.8" />
+                <stop offset="0%" stopColor="#000000" stopOpacity="0.4" />
                 <stop offset="100%" stopColor="#000000" stopOpacity="0" />
               </linearGradient>
               <linearGradient id="burn-right" x1="1" y1="0" x2="0" y2="0">
-                <stop offset="0%" stopColor="#000000" stopOpacity="0.8" />
+                <stop offset="0%" stopColor="#000000" stopOpacity="0.4" />
                 <stop offset="100%" stopColor="#000000" stopOpacity="0" />
               </linearGradient>
-              {/* Corner darkening */}
+              {/* Corner darkening — 50% reduced */}
               <radialGradient id="corner-tl" cx="0%" cy="0%" r="50%">
-                <stop offset="0%" stopColor="#000000" stopOpacity="0.5" />
+                <stop offset="0%" stopColor="#000000" stopOpacity="0.25" />
                 <stop offset="100%" stopColor="#000000" stopOpacity="0" />
               </radialGradient>
               <radialGradient id="corner-br" cx="100%" cy="100%" r="50%">
-                <stop offset="0%" stopColor="#000000" stopOpacity="0.4" />
+                <stop offset="0%" stopColor="#000000" stopOpacity="0.2" />
                 <stop offset="100%" stopColor="#000000" stopOpacity="0" />
               </radialGradient>
               {/* Ring stain gradients */}
@@ -676,12 +750,11 @@ const MapPage = () => {
             {/* 1. Parchment base fill */}
             <rect x={10} y={10} width={980} height={630} fill="url(#parchment)" />
 
-            {/* 2. Edge-darkening burn rects — fading to black */}
+            {/* 2. Edge-darkening burn rects — 50% reduced */}
             <rect x={10} y={10} width={980} height={160} fill="url(#burn-top)" />
             <rect x={10} y={480} width={980} height={160} fill="url(#burn-bottom)" />
             <rect x={10} y={10} width={160} height={630} fill="url(#burn-left)" />
             <rect x={830} y={10} width={160} height={630} fill="url(#burn-right)" />
-            {/* Corner darkening */}
             <rect x={10} y={10} width={980} height={630} fill="url(#corner-tl)" />
             <rect x={10} y={10} width={980} height={630} fill="url(#corner-br)" />
 
@@ -713,8 +786,10 @@ const MapPage = () => {
             {/* 9. Crease lines */}
             <CreaseLines />
 
-            {/* 10. Paper grain texture overlay */}
+            {/* 10. Paper grain texture overlay — more prominent */}
             <rect x={10} y={10} width={980} height={630} filter="url(#paper-grain)" style={{ mixBlendMode: 'multiply' }} />
+            {/* Fine grain second layer */}
+            <rect x={10} y={10} width={980} height={630} filter="url(#fine-grain)" style={{ mixBlendMode: 'multiply' }} />
 
             {/* 11. Elevation marks */}
             <ElevationMarks />
@@ -722,26 +797,29 @@ const MapPage = () => {
             {/* 12. Map border */}
             <MapBorder />
 
-            {/* 13. Title cartouche */}
-            <g opacity={0.6}>
-              <rect x={355} y={16} width={290} height={38} fill="url(#parchment)" stroke="#2a2218" strokeWidth={0.7} />
-              <text x={500} y={42} textAnchor="middle" fill="#2a2218" fontSize={12.5} fontFamily="monospace" letterSpacing={4}>
-                JAMES FLOYD'S WORLD
-              </text>
-            </g>
+            {/* 13. Title cartouche — wooden sign with nails */}
+            <TitleCartouche />
 
-            {/* 14. Landmarks + tooltips */}
+            {/* 14. Landmarks + tooltips — tight hit areas on icons only */}
             {LANDMARKS.map((lm) => (
               <g
                 key={lm.id}
                 transform={`translate(${lm.x}, ${lm.y})`}
-                className="cursor-pointer"
-                onMouseEnter={() => setHoveredLandmark(lm.id)}
-                onMouseLeave={() => setHoveredLandmark(null)}
-                onClick={() => navigate(lm.route)}
-                style={{ pointerEvents: 'all' }}
+                style={{ pointerEvents: 'none' }}
               >
-                <rect x={-30} y={-30} width={60} height={60} fill="transparent" />
+                {/* Tight clickable hit area — only over the icon */}
+                <rect
+                  x={-18}
+                  y={-24}
+                  width={36}
+                  height={48}
+                  fill="transparent"
+                  className="cursor-pointer"
+                  style={{ pointerEvents: 'all' }}
+                  onMouseEnter={() => setHoveredLandmark(lm.id)}
+                  onMouseLeave={() => setHoveredLandmark(null)}
+                  onClick={() => navigate(lm.route)}
+                />
                 <g opacity={hoveredLandmark === lm.id ? 1 : 0.7} style={{ transition: 'opacity 0.3s ease' }} transform="scale(1.25)">
                   <LandmarkIcon id={lm.id} />
                 </g>
@@ -753,12 +831,12 @@ const MapPage = () => {
                   fontFamily="monospace"
                   letterSpacing={2}
                   opacity={hoveredLandmark === lm.id ? 0.9 : 0.55}
-                  style={{ transition: 'opacity 0.3s ease', textTransform: 'uppercase' }}
+                  style={{ transition: 'opacity 0.3s ease', textTransform: 'uppercase', pointerEvents: 'none' }}
                 >
                   {lm.label}
                 </text>
                 {hoveredLandmark === lm.id && (
-                  <g>
+                  <g style={{ pointerEvents: 'none' }}>
                     <rect
                       x={-80}
                       y={40}
