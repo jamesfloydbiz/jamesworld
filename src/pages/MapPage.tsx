@@ -156,8 +156,8 @@ const CompassRose = ({ heading }: { heading: number | null }) => {
   return (
     <g transform="translate(900, 580)">
       {/* Outer ring */}
-      <circle cx={0} cy={0} r={36} fill="none" stroke="#F5F0E8" strokeWidth={0.8} opacity={0.3} />
-      <circle cx={0} cy={0} r={32} fill="none" stroke="#F5F0E8" strokeWidth={0.4} opacity={0.2} />
+      <circle cx={0} cy={0} r={36} fill="none" stroke="#F5F0E8" strokeWidth={0.8} opacity={0.5} />
+      <circle cx={0} cy={0} r={32} fill="none" stroke="#F5F0E8" strokeWidth={0.4} opacity={0.35} />
       {/* Tick marks */}
       {Array.from({ length: 16 }).map((_, i) => {
         const angle = (i * 22.5 * Math.PI) / 180;
@@ -171,15 +171,15 @@ const CompassRose = ({ heading }: { heading: number | null }) => {
             y2={-Math.cos(angle) * 36}
             stroke="#F5F0E8"
             strokeWidth={i % 4 === 0 ? 1 : 0.4}
-            opacity={i % 4 === 0 ? 0.6 : 0.3}
+            opacity={i % 4 === 0 ? 0.8 : 0.5}
           />
         );
       })}
       {/* Cardinal labels */}
-      <text x={0} y={-40} textAnchor="middle" fill="#F5F0E8" fontSize={7} fontFamily="monospace" opacity={0.5}>N</text>
-      <text x={42} y={2} textAnchor="middle" fill="#F5F0E8" fontSize={6} fontFamily="monospace" opacity={0.35}>E</text>
-      <text x={0} y={46} textAnchor="middle" fill="#F5F0E8" fontSize={6} fontFamily="monospace" opacity={0.35}>S</text>
-      <text x={-42} y={2} textAnchor="middle" fill="#F5F0E8" fontSize={6} fontFamily="monospace" opacity={0.35}>W</text>
+      <text x={0} y={-40} textAnchor="middle" fill="#F5F0E8" fontSize={9} fontFamily="monospace" opacity={0.7}>N</text>
+      <text x={42} y={2} textAnchor="middle" fill="#F5F0E8" fontSize={7.5} fontFamily="monospace" opacity={0.5}>E</text>
+      <text x={0} y={46} textAnchor="middle" fill="#F5F0E8" fontSize={7.5} fontFamily="monospace" opacity={0.5}>S</text>
+      <text x={-42} y={2} textAnchor="middle" fill="#F5F0E8" fontSize={7.5} fontFamily="monospace" opacity={0.5}>W</text>
       {/* Needle */}
       <g transform={`rotate(${rotation})`} style={{ transition: heading != null ? 'transform 0.3s ease-out' : 'none' }}>
         <polygon points="0,-26 3,-4 0,-8 -3,-4" fill="#B8860B" opacity={0.8} />
@@ -332,7 +332,7 @@ const TerrainHatching = () => (
 
 /* ─── Elevation marks ─── */
 const ElevationMarks = () => (
-  <g fill="#F5F0E8" fontFamily="monospace" fontSize={5} opacity={0.3}>
+  <g fill="#F5F0E8" fontFamily="monospace" fontSize={6.25} opacity={0.4}>
     <text x={220} y={215}>2,847</text>
     <text x={710} y={285}>3,102</text>
     <text x={460} y={490}>1,956</text>
@@ -346,7 +346,7 @@ const ElevationMarks = () => (
 
 /* ─── Ink border ─── */
 const MapBorder = () => (
-  <g fill="none" stroke="#F5F0E8" opacity={0.2}>
+  <g fill="none" stroke="#F5F0E8" opacity={0.4}>
     <rect x={10} y={10} width={980} height={630} strokeWidth={1.5} />
     <rect x={14} y={14} width={972} height={622} strokeWidth={0.4} />
   </g>
@@ -598,9 +598,9 @@ const MapPage = () => {
           <rect x={10} y={10} width={980} height={630} filter="url(#paper-grain)" />
 
           {/* Title cartouche */}
-          <g opacity={0.35}>
-            <rect x={370} y={18} width={260} height={34} fill="none" stroke="#F5F0E8" strokeWidth={0.6} />
-            <text x={500} y={41} textAnchor="middle" fill="#F5F0E8" fontSize={10} fontFamily="monospace" letterSpacing={4}>
+          <g opacity={0.45}>
+            <rect x={355} y={16} width={290} height={38} fill="none" stroke="#F5F0E8" strokeWidth={0.7} />
+            <text x={500} y={42} textAnchor="middle" fill="#F5F0E8" fontSize={12.5} fontFamily="monospace" letterSpacing={4}>
               JAMES FLOYD'S WORLD
             </text>
           </g>
@@ -619,20 +619,20 @@ const MapPage = () => {
               {/* Hit area */}
               <rect x={-30} y={-30} width={60} height={60} fill="transparent" />
 
-              {/* Icon */}
-              <g opacity={hoveredLandmark === lm.id ? 1 : 0.6} style={{ transition: 'opacity 0.3s ease' }}>
+              {/* Icon — scaled 25% */}
+              <g opacity={hoveredLandmark === lm.id ? 1 : 0.7} style={{ transition: 'opacity 0.3s ease' }} transform="scale(1.25)">
                 <LandmarkIcon id={lm.id} />
               </g>
 
               {/* Label */}
               <text
-                y={28}
+                y={32}
                 textAnchor="middle"
                 fill="#F5F0E8"
-                fontSize={8}
+                fontSize={10}
                 fontFamily="monospace"
                 letterSpacing={2}
-                opacity={hoveredLandmark === lm.id ? 0.9 : 0.35}
+                opacity={hoveredLandmark === lm.id ? 0.9 : 0.45}
                 style={{ transition: 'opacity 0.3s ease', textTransform: 'uppercase' }}
               >
                 {lm.label}
@@ -642,10 +642,10 @@ const MapPage = () => {
               {hoveredLandmark === lm.id && (
                 <g>
                   <rect
-                    x={-70}
-                    y={36}
-                    width={140}
-                    height={18}
+                    x={-80}
+                    y={40}
+                    width={160}
+                    height={20}
                     rx={1}
                     fill="rgba(0,0,0,0.7)"
                     stroke="#F5F0E8"
@@ -653,10 +653,10 @@ const MapPage = () => {
                     opacity={0.8}
                   />
                   <text
-                    y={48}
+                    y={54}
                     textAnchor="middle"
                     fill="#F5F0E8"
-                    fontSize={6}
+                    fontSize={7.5}
                     fontFamily="monospace"
                     opacity={0.7}
                   >
