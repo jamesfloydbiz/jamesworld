@@ -356,21 +356,39 @@ const CreaseLines = () => (
     <path d="M300 80 Q320 78 340 82 Q360 85 380 80" stroke="#8a7a5e" strokeWidth={0.3} opacity={0.06} />
     <path d="M600 560 Q630 555 660 560 Q690 565 720 558" stroke="#8a7a5e" strokeWidth={0.3} opacity={0.06} />
 
-    {/* Edge wrinkles — crinkled paper edges */}
+    {/* Edge wrinkles — crinkled paper edges, doubled and varied */}
     {/* Top edge wrinkles */}
     <path d="M80 14 Q85 18 95 13 Q105 17 115 12" stroke="#9e8e6e" strokeWidth={0.5} opacity={0.12} />
+    <path d="M180 13 Q188 17 198 14" stroke="#9e8e6e" strokeWidth={0.35} opacity={0.08} />
+    <path d="M280 12 Q290 18 305 11 Q315 16 325 13" stroke="#9e8e6e" strokeWidth={0.45} opacity={0.1} />
     <path d="M400 12 Q410 16 420 11 Q430 15 440 12" stroke="#9e8e6e" strokeWidth={0.4} opacity={0.1} />
+    <path d="M560 14 Q568 18 578 13" stroke="#9e8e6e" strokeWidth={0.3} opacity={0.07} />
+    <path d="M680 13 Q690 17 700 12 Q708 16 718 14" stroke="#9e8e6e" strokeWidth={0.4} opacity={0.09} />
     <path d="M750 13 Q758 17 768 12 Q775 16 785 13" stroke="#9e8e6e" strokeWidth={0.4} opacity={0.09} />
+    <path d="M900 12 Q910 16 920 13" stroke="#9e8e6e" strokeWidth={0.35} opacity={0.08} />
     {/* Bottom edge wrinkles */}
+    <path d="M100 637 Q108 633 118 638" stroke="#9e8e6e" strokeWidth={0.35} opacity={0.08} />
     <path d="M200 636 Q210 632 220 637 Q230 633 240 638" stroke="#9e8e6e" strokeWidth={0.5} opacity={0.11} />
+    <path d="M380 637 Q395 632 410 637" stroke="#9e8e6e" strokeWidth={0.4} opacity={0.09} />
     <path d="M550 637 Q560 633 570 638 Q580 634 590 637" stroke="#9e8e6e" strokeWidth={0.4} opacity={0.1} />
+    <path d="M700 636 Q712 631 725 636 Q735 632 745 637" stroke="#9e8e6e" strokeWidth={0.45} opacity={0.1} />
     <path d="M850 635 Q858 631 868 636" stroke="#9e8e6e" strokeWidth={0.4} opacity={0.09} />
+    <path d="M940 636 Q948 633 958 637" stroke="#9e8e6e" strokeWidth={0.3} opacity={0.07} />
     {/* Left edge wrinkles */}
+    <path d="M13 80 Q17 85 12 95" stroke="#9e8e6e" strokeWidth={0.35} opacity={0.08} />
     <path d="M13 150 Q17 155 12 165 Q16 175 13 180" stroke="#9e8e6e" strokeWidth={0.4} opacity={0.1} />
+    <path d="M14 260 Q18 268 12 278" stroke="#9e8e6e" strokeWidth={0.35} opacity={0.07} />
+    <path d="M13 340 Q17 348 12 358 Q16 365 13 370" stroke="#9e8e6e" strokeWidth={0.4} opacity={0.09} />
     <path d="M14 400 Q18 408 12 418 Q16 425 14 430" stroke="#9e8e6e" strokeWidth={0.4} opacity={0.09} />
+    <path d="M13 520 Q17 528 12 538" stroke="#9e8e6e" strokeWidth={0.35} opacity={0.08} />
+    <path d="M14 590 Q18 595 12 605" stroke="#9e8e6e" strokeWidth={0.3} opacity={0.07} />
     {/* Right edge wrinkles */}
+    <path d="M987 120 Q983 128 988 138" stroke="#9e8e6e" strokeWidth={0.35} opacity={0.08} />
     <path d="M987 200 Q983 208 988 218 Q984 225 987 230" stroke="#9e8e6e" strokeWidth={0.4} opacity={0.1} />
+    <path d="M986 300 Q982 308 987 318" stroke="#9e8e6e" strokeWidth={0.35} opacity={0.07} />
+    <path d="M987 380 Q983 388 988 398 Q984 405 987 410" stroke="#9e8e6e" strokeWidth={0.4} opacity={0.09} />
     <path d="M986 450 Q982 458 987 468 Q983 475 986 480" stroke="#9e8e6e" strokeWidth={0.4} opacity={0.09} />
+    <path d="M987 540 Q983 548 988 558" stroke="#9e8e6e" strokeWidth={0.35} opacity={0.08} />
   </g>
 );
 
