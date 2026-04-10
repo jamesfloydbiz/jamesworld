@@ -148,9 +148,6 @@ type Phase = 0 | 1 | 2;
 const EnvelopeFlap = ({ open }: { open: boolean }) => (
   <motion.div
     className="absolute top-0 left-0 right-0 z-30"
-    initial={{ opacity: 0 }}
-    animate={{ opacity: 1 }}
-    transition={{ duration: 0.5, ease: 'easeOut' }}
     style={{
       height: '45%',
       transformOrigin: 'top center',
@@ -304,7 +301,6 @@ const LetterPage = () => {
         <motion.div
           className="absolute inset-0 flex items-center justify-center z-30"
           style={{ perspective: '600px' }}
-          initial={{ opacity: 0 }}
           animate={
             isOpening
               ? { opacity: 0, rotateX: -60, scale: 1.1, y: -40 }
@@ -313,7 +309,6 @@ const LetterPage = () => {
           transition={{
             duration: 0.8,
             ease: [0.22, 1, 0.36, 1],
-            delay: isOpening ? 0 : 0.45,
           }}
         >
           <WaxSeal />
