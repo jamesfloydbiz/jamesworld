@@ -234,10 +234,9 @@ const LetterPage = () => {
         style={{
           ...letterCardStyle,
           width: 'min(640px, 90vw)',
-          height: 'min(40vh, 460px)',
+          height: 'min(70vh, 600px)',
         }}
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
+        initial={false}
         transition={{ duration: 0.6, ease: 'easeOut' }}
       >
         {/* Decorative border */}
