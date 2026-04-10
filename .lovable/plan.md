@@ -1,41 +1,40 @@
 
 
-# Seamless Transitions from Landing Page
+# Letter Page: Seamless Seal → Chat Transition + System Prompt Fix
 
-## Two Different Transitions
+## Changes
 
-### "Learn About James" → Letter Chat
-- On click, landing page text fades out quickly (~0.3s)
-- The button itself morphs into a cream letter-shaped rectangle (~40% of viewport height, centered) on the black background
-- The letter floats/scales into position from the button's original rect
-- Background stays **black** the entire time
-- Once the letter shape settles, navigate to `/letter` which mounts already showing the sealed letter with wax seal — visually continuous
-- LetterPage redesign: black background, cream letter card (~40% viewport height, max-w-2xl) centered, wax seal on the card, chat opens within this same card
+### 1. `src/pages/LetterPage.tsx` — Simplify to Two Phases
 
-### "Quick Portfolio View" → Portfolio
-- On click, landing page text fades out quickly (~0.3s)  
-- The button expands to fill the entire viewport, color shifting from transparent → cream `#F5F0E8`
-- Once fully expanded, navigate to `/portfolio` which mounts with its cream background — seamless blend
-- Portfolio content then types/fades in naturally
+Remove the three-phase (`sealed`/`opening`/`chat`) system. Replace with a single continuous flow:
 
-## Files Changed
+- **Phase 1 — Seal display**: When the page mounts, show the cream letter card with the wax seal centered on it. The seal fades in with a gentle pulse. After a **2-second auto-delay** (no click needed), the seal fades out.
+- **Phase 2 — Chat**: The chat UI fades in **inside the same card** (no re-mount, no AnimatePresence swap). The card stays exactly as-is — same size, same position. The chat header, messages area, and input field fade in with a short opacity transition.
 
-### `src/pages/LandingPage.tsx`
-- Add `transitioning` state: `null | 'letter' | 'portfolio'`
-- On button click, capture `getBoundingClientRect()`, set transitioning state
-- `AnimatePresence` overlay with `motion.div`:
-  - **Letter path**: button rect → centered letter shape (~40vh tall, ~max-w-2xl wide), bg shifts to cream `#F5F0E8`, surrounding area stays black. Navigate after ~0.8s
-  - **Portfolio path**: button rect → `inset: 0` filling viewport, bg shifts to cream `#F5F0E8`. Navigate after ~0.8s
-- Landing page content (title, subtitle, etc.) fades out when either transition starts
+This eliminates all glitching because the letter card div never unmounts or re-animates. Only the *contents* crossfade.
 
-### `src/pages/LetterPage.tsx`
-- Fix the broken UI: redesign so the page works end-to-end
-- Black background with a centered cream letter card (not fullscreen cream)
-- Letter card is ~40% viewport height, max-width ~640px
-- Sealed state: wax seal centered on the cream card, no separate "break the seal" text — seal pulses gently as affordance
-- Opening state: seal cracks on the card surface, card content transitions to chat
-- Chat state: messages render inside the same cream card with scroll, input at bottom
-- The card size matches what the landing page transition animates to, creating visual continuity
+Implementation:
+- Single `motion.div` for the card, always rendered
+- `showChat` boolean state, starts `false`, set to `true` after ~2s timeout on mount
+- Seal content: `opacity` animates from 1→0 when `showChat` becomes true
+- Chat content: `opacity` animates from 0→1 when `showChat` becomes true
+- Both content layers are absolutely positioned inside the card so they overlap during crossfade
+- The greeting typewriter plays immediately when chat appears, then transitions to the input-ready state
 
-No new dependencies needed.
+### 2. `src/pages/LetterPage.tsx` — Fix First Message Logic
+
+- The first message "What are you wondering about James?" is shown client-side via TypewriterText, then added to `messages` state as an assistant message
+- This message is **not sent to the edge function** — it's purely a UI greeting
+- When the user sends their first message, only send `[{ role: 'user', content: '...' }]` to the edge function (the system prompt in the edge function already handles context)
+
+### 3. `supabase/functions/letter-chat/index.ts` — Refine System Prompt
+
+Update the system prompt to:
+- Remove the instruction about opening with "What are you wondering about James?" (that's handled client-side now)
+- Add instruction to keep responses brief (2-3 sentences typically, unless depth is warranted)
+- Emphasize matching James's voice: calm, direct, systems-oriented
+
+### Files Changed
+- `src/pages/LetterPage.tsx` — rewrite phase logic to single-card crossfade
+- `supabase/functions/letter-chat/index.ts` — trim system prompt's opening instruction
 
