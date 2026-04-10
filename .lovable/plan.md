@@ -1,35 +1,22 @@
 
 
-# Fix Letter Page: Single Persistent Card with Content Crossfade
+# Fix Landing → Letter Transition Gap
 
 ## Problem
-The letter page renders three separate `motion.div` cards inside `AnimatePresence mode="wait"` — one for sealed, one for opening, one for chat. Each phase unmounts the entire cream card and remounts a new one, causing visible flicker/disappearance between transitions.
+When navigating from LandingPage to LetterPage, the expanding cream overlay unmounts with the page, then LetterPage mounts its own card with a fade-in animation (`opacity: 0, y: 20`). This creates a visible flash/gap. Additionally, the dimensions don't match — the overlay animates to `min(70vh, 600px)` tall but the LetterPage card is `min(40vh, 460px)`.
 
 ## Solution
-Use a **single persistent cream card** that never unmounts. Only the **inner contents** crossfade between phases.
+Two small changes to make the handoff seamless:
 
-### `src/pages/LetterPage.tsx` — Full rewrite of phase rendering
+### `src/pages/LetterPage.tsx`
+- Change the card's `initial` to `{{ opacity: 1, y: 0 }}` (or use `initial={false}`) — the card should appear instantly at full opacity since the LandingPage overlay already provided the visual entrance
+- Match the card height to the overlay: change `min(40vh, 460px)` → `min(70vh, 600px)` so dimensions align exactly
 
-**Structure:**
-- One `motion.div` card (always mounted, same size/position throughout)
-- Inside it, use `showChat` boolean with a 2s auto-timer (no click needed)
-- **Layer 1 (seal)**: Absolutely positioned, fades from opacity 1→0 when `showChat` turns true
-- **Layer 2 (chat)**: Absolutely positioned beneath, fades from opacity 0→1 when `showChat` turns true
-- Remove the `opening` phase entirely — no seal-crack animation, no `AnimatePresence mode="wait"`
-- Remove `Phase` type, replace with single `showChat` boolean
+### `src/pages/LandingPage.tsx`  
+- No changes needed — overlay dimensions and styling already match
 
-**Greeting logic:**
-- When chat fades in, `TypewriterText` plays "What are you wondering about James?"
-- On complete, adds it to messages array as assistant message
-- Only user messages after that get sent to the edge function
-
-**Card mounting:**
-- Card enters with a gentle `initial={{ opacity: 0, y: 20 }}` → `animate={{ opacity: 1, y: 0 }}` on page mount
-- This matches what the LandingPage expansion animates toward — visual continuity
-
-### `supabase/functions/letter-chat/index.ts`
-- No changes needed (already updated in prior step)
+This way the cream rectangle the user sees on LandingPage is pixel-identical to the one that appears on LetterPage. No gap, no flash.
 
 ### Files changed
-- `src/pages/LetterPage.tsx` — rewrite to single persistent card with content crossfade
+- `src/pages/LetterPage.tsx` — remove mount animation, match overlay dimensions
 
