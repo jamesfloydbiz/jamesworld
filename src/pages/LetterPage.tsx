@@ -313,7 +313,7 @@ const LetterPage = () => {
           transition={{
             duration: 0.8,
             ease: [0.22, 1, 0.36, 1],
-            delay: isOpening ? 0 : 0.3,
+            delay: isOpening ? 0 : 0.45,
           }}
         >
           <WaxSeal />

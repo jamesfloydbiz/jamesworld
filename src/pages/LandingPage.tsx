@@ -238,11 +238,25 @@ const LandingPage = () => {
             }}
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
           >
-            {/* Seal appears inside the expanding card */}
             <motion.div
+              className="absolute top-0 left-0 right-0 z-10"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.35, ease: 'easeOut' }}
+              style={{ height: '45%' }}
+            >
+              <svg viewBox="0 0 640 270" preserveAspectRatio="none" className="absolute inset-0 w-full h-full">
+                <polygon points="0,0 640,0 320,270" fill="#F5F0E8" stroke="rgba(61,40,23,0.08)" strokeWidth="1" />
+                <line x1="0" y1="0" x2="320" y2="270" stroke="rgba(61,40,23,0.06)" strokeWidth="0.5" />
+                <line x1="640" y1="0" x2="320" y2="270" stroke="rgba(61,40,23,0.06)" strokeWidth="0.5" />
+              </svg>
+            </motion.div>
+
+            <motion.div
+              className="relative z-20"
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5, delay: 0.4 }}
+              transition={{ duration: 0.45, delay: 0.3 }}
             >
               <svg viewBox="0 0 200 200" className="w-28 h-28 md:w-36 md:h-36">
                 <circle cx="100" cy="100" r="90" fill="#1a1a1a" />
