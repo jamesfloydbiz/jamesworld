@@ -160,7 +160,7 @@ const LetterPage = () => {
     const timer = setTimeout(() => {
       setShowChat(true);
       setGreeting(true);
-    }, 2000);
+    }, 3000);
     return () => clearTimeout(timer);
   }, []);
 
@@ -245,7 +245,7 @@ const LetterPage = () => {
         {/* Layer 1: Seal — fades out */}
         <motion.div
           className="absolute inset-0 flex items-center justify-center z-10"
-          initial={{ opacity: 1 }}
+          initial={{ opacity: 0 }}
           animate={{ opacity: showChat ? 0 : 1 }}
           transition={{ duration: 0.8, ease: 'easeInOut' }}
           style={{ pointerEvents: showChat ? 'none' : 'auto' }}
