@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 
 type Msg = { role: 'user' | 'assistant'; content: string };
@@ -84,24 +84,13 @@ async function streamChat({
 
 // ── Wax Seal SVG ──────────────────────────────────────────────────────
 const WaxSeal = () => (
-  <div className="flex flex-col items-center justify-center">
-    <svg viewBox="0 0 200 200" className="w-28 h-28 md:w-36 md:h-36">
-      <circle cx="100" cy="100" r="90" fill="#1a1a1a" />
-      <circle cx="100" cy="100" r="86" fill="#111" stroke="#333" strokeWidth="0.5" />
-      <circle cx="100" cy="100" r="82" fill="none" stroke="#222" strokeWidth="1" strokeDasharray="3 5" />
-      <path d="M100 42 L145 130 H55 Z" fill="none" stroke="#F5F0E8" strokeWidth="1.5" opacity="0.8" />
-      <text x="100" y="118" textAnchor="middle" fill="#F5F0E8" fontSize="22" fontFamily="monospace" opacity="0.8" letterSpacing="2">JF</text>
-    </svg>
-    <motion.div
-      className="absolute rounded-full"
-      style={{
-        width: '140px', height: '140px',
-        background: 'radial-gradient(circle, rgba(245,240,232,0.06) 0%, transparent 70%)',
-      }}
-      animate={{ opacity: [0.4, 0.8, 0.4] }}
-      transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-    />
-  </div>
+  <svg viewBox="0 0 200 200" className="w-28 h-28 md:w-36 md:h-36">
+    <circle cx="100" cy="100" r="90" fill="#1a1a1a" />
+    <circle cx="100" cy="100" r="86" fill="#111" stroke="#333" strokeWidth="0.5" />
+    <circle cx="100" cy="100" r="82" fill="none" stroke="#222" strokeWidth="1" strokeDasharray="3 5" />
+    <path d="M100 42 L145 130 H55 Z" fill="none" stroke="#F5F0E8" strokeWidth="1.5" opacity="0.8" />
+    <text x="100" y="118" textAnchor="middle" fill="#F5F0E8" fontSize="22" fontFamily="monospace" opacity="0.8" letterSpacing="2">JF</text>
+  </svg>
 );
 
 // ── Typewriter text ───────────────────────────────────────────────────
@@ -140,28 +129,91 @@ const TypewriterText = ({ text, onComplete }: { text: string; onComplete?: () =>
 };
 
 // ── Letter card style ─────────────────────────────────────────────────
+const parchmentBg = '#F5F0E8';
+const parchmentTexture = `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.15'/%3E%3C/svg%3E")`;
+
 const letterCardStyle: React.CSSProperties = {
-  backgroundColor: '#F5F0E8',
-  backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.15'/%3E%3C/svg%3E")`,
+  backgroundColor: parchmentBg,
+  backgroundImage: parchmentTexture,
   boxShadow: '0 20px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(61,40,23,0.1)',
 };
 
+// ── Animation phases ──────────────────────────────────────────────────
+// 0: sealed (seal visible on card)
+// 1: opening (seal peels off, flap opens)
+// 2: chat (chat revealed)
+type Phase = 0 | 1 | 2;
+
+// ── Envelope Flap (V shape) ───────────────────────────────────────────
+const EnvelopeFlap = ({ open }: { open: boolean }) => (
+  <motion.div
+    className="absolute top-0 left-0 right-0 z-30"
+    style={{
+      height: '45%',
+      transformOrigin: 'top center',
+      perspective: '800px',
+    }}
+  >
+    <motion.div
+      style={{
+        width: '100%',
+        height: '100%',
+        transformOrigin: 'top center',
+        backfaceVisibility: 'hidden',
+      }}
+      initial={{ rotateX: 0 }}
+      animate={{ rotateX: open ? 180 : 0 }}
+      transition={{ duration: 1, ease: [0.22, 1, 0.36, 1], delay: open ? 0.2 : 0 }}
+    >
+      {/* The V-shaped flap */}
+      <svg
+        viewBox="0 0 640 270"
+        preserveAspectRatio="none"
+        className="absolute inset-0 w-full h-full"
+        style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.1))' }}
+      >
+        <defs>
+          <pattern id="flapTexture" patternUnits="userSpaceOnUse" width="256" height="256">
+            <rect width="256" height="256" fill={parchmentBg} />
+            <filter id="flapNoise">
+              <feTurbulence type="fractalNoise" baseFrequency="0.7" numOctaves="3" stitchTiles="stitch" />
+            </filter>
+            <rect width="256" height="256" filter="url(#flapNoise)" opacity="0.1" />
+          </pattern>
+        </defs>
+        <polygon
+          points="0,0 640,0 320,270"
+          fill={parchmentBg}
+          stroke="rgba(61,40,23,0.08)"
+          strokeWidth="1"
+        />
+        {/* Subtle fold line */}
+        <line x1="0" y1="0" x2="320" y2="270" stroke="rgba(61,40,23,0.06)" strokeWidth="0.5" />
+        <line x1="640" y1="0" x2="320" y2="270" stroke="rgba(61,40,23,0.06)" strokeWidth="0.5" />
+      </svg>
+    </motion.div>
+  </motion.div>
+);
+
 // ── Main Page ─────────────────────────────────────────────────────────
 const LetterPage = () => {
-  const [showChat, setShowChat] = useState(false);
+  const [phase, setPhase] = useState<Phase>(0);
   const [messages, setMessages] = useState<Msg[]>([]);
   const [input, setInput] = useState('');
   const [isStreaming, setIsStreaming] = useState(false);
   const [greeting, setGreeting] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  // Auto-transition from seal to chat after 2s
+  // Phase transitions
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowChat(true);
+    // After 2s on seal, start opening
+    const t1 = setTimeout(() => setPhase(1), 2000);
+    // After opening animation (~1.5s), show chat
+    const t2 = setTimeout(() => {
+      setPhase(2);
       setGreeting(true);
-    }, 3000);
-    return () => clearTimeout(timer);
+    }, 3800);
+    return () => { clearTimeout(t1); clearTimeout(t2); };
   }, []);
 
   useEffect(() => {
@@ -185,7 +237,6 @@ const LetterPage = () => {
     setMessages(updated);
     setIsStreaming(true);
 
-    // Filter out the greeting message before sending to API
     const apiMessages = updated.filter(
       (m, i) => !(i === 0 && m.role === 'assistant' && m.content === 'What are you wondering about James?')
     );
@@ -214,6 +265,9 @@ const LetterPage = () => {
     });
   }, [input, isStreaming, messages]);
 
+  const isOpening = phase >= 1;
+  const isChatVisible = phase >= 2;
+
   return (
     <div className="fixed inset-0 flex items-center justify-center overflow-hidden" style={{ backgroundColor: '#000' }}>
       {/* Grain overlay */}
@@ -229,37 +283,55 @@ const LetterPage = () => {
       />
 
       {/* Single persistent card */}
-      <motion.div
-        className="relative z-20 flex flex-col rounded-sm overflow-hidden"
+      <div
+        className="relative z-20 rounded-sm overflow-hidden"
         style={{
           ...letterCardStyle,
           width: 'min(640px, 90vw)',
           height: 'min(70vh, 600px)',
         }}
-        initial={false}
-        transition={{ duration: 0.6, ease: 'easeOut' }}
       >
         {/* Decorative border */}
-        <div className="absolute inset-4 border rounded-sm pointer-events-none" style={{ borderColor: 'rgba(61,40,23,0.08)' }} />
+        <div className="absolute inset-4 border rounded-sm pointer-events-none z-40" style={{ borderColor: 'rgba(61,40,23,0.08)' }} />
 
-        {/* Layer 1: Seal — fades out */}
+        {/* Envelope flap V */}
+        <EnvelopeFlap open={isOpening} />
+
+        {/* Seal — centered, peels off when opening */}
         <motion.div
-          className="absolute inset-0 flex items-center justify-center z-10"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: showChat ? 0 : 1 }}
-          transition={{ duration: 0.8, ease: 'easeInOut' }}
-          style={{ pointerEvents: showChat ? 'none' : 'auto' }}
+          className="absolute inset-0 flex items-center justify-center z-30"
+          style={{ perspective: '600px' }}
+          initial={false}
+          animate={
+            isOpening
+              ? { opacity: 0, rotateX: -60, scale: 1.1, y: -40 }
+              : { opacity: 1, rotateX: 0, scale: 1, y: 0 }
+          }
+          transition={{
+            duration: 0.8,
+            ease: [0.22, 1, 0.36, 1],
+          }}
         >
           <WaxSeal />
+          {/* Glow */}
+          <motion.div
+            className="absolute rounded-full"
+            style={{
+              width: '140px', height: '140px',
+              background: 'radial-gradient(circle, rgba(245,240,232,0.06) 0%, transparent 70%)',
+            }}
+            animate={{ opacity: [0.4, 0.8, 0.4] }}
+            transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+          />
         </motion.div>
 
-        {/* Layer 2: Chat — fades in */}
+        {/* Chat layer — revealed after opening */}
         <motion.div
           className="absolute inset-0 flex flex-col z-20"
           initial={{ opacity: 0 }}
-          animate={{ opacity: showChat ? 1 : 0 }}
-          transition={{ duration: 0.8, ease: 'easeInOut', delay: 0.3 }}
-          style={{ pointerEvents: showChat ? 'auto' : 'none' }}
+          animate={{ opacity: isChatVisible ? 1 : 0 }}
+          transition={{ duration: 0.6, ease: 'easeInOut' }}
+          style={{ pointerEvents: isChatVisible ? 'auto' : 'none' }}
         >
           {/* Header */}
           <div className="px-6 md:px-10 pt-5 pb-3 border-b flex items-center justify-between" style={{ borderColor: 'rgba(61,40,23,0.1)' }}>
@@ -347,7 +419,7 @@ const LetterPage = () => {
             </form>
           </div>
         </motion.div>
-      </motion.div>
+      </div>
     </div>
   );
 };

@@ -214,7 +214,7 @@ const LandingPage = () => {
         {transition?.type === 'letter' && (
           <motion.div
             key="letter-expand"
-            className="fixed z-30 rounded-sm"
+            className="fixed z-30 rounded-sm flex items-center justify-center overflow-hidden"
             style={{
               backgroundColor: '#F5F0E8',
               backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.15'/%3E%3C/svg%3E")`,
@@ -237,7 +237,22 @@ const LandingPage = () => {
               opacity: 1,
             }}
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          />
+          >
+            {/* Seal appears inside the expanding card */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+            >
+              <svg viewBox="0 0 200 200" className="w-28 h-28 md:w-36 md:h-36">
+                <circle cx="100" cy="100" r="90" fill="#1a1a1a" />
+                <circle cx="100" cy="100" r="86" fill="#111" stroke="#333" strokeWidth="0.5" />
+                <circle cx="100" cy="100" r="82" fill="none" stroke="#222" strokeWidth="1" strokeDasharray="3 5" />
+                <path d="M100 42 L145 130 H55 Z" fill="none" stroke="#F5F0E8" strokeWidth="1.5" opacity="0.8" />
+                <text x="100" y="118" textAnchor="middle" fill="#F5F0E8" fontSize="22" fontFamily="monospace" opacity="0.8" letterSpacing="2">JF</text>
+              </svg>
+            </motion.div>
+          </motion.div>
         )}
 
         {transition?.type === 'portfolio' && (
