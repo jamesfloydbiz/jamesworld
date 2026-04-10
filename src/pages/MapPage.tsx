@@ -559,11 +559,21 @@ const MapPage = () => {
   }, []);
 
   const handleMouseMove = useCallback((e: React.MouseEvent) => {
-    if (!containerRef.current) return;
-    const rect = containerRef.current.getBoundingClientRect();
-    const nx = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
-    const ny = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
-    mouseTarget.current = { x: -nx * 3, y: ny * 3 };
+    if (!svgWrapperRef.current) return;
+    const mapRect = svgWrapperRef.current.getBoundingClientRect();
+    // Only apply tilt when mouse is over the tan map area
+    const inMap =
+      e.clientX >= mapRect.left && e.clientX <= mapRect.right &&
+      e.clientY >= mapRect.top && e.clientY <= mapRect.bottom;
+
+    if (inMap) {
+      const nx = ((e.clientX - mapRect.left) / mapRect.width - 0.5) * 2;
+      const ny = ((e.clientY - mapRect.top) / mapRect.height - 0.5) * 2;
+      mouseTarget.current = { x: -nx * 3, y: ny * 3 };
+    } else {
+      // Ease back to flat when outside the map
+      mouseTarget.current = { x: 0, y: 0 };
+    }
 
     // Footsteps — alternating left/right behind cursor
     const dx = e.clientX - lastFootstepPos.current.x;
@@ -571,7 +581,6 @@ const MapPage = () => {
     const dist = Math.sqrt(dx * dx + dy * dy);
     if (dist > 25 && isOnMap) {
       const angle = Math.atan2(dy, dx) * (180 / Math.PI) + 90;
-      // Offset perpendicular for left/right foot
       const perpAngle = Math.atan2(dy, dx) + (footstepSide.current === 0 ? Math.PI / 2 : -Math.PI / 2);
       const offsetDist = 4;
       const fx = e.clientX - dx * 0.5 + Math.cos(perpAngle) * offsetDist;
