@@ -159,7 +159,7 @@ const LandingPage = () => {
 
         <motion.div variants={fadeUp} className="flex flex-col gap-4 w-full max-w-xs">
           <button
-            onClick={() => navigate('/map')}
+            onClick={() => navigate('/letter')}
             className="font-mono text-sm tracking-widest uppercase px-8 py-4 border transition-all duration-300 hover:scale-[1.02]"
             style={{
               color: '#F5F0E8',
@@ -175,7 +175,7 @@ const LandingPage = () => {
               e.currentTarget.style.borderColor = '#3D2817';
             }}>
 
-            Explore the Map       
+            Learn About James       
           </button>
 
           <button
