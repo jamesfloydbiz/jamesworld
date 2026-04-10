@@ -238,11 +238,9 @@ const LandingPage = () => {
             }}
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
           >
-            <motion.div
+            {/* V flap — visible immediately */}
+            <div
               className="absolute top-0 left-0 right-0 z-10"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.35, ease: 'easeOut' }}
               style={{ height: '45%' }}
             >
               <svg viewBox="0 0 640 270" preserveAspectRatio="none" className="absolute inset-0 w-full h-full">
@@ -250,7 +248,18 @@ const LandingPage = () => {
                 <line x1="0" y1="0" x2="320" y2="270" stroke="rgba(61,40,23,0.06)" strokeWidth="0.5" />
                 <line x1="640" y1="0" x2="320" y2="270" stroke="rgba(61,40,23,0.06)" strokeWidth="0.5" />
               </svg>
-            </motion.div>
+            </div>
+
+            {/* Seal — visible immediately */}
+            <div className="relative z-20">
+              <svg viewBox="0 0 200 200" className="w-28 h-28 md:w-36 md:h-36">
+                <circle cx="100" cy="100" r="90" fill="#1a1a1a" />
+                <circle cx="100" cy="100" r="86" fill="#111" stroke="#333" strokeWidth="0.5" />
+                <circle cx="100" cy="100" r="82" fill="none" stroke="#222" strokeWidth="1" strokeDasharray="3 5" />
+                <path d="M100 42 L145 130 H55 Z" fill="none" stroke="#F5F0E8" strokeWidth="1.5" opacity="0.8" />
+                <text x="100" y="118" textAnchor="middle" fill="#F5F0E8" fontSize="22" fontFamily="monospace" opacity="0.8" letterSpacing="2">JF</text>
+              </svg>
+            </div>
           </motion.div>
         )}
 
