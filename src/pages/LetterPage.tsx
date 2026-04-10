@@ -207,12 +207,12 @@ const LetterPage = () => {
   // Phase transitions
   useEffect(() => {
     // After 2s on seal, start opening
-    const t1 = setTimeout(() => setPhase(1), 2000);
+    const t1 = setTimeout(() => setPhase(1), 1000);
     // After opening animation (~1.5s), show chat
     const t2 = setTimeout(() => {
       setPhase(2);
       setGreeting(true);
-    }, 3800);
+    }, 2800);
     return () => { clearTimeout(t1); clearTimeout(t2); };
   }, []);
 
