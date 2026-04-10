@@ -1,40 +1,35 @@
 
 
-# Letter Page: Seamless Seal → Chat Transition + System Prompt Fix
+# Fix Letter Page: Single Persistent Card with Content Crossfade
 
-## Changes
+## Problem
+The letter page renders three separate `motion.div` cards inside `AnimatePresence mode="wait"` — one for sealed, one for opening, one for chat. Each phase unmounts the entire cream card and remounts a new one, causing visible flicker/disappearance between transitions.
 
-### 1. `src/pages/LetterPage.tsx` — Simplify to Two Phases
+## Solution
+Use a **single persistent cream card** that never unmounts. Only the **inner contents** crossfade between phases.
 
-Remove the three-phase (`sealed`/`opening`/`chat`) system. Replace with a single continuous flow:
+### `src/pages/LetterPage.tsx` — Full rewrite of phase rendering
 
-- **Phase 1 — Seal display**: When the page mounts, show the cream letter card with the wax seal centered on it. The seal fades in with a gentle pulse. After a **2-second auto-delay** (no click needed), the seal fades out.
-- **Phase 2 — Chat**: The chat UI fades in **inside the same card** (no re-mount, no AnimatePresence swap). The card stays exactly as-is — same size, same position. The chat header, messages area, and input field fade in with a short opacity transition.
+**Structure:**
+- One `motion.div` card (always mounted, same size/position throughout)
+- Inside it, use `showChat` boolean with a 2s auto-timer (no click needed)
+- **Layer 1 (seal)**: Absolutely positioned, fades from opacity 1→0 when `showChat` turns true
+- **Layer 2 (chat)**: Absolutely positioned beneath, fades from opacity 0→1 when `showChat` turns true
+- Remove the `opening` phase entirely — no seal-crack animation, no `AnimatePresence mode="wait"`
+- Remove `Phase` type, replace with single `showChat` boolean
 
-This eliminates all glitching because the letter card div never unmounts or re-animates. Only the *contents* crossfade.
+**Greeting logic:**
+- When chat fades in, `TypewriterText` plays "What are you wondering about James?"
+- On complete, adds it to messages array as assistant message
+- Only user messages after that get sent to the edge function
 
-Implementation:
-- Single `motion.div` for the card, always rendered
-- `showChat` boolean state, starts `false`, set to `true` after ~2s timeout on mount
-- Seal content: `opacity` animates from 1→0 when `showChat` becomes true
-- Chat content: `opacity` animates from 0→1 when `showChat` becomes true
-- Both content layers are absolutely positioned inside the card so they overlap during crossfade
-- The greeting typewriter plays immediately when chat appears, then transitions to the input-ready state
+**Card mounting:**
+- Card enters with a gentle `initial={{ opacity: 0, y: 20 }}` → `animate={{ opacity: 1, y: 0 }}` on page mount
+- This matches what the LandingPage expansion animates toward — visual continuity
 
-### 2. `src/pages/LetterPage.tsx` — Fix First Message Logic
+### `supabase/functions/letter-chat/index.ts`
+- No changes needed (already updated in prior step)
 
-- The first message "What are you wondering about James?" is shown client-side via TypewriterText, then added to `messages` state as an assistant message
-- This message is **not sent to the edge function** — it's purely a UI greeting
-- When the user sends their first message, only send `[{ role: 'user', content: '...' }]` to the edge function (the system prompt in the edge function already handles context)
-
-### 3. `supabase/functions/letter-chat/index.ts` — Refine System Prompt
-
-Update the system prompt to:
-- Remove the instruction about opening with "What are you wondering about James?" (that's handled client-side now)
-- Add instruction to keep responses brief (2-3 sentences typically, unless depth is warranted)
-- Emphasize matching James's voice: calm, direct, systems-oriented
-
-### Files Changed
-- `src/pages/LetterPage.tsx` — rewrite phase logic to single-card crossfade
-- `supabase/functions/letter-chat/index.ts` — trim system prompt's opening instruction
+### Files changed
+- `src/pages/LetterPage.tsx` — rewrite to single persistent card with content crossfade
 
