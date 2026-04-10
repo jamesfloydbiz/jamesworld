@@ -45,7 +45,7 @@ const LANDMARKS = [
     label: 'Projects',
     descriptor: 'Active work and initiatives',
     x: 680,
-    y: 260,
+    y: 275,
   },
   {
     id: 'network',
@@ -91,16 +91,16 @@ const LandmarkIcon = ({ id }: { id: string }) => {
       return (
         <g>
           {/* Tall tree trunk */}
-          <line x1={10} y1={-28} x2={10} y2={14} stroke="#3d3020" strokeWidth={sw} />
-          {/* Three branch tiers */}
-          <path d="M3 -12 L10 -22 L17 -12" fill="none" stroke="#3d3020" strokeWidth={sw} />
-          <path d="M4 -6 L10 -16 L16 -6" fill="none" stroke="#3d3020" strokeWidth={sw} />
-          <path d="M5 0 L10 -10 L15 0" fill="none" stroke="#3d3020" strokeWidth={sw} />
-          {/* Backpack leaning right against tree */}
-          <g transform="rotate(12, 4, 6)">
-            <rect x={-4} y={-4} width={14} height={16} rx={3} fill="none" stroke={stroke} strokeWidth={sw} />
-            <path d="M0 -4 Q0 -10 3 -10 Q6 -10 6 -4" fill="none" stroke={stroke} strokeWidth={sw} />
-            <line x1={1} y1={4} x2={7} y2={4} stroke={stroke} strokeWidth={0.6} />
+          <line x1={10} y1={-34} x2={10} y2={14} stroke="#3d3020" strokeWidth={sw} />
+          {/* Three branch tiers - higher on tree */}
+          <path d="M3 -20 L10 -32 L17 -20" fill="none" stroke="#3d3020" strokeWidth={sw} />
+          <path d="M4 -14 L10 -24 L16 -14" fill="none" stroke="#3d3020" strokeWidth={sw} />
+          <path d="M5 -8 L10 -16 L15 -8" fill="none" stroke="#3d3020" strokeWidth={sw} />
+          {/* Backpack leaning right against tree - shifted left */}
+          <g transform="rotate(12, 0, 6)">
+            <rect x={-8} y={-4} width={14} height={16} rx={3} fill="none" stroke={stroke} strokeWidth={sw} />
+            <path d="M-4 -4 Q-4 -10 -1 -10 Q2 -10 2 -4" fill="none" stroke={stroke} strokeWidth={sw} />
+            <line x1={-3} y1={4} x2={3} y2={4} stroke={stroke} strokeWidth={0.6} />
           </g>
         </g>
       );
