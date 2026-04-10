@@ -163,7 +163,7 @@ const EnvelopeFlap = ({ open }: { open: boolean }) => (
       }}
       initial={{ rotateX: 0 }}
       animate={{ rotateX: open ? 180 : 0 }}
-      transition={{ duration: 1, ease: [0.22, 1, 0.36, 1], delay: open ? 0.2 : 0 }}
+      transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1], delay: open ? 0.1 : 0 }}
     >
       {/* The V-shaped flap */}
       <svg
@@ -206,13 +206,11 @@ const LetterPage = () => {
 
   // Phase transitions
   useEffect(() => {
-    // After 2s on seal, start opening
-    const t1 = setTimeout(() => setPhase(1), 2000);
-    // After opening animation (~1.5s), show chat
+    const t1 = setTimeout(() => setPhase(1), 1000);
     const t2 = setTimeout(() => {
       setPhase(2);
       setGreeting(true);
-    }, 3800);
+    }, 1900);
     return () => { clearTimeout(t1); clearTimeout(t2); };
   }, []);
 
@@ -307,7 +305,7 @@ const LetterPage = () => {
               : { opacity: 1, rotateX: 0, scale: 1, y: 0 }
           }
           transition={{
-            duration: 0.8,
+            duration: 0.4,
             ease: [0.22, 1, 0.36, 1],
           }}
         >
