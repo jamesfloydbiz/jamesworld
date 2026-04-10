@@ -615,7 +615,7 @@ const MapPage = () => {
     <div
       ref={containerRef}
       className="fixed inset-0 overflow-hidden"
-      style={{ backgroundColor: '#000000', cursor: isOnMap ? CHARACTER_CURSOR : 'crosshair' }}
+      style={{ backgroundColor: '#000000', cursor: isOnMap ? CHARACTER_CURSOR : 'default' }}
       onMouseMove={handleMouseMove}
     >
       {/* Grain overlay */}
@@ -630,30 +630,7 @@ const MapPage = () => {
         }}
       />
 
-      {/* Footsteps — visible, alternating left/right */}
-      {footsteps.map(f => (
-        <div
-          key={f.id}
-          className="fixed pointer-events-none z-20"
-          style={{
-            left: f.x - 5,
-            top: f.y - 8,
-            opacity: f.opacity,
-            transform: `rotate(${f.rotation}deg)`,
-          }}
-        >
-          <svg width="10" height="16" viewBox="0 0 10 16">
-            {/* Foot print — sole shape */}
-            <ellipse cx="5" cy="5" rx="3" ry="4.5" fill="#3a3020" opacity="0.6" />
-            {/* Heel */}
-            <ellipse cx="5" cy="13" rx="2.5" ry="2" fill="#3a3020" opacity="0.5" />
-            {/* Toes */}
-            <circle cx="3" cy="1.5" r="1" fill="#3a3020" opacity="0.4" />
-            <circle cx="5" cy="0.8" r="1" fill="#3a3020" opacity="0.4" />
-            <circle cx="7" cy="1.5" r="1" fill="#3a3020" opacity="0.4" />
-          </svg>
-        </div>
-      ))}
+      {/* Footsteps rendered inside map wrapper below */}
 
       {/* Logo entrance */}
       <AnimatePresence>
@@ -717,10 +694,37 @@ const MapPage = () => {
       >
         <div
           ref={svgWrapperRef}
-          style={{ willChange: 'transform', transformStyle: 'preserve-3d' }}
+          style={{ willChange: 'transform', transformStyle: 'preserve-3d', position: 'relative', overflow: 'hidden' }}
           onMouseEnter={() => setIsOnMap(true)}
           onMouseLeave={() => setIsOnMap(false)}
         >
+          {/* Footsteps — clipped to map */}
+          {footsteps.map(f => {
+            const mapEl = svgWrapperRef.current;
+            if (!mapEl) return null;
+            const mapRect = mapEl.getBoundingClientRect();
+            return (
+              <div
+                key={f.id}
+                className="fixed pointer-events-none"
+                style={{
+                  left: f.x - 5,
+                  top: f.y - 8,
+                  opacity: f.opacity,
+                  transform: `rotate(${f.rotation}deg)`,
+                  zIndex: 20,
+                }}
+              >
+                <svg width="10" height="16" viewBox="0 0 10 16">
+                  <ellipse cx="5" cy="5" rx="3" ry="4.5" fill="#3a3020" opacity="0.6" />
+                  <ellipse cx="5" cy="13" rx="2.5" ry="2" fill="#3a3020" opacity="0.5" />
+                  <circle cx="3" cy="1.5" r="1" fill="#3a3020" opacity="0.4" />
+                  <circle cx="5" cy="0.8" r="1" fill="#3a3020" opacity="0.4" />
+                  <circle cx="7" cy="1.5" r="1" fill="#3a3020" opacity="0.4" />
+                </svg>
+              </div>
+            );
+          })}
           <svg
             viewBox="0 0 1000 650"
             className="w-[80vw] h-[80vh] max-w-[80vw] max-h-[80vh]"
