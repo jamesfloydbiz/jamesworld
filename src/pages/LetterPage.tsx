@@ -366,9 +366,18 @@ const LetterPage = () => {
                     textAlign: msg.role === 'user' ? 'right' : 'left',
                   }}
                 >
-                  {msg.role === 'assistant' ? (
+                {msg.role === 'assistant' ? (
                     <div className="prose prose-sm max-w-none" style={{ color: '#3D2817' }}>
                       <ReactMarkdown>{msg.content}</ReactMarkdown>
+                      {/* Show cursor on the latest assistant message while streaming */}
+                      {isStreaming && i === messages.length - 1 && (
+                        <motion.span
+                          className="inline-block w-[2px] h-[1em] ml-[1px] align-text-bottom"
+                          style={{ backgroundColor: '#3D2817' }}
+                          animate={{ opacity: [1, 0] }}
+                          transition={{ duration: 0.5, repeat: Infinity }}
+                        />
+                      )}
                     </div>
                   ) : (
                     msg.content
@@ -377,14 +386,6 @@ const LetterPage = () => {
               </div>
             ))}
 
-            {isStreaming && (
-              <motion.span
-                className="inline-block w-[2px] h-4"
-                style={{ backgroundColor: '#3D2817' }}
-                animate={{ opacity: [1, 0] }}
-                transition={{ duration: 0.5, repeat: Infinity }}
-              />
-            )}
           </div>
 
           {/* Input */}
