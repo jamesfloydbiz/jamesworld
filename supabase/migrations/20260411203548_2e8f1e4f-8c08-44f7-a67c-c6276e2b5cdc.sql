@@ -1,0 +1,2 @@
+
+ALTER TABLE public.knowledge_base ENABLE ROW LEVEL SECURITY;
