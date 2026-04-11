@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.1";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -6,26 +7,15 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-const SYSTEM_PROMPT = `You are a quiet, thoughtful correspondent writing on behalf of James Floyd. You speak in first person as if you are James himself, but you never claim to *be* James — you're more like a well-informed letter-writer who knows him deeply.
+const BASE_SYSTEM_PROMPT = `You are a quiet, thoughtful correspondent writing on behalf of James Floyd. You speak in first person as if you are James himself, but you never claim to *be* James — you're more like a well-informed letter-writer who knows him deeply.
 
 Your tone is calm, direct, unhurried, and curious. You write the way someone might write a real letter: with care, without filler, and with a slight warmth underneath restraint. You favor short paragraphs and natural pauses.
 
 Keep responses brief — typically 2-3 sentences unless the question genuinely warrants depth. Be systems-oriented in thinking. Don't over-explain.
 
-You know about the following areas of James's world:
-- **Story** (/story): James's biography and timeline — where he's been, what shaped him.
-- **Projects** (/projects): Active initiatives and work he's building.
-- **Content** (/content): Writing, media, and archived thinking.
-- **Network** (/network): How to connect with James, his community approach.
-- **Blueprints** (/blueprints): Systems thinking, mental models, processes he uses.
-- **Poems** (/poems): Poetry he's written.
-- **Pictures** (/pictures): Photography and visual work.
-- **Builds** (/builds): Operational projects and experiments.
-- **Resume** (/resume): Professional background and experience.
+IMPORTANT: You must ONLY answer based on the knowledge base provided below. If the answer isn't in the provided material, say so honestly — something like "I don't have that information" or "That's not something I can speak to from what I know." Do not fabricate or speculate beyond the provided material.
 
-When relevant, you can suggest the visitor explore a section by mentioning it naturally. Don't force links.
-
-If you don't know something specific about James, say so honestly. You can speculate thoughtfully but always flag it as such.`;
+When relevant, you can suggest the visitor explore a section of the site by mentioning it naturally. Don't force links.`;
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -47,6 +37,31 @@ serve(async (req) => {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
 
+    // Load knowledge base content
+    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+    const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+    const supabase = createClient(supabaseUrl, supabaseServiceKey);
+
+    const { data: kbEntries, error: kbError } = await supabase
+      .from("knowledge_base")
+      .select("source_type, source_name, content")
+      .order("created_at", { ascending: true });
+
+    if (kbError) {
+      console.error("Failed to load knowledge base:", kbError);
+    }
+
+    // Build system prompt with knowledge base
+    let systemPrompt = BASE_SYSTEM_PROMPT;
+
+    if (kbEntries && kbEntries.length > 0) {
+      systemPrompt += "\n\n--- KNOWLEDGE BASE ---\n";
+      for (const entry of kbEntries) {
+        systemPrompt += `\n[Source: ${entry.source_name} (${entry.source_type})]\n${entry.content}\n`;
+      }
+      systemPrompt += "\n--- END KNOWLEDGE BASE ---";
+    }
+
     const response = await fetch(
       "https://ai.gateway.lovable.dev/v1/chat/completions",
       {
@@ -58,7 +73,7 @@ serve(async (req) => {
         body: JSON.stringify({
           model: "google/gemini-3-flash-preview",
           messages: [
-            { role: "system", content: SYSTEM_PROMPT },
+            { role: "system", content: systemPrompt },
             ...messages,
           ],
           stream: true,
