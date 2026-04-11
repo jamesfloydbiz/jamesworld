@@ -222,9 +222,17 @@ const LetterPage = () => {
     }
   }, [messages]);
 
+  const GREETING_TEXT = 'Welcome! What brings you here today?';
+
   const handleGreetingComplete = useCallback(() => {
-    setMessages([{ role: 'assistant', content: 'What are you wondering about James?' }]);
+    setMessages([{ role: 'assistant', content: GREETING_TEXT }]);
     setGreeting(false);
+  }, []);
+
+  const handleNewChat = useCallback(() => {
+    setMessages([]);
+    setInput('');
+    setGreeting(true);
   }, []);
 
   const send = useCallback(async () => {
@@ -238,7 +246,7 @@ const LetterPage = () => {
     setIsStreaming(true);
 
     const apiMessages = updated.filter(
-      (m, i) => !(i === 0 && m.role === 'assistant' && m.content === 'What are you wondering about James?')
+      (m, i) => !(i === 0 && m.role === 'assistant' && m.content === GREETING_TEXT)
     );
 
     let assistantSoFar = '';
@@ -338,7 +346,7 @@ const LetterPage = () => {
               Correspondence
             </p>
             <motion.button
-              onClick={() => window.history.back()}
+              onClick={handleNewChat}
               className="font-mono text-[10px] tracking-[0.2em] uppercase"
               style={{ color: 'rgba(61,40,23,0.3)' }}
               whileHover={{ color: 'rgba(61,40,23,0.6)' }}
@@ -348,10 +356,10 @@ const LetterPage = () => {
           </div>
 
           {/* Messages */}
-          <div ref={scrollRef} className="flex-1 overflow-y-auto px-6 md:px-10 py-6 space-y-6">
+          <div ref={scrollRef} className="flex-1 overflow-y-auto overscroll-contain px-6 md:px-10 py-6 space-y-6" style={{ scrollbarWidth: 'thin', scrollbarColor: 'rgba(61,40,23,0.2) transparent' }}>
             {greeting && (
               <div className="text-sm md:text-base leading-relaxed" style={{ color: '#3D2817', fontFamily: "'Georgia', serif" }}>
-                <TypewriterText text="What are you wondering about James?" onComplete={handleGreetingComplete} />
+                <TypewriterText text={GREETING_TEXT} onComplete={handleGreetingComplete} />
               </div>
             )}
 
