@@ -21,6 +21,7 @@ import ResumePage from "./pages/ResumePage";
 import ReferencesPage from "./pages/ReferencesPage";
 import SearchPage from "./pages/SearchPage";
 import SearchAssistant from "./components/ui/SearchAssistant";
+import DearReaderPage from "./pages/DearReaderPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -52,6 +53,7 @@ const App = () => (
             <Route path="/resume" element={<ResumePage />} />
             <Route path="/references" element={<ReferencesPage />} />
             <Route path="/search" element={<SearchPage />} />
+            <Route path="/dear-reader" element={<DearReaderPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </SearchProvider>
