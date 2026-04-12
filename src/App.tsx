@@ -3,6 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { SearchProvider } from "@/contexts/SearchContext";
 import Index from "./pages/Index";
 import LandingPage from "./pages/LandingPage";
 import LetterPage from "./pages/LetterPage";
@@ -19,6 +20,7 @@ import BuildsPage from "./pages/BuildsPage";
 import ResumePage from "./pages/ResumePage";
 import ReferencesPage from "./pages/ReferencesPage";
 import SearchPage from "./pages/SearchPage";
+import SearchAssistant from "./components/ui/SearchAssistant";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -29,27 +31,30 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/letter" element={<LetterPage />} />
-          <Route path="/museum" element={<Index />} />
-          <Route path="/story" element={<StoryPage />} />
-          <Route path="/portfolio" element={<PortfolioPage />} />
-          <Route path="/content" element={<ContentPage />} />
-          <Route path="/projects" element={<ProjectsPage />} />
-          <Route path="/network" element={<NetworkPage />} />
-          <Route path="/blueprints" element={<BlueprintsPage />} />
-          <Route path="/blueprints/mental-models" element={<MentalModelsPage />} />
-          <Route path="/poems" element={<PoemsPage />} />
-          <Route path="/pictures" element={<PicturesPage />} />
-          <Route path="/builds" element={<BuildsPage />} />
-          <Route path="/ops" element={<Navigate to="/builds" replace />} />
-          <Route path="/poetry" element={<Navigate to="/poems" replace />} />
-          <Route path="/resume" element={<ResumePage />} />
-          <Route path="/references" element={<ReferencesPage />} />
-          <Route path="/search" element={<SearchPage />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <SearchProvider>
+          <SearchAssistant />
+          <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/letter" element={<LetterPage />} />
+            <Route path="/museum" element={<Index />} />
+            <Route path="/story" element={<StoryPage />} />
+            <Route path="/portfolio" element={<PortfolioPage />} />
+            <Route path="/content" element={<ContentPage />} />
+            <Route path="/projects" element={<ProjectsPage />} />
+            <Route path="/network" element={<NetworkPage />} />
+            <Route path="/blueprints" element={<BlueprintsPage />} />
+            <Route path="/blueprints/mental-models" element={<MentalModelsPage />} />
+            <Route path="/poems" element={<PoemsPage />} />
+            <Route path="/pictures" element={<PicturesPage />} />
+            <Route path="/builds" element={<BuildsPage />} />
+            <Route path="/ops" element={<Navigate to="/builds" replace />} />
+            <Route path="/poetry" element={<Navigate to="/poems" replace />} />
+            <Route path="/resume" element={<ResumePage />} />
+            <Route path="/references" element={<ReferencesPage />} />
+            <Route path="/search" element={<SearchPage />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </SearchProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

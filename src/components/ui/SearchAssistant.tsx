@@ -9,9 +9,11 @@ const SearchAssistant = () => {
   const { messages, isLoading, isOpen, navSuggestion, setIsOpen, sendMessage } = useSearch();
   const [input, setInput] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const isSearchPage = location.pathname === '/search';
 
-  // Hide on /search page
-  if (location.pathname === '/search') return null;
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,13 +22,10 @@ const SearchAssistant = () => {
     setInput('');
   };
 
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+  if (isSearchPage) return null;
 
   return (
     <>
-      {/* Floating icon */}
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
@@ -42,7 +41,6 @@ const SearchAssistant = () => {
         </button>
       )}
 
-      {/* Popover */}
       {isOpen && (
         <div
           className="fixed top-4 right-4 z-50 flex flex-col"
@@ -55,7 +53,6 @@ const SearchAssistant = () => {
             fontFamily: "'Lora', serif",
           }}
         >
-          {/* Header */}
           <div className="flex items-center justify-between px-4 py-3" style={{ borderBottom: '1px solid hsl(0 0% 100% / 0.08)' }}>
             <Link
               to="/search"
@@ -65,21 +62,14 @@ const SearchAssistant = () => {
             >
               Full search
             </Link>
-            <button
-              onClick={() => setIsOpen(false)}
-              style={{ color: 'hsl(0 0% 100% / 0.4)' }}
-              className="hover:opacity-80 transition-opacity"
-            >
+            <button onClick={() => setIsOpen(false)} style={{ color: 'hsl(0 0% 100% / 0.4)' }} className="hover:opacity-80 transition-opacity">
               <X size={16} />
             </button>
           </div>
 
-          {/* Messages */}
           <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3" style={{ maxHeight: '320px', minHeight: '80px' }}>
             {messages.length === 0 && (
-              <p className="text-xs" style={{ color: 'hsl(0 0% 100% / 0.35)' }}>
-                Ask anything about James or this site.
-              </p>
+              <p className="text-xs" style={{ color: 'hsl(0 0% 100% / 0.35)' }}>Ask anything about James or this site.</p>
             )}
             {messages.map((msg, i) => (
               <div key={i} className={msg.role === 'user' ? 'text-right' : 'text-left'}>
@@ -91,9 +81,7 @@ const SearchAssistant = () => {
                   }}
                 >
                   {msg.role === 'assistant' ? (
-                    <div className="prose prose-sm prose-invert">
-                      <ReactMarkdown>{msg.content}</ReactMarkdown>
-                    </div>
+                    <div className="prose prose-sm prose-invert"><ReactMarkdown>{msg.content}</ReactMarkdown></div>
                   ) : msg.content}
                 </div>
               </div>
@@ -103,11 +91,7 @@ const SearchAssistant = () => {
                 to={navSuggestion.route}
                 onClick={() => setIsOpen(false)}
                 className="flex items-center gap-2 px-3 py-2 rounded-lg text-xs transition-colors duration-200"
-                style={{
-                  background: 'hsl(0 0% 100% / 0.06)',
-                  color: 'hsl(0 0% 100% / 0.8)',
-                  border: '1px solid hsl(0 0% 100% / 0.1)',
-                }}
+                style={{ background: 'hsl(0 0% 100% / 0.06)', color: 'hsl(0 0% 100% / 0.8)', border: '1px solid hsl(0 0% 100% / 0.1)' }}
               >
                 <ArrowRight size={14} />
                 Go to {navSuggestion.label}
@@ -116,21 +100,13 @@ const SearchAssistant = () => {
             {isLoading && (
               <div className="flex gap-1 py-1">
                 {[0, 1, 2].map(i => (
-                  <div
-                    key={i}
-                    className="w-1.5 h-1.5 rounded-full"
-                    style={{
-                      background: 'hsl(0 0% 100% / 0.3)',
-                      animation: `pulse 1.4s ease-in-out ${i * 0.2}s infinite`,
-                    }}
-                  />
+                  <div key={i} className="w-1.5 h-1.5 rounded-full" style={{ background: 'hsl(0 0% 100% / 0.3)', animation: `pulse 1.4s ease-in-out ${i * 0.2}s infinite` }} />
                 ))}
               </div>
             )}
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Input */}
           <form onSubmit={handleSubmit} className="px-3 py-3" style={{ borderTop: '1px solid hsl(0 0% 100% / 0.08)' }}>
             <div className="flex items-center gap-2">
               <input
@@ -139,17 +115,9 @@ const SearchAssistant = () => {
                 onChange={e => setInput(e.target.value)}
                 placeholder="Ask something..."
                 className="flex-1 bg-transparent outline-none text-xs"
-                style={{
-                  color: 'hsl(0 0% 100% / 0.8)',
-                  fontFamily: "'Lora', serif",
-                }}
+                style={{ color: 'hsl(0 0% 100% / 0.8)', fontFamily: "'Lora', serif" }}
               />
-              <button
-                type="submit"
-                disabled={isLoading || !input.trim()}
-                className="transition-opacity disabled:opacity-30"
-                style={{ color: 'hsl(0 0% 100% / 0.5)' }}
-              >
+              <button type="submit" disabled={isLoading || !input.trim()} className="transition-opacity disabled:opacity-30" style={{ color: 'hsl(0 0% 100% / 0.5)' }}>
                 <Send size={14} />
               </button>
             </div>
