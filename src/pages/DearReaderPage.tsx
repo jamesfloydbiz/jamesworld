@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 const L = ({ to, children }: { to: string; children: React.ReactNode }) => (
   <Link
     to={to}
-    className="underline underline-offset-4 decoration-[hsl(0_0%_100%_/_0.3)] transition-colors duration-300 italic"
+    className="underline underline-offset-4 decoration-[hsl(0_0%_100%_/_0.3)] transition-colors duration-300"
     style={{ color: "hsl(0 0% 100% / 0.85)" }}
     onMouseEnter={(e) => {
       e.currentTarget.style.color = "hsl(0 0% 100%)";
@@ -21,28 +21,29 @@ const L = ({ to, children }: { to: string; children: React.ReactNode }) => (
 
 const DearReaderPage = () => {
   return (
-    <div className="h-screen bg-background flex flex-col overflow-hidden">
+    <div className="min-h-screen bg-background flex flex-col">
       {/* Logo */}
-      <div className="w-full px-6 py-3 flex items-center shrink-0">
+      <div className="w-full px-6 py-5 flex items-center">
         <Link to="/">
-          <img src="/logo.svg" alt="Logo" className="h-8 w-8 opacity-80" />
+          <img src="/logo.svg" alt="Logo" className="h-10 w-10 opacity-80" />
         </Link>
       </div>
+      <div className="w-full" style={{ height: "1px", background: "hsl(0 0% 100% / 0.12)" }} />
 
       {/* Letter */}
-      <div className="flex-1 flex justify-center px-6 pt-0 pb-4 overflow-hidden">
+      <div className="flex-1 flex justify-center px-6 py-16 md:py-24">
         <article
           className="max-w-lg w-full"
           style={{
             fontFamily: "'Lora', serif",
-            fontSize: "0.88rem",
-            lineHeight: 1.75,
+            fontSize: "0.95rem",
+            lineHeight: 1.9,
             color: "hsl(0 0% 100% / 0.55)",
             fontWeight: 400,
           }}
         >
           <h1
-            className="mb-6"
+            className="mb-10"
             style={{
               fontFamily: "'Lora', serif",
               fontSize: "1.15rem",
@@ -57,24 +58,26 @@ const DearReaderPage = () => {
           {/* ── LETTER BODY ── Edit the paragraphs below. Use <L to="/route"> to link words. ── */}
 
           <p className="mb-6">
-            Thank you for your curiosity. This site has gone through many iterations, kind of like myself. I've decided
-            to leave it for now, as simple as possible. This is my story, my letter to you, and the links to other
+            Thank you for your curiosity. This site has gone through many iterations, kind of like myself. For now, I've
+            decided to leave it as simple as possible. This is my story, my letter to you, and the links to other
             creative projects.
           </p>
-
           <p className="mb-6">
-            If you're just looking for a summary of me go to <L to="/portfolio">portfolio</L>. It's the clearest view of
-            what I do and how I've gotten to now.
+            My name is James Floyd. I am a curious man, and one of depth. My goals are focused only on the moment I am
+            in, and that has led me down the path you can see on my <L to="/portfolio">newspaper</L>.
           </p>
 
           <p className="mb-6">
-            If you'd like a small look into my heart here are a few <L to="/poems">poems</L> I've written over the past
+            My foremost value is living with my heart out. Said differently, to bear my whole soul in every endeavor. If
+            you'd like a small look into that soul here are a few <L to="/poems">poems</L> I have written over the past
             years.
           </p>
 
           <p className="mb-6">
-            For my professional journey you can look at my <L to="/resume">resume</L>, and{" "}
-            <L to="/references">references.</L>
+            I have faced difficulty, as we all have, and find meaning in preventing that difficulty for future
+            generations. I believe that businesses are the best way to bring those solutions to those generations while
+            providing for ones life now. I have realized what makes this journey enjoyable is the company. On the
+            <L to="/references">references</L> page you can see what my company say about me.
           </p>
 
           <p className="mb-6">
