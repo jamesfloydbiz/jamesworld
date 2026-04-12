@@ -53,6 +53,7 @@ const App = () => (
             <Route path="/resume" element={<ResumePage />} />
             <Route path="/references" element={<ReferencesPage />} />
             <Route path="/search" element={<SearchPage />} />
+            <Route path="/dear-reader" element={<DearReaderPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </SearchProvider>
