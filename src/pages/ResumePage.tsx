@@ -236,7 +236,7 @@ const ResumePage = () => {
             transition={{ delay: 1.7, duration: 0.6 }}
           >
             <Link to="/" className="hover:underline underline-offset-4">3D Portfolio</Link>
-            <Link to="/story" className="hover:underline underline-offset-4">My Story</Link>
+            <Link to="/portfolio" className="hover:underline underline-offset-4">Portfolio</Link>
             <Link to="/poems" className="hover:underline underline-offset-4">Poetry</Link>
             <Link to="/projects" className="hover:underline underline-offset-4">Projects</Link>
             <Link to="/builds" className="hover:underline underline-offset-4">Builds</Link>

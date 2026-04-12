@@ -65,7 +65,7 @@ const Index = () => {
   const controlsReady = showTitles && !showLoading;
 
   const menuItems = [
-    { label: 'Story', path: '/story' },
+    { label: 'Portfolio', path: '/portfolio' },
     { 
       label: 'Projects', 
       path: '/projects',

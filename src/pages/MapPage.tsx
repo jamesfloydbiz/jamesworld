@@ -32,10 +32,10 @@ const useCompassHeading = () => {
 /* ─── Landmarks ─── */
 const LANDMARKS = [
   {
-    id: 'story',
-    route: '/story',
-    label: 'Story',
-    descriptor: 'A biography told as a timeline',
+    id: 'portfolio',
+    route: '/portfolio',
+    label: 'Portfolio',
+    descriptor: 'The full narrative and professional journey',
     x: 280,
     y: 190,
   },
