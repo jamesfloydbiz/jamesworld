@@ -14,7 +14,7 @@ const TreeModel = () => {
   });
 
   return (
-    <group ref={ref} position={[0.6, -1.2, 0]} scale={0.6}>
+    <group ref={ref} position={[0, -2.0, 0]} scale={0.6}>
       <primitive object={scene} />
     </group>
   );
