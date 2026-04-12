@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { WalkwayHeader } from '@/components/walkway/WalkwayHeader';
 import { Link } from 'react-router-dom';
-import { ExternalLink, Mail, MapPin, Phone } from 'lucide-react';
+import { ExternalLink, Mail, MapPin } from 'lucide-react';
 import { useKeyboardScroll } from '@/hooks/useKeyboardScroll';
 
 const skills = {
