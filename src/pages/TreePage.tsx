@@ -12,7 +12,7 @@ const TreeModel = () => {
   // No rotation
 
   return (
-    <group ref={ref} position={[0, -2.8, 0]} scale={0.45}>
+    <group ref={ref} position={[0, -2.8, 0]} scale={0.225}>
       <primitive object={scene} />
     </group>
   );
