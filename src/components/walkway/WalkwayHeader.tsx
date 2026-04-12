@@ -1,7 +1,6 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { WalkwayCharacter } from "./WalkwayCharacter";
 import { useGameStore } from "@/store/gameStore";
 
 interface WalkwayHeaderProps {
@@ -10,24 +9,9 @@ interface WalkwayHeaderProps {
 
 export function WalkwayHeader({ title }: WalkwayHeaderProps) {
   const navigate = useNavigate();
-  const { scrollProgress, setScrollProgress, restoreHubState, setIsTransitioning } = useGameStore();
+  const { restoreHubState, setIsTransitioning } = useGameStore();
   const [menuOpen, setMenuOpen] = useState(false);
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
-
-  // Track scroll progress
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollTop = window.scrollY;
-      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-      const progress = docHeight > 0 ? Math.min(1, scrollTop / docHeight) : 0;
-      setScrollProgress(progress);
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll();
-
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [setScrollProgress]);
 
   const handleBackToHub = () => {
     setIsTransitioning(true);
@@ -69,10 +53,9 @@ export function WalkwayHeader({ title }: WalkwayHeaderProps) {
         animate={{ y: 0 }}
         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
       >
-        {/* Persistent logo - top left corner */}
         <motion.button
           onClick={handleBackToHub}
-          className="absolute top-4 left-6 w-8 h-8 opacity-60 hover:opacity-100 transition-opacity"
+          className="absolute top-3 left-6 w-8 h-8 opacity-60 hover:opacity-100 transition-opacity"
           initial={{ opacity: 0 }}
           animate={{ opacity: 0.6 }}
           transition={{ delay: 0.3 }}
@@ -81,7 +64,6 @@ export function WalkwayHeader({ title }: WalkwayHeaderProps) {
           <img src="/logo.svg" alt="James Floyd logo - return to home" className="w-full h-full" />
         </motion.button>
 
-        {/* Menu button - subtle positioning */}
         <motion.button
           className="absolute top-4 right-6 text-[10px] tracking-[0.2em] uppercase text-muted-foreground/40 hover:text-foreground/80 transition-colors"
           onClick={() => setMenuOpen(!menuOpen)}
@@ -91,33 +73,8 @@ export function WalkwayHeader({ title }: WalkwayHeaderProps) {
         >
           Menu
         </motion.button>
-
-        {/* Two-line track zone */}
-        <div className="absolute bottom-0 left-0 right-0">
-          {/* Top boundary line */}
-          <div className="walkway-rail-top" />
-          
-          {/* Track zone - character and doorway live here */}
-          <div className="relative h-8">
-            {/* Portal entrance arch - centered vertically between the two lines */}
-            <motion.div
-              className="absolute top-1/2 -translate-y-1/2 left-[2%] w-4 h-6 border border-foreground/15 rounded-t-full"
-              initial={{ scaleY: 0 }}
-              animate={{ scaleY: 1 }}
-              transition={{ delay: 0.2, duration: 0.4 }}
-              style={{ transformOrigin: "center" }}
-            />
-            
-            {/* Character on the track */}
-            <WalkwayCharacter progress={scrollProgress} />
-          </div>
-          
-          {/* Bottom rail */}
-          <div className="walkway-rail" />
-        </div>
       </motion.header>
 
-      {/* Dropdown menu */}
       <AnimatePresence>
         {menuOpen && (
           <motion.div

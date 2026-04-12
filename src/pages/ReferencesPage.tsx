@@ -293,7 +293,7 @@ export default function ReferencesPage() {
     <div className="min-h-screen bg-background text-foreground">
       <WalkwayHeader title="References" />
 
-      <main className="pt-32 pb-24 px-6 md:px-12 lg:px-20">
+      <main className="pt-16 pb-24 px-6 md:px-12 lg:px-20">
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}

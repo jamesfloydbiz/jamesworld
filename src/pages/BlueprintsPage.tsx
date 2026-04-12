@@ -296,7 +296,7 @@ const BlueprintsPage = () => {
     <div className="min-h-screen bg-background">
       <WalkwayHeader title="Blueprints" />
 
-      <main className="pt-[140px] px-4 md:px-8 pb-24">
+      <main className="pt-16 px-4 md:px-8 pb-24">
         <motion.div
           className="max-w-5xl mx-auto"
           initial={{ opacity: 0, y: 40 }}
