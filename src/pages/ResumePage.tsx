@@ -104,9 +104,6 @@ const ResumePage = () => {
               <span className="flex items-center gap-1">
                 <MapPin className="w-3 h-3" /> United States
               </span>
-              <span className="flex items-center gap-1">
-                <Phone className="w-3 h-3" /> (916) 642-5266
-              </span>
               <a href="mailto:jamesfloydbiz@gmail.com" className="flex items-center gap-1 hover:text-foreground">
                 <Mail className="w-3 h-3" /> jamesfloydbiz@gmail.com
               </a>
