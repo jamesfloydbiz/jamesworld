@@ -106,7 +106,15 @@ const SearchPage = () => {
 
         {/* Search input with glow */}
         <div className="w-full max-w-md relative">
-          {/* Animated glow orbs */}
+          {/* Edge glow orbs that drift inward toward search bar */}
+          <div className="fixed inset-0 pointer-events-none z-0">
+            <div className="edge-glow-orb edge-glow-orb-tl" />
+            <div className="edge-glow-orb edge-glow-orb-tr" />
+            <div className="edge-glow-orb edge-glow-orb-bl" />
+            <div className="edge-glow-orb edge-glow-orb-br" />
+          </div>
+
+          {/* Local glow orbs near search bar */}
           <div className="absolute inset-0 pointer-events-none" style={{ overflow: 'visible' }}>
             <div className="search-glow-orb search-glow-orb-1" />
             <div className="search-glow-orb search-glow-orb-2" />
@@ -196,6 +204,56 @@ const SearchPage = () => {
       <style>{`
         @keyframes blink { 50% { opacity: 0; } }
 
+        .edge-glow-orb {
+          position: absolute;
+          border-radius: 50%;
+          filter: blur(80px);
+          opacity: 0;
+          pointer-events: none;
+          background: radial-gradient(circle, hsl(0 0% 100% / 0.12), transparent 70%);
+        }
+
+        .edge-glow-orb-tl {
+          width: 200px; height: 200px;
+          top: 5%; left: 0%;
+          animation: edgeDriftTL 10s ease-in-out infinite;
+        }
+        .edge-glow-orb-tr {
+          width: 180px; height: 180px;
+          top: 10%; right: 0%;
+          animation: edgeDriftTR 12s ease-in-out 1s infinite;
+        }
+        .edge-glow-orb-bl {
+          width: 160px; height: 160px;
+          bottom: 10%; left: 5%;
+          animation: edgeDriftBL 11s ease-in-out 3s infinite;
+        }
+        .edge-glow-orb-br {
+          width: 190px; height: 190px;
+          bottom: 5%; right: 0%;
+          animation: edgeDriftBR 13s ease-in-out 2s infinite;
+        }
+
+        @keyframes edgeDriftTL {
+          0%, 100% { opacity: 0; transform: translate(-30%, -20%) scale(1); }
+          40% { opacity: 0.4; transform: translate(30vw, 25vh) scale(0.7); }
+          70% { opacity: 0.15; transform: translate(20vw, 15vh) scale(0.9); }
+        }
+        @keyframes edgeDriftTR {
+          0%, 100% { opacity: 0; transform: translate(30%, -20%) scale(1); }
+          45% { opacity: 0.35; transform: translate(-25vw, 30vh) scale(0.6); }
+          75% { opacity: 0.1; transform: translate(-15vw, 20vh) scale(0.8); }
+        }
+        @keyframes edgeDriftBL {
+          0%, 100% { opacity: 0; transform: translate(-20%, 30%) scale(1); }
+          50% { opacity: 0.3; transform: translate(25vw, -25vh) scale(0.7); }
+        }
+        @keyframes edgeDriftBR {
+          0%, 100% { opacity: 0; transform: translate(20%, 20%) scale(1); }
+          35% { opacity: 0.35; transform: translate(-30vw, -20vh) scale(0.6); }
+          65% { opacity: 0.15; transform: translate(-20vw, -15vh) scale(0.8); }
+        }
+
         .search-glow-orb {
           position: absolute;
           border-radius: 50%;
@@ -206,26 +264,18 @@ const SearchPage = () => {
         }
 
         .search-glow-orb-1 {
-          width: 120px;
-          height: 120px;
-          top: -40px;
-          left: -60px;
+          width: 120px; height: 120px;
+          top: -40px; left: -60px;
           animation: glowDrift1 8s ease-in-out infinite;
         }
-
         .search-glow-orb-2 {
-          width: 100px;
-          height: 100px;
-          bottom: -30px;
-          right: -50px;
+          width: 100px; height: 100px;
+          bottom: -30px; right: -50px;
           animation: glowDrift2 10s ease-in-out 2s infinite;
         }
-
         .search-glow-orb-3 {
-          width: 80px;
-          height: 80px;
-          top: 50%;
-          left: 50%;
+          width: 80px; height: 80px;
+          top: 50%; left: 50%;
           transform: translate(-50%, -50%);
           animation: glowDrift3 12s ease-in-out 4s infinite;
         }
@@ -235,13 +285,11 @@ const SearchPage = () => {
           30% { opacity: 0.5; transform: translate(40px, 10px) scale(1.2); }
           60% { opacity: 0.3; transform: translate(80px, -10px) scale(1); }
         }
-
         @keyframes glowDrift2 {
           0%, 100% { opacity: 0; transform: translate(30px, 20px) scale(0.9); }
           40% { opacity: 0.4; transform: translate(-30px, -20px) scale(1.1); }
           70% { opacity: 0.2; transform: translate(-60px, 10px) scale(1); }
         }
-
         @keyframes glowDrift3 {
           0%, 100% { opacity: 0; transform: translate(-50%, -50%) scale(0.7); }
           50% { opacity: 0.35; transform: translate(-30%, -60%) scale(1.3); }
