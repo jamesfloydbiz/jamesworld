@@ -30,7 +30,7 @@ const DearReaderPage = () => {
       </div>
 
       {/* Letter */}
-      <div className="flex-1 flex justify-center px-6 <div className="flex-1 flex justify-center px-6 pt-0 pb-16 md:pt-0 md:pb-24">">
+      <div className="flex-1 flex justify-center px-6 pt-0 pb-16 md:pt-0 md:pb-24">
         <article
           className="max-w-lg w-full"
           style={{
