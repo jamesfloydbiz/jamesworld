@@ -74,7 +74,7 @@ const DearReaderPage = () => {
           </p>
 
           <p className="mb-6">
-            For my professional journey you can look at my <L to="/resume">resume</L>. And for the people who've and my{" "}
+            For my professional journey you can look at my <L to="/resume">resume</L>, and{" "}
             <L to="/references">references.</L>
           </p>
 
