@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 const L = ({ to, children }: { to: string; children: React.ReactNode }) => (
   <Link
     to={to}
-    className="underline underline-offset-4 decoration-[hsl(0_0%_100%_/_0.3)] transition-colors duration-300"
+    className="underline underline-offset-4 decoration-[hsl(0_0%_100%_/_0.3)] transition-colors duration-300 italic"
     style={{ color: "hsl(0 0% 100% / 0.85)" }}
     onMouseEnter={(e) => {
       e.currentTarget.style.color = "hsl(0 0% 100%)";

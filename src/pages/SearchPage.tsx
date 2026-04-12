@@ -4,7 +4,8 @@ import { useSearch } from '@/contexts/SearchContext';
 import ReactMarkdown from 'react-markdown';
 import { ArrowRight, Send } from 'lucide-react';
 
-const fullText = "Welcome to James Floyd's World. Ask for what you're wondering here, or start with scrolling his ";
+const line1 = "Welcome to James Floyd's World.";
+const line2 = "Ask for what you're wondering here, or start with scrolling his ";
 const suffix = "portfolio";
 
 const SearchPage = () => {

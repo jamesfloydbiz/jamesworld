@@ -5,9 +5,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { SearchProvider } from "@/contexts/SearchContext";
 import Index from "./pages/Index";
-import LandingPage from "./pages/LandingPage";
+import DearReaderPage from "./pages/DearReaderPage";
 import LetterPage from "./pages/LetterPage";
-import StoryPage from "./pages/StoryPage";
 import PortfolioPage from "./pages/PortfolioPage";
 import ContentPage from "./pages/ContentPage";
 import ProjectsPage from "./pages/ProjectsPage";
@@ -20,8 +19,6 @@ import BuildsPage from "./pages/BuildsPage";
 import ResumePage from "./pages/ResumePage";
 import ReferencesPage from "./pages/ReferencesPage";
 import SearchPage from "./pages/SearchPage";
-import SearchAssistant from "./components/ui/SearchAssistant";
-import DearReaderPage from "./pages/DearReaderPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -33,12 +30,10 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <SearchProvider>
-          <SearchAssistant />
           <Routes>
-            <Route path="/" element={<LandingPage />} />
+            <Route path="/" element={<DearReaderPage />} />
             <Route path="/letter" element={<LetterPage />} />
             <Route path="/museum" element={<Index />} />
-            <Route path="/story" element={<StoryPage />} />
             <Route path="/portfolio" element={<PortfolioPage />} />
             <Route path="/content" element={<ContentPage />} />
             <Route path="/projects" element={<ProjectsPage />} />
@@ -50,10 +45,11 @@ const App = () => (
             <Route path="/builds" element={<BuildsPage />} />
             <Route path="/ops" element={<Navigate to="/builds" replace />} />
             <Route path="/poetry" element={<Navigate to="/poems" replace />} />
+            <Route path="/story" element={<Navigate to="/portfolio" replace />} />
+            <Route path="/dear-reader" element={<Navigate to="/" replace />} />
             <Route path="/resume" element={<ResumePage />} />
             <Route path="/references" element={<ReferencesPage />} />
             <Route path="/search" element={<SearchPage />} />
-            <Route path="/dear-reader" element={<DearReaderPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </SearchProvider>
