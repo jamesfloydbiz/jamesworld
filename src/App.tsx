@@ -18,7 +18,7 @@ import PicturesPage from "./pages/PicturesPage";
 import BuildsPage from "./pages/BuildsPage";
 import ResumePage from "./pages/ResumePage";
 import ReferencesPage from "./pages/ReferencesPage";
-
+import TreePage from "./pages/TreePage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
