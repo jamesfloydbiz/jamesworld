@@ -14,12 +14,14 @@ const SearchPage = () => {
   const [input, setInput] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  const totalLength = line1.length + line2.length + suffix.length;
+
   useEffect(() => {
-    if (charIndex < fullText.length + suffix.length) {
+    if (charIndex < totalLength) {
       const timer = setTimeout(() => setCharIndex(i => i + 1), 40);
       return () => clearTimeout(timer);
     }
-  }, [charIndex]);
+  }, [charIndex, totalLength]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -32,25 +34,32 @@ const SearchPage = () => {
     setInput('');
   };
 
-  const displayedMain = fullText.slice(0, Math.min(charIndex, fullText.length));
-  const displayedSuffix = charIndex > fullText.length
-    ? suffix.slice(0, charIndex - fullText.length)
+  const displayedLine1 = line1.slice(0, Math.min(charIndex, line1.length));
+  const line2Start = line1.length;
+  const displayedLine2 = charIndex > line2Start
+    ? line2.slice(0, Math.min(charIndex - line2Start, line2.length))
     : '';
-  const showCursor = charIndex < fullText.length + suffix.length;
+  const suffixStart = line1.length + line2.length;
+  const displayedSuffix = charIndex > suffixStart
+    ? suffix.slice(0, charIndex - suffixStart)
+    : '';
+  const showCursor = charIndex < totalLength;
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
       <div className="w-full px-6 py-5 flex items-center">
-        <img src="/logo.svg" alt="Logo" className="h-10 w-10 opacity-80" />
+        <Link to="/">
+          <img src="/logo.svg" alt="Logo" className="h-10 w-10 opacity-80" />
+        </Link>
       </div>
       <div className="w-full" style={{ height: '1px', background: 'hsl(0 0% 100% / 0.12)' }} />
 
       {/* Center content */}
       <div className="flex-1 flex flex-col items-center justify-center px-6" style={{ marginTop: '-4rem' }}>
-        {/* Typewriter text */}
+        {/* Typewriter text - line 1 */}
         <p
-          className="max-w-lg text-center mb-8"
+          className="max-w-lg text-center mb-3"
           style={{
             fontFamily: "'Lora', serif",
             fontSize: '0.95rem',
@@ -59,22 +68,41 @@ const SearchPage = () => {
             fontWeight: 400,
           }}
         >
-          {displayedMain}
-          {displayedSuffix && (
-            <Link
-              to="/portfolio"
-              className="underline underline-offset-4 transition-colors duration-300"
-              style={{ color: 'hsl(0 0% 100% / 0.85)' }}
-              onMouseEnter={e => (e.currentTarget.style.color = 'hsl(0 0% 100%)')}
-              onMouseLeave={e => (e.currentTarget.style.color = 'hsl(0 0% 100% / 0.85)')}
-            >
-              {displayedSuffix}
-            </Link>
-          )}
-          {showCursor && (
+          {displayedLine1}
+          {charIndex <= line1.length && showCursor && (
             <span className="inline-block w-px h-4 ml-0.5 align-middle" style={{ background: 'hsl(0 0% 100% / 0.5)', animation: 'blink 1s step-end infinite' }} />
           )}
         </p>
+
+        {/* Typewriter text - line 2 */}
+        {charIndex > line1.length && (
+          <p
+            className="max-w-lg text-center mb-8"
+            style={{
+              fontFamily: "'Lora', serif",
+              fontSize: '0.95rem',
+              lineHeight: 1.7,
+              color: 'hsl(0 0% 100% / 0.6)',
+              fontWeight: 400,
+            }}
+          >
+            {displayedLine2}
+            {displayedSuffix && (
+              <Link
+                to="/portfolio"
+                className="underline underline-offset-4 transition-colors duration-300"
+                style={{ color: 'hsl(0 0% 100% / 0.85)' }}
+                onMouseEnter={e => (e.currentTarget.style.color = 'hsl(0 0% 100%)')}
+                onMouseLeave={e => (e.currentTarget.style.color = 'hsl(0 0% 100% / 0.85)')}
+              >
+                {displayedSuffix}
+              </Link>
+            )}
+            {charIndex > line1.length && showCursor && (
+              <span className="inline-block w-px h-4 ml-0.5 align-middle" style={{ background: 'hsl(0 0% 100% / 0.5)', animation: 'blink 1s step-end infinite' }} />
+            )}
+          </p>
+        )}
 
         {/* Search input with glow */}
         <div className="w-full max-w-md relative">
