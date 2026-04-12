@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { WalkwayHeader } from '@/components/walkway/WalkwayHeader';
 import { Link } from 'react-router-dom';
-import { ExternalLink, Mail, MapPin, Phone } from 'lucide-react';
+import { ExternalLink, Mail, MapPin } from 'lucide-react';
 import { useKeyboardScroll } from '@/hooks/useKeyboardScroll';
 
 const skills = {
@@ -103,9 +103,6 @@ const ResumePage = () => {
             <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
               <span className="flex items-center gap-1">
                 <MapPin className="w-3 h-3" /> United States
-              </span>
-              <span className="flex items-center gap-1">
-                <Phone className="w-3 h-3" /> (916) 642-5266
               </span>
               <a href="mailto:jamesfloydbiz@gmail.com" className="flex items-center gap-1 hover:text-foreground">
                 <Mail className="w-3 h-3" /> jamesfloydbiz@gmail.com
