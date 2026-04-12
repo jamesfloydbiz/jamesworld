@@ -28,10 +28,9 @@ const DearReaderPage = () => {
           <img src="/logo.svg" alt="Logo" className="h-10 w-10 opacity-80" />
         </Link>
       </div>
-      <div className="w-full" style={{ height: "1px", background: "hsl(0 0% 100% / 0.12)" }} />
 
       {/* Letter */}
-      <div className="flex-1 flex justify-center px-6 py-16 md:py-24">
+      <div className="flex-1 flex justify-center px-6 pt-6 pb-16 md:pt-8 md:pb-24">
         <article
           className="max-w-lg w-full"
           style={{
