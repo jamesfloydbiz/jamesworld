@@ -21,6 +21,7 @@ import ResumePage from "./pages/ResumePage";
 import ReferencesPage from "./pages/ReferencesPage";
 import SearchPage from "./pages/SearchPage";
 import SearchAssistant from "./components/ui/SearchAssistant";
+import DearReaderPage from "./pages/DearReaderPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
