@@ -21,16 +21,17 @@ const L = ({ to, children }: { to: string; children: React.ReactNode }) => (
 
 const DearReaderPage = () => {
   return (
-    <div className="h-screen bg-background flex flex-col overflow-hidden">
+    <div className="min-h-screen bg-background flex flex-col">
       {/* Logo */}
-      <div className="w-full px-6 py-2 flex items-center shrink-0">
+      <div className="w-full px-6 py-5 flex items-center">
         <Link to="/">
-          <img src="/logo.svg" alt="Logo" className="h-8 w-8 opacity-80" />
+          <img src="/logo.svg" alt="Logo" className="h-10 w-10 opacity-80" />
         </Link>
       </div>
+      <div className="w-full" style={{ height: "1px", background: "hsl(0 0% 100% / 0.12)" }} />
 
       {/* Letter */}
-      <div className="flex-1 flex justify-center px-6 pt-0 pb-4 overflow-hidden">
+      <div className="flex-1 flex justify-center px-6 py-16 md:py-24">
         <article
           className="max-w-lg w-full"
           style={{
@@ -74,11 +75,12 @@ const DearReaderPage = () => {
 
           <p className="mb-6">
             I find meaning in preventing the problems I overcome for the people of the world, and future generations. I
-            believe that businesses are the best way to do that while providing for one's life as you do that work. I
-            have realized what makes this journey enjoyable is the people around me. On the
+            believe that businesses are the best way to do that while providing for one's life as you do that work.
+          </p>
+          <p className="mb-6">
+            I have realized what makes this journey enjoyable is the people around me. On the
             <L to="/references">references</L> page you can see what people say about me.
           </p>
-
           <p className="mb-6">
             For other <L to="/builds">builds</L>, <L to="/content">content,</L> or
             <L to="/network">socials</L> click on what strikes your fancy.
