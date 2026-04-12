@@ -44,7 +44,7 @@ export function MainMenu({ onEnterGallery, galleryLoading, galleryProgress }: Ma
 
   const menuItems = [
     { label: '3D Gallery', action: onEnterGallery, isGallery: true },
-    { label: 'Story', path: '/story' },
+    { label: 'Portfolio', path: '/portfolio' },
     { label: 'Projects', path: '/projects' },
     { label: 'Content', path: '/content' },
     { label: 'Network', path: '/network' },

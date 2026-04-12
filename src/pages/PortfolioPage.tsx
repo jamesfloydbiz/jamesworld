@@ -100,7 +100,7 @@ function WalkingCharacter({ progress }: {progress: number;}) {
 
 /* ─── Site Links Section ─── */
 const siteLinks = [
-{ label: 'Story', path: '/story', desc: 'The full narrative — where it started, how it unfolded.' },
+{ label: 'Portfolio', path: '/portfolio', desc: 'The full narrative — where it started, how it unfolded.' },
 { label: 'Projects', path: '/projects', desc: 'What James has built and been part of building.' },
 { label: 'Builds', path: '/builds', desc: 'AI automations and operational systems James has designed.' },
 { label: 'Content', path: '/content', desc: 'Writing, videos, and things James has published.' },
@@ -141,7 +141,7 @@ const PortfolioPage = () => {
   };
 
   const menuItems = [
-    { label: "Story", path: "/story" },
+    { label: "Portfolio", path: "/portfolio" },
     { 
       label: "Projects", 
       path: "/projects",

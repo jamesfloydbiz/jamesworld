@@ -4,7 +4,8 @@ import { useSearch } from '@/contexts/SearchContext';
 import ReactMarkdown from 'react-markdown';
 import { ArrowRight, Send } from 'lucide-react';
 
-const fullText = "Welcome to James Floyd's World. Ask for what you're wondering here, or start with scrolling his ";
+const line1 = "Welcome to James Floyd's World.";
+const line2 = "Ask for what you're wondering here, or start with scrolling his ";
 const suffix = "portfolio";
 
 const SearchPage = () => {
@@ -13,12 +14,14 @@ const SearchPage = () => {
   const [input, setInput] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  const totalLength = line1.length + line2.length + suffix.length;
+
   useEffect(() => {
-    if (charIndex < fullText.length + suffix.length) {
+    if (charIndex < totalLength) {
       const timer = setTimeout(() => setCharIndex(i => i + 1), 40);
       return () => clearTimeout(timer);
     }
-  }, [charIndex]);
+  }, [charIndex, totalLength]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -31,25 +34,32 @@ const SearchPage = () => {
     setInput('');
   };
 
-  const displayedMain = fullText.slice(0, Math.min(charIndex, fullText.length));
-  const displayedSuffix = charIndex > fullText.length
-    ? suffix.slice(0, charIndex - fullText.length)
+  const displayedLine1 = line1.slice(0, Math.min(charIndex, line1.length));
+  const line2Start = line1.length;
+  const displayedLine2 = charIndex > line2Start
+    ? line2.slice(0, Math.min(charIndex - line2Start, line2.length))
     : '';
-  const showCursor = charIndex < fullText.length + suffix.length;
+  const suffixStart = line1.length + line2.length;
+  const displayedSuffix = charIndex > suffixStart
+    ? suffix.slice(0, charIndex - suffixStart)
+    : '';
+  const showCursor = charIndex < totalLength;
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
       <div className="w-full px-6 py-5 flex items-center">
-        <img src="/logo.svg" alt="Logo" className="h-10 w-10 opacity-80" />
+        <Link to="/">
+          <img src="/logo.svg" alt="Logo" className="h-10 w-10 opacity-80" />
+        </Link>
       </div>
       <div className="w-full" style={{ height: '1px', background: 'hsl(0 0% 100% / 0.12)' }} />
 
       {/* Center content */}
       <div className="flex-1 flex flex-col items-center justify-center px-6" style={{ marginTop: '-4rem' }}>
-        {/* Typewriter text */}
+        {/* Typewriter text - line 1 */}
         <p
-          className="max-w-lg text-center mb-8"
+          className="max-w-lg text-center mb-3"
           style={{
             fontFamily: "'Lora', serif",
             fontSize: '0.95rem',
@@ -58,26 +68,53 @@ const SearchPage = () => {
             fontWeight: 400,
           }}
         >
-          {displayedMain}
-          {displayedSuffix && (
-            <Link
-              to="/portfolio"
-              className="underline underline-offset-4 transition-colors duration-300"
-              style={{ color: 'hsl(0 0% 100% / 0.85)' }}
-              onMouseEnter={e => (e.currentTarget.style.color = 'hsl(0 0% 100%)')}
-              onMouseLeave={e => (e.currentTarget.style.color = 'hsl(0 0% 100% / 0.85)')}
-            >
-              {displayedSuffix}
-            </Link>
-          )}
-          {showCursor && (
+          {displayedLine1}
+          {charIndex <= line1.length && showCursor && (
             <span className="inline-block w-px h-4 ml-0.5 align-middle" style={{ background: 'hsl(0 0% 100% / 0.5)', animation: 'blink 1s step-end infinite' }} />
           )}
         </p>
 
+        {/* Typewriter text - line 2 */}
+        {charIndex > line1.length && (
+          <p
+            className="max-w-lg text-center mb-8"
+            style={{
+              fontFamily: "'Lora', serif",
+              fontSize: '0.95rem',
+              lineHeight: 1.7,
+              color: 'hsl(0 0% 100% / 0.6)',
+              fontWeight: 400,
+            }}
+          >
+            {displayedLine2}
+            {displayedSuffix && (
+              <Link
+                to="/portfolio"
+                className="underline underline-offset-4 transition-colors duration-300"
+                style={{ color: 'hsl(0 0% 100% / 0.85)' }}
+                onMouseEnter={e => (e.currentTarget.style.color = 'hsl(0 0% 100%)')}
+                onMouseLeave={e => (e.currentTarget.style.color = 'hsl(0 0% 100% / 0.85)')}
+              >
+                {displayedSuffix}
+              </Link>
+            )}
+            {charIndex > line1.length && showCursor && (
+              <span className="inline-block w-px h-4 ml-0.5 align-middle" style={{ background: 'hsl(0 0% 100% / 0.5)', animation: 'blink 1s step-end infinite' }} />
+            )}
+          </p>
+        )}
+
         {/* Search input with glow */}
         <div className="w-full max-w-md relative">
-          {/* Animated glow orbs */}
+          {/* Edge glow orbs that drift inward toward search bar */}
+          <div className="fixed inset-0 pointer-events-none z-0">
+            <div className="edge-glow-orb edge-glow-orb-tl" />
+            <div className="edge-glow-orb edge-glow-orb-tr" />
+            <div className="edge-glow-orb edge-glow-orb-bl" />
+            <div className="edge-glow-orb edge-glow-orb-br" />
+          </div>
+
+          {/* Local glow orbs near search bar */}
           <div className="absolute inset-0 pointer-events-none" style={{ overflow: 'visible' }}>
             <div className="search-glow-orb search-glow-orb-1" />
             <div className="search-glow-orb search-glow-orb-2" />
@@ -167,6 +204,56 @@ const SearchPage = () => {
       <style>{`
         @keyframes blink { 50% { opacity: 0; } }
 
+        .edge-glow-orb {
+          position: absolute;
+          border-radius: 50%;
+          filter: blur(80px);
+          opacity: 0;
+          pointer-events: none;
+          background: radial-gradient(circle, hsl(0 0% 100% / 0.12), transparent 70%);
+        }
+
+        .edge-glow-orb-tl {
+          width: 200px; height: 200px;
+          top: 5%; left: 0%;
+          animation: edgeDriftTL 10s ease-in-out infinite;
+        }
+        .edge-glow-orb-tr {
+          width: 180px; height: 180px;
+          top: 10%; right: 0%;
+          animation: edgeDriftTR 12s ease-in-out 1s infinite;
+        }
+        .edge-glow-orb-bl {
+          width: 160px; height: 160px;
+          bottom: 10%; left: 5%;
+          animation: edgeDriftBL 11s ease-in-out 3s infinite;
+        }
+        .edge-glow-orb-br {
+          width: 190px; height: 190px;
+          bottom: 5%; right: 0%;
+          animation: edgeDriftBR 13s ease-in-out 2s infinite;
+        }
+
+        @keyframes edgeDriftTL {
+          0%, 100% { opacity: 0; transform: translate(-30%, -20%) scale(1); }
+          40% { opacity: 0.4; transform: translate(30vw, 25vh) scale(0.7); }
+          70% { opacity: 0.15; transform: translate(20vw, 15vh) scale(0.9); }
+        }
+        @keyframes edgeDriftTR {
+          0%, 100% { opacity: 0; transform: translate(30%, -20%) scale(1); }
+          45% { opacity: 0.35; transform: translate(-25vw, 30vh) scale(0.6); }
+          75% { opacity: 0.1; transform: translate(-15vw, 20vh) scale(0.8); }
+        }
+        @keyframes edgeDriftBL {
+          0%, 100% { opacity: 0; transform: translate(-20%, 30%) scale(1); }
+          50% { opacity: 0.3; transform: translate(25vw, -25vh) scale(0.7); }
+        }
+        @keyframes edgeDriftBR {
+          0%, 100% { opacity: 0; transform: translate(20%, 20%) scale(1); }
+          35% { opacity: 0.35; transform: translate(-30vw, -20vh) scale(0.6); }
+          65% { opacity: 0.15; transform: translate(-20vw, -15vh) scale(0.8); }
+        }
+
         .search-glow-orb {
           position: absolute;
           border-radius: 50%;
@@ -177,26 +264,18 @@ const SearchPage = () => {
         }
 
         .search-glow-orb-1 {
-          width: 120px;
-          height: 120px;
-          top: -40px;
-          left: -60px;
+          width: 120px; height: 120px;
+          top: -40px; left: -60px;
           animation: glowDrift1 8s ease-in-out infinite;
         }
-
         .search-glow-orb-2 {
-          width: 100px;
-          height: 100px;
-          bottom: -30px;
-          right: -50px;
+          width: 100px; height: 100px;
+          bottom: -30px; right: -50px;
           animation: glowDrift2 10s ease-in-out 2s infinite;
         }
-
         .search-glow-orb-3 {
-          width: 80px;
-          height: 80px;
-          top: 50%;
-          left: 50%;
+          width: 80px; height: 80px;
+          top: 50%; left: 50%;
           transform: translate(-50%, -50%);
           animation: glowDrift3 12s ease-in-out 4s infinite;
         }
@@ -206,13 +285,11 @@ const SearchPage = () => {
           30% { opacity: 0.5; transform: translate(40px, 10px) scale(1.2); }
           60% { opacity: 0.3; transform: translate(80px, -10px) scale(1); }
         }
-
         @keyframes glowDrift2 {
           0%, 100% { opacity: 0; transform: translate(30px, 20px) scale(0.9); }
           40% { opacity: 0.4; transform: translate(-30px, -20px) scale(1.1); }
           70% { opacity: 0.2; transform: translate(-60px, 10px) scale(1); }
         }
-
         @keyframes glowDrift3 {
           0%, 100% { opacity: 0; transform: translate(-50%, -50%) scale(0.7); }
           50% { opacity: 0.35; transform: translate(-30%, -60%) scale(1.3); }

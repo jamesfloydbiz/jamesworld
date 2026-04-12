@@ -10,6 +10,14 @@ const IMAGE_BASE_URL = '';
 
 const automations = [
   {
+    title: 'Letter to James',
+    description: 'An interactive AI-powered letter experience — write to James and receive a thoughtful, personalized response.',
+    status: 'Active',
+    cta: 'Write a Letter',
+    link: '/letter',
+    external: false,
+  },
+  {
     title: 'JamesFloyds.World V2',
     description: 'The original interactive 3D museum experience — a navigable world built in WebGL with character movement and spatial sections.',
     status: 'Archive',

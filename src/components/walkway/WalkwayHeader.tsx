@@ -39,7 +39,7 @@ export function WalkwayHeader({ title }: WalkwayHeaderProps) {
   };
 
   const menuItems = [
-    { label: "Story", path: "/story" },
+    { label: "Portfolio", path: "/portfolio" },
     { 
       label: "Projects", 
       path: "/projects",
