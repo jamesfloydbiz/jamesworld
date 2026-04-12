@@ -35,8 +35,8 @@ const DearReaderPage = () => {
           className="max-w-lg w-full"
           style={{
             fontFamily: "'Lora', serif",
-            fontSize: "0.95rem",
-            lineHeight: 1.9,
+            fontSize: "0.88rem",
+            lineHeight: 1.75,
             color: "hsl(0 0% 100% / 0.55)",
             fontWeight: 400,
           }}
