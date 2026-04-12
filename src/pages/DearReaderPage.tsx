@@ -42,7 +42,7 @@ const DearReaderPage = () => {
           }}
         >
           <h1
-            className="mb-10"
+            className="mb-6"
             style={{
               fontFamily: "'Lora', serif",
               fontSize: "1.15rem",
