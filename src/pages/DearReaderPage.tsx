@@ -74,9 +74,9 @@ const DearReaderPage = () => {
           </p>
 
           <p className="mb-6">
-            I find meaning in preventing the difficulties I have for the people of the world, and future generations. I
-            believe that businesses are the best way to do that while providing for one's life now. I have realized what
-            makes this journey enjoyable is the people around me. On the
+            I find meaning in preventing the problems I overcome for the people of the world, and future generations. I
+            believe that businesses are the best way to do that while providing for one's life as you do that work. I
+            have realized what makes this journey enjoyable is the people around me. On the
             <L to="/references">references</L> page you can see what people say about me.
           </p>
 
