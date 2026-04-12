@@ -47,6 +47,7 @@ const App = () => (
           <Route path="/poetry" element={<Navigate to="/poems" replace />} />
           <Route path="/resume" element={<ResumePage />} />
           <Route path="/references" element={<ReferencesPage />} />
+          <Route path="/tree" element={<TreePage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
