@@ -18,7 +18,7 @@ import PicturesPage from "./pages/PicturesPage";
 import BuildsPage from "./pages/BuildsPage";
 import ResumePage from "./pages/ResumePage";
 import ReferencesPage from "./pages/ReferencesPage";
-
+import TreePage from "./pages/TreePage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -47,6 +47,7 @@ const App = () => (
           <Route path="/poetry" element={<Navigate to="/poems" replace />} />
           <Route path="/resume" element={<ResumePage />} />
           <Route path="/references" element={<ReferencesPage />} />
+          <Route path="/tree" element={<TreePage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
