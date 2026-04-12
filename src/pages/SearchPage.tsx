@@ -1,12 +1,17 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import { useSearch } from '@/contexts/SearchContext';
+import ReactMarkdown from 'react-markdown';
+import { ArrowRight, Send } from 'lucide-react';
 
 const fullText = "Welcome to James Floyd's World. Ask for what you're wondering here, or start with scrolling his ";
 const suffix = "portfolio";
 
 const SearchPage = () => {
   const [charIndex, setCharIndex] = useState(0);
-  const [query, setQuery] = useState('');
+  const { messages, isLoading, navSuggestion, sendMessage } = useSearch();
+  const [input, setInput] = useState('');
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (charIndex < fullText.length + suffix.length) {
@@ -14,6 +19,17 @@ const SearchPage = () => {
       return () => clearTimeout(timer);
     }
   }, [charIndex]);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!input.trim() || isLoading) return;
+    sendMessage(input.trim());
+    setInput('');
+  };
 
   const displayedMain = fullText.slice(0, Math.min(charIndex, fullText.length));
   const displayedSuffix = charIndex > fullText.length
@@ -59,26 +75,149 @@ const SearchPage = () => {
           )}
         </p>
 
-        {/* Search input */}
-        <div className="w-full max-w-md">
-          <input
-            type="text"
-            value={query}
-            onChange={e => setQuery(e.target.value)}
-            placeholder="Search..."
-            className="w-full bg-transparent text-foreground placeholder:text-muted-foreground outline-none"
-            style={{
+        {/* Search input with glow */}
+        <div className="w-full max-w-md relative">
+          {/* Animated glow orbs */}
+          <div className="absolute inset-0 pointer-events-none" style={{ overflow: 'visible' }}>
+            <div className="search-glow-orb search-glow-orb-1" />
+            <div className="search-glow-orb search-glow-orb-2" />
+            <div className="search-glow-orb search-glow-orb-3" />
+          </div>
+
+          <form onSubmit={handleSubmit} className="relative z-10">
+            <div className="flex items-center" style={{
               border: '1px solid hsl(0 0% 100% / 0.2)',
-              padding: '0.75rem 1rem',
-              fontFamily: "'Lora', serif",
-              fontSize: '0.9rem',
-              letterSpacing: '0.02em',
-            }}
-          />
+              borderRadius: '9999px',
+              padding: '0.5rem 0.75rem 0.5rem 1.25rem',
+              background: 'hsl(0 0% 0% / 0.6)',
+              backdropFilter: 'blur(8px)',
+            }}>
+              <input
+                type="text"
+                value={input}
+                onChange={e => setInput(e.target.value)}
+                placeholder="Search..."
+                className="flex-1 bg-transparent text-foreground placeholder:text-muted-foreground outline-none"
+                style={{
+                  fontFamily: "'Lora', serif",
+                  fontSize: '0.9rem',
+                  letterSpacing: '0.02em',
+                }}
+              />
+              <button
+                type="submit"
+                disabled={isLoading || !input.trim()}
+                className="ml-2 transition-opacity disabled:opacity-30"
+                style={{ color: 'hsl(0 0% 100% / 0.5)' }}
+              >
+                <Send size={16} />
+              </button>
+            </div>
+          </form>
         </div>
+
+        {/* AI Response area */}
+        {messages.length > 0 && (
+          <div className="w-full max-w-md mt-8 space-y-3">
+            {messages.map((msg, i) => (
+              <div key={i} className={msg.role === 'user' ? 'text-right' : 'text-left'}>
+                <div
+                  className="inline-block px-4 py-2 rounded-xl text-sm leading-relaxed max-w-[90%]"
+                  style={{
+                    background: msg.role === 'user' ? 'hsl(0 0% 100% / 0.06)' : 'transparent',
+                    color: msg.role === 'user' ? 'hsl(0 0% 100% / 0.7)' : 'hsl(0 0% 100% / 0.6)',
+                    fontFamily: "'Lora', serif",
+                  }}
+                >
+                  {msg.role === 'assistant' ? (
+                    <div className="prose prose-sm prose-invert">
+                      <ReactMarkdown>{msg.content}</ReactMarkdown>
+                    </div>
+                  ) : msg.content}
+                </div>
+              </div>
+            ))}
+            {navSuggestion && (
+              <Link
+                to={navSuggestion.route}
+                className="flex items-center gap-2 px-4 py-3 rounded-xl text-sm transition-all duration-300 hover:bg-white/10"
+                style={{
+                  background: 'hsl(0 0% 100% / 0.04)',
+                  color: 'hsl(0 0% 100% / 0.8)',
+                  border: '1px solid hsl(0 0% 100% / 0.1)',
+                  fontFamily: "'Lora', serif",
+                }}
+              >
+                <ArrowRight size={16} />
+                Go to {navSuggestion.label}
+              </Link>
+            )}
+            {isLoading && (
+              <div className="flex gap-1.5 py-2 pl-1">
+                {[0, 1, 2].map(i => (
+                  <div key={i} className="w-1.5 h-1.5 rounded-full" style={{ background: 'hsl(0 0% 100% / 0.25)', animation: `pulse 1.4s ease-in-out ${i * 0.2}s infinite` }} />
+                ))}
+              </div>
+            )}
+            <div ref={messagesEndRef} />
+          </div>
+        )}
       </div>
 
-      <style>{`@keyframes blink { 50% { opacity: 0; } }`}</style>
+      <style>{`
+        @keyframes blink { 50% { opacity: 0; } }
+
+        .search-glow-orb {
+          position: absolute;
+          border-radius: 50%;
+          filter: blur(40px);
+          opacity: 0;
+          pointer-events: none;
+          background: radial-gradient(circle, hsl(0 0% 100% / 0.15), transparent 70%);
+        }
+
+        .search-glow-orb-1 {
+          width: 120px;
+          height: 120px;
+          top: -40px;
+          left: -60px;
+          animation: glowDrift1 8s ease-in-out infinite;
+        }
+
+        .search-glow-orb-2 {
+          width: 100px;
+          height: 100px;
+          bottom: -30px;
+          right: -50px;
+          animation: glowDrift2 10s ease-in-out 2s infinite;
+        }
+
+        .search-glow-orb-3 {
+          width: 80px;
+          height: 80px;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          animation: glowDrift3 12s ease-in-out 4s infinite;
+        }
+
+        @keyframes glowDrift1 {
+          0%, 100% { opacity: 0; transform: translate(-20px, -30px) scale(0.8); }
+          30% { opacity: 0.5; transform: translate(40px, 10px) scale(1.2); }
+          60% { opacity: 0.3; transform: translate(80px, -10px) scale(1); }
+        }
+
+        @keyframes glowDrift2 {
+          0%, 100% { opacity: 0; transform: translate(30px, 20px) scale(0.9); }
+          40% { opacity: 0.4; transform: translate(-30px, -20px) scale(1.1); }
+          70% { opacity: 0.2; transform: translate(-60px, 10px) scale(1); }
+        }
+
+        @keyframes glowDrift3 {
+          0%, 100% { opacity: 0; transform: translate(-50%, -50%) scale(0.7); }
+          50% { opacity: 0.35; transform: translate(-30%, -60%) scale(1.3); }
+        }
+      `}</style>
     </div>
   );
 };
