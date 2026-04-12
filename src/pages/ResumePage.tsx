@@ -90,7 +90,7 @@ const ResumePage = () => {
     <div className="min-h-screen bg-background">
       <WalkwayHeader title="Resume" />
       
-      <main className="pt-[140px] px-6 md:px-8 pb-24">
+      <main className="pt-16 px-6 md:px-8 pb-24">
         <motion.div
           className="max-w-4xl mx-auto"
           initial={{ opacity: 0, y: 40 }}

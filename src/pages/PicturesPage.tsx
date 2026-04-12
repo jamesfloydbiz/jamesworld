@@ -46,7 +46,7 @@ const PicturesPage = () => {
     <div className="min-h-screen bg-black text-white">
       <WalkwayHeader title="Memories" />
       
-      <main className="pt-[140px] px-6 md:px-8 pb-24">
+      <main className="pt-16 px-6 md:px-8 pb-24">
         <motion.div
           className="max-w-7xl mx-auto"
           initial={{ opacity: 0, y: 40 }}
