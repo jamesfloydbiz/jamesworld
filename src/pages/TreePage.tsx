@@ -9,12 +9,10 @@ const TreeModel = () => {
   const { scene } = useGLTF('/models/tree_gn.glb');
   const ref = useRef<THREE.Group>(null);
 
-  useFrame(() => {
-    if (ref.current) ref.current.rotation.y += 0.0008;
-  });
+  // No rotation
 
   return (
-    <group ref={ref} position={[0, -2.0, 0]} scale={0.6}>
+    <group ref={ref} position={[0, -2.8, 0]} scale={0.45}>
       <primitive object={scene} />
     </group>
   );
@@ -51,11 +49,12 @@ const TreePage = () => {
           className="w-full text-center font-bold uppercase select-none z-20 relative"
           style={{
             fontFamily: "'Playfair Display', serif",
-            fontSize: 'clamp(3rem, 10vw, 10rem)',
-            letterSpacing: 'clamp(0.5rem, 3vw, 4rem)',
+            fontSize: 'clamp(4.5rem, 12vw, 15rem)',
+            letterSpacing: 'clamp(0.2rem, 1.5vw, 2rem)',
             color: '#ffffff',
             lineHeight: 1,
-            paddingTop: 'clamp(1.5rem, 4vh, 3rem)',
+            paddingTop: 'clamp(1rem, 3vh, 2rem)',
+            whiteSpace: 'nowrap',
           }}
         >
           JAMES FLOYD
