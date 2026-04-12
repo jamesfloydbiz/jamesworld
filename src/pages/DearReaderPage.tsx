@@ -74,10 +74,10 @@ const DearReaderPage = () => {
           </p>
 
           <p className="mb-6">
-            I have faced difficulty, as we all have, and find meaning in preventing that difficulty for future
-            generations. I believe that businesses are the best way to bring those solutions to those generations while
-            providing for ones life now. I have realized what makes this journey enjoyable is the company. On the
-            <L to="/references">references</L> page you can see what my company say about me.
+            I find meaning in preventing the difficulties I have for the people of the world, and future generations. I
+            believe that businesses are the best way to do that while providing for one's life now. I have realized what
+            makes this journey enjoyable is the people around me. On the
+            <L to="/references">references</L> page you can see what people say about me.
           </p>
 
           <p className="mb-6">
@@ -85,7 +85,7 @@ const DearReaderPage = () => {
             <L to="/network">socials</L> click on what strikes your fancy.
           </p>
           <p className="mb-6">
-            If you're not sure, click <L to="/search">here.</L>.
+            Click here to <L to="/search">search</L> a database about me.
           </p>
 
           <p style={{ color: "hsl(0 0% 100% / 0.4)" }}>— James</p>
