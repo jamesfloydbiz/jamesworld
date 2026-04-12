@@ -78,7 +78,7 @@ const LandmarkIcon = ({ id }: { id: string }) => {
   const stroke = '#2a2218';
   const sw = 1.2;
   switch (id) {
-    case 'story':
+    case 'portfolio':
       return (
         <g>
           <rect x={-12} y={-6} width={24} height={16} rx={1} fill="none" stroke={stroke} strokeWidth={sw} />
