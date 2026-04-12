@@ -21,28 +21,28 @@ const L = ({ to, children }: { to: string; children: React.ReactNode }) => (
 
 const DearReaderPage = () => {
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="h-screen bg-background flex flex-col overflow-hidden">
       {/* Logo */}
-      <div className="w-full px-6 py-5 flex items-center">
+      <div className="w-full px-6 py-3 flex items-center shrink-0">
         <Link to="/">
-          <img src="/logo.svg" alt="Logo" className="h-10 w-10 opacity-80" />
+          <img src="/logo.svg" alt="Logo" className="h-8 w-8 opacity-80" />
         </Link>
       </div>
 
       {/* Letter */}
-      <div className="flex-1 flex justify-center px-6 pt-0 pb-16 md:pt-0 md:pb-24">
+      <div className="flex-1 flex justify-center px-6 pt-0 pb-4 overflow-hidden">
         <article
           className="max-w-lg w-full"
           style={{
             fontFamily: "'Lora', serif",
-            fontSize: "0.95rem",
-            lineHeight: 1.9,
+            fontSize: "0.88rem",
+            lineHeight: 1.75,
             color: "hsl(0 0% 100% / 0.55)",
             fontWeight: 400,
           }}
         >
           <h1
-            className="mb-10"
+            className="mb-6"
             style={{
               fontFamily: "'Lora', serif",
               fontSize: "1.15rem",
