@@ -79,7 +79,7 @@ const DearReaderPage = () => {
           </p>
           <p className="mb-6">
             I have realized what makes this journey enjoyable is the people around me. On the
-            <L to="/references">references</L> page you can see what people say about me.
+            <L to="/references"> references</L> page you can see what people say about me.
           </p>
           <p className="mb-6">
             For other <L to="/builds">builds</L>, <L to="/content">content,</L> or
