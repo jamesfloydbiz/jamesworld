@@ -54,37 +54,36 @@ const DearReaderPage = () => {
             Dear Reader,
           </h1>
 
-          <p className="mb-5">
-            Thank you for your curiosity. This site has gone through many iterations,but for now, I've decided to leave
+          <p className="mb-3">
+            Thank you for your curiosity. This site has gone through many iterations, but for now, I've decided to leave
             it as simple as possible. This is my story and some of what I've created.
           </p>
-          <p className="mb-5">
+          <p className="mb-3">
             My name is James Floyd. I am a curious man, and one of depth. My goals are focused only on the moment I am
             in, and that has led me down the path you can see on my <L to="/portfolio">newspaper</L>.
           </p>
 
-          <p className="mb-5">
+          <p className="mb-3">
             My foremost value is living with my heart out. Said differently, to bear my whole soul in every endeavor. If
             you'd like a small look into that soul here are a few <L to="/poems">poems</L> I have written.
           </p>
 
-          <p className="mb-5">
+          <p className="mb-3">
             I find meaning in making the future easier. I believe that businesses are the best way to do that while
             providing for one's life as you do that work.
           </p>
-          <p className="mb-5">
+          <p className="mb-3">
             I have realized what makes this journey enjoyable is the people around me. On the
             <L to="/references"> references</L> page you can see what people say about me.
           </p>
-          <p className="mb-5">
-            For other <L to="/builds">builds</L>, <L to="/content">content,</L> or
-            <L to="/network">socials</L> click on what strikes your fancy.
-          </p>
-          <p className="mb-5">
-            Click here to <L to="/search">search</L> a database about me.
+          <p className="mb-3">
+            Click here to <L to="/search">search</L> my information, or here to see
+            my <L to="/projects">projects</L>, <L to="/builds">builds</L>, <L to="/content">content</L>, <L to="/network">socials</L>,
+            or <L to="/pictures">pictures</L>.
           </p>
 
-          <p style={{ color: "hsl(0 0% 100% / 0.4)" }}>— James</p>
+          <p className="mt-6" style={{ color: "hsl(0 0% 100% / 0.5)" }}>Sincerely,</p>
+          <p style={{ color: "hsl(0 0% 100% / 0.4)" }}>James</p>
         </article>
       </div>
     </div>
