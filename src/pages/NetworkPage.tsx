@@ -10,7 +10,7 @@ const philosophies = [
   },
   {
     title: 'YOLO',
-    description: 'Both where I grew up and the way I approach writing my story.',
+    description: 'Both where I grew up and the way I approach life.',
   },
   {
     title: 'Be Graceful',
