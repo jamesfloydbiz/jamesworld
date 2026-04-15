@@ -62,7 +62,28 @@ const DearReaderPage = () => {
             it as simple as possible. This is my story and some of what I've created.
           </p>
           <p className="mb-2">
-            My name is James Floyd. I am a curious man, and one of depth. My goals are focused only on the moment I am
+            My name is{" "}
+            <HoverCard openDelay={200} closeDelay={100}>
+              <HoverCardTrigger asChild>
+                <span
+                  className="cursor-default"
+                  style={{ color: "hsl(0 0% 100% / 0.85)" }}
+                >
+                  James Floyd
+                </span>
+              </HoverCardTrigger>
+              <HoverCardContent
+                side="top"
+                className="w-36 p-1 border-none bg-black/80 backdrop-blur-sm rounded-lg"
+              >
+                <img
+                  src="/pictures/james-profile.jpeg"
+                  alt="James Floyd"
+                  className="w-full rounded-md"
+                />
+              </HoverCardContent>
+            </HoverCard>
+            . I am a curious man, and one of depth. My goals are focused only on the moment I am
             in, and that has led me down the path you can see on my <L to="/portfolio">newspaper</L>.
           </p>
 
