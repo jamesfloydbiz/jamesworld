@@ -107,8 +107,28 @@ const DearReaderPage = () => {
           </p>
 
           <p className="mt-4" style={{ color: "hsl(0 0% 100% / 0.5)" }}>Sincerely,</p>
-          <p className="mb-6" style={{ color: "hsl(0 0% 100% / 0.4)" }}>James Floyd</p>
+          <HoverCard openDelay={200} closeDelay={100}>
+            <HoverCardTrigger asChild>
+              <p className="mb-6 cursor-default" style={{ color: "hsl(0 0% 100% / 0.4)" }}>James Floyd</p>
+            </HoverCardTrigger>
+            <HoverCardContent
+              side="top"
+              className="w-44 p-1 border-none bg-black/80 backdrop-blur-sm rounded-lg"
+            >
+              <img
+                src="/pictures/james-formal.jpeg"
+                alt="James Floyd"
+                className="w-full rounded-md"
+              />
+            </HoverCardContent>
+          </HoverCard>
         </article>
+      </div>
+
+      {/* Preload hover images */}
+      <div className="hidden">
+        <img src="/pictures/james-profile.jpeg" alt="" />
+        <img src="/pictures/james-formal.jpeg" alt="" />
       </div>
     </div>
   );
