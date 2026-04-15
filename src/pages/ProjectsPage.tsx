@@ -126,44 +126,6 @@ function ProjectCard({ project, index, delay }: { project: Project; index: numbe
   );
 }
 
-function ReferenceCard({ item, index }: { item: Reference; index: number }) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-30px' }}
-      transition={{ duration: 0.5, delay: index * 0.08 }}
-      style={{ transform: `rotate(${item.rotation})` }}
-    >
-      <div className="border border-foreground/10 bg-background p-6 md:p-8 shadow-[0_2px_20px_-8px_hsl(var(--foreground)/0.08)]">
-        {item.context && (
-          <p className="text-[10px] text-foreground/30 italic mb-2 tracking-wide">{item.context}</p>
-        )}
-        <p className="text-foreground/80 italic text-base md:text-lg leading-relaxed font-light">
-          {item.quote}
-        </p>
-        <div className="mt-5 pt-3 border-t border-foreground/5 flex items-end justify-between">
-          <div>
-            <p className="text-xs tracking-[0.15em] uppercase text-foreground/50">{item.name}</p>
-            <p className="text-[10px] tracking-[0.1em] text-foreground/30 mt-0.5">{item.relation}</p>
-          </div>
-          {item.link && (
-            <a
-              href={item.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1 text-[10px] text-foreground/25 hover:text-foreground/60 transition-colors"
-            >
-              <ExternalLink size={10} />
-              <span>source</span>
-            </a>
-          )}
-        </div>
-      </div>
-    </motion.div>
-  );
-}
-
 const ProjectsPage = () => {
   useKeyboardScroll();
   const streak = useMemo(() => getLinkedInStreak(), []);
@@ -254,45 +216,14 @@ const ProjectsPage = () => {
             >
               View Full Resume
             </Link>
+            <Link
+              to="/references"
+              className="px-6 py-3 border border-border text-sm tracking-wide hover:border-foreground transition-colors text-center"
+            >
+              View References
+            </Link>
           </motion.div>
 
-          {/* References Section */}
-          <motion.div
-            className="mt-24"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1.8, duration: 0.6 }}
-          >
-            <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-4xl font-light tracking-[0.2em] uppercase mb-4">
-                References
-              </h2>
-              <p className="text-sm text-foreground/40 tracking-wide">
-                Words from people who've been there.
-              </p>
-              <Link
-                to="/references"
-                className="inline-block mt-4 text-[11px] tracking-[0.2em] uppercase text-foreground/50 hover:text-foreground/80 transition-colors underline underline-offset-4"
-              >
-                View All References
-              </Link>
-            </div>
-
-            <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-4">
-              {references.slice(0, 6).map((ref, i) => (
-                <ReferenceCard key={i} item={ref} index={i} />
-              ))}
-            </div>
-
-            <div className="text-center mt-10">
-              <Link
-                to="/references"
-                className="px-6 py-3 border border-border text-sm tracking-wide hover:border-foreground transition-colors inline-block"
-              >
-                See All References →
-              </Link>
-            </div>
-          </motion.div>
         </motion.div>
       </main>
     </div>
