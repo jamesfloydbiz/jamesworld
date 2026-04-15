@@ -85,8 +85,8 @@ const automations = [
   },
   {
     title: 'AI Coded Calculators',
-    description: 'Calculators coded with Claude Code for internal use at BetterWealth',
-    status: 'Active',
+    description: 'Financial calculators coded with Claude Code for internal use at BetterWealth — including Internal Value, Passive Income Equivalent, Asset Allocation, BW Assessment, and External Value for whole life insurance.',
+    status: 'Archive',
     cta: 'View Calculators',
     link: 'https://jamesfloydl.github.io/BWCalculators/',
     external: true,
