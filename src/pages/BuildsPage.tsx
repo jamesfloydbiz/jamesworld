@@ -28,7 +28,7 @@ const automations = [
   {
     title: 'JamesFloyds.World V1',
     description: 'A 3D avatar-like world to explore James life, complete with an entrance sequence like no other.',
-    status: 'Active',
+    status: 'Archive',
     cta: 'Explore',
     link: 'https://james-world.lovable.app/',
     external: true,
@@ -36,7 +36,7 @@ const automations = [
   {
     title: 'Top YT Videos By Topic',
     description: 'Get the top 15 YouTube videos by views based on any input, sorted by length and recency.',
-    status: 'Active',
+    status: 'Archive',
     images: [
       '/ops-images/youtube_most_viewed_vids_workflow.png',
       '/ops-images/most_viewed_yt_vids_sheets.png',
@@ -45,7 +45,7 @@ const automations = [
   {
     title: 'Network Automation',
     description: 'An AI Agent that chats with someone, gets to know them, then saves their information to a spreadsheet database. After that there is a second Agent workflow triggered by new additions or changes to the database. That second agent emails me introduction suggestions based on the data points.\n\nTLDR: Boardy AI before it existed.',
-    status: 'Active',
+    status: 'Archive',
     images: [
       '/ops-images/AI_Auto_Intro_1.png',
       '/ops-images/AI_Auto_Intro2.png',
@@ -55,7 +55,7 @@ const automations = [
   {
     title: 'YT Video to Blog',
     description: "If it's on video, it might as well be a blog",
-    status: 'Booming',
+    status: 'Archive',
     images: [
       '/ops-images/Video_to_Blog.png',
       '/ops-images/Video_to_Blog_2.png',
@@ -65,7 +65,7 @@ const automations = [
   {
     title: 'Multi-Agent Blog Team',
     description: 'An experiment in multi-agent workflows that produces SEO designed blogs with QA',
-    status: 'Active',
+    status: 'Archive',
     images: [
       '/ops-images/Multi-Agent1.png',
       '/ops-images/MultiAgent2.png',
@@ -76,7 +76,7 @@ const automations = [
   {
     title: 'Organic YouTube to Calls Booked Dashboard',
     description: 'A dashboard that shows what videos correlate to site views, calls booked, etc. Remember, measurement is the first step to improvement.',
-    status: 'Active',
+    status: 'Archive',
     images: [
       '/ops-images/YT_Video_Views_Dashboard2.png',
       '/ops-images/YT_Video_Views_Dashboard3.png',
