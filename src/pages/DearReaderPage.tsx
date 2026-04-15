@@ -1,4 +1,9 @@
 import { Link } from "react-router-dom";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
 
 /** Inline link helper — keeps the letter prose clean */
 const L = ({ to, children }: { to: string; children: React.ReactNode }) => (
@@ -81,7 +86,7 @@ const DearReaderPage = () => {
           </p>
 
           <p className="mt-4" style={{ color: "hsl(0 0% 100% / 0.5)" }}>Sincerely,</p>
-          <p className="mb-6" style={{ color: "hsl(0 0% 100% / 0.4)" }}>James</p>
+          <p className="mb-6" style={{ color: "hsl(0 0% 100% / 0.4)" }}>James Floyd</p>
         </article>
       </div>
     </div>
