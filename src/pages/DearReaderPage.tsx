@@ -24,9 +24,7 @@ const DearReaderPage = () => {
     <div className="h-screen bg-background flex flex-col overflow-hidden">
       {/* Logo */}
       <div className="w-full px-6 py-2 flex items-center shrink-0">
-        <Link to="/">
-          <img src="/logo.svg" alt="Logo" className="h-8 w-8 opacity-80" />
-        </Link>
+        <img src="/logo.svg" alt="JF monogram" className="h-8 w-8 opacity-80" />
       </div>
 
       {/* Letter */}
