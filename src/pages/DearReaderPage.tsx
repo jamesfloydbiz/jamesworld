@@ -63,7 +63,7 @@ const DearReaderPage = () => {
           </p>
           <p className="mb-2">
             My name is{" "}
-            <HoverCard openDelay={200} closeDelay={100}>
+            <HoverCard openDelay={0} closeDelay={100}>
               <HoverCardTrigger asChild>
                 <span
                   className="cursor-default"
