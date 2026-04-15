@@ -107,9 +107,9 @@ const DearReaderPage = () => {
           </p>
 
           <p className="mt-4" style={{ color: "hsl(0 0% 100% / 0.5)" }}>Sincerely,</p>
-          <HoverCard openDelay={200} closeDelay={100}>
+          <HoverCard openDelay={0} closeDelay={100}>
             <HoverCardTrigger asChild>
-              <p className="mb-6 cursor-default" style={{ color: "hsl(0 0% 100% / 0.4)" }}>James Floyd</p>
+              <p className="mb-6 cursor-default font-bold" style={{ color: "hsl(0 0% 100%)" }}>James Floyd</p>
             </HoverCardTrigger>
             <HoverCardContent
               side="top"
