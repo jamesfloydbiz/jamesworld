@@ -1,4 +1,9 @@
 import { Link } from "react-router-dom";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
 
 /** Inline link helper — keeps the letter prose clean */
 const L = ({ to, children }: { to: string; children: React.ReactNode }) => (
@@ -57,7 +62,28 @@ const DearReaderPage = () => {
             it as simple as possible. This is my story and some of what I've created.
           </p>
           <p className="mb-2">
-            My name is James Floyd. I am a curious man, and one of depth. My goals are focused only on the moment I am
+            My name is{" "}
+            <HoverCard openDelay={200} closeDelay={100}>
+              <HoverCardTrigger asChild>
+                <span
+                  className="cursor-default"
+                  style={{ color: "hsl(0 0% 100% / 0.85)" }}
+                >
+                  James Floyd
+                </span>
+              </HoverCardTrigger>
+              <HoverCardContent
+                side="top"
+                className="w-36 p-1 border-none bg-black/80 backdrop-blur-sm rounded-lg"
+              >
+                <img
+                  src="/pictures/james-profile.jpeg"
+                  alt="James Floyd"
+                  className="w-full rounded-md"
+                />
+              </HoverCardContent>
+            </HoverCard>
+            . I am a curious man, and one of depth. My goals are focused only on the moment I am
             in, and that has led me down the path you can see on my <L to="/portfolio">newspaper</L>.
           </p>
 
@@ -81,7 +107,7 @@ const DearReaderPage = () => {
           </p>
 
           <p className="mt-4" style={{ color: "hsl(0 0% 100% / 0.5)" }}>Sincerely,</p>
-          <p className="mb-6" style={{ color: "hsl(0 0% 100% / 0.4)" }}>James</p>
+          <p className="mb-6" style={{ color: "hsl(0 0% 100% / 0.4)" }}>James Floyd</p>
         </article>
       </div>
     </div>
