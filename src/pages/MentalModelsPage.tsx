@@ -35,9 +35,12 @@ const MentalModelsPage = () => {
           </p>
           <div className="h-px bg-foreground/10 mb-6" />
 
-          {/* Subheader */}
-          <p className="text-foreground/25 text-[11px] mb-10">
-            11 models. 2 modes. The goal is not to know them — it's to use them automatically.
+          {/* Description */}
+          <p className="text-foreground/35 text-xs md:text-sm leading-relaxed mb-4">
+            After reading <span className="italic">Poor Charlie's Almanack</span>, I became obsessed with the mental models that made Charlie Munger one of the greatest thinkers in modern business. This page is my practice ground — a way to internalize those models until they fire automatically.
+          </p>
+          <p className="text-foreground/35 text-xs md:text-sm leading-relaxed mb-10">
+            Two modes: <span className="text-foreground/50">Decide</span> drops you into scenarios where you pick the right model for the situation. <span className="text-foreground/50">Spot It</span> trains you to recognize models in real-world examples. The goal isn't to memorize — it's to rewire how you think.
           </p>
 
           {/* Tabs */}
