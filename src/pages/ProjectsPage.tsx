@@ -86,42 +86,6 @@ const otherProjects = [
   },
 ];
 
-/* ── References data (mirrors ReferencesPage) ── */
-
-type RefType = 'text' | 'image' | 'video';
-
-interface Reference {
-  type: RefType;
-  name: string;
-  relation: string;
-  quote: string;
-  rotation: string;
-  link?: string;
-  context?: string;
-}
-
-const references: Reference[] = [
-  { type: 'text', name: 'Austin Moss', relation: 'Austinmoss.com · 2026', quote: '"I\'ve got to know James Floyd over the past year and can vouch for his talent, creativity, work ethic, and connecting skills plus many more. I hope one of my partners in NYC finds this and gets a chance to work with you."', rotation: '-1.2deg', context: 'Met through Jets and Capital, Friend' },
-  { type: 'text', name: 'Jarom Christensen', relation: 'Family Office Advisor · Investor Relations at Jets & Capital', quote: '"James Floyd is your guy. The best by a wide margin at driving the intersection between function, execution, and relationship."', rotation: '1.4deg', context: 'Worked together on Jets and Capital + a few deals, Friend' },
-  { type: 'text', name: 'Caleb Guilliams', relation: 'BetterWealth · Dec 2025', quote: '"James you have been a major blessing to me and to the team and I know I\'m not the only one who shares that."', rotation: '2deg', context: 'Worked for him at Betterwealth, Friend' },
-  { type: 'text', name: 'Joel Robertson', relation: 'Content Manager at BetterWealth', quote: '"Can confirm that James Floyd should be your guy. He\'s made for this kind of job."', rotation: '-0.9deg', context: 'Worked with him at Betterwealth, Friend' },
-  { type: 'text', name: 'Dom Rrufran', relation: 'President of BetterWealth · Ex-NFL Player', quote: '"I was like — this kid is different. This kid is special."', rotation: '-1.5deg', context: 'Worked for him at Betterwealth, Friend' },
-  { type: 'text', name: 'Lane Spurlock', relation: 'Founder · PlayHouse · anata · Deal Partner', quote: '"Dude it was so good to finally meet you in person!!!! Your amazing dude and killing it."', rotation: '1.8deg', link: 'https://www.linkedin.com/in/jamesfloyd', context: 'Friend I met off the internet' },
-  { type: 'text', name: 'Lauren Hansen', relation: '', quote: '"One of the coolest dudes in existence, cool to watch and learn from you and your pursuit of growth."', rotation: '0.7deg', context: 'Worked with her at Jets and Capital, Friend' },
-  { type: 'text', name: 'Danielle Raskin', relation: 'Curating experiences, community & connection', quote: '"James, you are a superstar. Your hard work and willingness to go above and beyond will take you a LONG WAY. So great meeting you & see you in NY!"', rotation: '-0.6deg', link: 'https://www.linkedin.com/feed/update/urn:li:activity:7440506144126640128/', context: 'Worked for her at SXSW Secret Garden Party, Friend' },
-  { type: 'text', name: 'Christian Davis', relation: '', quote: '"Honored to have a seat at your table sir!"', rotation: '1.1deg', context: 'Worked with him at Jets and Capital, Friend' },
-  { type: 'text', name: 'Vitoria Okuyama', relation: 'Ex Pro Tennis Player · Ex IB @ Citi', quote: '"James killed it!! If anyone wants to learn how to stand out in a volunteer crowd, reach out to James Floyd."', rotation: '-1.3deg', link: 'https://www.linkedin.com/feed/update/urn:li:activity:7440506144126640128/', context: 'Worked for her at SXSW Secret Garden Party, Friend' },
-  { type: 'text', name: 'Tim Nart', relation: '', quote: '"You\'re a Top bloke @jamesfloyd._ To many more."', rotation: '0.8deg', context: 'Worked with him at Jets and Capital, Friend' },
-  { type: 'text', name: 'Andrew Yeung', relation: 'Gathering extraordinary people & angel investing · x-Google, Meta', quote: '"james - you were the mvp"', rotation: '-1.6deg', link: 'https://www.linkedin.com/feed/update/urn:li:activity:7440506144126640128/', context: 'Worked for him at SXSW Secret Garden Party, Friend' },
-  { type: 'text', name: 'Dom Rrufran', relation: 'President of BetterWealth · Ex-NFL Player', quote: '"You just genuinely have that grit, and you\'re going to be special, you know that AND you\'re very coachable."', rotation: '1.2deg', context: 'Worked for him at Betterwealth, Friend' },
-  { type: 'text', name: 'Caleb Guilliams', relation: 'BetterWealth · Dec 2025', quote: '"The growth that you\'ve had over the last year has been insane."', rotation: '-0.5deg', context: 'Worked for him at Betterwealth, Friend' },
-  { type: 'text', name: 'Cooper Swanson', relation: '', quote: '"James Floyd you know ball bro."', rotation: '1.4deg', context: 'Friend' },
-  { type: 'text', name: 'Jordan Hutchinson', relation: '', quote: '"Love what you\'re building dude."', rotation: '-0.9deg', context: 'Worked for him at Jets and Capital, Friend' },
-  { type: 'text', name: 'Trinity Arl', relation: '', quote: '"James Floyd for president."', rotation: '1.8deg', context: 'Friend' },
-  { type: 'text', name: 'Vanessa Dayana', relation: '', quote: '"Quedó cheverazo! Me encanta te admiro James, me inspiras a ser mejor persona."', rotation: '-1.6deg', context: 'Friend from Ecuador' },
-  { type: 'text', name: 'Dom Rrufran', relation: 'President of BetterWealth · Ex-NFL Player', quote: '"You lowkey inspire me with how hard you work, how much you work."', rotation: '-1.3deg', context: 'Worked for him at Betterwealth, Friend' },
-  { type: 'text', name: 'Lauren Hansen', relation: '', quote: '"James supports it → it\'s worth supporting!!"', rotation: '-0.5deg', context: 'Worked with her at Jets and Capital, Friend' },
-];
 
 function ProjectCard({ project, index, delay }: { project: Project; index: number; delay: number }) {
   return (
