@@ -55,9 +55,8 @@ const DearReaderPage = () => {
           </h1>
 
           <p className="mb-5">
-            Thank you for your curiosity. This site has gone through many iterations, kind of like myself. For now, I've
-            decided to leave it as simple as possible. This is my story, my letter to you, and the links to other
-            creative projects.
+            Thank you for your curiosity. This site has gone through many iterations,but for now, I've decided to leave
+            it as simple as possible. This is my story and some of what I've created.
           </p>
           <p className="mb-5">
             My name is James Floyd. I am a curious man, and one of depth. My goals are focused only on the moment I am
@@ -66,13 +65,12 @@ const DearReaderPage = () => {
 
           <p className="mb-5">
             My foremost value is living with my heart out. Said differently, to bear my whole soul in every endeavor. If
-            you'd like a small look into that soul here are a few <L to="/poems">poems</L> I have written over the past
-            years.
+            you'd like a small look into that soul here are a few <L to="/poems">poems</L> I have written.
           </p>
 
           <p className="mb-5">
-            I find meaning in preventing the problems I overcome for the people of the world, and future generations. I
-            believe that businesses are the best way to do that while providing for one's life as you do that work.
+            I find meaning in making the future easier. I believe that businesses are the best way to do that while
+            providing for one's life as you do that work.
           </p>
           <p className="mb-5">
             I have realized what makes this journey enjoyable is the people around me. On the
