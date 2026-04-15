@@ -1,49 +1,40 @@
+# Site Cleanup & Simplification
 
+After reviewing the codebase, here are the issues I found:
 
-# Checklist: Site Cleanup & Refinements
+## Dead Files (not imported anywhere, safe to delete)
 
-## Tasks (in order)
+1. `**src/pages/LandingPage.tsx**` — The old landing page. No longer imported or routed; `/` now serves `DearReaderPage`. Dead code.
+2. `**src/pages/MapPage.tsx**` — ~900 lines, not imported or routed anywhere. Dead code.
+3. `**src/components/ui/SearchAssistant.tsx**` — The floating chat widget. Not imported in `App.tsx` or any other file. Dead code (per the earlier plan to remove it).
 
-### 1. Remove SearchAssistant chat widget from all pages
-- Delete `src/components/ui/SearchAssistant.tsx`
-- Remove its import and `<SearchAssistant />` from `App.tsx`
+## Minor Improvements
 
-### 2. Remove chat from Dear Reader page
-- The Dear Reader page doesn't have its own chat — this is handled by task 1 (the global SearchAssistant widget)
+4. `**/dear-reader` redirect** — Still in `App.tsx` (line 47). Same situation — redirects to `/`. Can be removed unless there are known external links.
+5. **Dear Reader logo links to `/**` — Since it *is* `/`, clicking the logo just reloads the page. Minor, but could be removed or made non-interactive on the home page to avoid a pointless navigation.
 
-### 3. Delete /ops redirect route
-- Remove `<Route path="/ops" element={<Navigate to="/builds" replace />} />` from `App.tsx`
-- The `/ops` route only exists as a redirect; no other files link to `/ops` (the image paths `/ops-images/` are asset paths, not routes)
+## What's Working Well
 
-### 4. Delete /story page and remove all references
-- Delete `src/pages/StoryPage.tsx`
-- Remove its import and route from `App.tsx`
-- Remove "Story" entries from navigation menus in: `Index.tsx`, `WalkwayHeader.tsx`, `PortfolioPage.tsx`, `MainMenu.tsx`, `MapPage.tsx`, `ResumePage.tsx`
+- Routing is clean and consistent
+- Dear Reader page content and spacing look solid
+- Projects page structure with archived section and dynamic streak is well-organized
+- No console errors or broken imports in the active routes
 
-### 5. Replace landing page with Dear Reader page
-- Change the `/` route to render `DearReaderPage` instead of `LandingPage`
-- Remove `/dear-reader` route (now redundant)
-- Remove `LandingPage` import from `App.tsx` (can delete `LandingPage.tsx` file too)
-- Update the logo `<Link to="/">` on DearReaderPage — it already points to `/`, so it will refresh/return home correctly
+## Implementation
 
-### 6. Make logo link to `/` across all pages
-- The logo already links to `/` on most pages. Since `/` is now the Dear Reader page, this is automatically correct. Verify `SearchPage.tsx` logo is a `<Link to="/">` (currently just an `<img>`, needs wrapping).
+- Delete 3 unused files (`LandingPage.tsx`, `MapPage.tsx`, `SearchAssistant.tsx`)
+- Optionally remove the 2 legacy redirect routes from `App.tsx`
+- All changes are deletions — no new code needed  
+  
+Also change in /builds the calculator to status archived and   
+the description to show that there was calculators to show 
 
-### 7. Add /letter as a card on BuildsPage
-- Add a new entry to the `automations` array: title "Letter to James", description about the interactive AI letter, link `/letter`, internal
-
-### 8. Italicize all links on Dear Reader page
-- Add `fontStyle: "italic"` to the `<L>` component
-
-### 9. Split typewriter text on /search into two paragraphs
-- First paragraph: "Welcome to James Floyd's World."
-- Second paragraph: "Ask for what you're wondering here, or start with scrolling his portfolio"
-
-### 10. Add glow effects moving from page edges to search bar
-- The glow orbs already exist but are local to the search bar container. Enhance them to originate from page edges (use `position: fixed` orbs that drift inward toward center)
-
-## Technical Details
-- ~10 files touched, mostly small edits
-- No database or edge function changes
-- No new dependencies
-
+  |                                                                                                                    |                      |                                                                                           |        |        |        |        |
+  | ------------------------------------------------------------------------------------------------------------------ | -------------------- | ----------------------------------------------------------------------------------------- | ------ | ------ | ------ | ------ |
+  | &nbsp;                                                                                                             | whole life insurance | [Internal-Value](https://github.com/BetterWealth1/BWCalculators/tree/main/Internal-Value) | &nbsp; | &nbsp; | &nbsp; | &nbsp; |
+  | [Passive-Income-Equivalent](https://github.com/BetterWealth1/BWCalculators/tree/main/Passive-Income-Equivalent)    | &nbsp;               | &nbsp;                                                                                    | &nbsp; | &nbsp; | &nbsp; | &nbsp; |
+  | [asset-allocation](https://github.com/BetterWealth1/BWCalculators/tree/main/asset-allo)                            | &nbsp;               | &nbsp;                                                                                    | &nbsp; | &nbsp; | &nbsp; | &nbsp; |
+  | [bwassessment](https://github.com/BetterWealth1/BWCalculators/tree/main/bwassessment)                              | &nbsp;               | assess peoples financial state                                                            | &nbsp; | &nbsp; | &nbsp; | &nbsp; |
+  | [external-value for whole life insurance](https://github.com/BetterWealth1/BWCalculators/tree/main/external-value) | &nbsp;               | &nbsp;                                                                                    | &nbsp; | &nbsp; | &nbsp; | &nbsp; |
+  | &nbsp;                                                                                                             | &nbsp;               | &nbsp;                                                                                    | &nbsp; | &nbsp; | &nbsp; | &nbsp; |
+  | &nbsp;                                                                                                             | &nbsp;               | &nbsp;                                                                                    | &nbsp; | &nbsp; | &nbsp; | &nbsp; |
