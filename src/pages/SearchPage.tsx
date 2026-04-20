@@ -79,7 +79,7 @@ const SearchPage = () => {
             value={input}
             onChange={e => setInput(e.target.value)}
             placeholder={placeholder}
-            className="flex-1 bg-transparent text-foreground outline-none"
+            className="flex-1 bg-transparent outline-none search-input"
             style={{
               fontFamily: "'Lora', serif",
               fontSize: '0.9rem',
