@@ -45,6 +45,61 @@ const SearchPage = () => {
     : '';
   const showCursor = charIndex < totalLength;
 
+  const hasConversation = messages.length > 0;
+
+  const renderInput = (placeholder: string) => (
+    <div className="w-full max-w-md relative mx-auto">
+      {/* Edge glow orbs that drift inward toward search bar */}
+      {!hasConversation && (
+        <div className="fixed inset-0 pointer-events-none z-0">
+          <div className="edge-glow-orb edge-glow-orb-tl" />
+          <div className="edge-glow-orb edge-glow-orb-tr" />
+          <div className="edge-glow-orb edge-glow-orb-bl" />
+          <div className="edge-glow-orb edge-glow-orb-br" />
+        </div>
+      )}
+
+      {/* Local glow orbs near search bar */}
+      <div className="absolute inset-0 pointer-events-none" style={{ overflow: 'visible' }}>
+        <div className="search-glow-orb search-glow-orb-1" />
+        <div className="search-glow-orb search-glow-orb-2" />
+        <div className="search-glow-orb search-glow-orb-3" />
+      </div>
+
+      <form onSubmit={handleSubmit} className="relative z-10">
+        <div className="flex items-center" style={{
+          border: '1px solid hsl(0 0% 100% / 0.2)',
+          borderRadius: '9999px',
+          padding: '0.5rem 0.75rem 0.5rem 1.25rem',
+          background: 'hsl(0 0% 0% / 0.6)',
+          backdropFilter: 'blur(8px)',
+        }}>
+          <input
+            type="text"
+            value={input}
+            onChange={e => setInput(e.target.value)}
+            placeholder={placeholder}
+            className="flex-1 bg-transparent text-foreground outline-none"
+            style={{
+              fontFamily: "'Lora', serif",
+              fontSize: '0.9rem',
+              letterSpacing: '0.02em',
+              color: 'hsl(0 0% 100% / 0.85)',
+            }}
+          />
+          <button
+            type="submit"
+            disabled={isLoading || !input.trim()}
+            className="ml-2 transition-opacity disabled:opacity-30"
+            style={{ color: 'hsl(0 0% 100% / 0.5)' }}
+          >
+            <Send size={16} />
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
@@ -55,29 +110,11 @@ const SearchPage = () => {
       </div>
       <div className="w-full" style={{ height: '1px', background: 'hsl(0 0% 100% / 0.12)' }} />
 
-      {/* Center content */}
-      <div className="flex-1 flex flex-col items-center justify-center px-6" style={{ marginTop: '-4rem' }}>
-        {/* Typewriter text - line 1 */}
-        <p
-          className="max-w-lg text-center mb-3"
-          style={{
-            fontFamily: "'Lora', serif",
-            fontSize: '0.95rem',
-            lineHeight: 1.7,
-            color: 'hsl(0 0% 100% / 0.6)',
-            fontWeight: 400,
-          }}
-        >
-          {displayedLine1}
-          {charIndex <= line1.length && showCursor && (
-            <span className="inline-block w-px h-4 ml-0.5 align-middle" style={{ background: 'hsl(0 0% 100% / 0.5)', animation: 'blink 1s step-end infinite' }} />
-          )}
-        </p>
-
-        {/* Typewriter text - line 2 */}
-        {charIndex > line1.length && (
+      {!hasConversation ? (
+        /* Initial centered state */
+        <div className="flex-1 flex flex-col items-center justify-center px-6" style={{ marginTop: '-4rem' }}>
           <p
-            className="max-w-lg text-center mb-8"
+            className="max-w-lg text-center mb-3"
             style={{
               fontFamily: "'Lora', serif",
               fontSize: '0.95rem',
@@ -86,120 +123,97 @@ const SearchPage = () => {
               fontWeight: 400,
             }}
           >
-            {displayedLine2}
-            {displayedSuffix && (
-              <Link
-                to="/portfolio"
-                className="underline underline-offset-4 transition-colors duration-300"
-                style={{ color: 'hsl(0 0% 100% / 0.85)' }}
-                onMouseEnter={e => (e.currentTarget.style.color = 'hsl(0 0% 100%)')}
-                onMouseLeave={e => (e.currentTarget.style.color = 'hsl(0 0% 100% / 0.85)')}
-              >
-                {displayedSuffix}
-              </Link>
-            )}
-            {charIndex > line1.length && showCursor && (
+            {displayedLine1}
+            {charIndex <= line1.length && showCursor && (
               <span className="inline-block w-px h-4 ml-0.5 align-middle" style={{ background: 'hsl(0 0% 100% / 0.5)', animation: 'blink 1s step-end infinite' }} />
             )}
           </p>
-        )}
 
-        {/* Search input with glow */}
-        <div className="w-full max-w-md relative">
-          {/* Edge glow orbs that drift inward toward search bar */}
-          <div className="fixed inset-0 pointer-events-none z-0">
-            <div className="edge-glow-orb edge-glow-orb-tl" />
-            <div className="edge-glow-orb edge-glow-orb-tr" />
-            <div className="edge-glow-orb edge-glow-orb-bl" />
-            <div className="edge-glow-orb edge-glow-orb-br" />
-          </div>
+          {charIndex > line1.length && (
+            <p
+              className="max-w-lg text-center mb-8"
+              style={{
+                fontFamily: "'Lora', serif",
+                fontSize: '0.95rem',
+                lineHeight: 1.7,
+                color: 'hsl(0 0% 100% / 0.6)',
+                fontWeight: 400,
+              }}
+            >
+              {displayedLine2}
+              {displayedSuffix && (
+                <Link
+                  to="/portfolio"
+                  className="underline underline-offset-4 transition-colors duration-300"
+                  style={{ color: 'hsl(0 0% 100% / 0.85)' }}
+                  onMouseEnter={e => (e.currentTarget.style.color = 'hsl(0 0% 100%)')}
+                  onMouseLeave={e => (e.currentTarget.style.color = 'hsl(0 0% 100% / 0.85)')}
+                >
+                  {displayedSuffix}
+                </Link>
+              )}
+              {charIndex > line1.length && showCursor && (
+                <span className="inline-block w-px h-4 ml-0.5 align-middle" style={{ background: 'hsl(0 0% 100% / 0.5)', animation: 'blink 1s step-end infinite' }} />
+              )}
+            </p>
+          )}
 
-          {/* Local glow orbs near search bar */}
-          <div className="absolute inset-0 pointer-events-none" style={{ overflow: 'visible' }}>
-            <div className="search-glow-orb search-glow-orb-1" />
-            <div className="search-glow-orb search-glow-orb-2" />
-            <div className="search-glow-orb search-glow-orb-3" />
-          </div>
-
-          <form onSubmit={handleSubmit} className="relative z-10">
-            <div className="flex items-center" style={{
-              border: '1px solid hsl(0 0% 100% / 0.2)',
-              borderRadius: '9999px',
-              padding: '0.5rem 0.75rem 0.5rem 1.25rem',
-              background: 'hsl(0 0% 0% / 0.6)',
-              backdropFilter: 'blur(8px)',
-            }}>
-              <input
-                type="text"
-                value={input}
-                onChange={e => setInput(e.target.value)}
-                placeholder="Search..."
-                className="flex-1 bg-transparent text-foreground placeholder:text-muted-foreground outline-none"
-                style={{
-                  fontFamily: "'Lora', serif",
-                  fontSize: '0.9rem',
-                  letterSpacing: '0.02em',
-                }}
-              />
-              <button
-                type="submit"
-                disabled={isLoading || !input.trim()}
-                className="ml-2 transition-opacity disabled:opacity-30"
-                style={{ color: 'hsl(0 0% 100% / 0.5)' }}
-              >
-                <Send size={16} />
-              </button>
-            </div>
-          </form>
+          {renderInput('Search...')}
         </div>
-
-        {/* AI Response area */}
-        {messages.length > 0 && (
-          <div className="w-full max-w-md mt-8 space-y-3">
-            {messages.map((msg, i) => (
-              <div key={i} className={msg.role === 'user' ? 'text-right' : 'text-left'}>
-                <div
-                  className="inline-block px-4 py-2 rounded-xl text-sm leading-relaxed max-w-[90%]"
+      ) : (
+        /* Conversation state — input pinned bottom */
+        <div className="flex-1 flex flex-col overflow-hidden">
+          <div className="flex-1 overflow-y-auto px-6 py-8">
+            <div className="w-full max-w-md mx-auto space-y-3">
+              {messages.map((msg, i) => (
+                <div key={i} className={msg.role === 'user' ? 'text-right' : 'text-left'}>
+                  <div
+                    className="inline-block px-4 py-2 rounded-xl text-sm leading-relaxed max-w-[90%]"
+                    style={{
+                      background: msg.role === 'user' ? 'hsl(0 0% 100% / 0.06)' : 'transparent',
+                      color: msg.role === 'user' ? 'hsl(0 0% 100% / 0.7)' : 'hsl(0 0% 100% / 0.6)',
+                      fontFamily: "'Lora', serif",
+                    }}
+                  >
+                    {msg.role === 'assistant' ? (
+                      <div className="prose prose-sm prose-invert">
+                        <ReactMarkdown>{msg.content}</ReactMarkdown>
+                      </div>
+                    ) : msg.content}
+                  </div>
+                </div>
+              ))}
+              {navSuggestion && (
+                <Link
+                  to={navSuggestion.route}
+                  className="flex items-center gap-2 px-4 py-3 rounded-xl text-sm transition-all duration-300 hover:bg-white/10"
                   style={{
-                    background: msg.role === 'user' ? 'hsl(0 0% 100% / 0.06)' : 'transparent',
-                    color: msg.role === 'user' ? 'hsl(0 0% 100% / 0.7)' : 'hsl(0 0% 100% / 0.6)',
+                    background: 'hsl(0 0% 100% / 0.04)',
+                    color: 'hsl(0 0% 100% / 0.8)',
+                    border: '1px solid hsl(0 0% 100% / 0.1)',
                     fontFamily: "'Lora', serif",
                   }}
                 >
-                  {msg.role === 'assistant' ? (
-                    <div className="prose prose-sm prose-invert">
-                      <ReactMarkdown>{msg.content}</ReactMarkdown>
-                    </div>
-                  ) : msg.content}
+                  <ArrowRight size={16} />
+                  Go to {navSuggestion.label}
+                </Link>
+              )}
+              {isLoading && (
+                <div className="flex gap-1.5 py-2 pl-1">
+                  {[0, 1, 2].map(i => (
+                    <div key={i} className="w-1.5 h-1.5 rounded-full" style={{ background: 'hsl(0 0% 100% / 0.25)', animation: `pulse 1.4s ease-in-out ${i * 0.2}s infinite` }} />
+                  ))}
                 </div>
-              </div>
-            ))}
-            {navSuggestion && (
-              <Link
-                to={navSuggestion.route}
-                className="flex items-center gap-2 px-4 py-3 rounded-xl text-sm transition-all duration-300 hover:bg-white/10"
-                style={{
-                  background: 'hsl(0 0% 100% / 0.04)',
-                  color: 'hsl(0 0% 100% / 0.8)',
-                  border: '1px solid hsl(0 0% 100% / 0.1)',
-                  fontFamily: "'Lora', serif",
-                }}
-              >
-                <ArrowRight size={16} />
-                Go to {navSuggestion.label}
-              </Link>
-            )}
-            {isLoading && (
-              <div className="flex gap-1.5 py-2 pl-1">
-                {[0, 1, 2].map(i => (
-                  <div key={i} className="w-1.5 h-1.5 rounded-full" style={{ background: 'hsl(0 0% 100% / 0.25)', animation: `pulse 1.4s ease-in-out ${i * 0.2}s infinite` }} />
-                ))}
-              </div>
-            )}
-            <div ref={messagesEndRef} />
+              )}
+              <div ref={messagesEndRef} />
+            </div>
           </div>
-        )}
-      </div>
+
+          <div className="w-full px-6 pb-6 pt-2">
+            {renderInput('follow-up')}
+          </div>
+        </div>
+      )}
 
       <style>{`
         @keyframes blink { 50% { opacity: 0; } }
