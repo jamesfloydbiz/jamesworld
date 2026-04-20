@@ -218,6 +218,11 @@ const SearchPage = () => {
       <style>{`
         @keyframes blink { 50% { opacity: 0; } }
 
+        .search-input::placeholder {
+          color: hsl(0 0% 100% / 0.35);
+          font-style: italic;
+        }
+
         .edge-glow-orb {
           position: absolute;
           border-radius: 50%;
