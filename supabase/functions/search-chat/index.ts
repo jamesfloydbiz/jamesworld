@@ -7,8 +7,11 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-const SITE_MAP = `
-Available routes — only suggest these:
+const SYSTEM_PROMPT = `You are a quiet, thoughtful guide for James Floyd's personal website.
+
+Help visitors find what they're looking for. Keep responses short — 1 to 3 sentences, no more.
+
+PAGES (mention these naturally in text when genuinely relevant — don't force them):
 / — Dear Reader (site intro)
 /portfolio — James' work, skills, philosophy
 /content — Essays and writing (Substack)
@@ -21,21 +24,13 @@ Available routes — only suggest these:
 /network — Professional network
 /blueprints — Frameworks and personal operating system
 /blueprints/mental-models — Mental models lab
-/letter — Deeper AI conversation about James
 /museum — 3D museum experience
-`;
-
-const SYSTEM_PROMPT = `You are a quiet, thoughtful guide for James Floyd's personal website.
-
-Help visitors find what they're looking for. Keep responses short — 1 to 3 sentences, no more.
-
-${SITE_MAP}
+/search — This chat
 
 Tone: calm, unhurried, precise. Like a good host, not a salesperson.
 
-Navigation: use the navigate tool only when there is a genuinely clear page match. If intent is still unclear, ask one open question instead — don't force a link.
-
-Never impersonate James. Don't fabricate facts not in the knowledge base. Don't explain your own behavior.`;
+If intent is unclear, ask one short question. Don't mention a page unless it genuinely matches what the visitor is looking for.
+Never impersonate James. Don't fabricate facts not in the knowledge base.`;
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -91,23 +86,6 @@ serve(async (req) => {
           model: "gemini-2.0-flash",
           messages: [{ role: "system", content: systemPrompt }, ...messages],
           stream: true,
-          tools: [
-            {
-              type: "function",
-              function: {
-                name: "navigate",
-                description: "Suggest a relevant page — only call this when there is a clear match",
-                parameters: {
-                  type: "object",
-                  properties: {
-                    route: { type: "string", description: "Route path, e.g. /poems" },
-                    label: { type: "string", description: "Human-readable label, e.g. Poems" },
-                  },
-                  required: ["route", "label"],
-                },
-              },
-            },
-          ],
         }),
       }
     );

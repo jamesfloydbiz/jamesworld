@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useSearch } from '@/contexts/SearchContext';
 import ReactMarkdown from 'react-markdown';
-import { ArrowRight, Send } from 'lucide-react';
+import { Send } from 'lucide-react';
 
 const line1 = "Welcome to James Floyd's World.";
 const line2 = "Ask for what you're wondering here, or start with scrolling his ";
@@ -10,7 +10,7 @@ const suffix = "portfolio";
 
 const SearchPage = () => {
   const [charIndex, setCharIndex] = useState(0);
-  const { messages, isLoading, navSuggestion, sendMessage } = useSearch();
+  const { messages, isLoading, sendMessage } = useSearch();
   const [input, setInput] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -183,21 +183,6 @@ const SearchPage = () => {
                   </div>
                 </div>
               ))}
-              {navSuggestion && (
-                <Link
-                  to={navSuggestion.route}
-                  className="flex items-center gap-2 px-4 py-3 rounded-xl text-sm transition-all duration-300 hover:bg-white/10"
-                  style={{
-                    background: 'hsl(0 0% 100% / 0.04)',
-                    color: 'hsl(0 0% 100% / 0.8)',
-                    border: '1px solid hsl(0 0% 100% / 0.1)',
-                    fontFamily: "'Lora', serif",
-                  }}
-                >
-                  <ArrowRight size={16} />
-                  Go to {navSuggestion.label}
-                </Link>
-              )}
               {isLoading && (
                 <div className="flex gap-1.5 py-2 pl-1">
                   {[0, 1, 2].map(i => (
