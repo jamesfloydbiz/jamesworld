@@ -176,8 +176,24 @@ const SearchPage = () => {
                     }}
                   >
                     {msg.role === 'assistant' ? (
-                      <div className="prose prose-sm prose-invert">
-                        <ReactMarkdown>{msg.content}</ReactMarkdown>
+                      <div className="prose prose-sm prose-invert max-w-none [&_a]:underline [&_a]:underline-offset-4 [&_a]:text-white/85 hover:[&_a]:text-white">
+                        <ReactMarkdown
+                          components={{
+                            a: ({ href, children, ...props }) => {
+                              const url = href || '';
+                              // Internal link → React Router Link (no page reload)
+                              if (url.startsWith('/')) {
+                                return <Link to={url}>{children}</Link>;
+                              }
+                              // External link → new tab
+                              return (
+                                <a href={url} target="_blank" rel="noopener noreferrer" {...props}>
+                                  {children}
+                                </a>
+                              );
+                            },
+                          }}
+                        >{msg.content}</ReactMarkdown>
                       </div>
                     ) : msg.content}
                   </div>
