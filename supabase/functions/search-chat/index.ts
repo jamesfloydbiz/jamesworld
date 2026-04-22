@@ -9,22 +9,22 @@ const corsHeaders = {
 
 const SYSTEM_PROMPT = `You are a classy, concise search assistant on James Floyd's personal website. You know James well and guide visitors naturally — answering questions directly, linking when helpful, asking one question when lost.
 
-## CRITICAL: CHECK THESE FACTS FIRST
-Before reasoning from general knowledge, check these verified facts:
+## KEY CONTEXT (always true, always available)
 - James has held THREE formal teaching roles: "Teacher and Trainer" (iSpiice, India), "Teacher and Coach" (Local Dreamers Foundation, Ecuador), Youth Development Specialist (Boys & Girls Clubs of America, Aug 2022–Jun 2023)
-- Latest Substack update: #7, "The Big Move" — published April 15, 2026
-- James moved to Brooklyn, NYC in April 2026
-- Current job: Jets and Capital Events (event production for family offices and UHNW individuals)
-- The knowledge base below contains the full verified record — use it, don't override it with assumptions
+- Current job: Event producer at Jets and Capital Events (networking for family offices and UHNW individuals)
+- Moved to Brooklyn, NYC in April 2026
+- Latest Substack update: #7, "The Big Move" (April 15, 2026)
+- Website: jamesfloyds.world · LinkedIn: linkedin.com/in/jamesfloydl · Instagram: @jamesfloydsworld · Substack: jamesfloyd.substack.com
 
 ## RULES
-1. Keep answers short — 1 to 3 sentences. Be precise, not exhaustive.
-2. Use the knowledge base. Never confidently deny a fact — say "I'm not sure" if you can't find it.
-3. Don't add page links at the end of factual answers. Only link when someone is asking WHERE to find something.
-4. When linking internally, always use markdown: [Resume](/resume) — never write bare /paths.
-5. Ask one short clarifying question when intent is unclear.
+1. Keep answers short — 1 to 3 sentences. Precise, not exhaustive.
+2. Trust the retrieved knowledge below. Never confidently deny a fact — say "I'm not sure" if you can't find it.
+3. Don't add page links after factual answers unless the person is asking WHERE to find something.
+4. When linking internally, always use markdown format: [Resume](/resume) — never write bare /paths.
+5. Never output function calls like navigate(). Plain text and markdown only.
+6. Ask one short clarifying question if intent is unclear.
 
-## EXACT EXAMPLES — follow this style
+## STYLE EXAMPLES
 
 User: "was james a teacher?"
 You: "Yes — James held formal teaching roles at three organizations: Teacher and Trainer at iSpiice in Northern India, Teacher and Coach at Local Dreamers Foundation in Ecuador, and Youth Development Specialist at Boys & Girls Clubs of America."
@@ -32,29 +32,38 @@ You: "Yes — James held formal teaching roles at three organizations: Teacher a
 User: "where can I read his writing?"
 You: "His essays and Substack posts are at [Content](/content). His poetry is at [Poems](/poems)."
 
-User: "what does james do?"
-You: "James produces events for ultra-high-net-worth individuals and family offices at Jets and Capital Events, builds AI tools, and creates content. He recently moved to NYC to go deeper into community and opportunity."
+User: "what does he do?"
+You: "James produces events for family offices and UHNW individuals at Jets and Capital Events, builds AI tools, and creates content. He recently moved to NYC."
 
-User: "where is james on social media?"
+User: "where is he on social?"
 You: "LinkedIn: linkedin.com/in/jamesfloydl · Instagram: @jamesfloydsworld · Substack: jamesfloyd.substack.com"
 
-User: "tell me about his resume"
-You: "You can view his full professional history at [Resume](/resume)."
-
-User: "what's his latest update?"
-You: "Update #7, published April 15, 2026 — James sold his car, mattress, and computer setup and moved to Brooklyn, NYC. His goal: secure a business or job in the city within 3 months. Full read at jamesfloyd.substack.com"
-
-## SITE PAGES (only link when someone asks where to find something)
+## SITE PAGES (only link when someone is asking where to go)
 [Portfolio](/portfolio) · [Resume](/resume) · [Writing & Essays](/content) · [Projects](/projects) · [Poetry](/poems) · [Photos](/pictures) · [Builds](/builds) · [References](/references) · [Network](/network) · [Blueprints](/blueprints) · [Museum](/museum)
 
-## SOCIALS
-LinkedIn: linkedin.com/in/jamesfloydl
-Instagram: @jamesfloydsworld
-Substack: jamesfloyd.substack.com
-Website: jamesfloyds.world
-
 ## TONE
-Calm, classy, brief. Like someone who knows James personally and is happy to help — not a salesperson, not a tour guide. Never speak as James in first person.`;
+Calm, classy, brief. Like someone who knows James personally. Never speak as James in first person.`;
+
+async function embedQuery(text: string, apiKey: string): Promise<number[]> {
+  const response = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:embedContent?key=${apiKey}`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "models/gemini-embedding-001",
+        content: { parts: [{ text }] },
+        taskType: "RETRIEVAL_QUERY",
+        outputDimensionality: 768,
+      }),
+    }
+  );
+  if (!response.ok) {
+    throw new Error(`Embed API error ${response.status}: ${await response.text()}`);
+  }
+  const data = await response.json();
+  return data.embedding.values;
+}
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -64,7 +73,7 @@ serve(async (req) => {
   try {
     const { messages } = await req.json();
 
-    if (!messages || !Array.isArray(messages)) {
+    if (!messages || !Array.isArray(messages) || messages.length === 0) {
       return new Response(JSON.stringify({ error: "messages array is required" }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -72,31 +81,44 @@ serve(async (req) => {
     }
 
     const GEMINI_API_KEY = Deno.env.get("GEMINI_API_KEY");
-    if (!GEMINI_API_KEY) {
-      throw new Error("GEMINI_API_KEY is not configured");
-    }
+    if (!GEMINI_API_KEY) throw new Error("GEMINI_API_KEY is not configured");
 
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    const { data: kbEntries, error: kbError } = await supabase
-      .from("knowledge_base")
-      .select("source_type, source_name, content")
-      .order("created_at", { ascending: true });
+    // Build query from recent user messages (last 3 user turns for context)
+    const recentUserMessages = messages
+      .filter((m: { role: string }) => m.role === "user")
+      .slice(-3)
+      .map((m: { content: string }) => m.content)
+      .join(" ");
 
-    if (kbError) {
-      console.error("Failed to load knowledge base:", kbError);
-    }
-
-    let systemPrompt = SYSTEM_PROMPT;
-    if (kbEntries && kbEntries.length > 0) {
-      systemPrompt += "\n\n--- KNOWLEDGE BASE ---\n";
-      for (const entry of kbEntries) {
-        systemPrompt += `\n[${entry.source_name}]\n${entry.content}\n`;
+    // Embed the query and retrieve top 5 relevant KB entries
+    let retrievedContext = "";
+    try {
+      const queryEmbedding = await embedQuery(recentUserMessages, GEMINI_API_KEY);
+      const { data: matches, error: matchError } = await supabase.rpc(
+        "match_knowledge_base",
+        {
+          query_embedding: queryEmbedding,
+          match_count: 5,
+          match_threshold: 0.3,
+        }
+      );
+      if (matchError) {
+        console.error("Vector search error:", matchError);
+      } else if (matches && matches.length > 0) {
+        retrievedContext = "\n\n## RELEVANT KNOWLEDGE (retrieved based on the user's question)\n";
+        for (const m of matches) {
+          retrievedContext += `\n[${m.source_name}]\n${m.content}\n`;
+        }
       }
-      systemPrompt += "\n--- END KNOWLEDGE BASE ---";
+    } catch (e) {
+      console.error("Retrieval failed, falling back to no context:", e);
     }
+
+    const systemPrompt = SYSTEM_PROMPT + retrievedContext;
 
     const response = await fetch(
       "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions",
@@ -134,9 +156,12 @@ serve(async (req) => {
     });
   } catch (e) {
     console.error("search-chat error:", e);
-    return new Response(JSON.stringify({ error: e instanceof Error ? e.message : "Unknown error" }), {
-      status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    return new Response(
+      JSON.stringify({ error: e instanceof Error ? e.message : "Unknown error" }),
+      {
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      }
+    );
   }
 });
