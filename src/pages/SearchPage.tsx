@@ -176,22 +176,34 @@ const SearchPage = () => {
                     }}
                   >
                     {msg.role === 'assistant' ? (
-                      <div className="prose prose-sm prose-invert max-w-none [&_a]:underline [&_a]:underline-offset-4 [&_a]:text-white/85 hover:[&_a]:text-white">
+                      <div>
                         <ReactMarkdown
                           components={{
-                            a: ({ href, children, ...props }) => {
+                            a: ({ href, children }) => {
                               const url = href || '';
-                              // Internal link → React Router Link (no page reload)
+                              const linkStyle: React.CSSProperties = {
+                                color: 'hsl(0 0% 100% / 0.95)',
+                                textDecoration: 'underline',
+                                textUnderlineOffset: '3px',
+                                textDecorationThickness: '1px',
+                                fontWeight: 500,
+                                cursor: 'pointer',
+                              };
+                              // Internal → React Router Link (SPA navigation)
                               if (url.startsWith('/')) {
-                                return <Link to={url}>{children}</Link>;
+                                return <Link to={url} style={linkStyle}>{children}</Link>;
                               }
-                              // External link → new tab
+                              // External → add https:// if missing, open in new tab
+                              const fullUrl = /^https?:\/\//i.test(url) ? url : `https://${url}`;
                               return (
-                                <a href={url} target="_blank" rel="noopener noreferrer" {...props}>
+                                <a href={fullUrl} target="_blank" rel="noopener noreferrer" style={linkStyle}>
                                   {children}
                                 </a>
                               );
                             },
+                            p: ({ children }) => (
+                              <p style={{ margin: '0 0 0.5em 0' }}>{children}</p>
+                            ),
                           }}
                         >{msg.content}</ReactMarkdown>
                       </div>
