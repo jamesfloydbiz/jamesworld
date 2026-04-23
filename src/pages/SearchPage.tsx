@@ -1,8 +1,63 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, Fragment, ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { useSearch } from '@/contexts/SearchContext';
-import ReactMarkdown from 'react-markdown';
 import { Send } from 'lucide-react';
+
+// Parse markdown-style links [text](url) and render as React elements.
+// Internal (starts with /) → React Router Link. External → <a target="_blank">.
+// Bare URLs like jamesfloyd.substack.com are auto-linked too.
+const LINK_STYLE: React.CSSProperties = {
+  color: 'hsl(0 0% 100% / 0.95)',
+  textDecoration: 'underline',
+  textUnderlineOffset: '3px',
+  textDecorationThickness: '1px',
+  fontWeight: 500,
+  cursor: 'pointer',
+};
+
+function renderMessage(text: string): ReactNode {
+  const out: ReactNode[] = [];
+  let key = 0;
+  // Matches [label](url) OR a bare URL like example.com or https://example.com
+  const pattern = /\[([^\]]+)\]\(([^)]+)\)|(\bhttps?:\/\/[^\s)]+)|(\b[a-zA-Z0-9-]+\.(?:com|org|net|io|co|xyz|dev|app|ai|me)(?:\/[^\s)]*)?)/g;
+  let lastIndex = 0;
+  let m: RegExpExecArray | null;
+  while ((m = pattern.exec(text)) !== null) {
+    if (m.index > lastIndex) {
+      out.push(<Fragment key={key++}>{text.slice(lastIndex, m.index)}</Fragment>);
+    }
+    const [full, mdLabel, mdUrl, bareHttp, bareDomain] = m;
+    if (mdLabel && mdUrl) {
+      if (mdUrl.startsWith('/')) {
+        out.push(<Link key={key++} to={mdUrl} style={LINK_STYLE}>{mdLabel}</Link>);
+      } else {
+        const url = /^https?:\/\//i.test(mdUrl) ? mdUrl : `https://${mdUrl}`;
+        out.push(
+          <a key={key++} href={url} target="_blank" rel="noopener noreferrer" style={LINK_STYLE}>
+            {mdLabel}
+          </a>
+        );
+      }
+    } else if (bareHttp) {
+      out.push(
+        <a key={key++} href={bareHttp} target="_blank" rel="noopener noreferrer" style={LINK_STYLE}>
+          {bareHttp}
+        </a>
+      );
+    } else if (bareDomain) {
+      out.push(
+        <a key={key++} href={`https://${bareDomain}`} target="_blank" rel="noopener noreferrer" style={LINK_STYLE}>
+          {bareDomain}
+        </a>
+      );
+    }
+    lastIndex = m.index + full.length;
+  }
+  if (lastIndex < text.length) {
+    out.push(<Fragment key={key++}>{text.slice(lastIndex)}</Fragment>);
+  }
+  return out;
+}
 
 const line1 = "Welcome to James Floyd's World.";
 const line2 = "Ask for what you're wondering here, or start with scrolling his ";
@@ -176,36 +231,8 @@ const SearchPage = () => {
                     }}
                   >
                     {msg.role === 'assistant' ? (
-                      <div>
-                        <ReactMarkdown
-                          components={{
-                            a: ({ href, children }) => {
-                              const url = href || '';
-                              const linkStyle: React.CSSProperties = {
-                                color: 'hsl(0 0% 100% / 0.95)',
-                                textDecoration: 'underline',
-                                textUnderlineOffset: '3px',
-                                textDecorationThickness: '1px',
-                                fontWeight: 500,
-                                cursor: 'pointer',
-                              };
-                              // Internal → React Router Link (SPA navigation)
-                              if (url.startsWith('/')) {
-                                return <Link to={url} style={linkStyle}>{children}</Link>;
-                              }
-                              // External → add https:// if missing, open in new tab
-                              const fullUrl = /^https?:\/\//i.test(url) ? url : `https://${url}`;
-                              return (
-                                <a href={fullUrl} target="_blank" rel="noopener noreferrer" style={linkStyle}>
-                                  {children}
-                                </a>
-                              );
-                            },
-                            p: ({ children }) => (
-                              <p style={{ margin: '0 0 0.5em 0' }}>{children}</p>
-                            ),
-                          }}
-                        >{msg.content}</ReactMarkdown>
+                      <div style={{ whiteSpace: 'pre-wrap' }}>
+                        {renderMessage(msg.content)}
                       </div>
                     ) : msg.content}
                   </div>
