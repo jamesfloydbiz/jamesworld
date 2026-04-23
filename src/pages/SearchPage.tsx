@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, Fragment, ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { useSearch } from '@/contexts/SearchContext';
-import { Send } from 'lucide-react';
+import { Send, ArrowRight } from 'lucide-react';
 
 // Parse markdown-style links [text](url) and render as React elements.
 // Internal (starts with /) → React Router Link. External → <a target="_blank">.
@@ -65,7 +65,7 @@ const suffix = "portfolio";
 
 const SearchPage = () => {
   const [charIndex, setCharIndex] = useState(0);
-  const { messages, isLoading, sendMessage } = useSearch();
+  const { messages, isLoading, navSuggestion, sendMessage } = useSearch();
   const [input, setInput] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -238,6 +238,21 @@ const SearchPage = () => {
                   </div>
                 </div>
               ))}
+              {navSuggestion && !isLoading && (
+                <Link
+                  to={navSuggestion.route}
+                  className="flex items-center justify-between gap-3 px-4 py-3 rounded-xl text-sm transition-all duration-300 hover:bg-white/10 mt-2"
+                  style={{
+                    background: 'hsl(0 0% 100% / 0.05)',
+                    color: 'hsl(0 0% 100% / 0.9)',
+                    border: '1px solid hsl(0 0% 100% / 0.15)',
+                    fontFamily: "'Lora', serif",
+                  }}
+                >
+                  <span>Go to {navSuggestion.label}</span>
+                  <ArrowRight size={16} />
+                </Link>
+              )}
               {isLoading && (
                 <div className="flex gap-1.5 py-2 pl-1">
                   {[0, 1, 2].map(i => (

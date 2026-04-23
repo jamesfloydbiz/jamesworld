@@ -16,18 +16,16 @@ const SYSTEM_PROMPT = `You are a classy, concise search assistant on James Floyd
 - Latest Substack update: #7, "The Big Move" (April 15, 2026)
 - Website: jamesfloyds.world · LinkedIn: linkedin.com/in/jamesfloydl · Instagram: @jamesfloydsworld · Substack: jamesfloyd.substack.com
 
-## LINK RULE — ABSOLUTE, NO EXCEPTIONS
-Every single time you mention a page on this site — even casually, even in passing — you MUST format it as a markdown link: [Label](/path). Not as plain words. Not as "his resume" or "the portfolio page" — those are WRONG. The correct form is "his [Resume](/resume)" or "the [Portfolio](/portfolio) page".
+## NAVIGATION — YOUR PRIMARY JOB
+The visitor's goal is to find the right page. You have TWO ways to send them:
 
-Examples of WRONG vs RIGHT:
-- WRONG: "You should check out his resume or the portfolio page."
-- RIGHT: "You'll find that on his [Resume](/resume) or [Portfolio](/portfolio) page."
-- WRONG: "His writing lives on the content page."
-- RIGHT: "His writing lives on the [Writing](/content) page."
-- WRONG: "See his professional background."
-- RIGHT: "See his [Resume](/resume) for the full professional background."
+1. **The `navigate` tool** (preferred for any clear-match question). Call it whenever your text answer points to a specific page. Example: "where can I read his writing?" → call navigate({route:"/content", label:"Writing"}) AND reply with short text.
 
-The point of this chat is to guide people to the right page. Links must be clickable. No exceptions.
+2. **Inline markdown links** `[Label](/path)` — use these inside your text when multiple pages are relevant or when mentioning a page in passing.
+
+NEVER write a page name as plain text without either calling navigate OR using markdown. "See his resume" is WRONG. "See his [Resume](/resume)" or calling navigate({route:"/resume", label:"Resume"}) is RIGHT.
+
+Prefer calling the `navigate` tool for the primary page being referenced. Use inline markdown for secondary pages.
 
 ## OTHER RULES
 1. Keep answers short — 1 to 3 sentences. Precise, not exhaustive.
@@ -146,6 +144,32 @@ serve(async (req) => {
           model: "gemini-2.5-flash",
           messages: [{ role: "system", content: systemPrompt }, ...messages],
           stream: true,
+          tools: [
+            {
+              type: "function",
+              function: {
+                name: "navigate",
+                description:
+                  "Suggest the single most relevant page for the visitor. Call this in parallel with your text response whenever the answer meaningfully points to one page of the site (e.g. they ask where to find writing, his background, his work, etc). Prefer calling this when there's a clear match. Do not call if they're just chatting or the answer spans no specific page.",
+                parameters: {
+                  type: "object",
+                  properties: {
+                    route: {
+                      type: "string",
+                      description:
+                        "Route path starting with /. Must be one of: /portfolio, /resume, /content, /projects, /poems, /pictures, /builds, /references, /network, /blueprints, /blueprints/mental-models, /museum",
+                    },
+                    label: {
+                      type: "string",
+                      description:
+                        "Human-readable label for the button, e.g. 'Resume', 'Portfolio', 'Writing', 'Poems'",
+                    },
+                  },
+                  required: ["route", "label"],
+                },
+              },
+            },
+          ],
         }),
       }
     );

@@ -1,11 +1,13 @@
 import { createContext, useContext, useState, useCallback, ReactNode } from 'react';
 
 export type Msg = { role: 'user' | 'assistant'; content: string };
+export type NavSuggestion = { route: string; label: string } | null;
 
 interface SearchContextType {
   messages: Msg[];
   isLoading: boolean;
   isOpen: boolean;
+  navSuggestion: NavSuggestion;
   setIsOpen: (open: boolean) => void;
   sendMessage: (input: string) => Promise<void>;
   clearChat: () => void;
@@ -25,14 +27,19 @@ export function SearchProvider({ children }: { children: ReactNode }) {
   const [messages, setMessages] = useState<Msg[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [navSuggestion, setNavSuggestion] = useState<NavSuggestion>(null);
 
   const sendMessage = useCallback(async (input: string) => {
     const userMsg: Msg = { role: 'user', content: input };
     const allMessages = [...messages, userMsg];
     setMessages(prev => [...prev, userMsg]);
     setIsLoading(true);
+    setNavSuggestion(null);
 
     let assistantText = '';
+    let toolCallArgs = '';
+    let toolCallName = '';
+    let inToolCall = false;
 
     const upsert = (text: string) => {
       assistantText = text;
@@ -93,6 +100,16 @@ export function SearchProvider({ children }: { children: ReactNode }) {
               upsert(assistantText + delta.content);
             }
 
+            // Tool call chunks (OpenAI-compatible Gemini streams these as deltas)
+            if (delta.tool_calls) {
+              for (const tc of delta.tool_calls) {
+                if (tc.function?.name) toolCallName = tc.function.name;
+                if (tc.function?.arguments) {
+                  toolCallArgs += tc.function.arguments;
+                  inToolCall = true;
+                }
+              }
+            }
           } catch {
             buf = line + '\n' + buf;
             break;
@@ -100,6 +117,27 @@ export function SearchProvider({ children }: { children: ReactNode }) {
         }
       }
 
+      // Parse completed tool call (if any)
+      if (inToolCall && toolCallName === 'navigate' && toolCallArgs) {
+        try {
+          const args = JSON.parse(toolCallArgs);
+          if (args.route && args.label) {
+            setNavSuggestion({ route: args.route, label: args.label });
+          }
+        } catch {
+          console.warn('Failed to parse navigate tool call:', toolCallArgs);
+        }
+      }
+
+      // If the AI called navigate but emitted no text, provide a minimal fallback
+      if (inToolCall && !assistantText.trim()) {
+        try {
+          const args = JSON.parse(toolCallArgs);
+          if (args.label) {
+            upsert(`Here you go — ${args.label} is right this way.`);
+          }
+        } catch { /* noop */ }
+      }
     } catch (e) {
       console.error('search-chat error:', e);
       upsert('Something went wrong. Please try again.');
@@ -115,7 +153,7 @@ export function SearchProvider({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <SearchContext.Provider value={{ messages, isLoading, isOpen, setIsOpen, sendMessage, clearChat }}>
+    <SearchContext.Provider value={{ messages, isLoading, isOpen, navSuggestion, setIsOpen, sendMessage, clearChat }}>
       {children}
     </SearchContext.Provider>
   );
