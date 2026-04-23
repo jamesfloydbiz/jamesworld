@@ -37,18 +37,36 @@ export function SearchProvider({ children }: { children: ReactNode }) {
     setNavSuggestion(null);
 
     let assistantText = '';
-    let toolCallArgs = '';
-    let toolCallName = '';
-    let inToolCall = false;
+
+    // Strip any fake function-call garbage Gemini sometimes emits
+    // (e.g. "fldnav:navigate{label:X,route:/y}" or "navigate(route='/x')")
+    // and pull the first internal markdown link out to use as the nav card.
+    const sanitize = (raw: string) => {
+      let text = raw;
+      // Remove "fldnav:navigate{...}" / "navigate(...)" / "navigate{...}" leakage
+      text = text.replace(/\b(?:fldnav:)?navigate\s*[({][^)}\n]*[)}]/gi, '').trim();
+      // Also trim trailing dangling colons/whitespace
+      text = text.replace(/[\s:]+$/g, '');
+      return text;
+    };
+
+    const extractFirstInternalLink = (text: string): NavSuggestion => {
+      const match = text.match(/\[([^\]]+)\]\((\/[^)\s]*)\)/);
+      if (match) return { label: match[1], route: match[2] };
+      return null;
+    };
 
     const upsert = (text: string) => {
-      assistantText = text;
+      const clean = sanitize(text);
+      assistantText = clean;
+      const nav = extractFirstInternalLink(clean);
+      if (nav) setNavSuggestion(nav);
       setMessages(prev => {
         const last = prev[prev.length - 1];
         if (last?.role === 'assistant') {
-          return prev.map((m, i) => i === prev.length - 1 ? { ...m, content: text } : m);
+          return prev.map((m, i) => i === prev.length - 1 ? { ...m, content: clean } : m);
         }
-        return [...prev, { role: 'assistant', content: text }];
+        return [...prev, { role: 'assistant', content: clean }];
       });
     };
 
@@ -95,48 +113,14 @@ export function SearchProvider({ children }: { children: ReactNode }) {
             const delta = parsed.choices?.[0]?.delta;
             if (!delta) continue;
 
-            // Content text
             if (delta.content) {
               upsert(assistantText + delta.content);
-            }
-
-            // Tool call chunks (OpenAI-compatible Gemini streams these as deltas)
-            if (delta.tool_calls) {
-              for (const tc of delta.tool_calls) {
-                if (tc.function?.name) toolCallName = tc.function.name;
-                if (tc.function?.arguments) {
-                  toolCallArgs += tc.function.arguments;
-                  inToolCall = true;
-                }
-              }
             }
           } catch {
             buf = line + '\n' + buf;
             break;
           }
         }
-      }
-
-      // Parse completed tool call (if any)
-      if (inToolCall && toolCallName === 'navigate' && toolCallArgs) {
-        try {
-          const args = JSON.parse(toolCallArgs);
-          if (args.route && args.label) {
-            setNavSuggestion({ route: args.route, label: args.label });
-          }
-        } catch {
-          console.warn('Failed to parse navigate tool call:', toolCallArgs);
-        }
-      }
-
-      // If the AI called navigate but emitted no text, provide a minimal fallback
-      if (inToolCall && !assistantText.trim()) {
-        try {
-          const args = JSON.parse(toolCallArgs);
-          if (args.label) {
-            upsert(`Here you go — ${args.label} is right this way.`);
-          }
-        } catch { /* noop */ }
       }
     } catch (e) {
       console.error('search-chat error:', e);
