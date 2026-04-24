@@ -239,19 +239,33 @@ const SearchPage = () => {
                 </div>
               ))}
               {navSuggestion && !isLoading && (
-                <Link
-                  to={navSuggestion.route}
-                  className="flex items-center justify-between gap-3 px-4 py-3 rounded-xl text-sm transition-all duration-300 hover:bg-white/10 mt-2"
-                  style={{
-                    background: 'hsl(0 0% 100% / 0.05)',
-                    color: 'hsl(0 0% 100% / 0.9)',
-                    border: '1px solid hsl(0 0% 100% / 0.15)',
-                    fontFamily: "'Lora', serif",
-                  }}
-                >
-                  <span>Go to {navSuggestion.label}</span>
-                  <ArrowRight size={16} />
-                </Link>
+                (() => {
+                  const isExternal = /^https?:\/\//i.test(navSuggestion.route);
+                  const cardProps = {
+                    className: "flex items-center justify-between gap-3 px-4 py-3 rounded-xl text-sm transition-all duration-300 hover:bg-white/10 mt-2",
+                    style: {
+                      background: 'hsl(0 0% 100% / 0.05)',
+                      color: 'hsl(0 0% 100% / 0.9)',
+                      border: '1px solid hsl(0 0% 100% / 0.15)',
+                      fontFamily: "'Lora', serif",
+                    } as React.CSSProperties,
+                  };
+                  const content = (
+                    <>
+                      <span>Go to {navSuggestion.label}</span>
+                      <ArrowRight size={16} />
+                    </>
+                  );
+                  return isExternal ? (
+                    <a href={navSuggestion.route} target="_blank" rel="noopener noreferrer" {...cardProps}>
+                      {content}
+                    </a>
+                  ) : (
+                    <Link to={navSuggestion.route} {...cardProps}>
+                      {content}
+                    </Link>
+                  );
+                })()
               )}
               {isLoading && (
                 <div className="flex gap-1.5 py-2 pl-1">

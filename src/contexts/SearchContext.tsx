@@ -37,10 +37,10 @@ function sanitize(raw: string): string {
 }
 
 function extractFirstPath(text: string): NavSuggestion {
-  // 1) [Label](/path)
-  const md = text.match(/\[([^\]]+)\]\((\/[A-Za-z0-9_\-/]+)\)/);
+  // 1) Markdown [Label](url) with internal /path or external https://
+  const md = text.match(/\[([^\]]+)\]\((\/[A-Za-z0-9_\-/]+|https?:\/\/[^)\s]+)\)/);
   if (md) return { label: md[1], route: md[2] };
-  // 2) bare /path reference  (e.g. "see /resume")
+  // 2) Bare /path reference (e.g. "see /resume")
   const bare = text.match(/(?:^|\s)(\/(?:portfolio|resume|content|projects|poems|pictures|builds|references|network|blueprints(?:\/mental-models)?|museum))\b/);
   if (bare) {
     const route = bare[1];
