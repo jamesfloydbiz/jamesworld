@@ -23,6 +23,33 @@ export const useSearch = () => {
 
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/search-chat`;
 
+// Strip fake tool-call syntax that Gemini sometimes emits as text
+// and collapse any "/path" references in lists into a clean sentence.
+function sanitize(raw: string): string {
+  let t = raw;
+  // Gemini sometimes emits "fldnav:navigate{...}" or "navigate(route='...', label='...')" as text
+  t = t.replace(/\b(?:fldnav:)?navigate\s*[({][^)}\n]*[)}]/gi, '');
+  // Remove entire bulleted-list lines that are just a path reference (e.g. "* /portfolio - ..." or "* **/portfolio** - ...")
+  t = t.replace(/^[\s*-]+\*{0,2}\/[A-Za-z/-]+\*{0,2}[^\n]*$/gm, '');
+  // Trim stray leading whitespace/newlines left behind
+  t = t.replace(/\n{3,}/g, '\n\n').trim();
+  return t;
+}
+
+function extractFirstPath(text: string): NavSuggestion {
+  // 1) [Label](/path)
+  const md = text.match(/\[([^\]]+)\]\((\/[A-Za-z0-9_\-/]+)\)/);
+  if (md) return { label: md[1], route: md[2] };
+  // 2) bare /path reference  (e.g. "see /resume")
+  const bare = text.match(/(?:^|\s)(\/(?:portfolio|resume|content|projects|poems|pictures|builds|references|network|blueprints(?:\/mental-models)?|museum))\b/);
+  if (bare) {
+    const route = bare[1];
+    const label = route.slice(1).split('/').pop()!.replace(/^[a-z]/, c => c.toUpperCase());
+    return { label, route };
+  }
+  return null;
+}
+
 export function SearchProvider({ children }: { children: ReactNode }) {
   const [messages, setMessages] = useState<Msg[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -37,30 +64,13 @@ export function SearchProvider({ children }: { children: ReactNode }) {
     setNavSuggestion(null);
 
     let assistantText = '';
-
-    // Strip any fake function-call garbage Gemini sometimes emits
-    // (e.g. "fldnav:navigate{label:X,route:/y}" or "navigate(route='/x')")
-    // and pull the first internal markdown link out to use as the nav card.
-    const sanitize = (raw: string) => {
-      let text = raw;
-      // Remove "fldnav:navigate{...}" / "navigate(...)" / "navigate{...}" leakage
-      text = text.replace(/\b(?:fldnav:)?navigate\s*[({][^)}\n]*[)}]/gi, '').trim();
-      // Also trim trailing dangling colons/whitespace
-      text = text.replace(/[\s:]+$/g, '');
-      return text;
-    };
-
-    const extractFirstInternalLink = (text: string): NavSuggestion => {
-      const match = text.match(/\[([^\]]+)\]\((\/[^)\s]*)\)/);
-      if (match) return { label: match[1], route: match[2] };
-      return null;
-    };
+    let toolCallName = '';
+    let toolCallArgs = '';
+    let sawToolCall = false;
 
     const upsert = (text: string) => {
       const clean = sanitize(text);
       assistantText = clean;
-      const nav = extractFirstInternalLink(clean);
-      if (nav) setNavSuggestion(nav);
       setMessages(prev => {
         const last = prev[prev.length - 1];
         if (last?.role === 'assistant') {
@@ -116,11 +126,47 @@ export function SearchProvider({ children }: { children: ReactNode }) {
             if (delta.content) {
               upsert(assistantText + delta.content);
             }
+
+            if (delta.tool_calls) {
+              for (const tc of delta.tool_calls) {
+                if (tc.function?.name) toolCallName = tc.function.name;
+                if (tc.function?.arguments) {
+                  toolCallArgs += tc.function.arguments;
+                  sawToolCall = true;
+                }
+              }
+            }
           } catch {
             buf = line + '\n' + buf;
             break;
           }
         }
+      }
+
+      // Primary: use the structured tool call if Gemini made one
+      if (sawToolCall && toolCallName === 'navigate' && toolCallArgs) {
+        try {
+          const args = JSON.parse(toolCallArgs);
+          if (args.route && args.label) {
+            setNavSuggestion({ route: args.route, label: args.label });
+          }
+        } catch {
+          console.warn('Failed to parse navigate tool call:', toolCallArgs);
+        }
+      }
+
+      // Fallback: if no tool call was made but the text references a page, derive one
+      if (!navSuggestion && assistantText) {
+        const fallback = extractFirstPath(assistantText);
+        if (fallback) setNavSuggestion(fallback);
+      }
+
+      // If tool called but AI wrote no text at all, provide a graceful default
+      if (sawToolCall && !assistantText.trim()) {
+        try {
+          const args = JSON.parse(toolCallArgs);
+          if (args.label) upsert(`Right this way →`);
+        } catch { /* noop */ }
       }
     } catch (e) {
       console.error('search-chat error:', e);
@@ -128,7 +174,7 @@ export function SearchProvider({ children }: { children: ReactNode }) {
     }
 
     setIsLoading(false);
-  }, [messages]);
+  }, [messages, navSuggestion]);
 
   const clearChat = useCallback(() => {
     setMessages([]);
