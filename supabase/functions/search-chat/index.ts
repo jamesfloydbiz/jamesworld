@@ -29,8 +29,25 @@ Rules:
 2. Trust the retrieved knowledge below. Never confidently deny a fact — say "I'm not sure" if you can't find it.
 3. Ask one short clarifying question if intent is unclear.
 
-## AVAILABLE PAGES (for tool calls)
-/portfolio · /resume · /content · /projects · /poems · /pictures · /builds · /references · /network · /blueprints · /blueprints/mental-models · /museum · https://linkedin.com/in/jamesfloydl · https://instagram.com/jamesfloydsworld · https://jamesfloyd.substack.com
+## PAGES — what's on each (use to pick the right destination)
+
+Internal:
+/portfolio — This is a summary page, includes my story, stories from my life, and a letter from me. send people here if theyre in a rush, or just want a summary on who i am
+/resume — skills, work history (Chief of Staff at BetterWealth, Keiretsu, Jets & Capital, Royal Mgmt), what I did at each job
+/content — links to content I've created on youtube, instagram, substack, and poetry I've written. Send people here if they're wondering about my content creation
+/projects — Current & archived: Jets & Capital, Builds, Resume, LinkedIn streak, etc. Send people here if they want to see actual things I've built or helped run
+/poems — 26 handwritten poem images in a grid (Darkness, Manhood, Peace, etc.), lightbox view — send people here if they are more soulful people, or wondering about my poetry
+/pictures — 35+ grayscale photos: campfires, events, travel, relationships, with captions
+/builds — 8 archived AI automations: multi-agent blogs, network AI, YouTube dashboards, financial calculators, 3D museum v1
+/references — 20+ testimonial cards from peers (BetterWealth, Jets & Capital, friends) — send people here if they're asking hiring questions, wondering who I am, what people think of me
+/network — Three philosophies (Givers Gain, YOLO, Be Graceful) + three ways to connect
+/blueprints — 5 shelf items: Music, Books, Mental Models, Health, Money
+/blueprints/mental-models — Interactive Decide/Spot It modes for learning Charlie Munger mental models
+
+External:
+https://linkedin.com/in/jamesfloydl — Daily public journal posts, network updates. the most up-to-date place on professional James
+https://instagram.com/jamesfloydsworld — public video recaps of parts of my life
+https://jamesfloyd.substack.com — Long-form writing: monthly "James Floyd Update," poetry, letters
 
 ## TONE
 Calm, classy, brief. Like someone who knows James personally. Never speak as James in first person.`;
@@ -134,7 +151,7 @@ serve(async (req) => {
                   properties: {
                     route: {
                       type: "string",
-                      description: "Internal path (starts with /) OR full external URL (starts with https://). Internal options: /portfolio, /resume, /content, /projects, /poems, /pictures, /builds, /references, /network, /blueprints, /blueprints/mental-models, /museum. External options: https://linkedin.com/in/jamesfloydl, https://instagram.com/jamesfloydsworld, https://jamesfloyd.substack.com",
+                      description: "Internal path (starts with /) OR full external URL (starts with https://). Internal options: /portfolio, /resume, /content, /projects, /poems, /pictures, /builds, /references, /network, /blueprints, /blueprints/mental-models. External options: https://linkedin.com/in/jamesfloydl, https://instagram.com/jamesfloydsworld, https://jamesfloyd.substack.com. See PAGES section in system prompt for what each one contains.",
                     },
                     label: {
                       type: "string",
