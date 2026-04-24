@@ -23,15 +23,20 @@ export const useSearch = () => {
 
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/search-chat`;
 
-// Strip fake tool-call syntax that Gemini sometimes emits as text
-// and collapse any "/path" references in lists into a clean sentence.
+// Strip fake tool-call syntax and stray path references that Gemini
+// sometimes emits as text. The real navigation comes via tool_calls.
 function sanitize(raw: string): string {
   let t = raw;
-  // Gemini sometimes emits "fldnav:navigate{...}" or "navigate(route='...', label='...')" as text
-  t = t.replace(/\b(?:fldnav:)?navigate\s*[({][^)}\n]*[)}]/gi, '');
-  // Remove entire bulleted-list lines that are just a path reference (e.g. "* /portfolio - ..." or "* **/portfolio** - ...")
+  // Fake tool-call patterns: "fldnav:navigate{...}", "navigate(...)",
+  // "suggest_navigation{...}", "anything_navigation(...)", etc.
+  t = t.replace(/\b(?:[a-z_]+:)?[a-z_]*navigation?\s*[({][^)}\n]*[)}]/gi, '');
+  // Bulleted lines that are just a path reference (e.g. "* /portfolio - ..." or "* **/portfolio** - ...")
   t = t.replace(/^[\s*-]+\*{0,2}\/[A-Za-z/-]+\*{0,2}[^\n]*$/gm, '');
-  // Trim stray leading whitespace/newlines left behind
+  // Bold-wrapped page names like **Network** or **Projects** (left bare so the nav card is clearly the CTA)
+  t = t.replace(/\*\*(Portfolio|Resume|Content|Writing|Projects|Poems|Pictures|Builds|References|Network|Blueprints|Mental Models|Museum|Substack|LinkedIn|Instagram)\*\*/g, '$1');
+  // Bare-path phrasing like "the /resume page" → "the page" (the nav card already says where to go)
+  t = t.replace(/\bthe\s+\/[A-Za-z/-]+\s+page\b/gi, 'the page');
+  // Squeeze extra blank lines and trim
   t = t.replace(/\n{3,}/g, '\n\n').trim();
   return t;
 }
