@@ -101,7 +101,7 @@ const DearReaderPage = () => {
             <L to="/references"> references</L> page you can see what people say about me.
           </p>
           <p className="mb-2">
-            If you're still curious, take a look at my <L to="/projects">projects</L>, <L to="/builds">builds</L>, 
+            If you're still curious, take a look at my <L to="/projects">projects</L>, <L to="/builds">builds</L>,  
             <L to="/content">content</L>, <L to="/network">socials</L>, or <L to="/pictures">pictures</L>.
           </p>
 
