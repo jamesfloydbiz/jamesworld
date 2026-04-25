@@ -102,7 +102,7 @@ const DearReaderPage = () => {
           </p>
           <p className="mb-2">
             If you're still curious, take a look at my <L to="/projects">projects</L>, <L to="/builds">builds</L>,  
-            <L to="/content">content</L>, <L to="/network">socials</L>, or <L to="/pictures">pictures</L>.
+            <L to="/content"> content</L>, <L to="/network">socials</L>, or <L to="/pictures">pictures</L>.
           </p>
 
           <p className="mt-4" style={{ color: "hsl(0 0% 100% / 0.5)" }}>Sincerely,</p>
