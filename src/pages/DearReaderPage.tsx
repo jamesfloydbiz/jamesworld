@@ -94,7 +94,7 @@ const DearReaderPage = () => {
 
           <p className="mb-2">
             I find meaning in making the future easier. I believe that businesses are the best way to do that while
-            providing for one's life as you do that work.
+            providing for one's life.
           </p>
           <p className="mb-2">
             I have realized what makes this journey enjoyable is the people around me. On the
