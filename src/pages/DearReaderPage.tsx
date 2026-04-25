@@ -58,8 +58,8 @@ const DearReaderPage = () => {
           </h1>
 
           <p className="mb-2">
-            Thank you for your curiosity. This site has gone through many iterations, but for now, I've decided to leave
-            it as simple as possible. This is my story and some of what I've created.
+            Thank you for your curiosity. This site began as a 3d avatar world, then became a 3d museum, and now I've decided to leave
+            it as simple as possible.
           </p>
           <p className="mb-2">
             My name is{" "}
@@ -84,7 +84,7 @@ const DearReaderPage = () => {
               </HoverCardContent>
             </HoverCard>
             . I am a curious man, and one of depth. My goals are focused only on the moment I am
-            in, and that has led me down the path you can see on my <L to="/portfolio">newspaper</L>.
+            in, and that has led me down the path you can see on my <L to="/portfolio">newspaper page</L>.
           </p>
 
           <p className="mb-2">
@@ -93,19 +93,19 @@ const DearReaderPage = () => {
           </p>
 
           <p className="mb-2">
-            I find meaning in making the future easier. I believe that businesses are the best way to do that while
+            I find meaning in making the future easier. I am in search of creation that feels like play. I believe that businesses are the best way to do that while
             providing for one's life.
           </p>
           <p className="mb-2">
-            I have realized what makes this journey enjoyable is the people around me. On the
+            I have realized what makes this exploration enjoyable is the people around me. On the
             <L to="/references"> references</L> page you can see what people say about me.
           </p>
           <p className="mb-2">
-            If you're still curious, take a look at my <L to="/projects">projects</L>, <L to="/builds">builds</L>,  
-            <L to="/content"> content</L>, <L to="/network">socials</L>, or <L to="/pictures">pictures</L>.
+            If you're curious for some things I've worked on, take a look at my <L to="/projects">projects</L>, or <L to="/builds">builds</L>.
+            If you want to get to know me virtually check out my<L to="/content"> content</L>, <L to="/network">socials</L>, or <L to="/pictures">pictures</L>.
           </p>
 
-          <p className="mt-4" style={{ color: "hsl(0 0% 100% / 0.5)" }}>Sincerely,</p>
+          <p className="mt-4" style={{ color: "hsl(0 0% 100% / 0.5)" }}>From my heart,</p>
           <HoverCard openDelay={0} closeDelay={100}>
             <HoverCardTrigger asChild>
               <p className="mb-6 cursor-default font-bold" style={{ color: "hsl(0 0% 100%)" }}>James Floyd</p>
