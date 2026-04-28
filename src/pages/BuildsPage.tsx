@@ -26,6 +26,14 @@ const automations = [
     external: true,
   },
   {
+    title: 'The Block — A Lawn Mowing Tycoon',
+    description: 'A 3D browser game designed to teach business through a lawncare tycoon.',
+    status: 'Archive',
+    cta: 'Play',
+    link: 'https://learnbusiness.lovable.app',
+    external: true,
+  },
+  {
     title: 'Top YT Videos By Topic',
     description: 'Get the top 15 YouTube videos by views based on any input, sorted by length and recency.',
     status: 'Archive',
