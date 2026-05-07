@@ -18,7 +18,7 @@ const featuredContent = [
     description: 'Place to place, lesson on top of lesson, saved for my future',
     duration: '20+',
     stats: '42T views',
-    link: 'https://www.instagram.com/jamesfloydsworld',
+    link: 'https://www.instagram.com/jamesfloydsworld/',
     external: true,
   },
   {

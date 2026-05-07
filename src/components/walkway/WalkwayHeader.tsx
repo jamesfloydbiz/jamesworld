@@ -23,9 +23,10 @@ export function WalkwayHeader({ title }: WalkwayHeaderProps) {
   };
 
   const menuItems = [
+    { label: "Sonder Series", path: "/sonder" },
     { label: "Portfolio", path: "/portfolio" },
-    { 
-      label: "Projects", 
+    {
+      label: "Projects",
       path: "/projects",
       subItems: [
         { label: "Portfolio", path: "/portfolio" },
@@ -33,8 +34,8 @@ export function WalkwayHeader({ title }: WalkwayHeaderProps) {
         { label: "References", path: "/references" }
       ]
     },
-    { 
-      label: "Content", 
+    {
+      label: "Content",
       path: "/content",
       subItems: [
         { label: "Poems", path: "/poems" },

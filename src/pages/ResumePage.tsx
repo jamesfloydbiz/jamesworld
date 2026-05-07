@@ -113,7 +113,7 @@ const ResumePage = () => {
               <a href="mailto:jamesfloydbiz@gmail.com" className="flex items-center gap-1 hover:text-foreground">
                 <Mail className="w-3 h-3" /> jamesfloydbiz@gmail.com
               </a>
-              <a href="https://www.linkedin.com/in/jamesfloydl" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 hover:text-foreground">
+              <a href="https://www.linkedin.com/in/jamesfloydl/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 hover:text-foreground">
                 linkedin.com/in/jamesfloydl <ExternalLink className="w-3 h-3" />
               </a>
             </div>
@@ -238,12 +238,13 @@ const ResumePage = () => {
             animate={{ opacity: 1 }}
             transition={{ delay: 1.7, duration: 0.6 }}
           >
-            <Link to="/" className="hover:underline underline-offset-4">3D Portfolio</Link>
+            <Link to="/museum" className="hover:underline underline-offset-4">3D Museum</Link>
             <Link to="/portfolio" className="hover:underline underline-offset-4">Portfolio</Link>
             <Link to="/poems" className="hover:underline underline-offset-4">Poetry</Link>
             <Link to="/projects" className="hover:underline underline-offset-4">Projects</Link>
             <Link to="/builds" className="hover:underline underline-offset-4">Builds</Link>
-            <Link to="/media" className="hover:underline underline-offset-4">Media</Link>
+            <Link to="/pictures" className="hover:underline underline-offset-4">Memories</Link>
+            <Link to="/sonder" className="hover:underline underline-offset-4">Sonder Series</Link>
           </motion.div>
           
           {/* CTA Section */}

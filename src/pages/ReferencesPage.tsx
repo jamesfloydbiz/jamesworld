@@ -63,7 +63,7 @@ const references: Reference[] = [
     relation: 'Founder · PlayHouse · anata · Deal Partner',
     quote: '"Dude it was so good to finally meet you in person!!!! Your amazing dude and killing it."',
     rotation: '1.8deg',
-    link: 'https://www.linkedin.com/in/jamesfloyd',
+    link: 'https://www.linkedin.com/in/jamesfloydl/',
     context: 'Friend I met off the internet',
   },
   {

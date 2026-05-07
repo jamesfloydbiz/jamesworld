@@ -56,7 +56,7 @@ const currentProjects: Project[] = [
     description: '', // filled dynamically
     status: 'Active',
     cta: 'Follow Along',
-    link: 'https://www.linkedin.com/in/jamesfloyd',
+    link: 'https://www.linkedin.com/in/jamesfloydl/',
     external: true,
   },
 ];

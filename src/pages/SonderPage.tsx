@@ -344,7 +344,7 @@ const SonderPage = () => {
             aria-label="James Floyd on social media"
           >
             <a
-              href="https://linkedin.com/in/jamesfloydl"
+              href="https://www.linkedin.com/in/jamesfloydl/"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="LinkedIn"
@@ -353,7 +353,7 @@ const SonderPage = () => {
               <Linkedin className="w-5 h-5" strokeWidth={1.5} />
             </a>
             <a
-              href="https://instagram.com/jamesfloydscontent"
+              href="https://www.instagram.com/jamesfloydscontent/"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Instagram"

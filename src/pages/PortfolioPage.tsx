@@ -101,6 +101,7 @@ function WalkingCharacter({ progress }: {progress: number;}) {
 
 /* ─── Site Links Section ─── */
 const siteLinks = [
+{ label: 'Sonder Series', path: '/sonder', desc: '100 conversations with strangers in NYC.' },
 { label: 'Portfolio', path: '/portfolio', desc: 'The full narrative — where it started, how it unfolded.' },
 { label: 'Projects', path: '/projects', desc: 'What James has built and been part of building.' },
 { label: 'Builds', path: '/builds', desc: 'AI automations and operational systems James has designed.' },
@@ -325,7 +326,7 @@ const PortfolioPage = () => {
           <Reveal delay={0.5}>
             <div className="mt-8 flex flex-wrap gap-4">
               <a
-                href="https://www.instagram.com/jamesfloydsworld"
+                href="https://www.instagram.com/jamesfloydsworld/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="px-6 py-3 border border-black/20 text-[12px] tracking-[0.2em] uppercase transition-colors hover:bg-black/5"
@@ -516,7 +517,7 @@ const PortfolioPage = () => {
                   Builders, investors, creators, and those who refuse to stay in one lane. If you are any of the above and wish to correspond, the publisher welcomes your inquiry.
                 </p>
                 <div className="space-y-2">
-                  <a href="https://www.instagram.com/jamesfloydsworld" target="_blank" rel="noopener noreferrer"
+                  <a href="https://www.instagram.com/jamesfloydsworld/" target="_blank" rel="noopener noreferrer"
                   className="block text-[11px] tracking-[0.2em] uppercase transition-colors hover:underline" style={{ color: '#4A5D23' }}>
                     ✦ Follow the Journey — Instagram
                   </a>

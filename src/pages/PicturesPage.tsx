@@ -62,7 +62,7 @@ const PicturesPage = () => {
           {/* Instagram link and caption */}
           <div className="flex flex-col items-center mb-16 text-center">
             <a 
-              href="https://instagram.com/jamesfloydsworld" 
+              href="https://www.instagram.com/jamesfloydsworld/"
               target="_blank" 
               rel="noopener noreferrer"
               className="text-white/60 hover:text-white transition-colors tracking-[0.25em] text-sm uppercase"

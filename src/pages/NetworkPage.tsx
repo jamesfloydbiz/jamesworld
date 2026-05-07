@@ -24,7 +24,7 @@ const connectOptions = [
     platform: 'Instagram',
     description: 'Follow to see what I\'m up to',
     cta: 'Follow @jamesfloydsworld',
-    link: 'https://www.instagram.com/jamesfloydsworld',
+    link: 'https://www.instagram.com/jamesfloydsworld/',
     external: true,
   },
   {
