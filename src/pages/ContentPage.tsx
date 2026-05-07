@@ -3,6 +3,7 @@ import { WalkwayHeader } from '@/components/walkway/WalkwayHeader';
 import { Link } from 'react-router-dom';
 import { ExternalLink } from 'lucide-react';
 import { useKeyboardScroll } from '@/hooks/useKeyboardScroll';
+import { PageMeta } from "@/components/PageMeta";
 
 const stats = [
   { label: 'Instagram Videos', value: '100+' },
@@ -70,6 +71,11 @@ const ContentPage = () => {
   useKeyboardScroll();
   return (
     <div className="min-h-screen bg-background">
+      <PageMeta
+        title="Content"
+        description={`Writing, talks, and creative output from James Floyd — poems, blueprints, builds, and reflections on entrepreneurship and intentional living.`}
+        path="/content"
+      />
       <WalkwayHeader title="Content" />
       
       <main className="pt-16 px-6 md:px-8 pb-24">

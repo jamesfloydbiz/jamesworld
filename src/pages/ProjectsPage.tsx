@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { ExternalLink } from 'lucide-react';
 import { useKeyboardScroll } from '@/hooks/useKeyboardScroll';
 import { useMemo } from 'react';
+import { PageMeta } from "@/components/PageMeta";
 
 /** LinkedIn streak start: April 15, 2026 = day 123. +1 each day after. */
 const STREAK_START_DATE = new Date('2026-04-15');
@@ -140,6 +141,11 @@ const ProjectsPage = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <PageMeta
+        title="Projects"
+        description="Active and archived projects from James Floyd — Jets and Capital, AI builds, The Sonder Series, and more."
+        path="/projects"
+      />
       <WalkwayHeader title="Projects" />
       
       <main className="pt-16 px-6 md:px-8 pb-24">

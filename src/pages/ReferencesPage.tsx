@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { WalkwayHeader } from '@/components/walkway/WalkwayHeader';
 import { useKeyboardScroll } from '@/hooks/useKeyboardScroll';
 import { Play, ExternalLink } from 'lucide-react';
+import { PageMeta } from "@/components/PageMeta";
 
 type RefType = 'text' | 'image' | 'video';
 
@@ -50,7 +51,7 @@ const references: Reference[] = [
   },
   {
     type: 'text',
-    name: 'Dom Rrufran',
+    name: 'Dom Rufran',
     relation: 'President of BetterWealth · Ex-NFL Player',
     quote: '"I was like — this kid is different. This kid is special."',
     rotation: '-1.5deg',
@@ -118,7 +119,7 @@ const references: Reference[] = [
   },
   {
     type: 'text',
-    name: 'Dom Rrufran',
+    name: 'Dom Rufran',
     relation: 'President of BetterWealth · Ex-NFL Player',
     quote: '"You just genuinely have that grit, and you\'re going to be special, you know that AND you\'re very coachable."',
     rotation: '1.2deg',
@@ -166,7 +167,7 @@ const references: Reference[] = [
   },
   {
     type: 'text',
-    name: 'Dom Rrufran',
+    name: 'Dom Rufran',
     relation: 'President of BetterWealth · Ex-NFL Player',
     quote: '"You lowkey inspire me with how hard you work, how much you work."',
     rotation: '-1.3deg',
@@ -291,6 +292,11 @@ export default function ReferencesPage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
+      <PageMeta
+        title="References"
+        description="What people say about working with James Floyd — written and video references from leaders across finance, sports, and entrepreneurship."
+        path="/references"
+      />
       <WalkwayHeader title="References" />
 
       <main className="pt-16 pb-24 px-6 md:px-12 lg:px-20">

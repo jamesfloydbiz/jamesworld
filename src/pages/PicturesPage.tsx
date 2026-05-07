@@ -1,6 +1,7 @@
 import { WalkwayHeader } from '@/components/walkway/WalkwayHeader';
 import { useKeyboardScroll } from '@/hooks/useKeyboardScroll';
 import { motion } from 'framer-motion';
+import { PageMeta } from "@/components/PageMeta";
 
 const pictures: { file: string; alt: string }[] = [
   { file: 'IMG_1311.jpeg', alt: 'James Floyd at campfire gathering with friends' },
@@ -44,6 +45,11 @@ const PicturesPage = () => {
 
   return (
     <div className="min-h-screen bg-black text-white">
+      <PageMeta
+        title="Memories"
+        description={`A photographic memoir of James Floyd's life — events, travel, friends, and small moments captured for the long run.`}
+        path="/pictures"
+      />
       <WalkwayHeader title="Memories" />
       
       <main className="pt-16 px-6 md:px-8 pb-24">

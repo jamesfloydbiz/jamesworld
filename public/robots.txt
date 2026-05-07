@@ -13,5 +13,5 @@ Allow: /
 User-agent: *
 Allow: /
 
-Sitemap: https://jamesworld.lovable.app/sitemap.xml
-LLMs-Txt: https://jamesworld.lovable.app/llms.txt
+Sitemap: https://jamesfloyds.world/sitemap.xml
+LLMs-Txt: https://jamesfloyds.world/llms.txt

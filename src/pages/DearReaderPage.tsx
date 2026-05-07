@@ -4,6 +4,7 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
+import { PageMeta } from "@/components/PageMeta";
 
 /** Inline link helper — keeps the letter prose clean */
 const L = ({ to, children }: { to: string; children: React.ReactNode }) => (
@@ -27,6 +28,11 @@ const L = ({ to, children }: { to: string; children: React.ReactNode }) => (
 const DearReaderPage = () => {
   return (
     <div className="h-screen bg-background flex flex-col overflow-hidden">
+      <PageMeta
+        title="Builder, Creator, Explorer"
+        description="James Floyd — builder, creator, and explorer connecting people, ideas, and conviction. Discover projects, AI builds, content, and a life lived without limits."
+        path="/"
+      />
       {/* Logo */}
       <div className="w-full px-6 py-2 flex items-center shrink-0">
         <img src="/logo.svg" alt="JF monogram" className="h-8 w-8 opacity-80" />

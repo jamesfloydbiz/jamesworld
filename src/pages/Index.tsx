@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { LoadingScreen } from '@/components/ui/LoadingScreen';
 import { ControlsHint } from '@/components/ui/MuseumUI';
 import { MobileJoystick } from '@/components/ui/MobileJoystick';
+import { PageMeta } from "@/components/PageMeta";
 
 // Lazy load heavy 3D components
 const MuseumScene = lazy(() => import('@/components/museum/MuseumScene').then(m => ({ default: m.MuseumScene })));
@@ -89,6 +90,11 @@ const Index = () => {
 
   return (
     <div className="fixed inset-0 bg-black">
+      <PageMeta
+        title="Museum"
+        description={`James Floyd's interactive 3D museum — explore portfolio, blueprints, content, and projects in a navigable gallery.`}
+        path="/museum"
+      />
       {/* 3D Museum Scene - always loading/visible behind the loading screen */}
       <div className="absolute inset-0">
         <Suspense fallback={null}>

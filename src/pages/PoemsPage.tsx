@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { WalkwayHeader } from '@/components/walkway/WalkwayHeader';
 import { useKeyboardScroll } from '@/hooks/useKeyboardScroll';
 import { X } from 'lucide-react';
+import { PageMeta } from "@/components/PageMeta";
 
 const poems = [
   { display: 'Weary Woman', file: 'WearyWoman' },
@@ -39,6 +40,11 @@ const PoemsPage = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <PageMeta
+        title="Poems"
+        description={`90+ poems by James Floyd. Wisdom, struggle, love, manhood, and the small honest observations of a life paying attention.`}
+        path="/poems"
+      />
       <WalkwayHeader title="Poems" />
       
       <main className="pt-16 px-6 md:px-8 pb-24">

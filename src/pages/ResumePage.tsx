@@ -3,6 +3,7 @@ import { WalkwayHeader } from '@/components/walkway/WalkwayHeader';
 import { Link } from 'react-router-dom';
 import { ExternalLink, Mail, MapPin } from 'lucide-react';
 import { useKeyboardScroll } from '@/hooks/useKeyboardScroll';
+import { PageMeta } from "@/components/PageMeta";
 
 const skills = {
   'AI Tools': ['AI Agents', 'Prompt Engineering', 'Automations', 'N8N'],
@@ -88,6 +89,11 @@ const ResumePage = () => {
   useKeyboardScroll();
   return (
     <div className="min-h-screen bg-background">
+      <PageMeta
+        title="Resume"
+        description={`James Floyd's resume — Chief of Staff, sales leader, event operator, and entrepreneurial builder. 7+ years across BetterWealth, Keiretsu Forum, and Jets and Capital.`}
+        path="/resume"
+      />
       <WalkwayHeader title="Resume" />
       
       <main className="pt-16 px-6 md:px-8 pb-24">

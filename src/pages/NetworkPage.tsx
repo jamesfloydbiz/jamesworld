@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { WalkwayHeader } from '@/components/walkway/WalkwayHeader';
 import { ExternalLink, Mail } from 'lucide-react';
 import { useKeyboardScroll } from '@/hooks/useKeyboardScroll';
+import { PageMeta } from "@/components/PageMeta";
 
 const philosophies = [
   {
@@ -47,6 +48,11 @@ const NetworkPage = () => {
   useKeyboardScroll();
   return (
     <div className="min-h-screen bg-background">
+      <PageMeta
+        title="Network"
+        description={`Connect with James Floyd — for collaborations, deals, speaking engagements, and meaningful conversation.`}
+        path="/network"
+      />
       <WalkwayHeader title="Network" />
       
       <main className="pt-16 px-6 md:px-8 pb-24">

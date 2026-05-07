@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { WalkwayHeader } from '@/components/walkway/WalkwayHeader';
 import { ExternalLink } from 'lucide-react';
 import { useKeyboardScroll } from '@/hooks/useKeyboardScroll';
+import { PageMeta } from "@/components/PageMeta";
 
 const shelfItems = [
   {
@@ -294,6 +295,11 @@ const BlueprintsPage = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <PageMeta
+        title="Blueprints"
+        description="Frameworks and mental models James Floyd uses to translate chaos into structure across teams, deals, and life."
+        path="/blueprints"
+      />
       <WalkwayHeader title="Blueprints" />
 
       <main className="pt-16 px-4 md:px-8 pb-24">

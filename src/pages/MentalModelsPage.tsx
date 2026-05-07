@@ -5,6 +5,7 @@ import { useKeyboardScroll } from '@/hooks/useKeyboardScroll';
 import { REFERENCE_LIST } from '@/components/mental-models/data';
 import DecideMode from '@/components/mental-models/DecideMode';
 import SpotItMode from '@/components/mental-models/SpotItMode';
+import { PageMeta } from "@/components/PageMeta";
 
 type Mode = 'decide' | 'spot';
 
@@ -19,6 +20,11 @@ const MentalModelsPage = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <PageMeta
+        title="Mental Models"
+        description={`James Floyd's working library of mental models — frameworks for thinking clearly about people, decisions, and systems.`}
+        path="/blueprints/mental-models"
+      />
       <WalkwayHeader title="Mental Models" />
 
       <main className="pt-16 px-4 md:px-8 pb-24">

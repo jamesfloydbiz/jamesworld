@@ -4,6 +4,7 @@ import { ExternalLink } from 'lucide-react';
 import { useKeyboardScroll } from '@/hooks/useKeyboardScroll';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { PageMeta } from "@/components/PageMeta";
 
 // For jsDelivr CDN, replace with: https://cdn.jsdelivr.net/gh/[username]/[repo]@main
 const IMAGE_BASE_URL = '';
@@ -143,6 +144,11 @@ const BuildsPage = () => {
   useKeyboardScroll();
   return (
     <div className="min-h-screen bg-background">
+      <PageMeta
+        title="Builds"
+        description="AI agents, automation tools, and software experiments from James Floyd — from network agents to multi-agent blog teams."
+        path="/builds"
+      />
       <WalkwayHeader title="Builds" />
       
       <main className="pt-16 px-6 md:px-8 pb-24">

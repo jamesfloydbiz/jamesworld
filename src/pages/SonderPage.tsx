@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Linkedin, Instagram, Youtube } from 'lucide-react';
 import { useKeyboardScroll } from '@/hooks/useKeyboardScroll';
+import { PageMeta } from '@/components/PageMeta';
 
 // Speed of the typewriter reveal in milliseconds per letter.
 const TYPEWRITER_INTERVAL_MS = 213; // 50% faster than the original 320ms
@@ -142,6 +143,11 @@ const SonderPage = () => {
 
   return (
     <div className="min-h-screen bg-white text-black">
+      <PageMeta
+        title="The Sonder Series"
+        description="100 conversations with strangers in New York City. James Floyd asks every person their story, the problem in the world that means the most to them, and the most impressive person they've ever met."
+        path="/sonder"
+      />
       {/* Top-left logo — click to return home (matches the landing page) */}
       <div className="absolute top-0 left-0 z-40 px-6 py-2">
         <Link
