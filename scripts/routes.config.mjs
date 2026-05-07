@@ -70,7 +70,7 @@ export const ROUTES = [
         <li><a href="/pictures">Memories</a> — photographic record of a life paying attention.</li>
         <li><a href="/resume">Resume</a> and <a href="/references">References</a>.</li>
       </ul>
-      <p>Get in touch on <a href="https://linkedin.com/in/jamesfloydl">LinkedIn</a>, <a href="https://instagram.com/jamesfloydscontent">Instagram</a>, or <a href="https://youtube.com/@jamesfloydsworld">YouTube</a>.</p>
+      <p>Get in touch on <a href="https://www.linkedin.com/in/jamesfloydl/">LinkedIn</a>, <a href="https://www.instagram.com/jamesfloydscontent/">Instagram</a>, or <a href="https://www.youtube.com/@jamesfloydsworld">YouTube</a>.</p>
     `),
   },
 
@@ -100,8 +100,8 @@ export const ROUTES = [
       <h2>Follow along</h2>
       <ul>
         <li><a href="https://www.youtube.com/@jamesfloydsworld">YouTube — full conversations</a></li>
-        <li><a href="https://instagram.com/jamesfloydscontent">Instagram — clips and behind the scenes</a></li>
-        <li><a href="https://linkedin.com/in/jamesfloydl">LinkedIn</a></li>
+        <li><a href="https://www.instagram.com/jamesfloydscontent/">Instagram — clips and behind the scenes</a></li>
+        <li><a href="https://www.linkedin.com/in/jamesfloydl/">LinkedIn</a></li>
       </ul>
       <p><em>— Your world comes from you.</em></p>
     `),
@@ -122,7 +122,7 @@ export const ROUTES = [
         <li><strong>Jets and Capital</strong> — exclusive event series uniting family offices, investors, and ultra-high-net-worth individuals in private jet hangars across the country. <em><a href="https://jetsandcapital.com">jetsandcapital.com</a></em></li>
         <li><strong><a href="/builds">Builds</a></strong> — AI agents, vibe coding, and operations experiments.</li>
         <li><strong><a href="/sonder">The Sonder Series</a></strong> — 100 interviews with people in New York.</li>
-        <li><strong>LinkedIn Daily Posts</strong> — posting every day, building a public archive of thinking. <em><a href="https://www.linkedin.com/in/jamesfloydl">linkedin.com/in/jamesfloydl</a></em></li>
+        <li><strong>LinkedIn Daily Posts</strong> — posting every day, building a public archive of thinking. <em><a href="https://www.linkedin.com/in/jamesfloydl/">linkedin.com/in/jamesfloydl</a></em></li>
       </ul>
       <h2>Archived</h2>
       <ul>
@@ -160,7 +160,7 @@ export const ROUTES = [
         <li><strong>Loeb NYC, Blue Devil Capital, others</strong> — supporting roles across investing and operations.</li>
       </ul>
       <h2>Public-facing</h2>
-      <p>I've spoken on entrepreneurship, intrapreneurship, AI automation, and building from nothing. Available for speaking, advisory, or operational engagements: <a href="https://linkedin.com/in/jamesfloydl">linkedin.com/in/jamesfloydl</a>.</p>
+      <p>I've spoken on entrepreneurship, intrapreneurship, AI automation, and building from nothing. Available for speaking, advisory, or operational engagements: <a href="https://www.linkedin.com/in/jamesfloydl/">linkedin.com/in/jamesfloydl</a>.</p>
     `),
   },
 
@@ -206,9 +206,9 @@ export const ROUTES = [
         <li><a href="/blueprints">Blueprints</a> — frameworks and mental models.</li>
         <li><a href="/sonder">The Sonder Series</a> — interviews with strangers.</li>
         <li><a href="https://jamesfloyd.substack.com">Substack</a> — long-form writing.</li>
-        <li><a href="https://www.linkedin.com/in/jamesfloydl">LinkedIn</a> — daily posts.</li>
+        <li><a href="https://www.linkedin.com/in/jamesfloydl/">LinkedIn</a> — daily posts.</li>
         <li><a href="https://www.youtube.com/@jamesfloydsworld">YouTube</a> — interviews and stories.</li>
-        <li><a href="https://instagram.com/jamesfloydsworld">Instagram</a> — life captured for my future kids.</li>
+        <li><a href="https://www.instagram.com/jamesfloydsworld/">Instagram</a> — life captured for my future kids.</li>
       </ul>
     `),
   },
@@ -231,9 +231,9 @@ export const ROUTES = [
       </ul>
       <h2>Where to find me</h2>
       <ul>
-        <li><a href="https://www.linkedin.com/in/jamesfloydl">LinkedIn</a> — primary.</li>
-        <li><a href="https://instagram.com/jamesfloydscontent">Instagram (content)</a></li>
-        <li><a href="https://instagram.com/jamesfloydsworld">Instagram (personal/life)</a></li>
+        <li><a href="https://www.linkedin.com/in/jamesfloydl/">LinkedIn</a> — primary.</li>
+        <li><a href="https://www.instagram.com/jamesfloydscontent/">Instagram (content)</a></li>
+        <li><a href="https://www.instagram.com/jamesfloydsworld/">Instagram (personal/life)</a></li>
         <li><a href="https://www.youtube.com/@jamesfloydsworld">YouTube</a></li>
         <li><a href="https://twitter.com/jamesfloydsworld">Twitter / X</a></li>
         <li>Email: <a href="mailto:jamesfloydbiz@gmail.com">jamesfloydbiz@gmail.com</a></li>
@@ -327,7 +327,7 @@ export const ROUTES = [
       <h1>Hall of Memories</h1>
       <p>A photographic memoir — events, travel, friends, and small moments. Where I publish the stories of my life for my kids.</p>
       <p>Includes images from Jets and Capital Miami, campfires with friends, Byron Donald private security, Brooklyn, the Sonder Series interviews, and 30+ other moments.</p>
-      <p>Follow along on <a href="https://instagram.com/jamesfloydsworld">Instagram (@jamesfloydsworld)</a>.</p>
+      <p>Follow along on <a href="https://www.instagram.com/jamesfloydsworld/">Instagram (@jamesfloydsworld)</a>.</p>
     `),
   },
 
@@ -359,7 +359,7 @@ export const ROUTES = [
       </ul>
       <h2>Background</h2>
       <p>Traveled to 15+ countries. Speaks fluent Spanish. Has written 90+ poems. Known for translating chaos into structure, scaling brands through AI and systems, and driving deal flow.</p>
-      <p>Contact: <a href="mailto:jamesfloydbiz@gmail.com">jamesfloydbiz@gmail.com</a> · <a href="https://linkedin.com/in/jamesfloydl">LinkedIn</a></p>
+      <p>Contact: <a href="mailto:jamesfloydbiz@gmail.com">jamesfloydbiz@gmail.com</a> · <a href="https://www.linkedin.com/in/jamesfloydl/">LinkedIn</a></p>
     `),
   },
 
