@@ -23,3 +23,7 @@ dist-ssr
 *.sln
 *.sw?
 .claude/worktrees/
+.claude/launch.json
+
+# Local backup of pre-normalization Sonder letter PNGs — not needed in deploy
+public/sonder/_letter_originals/

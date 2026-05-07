@@ -17,6 +17,7 @@ import PicturesPage from "./pages/PicturesPage";
 import BuildsPage from "./pages/BuildsPage";
 import ResumePage from "./pages/ResumePage";
 import ReferencesPage from "./pages/ReferencesPage";
+import SonderPage from "./pages/SonderPage";
 // import SearchPage from "./pages/SearchPage"; // hidden — re-enable when /search is restored
 import NotFound from "./pages/NotFound";
 
@@ -44,6 +45,7 @@ const App = () => (
             <Route path="/poetry" element={<Navigate to="/poems" replace />} />
             <Route path="/resume" element={<ResumePage />} />
             <Route path="/references" element={<ReferencesPage />} />
+            <Route path="/sonder" element={<SonderPage />} />
             {/* /search hidden for now — re-enable when bot UX is finalized */}
             {/* <Route path="/search" element={<SearchPage />} /> */}
             <Route path="*" element={<NotFound />} />

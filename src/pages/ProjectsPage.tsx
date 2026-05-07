@@ -43,11 +43,11 @@ const currentProjects: Project[] = [
     external: false,
   },
   {
-    title: 'Resume',
-    description: 'My process of mastering leverage. Code, Capital, Collaboration, and Content.',
+    title: 'The Sonder Series',
+    description: '100 interviews with people in New York.',
     status: 'Active',
-    cta: 'View Resume',
-    link: '/resume',
+    cta: 'Watch the Series',
+    link: '/sonder',
     external: false,
   },
   {
