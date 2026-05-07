@@ -26,7 +26,7 @@ const PUBLISHED_EPISODES = 27; // episodes published so far
 const PEOPLE_GOAL = 100;
 const PEOPLE_COUNT = 35; // people interviewed across the published episodes
 // Bump this when you replace any image in /public/sonder/episodes/ to bust browser cache.
-const THUMB_VERSION = '3';
+const THUMB_VERSION = '4';
 
 type Episode = {
   number: string;
@@ -459,6 +459,19 @@ const SonderPage = () => {
             })}
           </ul>
         </motion.div>
+
+        {/* Footer: back-to-top arrow + sign-off */}
+        <footer className="max-w-4xl mx-auto mt-24 flex flex-col items-center gap-6">
+          <button
+            type="button"
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            aria-label="Back to top"
+            className="text-2xl text-black/60 hover:text-black transition-colors leading-none"
+          >
+            ^
+          </button>
+          <p className="text-sm md:text-base text-black">— Your world comes from you.</p>
+        </footer>
       </main>
     </div>
   );
