@@ -36,21 +36,29 @@ function escapeHtml(s) {
  * silently corrupt the whole file.
  */
 /**
- * Replace `<div id="root"></div>` with one that contains the route's
- * crawler-readable body summary. React's createRoot() will replace its
- * children on mount, so users on a normal load see only the React UI.
- * Crawlers and link unfurlers without JS see the rich text version.
+ * Inject the route's crawler-readable body summary as a HIDDEN sibling of
+ * `<div id="root"></div>`. The element is `hidden` (display:none) so users
+ * never see it during the brief moment before React mounts — but it stays
+ * in the served HTML so crawlers, link unfurlers, and AI tools that parse
+ * markup directly can index real content.
+ *
+ * Why a sibling instead of inside #root?
+ *   - React's createRoot() replaces #root's children on mount. If our
+ *     fallback lived there, on a slow network there'd be a visible flash
+ *     of the fallback before React boots.
+ *   - As a sibling marked hidden, it never renders, never flashes, and
+ *     React's mount target stays clean.
  */
 function injectBody(html, route) {
   if (!route.body) return html;
-  const replacement = `<div id="root">${route.body}</div>`;
-  // Match either `<div id="root"></div>` (Vite default) or already-injected versions.
-  const pattern = /<div\s+id="root"[^>]*>[\s\S]*?<\/div>/;
+  const fallback = `<div id="seo-fallback" hidden aria-hidden="true">${route.body}</div>`;
+  // Match the empty <div id="root"></div> Vite ships with.
+  const pattern = /<div\s+id="root"[^>]*>\s*<\/div>/;
   if (!pattern.test(html)) {
-    console.warn(`  ! could not find <div id="root"> in template for ${route.path}`);
+    console.warn(`  ! could not find <div id="root"></div> in template for ${route.path}`);
     return html;
   }
-  return html.replace(pattern, replacement);
+  return html.replace(pattern, `<div id="root"></div>${fallback}`);
 }
 
 function replaceMeta(html, route) {
