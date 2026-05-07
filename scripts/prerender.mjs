@@ -35,6 +35,24 @@ function escapeHtml(s) {
  * We use distinct regexes per tag so a malformed match in one doesn't
  * silently corrupt the whole file.
  */
+/**
+ * Replace `<div id="root"></div>` with one that contains the route's
+ * crawler-readable body summary. React's createRoot() will replace its
+ * children on mount, so users on a normal load see only the React UI.
+ * Crawlers and link unfurlers without JS see the rich text version.
+ */
+function injectBody(html, route) {
+  if (!route.body) return html;
+  const replacement = `<div id="root">${route.body}</div>`;
+  // Match either `<div id="root"></div>` (Vite default) or already-injected versions.
+  const pattern = /<div\s+id="root"[^>]*>[\s\S]*?<\/div>/;
+  if (!pattern.test(html)) {
+    console.warn(`  ! could not find <div id="root"> in template for ${route.path}`);
+    return html;
+  }
+  return html.replace(pattern, replacement);
+}
+
 function replaceMeta(html, route) {
   const url = SITE_URL + route.path;
   const fullTitle = `${route.title} | James Floyd`;
@@ -94,14 +112,16 @@ function replaceMeta(html, route) {
 }
 
 function writeRoute(route, template) {
-  const html = replaceMeta(template, route);
+  let html = replaceMeta(template, route);
+  html = injectBody(html, route);
   const targetPath =
     route.path === '/'
       ? join(DIST, 'index.html')
       : join(DIST, route.path.replace(/^\//, ''), 'index.html');
   mkdirSync(dirname(targetPath), { recursive: true });
   writeFileSync(targetPath, html);
-  console.log(`  ✓ ${route.path} → ${targetPath.replace(DIST + '/', '')}`);
+  const sizeKB = (html.length / 1024).toFixed(1);
+  console.log(`  ✓ ${route.path} → ${targetPath.replace(DIST + '/', '')} (${sizeKB} kB)`);
 }
 
 function main() {
