@@ -145,20 +145,49 @@ export const ROUTES = [
     priority: 0.8,
     changefreq: 'monthly',
     body: wrap(`
-      <h1>Portfolio</h1>
-      <p>Events produced, deals closed, and operations led.</p>
+      <h1>James Floyd — Portfolio</h1>
+      <p><em>Connecting · Creating · Living. Est. 2002.</em></p>
+      <p>A maniacal innovator who went off the beaten path to connect, create, and live.</p>
+
+      <h2>The Story</h2>
+      <h3>The Before — No safety net. No map.</h3>
+      <p>In 2020 James drove down to San Diego with everything he owned packed into a green 2002 Subaru Outback. He had no income, no connections, and no dreams.</p>
+      <h3>The Leap — Cold emails. Obsession. The world opens.</h3>
+      <p>When James hit the bottom he was laying on the carpet of his depressing apartment watching the fan go in circles. He joined a sales job, did 20,000 conversations and built ~40 sales people. Over the next few years of his life he sent cold emails, handwritten notes, and gifts. He sent himself around the world, and talked to the wisest people he could get access to all the while trying everything new he could.</p>
+      <h3>The Now — They come to me now.</h3>
+      <p>Now James has an extensive network of family offices, investors, creators, and everybody in between. He has done events around the United States for thousands of people, and worked with some of the most high-profile people and companies in the world. People from every walk of life reach out to get connected to people in his network, get advice on life, business, and health, and to work with him.</p>
+
       <h2>Events</h2>
       <ul>
         <li><strong>Jets and Capital</strong> — Trump Doral Miami, Caesars Palace, The Intrepid Aircraft Carrier, private jet hangars. Ultra-high-net-worth investors, family offices, founders. Cumulative AUM in the room: $400B – $2+T.</li>
         <li><strong>Keiretsu Forum</strong> — global investment network with 900+ attendees per major event.</li>
         <li><strong>SXSW Secret Garden Party</strong> — operations support for Andrew Yeung's gathering of extraordinary people.</li>
       </ul>
+
       <h2>Operations + leadership</h2>
       <ul>
         <li><strong>Chief of Staff at BetterWealth</strong> — translating chaos into structure for a fast-moving brand.</li>
         <li><strong>Sales leadership</strong> — high-performance sales orgs.</li>
         <li><strong>Loeb NYC, Blue Devil Capital, others</strong> — supporting roles across investing and operations.</li>
       </ul>
+
+      <h2>Field Notes</h2>
+      <h3>48 Hours, 500 Guests</h3>
+      <p>When Trump's arrival forced a 500-person gala to completely restructure with 24 hours notice, James wrote the cold-call scripts, rallied the team, and helped turn what could have been a disaster into what guests called "double the fun." Chaos is just an opportunity with bad PR.</p>
+      <h3>The Elder in the Amazon</h3>
+      <p>Deep in the Amazon, James spent a day working alongside a 94-year-old tribal elder — farming, listening, communicating entirely in Spanish. No agenda. No pitch. Just presence. She never left that jungle, and she had more peace than anyone he'd met in any boardroom. That day redefined what success means to him.</p>
+      <h3>No, Not That Island</h3>
+      <p>A cold email. A yes. A weekend on an island with one of the most connected builders in the world. They hiked, cold plunged, and talked for hours. It was a breakthrough, where James realized nobody is a hero, so just make yourself yours.</p>
+
+      <h2>A Message from James</h2>
+      <p><em>Dear reader,</em></p>
+      <p>If you've scrolled this far, you are curious. I am too.</p>
+      <p>There's a lot more to know about me than what I can fit here, so here is what you need to know.</p>
+      <p>My greatest strength is the depth at which I care. About others and about myself. Including you.</p>
+      <p>My network is vast, and my experience even more so, but I can't promise to lead you where you want to go. I also can't follow you, because you do not know where I want to go.</p>
+      <p>I will however, walk alongside you. It would be an honor if you joined the ranks of people who have walked alongside me.</p>
+      <p><strong>— James Floyd</strong></p>
+
       <h2>Public-facing</h2>
       <p>I've spoken on entrepreneurship, intrapreneurship, AI automation, and building from nothing. Available for speaking, advisory, or operational engagements: <a href="https://www.linkedin.com/in/jamesfloydl/">linkedin.com/in/jamesfloydl</a>.</p>
     `),
