@@ -92,7 +92,7 @@ const episodes: Episode[] = Array.from({ length: TOTAL_EPISODES }, (_, i) => {
   return {
     number,
     title: override.title ?? (published ? 'Episode title coming soon' : 'Upcoming'),
-    location: override.location ?? (published ? 'TBD' : '—'),
+    location: override.location ?? '—',
     duration: override.duration ?? (published ? '— min' : '—'),
     published,
     thumb: published ? `/sonder/episodes/${number}.jpg?v=${THUMB_VERSION}` : null,
