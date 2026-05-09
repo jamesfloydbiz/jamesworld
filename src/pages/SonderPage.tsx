@@ -28,7 +28,7 @@ const LETTER_OFFSETS_X: Record<number, number> = {
 const TOTAL_EPISODES = 100;
 const PUBLISHED_EPISODES = 30; // episodes published so far
 const PEOPLE_GOAL = 100;
-const PEOPLE_COUNT = 38; // people interviewed across the published episodes
+const PEOPLE_COUNT = 37; // people interviewed across the published episodes
 // Bump this when you replace any image in /public/sonder/episodes/ to bust browser cache.
 const THUMB_VERSION = '6';
 
