@@ -70,12 +70,17 @@ const EPISODE_OVERRIDES: Record<number, EpisodeOverride> = {
     location: 'Fort Greene Park',
   },
    3: {
-    title: '"The Sonder Series Episode 2: Asha and Elizabeth"',
+    title: '"The Sonder Series Episode 3: Asha and Elizabeth"',
     location: 'Fort Greene Park',
    4: {
-    title: '"The Sonder Series Episode 2: Brendon"',
+    title: '"The Sonder Series Episode 4: Brendon"',
     location: 'Herbert Von King Park',
   },
+   5: {
+    title: '"The Sonder Series Episode 5: Grace"',
+    location: 'Central Park',
+  },
+     
   // 2: { title: '...', location: '...', duration: '...', youtubeUrl: '...' },
   // 3: { ... },
 };
