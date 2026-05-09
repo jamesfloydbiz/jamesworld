@@ -43,21 +43,45 @@ type Episode = {
   youtubeUrl: string | null;
 };
 
-// 100 episode cards. Published 1–27 each get a thumbnail at /sonder/episodes/NNN.jpg.
-// Title / location / date / duration are placeholders until you fill them in.
+// ─────────────────────────────────────────────────────────────────────────────
+// EDIT EPISODES HERE
+// ─────────────────────────────────────────────────────────────────────────────
+// Add one entry per episode you want to customize. Episode number is the key.
+// Any field you omit falls back to the default ("Episode title coming soon",
+// "TBD", etc.). Set `youtubeUrl` once a video is published — the card becomes
+// a clickable link to that video.
+//
+// Example:
+//   1: {
+//     title: '"I came here with a duffel bag and a phone number that didn\'t work."',
+//     location: 'Prospect Park',
+//     date: 'May 4',
+//     duration: '14 min',
+//     youtubeUrl: 'https://youtu.be/abc123',
+//   },
+// ─────────────────────────────────────────────────────────────────────────────
+type EpisodeOverride = Partial<Pick<Episode, 'title' | 'location' | 'date' | 'duration' | 'youtubeUrl'>>;
+
+const EPISODE_OVERRIDES: Record<number, EpisodeOverride> = {
+  // 1: { title: '...', location: '...', date: '...', duration: '...', youtubeUrl: '...' },
+  // 2: { ... },
+  // 3: { ... },
+};
+
 const episodes: Episode[] = Array.from({ length: TOTAL_EPISODES }, (_, i) => {
   const num = i + 1;
   const number = String(num).padStart(3, '0');
   const published = num <= PUBLISHED_EPISODES;
+  const override = EPISODE_OVERRIDES[num] ?? {};
   return {
     number,
-    title: published ? 'Episode title coming soon' : 'Upcoming',
-    location: published ? 'TBD' : '—',
-    date: published ? 'TBD' : '—',
-    duration: published ? '— min' : '—',
+    title: override.title ?? (published ? 'Episode title coming soon' : 'Upcoming'),
+    location: override.location ?? (published ? 'TBD' : '—'),
+    date: override.date ?? (published ? 'TBD' : '—'),
+    duration: override.duration ?? (published ? '— min' : '—'),
     published,
     thumb: published ? `/sonder/episodes/${number}.jpg?v=${THUMB_VERSION}` : null,
-    youtubeUrl: null,
+    youtubeUrl: override.youtubeUrl ?? null,
   };
 });
 
