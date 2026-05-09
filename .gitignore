@@ -27,3 +27,4 @@ dist-ssr
 
 # Local backup of pre-normalization Sonder letter PNGs — not needed in deploy
 public/sonder/_letter_originals/
+public/sonder/.png_originals/

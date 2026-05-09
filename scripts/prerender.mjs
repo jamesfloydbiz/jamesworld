@@ -119,8 +119,26 @@ function replaceMeta(html, route) {
   return out;
 }
 
+/**
+ * Add `<link rel="preload" as="image" fetchpriority="high">` tags into <head>
+ * for any route-specific above-the-fold imagery. Lets the browser begin the
+ * fetch in parallel with the JS bundle download so React doesn't have to wait
+ * on bitmaps to render the hero.
+ */
+function injectPreloads(html, route) {
+  if (!route.preloadImages || route.preloadImages.length === 0) return html;
+  const tags = route.preloadImages
+    .map(
+      (src) =>
+        `<link rel="preload" as="image" href="${src}" fetchpriority="high" />`
+    )
+    .join('\n    ');
+  return html.replace('</head>', `    ${tags}\n  </head>`);
+}
+
 function writeRoute(route, template) {
   let html = replaceMeta(template, route);
+  html = injectPreloads(html, route);
   html = injectBody(html, route);
   const targetPath =
     route.path === '/'

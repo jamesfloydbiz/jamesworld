@@ -13,6 +13,9 @@ const TYPEWRITER_ROW_GAP_MS = 160; // 50% faster than the original 240ms
 // Letter images cut from photographs — folder 1 spells SONDER, folder 2 spells SERIES
 const SONDER_LETTERS = [1, 2, 3, 4, 5, 6];
 const SERIES_LETTERS = [7, 8, 9, 10, 11, 12];
+// Bump this when you replace any letter image to bust the browser cache.
+const LETTER_VERSION = '2';
+const letterSrc = (n: number) => `/sonder/${n}.jpg?v=${LETTER_VERSION}`;
 
 // Per-letter horizontal offset (% of cell width) to optically center letters
 // whose photo padding is asymmetric. Positive = shift right, negative = left.
@@ -66,7 +69,41 @@ const SonderPage = () => {
   const TOTAL_LETTERS = SONDER_LETTERS.length + SERIES_LETTERS.length;
   const [revealed, setRevealed] = useState(0);
   const [signoffShown, setSignoffShown] = useState(false);
+  // Number of letter images that have finished decoding. The typewriter
+  // animation waits for all 12 (or a 1500ms safety timeout) before starting,
+  // so letters never appear out of order or mid-pop-in.
+  const [imagesReady, setImagesReady] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  // Preload all 12 letter images via fetch + decode. Resolves either when
+  // every image is decoded or after a 1500ms cap — whichever comes first.
+  useEffect(() => {
+    let cancelled = false;
+    const allLetters = [...SONDER_LETTERS, ...SERIES_LETTERS];
+    const decodes = allLetters.map((n) => {
+      const img = new Image();
+      img.src = letterSrc(n);
+      // decode() returns a promise that resolves when the bitmap is ready
+      // for paint. Falls back gracefully on browsers without decode().
+      const p =
+        typeof img.decode === 'function'
+          ? img.decode().catch(() => undefined)
+          : new Promise<void>((resolve) => {
+              img.onload = () => resolve();
+              img.onerror = () => resolve();
+            });
+      return p;
+    });
+
+    const cap = new Promise<void>((resolve) => window.setTimeout(resolve, 1500));
+    void Promise.race([Promise.all(decodes), cap]).then(() => {
+      if (!cancelled) setImagesReady(true);
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -80,8 +117,11 @@ const SonderPage = () => {
       return;
     }
 
+    // Hold the typewriter sequence until all letter bitmaps are ready.
+    if (!imagesReady) return;
+
     const timeouts: number[] = [];
-    let cumulativeDelay = 600; // small lead-in before first keystroke
+    let cumulativeDelay = 200; // small lead-in once images are ready
 
     // Start the continuous typewriter track right when the first letter lands,
     // and let it loop until the reveal finishes.
@@ -139,7 +179,7 @@ const SonderPage = () => {
       timeouts.forEach(window.clearTimeout);
       stopAudio();
     };
-  }, [TOTAL_LETTERS]);
+  }, [TOTAL_LETTERS, imagesReady]);
 
   return (
     <div className="min-h-screen bg-white text-black">
@@ -196,7 +236,7 @@ const SonderPage = () => {
               return (
                 <img
                   key={`s1-${n}`}
-                  src={`/sonder/${n}.png`}
+                  src={letterSrc(n)}
                   alt=""
                   aria-hidden="true"
                   className={`w-full h-auto select-none transition-opacity duration-150 ${
@@ -204,6 +244,7 @@ const SonderPage = () => {
                   }`}
                   style={offset ? { transform: `translateX(${offset}%)` } : undefined}
                   loading="eager"
+                  fetchPriority="high"
                   decoding="async"
                 />
               );
@@ -217,7 +258,7 @@ const SonderPage = () => {
               return (
                 <img
                   key={`s2-${n}`}
-                  src={`/sonder/${n}.png`}
+                  src={letterSrc(n)}
                   alt=""
                   aria-hidden="true"
                   className={`w-full h-auto select-none transition-opacity duration-150 ${
@@ -225,6 +266,7 @@ const SonderPage = () => {
                   }`}
                   style={offset ? { transform: `translateX(${offset}%)` } : undefined}
                   loading="eager"
+                  fetchPriority="high"
                   decoding="async"
                 />
               );

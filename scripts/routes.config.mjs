@@ -19,6 +19,10 @@ export const DEFAULT_OG_IMAGE = '/pictures/Jets_&_Capital_Miami_BTS_Day_0-58.jpe
  * @property {string} [image]     Optional path under /public for og:image
  * @property {string} [body]      Optional crawler-readable HTML to inject inside <div id="root">
  *                                (React replaces this on mount, so users never see it on a normal load).
+ * @property {string[]} [preloadImages] Optional list of image paths (under /public)
+ *                                to emit as <link rel="preload" as="image" fetchpriority="high">
+ *                                in <head>. Use for above-the-fold hero imagery so the browser
+ *                                kicks off fetches before the JS bundle even parses.
  * @property {number} priority    0.0 – 1.0, sitemap priority
  * @property {string} changefreq  sitemap.org changefreq
  */
@@ -81,6 +85,23 @@ export const ROUTES = [
       "100 conversations with strangers in New York City. James Floyd asks every person their story, the problem in the world that means the most to them, and the most impressive person they've ever met.",
     priority: 0.9,
     changefreq: 'weekly',
+    // Above-the-fold photo-letter hero. Preloading these gets the browser
+    // pulling them in parallel with the main JS bundle so the typewriter
+    // reveal isn't waiting on bitmap fetches.
+    preloadImages: [
+      '/sonder/1.jpg?v=2',
+      '/sonder/2.jpg?v=2',
+      '/sonder/3.jpg?v=2',
+      '/sonder/4.jpg?v=2',
+      '/sonder/5.jpg?v=2',
+      '/sonder/6.jpg?v=2',
+      '/sonder/7.jpg?v=2',
+      '/sonder/8.jpg?v=2',
+      '/sonder/9.jpg?v=2',
+      '/sonder/10.jpg?v=2',
+      '/sonder/11.jpg?v=2',
+      '/sonder/12.jpg?v=2',
+    ],
     body: wrap(`
       <h1>The Sonder Series</h1>
       <p><em>by James Floyd</em></p>
