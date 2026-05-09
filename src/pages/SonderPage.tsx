@@ -65,6 +65,17 @@ const EPISODE_OVERRIDES: Record<number, EpisodeOverride> = {
     title: '"The Sonder Series Episode 1: Carlie Ostrom"',
     location: 'Undisclosed',
   },
+   2: {
+    title: '"The Sonder Series Episode 2: A Couple of Lovers"',
+    location: 'Fort Greene Park',
+  },
+   3: {
+    title: '"The Sonder Series Episode 2: Asha and Elizabeth"',
+    location: 'Fort Greene Park',
+   4: {
+    title: '"The Sonder Series Episode 2: Brendon"',
+    location: 'Herbert Von King Park',
+  },
   // 2: { title: '...', location: '...', duration: '...', youtubeUrl: '...' },
   // 3: { ... },
 };
