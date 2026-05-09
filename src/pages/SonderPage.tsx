@@ -36,7 +36,6 @@ type Episode = {
   number: string;
   title: string;
   location: string;
-  date: string;
   duration: string;
   published: boolean;
   thumb: string | null;
@@ -55,16 +54,18 @@ type Episode = {
 //   1: {
 //     title: '"I came here with a duffel bag and a phone number that didn\'t work."',
 //     location: 'Prospect Park',
-//     date: 'May 4',
 //     duration: '14 min',
 //     youtubeUrl: 'https://youtu.be/abc123',
 //   },
 // ─────────────────────────────────────────────────────────────────────────────
-type EpisodeOverride = Partial<Pick<Episode, 'title' | 'location' | 'date' | 'duration' | 'youtubeUrl'>>;
+type EpisodeOverride = Partial<Pick<Episode, 'title' | 'location' | 'duration' | 'youtubeUrl'>>;
 
 const EPISODE_OVERRIDES: Record<number, EpisodeOverride> = {
-  // 1: { title: '...', location: '...', date: '...', duration: '...', youtubeUrl: '...' },
-  // 2: { ... },
+  1: {
+    title: '"The Sonder Series Episode 1: Carlie Ostrom"',
+    location: 'Undisclosed',
+  },
+  // 2: { title: '...', location: '...', duration: '...', youtubeUrl: '...' },
   // 3: { ... },
 };
 
@@ -77,7 +78,6 @@ const episodes: Episode[] = Array.from({ length: TOTAL_EPISODES }, (_, i) => {
     number,
     title: override.title ?? (published ? 'Episode title coming soon' : 'Upcoming'),
     location: override.location ?? (published ? 'TBD' : '—'),
-    date: override.date ?? (published ? 'TBD' : '—'),
     duration: override.duration ?? (published ? '— min' : '—'),
     published,
     thumb: published ? `/sonder/episodes/${number}.jpg?v=${THUMB_VERSION}` : null,
@@ -497,11 +497,10 @@ const SonderPage = () => {
                       {ep.title}
                     </p>
                     <div
-                      className="flex items-center justify-between text-xs text-black/50"
+                      className="text-xs text-black/50"
                       style={{ fontFamily: "'DM Mono', monospace" }}
                     >
                       <span>{ep.location}</span>
-                      <span>{ep.date}</span>
                     </div>
                   </div>
                 </div>
