@@ -60,7 +60,24 @@ type Episode = {
 // ─────────────────────────────────────────────────────────────────────────────
 type EpisodeOverride = Partial<Pick<Episode, 'title' | 'location' | 'duration' | 'youtubeUrl'>>;
 
+// Helper: assign the same location to a range of episodes (inclusive).
+// Use for the days I shot a bunch of conversations in one park.
+const sameLocation = (
+  from: number,
+  to: number,
+  location: string
+): Record<number, EpisodeOverride> =>
+  Object.fromEntries(
+    Array.from({ length: to - from + 1 }, (_, i) => [from + i, { location }])
+  );
+
 const EPISODE_OVERRIDES: Record<number, EpisodeOverride> = {
+  // ── Range-based locations (whole shoot days) ─────────────────────────────
+  ...sameLocation(6, 11, 'Central Park'),
+  ...sameLocation(12, 23, 'Prospect Park'),
+  ...sameLocation(33, 41, 'McCarren Park'),
+
+  // ── Episodes with custom titles + locations ──────────────────────────────
   1: {
     title: '"The Sonder Series Episode 1: Carlie Ostrom"',
     location: 'Undisclosed',
@@ -81,10 +98,17 @@ const EPISODE_OVERRIDES: Record<number, EpisodeOverride> = {
     title: '"The Sonder Series Episode 5: Grace"',
     location: 'Central Park',
   },
-  41: {
-    location: 'McCarren Park',
-  },
-  // 6: { title: '...', location: '...', duration: '...', youtubeUrl: '...' },
+
+  // ── One-off locations ────────────────────────────────────────────────────
+  24: { location: 'Herbert Von King Park' },
+  25: { location: 'Undisclosed' },
+  26: { location: 'Bryant Park' },
+  27: { location: 'Bryant Park' },
+  28: { location: 'On Da Stoop' },
+  29: { location: 'The Big Apple' },
+  30: { location: 'Undisclosed' },
+  31: { location: 'Diner 24' },
+  32: { location: 'Undisclosed' },
 };
 
 const episodes: Episode[] = Array.from({ length: TOTAL_EPISODES }, (_, i) => {
