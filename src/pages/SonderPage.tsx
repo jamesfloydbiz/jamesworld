@@ -26,11 +26,11 @@ const LETTER_OFFSETS_X: Record<number, number> = {
 };
 
 const TOTAL_EPISODES = 100;
-const PUBLISHED_EPISODES = 41; // episodes published so far
+const PUBLISHED_EPISODES = 50; // episodes published so far
 const PEOPLE_GOAL = 100;
-const PEOPLE_COUNT = 50; // people interviewed across the published episodes
+const PEOPLE_COUNT = 60; // people interviewed across the published episodes
 // Bump this when you replace any image in /public/sonder/episodes/ to bust browser cache.
-const THUMB_VERSION = '7';
+const THUMB_VERSION = '8';
 
 type Episode = {
   number: string;
@@ -76,6 +76,8 @@ const EPISODE_OVERRIDES: Record<number, EpisodeOverride> = {
   ...sameLocation(6, 11, 'Central Park'),
   ...sameLocation(12, 23, 'Prospect Park'),
   ...sameLocation(33, 41, 'McCarren Park'),
+  ...sameLocation(42, 47, 'Tompkins Square Park'),
+  ...sameLocation(48, 50, 'Central Park'),
 
   // ── Episodes with custom titles + locations ──────────────────────────────
   1: {

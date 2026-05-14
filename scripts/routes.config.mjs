@@ -115,9 +115,9 @@ export const ROUTES = [
         <li>What problem in the world means the most to you?</li>
         <li>Who's the most impressive person you've ever met, and what made them impressive to you?</li>
       </ol>
-      <p>Currently 50 of 100 people interviewed across 41 episodes.</p>
-      <h2>Episodes (1 – 41)</h2>
-      <p>Episodes 1 through 41 are published. Episodes 42 through 100 are upcoming. Visit the page to see thumbnails and watch the conversations.</p>
+      <p>Currently 60 of 100 people interviewed across 50 episodes.</p>
+      <h2>Episodes (1 – 50)</h2>
+      <p>Episodes 1 through 50 are published. Episodes 51 through 100 are upcoming. Visit the page to see thumbnails and watch the conversations.</p>
       <h2>Follow along</h2>
       <ul>
         <li><a href="https://www.youtube.com/@jamesfloydsworld">YouTube — full conversations</a></li>
