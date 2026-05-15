@@ -20,7 +20,9 @@
     <meta name="author" content="James Floyd">
     <meta name="keywords" content="James Floyd, builder, creator, explorer, AI automation, networking, content creator, entrepreneur">
     <meta name="theme-color" content="#000000" />
-    <link rel="icon" href="/logo.svg" type="image/svg+xml">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="icon" type="image/svg+xml" href="/logo.svg">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="canonical" href="https://jamesfloyds.world" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -36,6 +38,57 @@
     <meta name="twitter:title" content="James Floyd | Builder, Creator, Explorer">
     <meta name="twitter:description" content="James Floyd — builder, creator, and explorer connecting people, ideas, and conviction. Discover projects, AI builds, content, and a life lived without limits.">
     <meta name="twitter:image" content="https://jamesfloyds.world/pictures/Jets_&_Capital_Miami_BTS_Day_0-58.jpeg">
+
+    <!--
+      Structured data. Tells Google explicitly: this is a Person's personal
+      site. No SearchAction is declared (we don't expose /search publicly)
+      so Google should stop offering site-search results on the SERP, and
+      the stale "/?s={search_term_string}" route should age out of the
+      crawled-not-indexed bucket.
+    -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebSite",
+          "@id": "https://jamesfloyds.world/#website",
+          "url": "https://jamesfloyds.world/",
+          "name": "James Floyd",
+          "description": "Personal site of James Floyd — builder, creator, entrepreneur, intrapreneur, speaker, event producer, connector.",
+          "inLanguage": "en-US",
+          "publisher": { "@id": "https://jamesfloyds.world/#person" }
+        },
+        {
+          "@type": "Person",
+          "@id": "https://jamesfloyds.world/#person",
+          "name": "James Floyd",
+          "alternateName": ["jamesfloydl", "jamesfloydsworld"],
+          "url": "https://jamesfloyds.world/",
+          "image": "https://jamesfloyds.world/apple-touch-icon.png",
+          "jobTitle": "Builder, Creator, Entrepreneur",
+          "description": "Builder of teams, AI agents, and events. Currently producing The Sonder Series — 100 conversations with strangers in New York City.",
+          "knowsAbout": [
+            "AI automation",
+            "Event production",
+            "Sales leadership",
+            "Chief of Staff",
+            "Networking",
+            "Content creation"
+          ],
+          "sameAs": [
+            "https://www.linkedin.com/in/jamesfloydl/",
+            "https://www.instagram.com/jamesfloydsworld/",
+            "https://www.instagram.com/jamesfloydscontent/",
+            "https://www.youtube.com/@jamesfloydsworld",
+            "https://twitter.com/jamesfloydsworld",
+            "https://jamesfloyd.substack.com",
+            "https://github.com/jamesfloydbiz"
+          ]
+        }
+      ]
+    }
+    </script>
   </head>
   <body>
     <div id="root"></div>
