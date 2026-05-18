@@ -38,6 +38,7 @@ export function WalkwayHeader({ title }: WalkwayHeaderProps) {
       label: "Content",
       path: "/content",
       subItems: [
+        { label: "Writing", path: "/writing" },
         { label: "Poems", path: "/poems" },
         { label: "Memories", path: "/pictures" }
       ]

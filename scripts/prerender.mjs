@@ -13,7 +13,7 @@
  * Router takes over and the page renders normally.
  */
 
-import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { ROUTES, SITE_URL, DEFAULT_OG_IMAGE } from './routes.config.mjs';
@@ -21,6 +21,7 @@ import { ROUTES, SITE_URL, DEFAULT_OG_IMAGE } from './routes.config.mjs';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const DIST = resolve(__dirname, '..', 'dist');
 const TEMPLATE_PATH = join(DIST, 'index.html');
+const SUBSTACK_DATA_PATH = resolve(__dirname, '..', 'src', 'data', 'substack-posts.json');
 
 function escapeHtml(s) {
   return String(s)
@@ -28,6 +29,52 @@ function escapeHtml(s) {
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;');
+}
+
+/**
+ * Build the prerendered body for /writing from the Substack JSON dump.
+ * Returns the same wrap()-style markup the other routes use so the
+ * crawler-readable content fits the same visual mold.
+ */
+function writingBody() {
+  if (!existsSync(SUBSTACK_DATA_PATH)) {
+    return '<div role="main"><h1>Writing</h1><p>Posts coming soon.</p></div>';
+  }
+  const data = JSON.parse(readFileSync(SUBSTACK_DATA_PATH, 'utf8'));
+  const posts = (data && data.posts) || [];
+
+  const itemsHtml = posts
+    .map((p) => {
+      const safeTitle = escapeHtml(p.title);
+      const safeExcerpt = escapeHtml(p.excerpt);
+      const safeSubtitle = p.subtitle ? escapeHtml(p.subtitle) : '';
+      return `
+      <article>
+        <h2><a href="${escapeHtml(p.link)}">${safeTitle}</a></h2>
+        <p><em>${escapeHtml(p.displayDate)}${safeSubtitle ? ' · ' + safeSubtitle : ''}</em></p>
+        <p>${safeExcerpt}</p>
+        <p><a href="${escapeHtml(p.link)}">Read on Substack →</a></p>
+      </article>`;
+    })
+    .join('\n');
+
+  const FALLBACK_STYLE = [
+    'position: relative',
+    'max-width: 720px',
+    'margin: 0 auto',
+    'padding: 3rem 1.5rem 6rem',
+    'font-family: ui-serif, Georgia, "Times New Roman", serif',
+    'font-size: 1rem',
+    'line-height: 1.7',
+    'color: #1a1a1a',
+    'background: #ffffff',
+  ].join('; ');
+
+  return `<div role="main" style="${FALLBACK_STYLE};">
+    <h1>Writing</h1>
+    <p><em>Essays, letters, and updates by James Floyd. Mirrored from <a href="https://jamesfloyd.substack.com">jamesfloyd.substack.com</a>.</em></p>
+    ${itemsHtml}
+  </div>`;
 }
 
 /**
@@ -51,7 +98,9 @@ function escapeHtml(s) {
  */
 function injectBody(html, route) {
   if (!route.body) return html;
-  const fallback = `<div id="seo-fallback" hidden aria-hidden="true">${route.body}</div>`;
+  const bodyHtml =
+    route.body === '__DYNAMIC_WRITING__' ? writingBody() : route.body;
+  const fallback = `<div id="seo-fallback" hidden aria-hidden="true">${bodyHtml}</div>`;
   // Match the empty <div id="root"></div> Vite ships with.
   const pattern = /<div\s+id="root"[^>]*>\s*<\/div>/;
   if (!pattern.test(html)) {

@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && bun scripts/prerender.mjs && bun scripts/generate-sitemap.mjs",
+    "fetch:substack": "bun scripts/fetch-substack.mjs",
+    "build": "bun scripts/fetch-substack.mjs && vite build && bun scripts/prerender.mjs && bun scripts/generate-sitemap.mjs",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview"

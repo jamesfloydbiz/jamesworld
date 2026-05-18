@@ -91,6 +91,7 @@ James Floyd, jamesfloyds.world, The Sonder Series, sonder series, sonder, NYC in
 - https://jamesfloyds.world/projects — Active and archived projects
 - https://jamesfloyds.world/portfolio — Newspaper-style portfolio overview
 - https://jamesfloyds.world/builds — AI agents, automations, and software experiments
+- https://jamesfloyds.world/writing — Essays, letters, and updates (mirrored from Substack, refreshed daily)
 - https://jamesfloyds.world/content — Writing, videos, and published content
 - https://jamesfloyds.world/network — How to connect, values, contact info
 - https://jamesfloyds.world/blueprints — Frameworks and playbooks
