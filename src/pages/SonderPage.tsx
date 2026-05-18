@@ -78,7 +78,7 @@ const EPISODE_OVERRIDES: Record<number, EpisodeOverride> = {
   ...sameLocation(33, 41, 'McCarren Park'),
   ...sameLocation(42, 47, 'Tompkins Square Park'),
   ...sameLocation(48, 50, 'Central Park'),
-  ...sameLocation(55, 58, 'Rockefeller Park'),
+  ...sameLocation(54, 58, 'Rockefeller Park'),
   ...sameLocation(59, 70, 'East Central Park'),
 
   // ── Episodes with custom titles + locations ──────────────────────────────
@@ -116,7 +116,6 @@ const EPISODE_OVERRIDES: Record<number, EpisodeOverride> = {
   51: { location: 'Queensbridge Park' },
   52: { location: 'Capital One Cafe' },
   53: { location: 'Union Square' },
-  54: { location: 'Union Square' },
 };
 
 const episodes: Episode[] = Array.from({ length: TOTAL_EPISODES }, (_, i) => {
