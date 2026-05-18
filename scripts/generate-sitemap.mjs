@@ -15,7 +15,11 @@ const DIST = resolve(__dirname, '..', 'dist');
 function buildSitemap() {
   const today = new Date().toISOString().slice(0, 10);
   const urls = ROUTES.map((route) => {
-    const loc = SITE_URL + (route.path === '/' ? '/' : route.path);
+    // Match the trailing-slash form GitHub Pages actually serves (it 301s
+    // /<name> → /<name>/) so Google doesn't flag a redirect when crawling
+    // a sitemap URL.
+    const loc =
+      SITE_URL + (route.path === '/' ? '/' : route.path.replace(/\/?$/, '/'));
     return `  <url>
     <loc>${loc}</loc>
     <lastmod>${today}</lastmod>

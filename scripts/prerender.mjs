@@ -62,7 +62,13 @@ function injectBody(html, route) {
 }
 
 function replaceMeta(html, route) {
-  const url = SITE_URL + route.path;
+  // Use the trailing-slash form for non-root URLs. GitHub Pages always
+  // serves dist/<name>/index.html and 301-redirects /<name> → /<name>/.
+  // If canonical + og:url + sitemap all point at /<name>, Google flags
+  // a "redirect error" because the URL it's told to crawl redirects.
+  // Pointing every URL at /<name>/ matches the served URL → no redirect.
+  const url =
+    SITE_URL + (route.path === '/' ? '/' : route.path.replace(/\/?$/, '/'));
   const fullTitle = `${route.title} | James Floyd`;
   const description = route.description;
   const ogImagePath = route.image || DEFAULT_OG_IMAGE;
