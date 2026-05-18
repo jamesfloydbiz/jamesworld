@@ -173,3 +173,92 @@
 }
 .animate-swing-stick-1 { animation: swingStick1 4s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
 .animate-swing-stick-2 { animation: swingStick2 3s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+
+/* ─────────────────────────────────────────────────────────────────────────
+   .post-body — typography for Substack post HTML rendered inside the
+   /writing modal reader. Targets the tags that Substack's editor emits.
+   Designed to read like a Substack post on a dark theme: serif body,
+   generous line-height, scoped <h1>/<h2>/<blockquote>/img sizing.
+   ───────────────────────────────────────────────────────────────────────── */
+.post-body {
+  font-size: 1.0625rem;
+  line-height: 1.75;
+  color: hsl(var(--foreground) / 0.92);
+}
+.post-body > * + * { margin-top: 1.25em; }
+.post-body p { margin: 0 0 1em; }
+.post-body p:last-child { margin-bottom: 0; }
+.post-body h1, .post-body h2, .post-body h3, .post-body h4 {
+  font-family: 'Playfair Display', 'EB Garamond', Georgia, serif;
+  font-weight: 700;
+  line-height: 1.25;
+  margin: 2em 0 0.6em;
+  color: hsl(var(--foreground));
+}
+.post-body h1 { font-size: 1.85rem; }
+.post-body h2 { font-size: 1.55rem; }
+.post-body h3 { font-size: 1.25rem; }
+.post-body h4 { font-size: 1.1rem; }
+.post-body a {
+  color: hsl(var(--foreground));
+  text-decoration: underline;
+  text-decoration-color: hsl(var(--foreground) / 0.4);
+  text-underline-offset: 3px;
+  transition: text-decoration-color 0.2s;
+}
+.post-body a:hover {
+  text-decoration-color: hsl(var(--foreground));
+}
+.post-body strong { color: hsl(var(--foreground)); }
+.post-body em { font-style: italic; }
+.post-body blockquote {
+  border-left: 3px solid hsl(var(--foreground) / 0.4);
+  margin: 1.5em 0;
+  padding: 0.25em 0 0.25em 1.25em;
+  font-style: italic;
+  color: hsl(var(--foreground) / 0.85);
+}
+.post-body ul, .post-body ol {
+  margin: 1em 0;
+  padding-left: 1.5em;
+}
+.post-body li { margin: 0.4em 0; }
+.post-body hr {
+  border: 0;
+  border-top: 1px solid hsl(var(--border));
+  margin: 2.5em 0;
+}
+.post-body img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 1.5em auto;
+  border-radius: 2px;
+}
+.post-body figure {
+  margin: 1.5em 0;
+}
+.post-body figcaption {
+  font-size: 0.85rem;
+  text-align: center;
+  color: hsl(var(--muted-foreground));
+  margin-top: 0.5em;
+}
+.post-body pre, .post-body code {
+  font-family: 'DM Mono', 'Space Mono', monospace;
+  font-size: 0.9em;
+}
+.post-body pre {
+  background: hsl(var(--secondary));
+  padding: 1em;
+  border-radius: 4px;
+  overflow-x: auto;
+}
+.post-body code:not(pre code) {
+  background: hsl(var(--secondary));
+  padding: 0.15em 0.4em;
+  border-radius: 3px;
+}
+/* Substack ships <p>s with explicit <a class="image-link"> wrappers that
+   keep images linkable. Keep those clean. */
+.post-body a.image-link { text-decoration: none; }

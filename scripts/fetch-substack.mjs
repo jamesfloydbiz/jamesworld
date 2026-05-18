@@ -42,9 +42,42 @@ function extractAttr(block, tag, attr) {
   return m ? m[1] : '';
 }
 
+/**
+ * Strip Substack editor artifacts that show up in the RSS but never appear
+ * on the published post. The "Text within this block will maintain its
+ * original spacing when published" placeholder is the biggest offender —
+ * Substack inserts it as a hint inside their preformatted block editor.
+ */
+const SUBSTACK_ARTIFACTS = [
+  /Text within this block will maintain its original spacing when published\.?/gi,
+];
+
+function stripSubstackArtifacts(html) {
+  let out = html;
+  for (const re of SUBSTACK_ARTIFACTS) out = out.replace(re, '');
+  return out;
+}
+
+/**
+ * Clean the raw <content:encoded> HTML into something we can safely render
+ * inside the post modal. Removes Substack-specific UI cruft (subscribe
+ * buttons, "Share" CTAs that point only to Substack, inline scripts, etc.)
+ * while preserving the post's actual content.
+ */
+function sanitizeBodyHtml(html) {
+  return stripSubstackArtifacts(html)
+    .replace(/<script[\s\S]*?<\/script>/gi, '')
+    .replace(/<style[\s\S]*?<\/style>/gi, '')
+    // Substack's "Subscribe to my newsletter" inline CTA blocks
+    .replace(/<div[^>]*class="[^"]*subscribe-widget[^"]*"[\s\S]*?<\/div>/gi, '')
+    // Substack's "Share this post" inline CTAs
+    .replace(/<div[^>]*class="[^"]*share-dialog[^"]*"[\s\S]*?<\/div>/gi, '')
+    .trim();
+}
+
 /** Strip HTML tags and collapse whitespace into a plain-text excerpt. */
 function plainText(html, max = EXCERPT_CHARS) {
-  const stripped = html
+  const stripped = stripSubstackArtifacts(html)
     .replace(/<style[\s\S]*?<\/style>/gi, '')
     .replace(/<script[\s\S]*?<\/script>/gi, '')
     .replace(/<[^>]+>/g, ' ')
@@ -95,6 +128,7 @@ function parseFeed(xml) {
       displayDate,
       subtitle: plainText(description, 160),
       excerpt,
+      bodyHtml: sanitizeBodyHtml(contentEncoded),
       coverImage: enclosureUrl || null,
     });
   }
