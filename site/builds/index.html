@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Builds — James Floyd</title>
+  <meta name="description" content="AI agents, automation tools, and software experiments from James Floyd — from network agents to multi-agent blog teams.">
+  <link rel="canonical" href="https://jamesfloyds.world/builds/">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://jamesfloyds.world/builds/">
+  <meta property="og:title" content="Builds — James Floyd">
+  <meta property="og:description" content="AI Agents, Vibe Coding, and Ops.">
+  <meta property="og:image" content="https://jamesfloyds.world/images/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Builds — James Floyd">
+  <meta name="twitter:description" content="AI Agents, Vibe Coding, and Ops.">
+  <meta name="twitter:image" content="https://jamesfloyds.world/images/og-image.png">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=DM+Mono:wght@300;400&family=Lora:ital,wght@0,400;0,500;1,400&family=Space+Mono:wght@400;700&display=swap">
+  <link rel="stylesheet" href="/css/site.css">
+  <style>
+    .gallery-strip {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      margin-bottom: 12px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border) transparent;
+    }
+    .gallery-thumb {
+      height: 80px;
+      width: auto;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: border-color 0.2s;
+      display: block;
+    }
+    .gallery-thumb:hover { border-color: hsl(0 0% 60%); }
+
+    .img-lightbox {
+      max-width: 96vw;
+      max-height: 92vh;
+      background: var(--bg);
+      border: none;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .img-lightbox::backdrop {
+      background: hsl(0 0% 0% / 0.95);
+    }
+    .img-lightbox img {
+      max-width: 100%;
+      max-height: 90vh;
+      object-fit: contain;
+      cursor: pointer;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="site-header anim-slide-dn">
+    <a href="/" class="site-header__logo" aria-label="Return to home"><img src="/logo.svg" alt="JF"></a>
+    <button class="site-header__menu-btn" id="menu-btn" aria-expanded="false" aria-controls="site-nav">Menu</button>
+  </header>
+
+  <nav class="site-nav" id="site-nav" aria-label="Main navigation">
+    <ul class="site-nav__list">
+      <li class="site-nav__item"><a href="/sonder/" class="site-nav__link">Sonder Series</a></li>
+      <li class="site-nav__item"><a href="/portfolio/" class="site-nav__link">Portfolio</a></li>
+      <li class="site-nav__item" data-has-sub>
+        <a href="/projects/" class="site-nav__link">Projects</a>
+        <div class="site-nav__sub">
+          <a href="/portfolio/" class="site-nav__sub-link">Portfolio</a>
+          <a href="/resume/" class="site-nav__sub-link">Resume</a>
+          <a href="/references/" class="site-nav__sub-link">References</a>
+        </div>
+      </li>
+      <li class="site-nav__item" data-has-sub>
+        <a href="/content/" class="site-nav__link">Content</a>
+        <div class="site-nav__sub">
+          <a href="/writing/" class="site-nav__sub-link">Writing</a>
+          <a href="/poems/" class="site-nav__sub-link">Poems</a>
+          <a href="/pictures/" class="site-nav__sub-link">Memories</a>
+        </div>
+      </li>
+      <li class="site-nav__item"><a href="/network/" class="site-nav__link">Network</a></li>
+      <li class="site-nav__item"><a href="/blueprints/" class="site-nav__link">Blueprints</a></li>
+      <li class="site-nav__item" style="margin-top:24px;"><a href="/" class="site-nav__back">Back to Gallery</a></li>
+    </ul>
+    <button class="site-nav__close" id="nav-close">Close</button>
+  </nav>
+
+  <main class="page">
+    <div class="page-content anim-fade-up" style="animation-delay:0.6s">
+
+      <h1 class="page-title">Builds</h1>
+      <p class="page-subtitle">AI Agents, Vibe Coding, and Ops</p>
+
+      <h2 class="section-heading">Active Automations</h2>
+
+      <div class="grid-2">
+
+        <article class="card">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:0.75rem;">
+            <h3 style="font-size:1rem;">JamesFloyds.World V2</h3>
+            <span class="tag" style="opacity:0.5;">Archive</span>
+          </div>
+          <p class="card-body" style="margin-bottom:1rem;">The original interactive 3D museum experience — a navigable world built in WebGL with character movement and spatial sections.</p>
+          <a href="https://jamesworldv2.lovable.app" target="_blank" rel="noopener noreferrer" class="text-link" style="font-size:0.875rem;">
+            Explore
+            <svg style="display:inline;margin-left:4px;vertical-align:middle;" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+        </article>
+
+        <article class="card">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:0.75rem;">
+            <h3 style="font-size:1rem;">JamesFloyds.World V1</h3>
+            <span class="tag" style="opacity:0.5;">Archive</span>
+          </div>
+          <p class="card-body" style="margin-bottom:1rem;">A 3D avatar-like world to explore James life, complete with an entrance sequence like no other.</p>
+          <a href="https://james-world.lovable.app/" target="_blank" rel="noopener noreferrer" class="text-link" style="font-size:0.875rem;">
+            Explore
+            <svg style="display:inline;margin-left:4px;vertical-align:middle;" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+        </article>
+
+        <article class="card">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:0.75rem;">
+            <h3 style="font-size:1rem;">The Block — A Lawn Mowing Tycoon</h3>
+            <span class="tag" style="opacity:0.5;">Archive</span>
+          </div>
+          <p class="card-body" style="margin-bottom:1rem;">A 3D browser game designed to teach business through a lawncare tycoon.</p>
+          <a href="https://learnbusiness.lovable.app" target="_blank" rel="noopener noreferrer" class="text-link" style="font-size:0.875rem;">
+            Play
+            <svg style="display:inline;margin-left:4px;vertical-align:middle;" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+        </article>
+
+        <article class="card">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:0.75rem;">
+            <h3 style="font-size:1rem;">Top YT Videos By Topic</h3>
+            <span class="tag" style="opacity:0.5;">Archive</span>
+          </div>
+          <div class="gallery-strip">
+            <img class="gallery-thumb" src="/ops-images/youtube_most_viewed_vids_workflow.png" alt="Top YT Videos workflow" loading="lazy" data-lightbox>
+            <img class="gallery-thumb" src="/ops-images/most_viewed_yt_vids_sheets.png" alt="Top YT Videos sheets" loading="lazy" data-lightbox>
+          </div>
+          <p class="card-body">Get the top 15 YouTube videos by views based on any input, sorted by length and recency.</p>
+        </article>
+
+        <article class="card">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:0.75rem;">
+            <h3 style="font-size:1rem;">Network Automation</h3>
+            <span class="tag" style="opacity:0.5;">Archive</span>
+          </div>
+          <div class="gallery-strip">
+            <img class="gallery-thumb" src="/ops-images/AI_Auto_Intro_1.png" alt="Network Automation 1" loading="lazy" data-lightbox>
+            <img class="gallery-thumb" src="/ops-images/AI_Auto_Intro2.png" alt="Network Automation 2" loading="lazy" data-lightbox>
+            <img class="gallery-thumb" src="/ops-images/AI_Auto_Intro_3.png" alt="Network Automation 3" loading="lazy" data-lightbox>
+          </div>
+          <p class="card-body" style="white-space:pre-line;">An AI Agent that chats with someone, gets to know them, then saves their information to a spreadsheet database. After that there is a second Agent workflow triggered by new additions or changes to the database. That second agent emails me introduction suggestions based on the data points.
+
+TLDR: Boardy AI before it existed.</p>
+        </article>
+
+        <article class="card">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:0.75rem;">
+            <h3 style="font-size:1rem;">YT Video to Blog</h3>
+            <span class="tag" style="opacity:0.5;">Archive</span>
+          </div>
+          <div class="gallery-strip">
+            <img class="gallery-thumb" src="/ops-images/Video_to_Blog.png" alt="YT to Blog 1" loading="lazy" data-lightbox>
+            <img class="gallery-thumb" src="/ops-images/Video_to_Blog_2.png" alt="YT to Blog 2" loading="lazy" data-lightbox>
+            <img class="gallery-thumb" src="/ops-images/Video_to_Blog_3.png" alt="YT to Blog 3" loading="lazy" data-lightbox>
+          </div>
+          <p class="card-body">If it's on video, it might as well be a blog</p>
+        </article>
+
+        <article class="card">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:0.75rem;">
+            <h3 style="font-size:1rem;">Multi-Agent Blog Team</h3>
+            <span class="tag" style="opacity:0.5;">Archive</span>
+          </div>
+          <div class="gallery-strip">
+            <img class="gallery-thumb" src="/ops-images/Multi-Agent1.png" alt="Multi-Agent 1" loading="lazy" data-lightbox>
+            <img class="gallery-thumb" src="/ops-images/MultiAgent2.png" alt="Multi-Agent 2" loading="lazy" data-lightbox>
+            <img class="gallery-thumb" src="/ops-images/MultiAgent3.png" alt="Multi-Agent 3" loading="lazy" data-lightbox>
+            <img class="gallery-thumb" src="/ops-images/MultiAgent4.png" alt="Multi-Agent 4" loading="lazy" data-lightbox>
+          </div>
+          <p class="card-body">An experiment in multi-agent workflows that produces SEO designed blogs with QA</p>
+        </article>
+
+        <article class="card">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:0.75rem;">
+            <h3 style="font-size:1rem;">Organic YouTube to Calls Booked Dashboard</h3>
+            <span class="tag" style="opacity:0.5;">Archive</span>
+          </div>
+          <div class="gallery-strip">
+            <img class="gallery-thumb" src="/ops-images/YT_Video_Views_Dashboard2.png" alt="YT Dashboard 1" loading="lazy" data-lightbox>
+            <img class="gallery-thumb" src="/ops-images/YT_Video_Views_Dashboard3.png" alt="YT Dashboard 2" loading="lazy" data-lightbox>
+            <img class="gallery-thumb" src="/ops-images/YT_Video_Views_Dashboard4.png" alt="YT Dashboard 3" loading="lazy" data-lightbox>
+          </div>
+          <p class="card-body">A dashboard that shows what videos correlate to site views, calls booked, etc. Remember, measurement is the first step to improvement.</p>
+        </article>
+
+        <article class="card">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:0.75rem;">
+            <h3 style="font-size:1rem;">AI Coded Calculators</h3>
+            <span class="tag" style="opacity:0.5;">Archive</span>
+          </div>
+          <p class="card-body" style="margin-bottom:1rem;">Financial calculators coded with Claude Code for internal use at BetterWealth — including Internal Value, Passive Income Equivalent, Asset Allocation, BW Assessment, and External Value for whole life insurance.</p>
+          <a href="https://jamesfloydl.github.io/BWCalculators/" target="_blank" rel="noopener noreferrer" class="text-link" style="font-size:0.875rem;">
+            View Calculators
+            <svg style="display:inline;margin-left:4px;vertical-align:middle;" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+        </article>
+
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Image lightbox dialog -->
+  <dialog class="img-lightbox" id="img-lightbox">
+    <img id="lightbox-img" src="" alt="" onclick="document.getElementById('img-lightbox').close()">
+  </dialog>
+
+  <script src="/js/site.js"></script>
+  <script>
+    var lightbox = document.getElementById('img-lightbox');
+    var lightboxImg = document.getElementById('lightbox-img');
+
+    document.querySelectorAll('[data-lightbox]').forEach(function(thumb) {
+      thumb.addEventListener('click', function() {
+        lightboxImg.src = thumb.src;
+        lightboxImg.alt = thumb.alt;
+        lightbox.showModal();
+      });
+    });
+
+    lightbox.addEventListener('click', function(e) {
+      if (e.target === lightbox) lightbox.close();
+    });
+  </script>
+</body>
+</html>

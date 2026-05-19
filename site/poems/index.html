@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Poems — James Floyd</title>
+  <meta name="description" content="90+ poems by James Floyd. Wisdom, struggle, love, manhood, and the small honest observations of a life paying attention.">
+  <link rel="canonical" href="https://jamesfloyds.world/poems/">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://jamesfloyds.world/poems/">
+  <meta property="og:title" content="Poems — James Floyd">
+  <meta property="og:description" content="90+ poems by James Floyd.">
+  <meta property="og:image" content="https://jamesfloyds.world/images/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Poems — James Floyd">
+  <meta name="twitter:description" content="90+ poems by James Floyd.">
+  <meta name="twitter:image" content="https://jamesfloyds.world/images/og-image.png">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=DM+Mono:wght@300;400&family=Lora:ital,wght@0,400;0,500;1,400&family=Space+Mono:wght@400;700&display=swap">
+  <link rel="stylesheet" href="/css/site.css">
+  <style>
+    .poems-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+    @media (min-width: 480px) { .poems-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (min-width: 768px) { .poems-grid { grid-template-columns: repeat(4, 1fr); } }
+
+    .poem-card {
+      border: 1px solid var(--border);
+      padding: 0.75rem;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+    .poem-card:hover { border-color: hsl(0 0% 40%); }
+    .poem-card:hover .poem-card__title { text-decoration: underline; text-underline-offset: 4px; }
+    .poem-card__img { aspect-ratio: 1; width: 100%; object-fit: cover; display: block; margin-bottom: 0.5rem; }
+    .poem-card__title { font-size: 0.875rem; color: var(--fg-80); }
+
+    /* Lightbox */
+    .poem-lightbox {
+      max-width: min(720px, 96vw);
+      width: 100%;
+      max-height: 92vh;
+      background: var(--bg);
+      border: none;
+      padding: 0;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .poem-lightbox::backdrop {
+      background: hsl(0 0% 0% / 0.95);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+    }
+    .poem-lightbox__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .poem-lightbox__title {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--fg-70);
+    }
+    .poem-lightbox__close {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--fg-40);
+      background: none;
+      border: none;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+    .poem-lightbox__close:hover { color: var(--fg); }
+    .poem-lightbox__body {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .poem-lightbox__img { max-width: 100%; max-height: 100%; object-fit: contain; cursor: pointer; }
+  </style>
+</head>
+<body>
+
+  <header class="site-header anim-slide-dn">
+    <a href="/" class="site-header__logo" aria-label="Return to home"><img src="/logo.svg" alt="JF"></a>
+    <button class="site-header__menu-btn" id="menu-btn" aria-expanded="false" aria-controls="site-nav">Menu</button>
+  </header>
+
+  <nav class="site-nav" id="site-nav" aria-label="Main navigation">
+    <ul class="site-nav__list">
+      <li class="site-nav__item"><a href="/sonder/" class="site-nav__link">Sonder Series</a></li>
+      <li class="site-nav__item"><a href="/portfolio/" class="site-nav__link">Portfolio</a></li>
+      <li class="site-nav__item" data-has-sub>
+        <a href="/projects/" class="site-nav__link">Projects</a>
+        <div class="site-nav__sub">
+          <a href="/portfolio/" class="site-nav__sub-link">Portfolio</a>
+          <a href="/resume/" class="site-nav__sub-link">Resume</a>
+          <a href="/references/" class="site-nav__sub-link">References</a>
+        </div>
+      </li>
+      <li class="site-nav__item" data-has-sub>
+        <a href="/content/" class="site-nav__link">Content</a>
+        <div class="site-nav__sub">
+          <a href="/writing/" class="site-nav__sub-link">Writing</a>
+          <a href="/poems/" class="site-nav__sub-link">Poems</a>
+          <a href="/pictures/" class="site-nav__sub-link">Memories</a>
+        </div>
+      </li>
+      <li class="site-nav__item"><a href="/network/" class="site-nav__link">Network</a></li>
+      <li class="site-nav__item"><a href="/blueprints/" class="site-nav__link">Blueprints</a></li>
+      <li class="site-nav__item" style="margin-top:24px;"><a href="/" class="site-nav__back">Back to Gallery</a></li>
+    </ul>
+    <button class="site-nav__close" id="nav-close">Close</button>
+  </nav>
+
+  <main class="page">
+    <div class="page-content anim-fade-up" style="animation-delay:0.6s">
+
+      <div style="display:flex;align-items:baseline;gap:1rem;margin-bottom:3rem;">
+        <h1 class="page-title" style="margin-bottom:0;">All Poems</h1>
+        <span class="tag">26 pieces</span>
+      </div>
+
+      <div class="poems-grid">
+
+        <div class="poem-card" data-poem="WearyWoman" data-title="Weary Woman" role="button" tabindex="0">
+          <img class="poem-card__img" src="/poems/WearyWoman.png" alt="Weary Woman" loading="eager">
+          <p class="poem-card__title">Weary Woman</p>
+        </div>
+
+        <div class="poem-card" data-poem="TheWanderer" data-title="The Wanderer" role="button" tabindex="0">
+          <img class="poem-card__img" src="/poems/TheWanderer.png" alt="The Wanderer" loading="eager">
+          <p class="poem-card__title">The Wanderer</p>
+        </div>
+
+        <div class="poem-card" data-poem="Madman" data-title="Madman" role="button" tabindex="0">
+          <img class="poem-card__img" src="/poems/Madman.png" alt="Madman" loading="eager">
+          <p class="poem-card__title">Madman</p>
+        </div>
+
+        <div class="poem-card" data-poem="Abundance" data-title="Abundance" role="button" tabindex="0">
+          <img class="poem-card__img" src="/poems/Abundance.png" alt="Abundance" loading="eager">
+          <p class="poem-card__title">Abundance</p>
+        </div>
+
+        <div class="poem-card" data-poem="AloneAgain" data-title="Alone Again" role="button" tabindex="0">
+          <img class="poem-card__img" src="/poems/AloneAgain.png" alt="Alone Again" loading="eager">
+          <p class="poem-card__title">Alone Again</p>
+        </div>
+
+        <div class="poem-card" data-poem="Contradictions" data-title="Contradictions" role="button" tabindex="0">
+          <img class="poem-card__img" src="/poems/Contradictions.png" alt="Contradictions" loading="eager">
+          <p class="poem-card__title">Contradictions</p>
+        </div>
+
+        <div class="poem-card" data-poem="Energy" data-title="Energy" role="button" tabindex="0">
+          <img class="poem-card__img" src="/poems/Energy.png" alt="Energy" loading="lazy">
+          <p class="poem-card__title">Energy</p>
+        </div>
+
+        <div class="poem-card" data-poem="Eyes" data-title="Eyes" role="button" tabindex="0">
+          <img class="poem-card__img" src="/poems/Eyes.png" alt="Eyes" loading="lazy">
+          <p class="poem-card__title">Eyes</p>
+        </div>
+
+        <div class="poem-card" data-poem="Flow" data-title="Flow" role="button" tabindex="0">
+          <img class="poem-card__img" src="/poems/Flow.png" alt="Flow" loading="lazy">
+          <p class="poem-card__title">Flow</p>
+        </div>
+
+        <div class="poem-card" data-poem="HiImJames" data-title="Hi Im James" role="button" tabindex="0">
+          <img class="poem-card__img" src="/poems/HiImJames.png" alt="Hi Im James" loading="lazy">
+          <p class="poem-card__title">Hi Im James</p>
+        </div>
+
+        <div class="poem-card" data-poem="Home" data-title="Home" role="button" tabindex="0">
+          <img class="poem-card__img" src="/poems/Home.png" alt="Home" loading="lazy">
+          <p class="poem-card__title">Home</p>
+        </div>
+
+        <div class="poem-card" data-poem="IntotheDarkness" data-title="Into the Darkness" role="button" tabindex="0">
+          <img class="poem-card__img" src="/poems/IntotheDarkness.png" alt="Into the Darkness" loading="lazy">
+          <p class="poem-card__title">Into the Darkness</p>
+        </div>
+
+        <div class="poem-card" data-poem="LoveBegetsLove" data-title="Love Begets Love" role="button" tabindex="0">
+          <img class="poem-card__img" src="/poems/LoveBegetsLove.png" alt="Love Begets Love" loading="lazy">
+          <p class="poem-card__title">Love Begets Love</p>
+        </div>
+
+        <div class="poem-card" data-poem="Manhood" data-title="Manhood" role="button" tabindex="0">
+          <img class="poem-card__img" src="/poems/Manhood.png" alt="Manhood" loading="lazy">
+          <p class="poem-card__title">Manhood</p>
+        </div>
+
+        <div class="poem-card" data-poem="NoSleep" data-title="No Sleep" role="button" tabindex="0">
+          <img class="poem-card__img" src="/poems/NoSleep.png" alt="No Sleep" loading="lazy">
+          <p class="poem-card__title">No Sleep</p>
+        </div>
+
+        <div class="poem-card" data-poem="Odetoforever" data-title="Ode to forever" role="button" tabindex="0">
+          <img class="poem-card__img" src="/poems/Odetoforever.png" alt="Ode to forever" loading="lazy">
+          <p class="poem-card__title">Ode to forever</p>
+        </div>
+
+        <div class="poem-card" data-poem="Off" data-title="Off" role="button" tabindex="0">
+          <img class="poem-card__img" src="/poems/Off.png" alt="Off" loading="lazy">
+          <p class="poem-card__title">Off</p>
+        </div>
+
+        <div class="poem-card" data-poem="Peace" data-title="Peace" role="button" tabindex="0">
+          <img class="poem-card__img" src="/poems/Peace.png" alt="Peace" loading="lazy">
+          <p class="poem-card__title">Peace</p>
+        </div>
+
+        <div class="poem-card" data-poem="Possibility" data-title="Possibility" role="button" tabindex="0">
+          <img class="poem-card__img" src="/poems/Possibility.png" alt="Possibility" loading="lazy">
+          <p class="poem-card__title">Possibility</p>
+        </div>
+
+        <div class="poem-card" data-poem="Sleep" data-title="Sleep" role="button" tabindex="0">
+          <img class="poem-card__img" src="/poems/Sleep.png" alt="Sleep" loading="lazy">
+          <p class="poem-card__title">Sleep</p>
+        </div>
+
+        <div class="poem-card" data-poem="TheDancewithDeath" data-title="The Dance with Death" role="button" tabindex="0">
+          <img class="poem-card__img" src="/poems/TheDancewithDeath.png" alt="The Dance with Death" loading="lazy">
+          <p class="poem-card__title">The Dance with Death</p>
+        </div>
+
+        <div class="poem-card" data-poem="TheFight" data-title="The Fight" role="button" tabindex="0">
+          <img class="poem-card__img" src="/poems/TheFight.png" alt="The Fight" loading="lazy">
+          <p class="poem-card__title">The Fight</p>
+        </div>
+
+        <div class="poem-card" data-poem="ThetrialsofDanger" data-title="The trials of Danger" role="button" tabindex="0">
+          <img class="poem-card__img" src="/poems/ThetrialsofDanger.png" alt="The trials of Danger" loading="lazy">
+          <p class="poem-card__title">The trials of Danger</p>
+        </div>
+
+        <div class="poem-card" data-poem="ToHer" data-title="To Her" role="button" tabindex="0">
+          <img class="poem-card__img" src="/poems/ToHer.png" alt="To Her" loading="lazy">
+          <p class="poem-card__title">To Her</p>
+        </div>
+
+        <div class="poem-card" data-poem="TotheStrivers" data-title="To the Strivers" role="button" tabindex="0">
+          <img class="poem-card__img" src="/poems/TotheStrivers.png" alt="To the Strivers" loading="lazy">
+          <p class="poem-card__title">To the Strivers</p>
+        </div>
+
+        <div class="poem-card" data-poem="WisdomisPain" data-title="Wisdom is Pain" role="button" tabindex="0">
+          <img class="poem-card__img" src="/poems/WisdomisPain.png" alt="Wisdom is Pain" loading="lazy">
+          <p class="poem-card__title">Wisdom is Pain</p>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Poem Lightbox -->
+  <dialog class="poem-lightbox" id="poem-dialog" aria-labelledby="poem-dialog-title">
+    <div class="poem-lightbox__header">
+      <p class="poem-lightbox__title" id="poem-dialog-title"></p>
+      <button class="poem-lightbox__close" id="poem-dialog-close">Close ×</button>
+    </div>
+    <div class="poem-lightbox__body">
+      <img class="poem-lightbox__img" id="poem-dialog-img" src="" alt="">
+    </div>
+  </dialog>
+
+  <script src="/js/site.js"></script>
+  <script>
+    var dialog = document.getElementById('poem-dialog');
+    var dialogTitle = document.getElementById('poem-dialog-title');
+    var dialogImg = document.getElementById('poem-dialog-img');
+    var dialogClose = document.getElementById('poem-dialog-close');
+
+    function openPoem(file, title) {
+      dialogTitle.textContent = title;
+      dialogImg.src = '/poems/' + file + '.png';
+      dialogImg.alt = title;
+      dialog.showModal();
+    }
+
+    document.querySelectorAll('.poem-card').forEach(function(card) {
+      card.addEventListener('click', function() {
+        openPoem(card.dataset.poem, card.dataset.title);
+      });
+      card.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') openPoem(card.dataset.poem, card.dataset.title);
+      });
+    });
+
+    dialogClose.addEventListener('click', function() { dialog.close(); });
+    dialogImg.addEventListener('click', function() { dialog.close(); });
+    dialog.addEventListener('click', function(e) {
+      if (e.target === dialog) dialog.close();
+    });
+  </script>
+</body>
+</html>

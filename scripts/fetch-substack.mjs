@@ -161,8 +161,13 @@ async function main() {
     posts,
   };
   mkdirSync(dirname(OUT_PATH), { recursive: true });
-  writeFileSync(OUT_PATH, JSON.stringify(out, null, 2));
-  console.log(`✓ wrote ${posts.length} Substack posts → src/data/substack-posts.json`);
+  const json = JSON.stringify(out, null, 2);
+  writeFileSync(OUT_PATH, json);
+  // Also copy to public/data/ so the plain-HTML writing page can fetch it
+  const PUBLIC_OUT = resolve(__dirname, '..', 'public', 'data', 'substack-posts.json');
+  mkdirSync(dirname(PUBLIC_OUT), { recursive: true });
+  writeFileSync(PUBLIC_OUT, json);
+  console.log(`✓ wrote ${posts.length} Substack posts → src/data/substack-posts.json + public/data/`);
   for (const p of posts.slice(0, 5)) {
     console.log(`  · ${p.displayDate} — ${p.title}`);
   }
