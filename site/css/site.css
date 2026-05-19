@@ -451,6 +451,9 @@ dialog {
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  /* `inset: 0` + `margin: auto` centers a fixed-position dialog in the viewport.
+     Without explicit `margin: auto`, Chrome/Safari pin it to top:0/left:0. */
+  margin: auto;
 }
 dialog::backdrop {
   background: hsl(0 0% 0% / 0.85);
