@@ -354,8 +354,13 @@ ul, ol { list-style: none; }
   border: 1px solid var(--border);
   padding: 1.5rem;
   transition: border-color 0.2s;
+  /* Stack content vertically so the action row can be pinned to the bottom
+     when grid alignment stretches a card to match a taller sibling. */
+  display: flex;
+  flex-direction: column;
 }
 .card:hover { border-color: hsl(0 0% 40%); }
+.card > .btn-row { margin-top: auto; }
 .card-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--fg-60); }
 .card-title { font-size: 1.05rem; margin: 0.5rem 0 0.5rem; }
 .card-body  { color: var(--fg-60); font-size: 0.875rem; line-height: 1.6; }
