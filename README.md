@@ -1,73 +1,45 @@
-# Welcome to your Lovable project
+# jamesfloyds.world
 
-## Project info
+Plain HTML site. No framework, no build step for the pages themselves.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID 
+## Stack
 
-## How can I edit this code?
+- HTML files in `site/` — one `index.html` per route
+- CSS custom properties in `site/css/site.css` (no Tailwind, no preprocessor)
+- Vanilla JS in `site/js/site.js` and inline where needed
+- Static assets in `public/` (images, favicons, logos, Substack JSON)
+- Bun scripts in `scripts/` for the Substack fetch + dist assembly
 
-There are several ways of editing your application.
+A small Bun runtime is the only dependency, and only for the build/deploy
+pipeline — the pages themselves are pure HTML/CSS/JS that any browser
+from the last 10 years will render.
 
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
+## Local development
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+bun run serve:site     # http://localhost:3000 — merges site/ + public/
 ```
 
-**Edit a file directly in GitHub**
+Edit files in `site/`. Reload the browser. That's it.
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## Build for deploy
 
-**Use GitHub Codespaces**
+```sh
+bun run build:site
+```
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+Outputs `dist/`:
+1. Fetches latest Substack RSS → `public/data/substack-posts.json`
+2. Copies `public/` + `site/` into `dist/`
+3. Writes `dist/sitemap.xml` from `scripts/routes.config.mjs`
 
-## What technologies are used for this project?
+## Deployment
 
-This project is built with:
+`.github/workflows/deploy.yml` runs `bun run build:site` and publishes
+`dist/` to GitHub Pages. The workflow also re-runs daily (06:17 UTC) so
+new Substack posts appear without a code push.
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## Future work
 
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+- `ideas/ai-search.md` — spec for an AI chat over James's full corpus
+- `supabase/` — prior search/chat Edge Functions, kept as a starting point

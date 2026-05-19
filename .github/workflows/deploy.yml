@@ -16,10 +16,8 @@ jobs:
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
-      # Only the fetch-substack script needs dependencies (node-fetch polyfill
-      # via bun's built-in fetch — actually no deps needed). Install anyway in
-      # case routes.config.mjs or other scripts have transitive imports.
-      - run: bun install --frozen-lockfile
+      # No npm dependencies — build scripts use Node.js built-ins + Bun's
+      # built-in fetch. Nothing to install.
       - run: bun run build:site
       - uses: actions/upload-pages-artifact@v3
         with:

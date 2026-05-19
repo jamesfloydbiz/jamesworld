@@ -1,7 +1,7 @@
 /**
  * Fetch James's Substack RSS feed at build time and write a structured
- * JSON file (src/data/substack-posts.json) so the React app + the prerender
- * script can both consume it.
+ * JSON file to public/data/substack-posts.json so the writing page can
+ * fetch it at runtime.
  *
  * Substack's RSS schema is stable and well-formed XML — a small regex
  * parser is enough; no dependency on a full XML library.
@@ -10,12 +10,12 @@
  * the existing JSON file in place rather than breaking the build.
  */
 
-import { writeFileSync, existsSync, readFileSync, mkdirSync } from 'node:fs';
+import { writeFileSync, existsSync, mkdirSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const OUT_PATH = resolve(__dirname, '..', 'src', 'data', 'substack-posts.json');
+const OUT_PATH = resolve(__dirname, '..', 'public', 'data', 'substack-posts.json');
 
 const FEED_URL = 'https://jamesfloyd.substack.com/feed';
 const EXCERPT_CHARS = 240;
@@ -161,13 +161,8 @@ async function main() {
     posts,
   };
   mkdirSync(dirname(OUT_PATH), { recursive: true });
-  const json = JSON.stringify(out, null, 2);
-  writeFileSync(OUT_PATH, json);
-  // Also copy to public/data/ so the plain-HTML writing page can fetch it
-  const PUBLIC_OUT = resolve(__dirname, '..', 'public', 'data', 'substack-posts.json');
-  mkdirSync(dirname(PUBLIC_OUT), { recursive: true });
-  writeFileSync(PUBLIC_OUT, json);
-  console.log(`✓ wrote ${posts.length} Substack posts → src/data/substack-posts.json + public/data/`);
+  writeFileSync(OUT_PATH, JSON.stringify(out, null, 2));
+  console.log(`✓ wrote ${posts.length} Substack posts → public/data/substack-posts.json`);
   for (const p of posts.slice(0, 5)) {
     console.log(`  · ${p.displayDate} — ${p.title}`);
   }
