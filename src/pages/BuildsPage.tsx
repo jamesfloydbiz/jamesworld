@@ -15,8 +15,8 @@ const automations = [
     description: 'The original interactive 3D museum experience — a navigable world built in WebGL with character movement and spatial sections.',
     status: 'Archive',
     cta: 'Explore',
-    link: '/museum',
-    external: false,
+    link: 'https://jamesworldv2.lovable.app',
+    external: true,
   },
   {
     title: 'JamesFloyds.World V1',

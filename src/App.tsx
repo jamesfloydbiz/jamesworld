@@ -5,7 +5,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import { SearchProvider } from "@/contexts/SearchContext";
-import Index from "./pages/Index";
 import DearReaderPage from "./pages/DearReaderPage";
 import PortfolioPage from "./pages/PortfolioPage";
 import ContentPage from "./pages/ContentPage";
@@ -35,7 +34,6 @@ const App = () => (
           <SearchProvider>
             <Routes>
             <Route path="/" element={<DearReaderPage />} />
-            <Route path="/museum" element={<Index />} />
             <Route path="/portfolio" element={<PortfolioPage />} />
             <Route path="/content" element={<ContentPage />} />
             <Route path="/projects" element={<ProjectsPage />} />

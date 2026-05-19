@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { useGameStore } from "@/store/gameStore";
 
 interface WalkwayHeaderProps {
   title: string;
@@ -9,18 +8,10 @@ interface WalkwayHeaderProps {
 
 export function WalkwayHeader({ title }: WalkwayHeaderProps) {
   const navigate = useNavigate();
-  const { restoreHubState, setIsTransitioning } = useGameStore();
   const [menuOpen, setMenuOpen] = useState(false);
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
 
-  const handleBackToHub = () => {
-    setIsTransitioning(true);
-    setTimeout(() => {
-      restoreHubState();
-      setIsTransitioning(false);
-      navigate("/");
-    }, 300);
-  };
+  const handleBackToHub = () => navigate("/");
 
   const menuItems = [
     { label: "Sonder Series", path: "/sonder" },

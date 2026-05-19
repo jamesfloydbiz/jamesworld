@@ -111,8 +111,7 @@ const siteLinks = [
 { label: 'Resume', path: '/resume', desc: 'The traditional view — roles, timelines, outcomes.' },
 { label: 'References', path: '/references', desc: 'What others have said about James.' },
 { label: 'Poems', path: '/poems', desc: 'Thoughts that needed a different format.' },
-{ label: 'Memories', path: '/pictures', desc: 'Snapshots from the road.' },
-{ label: 'Museum', path: '/museum', desc: 'The 3D gallery — walk through the world.' }];
+{ label: 'Memories', path: '/pictures', desc: 'Snapshots from the road.' }];
 
 
 /* ─── Main Page ─── */

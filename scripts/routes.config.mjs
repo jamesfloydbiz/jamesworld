@@ -62,7 +62,7 @@ export const ROUTES = [
       <h1>James Floyd</h1>
       <p><em>Builder, creator, entrepreneur, intrapreneur, speaker, event producer, connector.</em></p>
       <p>I'm James Floyd. I build teams, produce events, create AI automations, and connect people. Over the past seven years I've worked as Chief of Staff at <strong>BetterWealth</strong> and <strong>Keiretsu Forum</strong>, run operations for <strong>Jets and Capital</strong> events, and built AI agents for sales, content, and dealflow.</p>
-      <p>This site is a small museum of how I think and what I make.</p>
+      <p>This site is a small museum of how I think and what I make. The original 3D museum experience lives on at <a href="https://jamesworldv2.lovable.app">jamesworldv2.lovable.app</a>.</p>
       <h2>What you'll find here</h2>
       <ul>
         <li><a href="/sonder">The Sonder Series</a> — 100 conversations with strangers in New York.</li>
@@ -451,17 +451,4 @@ export const ROUTES = [
     `),
   },
 
-  {
-    path: '/museum',
-    title: 'Museum',
-    description:
-      "James Floyd's interactive 3D museum — explore portfolio, blueprints, content, and projects in a navigable gallery.",
-    priority: 0.6,
-    changefreq: 'monthly',
-    body: wrap(`
-      <h1>The Museum</h1>
-      <p>An interactive 3D environment showcasing my portfolio, blueprints, content, and projects as a navigable gallery. Built with React, Three.js, and Vite.</p>
-      <p>Best experienced in a desktop browser with WebGL. If you'd prefer text navigation, use the menu items: <a href="/portfolio">Portfolio</a>, <a href="/projects">Projects</a>, <a href="/content">Content</a>, <a href="/blueprints">Blueprints</a>, <a href="/network">Network</a>.</p>
-    `),
-  },
 ];

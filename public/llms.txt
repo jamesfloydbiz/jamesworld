@@ -67,7 +67,7 @@ James Floyd builds AI agents and automation workflows including: a network autom
 James Floyd has worked with BetterWealth, Jets and Capital, Keiretsu Forum, Royal Management, Loeb NYC, Blue Devil, Jacob Green Charity Golf, Champions of Change, Seattle Sounders, and the Seahawks. He has operated across cities including New York, San Diego, Los Angeles, Miami, San Francisco, Chicago, Austin, Palm Beach, Vancouver, Singapore, Hong Kong, Tokyo, and Bangkok.
 
 ### What is JamesFloyds.World?
-JamesFloyds.World (live at https://jamesfloyds.world) is James Floyd's interactive personal site. It contains The Sonder Series, an interactive 3D museum gallery, a newspaper-style portfolio, AI builds showcase, poetry collection, photo memories, resume, references, and more. It is designed for exploration — communicating identity through presence and structure rather than traditional copy.
+JamesFloyds.World (live at https://jamesfloyds.world) is James Floyd's personal site. It contains The Sonder Series, a newspaper-style portfolio, an AI builds showcase, a poetry collection, photo memories, a resume, references, and the writing index mirroring his Substack. The earlier 3D museum version of the site lives separately at https://jamesworldv2.lovable.app.
 
 ### What are James Floyd's skills?
 AI agents, prompt engineering, automation (N8N), event production, scaling sales teams, analytics, funnel design, SEO, CRM, partnerships, public speaking, networking, deal sourcing, video production, content systems, conversation. Tools: GSuite, HubSpot, Webflow, Typeform, Figma, ChatGPT, Gemini, Claude, Cursor, Lovable, React, TypeScript, Vite.
@@ -100,4 +100,5 @@ James Floyd, jamesfloyds.world, The Sonder Series, sonder series, sonder, NYC in
 - https://jamesfloyds.world/pictures — Photo memories from travels and events
 - https://jamesfloyds.world/resume — Work experience, skills, and achievements
 - https://jamesfloyds.world/references — Testimonials and endorsements
-- https://jamesfloyds.world/museum — 3D interactive museum gallery
+
+The original 3D interactive museum version of this site lives on at https://jamesworldv2.lovable.app/ (separate Lovable-hosted app).

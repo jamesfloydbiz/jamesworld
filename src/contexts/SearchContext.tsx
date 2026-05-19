@@ -46,7 +46,7 @@ function extractFirstPath(text: string): NavSuggestion {
   const md = text.match(/\[([^\]]+)\]\((\/[A-Za-z0-9_\-/]+|https?:\/\/[^)\s]+)\)/);
   if (md) return { label: md[1], route: md[2] };
   // 2) Bare /path reference (e.g. "see /resume")
-  const bare = text.match(/(?:^|\s)(\/(?:portfolio|resume|content|projects|poems|pictures|builds|references|network|blueprints(?:\/mental-models)?|museum))\b/);
+  const bare = text.match(/(?:^|\s)(\/(?:portfolio|resume|content|projects|poems|pictures|builds|references|network|blueprints(?:\/mental-models)?|writing|sonder))\b/);
   if (bare) {
     const route = bare[1];
     const label = route.slice(1).split('/').pop()!.replace(/^[a-z]/, c => c.toUpperCase());

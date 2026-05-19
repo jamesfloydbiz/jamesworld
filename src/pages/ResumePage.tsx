@@ -238,7 +238,7 @@ const ResumePage = () => {
             animate={{ opacity: 1 }}
             transition={{ delay: 1.7, duration: 0.6 }}
           >
-            <Link to="/museum" className="hover:underline underline-offset-4">3D Museum</Link>
+            <a href="https://jamesworldv2.lovable.app" target="_blank" rel="noopener noreferrer" className="hover:underline underline-offset-4">3D Museum ↗</a>
             <Link to="/portfolio" className="hover:underline underline-offset-4">Portfolio</Link>
             <Link to="/poems" className="hover:underline underline-offset-4">Poetry</Link>
             <Link to="/projects" className="hover:underline underline-offset-4">Projects</Link>
