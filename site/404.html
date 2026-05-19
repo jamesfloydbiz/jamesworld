@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>404 — Page Not Found | James Floyd</title>
+  <meta name="description" content="That page doesn't exist on jamesfloyds.world.">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Mono:wght@300;400&family=EB+Garamond:ital,wght@0,400;1,400&display=swap">
+  <link rel="stylesheet" href="/css/site.css">
+  <style>
+    .notfound-wrap {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      text-align: center;
+    }
+    .notfound-code {
+      font-family: 'DM Mono', monospace;
+      font-size: 6rem;
+      line-height: 1;
+      color: var(--fg-12);
+      margin-bottom: 1.5rem;
+    }
+    .notfound-msg {
+      font-family: 'EB Garamond', serif;
+      font-size: 1.25rem;
+      color: var(--fg-60);
+      margin-bottom: 2.5rem;
+    }
+    .notfound-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px 24px;
+      justify-content: center;
+      list-style: none;
+    }
+    .notfound-links a {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--fg-50);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .notfound-links a:hover { color: var(--fg); }
+  </style>
+  <script>
+    /* /poetry/ redirect → /poems/ */
+    (function() {
+      var p = window.location.pathname;
+      if (p === '/poetry' || p === '/poetry/') {
+        window.location.replace('/poems/');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <div class="notfound-wrap">
+    <div class="notfound-code">404</div>
+    <p class="notfound-msg">That page doesn't exist on jamesfloyds.world.</p>
+    <ul class="notfound-links">
+      <li><a href="/">Home</a></li>
+      <li><a href="/sonder/">Sonder Series</a></li>
+      <li><a href="/portfolio/">Portfolio</a></li>
+      <li><a href="/projects/">Projects</a></li>
+      <li><a href="/writing/">Writing</a></li>
+      <li><a href="/poems/">Poems</a></li>
+      <li><a href="/pictures/">Memories</a></li>
+    </ul>
+  </div>
+</body>
+</html>

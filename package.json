@@ -10,7 +10,8 @@
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview",
-    "serve:site": "bun scripts/serve-site.mjs"
+    "serve:site": "bun scripts/serve-site.mjs",
+    "build:site": "bun scripts/fetch-substack.mjs && bun scripts/build-site.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
