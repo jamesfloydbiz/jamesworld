@@ -271,7 +271,7 @@
         btn.setAttribute('type', 'button');
         btn.innerHTML =
           '<h2 class="post-title">' + escapeHtml(post.title) + '</h2>' +
-          '<p class="post-meta">' + escapeHtml(post.displayDate) + (post.subtitle ? ' · ' + escapeHtml(post.subtitle) : '') + '</p>' +
+          '<p class="post-meta">' + escapeHtml(post.displayDate) + (post.subtitle ? ' · ' + escapeHtml(decodeEntities(post.subtitle)) : '') + '</p>' +
           '<p class="post-excerpt"></p>' +
           '<span class="post-cta">Read full post →</span>';
         btn.querySelector('.post-excerpt').innerHTML = post.excerpt;
@@ -287,6 +287,12 @@
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;')
         .replace(/"/g, '&quot;');
+    }
+
+    function decodeEntities(s) {
+      var el = document.createElement('div');
+      el.innerHTML = s;
+      return el.textContent || el.innerText || '';
     }
 
     fetch('/data/substack-posts.json')

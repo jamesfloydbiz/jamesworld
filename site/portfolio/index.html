@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Portfolio — James Floyd</title>
+  <meta name="description" content="James Floyd's portfolio — events produced, deals closed, and operations led across Jets and Capital, BetterWealth, Keiretsu Forum, and more.">
+  <link rel="canonical" href="https://jamesfloyds.world/portfolio/">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://jamesfloyds.world/portfolio/">
+  <meta property="og:title" content="Portfolio — James Floyd">
+  <meta property="og:description" content="The Times of James — Winging It at the Highest Level.">
+  <meta property="og:image" content="https://jamesfloyds.world/images/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Portfolio — James Floyd">
+  <meta name="twitter:description" content="The Times of James — Winging It at the Highest Level.">
+  <meta name="twitter:image" content="https://jamesfloyds.world/images/og-image.png">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=DM+Mono:wght@300;400&display=swap">
+  <style>
+    :root {
+      --pf-bg: #f5f0e8;
+      --pf-fg: #1a1a1a;
+      --pf-muted: #888;
+      --pf-body: #444;
+      --pf-border: rgba(0,0,0,0.1);
+      --pf-border-med: rgba(0,0,0,0.15);
+      --pf-green: #4A5D23;
+      --pf-brown: #6B4C3B;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--pf-bg);
+      color: var(--pf-fg);
+      font-family: 'EB Garamond', Georgia, serif;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    /* Grain overlay */
+    body::before {
+      content: '';
+      pointer-events: none;
+      position: fixed;
+      inset: 0;
+      z-index: 60;
+      opacity: 0.04;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-repeat: repeat;
+    }
+
+    /* Nav */
+    .pf-nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 40;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      border-bottom: 1px solid var(--pf-border);
+      background: var(--pf-bg);
+    }
+    .pf-nav__logo { width: 28px; height: 28px; display: block; }
+    .pf-nav__menu-btn {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--pf-muted);
+      background: none;
+      border: none;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+    .pf-nav__menu-btn:hover { color: var(--pf-fg); }
+
+    /* Full-screen nav overlay */
+    .pf-menu {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      background: var(--pf-bg);
+      align-items: center;
+      justify-content: center;
+    }
+    .pf-menu.is-open { display: flex; }
+    .pf-menu__list { list-style: none; text-align: center; }
+    .pf-menu__item { margin-bottom: 1.5rem; }
+    .pf-menu__link {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.25rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--pf-fg);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .pf-menu__link:hover { color: var(--pf-green); }
+    .pf-menu__back {
+      display: block;
+      margin-top: 1.5rem;
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--pf-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .pf-menu__back:hover { color: var(--pf-fg); }
+    .pf-menu__close {
+      margin-top: 3rem;
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: #999;
+      background: none;
+      border: none;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+    .pf-menu__close:hover { color: var(--pf-fg); }
+
+    /* Main content */
+    .pf-main {
+      position: relative;
+      z-index: 10;
+      padding-top: 44px;
+    }
+
+    /* Walking character strip */
+    .pf-walker-strip {
+      position: relative;
+      height: 32px;
+      background: var(--pf-bg);
+      border-top: 1px solid var(--pf-border);
+      border-bottom: 1px solid var(--pf-border);
+      overflow: hidden;
+    }
+    .pf-walker-dot {
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 14px;
+      height: 26px;
+      pointer-events: none;
+    }
+    .pf-walker-pin {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      left: 2%;
+      width: 16px;
+      height: 24px;
+      border: 1px solid rgba(0,0,0,0.15);
+      border-radius: 8px 8px 0 0;
+    }
+
+    /* Section wrapper */
+    .pf-section {
+      padding: 4rem 1.25rem;
+      max-width: 1024px;
+      margin: 0 auto;
+    }
+    @media (min-width: 768px) { .pf-section { padding: 4rem 3rem; } }
+
+    /* Section label */
+    .pf-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--pf-muted);
+      margin-bottom: 2rem;
+    }
+
+    /* Dividers */
+    .pf-rule { width: 100%; height: 1px; background: var(--pf-border); }
+    .pf-rule--med { background: var(--pf-border-med); }
+
+    /* Ticker */
+    @keyframes tickerScroll { from { transform: translateX(0); } to { transform: translateX(-33.33%); } }
+    @keyframes tickerScrollRev { from { transform: translateX(-33.33%); } to { transform: translateX(0); } }
+
+    .pf-ticker {
+      width: 100%;
+      overflow: hidden;
+      padding: 12px 0;
+      border-top: 1px solid;
+      border-bottom: 1px solid;
+    }
+    .pf-ticker--light { background: var(--pf-bg); border-color: rgba(0,0,0,0.1); }
+    .pf-ticker--dark { background: #111; border-color: #333; }
+    .pf-ticker__inner {
+      white-space: nowrap;
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+    }
+    .pf-ticker--light .pf-ticker__inner { color: #1a1a1a; animation: tickerScroll 50s linear infinite; }
+    .pf-ticker--dark .pf-ticker__inner { color: #f5f0e8; animation: tickerScrollRev 50s linear infinite; }
+
+    /* Logos bar */
+    @keyframes logosScroll { from { transform: translateX(-33.33%); } to { transform: translateX(0); } }
+    .pf-logos-bar {
+      width: 100%;
+      overflow: hidden;
+      padding: 24px 0;
+      border-top: 1px solid var(--pf-border);
+      border-bottom: 1px solid var(--pf-border);
+      background: var(--pf-bg);
+    }
+    .pf-logos-inner {
+      display: flex;
+      align-items: center;
+      gap: 48px;
+      white-space: nowrap;
+      animation: logosScroll 40s linear infinite;
+    }
+    .pf-logos-inner img {
+      height: 40px;
+      width: auto;
+      flex-shrink: 0;
+      filter: grayscale(1);
+      opacity: 0.7;
+      mix-blend-mode: multiply;
+      transition: opacity 0.3s;
+    }
+    .pf-logos-inner img:hover { opacity: 1; }
+
+    /* Masthead */
+    .pf-masthead-h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 7vw, 5.5rem);
+      line-height: 0.9;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      font-weight: 900;
+      text-align: center;
+      white-space: nowrap;
+    }
+    .pf-masthead-h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.5rem, 4vw, 3rem);
+      line-height: 1.1;
+      letter-spacing: 0.02em;
+      font-weight: 700;
+      text-align: center;
+    }
+    .pf-dateline {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--pf-muted);
+      text-align: center;
+    }
+
+    /* Photo card */
+    .pf-photo { overflow: hidden; }
+    .pf-photo img {
+      width: 100%;
+      height: 280px;
+      object-fit: cover;
+      filter: grayscale(1);
+      transition: transform 0.7s ease;
+      display: block;
+    }
+    @media (min-width: 768px) { .pf-photo img { height: 320px; } }
+    .pf-photo:hover img { transform: scale(1.03); }
+    .pf-photo__caption {
+      margin-top: 8px;
+      font-size: 11px;
+      font-style: italic;
+      color: #555;
+      line-height: 1.4;
+    }
+
+    /* 3-col grid */
+    .pf-col3 {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    @media (min-width: 768px) {
+      .pf-col3 {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0;
+        divide-x: 1px solid var(--pf-border);
+      }
+      .pf-col3 > * { padding: 0 2.5rem; border-right: 1px solid var(--pf-border); }
+      .pf-col3 > *:first-child { padding-left: 0; }
+      .pf-col3 > *:last-child { padding-right: 0; border-right: none; }
+    }
+
+    /* Scroll reveal */
+    .reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .reveal.is-visible { opacity: 1; transform: translateY(0); }
+
+    /* CTA links */
+    .pf-cta-link {
+      display: inline-block;
+      padding: 12px 24px;
+      border: 1px solid rgba(0,0,0,0.2);
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+    .pf-cta-link:hover { background: rgba(0,0,0,0.05); }
+    .pf-cta-link--green { color: var(--pf-green); }
+    .pf-cta-link--brown { color: var(--pf-brown); }
+
+    /* Explore links grid */
+    .pf-explore-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
+    @media (min-width: 768px) { .pf-explore-grid { grid-template-columns: repeat(2, 1fr); } }
+
+    .pf-explore-item {
+      display: block;
+      text-align: left;
+      padding: 16px 10px;
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+      text-decoration: none;
+      color: inherit;
+      transition: color 0.2s;
+    }
+    .pf-explore-item:hover .pf-explore-label { color: var(--pf-green); }
+    .pf-explore-label {
+      font-family: 'Playfair Display', serif;
+      font-size: 0.875rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .pf-explore-desc {
+      display: block;
+      margin-top: 4px;
+      font-size: 13px;
+      color: #777;
+    }
+
+    /* Hero img */
+    .pf-hero-img { width: 100%; height: auto; filter: grayscale(1); display: block; }
+
+    /* Classified */
+    .pf-classified {
+      border: 2px solid rgba(0,0,0,0.8);
+      padding: 32px;
+      max-width: 480px;
+      text-align: center;
+      margin: 0 auto;
+    }
+    .pf-classified-inner { border: 1px solid rgba(0,0,0,0.3); padding: 24px 32px; }
+
+    /* Footer */
+    .pf-footer {
+      border-top: 1px solid var(--pf-border);
+      padding: 24px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 1024px;
+      margin: 0 auto;
+    }
+    .pf-footer span {
+      font-family: 'DM Mono', monospace;
+      font-size: 8px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--pf-muted);
+    }
+    .pf-footer__center { display: none; }
+    @media (min-width: 768px) { .pf-footer__center { display: inline; color: #aaa; } }
+  </style>
+</head>
+<body>
+
+  <!-- Fixed Nav -->
+  <nav class="pf-nav">
+    <a href="/" aria-label="Home">
+      <img class="pf-nav__logo" src="/images/JF_logo_transparent-2.png" alt="JF">
+    </a>
+    <button class="pf-nav__menu-btn" id="pf-menu-btn" aria-expanded="false">Menu</button>
+  </nav>
+
+  <!-- Full-screen nav overlay -->
+  <div class="pf-menu" id="pf-menu" aria-hidden="true">
+    <nav>
+      <ul class="pf-menu__list">
+        <li class="pf-menu__item"><a href="/portfolio/" class="pf-menu__link">Portfolio</a></li>
+        <li class="pf-menu__item"><a href="/projects/" class="pf-menu__link">Projects</a></li>
+        <li class="pf-menu__item"><a href="/content/" class="pf-menu__link">Content</a></li>
+        <li class="pf-menu__item"><a href="/network/" class="pf-menu__link">Network</a></li>
+        <li class="pf-menu__item"><a href="/blueprints/" class="pf-menu__link">Blueprints</a></li>
+        <li class="pf-menu__item"><a href="/" class="pf-menu__back">← Back to Gallery</a></li>
+      </ul>
+      <button class="pf-menu__close" id="pf-menu-close">Close</button>
+    </nav>
+  </div>
+
+  <!-- Main Content -->
+  <main class="pf-main">
+
+    <!-- Walking character strip -->
+    <div class="pf-walker-strip">
+      <div class="pf-walker-pin"></div>
+      <svg class="pf-walker-dot" id="pf-walker" style="left:5%" viewBox="0 0 14 26" fill="none">
+        <circle cx="7" cy="3.5" r="3.5" fill="#1a1a1a"/>
+        <ellipse cx="7" cy="16" rx="3.5" ry="8" fill="#1a1a1a"/>
+      </svg>
+    </div>
+
+    <!-- ═══ 1. MASTHEAD ═══ -->
+    <section class="pf-section" style="padding-bottom:2rem;">
+      <div class="reveal">
+        <h1 class="pf-masthead-h1">The Times of James</h1>
+      </div>
+
+      <div class="pf-rule pf-rule--med" style="margin:16px 0;"></div>
+
+      <div class="reveal" style="transition-delay:0.1s">
+        <p class="pf-dateline" id="pf-dateline">EST. 2002 · — · CONNECTING · CREATING · LIVING</p>
+      </div>
+
+      <div class="pf-rule" style="margin:24px 0;"></div>
+
+      <div class="reveal" style="transition-delay:0.2s">
+        <h2 class="pf-masthead-h2">Winging It at the Highest Level</h2>
+      </div>
+
+      <div class="reveal" style="transition-delay:0.3s">
+        <p style="margin-top:16px;font-size:1.25rem;color:#555;text-align:center;max-width:800px;margin-left:auto;margin-right:auto;line-height:1.7;">
+          A maniacal innovator who went off the beaten path to connect, create, and live.
+        </p>
+      </div>
+
+      <!-- Hero image -->
+      <div class="reveal" style="transition-delay:0.4s;margin-top:32px;">
+        <img class="pf-hero-img" src="/pictures/Jets_&_Capital_Miami_BTS_Day_0-58.jpeg" alt="James Floyd at Jets and Capital Miami" loading="eager">
+      </div>
+
+      <!-- CTAs -->
+      <div class="reveal" style="transition-delay:0.5s;margin-top:32px;display:flex;flex-wrap:wrap;gap:16px;">
+        <a href="https://www.instagram.com/jamesfloydsworld/" target="_blank" rel="noopener noreferrer" class="pf-cta-link pf-cta-link--green">
+          Follow the Journey →
+        </a>
+        <a href="https://www.linkedin.com/in/jamesfloydl/" target="_blank" rel="noopener noreferrer" class="pf-cta-link pf-cta-link--brown">
+          Work or Connect →
+        </a>
+      </div>
+
+      <div class="pf-rule" style="margin-top:40px;"></div>
+    </section>
+
+    <!-- ═══ 2. CITIES TICKER ═══ -->
+    <div class="pf-ticker pf-ticker--dark">
+      <div class="pf-ticker__inner">
+        San Diego · Singapore · Hong Kong · Tokyo · Bangkok · Macleod Ganj · Dhaka · Chichén Itzá · Quito · New York · Los Angeles · Vancouver · Chicago · Miami · San Francisco · Palm Beach · Austin ·
+        San Diego · Singapore · Hong Kong · Tokyo · Bangkok · Macleod Ganj · Dhaka · Chichén Itzá · Quito · New York · Los Angeles · Vancouver · Chicago · Miami · San Francisco · Palm Beach · Austin ·
+        San Diego · Singapore · Hong Kong · Tokyo · Bangkok · Macleod Ganj · Dhaka · Chichén Itzá · Quito · New York · Los Angeles · Vancouver · Chicago · Miami · San Francisco · Palm Beach · Austin ·
+      </div>
+    </div>
+
+    <!-- ═══ 3. THE STORY ═══ -->
+    <section class="pf-section">
+      <div class="reveal"><p class="pf-label">§ The Story</p></div>
+
+      <div class="pf-col3">
+        <div class="reveal" style="transition-delay:0s">
+          <h3 style="font-family:'Playfair Display',serif;font-size:1.25rem;font-weight:700;margin-bottom:8px;">The Before</h3>
+          <p style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:var(--pf-muted);margin-bottom:16px;">No safety net. No map.</p>
+          <p style="font-size:15px;line-height:1.7;color:var(--pf-body);">In 2020 James drove down to San Diego with everything he owned packed into a green 2002 Subaru Outback. He had no income, no connections, and no dreams.</p>
+        </div>
+        <div class="reveal" style="transition-delay:0.15s">
+          <h3 style="font-family:'Playfair Display',serif;font-size:1.25rem;font-weight:700;margin-bottom:8px;">The Leap</h3>
+          <p style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:var(--pf-muted);margin-bottom:16px;">Cold emails. Obsession. The world opens.</p>
+          <p style="font-size:15px;line-height:1.7;color:var(--pf-body);">When James hit the bottom he was laying on the carpet of his depressing apartment watching the fan go in circles. He joined a sales job, did 20,000 conversations and built ~40 sales people. Over the next few years of his life he sent cold emails, handwritten notes, and gifts. He sent himself around the world, and talked to the wisest people he could get access to all the while trying everything new he could.</p>
+        </div>
+        <div class="reveal" style="transition-delay:0.3s">
+          <h3 style="font-family:'Playfair Display',serif;font-size:1.25rem;font-weight:700;margin-bottom:8px;">The Now</h3>
+          <p style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:var(--pf-muted);margin-bottom:16px;">They come to me now.</p>
+          <p style="font-size:15px;line-height:1.7;color:var(--pf-body);">Now James has an extensive network of family offices, investors, creators, and everybody in between. He has done events around the United States for thousands of people, and worked with some of the most high-profile people and companies in the world. People from every walk of life reach out to get connected to people in his network, get advice on life, business, and health, and to work with him.</p>
+        </div>
+      </div>
+
+      <!-- In the Field photos -->
+      <div class="reveal" style="transition-delay:0.5s;margin-top:48px;padding-top:32px;border-top:1px solid var(--pf-border);">
+        <p class="pf-label">In the Field</p>
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:16px;">
+          <div class="pf-photo">
+            <img src="/pictures/IMG_0647.jpg" alt="Private Security for Byron Donald" loading="lazy">
+            <p class="pf-photo__caption">Private Security for Byron Donald</p>
+          </div>
+          <div class="pf-photo">
+            <img src="/pictures/IMG_1311.jpeg" alt="Campfires, songs, and quality conversations" loading="lazy">
+            <p class="pf-photo__caption">Campfires, songs, and quality conversations</p>
+          </div>
+          <div class="pf-photo">
+            <img src="/pictures/IMG_1978_Original.jpg" alt="Jets and Capital Miami" loading="lazy">
+            <p class="pf-photo__caption">Jets and Capital Miami</p>
+          </div>
+          <div class="pf-photo">
+            <img src="/pictures/IMG_4347.jpeg" alt="Relationships with extraordinary people" loading="lazy">
+            <p class="pf-photo__caption">Relationships with extraordinary people produce exponential returns</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="pf-rule"></div>
+
+    <!-- ═══ 4. LOGOS BAR ═══ -->
+    <section style="max-width:1024px;margin:0 auto;">
+      <div class="reveal"><p class="pf-label" style="padding:48px 20px 16px;">Organizations James Has Worked With</p></div>
+    </section>
+    <div class="pf-logos-bar">
+      <div class="pf-logos-inner">
+        <img src="/logos/loeb_nyc.png" alt="Loeb NYC" loading="lazy">
+        <img src="/logos/blue_devil.png" alt="Blue Devil" loading="lazy">
+        <img src="/logos/jacob_green.png" alt="Jacob Green Charity Golf" loading="lazy">
+        <img src="/logos/jets.png" alt="Jets & Capital" loading="lazy">
+        <img src="/logos/keiretsu.png" alt="Keiretsu Forum" loading="lazy">
+        <img src="/logos/betterwealth.png" alt="BetterWealth" loading="lazy">
+        <img src="/logos/champions.jpg" alt="Champions of Change" loading="lazy">
+        <img src="/logos/sounders_fc.png" alt="Seattle Sounders" loading="lazy">
+        <img src="/logos/seahawks.png" alt="Seahawks" loading="lazy">
+        <!-- Duplicate rows for seamless loop -->
+        <img src="/logos/loeb_nyc.png" alt="Loeb NYC" loading="lazy">
+        <img src="/logos/blue_devil.png" alt="Blue Devil" loading="lazy">
+        <img src="/logos/jacob_green.png" alt="Jacob Green Charity Golf" loading="lazy">
+        <img src="/logos/jets.png" alt="Jets & Capital" loading="lazy">
+        <img src="/logos/keiretsu.png" alt="Keiretsu Forum" loading="lazy">
+        <img src="/logos/betterwealth.png" alt="BetterWealth" loading="lazy">
+        <img src="/logos/champions.jpg" alt="Champions of Change" loading="lazy">
+        <img src="/logos/sounders_fc.png" alt="Seattle Sounders" loading="lazy">
+        <img src="/logos/seahawks.png" alt="Seahawks" loading="lazy">
+        <!-- Third row -->
+        <img src="/logos/loeb_nyc.png" alt="Loeb NYC" loading="lazy">
+        <img src="/logos/blue_devil.png" alt="Blue Devil" loading="lazy">
+        <img src="/logos/jacob_green.png" alt="Jacob Green Charity Golf" loading="lazy">
+        <img src="/logos/jets.png" alt="Jets & Capital" loading="lazy">
+        <img src="/logos/keiretsu.png" alt="Keiretsu Forum" loading="lazy">
+        <img src="/logos/betterwealth.png" alt="BetterWealth" loading="lazy">
+        <img src="/logos/champions.jpg" alt="Champions of Change" loading="lazy">
+        <img src="/logos/sounders_fc.png" alt="Seattle Sounders" loading="lazy">
+        <img src="/logos/seahawks.png" alt="Seahawks" loading="lazy">
+      </div>
+    </div>
+
+    <div class="pf-rule"></div>
+
+    <!-- ═══ 5. FIELD NOTES ═══ -->
+    <section class="pf-section">
+      <div class="reveal"><p class="pf-label">§ Field Notes</p></div>
+
+      <div class="pf-col3">
+        <div class="reveal" style="transition-delay:0s">
+          <h3 style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;margin-bottom:12px;">48 Hours, 500 Guests</h3>
+          <p style="font-size:15px;line-height:1.7;color:var(--pf-body);">When Trump's arrival forced a 500-person gala to completely restructure with 24 hours notice, James wrote the cold-call scripts, rallied the team, and helped turn what could have been a disaster into what guests called 'double the fun.' Chaos is just an opportunity with bad PR.</p>
+        </div>
+        <div class="reveal" style="transition-delay:0.15s">
+          <h3 style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;margin-bottom:12px;">The Elder in the Amazon</h3>
+          <p style="font-size:15px;line-height:1.7;color:var(--pf-body);">Deep in the Amazon, James spent a day working alongside a 94-year-old tribal elder — farming, listening, communicating entirely in Spanish. No agenda. No pitch. Just presence. She never left that jungle, and she had more peace than anyone he'd met in any boardroom. That day redefined what success means to him.</p>
+        </div>
+        <div class="reveal" style="transition-delay:0.3s">
+          <h3 style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;margin-bottom:12px;">No, Not That Island</h3>
+          <p style="font-size:15px;line-height:1.7;color:var(--pf-body);">A cold email. A yes. A weekend on an island with one of the most connected builders in the world. They hiked, cold plunged, and talked for hours. It was a breakthrough, where James realized nobody is a hero, so just make yourself yours.</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="pf-rule"></div>
+
+    <!-- ═══ 6. MESSAGE FROM JAMES ═══ -->
+    <section class="pf-section">
+      <div class="reveal"><p class="pf-label">§ A Message from James</p></div>
+
+      <div class="reveal" style="transition-delay:0.1s;max-width:640px;margin:0 auto 0 48px;border-left:2px solid rgba(0,0,0,0.1);padding-left:32px;">
+        <p style="font-size:1.1rem;font-style:italic;color:#555;margin-bottom:24px;">Dear reader,</p>
+        <p style="font-size:15px;line-height:1.8;color:var(--pf-body);margin-bottom:16px;">If you've scrolled this far, you are curious. I am too.</p>
+        <p style="font-size:15px;line-height:1.8;color:var(--pf-body);margin-bottom:16px;">There's a lot more to know about me than what I can fit here, so here is what you need to know.</p>
+        <p style="font-size:15px;line-height:1.8;color:var(--pf-body);margin-bottom:16px;">My greatest strength is the depth at which I care. About others and about myself.</p>
+        <p style="font-size:15px;line-height:1.8;color:var(--pf-body);margin-bottom:16px;">Including you.</p>
+        <p style="font-size:15px;line-height:1.8;color:var(--pf-body);margin-bottom:16px;">My network is vast, and my experience even more so, but I can't promise to lead you where you want to go. I also can't follow you, because you do not know where I want to go.</p>
+        <p style="font-size:15px;line-height:1.8;color:var(--pf-body);margin-bottom:24px;">I will however, walk alongside you. It would be an honor if you joined the ranks of people who have walked alongside me.</p>
+        <p style="font-family:'Playfair Display',serif;font-size:0.875rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;">— James Floyd</p>
+      </div>
+    </section>
+
+    <div class="pf-rule"></div>
+
+    <!-- ═══ 7. CLASSIFIED ═══ -->
+    <section class="pf-section" style="display:flex;justify-content:center;">
+      <div class="reveal pf-classified">
+        <div class="pf-classified-inner">
+          <p style="font-family:'DM Mono',monospace;font-size:8px;letter-spacing:0.4em;text-transform:uppercase;color:var(--pf-muted);margin-bottom:12px;">— Classified —</p>
+          <h3 style="font-family:'Playfair Display',serif;font-size:1.75rem;font-weight:900;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:16px;">Seeking: Curiosity</h3>
+          <div style="width:48px;height:1px;background:rgba(0,0,0,0.3);margin:0 auto 16px;"></div>
+          <p style="font-size:14px;line-height:1.7;color:var(--pf-body);margin-bottom:24px;font-style:italic;">
+            Builders, investors, creators, and those who refuse to stay in one lane. If you are any of the above and wish to correspond, the publisher welcomes your inquiry.
+          </p>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <a href="https://www.instagram.com/jamesfloydsworld/" target="_blank" rel="noopener noreferrer"
+               style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--pf-green);text-decoration:none;transition:text-decoration 0.2s;">
+              ✦ Follow the Journey — Instagram
+            </a>
+            <a href="https://www.linkedin.com/in/jamesfloydl/" target="_blank" rel="noopener noreferrer"
+               style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--pf-brown);text-decoration:none;">
+              ✦ Work or Connect — LinkedIn
+            </a>
+          </div>
+          <p style="margin-top:24px;font-family:'DM Mono',monospace;font-size:7px;letter-spacing:0.3em;text-transform:uppercase;color:#aaa;">
+            Replies answered personally · No intermediaries
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <div class="pf-rule"></div>
+
+    <!-- ═══ 8. EXPLORE ═══ -->
+    <section class="pf-section">
+      <div class="reveal"><p class="pf-label">§ Explore</p></div>
+
+      <div class="pf-explore-grid">
+        <a href="/sonder/" class="pf-explore-item reveal" style="transition-delay:0s"><span class="pf-explore-label">Sonder Series →</span><span class="pf-explore-desc">100 conversations with strangers in NYC.</span></a>
+        <a href="/portfolio/" class="pf-explore-item reveal" style="transition-delay:0.04s"><span class="pf-explore-label">Portfolio →</span><span class="pf-explore-desc">The full narrative — where it started, how it unfolded.</span></a>
+        <a href="/projects/" class="pf-explore-item reveal" style="transition-delay:0.08s"><span class="pf-explore-label">Projects →</span><span class="pf-explore-desc">What James has built and been part of building.</span></a>
+        <a href="/builds/" class="pf-explore-item reveal" style="transition-delay:0.12s"><span class="pf-explore-label">Builds →</span><span class="pf-explore-desc">AI automations and operational systems James has designed.</span></a>
+        <a href="/content/" class="pf-explore-item reveal" style="transition-delay:0.16s"><span class="pf-explore-label">Content →</span><span class="pf-explore-desc">Writing, videos, and things James has published.</span></a>
+        <a href="/network/" class="pf-explore-item reveal" style="transition-delay:0.2s"><span class="pf-explore-label">Network →</span><span class="pf-explore-desc">The values that made the path, and how to get in touch.</span></a>
+        <a href="/blueprints/" class="pf-explore-item reveal" style="transition-delay:0.24s"><span class="pf-explore-label">Blueprints →</span><span class="pf-explore-desc">Frameworks and playbooks for doing things differently.</span></a>
+        <a href="/resume/" class="pf-explore-item reveal" style="transition-delay:0.28s"><span class="pf-explore-label">Resume →</span><span class="pf-explore-desc">The traditional view — roles, timelines, outcomes.</span></a>
+        <a href="/references/" class="pf-explore-item reveal" style="transition-delay:0.32s"><span class="pf-explore-label">References →</span><span class="pf-explore-desc">What others have said about James.</span></a>
+        <a href="/poems/" class="pf-explore-item reveal" style="transition-delay:0.36s"><span class="pf-explore-label">Poems →</span><span class="pf-explore-desc">Thoughts that needed a different format.</span></a>
+        <a href="/pictures/" class="pf-explore-item reveal" style="transition-delay:0.4s"><span class="pf-explore-label">Memories →</span><span class="pf-explore-desc">Snapshots from the road.</span></a>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="pf-footer">
+      <span>The Times of James</span>
+      <span class="pf-footer__center">Connecting — Creating — Living</span>
+      <img src="/images/JF_logo_transparent-2.png" alt="JF" style="width:20px;height:20px;">
+    </footer>
+
+  </main>
+
+  <script>
+    // Set dateline date
+    var today = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }).toUpperCase();
+    document.getElementById('pf-dateline').textContent = 'EST. 2002 · ' + today + ' · CONNECTING · CREATING · LIVING';
+
+    // Nav menu toggle
+    var menuBtn = document.getElementById('pf-menu-btn');
+    var menu = document.getElementById('pf-menu');
+    var menuClose = document.getElementById('pf-menu-close');
+
+    menuBtn.addEventListener('click', function() {
+      var open = menu.classList.toggle('is-open');
+      menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      menu.setAttribute('aria-hidden', open ? 'false' : 'true');
+    });
+    menuClose.addEventListener('click', function() {
+      menu.classList.remove('is-open');
+      menuBtn.setAttribute('aria-expanded', 'false');
+    });
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        menu.classList.remove('is-open');
+        menuBtn.setAttribute('aria-expanded', 'false');
+      }
+    });
+
+    // Walking character scroll progress
+    var walker = document.getElementById('pf-walker');
+    function updateWalker() {
+      var scrollTop = window.scrollY;
+      var docH = document.documentElement.scrollHeight - window.innerHeight;
+      var progress = docH > 0 ? Math.min(1, scrollTop / docH) : 0;
+      var pct = 5 + progress * 90;
+      walker.style.left = pct + '%';
+    }
+    window.addEventListener('scroll', updateWalker, { passive: true });
+    updateWalker();
+
+    // Scroll reveal using IntersectionObserver
+    var reveals = document.querySelectorAll('.reveal');
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { rootMargin: '-60px' });
+
+    reveals.forEach(function(el) {
+      // Apply transition-delay from style if present
+      observer.observe(el);
+    });
+
+    // Immediately reveal above-fold elements
+    reveals.forEach(function(el) {
+      var rect = el.getBoundingClientRect();
+      if (rect.top < window.innerHeight) {
+        setTimeout(function() { el.classList.add('is-visible'); }, 0);
+      }
+    });
+  </script>
+</body>
+</html>
