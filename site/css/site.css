@@ -447,7 +447,10 @@ dialog {
   padding: 0;
   max-width: min(680px, 94vw);
   width: 100%;
-  max-height: 85vh;
+  /* Explicit height (not max-height) so flex:1 children — body content —
+     have a real height to grow into. With max-height alone the dialog
+     sized to its content and the body collapsed to almost nothing. */
+  height: 85vh;
   overflow: hidden;
   display: flex;
   flex-direction: column;
