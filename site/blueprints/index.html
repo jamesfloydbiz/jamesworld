@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Blueprints — James Floyd</title>
+  <meta name="description" content="Frameworks and mental models James Floyd uses to translate chaos into structure across teams, deals, and life.">
+  <link rel="canonical" href="https://jamesfloyds.world/blueprints/">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://jamesfloyds.world/blueprints/">
+  <meta property="og:title" content="Blueprints — James Floyd">
+  <meta property="og:description" content="Frameworks and mental models — 100% foolproof processes to be awesome.">
+  <meta property="og:image" content="https://jamesfloyds.world/images/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Blueprints — James Floyd">
+  <meta name="twitter:description" content="Frameworks and mental models — 100% foolproof processes to be awesome.">
+  <meta name="twitter:image" content="https://jamesfloyds.world/images/og-image.png">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=DM+Mono:wght@300;400&family=Lora:ital,wght@0,400;0,500;1,400&family=Space+Mono:wght@400;700&display=swap">
+  <link rel="stylesheet" href="/css/site.css">
+</head>
+<body>
+
+  <header class="site-header anim-slide-dn">
+    <a href="/" class="site-header__logo" aria-label="Return to home"><img src="/logo.svg" alt="JF"></a>
+    <button class="site-header__menu-btn" id="menu-btn" aria-expanded="false" aria-controls="site-nav">Menu</button>
+  </header>
+
+  <nav class="site-nav" id="site-nav" aria-label="Main navigation">
+    <ul class="site-nav__list">
+      <li class="site-nav__item"><a href="/sonder/" class="site-nav__link">Sonder Series</a></li>
+      <li class="site-nav__item"><a href="/portfolio/" class="site-nav__link">Portfolio</a></li>
+      <li class="site-nav__item" data-has-sub>
+        <a href="/projects/" class="site-nav__link">Projects</a>
+        <div class="site-nav__sub">
+          <a href="/portfolio/" class="site-nav__sub-link">Portfolio</a>
+          <a href="/resume/" class="site-nav__sub-link">Resume</a>
+          <a href="/references/" class="site-nav__sub-link">References</a>
+        </div>
+      </li>
+      <li class="site-nav__item" data-has-sub>
+        <a href="/content/" class="site-nav__link">Content</a>
+        <div class="site-nav__sub">
+          <a href="/writing/" class="site-nav__sub-link">Writing</a>
+          <a href="/poems/" class="site-nav__sub-link">Poems</a>
+          <a href="/pictures/" class="site-nav__sub-link">Memories</a>
+        </div>
+      </li>
+      <li class="site-nav__item"><a href="/network/" class="site-nav__link">Network</a></li>
+      <li class="site-nav__item"><a href="/blueprints/" class="site-nav__link">Blueprints</a></li>
+      <li class="site-nav__item" style="margin-top:24px;"><a href="/" class="site-nav__back">Back to Gallery</a></li>
+    </ul>
+    <button class="site-nav__close" id="nav-close">Close</button>
+  </nav>
+
+  <main class="page">
+    <div class="page-content anim-fade-up" style="animation-delay:0.4s">
+
+      <h1 class="page-title">Blueprints</h1>
+      <p class="page-subtitle" style="font-size:0.75rem;letter-spacing:0.1em;">100% foolproof processes to be awesome</p>
+
+      <!-- Bookshelf -->
+      <div class="shelf">
+
+        <!-- Top shelf: Music + Books -->
+        <div class="shelf-row">
+
+          <!-- Music / Gramophone -->
+          <div class="shelf-item" data-shelf-id="music">
+            <span class="shelf-item__label">
+              Music
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            </span>
+            <svg class="shelf-item__svg" viewBox="0 0 100 94">
+              <!-- Base platform -->
+              <rect x="25" y="82" width="50" height="6" fill="none" stroke="hsl(0 0% 70%)" stroke-width="1" rx="1"/>
+              <!-- Cabinet body -->
+              <rect x="30" y="62" width="40" height="22" fill="none" stroke="hsl(0 0% 70%)" stroke-width="1" rx="1"/>
+              <!-- Crank handle -->
+              <line x1="70" y1="72" x2="78" y2="72" fill="none" stroke="hsl(0 0% 40%)" stroke-width="0.6" stroke-linecap="round"/>
+              <circle cx="80" cy="72" r="2" fill="none" stroke="hsl(0 0% 40%)" stroke-width="0.6"/>
+              <!-- Turntable disc -->
+              <ellipse cx="50" cy="62" rx="14" ry="3" fill="none" stroke="hsl(0 0% 40%)" stroke-width="0.6"/>
+              <!-- Pipe neck -->
+              <line x1="50" y1="59" x2="50" y2="44" fill="none" stroke="hsl(0 0% 70%)" stroke-width="1" stroke-linecap="round"/>
+              <!-- Pipe elbow -->
+              <path d="M 50 44 Q 52 40 56 38" fill="none" stroke="hsl(0 0% 70%)" stroke-width="1" stroke-linecap="round"/>
+              <!-- Horn bell -->
+              <path d="M 56 38 Q 48 30 38 22" fill="none" stroke="hsl(0 0% 70%)" stroke-width="1" stroke-linecap="round"/>
+              <path d="M 56 38 Q 64 30 74 26" fill="none" stroke="hsl(0 0% 70%)" stroke-width="1" stroke-linecap="round"/>
+              <!-- Horn rim arc -->
+              <path d="M 38 22 Q 56 16 74 26" fill="none" stroke="hsl(0 0% 70%)" stroke-width="1" stroke-linecap="round"/>
+              <!-- Inner horn detail -->
+              <path d="M 44 26 Q 56 22 68 28" fill="none" stroke="hsl(0 0% 40%)" stroke-width="0.6" stroke-linecap="round"/>
+              <!-- Music notes (hidden, shown on hover via CSS) -->
+              <text class="music-note music-note-1" x="46" y="20" fill="hsl(0 0% 70%)" font-size="8" font-family="serif">♪</text>
+              <text class="music-note music-note-2" x="58" y="16" fill="hsl(0 0% 55%)" font-size="7" font-family="serif">♫</text>
+              <text class="music-note music-note-3" x="68" y="22" fill="hsl(0 0% 65%)" font-size="8" font-family="serif">♪</text>
+            </svg>
+            <!-- No popup — this is a link item, JS will open Spotify -->
+          </div>
+
+          <!-- Books / BookSpines -->
+          <div class="shelf-item shelf-item--books" data-shelf-id="books">
+            <span class="shelf-item__label">Books</span>
+            <svg class="shelf-item__svg" viewBox="0 0 140 80">
+              <rect x="8" y="2" width="14" height="78" fill="none" stroke="hsl(0 0% 70%)" stroke-width="1" rx="0.5"/>
+              <text x="15" y="45" fill="hsl(0 0% 60%)" font-size="3.2" text-anchor="middle" transform="rotate(-90 15 45)" letter-spacing="1" font-family="monospace">4000 WEEKS</text>
+              <rect x="25" y="10" width="18" height="70" fill="none" stroke="hsl(0 0% 70%)" stroke-width="1" rx="0.5"/>
+              <text x="34" y="48" fill="hsl(0 0% 60%)" font-size="2.8" text-anchor="middle" transform="rotate(-90 34 48)" letter-spacing="0.8" font-family="monospace">THIRD DOOR</text>
+              <rect x="46" y="5" width="20" height="75" fill="none" stroke="hsl(0 0% 70%)" stroke-width="1" rx="0.5"/>
+              <text x="56" y="45" fill="hsl(0 0% 60%)" font-size="2.8" text-anchor="middle" transform="rotate(-90 56 45)" letter-spacing="0.5" font-family="monospace">IRON JOHN</text>
+              <rect x="69" y="12" width="12" height="68" fill="none" stroke="hsl(0 0% 70%)" stroke-width="1" rx="0.5"/>
+              <text x="75" y="48" fill="hsl(0 0% 60%)" font-size="2.6" text-anchor="middle" transform="rotate(-90 75 48)" letter-spacing="0.5" font-family="monospace">WINNERS</text>
+              <rect x="84" y="4" width="22" height="76" fill="none" stroke="hsl(0 0% 70%)" stroke-width="1" rx="0.5"/>
+              <text x="95" y="42" fill="hsl(0 0% 60%)" font-size="2.3" text-anchor="middle" transform="rotate(-90 95 42)" letter-spacing="0.3" font-family="monospace">LESSONS OF HISTORY</text>
+              <rect x="108" y="8" width="16" height="72" fill="none" stroke="hsl(0 0% 70%)" stroke-width="1" rx="0.5" transform="rotate(5 116 44)"/>
+              <text x="116" y="44" fill="hsl(0 0% 60%)" font-size="2.3" text-anchor="middle" transform="rotate(-85 116 44)" letter-spacing="0.5" font-family="monospace">NO SMALL PLANS</text>
+            </svg>
+            <div class="shelf-popup is-right" id="popup-books">
+              <div class="shelf-popup__arrow"></div>
+              <p class="shelf-popup__title">Books</p>
+              <p class="shelf-popup__body">4000 Weeks, The Third Door, Make No Small Plans, Iron John, Winners Take All, The Lessons of History by Ariel and Will Durant</p>
+              <button class="shelf-popup__close" data-close-popup>Close</button>
+            </div>
+          </div>
+
+        </div>
+        <div class="shelf-line"></div>
+
+        <!-- Bottom shelf: Mental Models + Health + Money -->
+        <div class="shelf-row" style="margin-top:2rem;">
+
+          <!-- Mental Models / SwingingSticks -->
+          <div class="shelf-item" data-shelf-id="models" data-internal-link="/blueprints/mental-models/">
+            <span class="shelf-item__label">Mental Models</span>
+            <svg class="shelf-item__svg" viewBox="0 0 100 90">
+              <!-- Base -->
+              <rect x="30" y="82" width="40" height="4" fill="none" stroke="hsl(0 0% 70%)" stroke-width="1" rx="1"/>
+              <!-- Vertical post -->
+              <line x1="50" y1="82" x2="50" y2="40" fill="none" stroke="hsl(0 0% 70%)" stroke-width="1" stroke-linecap="round"/>
+              <!-- Pivot point -->
+              <circle cx="50" cy="40" r="2" fill="none" stroke="hsl(0 0% 70%)" stroke-width="1"/>
+              <!-- Long arm + short arm (CSS animated) -->
+              <g class="anim-swing-1">
+                <line x1="50" y1="40" x2="50" y2="8" stroke="hsl(0 0% 70%)" stroke-width="1.2" stroke-linecap="round"/>
+                <circle cx="50" cy="8" r="2.5" fill="none" stroke="hsl(0 0% 70%)" stroke-width="1"/>
+                <g class="anim-swing-2">
+                  <line x1="50" y1="8" x2="50" y2="22" stroke="hsl(0 0% 70%)" stroke-width="1" stroke-linecap="round"/>
+                  <circle cx="50" cy="22" r="2" fill="none" stroke="hsl(0 0% 70%)" stroke-width="1"/>
+                </g>
+              </g>
+            </svg>
+          </div>
+
+          <!-- Health / FruitBasket -->
+          <div class="shelf-item shelf-item--health" data-shelf-id="health">
+            <span class="shelf-item__label">Health</span>
+            <svg class="shelf-item__svg" viewBox="0 0 100 80">
+              <!-- Basket body -->
+              <path d="M 25 42 Q 25 74 50 74 Q 75 74 75 42" fill="none" stroke="hsl(0 0% 70%)" stroke-width="1" stroke-linecap="round"/>
+              <line x1="23" y1="42" x2="77" y2="42" fill="none" stroke="hsl(0 0% 70%)" stroke-width="1"/>
+              <!-- Basket handle -->
+              <path d="M 35 42 Q 50 22 65 42" fill="none" stroke="hsl(0 0% 70%)" stroke-width="1" stroke-linecap="round"/>
+              <!-- Weave lines horizontal -->
+              <path d="M 28 50 Q 50 49 72 50" fill="none" stroke="hsl(0 0% 40%)" stroke-width="0.6"/>
+              <path d="M 30 58 Q 50 57 70 58" fill="none" stroke="hsl(0 0% 40%)" stroke-width="0.6"/>
+              <path d="M 34 66 Q 50 65 66 66" fill="none" stroke="hsl(0 0% 40%)" stroke-width="0.6"/>
+              <!-- Weave lines vertical -->
+              <line x1="42" y1="42" x2="40" y2="72" fill="none" stroke="hsl(0 0% 40%)" stroke-width="0.6"/>
+              <line x1="50" y1="42" x2="50" y2="74" fill="none" stroke="hsl(0 0% 40%)" stroke-width="0.6"/>
+              <line x1="58" y1="42" x2="60" y2="72" fill="none" stroke="hsl(0 0% 40%)" stroke-width="0.6"/>
+              <!-- Apple -->
+              <circle cx="38" cy="35" r="6" fill="none" stroke="hsl(0 0% 70%)" stroke-width="1"/>
+              <line x1="38" y1="29" x2="38" y2="25" fill="none" stroke="hsl(0 0% 40%)" stroke-width="0.6" stroke-linecap="round"/>
+              <path d="M 38 26 Q 42 23 44 26" fill="none" stroke="hsl(0 0% 40%)" stroke-width="0.6" stroke-linecap="round"/>
+              <!-- Banana -->
+              <path d="M 50 32 Q 58 24 64 30" fill="none" stroke="hsl(0 0% 70%)" stroke-width="1" stroke-linecap="round"/>
+              <path d="M 50 32 Q 56 28 64 30" fill="none" stroke="hsl(0 0% 40%)" stroke-width="0.6" stroke-linecap="round"/>
+              <!-- Broccoli -->
+              <line x1="68" y1="42" x2="68" y2="34" fill="none" stroke="hsl(0 0% 40%)" stroke-width="0.6" stroke-linecap="round"/>
+              <circle cx="64" cy="32" r="3" fill="none" stroke="hsl(0 0% 70%)" stroke-width="1"/>
+              <circle cx="68" cy="30" r="3" fill="none" stroke="hsl(0 0% 70%)" stroke-width="1"/>
+              <circle cx="72" cy="32" r="3" fill="none" stroke="hsl(0 0% 70%)" stroke-width="1"/>
+            </svg>
+            <div class="shelf-popup is-left" id="popup-health">
+              <div class="shelf-popup__arrow"></div>
+              <p class="shelf-popup__title">Health</p>
+              <p class="shelf-popup__body">Move — pushups, pullups, farmer's carries, rucking, walking, Russian twists, pike pushups, pistol squats.
+
+Eat — high protein, enough fiber. Tip: put spinach in a lot of things.
+
+Sleep — sleep early, wake early.</p>
+              <button class="shelf-popup__close" data-close-popup>Close</button>
+            </div>
+          </div>
+
+          <!-- Money / PiggyBank -->
+          <div class="shelf-item" data-shelf-id="money">
+            <span class="shelf-item__label">Money</span>
+            <svg class="shelf-item__svg" viewBox="0 0 100 80">
+              <!-- Body -->
+              <ellipse cx="50" cy="49" rx="28" ry="20" fill="none" stroke="hsl(0 0% 70%)" stroke-width="1"/>
+              <!-- Snout -->
+              <ellipse cx="76" cy="46" rx="7" ry="5" fill="none" stroke="hsl(0 0% 70%)" stroke-width="1"/>
+              <circle cx="74" cy="45" r="1" fill="none" stroke="hsl(0 0% 40%)" stroke-width="0.6"/>
+              <circle cx="78" cy="45" r="1" fill="none" stroke="hsl(0 0% 40%)" stroke-width="0.6"/>
+              <!-- Eye -->
+              <circle cx="66" cy="40" r="2" fill="none" stroke="hsl(0 0% 70%)" stroke-width="1"/>
+              <circle cx="66" cy="40" r="0.6" fill="hsl(0 0% 70%)" stroke="none"/>
+              <!-- Ears -->
+              <path d="M 38 32 Q 34 24 40 26 Q 44 28 42 32" fill="none" stroke="hsl(0 0% 70%)" stroke-width="1" stroke-linecap="round"/>
+              <path d="M 50 30 Q 48 22 54 24 Q 58 26 54 30" fill="none" stroke="hsl(0 0% 70%)" stroke-width="1" stroke-linecap="round"/>
+              <!-- Legs -->
+              <line x1="36" y1="66" x2="36" y2="78" fill="none" stroke="hsl(0 0% 70%)" stroke-width="1" stroke-linecap="round"/>
+              <line x1="42" y1="67" x2="42" y2="78" fill="none" stroke="hsl(0 0% 70%)" stroke-width="1" stroke-linecap="round"/>
+              <line x1="58" y1="67" x2="58" y2="78" fill="none" stroke="hsl(0 0% 70%)" stroke-width="1" stroke-linecap="round"/>
+              <line x1="64" y1="66" x2="64" y2="78" fill="none" stroke="hsl(0 0% 70%)" stroke-width="1" stroke-linecap="round"/>
+              <!-- Hooves -->
+              <line x1="34" y1="78" x2="38" y2="78" fill="none" stroke="hsl(0 0% 40%)" stroke-width="0.6"/>
+              <line x1="40" y1="78" x2="44" y2="78" fill="none" stroke="hsl(0 0% 40%)" stroke-width="0.6"/>
+              <line x1="56" y1="78" x2="60" y2="78" fill="none" stroke="hsl(0 0% 40%)" stroke-width="0.6"/>
+              <line x1="62" y1="78" x2="66" y2="78" fill="none" stroke="hsl(0 0% 40%)" stroke-width="0.6"/>
+              <!-- Coin slot -->
+              <line x1="44" y1="30" x2="56" y2="30" fill="none" stroke="hsl(0 0% 70%)" stroke-width="1"/>
+              <!-- Coin -->
+              <circle cx="50" cy="24" r="4" fill="none" stroke="hsl(0 0% 40%)" stroke-width="0.6"/>
+              <text x="50" y="26" fill="hsl(0 0% 50%)" font-size="4" text-anchor="middle" font-family="monospace">$</text>
+              <!-- Tail -->
+              <path d="M 23 44 Q 16 40 17 34 Q 18 29 22 32" fill="none" stroke="hsl(0 0% 50%)" stroke-width="1" stroke-linecap="round"/>
+            </svg>
+            <div class="shelf-popup is-left" id="popup-money">
+              <div class="shelf-popup__arrow"></div>
+              <p class="shelf-popup__title">Money</p>
+              <p class="shelf-popup__body">Clarity → Cashflow → Consumption → Control → Risk Management</p>
+              <button class="shelf-popup__close" data-close-popup>Close</button>
+            </div>
+          </div>
+
+        </div>
+        <div class="shelf-line"></div>
+
+      </div><!-- /.shelf -->
+
+    </div>
+  </main>
+
+  <script src="/js/site.js"></script>
+  <script>
+    // Shelf item click handler
+    document.querySelectorAll('[data-shelf-id]').forEach(function(item) {
+      item.addEventListener('click', function(e) {
+        var id = item.dataset.shelfId;
+        var internalLink = item.dataset.internalLink;
+
+        // External link items
+        if (id === 'music') {
+          window.open('https://open.spotify.com/user/___vertigo___?si=dca6a7458c8849cf', '_blank', 'noopener,noreferrer');
+          return;
+        }
+        // Internal navigation
+        if (internalLink) {
+          window.location.href = internalLink;
+          return;
+        }
+        // Toggle popup
+        var popup = document.getElementById('popup-' + id);
+        if (!popup) return;
+        e.stopPropagation();
+        var isOpen = popup.classList.contains('is-open');
+        // Close all popups
+        document.querySelectorAll('.shelf-popup').forEach(function(p) { p.classList.remove('is-open'); });
+        if (!isOpen) popup.classList.add('is-open');
+      });
+    });
+
+    // Close popup buttons
+    document.querySelectorAll('[data-close-popup]').forEach(function(btn) {
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        btn.closest('.shelf-popup').classList.remove('is-open');
+      });
+    });
+
+    // Click outside closes popups
+    document.addEventListener('click', function() {
+      document.querySelectorAll('.shelf-popup').forEach(function(p) { p.classList.remove('is-open'); });
+    });
+  </script>
+</body>
+</html>
