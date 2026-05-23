@@ -174,7 +174,7 @@
       width: 0;
       transition: width 1.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .progress-fill.animated { width: 95%; }
+    .progress-fill.animated { width: 100%; }
 
     .sonder-about {
       font-family: 'EB Garamond', serif;
@@ -380,17 +380,17 @@
     <div class="sonder-section" style="margin-top:80px">
       <div class="people-count-row">
         <div class="people-count-num">
-          <span>095</span><span class="denom"> / 100</span>
+          <span>105</span><span class="denom"> / 100</span>
         </div>
         <span class="people-label">people</span>
       </div>
       <div
         class="progress-track"
         role="progressbar"
-        aria-valuenow="95"
+        aria-valuenow="100"
         aria-valuemin="0"
         aria-valuemax="100"
-        aria-label="95 of 100 people interviewed"
+        aria-label="105 of 100 people interviewed — goal reached"
       >
         <div class="progress-fill" id="progress-fill"></div>
       </div>
@@ -455,9 +455,9 @@
 
   <script>
     // ── Episode data ────────────────────────────────────────────────────────────
-    var PUBLISHED = 76;
+    var PUBLISHED = 82;
     var TOTAL = 100;
-    var THUMB_V = '11';
+    var THUMB_V = '12';
     var LETTER_V = '2';
 
     function sameLocation(from, to, loc) {
@@ -474,6 +474,7 @@
       sameLocation(48, 50, 'Central Park'),
       sameLocation(54, 58, 'Rockefeller Park'),
       sameLocation(59, 70, 'East Central Park'),
+      sameLocation(77, 82, 'Brooklyn Bridge Park'),
       {
         1:  { title: '"The Sonder Series Episode 1: Carlie Ostrom"', location: 'Undisclosed' },
         2:  { title: '"The Sonder Series Episode 2: A Couple of Lovers"', location: 'Fort Greene Park' },
