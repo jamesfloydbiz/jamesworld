@@ -207,9 +207,9 @@
     .sonder-social a:hover { color: #000; }
     .sonder-social svg { display: block; width: 20px; height: 20px; }
 
-    /* Episodes section — same max-width as .sonder-section so the
-       Episodes header lines up with the body text above. */
-    .episodes-section { max-width: 768px; margin: 80px auto 0; }
+    /* Episodes section — wider container, centered with margin auto.
+       Holds the grid up to 5 columns on big screens. */
+    .episodes-section { max-width: 1440px; margin: 80px auto 0; }
     .episodes-header {
       display: flex;
       align-items: baseline;
@@ -236,8 +236,10 @@
       grid-template-columns: 1fr;
       gap: 12px;
     }
-    @media (min-width: 640px) { .episode-grid { grid-template-columns: repeat(2, 1fr); } }
-    @media (min-width: 900px) { .episode-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (min-width: 640px)  { .episode-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (min-width: 900px)  { .episode-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (min-width: 1200px) { .episode-grid { grid-template-columns: repeat(4, 1fr); } }
+    @media (min-width: 1440px) { .episode-grid { grid-template-columns: repeat(5, 1fr); } }
 
     .episode-card {
       height: 100%;
