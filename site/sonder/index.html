@@ -447,6 +447,27 @@
         <span class="episodes-range">001 — 100</span>
       </div>
       <ul class="episode-grid" id="episode-grid" aria-label="Sonder Series episodes"></ul>
+
+      <!-- Extra Credit — episodes beyond the original 100-conversation goal. -->
+      <div class="episodes-header" style="margin-top:80px;">
+        <h2 class="episodes-h">Extra Credit</h2>
+      </div>
+      <ul class="episode-grid" aria-label="Sonder Series — extra credit episodes">
+        <li>
+          <div class="episode-card">
+            <div class="episode-thumb">
+              <img src="/sonder/thumbnails/101.jpg?v=18" alt="Episode 101 thumbnail" loading="lazy" decoding="async">
+            </div>
+            <div class="episode-body">
+              <div class="episode-meta-row">
+                <span>EP 101</span><span>— min</span>
+              </div>
+              <p class="episode-title">Episode title coming soon</p>
+              <div class="episode-loc">Brooklyn and Bergen</div>
+            </div>
+          </div>
+        </li>
+      </ul>
     </div>
 
     <footer class="sonder-footer">
@@ -457,9 +478,9 @@
 
   <script>
     // ── Episode data ────────────────────────────────────────────────────────────
-    var PUBLISHED = 98;
+    var PUBLISHED = 99;
     var TOTAL = 100;
-    var THUMB_V = '17';
+    var THUMB_V = '18';
     var LETTER_V = '2';
 
     function sameLocation(from, to, loc) {
@@ -508,6 +529,8 @@
         96: { location: 'Park Slope Stoop' },
         97: { location: 'Pier 6' },
         98: { location: 'Undisclosed' },
+        99: { location: 'Eastern Parkway' },
+        100: { title: 'Mayor Mamdani on the Empire State?' },
         71: { location: 'New York Botanical Garden' },
         72: { location: 'Walter Gladwin Park' },
         73: { location: 'Crotona Park' },
