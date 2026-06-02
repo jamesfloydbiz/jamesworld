@@ -47,14 +47,18 @@ html {
   color: var(--fg);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 body {
   background: var(--bg);
   color: var(--fg);
   font-family: var(--font-mono);
-  overflow-x: hidden;
+  /* `clip` (not `hidden`) so iOS Safari doesn't treat the body as a scroll
+     container — that bug killed vertical scroll on /references on mobile
+     when rotated cards extended past the viewport. `clip` prevents the
+     horizontal overflow without establishing a scrolling context. */
+  overflow-x: clip;
 }
 
 img { display: block; max-width: 100%; height: auto; }
@@ -631,6 +635,8 @@ dialog::backdrop {
 /* ── Mental Models quiz ─────────────────────────────────────────────────── */
 .mm-tabs {
   display: flex;
+  /* Allow soft wrap as a fallback if a future tab name is longer. */
+  flex-wrap: wrap;
   gap: 0;
   border-bottom: 1px solid var(--border);
   margin-bottom: 2rem;
@@ -651,6 +657,11 @@ dialog::backdrop {
 }
 .mm-tab:hover { color: var(--fg-70); }
 .mm-tab.is-active { color: var(--fg); border-bottom-color: var(--fg); }
+
+/* Compress padding on small phones so all four tabs fit on one row. */
+@media (max-width: 480px) {
+  .mm-tab { padding: 10px 12px; font-size: 10px; letter-spacing: 0.1em; }
+}
 
 .mm-panel { display: none; }
 .mm-panel.is-active { display: block; }
@@ -879,3 +890,11 @@ dialog::backdrop {
   transition: color 0.2s;
 }
 .ref-card__source:hover { color: var(--fg-60); }
+
+/* On phones the rotated cards extended past the viewport and triggered an
+   iOS Safari scroll-stuck bug. Sit them flat below 640px — desktop keeps
+   its scattered-photo feel. !important is needed because each <article>
+   carries its own inline transform attribute. */
+@media (max-width: 640px) {
+  .ref-card { transform: none !important; }
+}
