@@ -11,8 +11,13 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    # Force any action that still ships a Node 20 entrypoint onto Node 24.
+    # GitHub flips the default on 2026-06-16; this env var lets the deploy
+    # run on the newer runtime today without waiting for upstream releases.
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest

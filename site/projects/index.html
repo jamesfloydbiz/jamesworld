@@ -67,8 +67,31 @@
 
         <article class="card">
           <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:0.75rem;">
+            <h2 style="font-size:1.1rem;letter-spacing:0.05em;">The Sonder Series</h2>
+            <span class="tag">Active</span>
+          </div>
+          <!-- TODO: update this paragraph as the series progresses — currently
+               says "100 interviews"; consider mentioning the report, Mamdani
+               aspirational Ep 100, the Extra Credit thread, etc. -->
+          <p class="card-body" style="margin-bottom:1rem;">100 interviews with people in New York.</p>
+          <div class="btn-row" style="gap:12px;align-items:center;">
+            <a href="/sonder/" class="text-link" style="font-size:0.875rem;">Check it out →</a>
+            <a href="/sonder/report/" class="btn btn-outline" style="font-size:11px;letter-spacing:0.15em;padding:6px 12px;">
+              The Sonder Report
+            </a>
+          </div>
+        </article>
+
+      </div>
+
+      <!-- Archived Projects -->
+      <h2 class="section-heading">Archived Projects</h2>
+      <div class="grid-2" style="margin-bottom:4rem;">
+
+        <article class="card">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:0.75rem;">
             <h2 style="font-size:1.1rem;letter-spacing:0.05em;">Jets and Capital</h2>
-            <span class="tag">Freelance</span>
+            <span class="tag">Archived</span>
           </div>
           <p class="card-body" style="margin-bottom:1.5rem;">Jets &amp; Capital is an exclusive event series uniting family offices, investors, and UHNWI in private jet hangars across the country.</p>
           <a href="https://jetsandcapital.com" target="_blank" rel="noopener noreferrer" class="text-link" style="font-size:0.875rem;">
@@ -80,7 +103,7 @@
         <article class="card">
           <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:0.75rem;">
             <h2 style="font-size:1.1rem;letter-spacing:0.05em;">Builds</h2>
-            <span class="tag">Active</span>
+            <span class="tag">Archived</span>
           </div>
           <p class="card-body" style="margin-bottom:1.5rem;">AI Agents, vibe coding, and Ops</p>
           <a href="/builds/" class="text-link" style="font-size:0.875rem;">Explore Builds →</a>
@@ -88,30 +111,20 @@
 
         <article class="card">
           <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:0.75rem;">
-            <h2 style="font-size:1.1rem;letter-spacing:0.05em;">The Sonder Series</h2>
-            <span class="tag">Active</span>
-          </div>
-          <p class="card-body" style="margin-bottom:1.5rem;">100 interviews with people in New York.</p>
-          <a href="/sonder/" class="text-link" style="font-size:0.875rem;">Watch the Series →</a>
-        </article>
-
-        <article class="card">
-          <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:0.75rem;">
             <h2 style="font-size:1.1rem;letter-spacing:0.05em;">LinkedIn Daily Posts</h2>
-            <span class="tag">Active</span>
+            <span class="tag">Archived</span>
           </div>
-          <p class="card-body" id="li-streak-desc" style="margin-bottom:1.5rem;">Posting every day.</p>
-          <a href="https://www.linkedin.com/in/jamesfloydl/" target="_blank" rel="noopener noreferrer" class="text-link" style="font-size:0.875rem;">
-            Follow Along
-            <svg style="display:inline;margin-left:4px;vertical-align:middle;" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-          </a>
+          <p class="card-body" style="margin-bottom:1rem;">Posted 1.2 posts/day for 150 days straight (Jan – May 2026).</p>
+          <div class="btn-row" style="gap:12px;align-items:center;">
+            <a href="https://www.linkedin.com/in/jamesfloydl/" target="_blank" rel="noopener noreferrer" class="text-link" style="font-size:0.875rem;">
+              Follow Along
+              <svg style="display:inline;margin-left:4px;vertical-align:middle;" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            </a>
+            <button type="button" class="btn btn-outline" data-modal-open="li-stats-modal" style="font-size:11px;letter-spacing:0.15em;padding:6px 12px;">
+              See the data
+            </button>
+          </div>
         </article>
-
-      </div>
-
-      <!-- Archived Projects -->
-      <h2 class="section-heading">Archived Projects</h2>
-      <div class="grid-2" style="margin-bottom:4rem;">
 
         <article class="card">
           <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:0.75rem;">
@@ -123,6 +136,30 @@
         </article>
 
       </div>
+
+      <!-- LinkedIn stats modal — populated by the static content below. -->
+      <dialog id="li-stats-modal" aria-labelledby="li-stats-title">
+        <div class="modal-header">
+          <p class="modal-title" id="li-stats-title">LinkedIn Daily Posts · Jan – May 2026</p>
+          <button type="button" class="modal-close" data-modal-close>Close ×</button>
+        </div>
+        <div class="modal-body" style="padding:24px;">
+          <p style="font-family:var(--font-mono);font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--fg-50);margin-bottom:8px;">The Window</p>
+          <p style="margin-bottom:24px;">Posted <strong>1.2 posts/day for 150 days straight</strong>.</p>
+
+          <p style="font-family:var(--font-mono);font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--fg-50);margin-bottom:8px;">The Numbers</p>
+          <ul style="list-style:none;padding:0;margin:0 0 24px;display:grid;gap:10px;">
+            <li><strong>161,223</strong> impressions <span style="color:var(--fg-50);font-size:0.875rem;">(up 6,601% vs. prior 152 days)</span></li>
+            <li><strong>63,649</strong> members reached</li>
+            <li><strong>2,956</strong> engagements <span style="color:var(--fg-50);font-size:0.875rem;">(up 5,275% vs. prior 152 days)</span></li>
+            <li><strong>1,187</strong> total followers <span style="color:var(--fg-50);font-size:0.875rem;">(up 113% vs. prior 152 days; ~+700 net over the window)</span></li>
+          </ul>
+
+          <p style="font-family:var(--font-mono);font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--fg-50);margin-bottom:8px;">What it really did</p>
+          <p style="margin-bottom:12px;">Most importantly, I brought my audience along with me as I shared stories from exploring in public.</p>
+          <p style="color:var(--fg-70);font-style:italic;">I constantly had people I met comment they had seen me on LinkedIn or already heard a story from my life.</p>
+        </div>
+      </dialog>
 
       <!-- Other Projects -->
       <h2 class="section-heading">Other Projects</h2>
@@ -158,17 +195,6 @@
     </div>
   </main>
 
-  <script>
-    // LinkedIn streak: started April 15, 2026 at day 123
-    (function() {
-      var start = new Date('2026-04-15');
-      var count = 123;
-      var days = Math.max(0, Math.floor((Date.now() - start.getTime()) / 86400000));
-      var streak = count + days;
-      var el = document.getElementById('li-streak-desc');
-      if (el) el.textContent = 'Posting every day. Current streak: ' + streak + ' days.';
-    })();
-  </script>
   <script src="/js/site.js"></script>
 </body>
 </html>

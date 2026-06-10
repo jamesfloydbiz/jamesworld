@@ -30,9 +30,16 @@
       --muted:rgba(0,0,0,0.55);
       --muted-soft:rgba(0,0,0,0.4);
       --very-muted:rgba(0,0,0,0.25);
-      --bar:rgba(0,0,0,0.12);
+      --bar:rgba(0,0,0,0.08);
       --bar-mid:rgba(0,0,0,0.45);
       --bar-dark:#000;
+      /* Warm earth-brown + forest-green accents — used on data viz, map
+         markers, big numbers, and divider symbols. Black stays for body
+         text so legibility doesn't drop. */
+      --brown:#8b5a3c;
+      --brown-soft:#a87a5c;
+      --green:#4a6741;
+      --green-soft:#6b8965;
     }
     *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
     html { scroll-behavior:smooth; }
@@ -131,7 +138,7 @@
       font-size:11px;
       letter-spacing:0.25em;
       text-transform:uppercase;
-      color:var(--ink);
+      color:var(--green);
       border-bottom:1px solid var(--line);
       padding-bottom:10px;
       margin:64px 0 20px;
@@ -178,7 +185,7 @@
       font-family:'Playfair Display', serif;
       font-size:1.875rem;
       font-weight:700;
-      color:var(--ink);
+      color:var(--brown);
       line-height:1;
     }
     .stat .l {
@@ -211,11 +218,11 @@
     }
     .bar .fill {
       height:100%;
-      background:var(--bar-mid);
+      background:var(--green-soft);
     }
-    .bar .fill.hot { background:var(--bar-dark); }
-    .bar .fill.cool { background:var(--bar-mid); }
-    .bar .fill.gold { background:var(--bar-mid); }
+    .bar .fill.hot { background:var(--brown); }
+    .bar .fill.cool { background:var(--green); }
+    .bar .fill.gold { background:var(--brown-soft); }
     .bar .pct {
       font-family:'DM Mono', monospace;
       font-variant-numeric:tabular-nums;
@@ -314,13 +321,14 @@
       margin:18px 0;
       font-family:'EB Garamond', serif;
     }
-    .note.warn { border-left:3px solid var(--ink); }
+    .note.warn { border-left:3px solid var(--brown); }
     .note b { font-weight:600; }
 
     /* Divider — small symbol between sections */
     .divider {
       text-align:center;
-      color:var(--very-muted);
+      color:var(--brown);
+      opacity:0.5;
       margin:48px 0 6px;
       letter-spacing:0.4em;
       font-size:0.875rem;
@@ -492,34 +500,34 @@
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 470" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Map of all Sonder Series interview locations across the five boroughs of New York City">
             <rect width="880" height="470" fill="#f6f4ef"/>
             <text x="30" y="22" font-family="DM Mono, monospace" font-size="10" letter-spacing="2" fill="#000" fill-opacity="0.55">NEW YORK CITY — ALL FIVE BOROUGHS</text>
-            <circle cx="497.9" cy="188.5" r="16.1" fill="#000" fill-opacity="0.78" stroke="#fff" stroke-width="1.2"/>
-            <circle cx="470.1" cy="376.6" r="16.1" fill="#000" fill-opacity="0.78" stroke="#fff" stroke-width="1.2"/>
-            <circle cx="450.9" cy="203.5" r="15.1" fill="#000" fill-opacity="0.78" stroke="#fff" stroke-width="1.2"/>
-            <circle cx="519.3" cy="279.8" r="14.5" fill="#000" fill-opacity="0.78" stroke="#fff" stroke-width="1.2"/>
-            <circle cx="435.9" cy="272.1" r="12.6" fill="#000" fill-opacity="0.78" stroke="#fff" stroke-width="1.2"/>
-            <circle cx="395.7" cy="314.6" r="12.6" fill="#000" fill-opacity="0.78" stroke="#fff" stroke-width="1.2"/>
-            <circle cx="341.1" cy="286.1" r="11.8" fill="#000" fill-opacity="0.78" stroke="#fff" stroke-width="1.2"/>
-            <circle cx="409.7" cy="257.2" r="10.1" fill="#000" fill-opacity="0.78" stroke="#fff" stroke-width="1.2"/>
-            <circle cx="455.9" cy="327.1" r="8.9" fill="#000" fill-opacity="0.78" stroke="#fff" stroke-width="1.2"/>
-            <circle cx="537.3" cy="328.8" r="8.9" fill="#000" fill-opacity="0.78" stroke="#fff" stroke-width="1.2"/>
-            <circle cx="431.3" cy="229.3" r="8.9" fill="#000" fill-opacity="0.78" stroke="#fff" stroke-width="1.2"/>
-            <circle cx="446.8" cy="262.6" r="8.9" fill="#000" fill-opacity="0.78" stroke="#fff" stroke-width="1.2"/>
-            <circle cx="529.7" cy="189.7" r="8.9" fill="#000" fill-opacity="0.78" stroke="#fff" stroke-width="1.2"/>
-            <circle cx="393.5" cy="288.9" r="8.9" fill="#000" fill-opacity="0.78" stroke="#fff" stroke-width="1.2"/>
-            <circle cx="173.5" cy="405.3" r="8.9" fill="#000" fill-opacity="0.78" stroke="#fff" stroke-width="1.2"/>
-            <circle cx="385.6" cy="321.4" r="7.5" fill="#000" fill-opacity="0.78" stroke="#fff" stroke-width="1.2"/>
-            <circle cx="542.5" cy="224.7" r="7.5" fill="#000" fill-opacity="0.78" stroke="#fff" stroke-width="1.2"/>
-            <circle cx="434.8" cy="206.6" r="7.5" fill="#000" fill-opacity="0.78" stroke="#fff" stroke-width="1.2"/>
-            <circle cx="507.2" cy="190.8" r="7.5" fill="#000" fill-opacity="0.78" stroke="#fff" stroke-width="1.2"/>
-            <circle cx="338.9" cy="308.6" r="7.5" fill="#000" fill-opacity="0.78" stroke="#fff" stroke-width="1.2"/>
-            <circle cx="397.6" cy="355.6" r="7.5" fill="#000" fill-opacity="0.78" stroke="#fff" stroke-width="1.2"/>
-            <circle cx="491.9" cy="361.2" r="7.5" fill="#000" fill-opacity="0.78" stroke="#fff" stroke-width="1.2"/>
-            <circle cx="713.1" cy="57.8" r="7.5" fill="#000" fill-opacity="0.78" stroke="#fff" stroke-width="1.2"/>
-            <circle cx="636.8" cy="94.8" r="7.5" fill="#000" fill-opacity="0.78" stroke="#fff" stroke-width="1.2"/>
-            <circle cx="632.2" cy="142.0" r="7.5" fill="#000" fill-opacity="0.78" stroke="#fff" stroke-width="1.2"/>
-            <circle cx="780.8" cy="312.6" r="7.5" fill="#000" fill-opacity="0.78" stroke="#fff" stroke-width="1.2"/>
-            <circle cx="729.7" cy="286.1" r="7.5" fill="#000" fill-opacity="0.78" stroke="#fff" stroke-width="1.2"/>
-            <circle cx="104.1" cy="402.6" r="7.5" fill="#000" fill-opacity="0.78" stroke="#fff" stroke-width="1.2"/>
+            <circle cx="497.9" cy="188.5" r="16.1" fill="#8b5a3c" fill-opacity="0.85" stroke="#fff" stroke-width="1.2"/>
+            <circle cx="470.1" cy="376.6" r="16.1" fill="#8b5a3c" fill-opacity="0.85" stroke="#fff" stroke-width="1.2"/>
+            <circle cx="450.9" cy="203.5" r="15.1" fill="#8b5a3c" fill-opacity="0.85" stroke="#fff" stroke-width="1.2"/>
+            <circle cx="519.3" cy="279.8" r="14.5" fill="#8b5a3c" fill-opacity="0.85" stroke="#fff" stroke-width="1.2"/>
+            <circle cx="435.9" cy="272.1" r="12.6" fill="#8b5a3c" fill-opacity="0.85" stroke="#fff" stroke-width="1.2"/>
+            <circle cx="395.7" cy="314.6" r="12.6" fill="#8b5a3c" fill-opacity="0.85" stroke="#fff" stroke-width="1.2"/>
+            <circle cx="341.1" cy="286.1" r="11.8" fill="#8b5a3c" fill-opacity="0.85" stroke="#fff" stroke-width="1.2"/>
+            <circle cx="409.7" cy="257.2" r="10.1" fill="#8b5a3c" fill-opacity="0.85" stroke="#fff" stroke-width="1.2"/>
+            <circle cx="455.9" cy="327.1" r="8.9" fill="#8b5a3c" fill-opacity="0.85" stroke="#fff" stroke-width="1.2"/>
+            <circle cx="537.3" cy="328.8" r="8.9" fill="#8b5a3c" fill-opacity="0.85" stroke="#fff" stroke-width="1.2"/>
+            <circle cx="431.3" cy="229.3" r="8.9" fill="#8b5a3c" fill-opacity="0.85" stroke="#fff" stroke-width="1.2"/>
+            <circle cx="446.8" cy="262.6" r="8.9" fill="#8b5a3c" fill-opacity="0.85" stroke="#fff" stroke-width="1.2"/>
+            <circle cx="529.7" cy="189.7" r="8.9" fill="#8b5a3c" fill-opacity="0.85" stroke="#fff" stroke-width="1.2"/>
+            <circle cx="393.5" cy="288.9" r="8.9" fill="#8b5a3c" fill-opacity="0.85" stroke="#fff" stroke-width="1.2"/>
+            <circle cx="173.5" cy="405.3" r="8.9" fill="#8b5a3c" fill-opacity="0.85" stroke="#fff" stroke-width="1.2"/>
+            <circle cx="385.6" cy="321.4" r="7.5" fill="#8b5a3c" fill-opacity="0.85" stroke="#fff" stroke-width="1.2"/>
+            <circle cx="542.5" cy="224.7" r="7.5" fill="#8b5a3c" fill-opacity="0.85" stroke="#fff" stroke-width="1.2"/>
+            <circle cx="434.8" cy="206.6" r="7.5" fill="#8b5a3c" fill-opacity="0.85" stroke="#fff" stroke-width="1.2"/>
+            <circle cx="507.2" cy="190.8" r="7.5" fill="#8b5a3c" fill-opacity="0.85" stroke="#fff" stroke-width="1.2"/>
+            <circle cx="338.9" cy="308.6" r="7.5" fill="#8b5a3c" fill-opacity="0.85" stroke="#fff" stroke-width="1.2"/>
+            <circle cx="397.6" cy="355.6" r="7.5" fill="#8b5a3c" fill-opacity="0.85" stroke="#fff" stroke-width="1.2"/>
+            <circle cx="491.9" cy="361.2" r="7.5" fill="#8b5a3c" fill-opacity="0.85" stroke="#fff" stroke-width="1.2"/>
+            <circle cx="713.1" cy="57.8" r="7.5" fill="#8b5a3c" fill-opacity="0.85" stroke="#fff" stroke-width="1.2"/>
+            <circle cx="636.8" cy="94.8" r="7.5" fill="#8b5a3c" fill-opacity="0.85" stroke="#fff" stroke-width="1.2"/>
+            <circle cx="632.2" cy="142.0" r="7.5" fill="#8b5a3c" fill-opacity="0.85" stroke="#fff" stroke-width="1.2"/>
+            <circle cx="780.8" cy="312.6" r="7.5" fill="#8b5a3c" fill-opacity="0.85" stroke="#fff" stroke-width="1.2"/>
+            <circle cx="729.7" cy="286.1" r="7.5" fill="#8b5a3c" fill-opacity="0.85" stroke="#fff" stroke-width="1.2"/>
+            <circle cx="104.1" cy="402.6" r="7.5" fill="#8b5a3c" fill-opacity="0.85" stroke="#fff" stroke-width="1.2"/>
             <text x="850" y="460" text-anchor="end" font-family="EB Garamond, serif" font-size="11" font-style="italic" fill="#000" fill-opacity="0.4">Static fallback — load the page with JavaScript &amp; internet for the interactive map.</text>
           </svg>
         </div>
@@ -581,7 +589,7 @@
         pts.forEach(function(p){
           var m=L.circleMarker([p[1],p[2]],{
             radius:6+Math.sqrt(p[3])*4, color:'#ffffff', weight:1.5,
-            fillColor:'#000000', fillOpacity:0.85
+            fillColor:'#8b5a3c', fillOpacity:0.85
           }).bindTooltip('<b>'+p[0]+'</b> — '+p[3]+(p[3]>1?' episodes':' episode'),{direction:'top'});
           m.addTo(map); markers.push(m);
         });
