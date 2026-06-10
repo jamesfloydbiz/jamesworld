@@ -208,6 +208,60 @@
     .sonder-social a:hover { color: #000; }
     .sonder-social svg { display: block; width: 20px; height: 20px; }
 
+    /* Report callout */
+    .sonder-report-link {
+      display: block;
+      border: 1px solid rgba(0,0,0,0.15);
+      padding: 32px 24px;
+      text-align: center;
+      color: #000;
+      text-decoration: none;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    @media (min-width: 768px) { .sonder-report-link { padding: 48px 40px; } }
+    .sonder-report-link:hover {
+      border-color: #000;
+      background: rgba(0,0,0,0.02);
+    }
+    .sonder-report-link__kicker {
+      display: block;
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: rgba(0,0,0,0.55);
+      margin-bottom: 14px;
+    }
+    .sonder-report-link__title {
+      display: block;
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      font-weight: 700;
+      line-height: 1.05;
+      margin-bottom: 12px;
+    }
+    @media (min-width: 768px) { .sonder-report-link__title { font-size: 2.5rem; } }
+    .sonder-report-link__sub {
+      display: block;
+      font-family: 'EB Garamond', serif;
+      font-size: 1rem;
+      line-height: 1.55;
+      color: rgba(0,0,0,0.7);
+      max-width: 540px;
+      margin: 0 auto 20px;
+    }
+    @media (min-width: 768px) { .sonder-report-link__sub { font-size: 1.125rem; } }
+    .sonder-report-link__cta {
+      display: inline-block;
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(0,0,0,0.7);
+      transition: color 0.2s;
+    }
+    .sonder-report-link:hover .sonder-report-link__cta { color: #000; }
+
     /* Episodes section — wider container, centered with margin auto.
        Holds the grid up to 5 columns on big screens. */
     .episodes-section { max-width: 1440px; margin: 80px auto 0; }
@@ -439,6 +493,15 @@
           </a>
         </li>
       </ul>
+    </div>
+
+    <!-- Data report callout -->
+    <div class="sonder-section" style="margin-top:80px">
+      <a href="/sonder/report/" class="sonder-report-link">
+        <span class="sonder-report-link__title">The Sonder Report</span>
+        <span class="sonder-report-link__sub">Learnings from 100 conversations with my NY neighbors.</span>
+        <span class="sonder-report-link__cta">Read the report →</span>
+      </a>
     </div>
 
     <!-- Episode grid -->

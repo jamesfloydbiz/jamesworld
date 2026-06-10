@@ -129,6 +129,28 @@ export const ROUTES = [
   },
 
   {
+    path: '/sonder/report',
+    title: 'The Sonder Report — 100 Conversations, in Data',
+    description:
+      "A data report on The Sonder Series — what 125 New Yorkers told James Floyd, in 276,749 words, about the world's biggest problem, the most impressive person they've met, and how to survive the city.",
+    priority: 0.7,
+    changefreq: 'monthly',
+    body: wrap(`
+      <h1>The Sonder Report — 100 Conversations, in Data</h1>
+      <p>A count of what 125 New Yorkers actually said across 100 Sonder Series interviews. 276,749 words. Five boroughs. Twenty parks. Ages 11 to 86.</p>
+      <h2>Headline findings</h2>
+      <ul>
+        <li>The world's biggest problem, according to strangers, is each other — connection / empathy / decency was the largest Q2 theme (~24%).</li>
+        <li>People answer "the world's problem" with their own life — the problem they named was the one they'd lived or worked on.</li>
+        <li>"Impressive" means character, and usually means family. About half named kin; mothers led; "mom" appears 139 times.</li>
+        <li>About 1 in 8 refused to rank humans at all — a considered humanism, not evasion.</li>
+        <li>The deepest themes go unnamed — "lonely" (6 mentions) and "immigrant" (5) are nearly absent despite defining the corpus.</li>
+      </ul>
+      <p>Full report at <a href="/sonder/report/">/sonder/report/</a>. Includes a live map of every interview location. Companion to <a href="/sonder/">the Sonder Series itself</a>.</p>
+    `),
+  },
+
+  {
     path: '/projects',
     title: 'Projects',
     description:

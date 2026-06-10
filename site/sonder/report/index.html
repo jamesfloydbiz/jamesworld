@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Sonder Report — Learnings from 100 conversations with my NY neighbors</title>
+  <meta name="description" content="The Sonder Report — learnings from 100 conversations with my NY neighbors. What James Floyd's neighbors said about the world's biggest problem, the most impressive person they've met, and how to survive the city.">
+  <link rel="canonical" href="https://jamesfloyds.world/sonder/report/">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://jamesfloyds.world/sonder/report/">
+  <meta property="og:title" content="The Sonder Report — Learnings from 100 conversations with my NY neighbors">
+  <meta property="og:description" content="Learnings from 100 conversations with my NY neighbors. The Sonder Series, by the numbers.">
+  <meta property="og:image" content="https://jamesfloyds.world/images/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="The Sonder Report — Learnings from 100 conversations with my NY neighbors">
+  <meta name="twitter:description" content="Learnings from 100 conversations with my NY neighbors. The Sonder Series, by the numbers.">
+  <meta name="twitter:image" content="https://jamesfloyds.world/images/og-image.png">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=DM+Mono:wght@300;400;500&display=swap">
+  <style>
+    :root{
+      --ink:#000;
+      --paper:#fff;
+      --card:#fff;
+      --line:rgba(0,0,0,0.10);
+      --line-strong:rgba(0,0,0,0.18);
+      --muted:rgba(0,0,0,0.55);
+      --muted-soft:rgba(0,0,0,0.4);
+      --very-muted:rgba(0,0,0,0.25);
+      --bar:rgba(0,0,0,0.12);
+      --bar-mid:rgba(0,0,0,0.45);
+      --bar-dark:#000;
+    }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    html { scroll-behavior:smooth; }
+    body {
+      background:var(--paper);
+      color:var(--ink);
+      font-family:'EB Garamond', Georgia, serif;
+      line-height:1.6;
+      font-size:17px;
+    }
+
+    /* Top-left logo — click to return home */
+    .report-logo {
+      position:absolute;
+      top:0; left:0;
+      z-index:40;
+      padding:8px 24px;
+      display:block;
+    }
+    .report-logo img {
+      width:32px; height:32px;
+      opacity:0.7;
+      filter:invert(1);
+      transition:opacity 0.2s;
+    }
+    .report-logo:hover img { opacity:1; }
+
+    .wrap {
+      max-width:880px;
+      margin:0 auto;
+      padding:64px 24px 110px;
+    }
+    @media (min-width:768px) { .wrap { padding:80px 32px 120px; } }
+
+    /* Back to Sonder link */
+    .back-link {
+      display:inline-block;
+      font-family:'DM Mono', monospace;
+      font-size:11px;
+      letter-spacing:0.2em;
+      text-transform:uppercase;
+      color:var(--muted);
+      text-decoration:none;
+      margin-bottom:32px;
+      transition:color 0.2s;
+    }
+    .back-link:hover { color:var(--ink); }
+
+    /* Title block */
+    header.title {
+      text-align:center;
+      border-bottom:1px solid var(--line-strong);
+      padding-bottom:32px;
+    }
+    .kicker {
+      font-family:'DM Mono', monospace;
+      letter-spacing:0.3em;
+      text-transform:uppercase;
+      font-size:11px;
+      color:var(--muted);
+    }
+    @media (min-width:768px) { .kicker { font-size:12px; } }
+
+    h1 {
+      font-family:'Playfair Display', serif;
+      font-size:2.5rem;
+      line-height:1.05;
+      margin:18px 0 6px;
+      font-weight:700;
+    }
+    @media (min-width:768px) { h1 { font-size:3rem; } }
+    h1 .sub {
+      display:block;
+      font-family:'EB Garamond', serif;
+      font-size:1.05rem;
+      color:var(--muted);
+      font-style:italic;
+      font-weight:400;
+      margin-top:14px;
+      letter-spacing:0;
+    }
+    @media (min-width:768px) { h1 .sub { font-size:1.15rem; } }
+
+    .def {
+      font-family:'EB Garamond', serif;
+      font-size:0.95rem;
+      color:var(--muted);
+      max-width:600px;
+      margin:16px auto 0;
+    }
+    .def b { font-weight:600; color:var(--ink); }
+
+    /* Section headers (h2 acts as section label) */
+    h2 {
+      font-family:'DM Mono', monospace;
+      font-size:11px;
+      letter-spacing:0.25em;
+      text-transform:uppercase;
+      color:var(--ink);
+      border-bottom:1px solid var(--line);
+      padding-bottom:10px;
+      margin:64px 0 20px;
+      font-weight:400;
+    }
+    @media (min-width:768px) { h2 { font-size:12px; } }
+
+    h3 {
+      font-family:'Playfair Display', serif;
+      font-size:1.5rem;
+      margin:28px 0 4px;
+      font-weight:600;
+    }
+
+    h4 {
+      font-family:'DM Mono', monospace;
+      font-size:11px;
+      letter-spacing:0.15em;
+      color:var(--muted);
+      margin:26px 0 8px;
+      text-transform:uppercase;
+      font-weight:500;
+    }
+
+    p { margin:12px 0; }
+    .lead { font-size:1.1rem; line-height:1.55; }
+    .small { font-size:0.875rem; color:var(--muted); }
+
+    /* Stats strip — small cards with a big number */
+    .statstrip {
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      margin:24px 0;
+    }
+    .stat {
+      flex:1 1 120px;
+      background:var(--card);
+      border:1px solid var(--line);
+      padding:16px 12px;
+      text-align:center;
+    }
+    .stat .n {
+      font-family:'Playfair Display', serif;
+      font-size:1.875rem;
+      font-weight:700;
+      color:var(--ink);
+      line-height:1;
+    }
+    .stat .l {
+      font-family:'DM Mono', monospace;
+      font-size:10px;
+      letter-spacing:0.15em;
+      text-transform:uppercase;
+      color:var(--muted);
+      margin-top:8px;
+    }
+
+    /* Horizontal bar charts */
+    .bars { margin:14px 0; }
+    .bar {
+      display:grid;
+      grid-template-columns:215px 1fr 54px;
+      align-items:center;
+      gap:10px;
+      margin:7px 0;
+      font-size:0.95rem;
+    }
+    .bar .lab {
+      text-align:right;
+      font-family:'EB Garamond', serif;
+    }
+    .bar .track {
+      background:var(--bar);
+      height:18px;
+      overflow:hidden;
+    }
+    .bar .fill {
+      height:100%;
+      background:var(--bar-mid);
+    }
+    .bar .fill.hot { background:var(--bar-dark); }
+    .bar .fill.cool { background:var(--bar-mid); }
+    .bar .fill.gold { background:var(--bar-mid); }
+    .bar .pct {
+      font-family:'DM Mono', monospace;
+      font-variant-numeric:tabular-nums;
+      color:var(--muted);
+      font-size:12px;
+    }
+    @media (max-width:640px) {
+      .bar { grid-template-columns:130px 1fr 46px; font-size:0.85rem; }
+    }
+
+    /* Pull quotes — small boxes */
+    .pullgrid {
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:14px;
+      margin:18px 0;
+    }
+    @media (max-width:640px) { .pullgrid { grid-template-columns:1fr; } }
+    .pull {
+      background:var(--card);
+      border:1px solid var(--line);
+      padding:14px 16px;
+      font-style:italic;
+      font-size:1rem;
+      font-family:'EB Garamond', serif;
+      line-height:1.5;
+    }
+    .pull .src {
+      display:block;
+      font-style:normal;
+      font-family:'DM Mono', monospace;
+      font-size:10px;
+      letter-spacing:0.15em;
+      text-transform:uppercase;
+      color:var(--muted);
+      margin-top:8px;
+    }
+
+    /* Big blockquote (less commonly used) */
+    blockquote {
+      margin:18px 0;
+      padding:6px 0 6px 20px;
+      border-left:3px solid var(--ink);
+      font-size:1.15rem;
+      font-style:italic;
+      color:var(--ink);
+      font-family:'EB Garamond', serif;
+    }
+    blockquote .src {
+      display:block;
+      font-style:normal;
+      font-family:'DM Mono', monospace;
+      font-size:11px;
+      letter-spacing:0.15em;
+      text-transform:uppercase;
+      color:var(--muted);
+      margin-top:6px;
+    }
+
+    /* Tables */
+    table {
+      width:100%;
+      border-collapse:collapse;
+      margin:16px 0;
+      font-size:0.95rem;
+      font-family:'EB Garamond', serif;
+    }
+    th, td {
+      text-align:left;
+      padding:10px 9px;
+      border-bottom:1px solid var(--line);
+      vertical-align:top;
+    }
+    th {
+      font-family:'DM Mono', monospace;
+      font-size:10px;
+      letter-spacing:0.15em;
+      text-transform:uppercase;
+      color:var(--muted);
+      font-weight:500;
+    }
+    td.num {
+      text-align:right;
+      font-family:'DM Mono', monospace;
+      font-variant-numeric:tabular-nums;
+      width:32px;
+      color:var(--very-muted);
+    }
+
+    /* Note boxes */
+    .note {
+      font-size:0.95rem;
+      color:var(--ink);
+      background:rgba(0,0,0,0.04);
+      padding:16px 18px;
+      margin:18px 0;
+      font-family:'EB Garamond', serif;
+    }
+    .note.warn { border-left:3px solid var(--ink); }
+    .note b { font-weight:600; }
+
+    /* Divider — small symbol between sections */
+    .divider {
+      text-align:center;
+      color:var(--very-muted);
+      margin:48px 0 6px;
+      letter-spacing:0.4em;
+      font-size:0.875rem;
+    }
+
+    /* Two-column layout */
+    .twocol {
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:28px;
+    }
+    @media (max-width:640px) { .twocol { grid-template-columns:1fr; gap:14px; } }
+
+    /* Chip tags */
+    .chip {
+      display:inline-block;
+      background:rgba(0,0,0,0.04);
+      border:1px solid var(--line);
+      padding:2px 10px;
+      font-size:0.8rem;
+      font-family:'DM Mono', monospace;
+      letter-spacing:0.05em;
+      color:var(--muted);
+      margin:2px 3px;
+    }
+
+    /* Map */
+    .map-wrap {
+      background:var(--card);
+      border:1px solid var(--line);
+      padding:6px;
+      margin:18px 0;
+      overflow:hidden;
+    }
+    .map-host { position:relative; }
+    #sondermap {
+      height:470px;
+      width:100%;
+      background:#f4f4f4;
+      position:relative;
+      z-index:1;
+    }
+    /* Static SVG fallback — visible when JS is disabled or the Leaflet
+       CDN / tile servers don't load. Hidden as soon as Leaflet successfully
+       initializes (the `.map-ready` class is added by the init script). */
+    .map-fallback {
+      position:absolute;
+      inset:0;
+      z-index:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:#f6f4ef;
+    }
+    .map-fallback svg { width:100%; height:100%; display:block; }
+    .map-host.map-ready .map-fallback { display:none; }
+
+    /* Override Leaflet tooltip to match brand */
+    .leaflet-tooltip {
+      font-family:'EB Garamond', serif !important;
+      font-size:13px !important;
+      color:var(--ink) !important;
+      background:#fff !important;
+      border:1px solid var(--line-strong) !important;
+      border-radius:0 !important;
+      box-shadow:0 2px 8px rgba(0,0,0,0.08) !important;
+    }
+
+    /* Footer */
+    .report-footer {
+      text-align:center;
+      color:var(--muted);
+      font-size:0.85rem;
+      margin-top:48px;
+      font-family:'DM Mono', monospace;
+      letter-spacing:0.15em;
+      text-transform:uppercase;
+    }
+  </style>
+</head>
+<body>
+
+  <a href="/" class="report-logo" aria-label="Return to home">
+    <img src="/logo.svg" alt="JF monogram">
+  </a>
+
+  <div class="wrap">
+
+    <a href="/sonder/" class="back-link">← Back to the Sonder Series</a>
+
+    <header class="title">
+      <div class="kicker">The Sonder Series</div>
+      <h1>The Sonder Report
+        <span class="sub">Learnings from 100 conversations with my NY neighbors</span>
+      </h1>
+      <p class="def"><b>sonder</b> &middot; <i>n.</i> the realization that each random passerby is living a life as vivid and complex as your own.</p>
+    </header>
+
+    <div class="statstrip">
+      <div class="stat"><div class="n">100</div><div class="l">conversations</div></div>
+      <div class="stat"><div class="n">102</div><div class="l">transcripts</div></div>
+      <div class="stat"><div class="n">276,749</div><div class="l">words spoken</div></div>
+      <div class="stat"><div class="n">5</div><div class="l">boroughs</div></div>
+      <div class="stat"><div class="n">20+</div><div class="l">nationalities</div></div>
+    </div>
+
+    <h2 style="margin-top:34px">What it took</h2>
+    <div class="statstrip">
+      <div class="stat"><div class="n">32</div><div class="l">days, start to finish</div></div>
+      <div class="stat"><div class="n">180 mi</div><div class="l">walked &middot; 377,090 steps</div></div>
+      <div class="stat"><div class="n">26</div><div class="l">days filming</div></div>
+      <div class="stat"><div class="n">29h 37m</div><div class="l">of footage</div></div>
+      <div class="stat"><div class="n">125</div><div class="l">people &middot; 64 men, 61 women</div></div>
+      <div class="stat"><div class="n">17m 46s</div><div class="l">avg per conversation</div></div>
+    </div>
+    <p class="small" style="text-align:center;margin-top:-2px">Ages 11 to 86 &middot; all five boroughs &middot; 30+ locations, 20 parks &middot; about 5 people a day &middot; the length of Manhattan, 13 times over.</p>
+
+    <h2>How to read this</h2>
+    <p>James stopped strangers in parks, on stoops, and on sidewalks and asked each of them, on camera, the same small set of questions: <b>(1)</b> What's your story? <b>(2)</b> What problem in the world means the most to you? <b>(3)</b> Who is the most impressive person you've met? &mdash; and <b>(4)</b> a piece of New York advice that, partway through, became a &ldquo;challenge.&rdquo; This report is a count of what people actually said. The quotes are the evidence; the numbers sit on top of them.</p>
+
+    <div class="divider">&#10086;</div>
+    <h2>Who said yes</h2>
+    <p>The clean, stated facts about the 100 conversations &mdash; the things people told James outright.</p>
+
+    <div class="twocol">
+      <div>
+        <h4>Solo vs. group</h4>
+        <div class="bars">
+          <div class="bar"><div class="lab">One guest</div><div class="track"><div class="fill" style="width:100%"></div></div><div class="pct">71</div></div>
+          <div class="bar"><div class="lab">A pair</div><div class="track"><div class="fill" style="width:32%"></div></div><div class="pct">23</div></div>
+          <div class="bar"><div class="lab">Three or more</div><div class="track"><div class="fill" style="width:7%"></div></div><div class="pct">6</div></div>
+        </div>
+        <p class="small">Nearly a third of the conversations were with couples, siblings, friends, or a parent and child &mdash; so 100 conversations held 125 distinct voices.</p>
+      </div>
+      <div>
+        <h4>Gender of guests</h4>
+        <div class="bars">
+          <div class="bar"><div class="lab">Men</div><div class="track"><div class="fill cool" style="width:100%"></div></div><div class="pct">64</div></div>
+          <div class="bar"><div class="lab">Women</div><div class="track"><div class="fill cool" style="width:95%"></div></div><div class="pct">61</div></div>
+        </div>
+        <p class="small">Across 125 guests, an almost even split &mdash; 64 men, 61 women.</p>
+      </div>
+    </div>
+
+    <h4>Ethnic heritage, by continent (stated/recorded)</h4>
+    <div class="bars">
+      <div class="bar"><div class="lab">North America</div><div class="track"><div class="fill gold" style="width:100%"></div></div><div class="pct">31</div></div>
+      <div class="bar"><div class="lab">Europe</div><div class="track"><div class="fill gold" style="width:84%"></div></div><div class="pct">26</div></div>
+      <div class="bar"><div class="lab">Africa</div><div class="track"><div class="fill gold" style="width:35%"></div></div><div class="pct">11</div></div>
+      <div class="bar"><div class="lab">South America</div><div class="track"><div class="fill gold" style="width:35%"></div></div><div class="pct">11</div></div>
+      <div class="bar"><div class="lab">Asia</div><div class="track"><div class="fill gold" style="width:26%"></div></div><div class="pct">8</div></div>
+      <div class="bar"><div class="lab">Middle East</div><div class="track"><div class="fill gold" style="width:10%"></div></div><div class="pct">3</div></div>
+      <div class="bar"><div class="lab">Mixed / multiple</div><div class="track"><div class="fill" style="width:32%"></div></div><div class="pct">~10</div></div>
+    </div>
+    <p>About a third of guests traced their heritage to North America, a quarter to Europe. But <b>roughly 40% came from African, South American, Asian, Middle Eastern, or mixed backgrounds</b>. Stated birthplaces spanned twenty countries on five continents &mdash; Colombia, Estonia, Iraq, South Korea, France, England, Brazil, Tanzania, India, Singapore, Greece, Croatia, Trinidad, Jamaica, Ukraine, Mexico, China, Cameroon. The word <b>&ldquo;moved&rdquo; appears 264 times</b>. Demographically, this is a transplant city.</p>
+
+    <h4>Stated ages &amp; how they were recruited</h4>
+    <p>Ages ran <b>from 11 to 86</b>, though most guests were in their twenties and thirties. Most were stopped cold &mdash; they <i>&ldquo;saw my sign and asked,&rdquo;</i> or got waved down mid-walk. A few came through a friend, a LinkedIn DM, or, once, a Google Calendar invite to a stranger.</p>
+
+    <div class="divider">&#10086;</div>
+    <h2>Where it happened</h2>
+    <p>Interviews spanned all five boroughs and <b>20 different parks</b> across 30+ locations &mdash; but clustered hard. The <b>Central Park</b> area (south, west, and east sides) was the clear hub at roughly a fifth of all conversations; <b>Prospect Park</b> in Brooklyn was the next biggest. Each dot sits at the real location, sized by episode count; about ten conversations were at undisclosed or vague spots and aren't pinned.</p>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <div class="map-wrap">
+      <div class="map-host" id="sondermap-host">
+        <div id="sondermap"></div>
+        <div class="map-fallback" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 470" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Map of all Sonder Series interview locations across the five boroughs of New York City">
+            <rect width="880" height="470" fill="#f6f4ef"/>
+            <text x="30" y="22" font-family="DM Mono, monospace" font-size="10" letter-spacing="2" fill="#000" fill-opacity="0.55">NEW YORK CITY — ALL FIVE BOROUGHS</text>
+            <circle cx="497.9" cy="188.5" r="16.1" fill="#000" fill-opacity="0.78" stroke="#fff" stroke-width="1.2"/>
+            <circle cx="470.1" cy="376.6" r="16.1" fill="#000" fill-opacity="0.78" stroke="#fff" stroke-width="1.2"/>
+            <circle cx="450.9" cy="203.5" r="15.1" fill="#000" fill-opacity="0.78" stroke="#fff" stroke-width="1.2"/>
+            <circle cx="519.3" cy="279.8" r="14.5" fill="#000" fill-opacity="0.78" stroke="#fff" stroke-width="1.2"/>
+            <circle cx="435.9" cy="272.1" r="12.6" fill="#000" fill-opacity="0.78" stroke="#fff" stroke-width="1.2"/>
+            <circle cx="395.7" cy="314.6" r="12.6" fill="#000" fill-opacity="0.78" stroke="#fff" stroke-width="1.2"/>
+            <circle cx="341.1" cy="286.1" r="11.8" fill="#000" fill-opacity="0.78" stroke="#fff" stroke-width="1.2"/>
+            <circle cx="409.7" cy="257.2" r="10.1" fill="#000" fill-opacity="0.78" stroke="#fff" stroke-width="1.2"/>
+            <circle cx="455.9" cy="327.1" r="8.9" fill="#000" fill-opacity="0.78" stroke="#fff" stroke-width="1.2"/>
+            <circle cx="537.3" cy="328.8" r="8.9" fill="#000" fill-opacity="0.78" stroke="#fff" stroke-width="1.2"/>
+            <circle cx="431.3" cy="229.3" r="8.9" fill="#000" fill-opacity="0.78" stroke="#fff" stroke-width="1.2"/>
+            <circle cx="446.8" cy="262.6" r="8.9" fill="#000" fill-opacity="0.78" stroke="#fff" stroke-width="1.2"/>
+            <circle cx="529.7" cy="189.7" r="8.9" fill="#000" fill-opacity="0.78" stroke="#fff" stroke-width="1.2"/>
+            <circle cx="393.5" cy="288.9" r="8.9" fill="#000" fill-opacity="0.78" stroke="#fff" stroke-width="1.2"/>
+            <circle cx="173.5" cy="405.3" r="8.9" fill="#000" fill-opacity="0.78" stroke="#fff" stroke-width="1.2"/>
+            <circle cx="385.6" cy="321.4" r="7.5" fill="#000" fill-opacity="0.78" stroke="#fff" stroke-width="1.2"/>
+            <circle cx="542.5" cy="224.7" r="7.5" fill="#000" fill-opacity="0.78" stroke="#fff" stroke-width="1.2"/>
+            <circle cx="434.8" cy="206.6" r="7.5" fill="#000" fill-opacity="0.78" stroke="#fff" stroke-width="1.2"/>
+            <circle cx="507.2" cy="190.8" r="7.5" fill="#000" fill-opacity="0.78" stroke="#fff" stroke-width="1.2"/>
+            <circle cx="338.9" cy="308.6" r="7.5" fill="#000" fill-opacity="0.78" stroke="#fff" stroke-width="1.2"/>
+            <circle cx="397.6" cy="355.6" r="7.5" fill="#000" fill-opacity="0.78" stroke="#fff" stroke-width="1.2"/>
+            <circle cx="491.9" cy="361.2" r="7.5" fill="#000" fill-opacity="0.78" stroke="#fff" stroke-width="1.2"/>
+            <circle cx="713.1" cy="57.8" r="7.5" fill="#000" fill-opacity="0.78" stroke="#fff" stroke-width="1.2"/>
+            <circle cx="636.8" cy="94.8" r="7.5" fill="#000" fill-opacity="0.78" stroke="#fff" stroke-width="1.2"/>
+            <circle cx="632.2" cy="142.0" r="7.5" fill="#000" fill-opacity="0.78" stroke="#fff" stroke-width="1.2"/>
+            <circle cx="780.8" cy="312.6" r="7.5" fill="#000" fill-opacity="0.78" stroke="#fff" stroke-width="1.2"/>
+            <circle cx="729.7" cy="286.1" r="7.5" fill="#000" fill-opacity="0.78" stroke="#fff" stroke-width="1.2"/>
+            <circle cx="104.1" cy="402.6" r="7.5" fill="#000" fill-opacity="0.78" stroke="#fff" stroke-width="1.2"/>
+            <text x="850" y="460" text-anchor="end" font-family="EB Garamond, serif" font-size="11" font-style="italic" fill="#000" fill-opacity="0.4">Static fallback — load the page with JavaScript &amp; internet for the interactive map.</text>
+          </svg>
+        </div>
+      </div>
+    </div>
+    <p class="small" style="margin:6px 0 0">A live map &mdash; drag to pan, use the +/&minus; buttons to zoom, hover a dot for the park and its episode count. Counts are by published-episode location; needs an internet connection to load the map tiles.</p>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+    (function(){
+      // Give up waiting for Leaflet after 4s — the SVG fallback stays visible.
+      var leafletGiveUpAt = Date.now() + 4000;
+      function init(){
+        if(typeof L==='undefined'){
+          if(Date.now() > leafletGiveUpAt) return;
+          return setTimeout(init,150);
+        }
+        var el=document.getElementById('sondermap');
+        var host=document.getElementById('sondermap-host');
+        if(!el){return;}
+        var map=L.map(el,{scrollWheelZoom:false}).setView([40.72,-73.96],11);
+        var tiles=L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{
+          attribution:'&copy; OpenStreetMap, &copy; CARTO', subdomains:'abcd', maxZoom:18
+        });
+        // Only mark the host as ready (which hides the fallback) once a tile
+        // actually loads. If the CDN is down, the fallback stays visible.
+        tiles.on('load', function(){ if(host){host.classList.add('map-ready');} });
+        tiles.addTo(map);
+        var pts=[
+          ["Central Park — south & west",40.7700,-73.9760,10],
+          ["Central Park — east side",40.7795,-73.9588,12],
+          ["Prospect Park",40.6602,-73.9690,12],
+          ["McCarren Park",40.7216,-73.9510,9],
+          ["Tompkins Square Park",40.7265,-73.9815,6],
+          ["Brooklyn Bridge Park",40.6995,-73.9962,6],
+          ["Pier 6 (on the waterfront)",40.6952,-73.9999,1],
+          ["Rockefeller Park (Battery Park City)",40.7176,-74.0162,5],
+          ["Fort Greene Park",40.6916,-73.9742,2],
+          ["Herbert Von King Park",40.6905,-73.9444,2],
+          ["Bryant Park",40.7536,-73.9832,2],
+          ["Union Square",40.7359,-73.9911,3],
+          ["Stuyvesant Oval",40.7325,-73.9775,2],
+          ["Ruppert Park (Yorkville)",40.7787,-73.9472,2],
+          ["Chinatown",40.7158,-73.9970,2],
+          ["Bay St / Borough Hall (Staten Island)",40.6420,-74.0775,2],
+          ["Queensbridge Park",40.7565,-73.9425,1],
+          ["Columbus Circle",40.7680,-73.9819,1],
+          ["East 85th Street",40.7780,-73.9554,1],
+          ["Battery Park",40.7033,-74.0170,1],
+          ["Park Slope (toward the waterfront)",40.6735,-73.9955,1],
+          ["Eastern Parkway",40.6700,-73.9610,1],
+          ["New York Botanical Garden (Bronx)",40.8624,-73.8801,1],
+          ["Walter Gladwin Park (Bronx)",40.8389,-73.9080,1],
+          ["St. Mary's Park (Bronx)",40.8090,-73.9097,1],
+          ["Forest Park (Queens)",40.7008,-73.8553,1],
+          ["Middle Village (Queens)",40.7176,-73.8740,1],
+          ["Snug Harbor (Staten Island)",40.6437,-74.1029,1]
+        ];
+        var markers=[];
+        pts.forEach(function(p){
+          var m=L.circleMarker([p[1],p[2]],{
+            radius:6+Math.sqrt(p[3])*4, color:'#ffffff', weight:1.5,
+            fillColor:'#000000', fillOpacity:0.85
+          }).bindTooltip('<b>'+p[0]+'</b> — '+p[3]+(p[3]>1?' episodes':' episode'),{direction:'top'});
+          m.addTo(map); markers.push(m);
+        });
+        try{ map.fitBounds(L.featureGroup(markers).getBounds().pad(0.12)); }catch(e){}
+      }
+      if(document.readyState!=='loading'){init();}else{document.addEventListener('DOMContentLoaded',init);}
+    })();
+    </script>
+
+    <div class="divider">&#10086; &nbsp;PART I&nbsp; &#10087;</div>
+    <h2>Q1 &mdash; &ldquo;What's your story?&rdquo;</h2>
+    <p>The simplest question caused the most hesitation. People answered in four recognizable shapes.</p>
+
+    <p><b>Geography first</b> was the single most common opening move &mdash; people located themselves before anything else (&ldquo;I'm from ___, then I moved to ___&rdquo;). This tracks the word data exactly: <span class="chip">&ldquo;new york&rdquo; &middot; a top phrase</span> <span class="chip">&ldquo;moved&rdquo; &middot; 264</span>. A second group led with a <b>professional pivot</b> (the r&eacute;sum&eacute; as life story), a polished form used by people who'd clearly told it before. A third gave the <b>existential stall</b> &mdash; pushing back on the premise. And a few led with <b>what they do for joy</b>, not where they're from.</p>
+
+    <div class="pullgrid">
+      <div class="pull">&ldquo;My story's in the making.&rdquo;<span class="src">Ep 081 &middot; the most compressed answer in the series</span></div>
+      <div class="pull">&ldquo;It's hard to talk about your life story, especially when you're right in the middle of it.&rdquo;<span class="src">Gabe, Ep 009</span></div>
+      <div class="pull">&ldquo;I'm just a girl from New Jersey with a dream&hellip; there've been so many deaths, including my dad.&rdquo;<span class="src">Ep 015</span></div>
+      <div class="pull">&ldquo;I'm from Iraq&hellip; I'm an artist and I live for music.&rdquo;<span class="src">Demi, Ep 064</span></div>
+    </div>
+    <p class="small">Who dove in vs. who froze: guests who were older and settled, visitors with a clear reason to be in the city, or people with a recent dramatic life event answered fast. The youngest guests gave some of the most honest answers precisely because they hadn't yet fixed on a story.</p>
+
+    <div class="divider">&#10086; &nbsp;PART II&nbsp; &#10087;</div>
+    <h2>Q2 &mdash; &ldquo;What problem means the most to you?&rdquo;</h2>
+    <p>The most common answer to &ldquo;the biggest problem in the world&rdquo; was not a place or a policy. It was <b>the erosion of human connection</b> &mdash; loneliness, lack of empathy, people no longer seeing each other. About <b>one in four</b> guests named some version of it, more than any other category.</p>
+
+    <div class="bars">
+      <div class="bar"><div class="lab">Connection / empathy / decency</div><div class="track"><div class="fill hot" style="width:100%"></div></div><div class="pct">~24%</div></div>
+      <div class="bar"><div class="lab">Poverty / inequality / economy</div><div class="track"><div class="fill" style="width:67%"></div></div><div class="pct">~16%</div></div>
+      <div class="bar"><div class="lab">Discrimination / rights / immigration</div><div class="track"><div class="fill" style="width:50%"></div></div><div class="pct">~12%</div></div>
+      <div class="bar"><div class="lab">War / violence / genocide</div><div class="track"><div class="fill" style="width:38%"></div></div><div class="pct">~9%</div></div>
+      <div class="bar"><div class="lab">Political division / governance</div><div class="track"><div class="fill" style="width:33%"></div></div><div class="pct">~8%</div></div>
+      <div class="bar"><div class="lab">Healthcare / health / clean water</div><div class="track"><div class="fill" style="width:29%"></div></div><div class="pct">~7%</div></div>
+      <div class="bar"><div class="lab">Technology / AI</div><div class="track"><div class="fill" style="width:25%"></div></div><div class="pct">~6%</div></div>
+      <div class="bar"><div class="lab">Mental health / addiction / children</div><div class="track"><div class="fill" style="width:25%"></div></div><div class="pct">~6%</div></div>
+      <div class="bar"><div class="lab">Education / freedom / opportunity</div><div class="track"><div class="fill" style="width:25%"></div></div><div class="pct">~6%</div></div>
+      <div class="bar"><div class="lab">Environment / climate</div><div class="track"><div class="fill" style="width:21%"></div></div><div class="pct">~5%</div></div>
+      <div class="bar"><div class="lab">Misinformation / surface thinking</div><div class="track"><div class="fill" style="width:17%"></div></div><div class="pct">~4%</div></div>
+    </div>
+    <p class="small">Approximate; many guests named more than one problem, so shares sum to more than 100%. Lines between categories are fuzzy by nature (is &ldquo;gender disparity&rdquo; <i>rights</i> or <i>discrimination</i>?).</p>
+
+    <p>Beneath the categories, one pattern held: <b>people answered &ldquo;the world's problem&rdquo; with their own life.</b> The problem they named was, again and again, the one they had lived or worked on.</p>
+    <table>
+      <tr><th>Guest</th><th>Named as the world's biggest problem</th></tr>
+      <tr><td>An immigration advocate (Ep 014)</td><td>&ldquo;The dissolution of human decency&rdquo; &amp; deportation</td></tr>
+      <tr><td>A sixth-grade teacher (Ep 018)</td><td>Education</td></tr>
+      <tr><td>A health-tech founder (Ep 032)</td><td>Access to healthcare</td></tr>
+      <tr><td>A recovering addict, now a counselor (Ep 076)</td><td>Drug addiction &amp; its stigma</td></tr>
+      <tr><td>A trans guest (Ep 089)</td><td>&ldquo;Vitriol and hate in our government&rdquo; toward trans people</td></tr>
+      <tr><td>A Palestinian shop owner (Ep 081)</td><td>&ldquo;Palestine. Palestine. Palestine.&rdquo;</td></tr>
+    </table>
+    <p>The implication is methodological: <b>Q2 is a biography question in disguise.</b> People reach for the wound or the work they know.</p>
+
+    <div class="pullgrid">
+      <div class="pull">&ldquo;What it boils down to is the dissolution of human decency. If we're decent to each other, everything else builds upon that.&rdquo;<span class="src">Naomi, Ep 014</span></div>
+      <div class="pull">&ldquo;I am in an empathy epidemic. People forget how to relate to other people&hellip; the &lsquo;I don't care&rsquo; epidemic.&rdquo;<span class="src">Helena, Ep 058</span></div>
+      <div class="pull">&ldquo;Every human that you kill is an enormous universe in itself.&rdquo;<span class="src">a guest, Ep 012, on war</span></div>
+      <div class="pull">&ldquo;It's set up for you to lose. If the system was set up for people to win, a lot less violence would happen.&rdquo;<span class="src">a guest, Ep 022, on inequality</span></div>
+    </div>
+
+    <div class="divider">&#10086; &nbsp;PART III&nbsp; &#10087;</div>
+    <h2>Q3 &mdash; &ldquo;Who is the most impressive person you've met?&rdquo;</h2>
+    <p>Three findings, all robust across multiple counts of the data:</p>
+    <p><b>1. People named family, not the famous.</b> About <b>half</b> of all answers named a parent, grandparent, or partner. A <b>mother</b> was the single most common answer (~1 in 6). Only about <b>1 in 10</b> named a public figure &mdash; and even then, usually for a character trait, not their fame.</p>
+
+    <div class="bars">
+      <div class="bar"><div class="lab">Mother</div><div class="track"><div class="fill gold" style="width:100%"></div></div><div class="pct">~19%</div></div>
+      <div class="bar"><div class="lab">Father / grandparent / aunt</div><div class="track"><div class="fill gold" style="width:100%"></div></div><div class="pct">~22%</div></div>
+      <div class="bar"><div class="lab">Mentor / professional figure</div><div class="track"><div class="fill" style="width:91%"></div></div><div class="pct">~20%</div></div>
+      <div class="bar"><div class="lab">Friend / peer</div><div class="track"><div class="fill" style="width:55%"></div></div><div class="pct">~12%</div></div>
+      <div class="bar"><div class="lab">Declined to name anyone</div><div class="track"><div class="fill cool" style="width:55%"></div></div><div class="pct">~12%</div></div>
+      <div class="bar"><div class="lab">Public figure</div><div class="track"><div class="fill cool" style="width:45%"></div></div><div class="pct">~10%</div></div>
+      <div class="bar"><div class="lab">Partner / spouse</div><div class="track"><div class="fill gold" style="width:36%"></div></div><div class="pct">~8%</div></div>
+      <div class="bar"><div class="lab">Self / their own child</div><div class="track"><div class="fill" style="width:27%"></div></div><div class="pct">~6%</div></div>
+    </div>
+    <p class="small">Approximate; multi-guest episodes contribute extra answers. The word <b>&ldquo;mom&rdquo; appears 139 times</b> in the corpus &mdash; far more than any other family word.</p>
+
+    <p><b>2. &ldquo;Impressive&rdquo; almost never meant achievement.</b> The reasons people gave clustered around <b>character</b> &mdash; resilience, kindness, unconditional love, integrity, staying true to oneself &mdash; not accomplishments. Often the same person held both: the parent who had a brutal life and never let the children feel its weight.</p>
+    <p><b>3. About 1 in 8 refused to rank humans at all</b> &mdash; usually on principle, not from discomfort.</p>
+
+    <div class="pullgrid">
+      <div class="pull">&ldquo;She worked three jobs&hellip; &lsquo;Mom, you speak eight languages.&rsquo; She never let the world stomp her light out.&rdquo;<span class="src">on his mother, Ep 045</span></div>
+      <div class="pull">&ldquo;Every single person at her funeral said she went out on a limb for them&hellip; I am better for her.&rdquo;<span class="src">on a great-aunt, Ep 014</span></div>
+      <div class="pull">&ldquo;He'd be the same person with somebody very powerful, or with the waiter, or with a homeless person.&rdquo;<span class="src">on a late father, Ep 012</span></div>
+      <div class="pull">&ldquo;If I met everyone at a specific time in their life, I'd see everyone as the most amazing human being ever.&rdquo;<span class="src">Pierre, Ep 010 &middot; declining to name one</span></div>
+    </div>
+
+    <div class="divider">&#10086; &nbsp;PART IV&nbsp; &#10087;</div>
+    <h2>Q4 &mdash; The New York advice that became a challenge</h2>
+    <p>This question changed shape on camera. Early on, James asked guests for <b>advice</b> about the city; partway through he started asking for a <b>challenge</b> instead &mdash; a thing to go <i>do</i> &mdash; reasoning that a challenge produces action where advice produces a nod. So the early episodes hold advice and the later ones hold dares. Together they read as a stranger's field guide to New York.</p>
+    <h4>First, the advice</h4>
+    <div class="pullgrid">
+      <div class="pull">&ldquo;Say yes and be brave.&rdquo;<span class="src">Katherine, Ep 002</span></div>
+      <div class="pull">&ldquo;Find your tribe. Action is better than speculation.&rdquo;<span class="src">Sergio, Ep 026</span></div>
+      <div class="pull">&ldquo;Leave New York often on the weekends to ground yourself in reality.&rdquo;<span class="src">Ep 030</span></div>
+      <div class="pull">&ldquo;This city is kind but not nice. I'll give you the shirt off my back &mdash; and keep walking.&rdquo;<span class="src">Ben, Ep 045</span></div>
+    </div>
+    <h4>Then, the challenge</h4>
+    <p>Once the question became a dare (the back half of the run), the answers fell into clear types: <span class="chip">explore a place (~10)</span> <span class="chip">personal-growth mindset (~10)</span> <span class="chip">physical / adventure (~7)</span> <span class="chip">meet strangers (~5)</span> <span class="chip">survival realism (~6)</span> <span class="chip">food (~4)</span>. The <b>Brooklyn Bridge</b> was the single most repeated destination, named by guests who didn't know each other had said it.</p>
+    <div class="pullgrid">
+      <div class="pull">&ldquo;Call someone you love and tell them you love them this week. Sometimes we love people but don't say it as much as we must.&rdquo;<span class="src">Fernando, Ep 080</span></div>
+      <div class="pull">&ldquo;Presence. The present is the only place where change actually happens.&rdquo;<span class="src">Keegan, Ep 063</span></div>
+      <div class="pull">&ldquo;Don't let the city make you colder and angrier and more of a cynic.&rdquo;<span class="src">Sharri, Ep 084</span></div>
+      <div class="pull">&ldquo;Instead of walking over a homeless person, ask them what they need &mdash; then buy it.&rdquo;<span class="src">Jason, Ep 100</span></div>
+    </div>
+    <p class="small">One warning recurs independently across both halves &mdash; <i>don't get jaded, leave often, keep your habits</i> &mdash; which reads less like a clich&eacute; than a real hazard of the city.</p>
+
+    <div class="divider">&#10086;</div>
+    <h2>The psychographic profile</h2>
+    <p>Beyond the stated facts, the transcripts draw a consistent portrait of <i>who these people are inside</i> &mdash; their values and outlook. Each claim below is anchored to a count or a pattern in the words themselves.</p>
+
+    <div class="twocol">
+      <div>
+        <h4>They turn inward</h4>
+        <p class="small"><b>&ldquo;myself&rdquo; (226) + &ldquo;yourself&rdquo; (143) = 369 self-directed references.</b> The dominant motion is reflection. People used the interview to examine and instruct themselves more than to describe others.</p>
+        <h4>They are defined by movement</h4>
+        <p class="small">A relocation cluster &mdash; moved, away, home, leave, left &mdash; appears <b>~600 times</b>. Almost everyone defines themselves by a leaving and an arriving.</p>
+        <h4>They reach for the spiritual, unprompted</h4>
+        <p class="small">Religion is never asked about, yet <b>&ldquo;god&rdquo; appears 122 times</b> (+ believe 82, faith 16). Meaning, for many, defaults to a spiritual frame.</p>
+      </div>
+      <div>
+        <h4>They prize character over status</h4>
+        <p class="small">The Q3 data is unambiguous: admiration attaches to resilience, kindness, and authenticity, not fame. <b>&ldquo;different&rdquo; appears 444 times</b> &mdash; the wonder of distinct lives, which is the premise of <i>Sonder</i> itself.</p>
+        <h4>Family is the gravitational center</h4>
+        <p class="small">kids + children (184), mom + mother (176), family (122), dad + father (120), parents (84). When people reach for what they value most, they reach for kin.</p>
+        <h4>They are emotionally open</h4>
+        <p class="small">heart (57), pain (55), grateful (15), brave (18), scared (21), died (19). For strangers on a bench, the level of vulnerability is high &mdash; many talked for 30&ndash;45 minutes when they'd planned on two.</p>
+      </div>
+    </div>
+
+    <div class="note warn"><b>The most telling psychographic signal &mdash; the words people avoid.</b> The two ideas the data points to as most central are almost never named directly: <b>&ldquo;lonely&rdquo; appears just 6 times and &ldquo;immigrant&rdquo; only 5</b> &mdash; despite disconnection being the #1 stated problem and a transplant identity defining the whole corpus. People circle these with substitutes (alone, connection, community, different). The deepest themes are the ones for which people have no clean single word, so they talk <i>around</i> them.</div>
+
+    <div class="divider">&#10086;</div>
+    <h2>The corpus in words</h2>
+    <p>After grammatical filler and the question words echoed back, the most frequent content words tell the story of the project on their own. Counts are over the full 276,749-word corpus.</p>
+    <div class="bars">
+      <div class="bar"><div class="lab">love</div><div class="track"><div class="fill hot" style="width:100%"></div></div><div class="pct">458</div></div>
+      <div class="bar"><div class="lab">different</div><div class="track"><div class="fill" style="width:97%"></div></div><div class="pct">444</div></div>
+      <div class="bar"><div class="lab">story</div><div class="track"><div class="fill" style="width:79%"></div></div><div class="pct">362</div></div>
+      <div class="bar"><div class="lab">moved</div><div class="track"><div class="fill cool" style="width:58%"></div></div><div class="pct">264</div></div>
+      <div class="bar"><div class="lab">god</div><div class="track"><div class="fill gold" style="width:27%"></div></div><div class="pct">122</div></div>
+      <div class="bar"><div class="lab">money</div><div class="track"><div class="fill" style="width:25%"></div></div><div class="pct">116</div></div>
+      <div class="bar"><div class="lab">community</div><div class="track"><div class="fill" style="width:23%"></div></div><div class="pct">107</div></div>
+      <div class="bar"><div class="lab">mom</div><div class="track"><div class="fill gold" style="width:30%"></div></div><div class="pct">139</div></div>
+      <div class="bar"><div class="lab">lonely</div><div class="track"><div class="fill" style="width:1.3%"></div></div><div class="pct">6</div></div>
+      <div class="bar"><div class="lab">immigrant</div><div class="track"><div class="fill" style="width:1.1%"></div></div><div class="pct">5</div></div>
+    </div>
+    <p class="small">The two most common multi-word phrases are <b>&ldquo;you know&rdquo;</b> and <b>&ldquo;I think&rdquo;</b> &mdash; the linguistic fingerprint of people thinking in real time, not reciting. The unedited format is doing real work: you can hear people discovering their answers. (One folk-theory of the city, <i>&ldquo;kind but not nice,&rdquo;</i> surfaced independently from strangers in Eps 045, 078, and 079.)</p>
+
+    <div class="divider">&#10086;</div>
+    <h2>What the data says, in seven lines</h2>
+    <table>
+      <tr><td class="num">1</td><td>The world's &ldquo;biggest problem,&rdquo; according to strangers, is each other &mdash; or the lack of each other. Connection/empathy was the largest Q2 theme (~24%).</td></tr>
+      <tr><td class="num">2</td><td>People answer &ldquo;the world's problem&rdquo; with their own life. Lived experience predicted the named problem more reliably than anything else.</td></tr>
+      <tr><td class="num">3</td><td>&ldquo;Impressive&rdquo; means character, and usually means family. ~Half named kin; mothers led; &ldquo;mom&rdquo; appears 139 times; public figures were ~10%.</td></tr>
+      <tr><td class="num">4</td><td>About 1 in 8 refused to rank humans at all &mdash; a considered humanism, not evasion.</td></tr>
+      <tr><td class="num">5</td><td>The answers are unrehearsed. &ldquo;You know&rdquo; and &ldquo;I think&rdquo; dominate &mdash; people caught reasoning, not performing.</td></tr>
+      <tr><td class="num">6</td><td>This is a transplant's portrait of New York. &ldquo;Moved&rdquo; (264) and a 5-continent guest list; ~40% of non-European/N. American heritage.</td></tr>
+      <tr><td class="num">7</td><td>The deepest themes go unnamed. &ldquo;Lonely&rdquo; (6) and &ldquo;immigrant&rdquo; (5) are nearly absent &mdash; people talk around what matters most.</td></tr>
+    </table>
+
+    <p class="report-footer">100 conversations &middot; 276,749 words &middot; The Sonder Series by James Floyd &middot; Your world comes from you.</p>
+
+  </div>
+</body>
+</html>
