@@ -21,6 +21,22 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=DM+Mono:wght@300;400&family=Lora:ital,wght@0,400;0,500;1,400&family=Space+Mono:wght@400;700&display=swap">
   <link rel="stylesheet" href="/css/site.css">
+  <style>
+    /* Page-specific overrides: ditch the scattered-Polaroid look in favor of
+       a flat mosaic (CSS columns) — same masonry pattern as /pictures/. */
+    .ref-grid {
+      display: block;
+      columns: 1;
+      column-gap: 1rem;
+    }
+    @media (min-width: 480px)  { .ref-grid { columns: 2; } }
+    @media (min-width: 1024px) { .ref-grid { columns: 3; } }
+    .ref-card {
+      display: block;
+      break-inside: avoid;
+      margin-bottom: 1rem;
+    }
+  </style>
 </head>
 <body>
 
@@ -57,7 +73,7 @@
   </nav>
 
   <main class="page">
-    <div class="page-content anim-fade-up" style="animation-delay:0.4s">
+    <div class="page-content anim-fade-up" style="animation-delay:0.4s; max-width: 80rem;">
 
       <h1 class="page-title">References</h1>
       <p class="page-subtitle">Words from people who've been there.</p>
@@ -70,7 +86,7 @@
 
       <div class="ref-grid">
 
-        <article class="ref-card" style="transform:rotate(-1.2deg)">
+        <article class="ref-card">
           <p class="ref-card__context">Met through Jets and Capital, Friend</p>
           <p class="ref-card__quote">"I've got to know James Floyd over the past year and can vouch for his talent, creativity, work ethic, and connecting skills plus many more. I hope one of my partners in NYC finds this and gets a chance to work with you."</p>
           <div class="ref-card__footer">
@@ -81,7 +97,7 @@
           </div>
         </article>
 
-        <article class="ref-card" style="transform:rotate(1.4deg)">
+        <article class="ref-card">
           <p class="ref-card__context">Worked together on Jets and Capital + a few deals, Friend</p>
           <p class="ref-card__quote">"James Floyd is your guy. The best by a wide margin at driving the intersection between function, execution, and relationship."</p>
           <div class="ref-card__footer">
@@ -92,7 +108,7 @@
           </div>
         </article>
 
-        <article class="ref-card" style="transform:rotate(2deg)">
+        <article class="ref-card">
           <p class="ref-card__context">Worked for him at Betterwealth, Friend</p>
           <p class="ref-card__quote">"James you have been a major blessing to me and to the team and I know I'm not the only one who shares that."</p>
           <div class="ref-card__footer">
@@ -103,7 +119,7 @@
           </div>
         </article>
 
-        <article class="ref-card" style="transform:rotate(-0.9deg)">
+        <article class="ref-card">
           <p class="ref-card__context">Worked with him at Betterwealth, Friend</p>
           <p class="ref-card__quote">"Can confirm that James Floyd should be your guy. He's made for this kind of job."</p>
           <div class="ref-card__footer">
@@ -114,7 +130,7 @@
           </div>
         </article>
 
-        <article class="ref-card" style="transform:rotate(-1.5deg)">
+        <article class="ref-card">
           <p class="ref-card__context">Worked for him at Betterwealth, Friend</p>
           <p class="ref-card__quote">"I was like — this kid is different. This kid is special."</p>
           <div class="ref-card__footer">
@@ -125,7 +141,7 @@
           </div>
         </article>
 
-        <article class="ref-card" style="transform:rotate(1.8deg)">
+        <article class="ref-card">
           <p class="ref-card__context">DM'ed me on LinkedIn, met up at SXSW</p>
           <p class="ref-card__quote">"Dude it was so good to finally meet you in person!!!! Your amazing dude and killing it."</p>
           <div class="ref-card__footer">
@@ -140,7 +156,7 @@
           </div>
         </article>
 
-        <article class="ref-card" style="transform:rotate(0.7deg)">
+        <article class="ref-card">
           <p class="ref-card__context">Worked with her at Jets and Capital, Friend</p>
           <p class="ref-card__quote">"One of the coolest dudes in existence, cool to watch and learn from you and your pursuit of growth."</p>
           <div class="ref-card__footer">
@@ -151,7 +167,7 @@
           </div>
         </article>
 
-        <article class="ref-card" style="transform:rotate(-0.6deg)">
+        <article class="ref-card">
           <p class="ref-card__context">Worked for her at SXSW Secret Garden Party, Friend</p>
           <p class="ref-card__quote">"James, you are a superstar. Your hard work and willingness to go above and beyond will take you a LONG WAY. So great meeting you & see you in NY!"</p>
           <div class="ref-card__footer">
@@ -166,7 +182,7 @@
           </div>
         </article>
 
-        <article class="ref-card" style="transform:rotate(1.1deg)">
+        <article class="ref-card">
           <p class="ref-card__context">Worked with him at Jets and Capital, Friend</p>
           <p class="ref-card__quote">"Honored to have a seat at your table sir!"</p>
           <div class="ref-card__footer">
@@ -177,7 +193,7 @@
           </div>
         </article>
 
-        <article class="ref-card" style="transform:rotate(-1.3deg)">
+        <article class="ref-card">
           <p class="ref-card__context">Worked for her at SXSW Secret Garden Party, Friend</p>
           <p class="ref-card__quote">"James killed it!! If anyone wants to learn how to stand out in a volunteer crowd, reach out to James Floyd."</p>
           <div class="ref-card__footer">
@@ -192,7 +208,7 @@
           </div>
         </article>
 
-        <article class="ref-card" style="transform:rotate(0.8deg)">
+        <article class="ref-card">
           <p class="ref-card__context">Worked with him at Jets and Capital, Friend</p>
           <p class="ref-card__quote">"You're a Top bloke @jamesfloyd._ To many more."</p>
           <div class="ref-card__footer">
@@ -203,7 +219,7 @@
           </div>
         </article>
 
-        <article class="ref-card" style="transform:rotate(-1.6deg)">
+        <article class="ref-card">
           <p class="ref-card__context">Worked for him at SXSW Secret Garden Party, Friend</p>
           <p class="ref-card__quote">"james - you were the mvp"</p>
           <div class="ref-card__footer">
@@ -218,7 +234,7 @@
           </div>
         </article>
 
-        <article class="ref-card" style="transform:rotate(1.2deg)">
+        <article class="ref-card">
           <p class="ref-card__context">Worked for him at Betterwealth, Friend</p>
           <p class="ref-card__quote">"You just genuinely have that grit, and you're going to be special, you know that AND you're very coachable."</p>
           <div class="ref-card__footer">
@@ -229,7 +245,7 @@
           </div>
         </article>
 
-        <article class="ref-card" style="transform:rotate(-0.5deg)">
+        <article class="ref-card">
           <p class="ref-card__context">Worked for him at Betterwealth, Friend</p>
           <p class="ref-card__quote">"The growth that you've had over the last year has been insane."</p>
           <div class="ref-card__footer">
@@ -240,7 +256,7 @@
           </div>
         </article>
 
-        <article class="ref-card" style="transform:rotate(1.4deg)">
+        <article class="ref-card">
           <p class="ref-card__context">Friend</p>
           <p class="ref-card__quote">"James Floyd you know ball bro."</p>
           <div class="ref-card__footer">
@@ -251,7 +267,7 @@
           </div>
         </article>
 
-        <article class="ref-card" style="transform:rotate(-0.9deg)">
+        <article class="ref-card">
           <p class="ref-card__context">Worked for him at Jets and Capital, Friend</p>
           <p class="ref-card__quote">"Love what you're building dude."</p>
           <div class="ref-card__footer">
@@ -262,7 +278,7 @@
           </div>
         </article>
 
-        <article class="ref-card" style="transform:rotate(1.8deg)">
+        <article class="ref-card">
           <p class="ref-card__context">Friend</p>
           <p class="ref-card__quote">"James Floyd for president."</p>
           <div class="ref-card__footer">
@@ -273,7 +289,7 @@
           </div>
         </article>
 
-        <article class="ref-card" style="transform:rotate(-1.6deg)">
+        <article class="ref-card">
           <p class="ref-card__context">Friend from Ecuador</p>
           <p class="ref-card__quote">"Quedó cheverazo! Me encanta te admiro James, me inspiras a ser mejor persona."</p>
           <div class="ref-card__footer">
@@ -284,7 +300,7 @@
           </div>
         </article>
 
-        <article class="ref-card" style="transform:rotate(-1.3deg)">
+        <article class="ref-card">
           <p class="ref-card__context">Worked for him at Betterwealth, Friend</p>
           <p class="ref-card__quote">"You lowkey inspire me with how hard you work, how much you work."</p>
           <div class="ref-card__footer">
@@ -295,7 +311,7 @@
           </div>
         </article>
 
-        <article class="ref-card" style="transform:rotate(-0.5deg)">
+        <article class="ref-card">
           <p class="ref-card__context">Worked with her at Jets and Capital, Friend</p>
           <p class="ref-card__quote">"James supports it → it's worth supporting!!"</p>
           <div class="ref-card__footer">
@@ -306,7 +322,7 @@
           </div>
         </article>
 
-        <article class="ref-card" style="transform:rotate(1.1deg)">
+        <article class="ref-card">
           <p class="ref-card__context">Commented on a post mentioning a house show we threw on her rooftop</p>
           <p class="ref-card__quote">"James, it was a true pleasure. You not only helped but also made it an even better experience. Grateful to be friends!! Thank you for being the person who says yes and figures it out. ☀️"</p>
           <div class="ref-card__footer">
@@ -317,7 +333,7 @@
           </div>
         </article>
 
-        <article class="ref-card" style="transform:rotate(0.9deg)">
+        <article class="ref-card">
           <p class="ref-card__context">Commented on a post detailing people I interviewed for the Sonder Series</p>
           <p class="ref-card__quote">"i don't even know where to start on this post, every single line is just so poignant and well written wowww i am loving your content"</p>
           <div class="ref-card__footer">
@@ -328,7 +344,7 @@
           </div>
         </article>
 
-        <article class="ref-card" style="transform:rotate(-1.3deg)">
+        <article class="ref-card">
           <p class="ref-card__context">James helped her with an event / creative ideating</p>
           <p class="ref-card__quote">"James really is the best. He knows the space so well, always provides unique insights and perspectives, and knows how to curate advice based on the individuality of the project at hand. A true master and visionary, yet his work lies right at the intersection of idea and application. His input is always tangible, logical, simple, and applicable, all while also being creative and outside-the-box. He's the go-to man for thinking differently. So much appreciation!"</p>
           <div class="ref-card__footer">
@@ -343,7 +359,7 @@
           </div>
         </article>
 
-        <article class="ref-card" style="transform:rotate(1.5deg)">
+        <article class="ref-card">
           <p class="ref-card__context">Sonder Series Ep 52</p>
           <p class="ref-card__quote">"You are an incredible human being. You are a force of nature."</p>
           <div class="ref-card__footer">
@@ -354,7 +370,7 @@
           </div>
         </article>
 
-        <article class="ref-card" style="transform:rotate(1.2deg)">
+        <article class="ref-card">
           <p class="ref-card__context">Sonder Series Ep 49</p>
           <p class="ref-card__quote">"You are like the master of third door. Like no one I've ever seen."</p>
           <div class="ref-card__footer">
@@ -365,7 +381,7 @@
           </div>
         </article>
 
-        <article class="ref-card" style="transform:rotate(-1.7deg)">
+        <article class="ref-card">
           <p class="ref-card__context">Sonder Series Ep 31</p>
           <p class="ref-card__quote">"You're a very authentic person... that is something that I aspire to have."</p>
           <div class="ref-card__footer">
@@ -376,7 +392,7 @@
           </div>
         </article>
 
-        <article class="ref-card" style="transform:rotate(0.6deg)">
+        <article class="ref-card">
           <p class="ref-card__context">Sonder Series Ep 10</p>
           <p class="ref-card__quote">"If you were to ask me the same question about you... I would say you are the most amazing human being right now, right here."</p>
           <div class="ref-card__footer">
@@ -387,7 +403,7 @@
           </div>
         </article>
 
-        <article class="ref-card" style="transform:rotate(-1.0deg)">
+        <article class="ref-card">
           <p class="ref-card__context">Sonder Series Ep 43</p>
           <p class="ref-card__quote">"Now you really made the best out of shit, man... sounds like you've had some good guidance from inside."</p>
           <div class="ref-card__footer">
@@ -398,7 +414,7 @@
           </div>
         </article>
 
-        <article class="ref-card" style="transform:rotate(0.8deg)">
+        <article class="ref-card">
           <p class="ref-card__context">Sonder Series Ep 37</p>
           <p class="ref-card__quote">"I love how transparent you are."</p>
           <div class="ref-card__footer">
@@ -409,7 +425,7 @@
           </div>
         </article>
 
-        <article class="ref-card" style="transform:rotate(-0.7deg)">
+        <article class="ref-card">
           <p class="ref-card__context">Sonder Series Ep 51</p>
           <p class="ref-card__quote">"I admire how thoughtful you are."</p>
           <div class="ref-card__footer">
@@ -420,7 +436,7 @@
           </div>
         </article>
 
-        <article class="ref-card" style="transform:rotate(1.3deg)">
+        <article class="ref-card">
           <p class="ref-card__context">Sonder Series Ep 21</p>
           <p class="ref-card__quote">"You're a good storyteller as well."</p>
           <div class="ref-card__footer">
