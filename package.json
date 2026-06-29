@@ -6,7 +6,8 @@
   "description": "jamesfloyds.world — plain HTML site, no framework.",
   "scripts": {
     "fetch:substack": "bun scripts/fetch-substack.mjs",
-    "build:site": "bun scripts/fetch-substack.mjs && bun scripts/build-site.mjs",
+    "bake:linkedin": "bun scripts/bake-linkedin.mjs",
+    "build:site": "bun scripts/fetch-substack.mjs && bun scripts/bake-linkedin.mjs && bun scripts/build-site.mjs",
     "serve:site": "bun scripts/serve-site.mjs"
   }
 }
