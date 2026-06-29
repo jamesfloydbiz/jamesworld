@@ -328,6 +328,23 @@ ul, ol { list-style: none; }
 .page-content {
   max-width: 56rem;
   margin: 0 auto;
+  /* Side gutter so titles + prose don't touch the screen edge on phones.
+     On desktop the max-width already leaves plenty of whitespace, so the
+     extra 16-24px just sits inside the column and is invisible. */
+  padding: 0 clamp(16px, 4vw, 24px);
+}
+
+/* Narrow viewports: keep rotated reference cards from clipping at the edges.
+   The rotation comes from inline style="..." on each .ref-card so we need
+   !important to override; the alternative is rewriting all 23 cards. */
+@media (max-width: 640px) {
+  .ref-card { transform: none !important; }
+}
+
+/* Narrow phones: hide the per-tab counts on /writing/ so "LinkedIn Posts" fits
+   on a single line next to "Letters" instead of wrapping awkwardly. */
+@media (max-width: 480px) {
+  .writing-tab .count { display: none; }
 }
 
 .page-title {

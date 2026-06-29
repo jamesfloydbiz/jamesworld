@@ -53,7 +53,7 @@
   </script>
 
   <style>
-    /* Home page is full-viewport, no scroll */
+    /* Home page is full-viewport, no scroll on roomy screens */
     html, body { height: 100%; overflow: hidden; }
 
     .home {
@@ -61,6 +61,14 @@
       display: flex;
       flex-direction: column;
       overflow: hidden;
+    }
+
+    /* Phones + short windows: the letter is taller than the viewport, so
+       allow normal scrolling instead of clipping the salutation + signature. */
+    @media (max-width: 768px), (max-height: 760px) {
+      html, body { height: auto; overflow: auto; }
+      .home { height: auto; min-height: 100vh; overflow: visible; }
+      .home__content { overflow: visible; padding-top: 8px; padding-bottom: 32px; }
     }
 
     .home__logo-bar {
