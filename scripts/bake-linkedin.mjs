@@ -73,12 +73,23 @@ function renderPost(p) {
 
   for (const img of (p.images || []).filter(isImage)) {
     const src = mediaPath(img);
-    bodyParts.push(`<img src="${escAttr(src)}" loading="lazy" alt="" style="max-width:100%;height:auto;display:block;margin:1rem 0;border-radius:2px;">`);
+    // width:100% (not max-width) so the small 160×120 thumbnails LinkedIn's
+    // export gave us still upscale to fill the modal — a bit fuzzy but legible.
+    bodyParts.push(`<img src="${escAttr(src)}" loading="lazy" alt="" style="width:100%;height:auto;display:block;margin:1rem 0;border-radius:2px;">`);
   }
   for (const pdf of (p.documents || []).filter(isPdf)) {
     const src = mediaPath(pdf);
     bodyParts.push(`<p><a href="${escAttr(src)}" target="_blank" rel="noopener noreferrer" class="prose-link">Open carousel PDF →</a></p>`);
   }
+
+  // Composite engagement score: comments are the strongest signal (effort to
+  // write), reactions next, impressions are reach not engagement so weighted
+  // lightly. Posts with no analytics data sort to the bottom by date.
+  const e = p.engagement || {};
+  const engagementScore =
+    (Number(e.comments) || 0) * 3 +
+    (Number(e.reactions) || 0) +
+    (Number(e.impressions) || 0) * 0.001;
 
   // Tags so the JS can filter/sort without re-parsing
   const dataAttrs = [
@@ -88,6 +99,7 @@ function renderPost(p) {
     `data-display-date="${escAttr(displayDate)}"`,
     `data-quality="${escAttr(String(p.qualityScore || 0))}"`,
     `data-rank="${escAttr(String(p.rank || 9999))}"`,
+    `data-engagement="${escAttr(engagementScore.toFixed(3))}"`,
     `data-curated="${p.curated ? 'true' : 'false'}"`,
   ].join(' ');
 
