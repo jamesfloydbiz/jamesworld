@@ -89,6 +89,16 @@
     }
     .rh-timeline__link:hover { color: var(--fg-80); }
     .rh-timeline__item.is-active .rh-timeline__link { color: var(--fg); }
+    .rh-timeline__name { display: block; }
+    .rh-timeline__date {
+      display: block;
+      font-size: 0.62rem;
+      letter-spacing: 0.05em;
+      color: var(--fg-30);
+      text-transform: none;
+      margin-top: 2px;
+    }
+    .rh-timeline__item.is-active .rh-timeline__date { color: var(--fg-55); }
 
     /* Article (right column) */
     .rh-article { max-width: 680px; }
@@ -138,9 +148,17 @@
       text-transform: uppercase;
       color: var(--fg-80);
       margin: 0 0 20px 0;
-      padding-top: 8px;
-      border-top: 1px solid var(--fg-15);
       padding-top: 16px;
+      border-top: 1px solid var(--fg-15);
+    }
+    .rh-section__date {
+      display: inline-block;
+      margin-left: 10px;
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      color: var(--fg-45);
+      text-transform: none;
+      font-weight: normal;
     }
     .rh-section p {
       font-family: 'Lora', Georgia, serif;
@@ -202,7 +220,9 @@
         border-color: var(--fg-35);
       }
       .rh-timeline__link { font-size: 0.68rem; }
+      .rh-timeline__date { display: none; }
       .rh-article__title { font-size: 1.75rem; }
+      .rh-section__date { display: block; margin-left: 0; margin-top: 4px; }
     }
   </style>
 </head>
@@ -246,37 +266,75 @@
       <aside class="rh-timeline" aria-label="Essay timeline">
         <ol class="rh-timeline__list">
         <li class="rh-timeline__item is-active" data-section="pre-speech">
-          <a class="rh-timeline__link" href="#pre-speech">Pre-Speech</a>
+          <a class="rh-timeline__link" href="#pre-speech">
+            <span class="rh-timeline__name">Pre-Speech</span>
+            <span class="rh-timeline__date">~2M – 100k BCE</span>
+          </a>
         </li>
         <li class="rh-timeline__item" data-section="writing-emerges">
-          <a class="rh-timeline__link" href="#writing-emerges">Writing Emerges</a>
+          <a class="rh-timeline__link" href="#writing-emerges">
+            <span class="rh-timeline__name">Writing Emerges</span>
+            <span class="rh-timeline__date">~3200 BCE</span>
+          </a>
         </li>
         <li class="rh-timeline__item" data-section="full-class-systems-emerge">
-          <a class="rh-timeline__link" href="#full-class-systems-emerge">Full Class Systems Emerge</a>
+          <a class="rh-timeline__link" href="#full-class-systems-emerge">
+            <span class="rh-timeline__name">Full Class Systems Emerge</span>
+            <span class="rh-timeline__date">~2500 BCE onward</span>
+          </a>
+        </li>
+        <li class="rh-timeline__item" data-section="sparta-han-confucius-abbasid-mesoamerica">
+          <a class="rh-timeline__link" href="#sparta-han-confucius-abbasid-mesoamerica">
+            <span class="rh-timeline__name">Sparta, Han, Confucius, Abbasid, Mesoamerica</span>
+            <span class="rh-timeline__date">~2000 – 500 BCE</span>
+          </a>
         </li>
         <li class="rh-timeline__item" data-section="lets-begin-to-follow-greece-now">
-          <a class="rh-timeline__link" href="#lets-begin-to-follow-greece-now">Lets Begin to Follow Greece Now</a>
+          <a class="rh-timeline__link" href="#lets-begin-to-follow-greece-now">
+            <span class="rh-timeline__name">Lets Begin to Follow Greece Now</span>
+            <span class="rh-timeline__date">~500 – 300 BCE</span>
+          </a>
         </li>
         <li class="rh-timeline__item" data-section="rome">
-          <a class="rh-timeline__link" href="#rome">Rome</a>
+          <a class="rh-timeline__link" href="#rome">
+            <span class="rh-timeline__name">Rome</span>
+            <span class="rh-timeline__date">~300 BCE – 400 CE</span>
+          </a>
         </li>
         <li class="rh-timeline__item" data-section="then-comes-the-medieval-ages">
-          <a class="rh-timeline__link" href="#then-comes-the-medieval-ages">Then comes the medieval ages</a>
+          <a class="rh-timeline__link" href="#then-comes-the-medieval-ages">
+            <span class="rh-timeline__name">Then comes the medieval ages</span>
+            <span class="rh-timeline__date">~500 – 1400 CE</span>
+          </a>
         </li>
         <li class="rh-timeline__item" data-section="the-renaissance">
-          <a class="rh-timeline__link" href="#the-renaissance">The Renaissance</a>
+          <a class="rh-timeline__link" href="#the-renaissance">
+            <span class="rh-timeline__name">The Renaissance</span>
+            <span class="rh-timeline__date">~1400 – 1600 CE</span>
+          </a>
         </li>
-        <li class="rh-timeline__item" data-section="then-the-enlightenment-1680-1800">
-          <a class="rh-timeline__link" href="#then-the-enlightenment-1680-1800">Then the enlightenment ~1680 - 1800</a>
+        <li class="rh-timeline__item" data-section="the-enlightenment">
+          <a class="rh-timeline__link" href="#the-enlightenment">
+            <span class="rh-timeline__name">The Enlightenment</span>
+            <span class="rh-timeline__date">~1680 – 1800</span>
+          </a>
         </li>
         <li class="rh-timeline__item" data-section="the-industrial-revolution">
-          <a class="rh-timeline__link" href="#the-industrial-revolution">the Industrial revolution</a>
+          <a class="rh-timeline__link" href="#the-industrial-revolution">
+            <span class="rh-timeline__name">the Industrial revolution</span>
+            <span class="rh-timeline__date">~1760 – 1900 CE</span>
+          </a>
         </li>
-        <li class="rh-timeline__item" data-section="where-the-classroom-design-actually-came-from">
-          <a class="rh-timeline__link" href="#where-the-classroom-design-actually-came-from">Where the classroom design actually came from</a>
+        <li class="rh-timeline__item" data-section="modern-era">
+          <a class="rh-timeline__link" href="#modern-era">
+            <span class="rh-timeline__name">Modern Era</span>
+            <span class="rh-timeline__date">~1900 – present</span>
+          </a>
         </li>
         <li class="rh-timeline__item" data-section="myths">
-          <a class="rh-timeline__link" href="#myths">Myths</a>
+          <a class="rh-timeline__link" href="#myths">
+            <span class="rh-timeline__name">Myths</span>
+          </a>
         </li>
         </ol>
       </aside>
@@ -290,7 +348,7 @@
         </header>
 
         <section id="pre-speech" class="rh-section">
-          <h2>Pre-Speech</h2>
+          <h2>Pre-Speech <span class="rh-section__date">~2M – 100k BCE</span></h2>
           <p>Social mobility and education was simply done through play and imitation resulting in skill.</p>
           <p>In the hunter and gatherer stage Education was mostly play and likely eventually working alongside mentors/parents</p>
           <p>In prehistory, people learned by imitation, storytelling, and practical apprenticeship rather than schools.</p>
@@ -298,31 +356,34 @@
           <p>Child mortality was about 50%</p>
         </section>
         <section id="writing-emerges" class="rh-section">
-          <h2>Writing Emerges</h2>
+          <h2>Writing Emerges <span class="rh-section__date">~3200 BCE</span></h2>
           <p>The Next Stage as writing emerged, 'Teaching' was created to instruct the elites children on how to fill jobs as politicians, scribes, accountants, priests, etc</p>
           <p>Writing emerged in Mesopotamia, Egypt</p>
           <p>It emerged as symbols and accounting marks</p>
           <p>And teaching in its earliest form was repetition, examples, and copying.</p>
         </section>
         <section id="full-class-systems-emerge" class="rh-section">
-          <h2>Full Class Systems Emerge</h2>
+          <h2>Full Class Systems Emerge <span class="rh-section__date">~2500 BCE onward</span></h2>
           <p>Sons of upper class people were put into classes to learn skills by repetition, copying, and imitation. While stories continued to bear the weight of values, and philosophy.</p>
           <p>Eventually schools are created to train sons of the elite in important functions like leadership, scribing, war, but it is still the great minority of people that are in schools. Everyone else just imitates their parents, or a different adult in some way. Stories are how lessons are passed down. The most well recorded and possibly earliest instance of schools is a 'Eduba' which translates to 'tablet house'. Scribing and accounting schools in Mesopotamia around 2500-1500 BCE where more advanced students lead most of the teaching. Access to this school as said before was mostly those with money and/or connections.</p>
           <p>Schools were then developed in Egypt. From there formal schooling spread at very different times. Old Europe and Asia from around 500 BCE, the Islamic Middle East from about 700 CE, West Africa a few centuries after that, and Mesoamerica last, in the 1400s CE.</p>
           <p>Each civilization had different takes on the how of schools and separately education, but most in practice or law gated this teaching to high social class youth.</p>
           <p>Mesopotamia had Edubas teaching everything needed to be a scribe. Land surveying, geometry, arithmetic, law, and more, but all of it was tied to the job of being a scribe. Egypt, some generations later was the same.</p>
-          <p>Only when we look at Greece does 'school' in the more modern sense emerge.</p>
+        </section>
+        <section id="sparta-han-confucius-abbasid-mesoamerica" class="rh-section">
+          <h2>Sparta, Han, Confucius, Abbasid, Mesoamerica <span class="rh-section__date">~2000 – 500 BCE</span></h2>
           <p>These different places also approached education differently.</p>
           <p>Basically post the Edubas in Mesopotamia and similar schools in Egypt, basically trade schools for the administrative class (Mostly called Scribes). Many different societies began their own unique approaches to education and teaching.</p>
           <p>While most of it was still, imitation, and repetition, it began much earlier and removed some of the play mechanics from earlier societies.</p>
           <p>The Spartans had their state led military training for upper class boys. Same with the Han in China who had schools to train officials.</p>
           <p>Basically, early school was training nepo babies in government jobs.</p>
-          <p>Confucious in China is one of the first to teach to anyone and one of the first to focus on honing mind and character of people rather than a specific job. This paved the way for some meritocratic practices later in China. However, Confucious' teachings were still private mentorship rather than more formal schools.</p>
+          <p>Confucius in China is one of the first to teach to anyone and one of the first to focus on honing mind and character of people rather than a specific job. This paved the way for some meritocratic practices later in China. However, Confucius' teachings were still private mentorship rather than more formal schools.</p>
           <p>In the Abbasid Caliphate, they had schools with endowments and portable credentials. Essentially assigning the merit to a person through a license. One of the first (if not first). This allowed social mobility because students without money could still study.</p>
           <p>In Mesoamerica later they had what is likely one of the earliest forms of universal schooling. Although based on social class people were taught different subjects, everyone was educated in something by the state. Upper Class people were taught literacy, the calendar, rhetoric, and other skills for leading. While commoners were taught war, and civic skills.</p>
+          <p>Only when we look at Greece does 'school' in the more modern sense emerge.</p>
         </section>
         <section id="lets-begin-to-follow-greece-now" class="rh-section">
-          <h2>Lets Begin to Follow Greece Now</h2>
+          <h2>Lets Begin to Follow Greece Now <span class="rh-section__date">~500 – 300 BCE</span></h2>
           <p>In Greece around 450 BCE is where more modern schools began. Ones that still influence the American society today. They were also one of the first societies begin educating the minds and characters of people specifically, rather than training for work. They also had sophists who traveled around teaching rhetoric to anyone who could pay. (Still gated by means but technically accessible to all)</p>
           <p>People like Aristotle and plato had schools focused on different classes within what they called, eleutherioi technai, &quot;skills of the free.&quot;</p>
           <p>In fact the Greeks called education 'paideia', the formation of a free citizen. and called the crafts done by paid laborers, banausoi technai, Mechanical arts.</p>
@@ -331,41 +392,43 @@
           <p>The whole thing rested on slavery. There were enough slaves doing the mechanical work that the ruling class could play arts and chat.</p>
         </section>
         <section id="rome" class="rh-section">
-          <h2>Rome</h2>
+          <h2>Rome <span class="rh-section__date">~300 BCE – 400 CE</span></h2>
           <p>In Rome they standardized these schools even more, but school stayed accessible only to the elite through money. School went in 3 sections.</p><ul class="rh-list"><li>ages seven to eleven went to litterator which was basic letters and arithmetic</li><li>ages 12-15 did grammaticus which was literature, greek, and grammar</li><li>ages 15+ did rhetor which was rhetoric and public speaking</li></ul>
           <p>In the 300s the church absorbed the school system and kept it alive in monasteries and cathedrals but gated it only to those in the clergy which is why Europe inherited it.</p>
         </section>
         <section id="then-comes-the-medieval-ages" class="rh-section">
-          <h2>Then comes the medieval ages</h2>
+          <h2>Then comes the medieval ages <span class="rh-section__date">~500 – 1400 CE</span></h2>
           <p>In terms of education around 5% of families could spare a kid to go to school through the church. Well under a tenth of a percent would decide to go to universities that were beginning like Bologna and Oxford, and a formal guild and process was formed for many of the trades. So education remained mostly imitation, and stories passed down generationally.</p>
         </section>
         <section id="the-renaissance" class="rh-section">
-          <h2>The Renaissance</h2>
+          <h2>The Renaissance <span class="rh-section__date">~1400 – 1600 CE</span></h2>
           <p>As the Black Plague fucks shit up, and the printing press drops in the 1400s the church loses its hold on schooling. Merchants, and others start schools for younger children and anyone literate can read works copied from the Islamic states, Greece, Rome, and beyond.</p>
           <p>Still many people are working and therefore illiterate. The Protestants begin to push literacy so people could read the bible.</p>
         </section>
-        <section id="then-the-enlightenment-1680-1800" class="rh-section">
-          <h2>Then the enlightenment ~1680 - 1800</h2>
+        <section id="the-enlightenment" class="rh-section">
+          <h2>The Enlightenment <span class="rh-section__date">~1680 – 1800</span></h2>
           <p>In Europe 'thinkers' are transitioning to beliefs like John Locke's of the minds blank slate. That ones mind is born without fixed nature and can be decided through essentially nurturing and work.</p>
           <p>In other places Japans Samurai schools are creating literacy, Chinas Keju Exam still offers a mobility path, and the Islamic states have lost to the Ottoman Empire and are falling behind some in education.</p>
+          <p>Meanwhile in Prussia the modern classroom is quietly being invented — long before any factory. Prussia was a stronghold of Pietism, a Lutheran movement that held salvation depended on reading the Bible yourself, not having a priest read it to you. Every child needed to read, so every child needed school. A minister named Francke ran schools in Halle, Prussia, built around a strict hour-by-hour timetable, and that timetable became the template everyone copied. Attendance became compulsory on royal land in 1717 and across all of Prussia by 1763. There were no factories yet. Prussia was poor and thinly populated, so a literate, orderly population also helped fill the army and pay taxes, but the trigger was Scripture, not industry.</p>
+          <p>The first Prussian teacher college opened in 1748. State-funded, state-run schools were written into Prussian law in 1794. And an exit exam called the Abitur was first used in 1788, deciding who could go on to university.</p>
         </section>
         <section id="the-industrial-revolution" class="rh-section">
-          <h2>the Industrial revolution</h2>
+          <h2>the Industrial revolution <span class="rh-section__date">~1760 – 1900 CE</span></h2>
           <p>As technology exploded so did the need for literacy, numbers, and other skills for workers.</p>
           <p>In the western world more and more people moved to cities and with that came the need for a different education system to feed the different class system.</p>
-          <p>Essentially, schools no longer needed to feed admin workers to the top class, instead it needed to increase literacy for factories, make loyal citizens, and develop minds of children because it was now believed to be a right. Only some old aristocratic schools continued to teach rhetoric and character. Much of that was done through stories, religion, or imitation. ( I expand on this more in a moment)</p>
+          <p>Essentially, schools no longer needed to feed admin workers to the top class, instead it needed to increase literacy for factories, make loyal citizens, and develop minds of children because it was now believed to be a right. Only some old aristocratic schools continued to teach rhetoric and character. Much of that was done through stories, religion, or imitation.</p>
           <p>Education in the west evolved further in terms of structure. It went from a one teacher one student, or master and a few students to a classroom, 30-50 kids in a room learning from one teacher.</p>
           <p>In the East Japan Adopts the Industrial age and compulsory schooling China abolishes the Keju exam, and the colonized states are mostly excluded from this expansion.</p>
           <p>The state begins to pay for and enforce schooling in country after country.</p>
           <p>However, in America (where I'm trying to focus this on) the upper class still went to elite academies with pipelines to the Ivy League. The Middle class went to public high schools, and the lower class didn't go at all. In 1900 about 10% of teenagers were enrolled in high school at all, and only about 6% actually graduated. By 1940 enrollment had climbed to about 70%, and graduation had climbed to around half.</p>
           <p>The elementary schools served the lower class kids teaching the basics and many of them had to leave after 8th grade to work.</p>
-        </section>
-        <section id="where-the-classroom-design-actually-came-from" class="rh-section">
-          <h2>Where the classroom design actually came from</h2>
-          <p>Prussia built the model long before any war. In the early 1700s the state made school compulsory: one room, one teacher at the front, a whole group of kids taught the same lesson on the same schedule. The reason was religion, not factories. Prussia was a stronghold of Pietism, a Lutheran movement that held salvation depended on reading the Bible yourself, not having a priest read it to you. Every child needed to read, so every child needed school. A minister named Francke ran schools in Halle built around a strict hour-by-hour timetable, and that timetable became the template everyone copied. Attendance became compulsory on royal land in 1717 and across all of Prussia by 1763. There were no factories yet. Prussia was poor and thinly populated, so a literate, orderly population also helped fill the army and pay taxes, but the trigger was Scripture, not industry.</p>
-          <p>The war changed the purpose, not the shape. Prussia lost to Napoleon in 1806. The whole state rebuilt itself: serfs freed, the army remade, and education handed to a scholar named Wilhelm von Humboldt. Humboldt mostly left the elementary classroom alone and built on top of it. In 1810 he opened the University of Berlin, the first school to fuse teaching with original research, a design most universities still copy. Formal teacher certification arrived the same year. By 1812 an exit exam called the Abitur controlled who could enter university at all. Humboldt's stated goal was closer to freedom than control, a broadly educated citizen who could think independently rather than a specialist trained for one job. The state still gained from it, since it needed educated officials to run the new Prussia, but &quot;produce obedient factory workers&quot; was never the actual language used.</p>
+          <p>Meanwhile the shape of Prussian schooling was being refined and exported. Prussia lost to Napoleon in 1806. The whole state rebuilt itself: serfs freed, the army remade, and education handed to a scholar named Wilhelm von Humboldt. Humboldt mostly left the elementary classroom alone and built on top of it. In 1810 he opened the University of Berlin, the first school to fuse teaching with original research, a design most universities still copy. Formal teacher certification arrived the same year. By 1812 the Abitur was locked in as the exit exam controlling who could enter university at all. Humboldt's stated goal was closer to freedom than control, a broadly educated citizen who could think independently rather than a specialist trained for one job. The state still gained from it, since it needed educated officials to run the new Prussia, but &quot;produce obedient factory workers&quot; was never the actual language used.</p>
           <p>America imported the elementary layer, not the university layer. Horace Mann visited Prussia in 1843 and came home impressed by the organization: children grouped by age, trained teachers, a state that actually paid for schools. Massachusetts passed the first statewide compulsory attendance law in the country in 1852, built on what Mann had seen. Boston's Quincy Grammar School, opened in 1848, is usually cited as the first fully graded American school, splitting kids into separate rooms by age instead of one big room holding every age at once.</p>
-          <p>Piece by piece, where the rest of the current system came from:</p><ul class="rh-list"><li>Compulsory attendance: Prussia, 1717, all fifty US states by 1918</li><li>One teacher facing a same-age group: Halle, around 1700</li><li>State-funded, state-run schools: written into Prussian law in 1794</li><li>Trained, certified teachers: Prussia's first teacher college in 1748, formal state certification in 1810</li><li>A standard exit exam deciding who moves on: Prussia's Abitur, first used in 1788, locked in under Humboldt by 1812</li><li>Class periods marked off by bells: settled into the current 45-minute length around 1880</li><li>Mass standardized testing: began with the US Army's IQ tests in World War One, 1917, then spread into schools</li><li>Coursework measured in standard credit hours: the Carnegie unit, 1906</li><li>Federal standardized testing tied directly to school funding: No Child Left Behind, 2002</li><li>The most recent nationwide curriculum standard: Common Core, adopted by most states starting 2010</li></ul>
+          <p>Class periods marked off by bells settled into the current 45-minute length around 1880.</p>
+        </section>
+        <section id="modern-era" class="rh-section">
+          <h2>Modern Era <span class="rh-section__date">~1900 – present</span></h2>
+          <p>Piece by piece, the rest of the current system fell into place through the twentieth century:</p><ul class="rh-list"><li>Coursework measured in standard credit hours: the Carnegie unit, 1906</li><li>Mass standardized testing: began with the US Army's IQ tests in World War One, 1917, then spread into schools</li><li>Compulsory attendance in all fifty US states by 1918</li><li>Federal standardized testing tied directly to school funding: No Child Left Behind, 2002</li><li>The most recent nationwide curriculum standard: Common Core, adopted by most states starting 2010</li></ul>
           <p>School wise pre-k is different by social class. K-12 is about 90% of people in public school and 10% in private. Funding is done for public schools at a ratio of 45% local (property taxes), 45% state, 10% federal. Still built on the model Mann brought back from Prussia - age-graded classrooms, bells, standardized curriculum, one teacher to 20-30 kids.</p>
           <p>For K-12 layers exist by class still. About 62% of a graduating class enrolls in college the same year, most at a four-year school. But highly selective colleges stay a thin slice of that: about 7% of low-income grads get in, against 37% of high-income grads.</p>
           <p>So of the roughly 50 million K-12 kids today, the overwhelming majority sit inside the same basic format Mann brought back in the 1850s. Only a thin slice, weighted heavily toward wealthier families, moves through anything structurally different, like elite private schools or the pipeline into a highly selective college.</p>

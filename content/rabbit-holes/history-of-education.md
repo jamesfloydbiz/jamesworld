@@ -50,7 +50,7 @@ Each civilization had different takes on the how of schools and separately educa
 Mesopotamia had Edubas teaching everything needed to be a scribe. Land surveying, geometry, arithmetic, law, and more, but all of it was tied to the job of being a scribe. Egypt, some generations later was the same.
 
 
-Only when we look at Greece does 'school' in the more modern sense emerge.
+Sparta, Han, Confucius, Abbasid, Mesoamerica
 
 
 These different places also approached education differently.
@@ -68,13 +68,16 @@ The Spartans had their state led military training for upper class boys. Same wi
 Basically, early school was training nepo babies in government jobs.
 
 
-Confucious in China is one of the first to teach to anyone and one of the first to focus on honing mind and character of people rather than a specific job. This paved the way for some meritocratic practices later in China. However, Confucious' teachings were still private mentorship rather than more formal schools.
+Confucius in China is one of the first to teach to anyone and one of the first to focus on honing mind and character of people rather than a specific job. This paved the way for some meritocratic practices later in China. However, Confucius' teachings were still private mentorship rather than more formal schools.
 
 
 In the Abbasid Caliphate, they had schools with endowments and portable credentials. Essentially assigning the merit to a person through a license. One of the first (if not first). This allowed social mobility because students without money could still study.
 
 
 In Mesoamerica later they had what is likely one of the earliest forms of universal schooling. Although based on social class people were taught different subjects, everyone was educated in something by the state. Upper Class people were taught literacy, the calendar, rhetoric, and other skills for leading. While commoners were taught war, and civic skills.
+
+
+Only when we look at Greece does 'school' in the more modern sense emerge.
 
 
 Lets Begin to Follow Greece Now
@@ -125,13 +128,19 @@ As the Black Plague fucks shit up, and the printing press drops in the 1400s the
 Still many people are working and therefore illiterate. The Protestants begin to push literacy so people could read the bible.
 
 
-Then the enlightenment ~1680 - 1800
+The Enlightenment
 
 
 In Europe 'thinkers' are transitioning to beliefs like John Locke's of the minds blank slate. That ones mind is born without fixed nature and can be decided through essentially nurturing and work.
 
 
 In other places Japans Samurai schools are creating literacy, Chinas Keju Exam still offers a mobility path, and the Islamic states have lost to the Ottoman Empire and are falling behind some in education.
+
+
+Meanwhile in Prussia the modern classroom is quietly being invented — long before any factory. Prussia was a stronghold of Pietism, a Lutheran movement that held salvation depended on reading the Bible yourself, not having a priest read it to you. Every child needed to read, so every child needed school. A minister named Francke ran schools in Halle, Prussia, built around a strict hour-by-hour timetable, and that timetable became the template everyone copied. Attendance became compulsory on royal land in 1717 and across all of Prussia by 1763. There were no factories yet. Prussia was poor and thinly populated, so a literate, orderly population also helped fill the army and pay taxes, but the trigger was Scripture, not industry.
+
+
+The first Prussian teacher college opened in 1748. State-funded, state-run schools were written into Prussian law in 1794. And an exit exam called the Abitur was first used in 1788, deciding who could go on to university.
 
 
 the Industrial revolution
@@ -143,7 +152,7 @@ As technology exploded so did the need for literacy, numbers, and other skills f
 In the western world more and more people moved to cities and with that came the need for a different education system to feed the different class system.
 
 
-Essentially, schools no longer needed to feed admin workers to the top class, instead it needed to increase literacy for factories, make loyal citizens, and develop minds of children because it was now believed to be a right. Only some old aristocratic schools continued to teach rhetoric and character. Much of that was done through stories, religion, or imitation. ( I expand on this more in a moment)
+Essentially, schools no longer needed to feed admin workers to the top class, instead it needed to increase literacy for factories, make loyal citizens, and develop minds of children because it was now believed to be a right. Only some old aristocratic schools continued to teach rhetoric and character. Much of that was done through stories, religion, or imitation.
 
 
 Education in the west evolved further in terms of structure. It went from a one teacher one student, or master and a few students to a classroom, 30-50 kids in a room learning from one teacher.
@@ -161,27 +170,22 @@ However, in America (where I'm trying to focus this on) the upper class still we
 The elementary schools served the lower class kids teaching the basics and many of them had to leave after 8th grade to work.
 
 
-Where the classroom design actually came from
-
-
-Prussia built the model long before any war. In the early 1700s the state made school compulsory: one room, one teacher at the front, a whole group of kids taught the same lesson on the same schedule. The reason was religion, not factories. Prussia was a stronghold of Pietism, a Lutheran movement that held salvation depended on reading the Bible yourself, not having a priest read it to you. Every child needed to read, so every child needed school. A minister named Francke ran schools in Halle built around a strict hour-by-hour timetable, and that timetable became the template everyone copied. Attendance became compulsory on royal land in 1717 and across all of Prussia by 1763. There were no factories yet. Prussia was poor and thinly populated, so a literate, orderly population also helped fill the army and pay taxes, but the trigger was Scripture, not industry.
-
-
-The war changed the purpose, not the shape. Prussia lost to Napoleon in 1806. The whole state rebuilt itself: serfs freed, the army remade, and education handed to a scholar named Wilhelm von Humboldt. Humboldt mostly left the elementary classroom alone and built on top of it. In 1810 he opened the University of Berlin, the first school to fuse teaching with original research, a design most universities still copy. Formal teacher certification arrived the same year. By 1812 an exit exam called the Abitur controlled who could enter university at all. Humboldt's stated goal was closer to freedom than control, a broadly educated citizen who could think independently rather than a specialist trained for one job. The state still gained from it, since it needed educated officials to run the new Prussia, but "produce obedient factory workers" was never the actual language used.
+Meanwhile the shape of Prussian schooling was being refined and exported. Prussia lost to Napoleon in 1806. The whole state rebuilt itself: serfs freed, the army remade, and education handed to a scholar named Wilhelm von Humboldt. Humboldt mostly left the elementary classroom alone and built on top of it. In 1810 he opened the University of Berlin, the first school to fuse teaching with original research, a design most universities still copy. Formal teacher certification arrived the same year. By 1812 the Abitur was locked in as the exit exam controlling who could enter university at all. Humboldt's stated goal was closer to freedom than control, a broadly educated citizen who could think independently rather than a specialist trained for one job. The state still gained from it, since it needed educated officials to run the new Prussia, but "produce obedient factory workers" was never the actual language used.
 
 
 America imported the elementary layer, not the university layer. Horace Mann visited Prussia in 1843 and came home impressed by the organization: children grouped by age, trained teachers, a state that actually paid for schools. Massachusetts passed the first statewide compulsory attendance law in the country in 1852, built on what Mann had seen. Boston's Quincy Grammar School, opened in 1848, is usually cited as the first fully graded American school, splitting kids into separate rooms by age instead of one big room holding every age at once.
 
 
-Piece by piece, where the rest of the current system came from:
-- Compulsory attendance: Prussia, 1717, all fifty US states by 1918
-- One teacher facing a same-age group: Halle, around 1700
-- State-funded, state-run schools: written into Prussian law in 1794
-- Trained, certified teachers: Prussia's first teacher college in 1748, formal state certification in 1810
-- A standard exit exam deciding who moves on: Prussia's Abitur, first used in 1788, locked in under Humboldt by 1812
-- Class periods marked off by bells: settled into the current 45-minute length around 1880
-- Mass standardized testing: began with the US Army's IQ tests in World War One, 1917, then spread into schools
+Class periods marked off by bells settled into the current 45-minute length around 1880.
+
+
+Modern Era
+
+
+Piece by piece, the rest of the current system fell into place through the twentieth century:
 - Coursework measured in standard credit hours: the Carnegie unit, 1906
+- Mass standardized testing: began with the US Army's IQ tests in World War One, 1917, then spread into schools
+- Compulsory attendance in all fifty US states by 1918
 - Federal standardized testing tied directly to school funding: No Child Left Behind, 2002
 - The most recent nationwide curriculum standard: Common Core, adopted by most states starting 2010
 

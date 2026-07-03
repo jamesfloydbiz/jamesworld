@@ -18,50 +18,51 @@ const ROOT = resolve(__dirname, '..');
 const CONTENT_DIR = resolve(ROOT, 'content', 'rabbit-holes');
 const OUT_DIR = resolve(ROOT, 'site', 'writing', 'rabbit-holes');
 
-// Explicit heading lists. A block whose exact text is in this list becomes a
-// new section; every other block is body content of the current section.
-// Kept explicit so a stray line like "Child mortality was about 50%" doesn't
-// accidentally get promoted to a chapter heading.
+// Explicit sections list per essay. A block whose exact text matches
+// `name` becomes a new section; every other block is body content of the
+// current section. `date` is an optional era range shown under the heading
+// in both the timeline nav and the article.
 const META = {
   'history-of-education': {
     title: 'A History of Education',
     subtitle: 'From play and imitation to Prussian classrooms — how schooling came to be.',
     reading: '~14 min',
-    headings: [
-      'Pre-Speech',
-      'Writing Emerges',
-      'Full Class Systems Emerge',
-      'Lets Begin to Follow Greece Now',
-      'Rome',
-      'Then comes the medieval ages',
-      'The Renaissance',
-      'Then the enlightenment ~1680 - 1800',
-      'the Industrial revolution',
-      'Where the classroom design actually came from',
-      'Myths',
+    sections: [
+      { name: 'Pre-Speech',                                   date: '~2M – 100k BCE' },
+      { name: 'Writing Emerges',                              date: '~3200 BCE' },
+      { name: 'Full Class Systems Emerge',                    date: '~2500 BCE onward' },
+      { name: 'Sparta, Han, Confucius, Abbasid, Mesoamerica', date: '~2000 – 500 BCE' },
+      { name: 'Lets Begin to Follow Greece Now',              date: '~500 – 300 BCE' },
+      { name: 'Rome',                                         date: '~300 BCE – 400 CE' },
+      { name: 'Then comes the medieval ages',                 date: '~500 – 1400 CE' },
+      { name: 'The Renaissance',                              date: '~1400 – 1600 CE' },
+      { name: 'The Enlightenment',                            date: '~1680 – 1800' },
+      { name: 'the Industrial revolution',                    date: '~1760 – 1900 CE' },
+      { name: 'Modern Era',                                   date: '~1900 – present' },
+      { name: 'Myths',                                        date: '' },
     ],
   },
   'social-classes-and-mobility': {
     title: 'Social Classes and Mobility',
     subtitle: 'How class emerged, hardened, and softened across ten thousand years.',
     reading: '~15 min',
-    headings: [
-      'Pre-Speech',
-      'Speech Emerges',
-      'Symbolism Emerges',
-      'Social Classes Emerge',
-      'Writing Emerges',
-      'Full Class Systems Emerge',
-      'Different takes on Social Mobility',
-      'Rome',
-      'Then comes the medieval ages',
-      'The Renaissance',
-      'Then the enlightenment ~1680 - 1800',
-      'the Industrial revolution',
-      "1980-2020's",
-      'Today',
-      'Patterns',
-      'To add',
+    sections: [
+      { name: 'Pre-Speech' },
+      { name: 'Speech Emerges' },
+      { name: 'Symbolism Emerges' },
+      { name: 'Social Classes Emerge' },
+      { name: 'Writing Emerges' },
+      { name: 'Full Class Systems Emerge' },
+      { name: 'Different takes on Social Mobility' },
+      { name: 'Rome' },
+      { name: 'Then comes the medieval ages' },
+      { name: 'The Renaissance' },
+      { name: 'Then the enlightenment ~1680 - 1800' },
+      { name: 'the Industrial revolution' },
+      { name: "1980-2020's" },
+      { name: 'Today' },
+      { name: 'Patterns' },
+      { name: 'To add' },
     ],
   },
 };
@@ -80,9 +81,10 @@ function slugify(s) {
 }
 
 // Parse the markdown into an ordered list of sections using the explicit
-// heading list from META.
-function parse(md, headings) {
-  const headingSet = new Set(headings.map((h) => h.trim()));
+// section list from META. Each META entry has `name` (matched against MD
+// heading lines) and optional `date` (era range shown in nav + article).
+function parse(md, sectionSpec) {
+  const dateByName = new Map(sectionSpec.map((s) => [s.name.trim(), s.date || '']));
   const blocks = md
     .replace(/\r\n/g, '\n')
     .split(/\n\s*\n/g)
@@ -93,13 +95,13 @@ function parse(md, headings) {
   let cur = null;
 
   const startSection = (heading) => {
-    cur = { heading, blocks: [] };
+    cur = { heading, date: dateByName.get(heading) || '', blocks: [] };
     sections.push(cur);
   };
 
   for (const block of blocks) {
     const singleLine = !block.includes('\n');
-    if (singleLine && headingSet.has(block.trim())) {
+    if (singleLine && dateByName.has(block.trim())) {
       startSection(block.trim());
       continue;
     }
@@ -158,14 +160,19 @@ function renderSections(sections) {
     .filter((s) => s.heading)
     .map(
       (s, idx) => `        <li class="rh-timeline__item${idx === 0 ? ' is-active' : ''}" data-section="${s.id}">
-          <a class="rh-timeline__link" href="#${s.id}">${esc(s.heading)}</a>
+          <a class="rh-timeline__link" href="#${s.id}">
+            <span class="rh-timeline__name">${esc(s.heading)}</span>${s.date ? `
+            <span class="rh-timeline__date">${esc(s.date)}</span>` : ''}
+          </a>
         </li>`
     )
     .join('\n');
 
   const articleHtml = withIds
     .map((s) => {
-      const heading = s.heading ? `<h2>${esc(s.heading)}</h2>` : '';
+      const heading = s.heading
+        ? `<h2>${esc(s.heading)}${s.date ? ` <span class="rh-section__date">${esc(s.date)}</span>` : ''}</h2>`
+        : '';
       const body = s.blocks.map(renderBlock).join('\n');
       return `        <section id="${s.id}" class="rh-section">\n${heading ? `          ${heading}\n` : ''}          ${body.split('\n').join('\n          ')}\n        </section>`;
     })
@@ -266,6 +273,16 @@ function pageTemplate(slug, meta, timelineItems, articleHtml) {
     }
     .rh-timeline__link:hover { color: var(--fg-80); }
     .rh-timeline__item.is-active .rh-timeline__link { color: var(--fg); }
+    .rh-timeline__name { display: block; }
+    .rh-timeline__date {
+      display: block;
+      font-size: 0.62rem;
+      letter-spacing: 0.05em;
+      color: var(--fg-30);
+      text-transform: none;
+      margin-top: 2px;
+    }
+    .rh-timeline__item.is-active .rh-timeline__date { color: var(--fg-55); }
 
     /* Article (right column) */
     .rh-article { max-width: 680px; }
@@ -315,9 +332,17 @@ function pageTemplate(slug, meta, timelineItems, articleHtml) {
       text-transform: uppercase;
       color: var(--fg-80);
       margin: 0 0 20px 0;
-      padding-top: 8px;
-      border-top: 1px solid var(--fg-15);
       padding-top: 16px;
+      border-top: 1px solid var(--fg-15);
+    }
+    .rh-section__date {
+      display: inline-block;
+      margin-left: 10px;
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      color: var(--fg-45);
+      text-transform: none;
+      font-weight: normal;
     }
     .rh-section p {
       font-family: 'Lora', Georgia, serif;
@@ -379,7 +404,9 @@ function pageTemplate(slug, meta, timelineItems, articleHtml) {
         border-color: var(--fg-35);
       }
       .rh-timeline__link { font-size: 0.68rem; }
+      .rh-timeline__date { display: none; }
       .rh-article__title { font-size: 1.75rem; }
+      .rh-section__date { display: block; margin-left: 0; margin-top: 4px; }
     }
   </style>
 </head>
@@ -521,7 +548,7 @@ function bake() {
       continue;
     }
     const md = readFileSync(resolve(CONTENT_DIR, file), 'utf8');
-    const sections = parse(md, meta.headings || []);
+    const sections = parse(md, meta.sections || []);
     const { timelineItems, articleHtml } = renderSections(sections);
     const html = pageTemplate(slug, meta, timelineItems, articleHtml);
     const outDir = resolve(OUT_DIR, slug);

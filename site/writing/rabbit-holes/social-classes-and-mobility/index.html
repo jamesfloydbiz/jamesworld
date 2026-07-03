@@ -89,6 +89,16 @@
     }
     .rh-timeline__link:hover { color: var(--fg-80); }
     .rh-timeline__item.is-active .rh-timeline__link { color: var(--fg); }
+    .rh-timeline__name { display: block; }
+    .rh-timeline__date {
+      display: block;
+      font-size: 0.62rem;
+      letter-spacing: 0.05em;
+      color: var(--fg-30);
+      text-transform: none;
+      margin-top: 2px;
+    }
+    .rh-timeline__item.is-active .rh-timeline__date { color: var(--fg-55); }
 
     /* Article (right column) */
     .rh-article { max-width: 680px; }
@@ -138,9 +148,17 @@
       text-transform: uppercase;
       color: var(--fg-80);
       margin: 0 0 20px 0;
-      padding-top: 8px;
-      border-top: 1px solid var(--fg-15);
       padding-top: 16px;
+      border-top: 1px solid var(--fg-15);
+    }
+    .rh-section__date {
+      display: inline-block;
+      margin-left: 10px;
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      color: var(--fg-45);
+      text-transform: none;
+      font-weight: normal;
     }
     .rh-section p {
       font-family: 'Lora', Georgia, serif;
@@ -202,7 +220,9 @@
         border-color: var(--fg-35);
       }
       .rh-timeline__link { font-size: 0.68rem; }
+      .rh-timeline__date { display: none; }
       .rh-article__title { font-size: 1.75rem; }
+      .rh-section__date { display: block; margin-left: 0; margin-top: 4px; }
     }
   </style>
 </head>
@@ -246,52 +266,84 @@
       <aside class="rh-timeline" aria-label="Essay timeline">
         <ol class="rh-timeline__list">
         <li class="rh-timeline__item is-active" data-section="pre-speech">
-          <a class="rh-timeline__link" href="#pre-speech">Pre-Speech</a>
+          <a class="rh-timeline__link" href="#pre-speech">
+            <span class="rh-timeline__name">Pre-Speech</span>
+          </a>
         </li>
         <li class="rh-timeline__item" data-section="speech-emerges">
-          <a class="rh-timeline__link" href="#speech-emerges">Speech Emerges</a>
+          <a class="rh-timeline__link" href="#speech-emerges">
+            <span class="rh-timeline__name">Speech Emerges</span>
+          </a>
         </li>
         <li class="rh-timeline__item" data-section="symbolism-emerges">
-          <a class="rh-timeline__link" href="#symbolism-emerges">Symbolism Emerges</a>
+          <a class="rh-timeline__link" href="#symbolism-emerges">
+            <span class="rh-timeline__name">Symbolism Emerges</span>
+          </a>
         </li>
         <li class="rh-timeline__item" data-section="social-classes-emerge">
-          <a class="rh-timeline__link" href="#social-classes-emerge">Social Classes Emerge</a>
+          <a class="rh-timeline__link" href="#social-classes-emerge">
+            <span class="rh-timeline__name">Social Classes Emerge</span>
+          </a>
         </li>
         <li class="rh-timeline__item" data-section="writing-emerges">
-          <a class="rh-timeline__link" href="#writing-emerges">Writing Emerges</a>
+          <a class="rh-timeline__link" href="#writing-emerges">
+            <span class="rh-timeline__name">Writing Emerges</span>
+          </a>
         </li>
         <li class="rh-timeline__item" data-section="full-class-systems-emerge">
-          <a class="rh-timeline__link" href="#full-class-systems-emerge">Full Class Systems Emerge</a>
+          <a class="rh-timeline__link" href="#full-class-systems-emerge">
+            <span class="rh-timeline__name">Full Class Systems Emerge</span>
+          </a>
         </li>
         <li class="rh-timeline__item" data-section="different-takes-on-social-mobility">
-          <a class="rh-timeline__link" href="#different-takes-on-social-mobility">Different takes on Social Mobility</a>
+          <a class="rh-timeline__link" href="#different-takes-on-social-mobility">
+            <span class="rh-timeline__name">Different takes on Social Mobility</span>
+          </a>
         </li>
         <li class="rh-timeline__item" data-section="rome">
-          <a class="rh-timeline__link" href="#rome">Rome</a>
+          <a class="rh-timeline__link" href="#rome">
+            <span class="rh-timeline__name">Rome</span>
+          </a>
         </li>
         <li class="rh-timeline__item" data-section="then-comes-the-medieval-ages">
-          <a class="rh-timeline__link" href="#then-comes-the-medieval-ages">Then comes the medieval ages</a>
+          <a class="rh-timeline__link" href="#then-comes-the-medieval-ages">
+            <span class="rh-timeline__name">Then comes the medieval ages</span>
+          </a>
         </li>
         <li class="rh-timeline__item" data-section="the-renaissance">
-          <a class="rh-timeline__link" href="#the-renaissance">The Renaissance</a>
+          <a class="rh-timeline__link" href="#the-renaissance">
+            <span class="rh-timeline__name">The Renaissance</span>
+          </a>
         </li>
         <li class="rh-timeline__item" data-section="then-the-enlightenment-1680-1800">
-          <a class="rh-timeline__link" href="#then-the-enlightenment-1680-1800">Then the enlightenment ~1680 - 1800</a>
+          <a class="rh-timeline__link" href="#then-the-enlightenment-1680-1800">
+            <span class="rh-timeline__name">Then the enlightenment ~1680 - 1800</span>
+          </a>
         </li>
         <li class="rh-timeline__item" data-section="the-industrial-revolution">
-          <a class="rh-timeline__link" href="#the-industrial-revolution">the Industrial revolution</a>
+          <a class="rh-timeline__link" href="#the-industrial-revolution">
+            <span class="rh-timeline__name">the Industrial revolution</span>
+          </a>
         </li>
         <li class="rh-timeline__item" data-section="1980-2020-s">
-          <a class="rh-timeline__link" href="#1980-2020-s">1980-2020's</a>
+          <a class="rh-timeline__link" href="#1980-2020-s">
+            <span class="rh-timeline__name">1980-2020's</span>
+          </a>
         </li>
         <li class="rh-timeline__item" data-section="today">
-          <a class="rh-timeline__link" href="#today">Today</a>
+          <a class="rh-timeline__link" href="#today">
+            <span class="rh-timeline__name">Today</span>
+          </a>
         </li>
         <li class="rh-timeline__item" data-section="patterns">
-          <a class="rh-timeline__link" href="#patterns">Patterns</a>
+          <a class="rh-timeline__link" href="#patterns">
+            <span class="rh-timeline__name">Patterns</span>
+          </a>
         </li>
         <li class="rh-timeline__item" data-section="to-add">
-          <a class="rh-timeline__link" href="#to-add">To add</a>
+          <a class="rh-timeline__link" href="#to-add">
+            <span class="rh-timeline__name">To add</span>
+          </a>
         </li>
         </ol>
       </aside>
