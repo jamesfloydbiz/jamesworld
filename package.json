@@ -7,7 +7,8 @@
   "scripts": {
     "fetch:substack": "bun scripts/fetch-substack.mjs",
     "bake:linkedin": "bun scripts/bake-linkedin.mjs",
-    "build:site": "bun scripts/fetch-substack.mjs && bun scripts/bake-linkedin.mjs && bun scripts/build-site.mjs",
+    "bake:rabbit-holes": "bun scripts/bake-rabbit-holes.mjs",
+    "build:site": "bun scripts/fetch-substack.mjs && bun scripts/bake-linkedin.mjs && bun scripts/bake-rabbit-holes.mjs && bun scripts/build-site.mjs",
     "serve:site": "bun scripts/serve-site.mjs"
   }
 }

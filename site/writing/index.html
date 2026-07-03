@@ -97,7 +97,54 @@
     .writing-tab .count { color: var(--fg-30); margin-left: 6px; }
 
     /* The two lists swap based on the active tab */
-    .post-list[hidden], .li-post-list[hidden], .li-controls[hidden] { display: none !important; }
+    .post-list[hidden], .li-post-list[hidden], .li-controls[hidden], .rh-shelf[hidden] { display: none !important; }
+
+    /* Rabbit Holes shelf — cards linking out to long-form essay pages */
+    .rh-shelf { list-style: none; padding: 0; margin: 0; display: grid; gap: 20px; }
+    .rh-shelf__card {
+      display: block;
+      padding: 24px;
+      border: 1px solid var(--fg-15);
+      border-radius: 4px;
+      text-decoration: none;
+      color: inherit;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .rh-shelf__card:hover {
+      border-color: var(--fg-45);
+      background: rgba(255,255,255,0.02);
+    }
+    .rh-shelf__eyebrow {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--fg-55);
+      margin-bottom: 8px;
+    }
+    .rh-shelf__title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 700;
+      font-size: 1.5rem;
+      line-height: 1.2;
+      margin: 0 0 8px 0;
+      color: var(--fg);
+    }
+    .rh-shelf__subtitle {
+      font-family: 'Lora', Georgia, serif;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: var(--fg-70);
+      margin: 0 0 16px 0;
+    }
+    .rh-shelf__cta {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--fg-70);
+    }
 
     /* ── LinkedIn list controls (sort + curated/all toggle) ─────────────── */
     .li-controls {
@@ -303,19 +350,22 @@
         </div>
         <p class="page-subtitle">
           Letters from
-          <a href="https://jamesfloyd.substack.com" target="_blank" rel="noopener noreferrer" class="prose-link">Substack</a>
-          and posts from
-          <a href="https://www.linkedin.com/in/jamesfloydl/" target="_blank" rel="noopener noreferrer" class="prose-link">LinkedIn</a>.
-          Click any of them to read here.
+          <a href="https://jamesfloyd.substack.com" target="_blank" rel="noopener noreferrer" class="prose-link">Substack</a>,
+          posts from
+          <a href="https://www.linkedin.com/in/jamesfloydl/" target="_blank" rel="noopener noreferrer" class="prose-link">LinkedIn</a>,
+          and long-form rabbit holes. Click any of them to read here.
         </p>
 
-        <!-- Tab strip — Letters (Substack) vs Posts (LinkedIn) -->
+        <!-- Tab strip — Letters (Substack), Posts (LinkedIn), Rabbit Holes (long-form essays) -->
         <div class="writing-tabs" role="tablist">
           <button class="writing-tab is-active" type="button" role="tab" data-tab="letters" aria-selected="true">
             Letters<span class="count" id="letters-count"></span>
           </button>
           <button class="writing-tab" type="button" role="tab" data-tab="posts" aria-selected="false">
             LinkedIn Posts<span class="count" id="posts-count"></span>
+          </button>
+          <button class="writing-tab" type="button" role="tab" data-tab="rabbit-holes" aria-selected="false" id="rabbit-holes-tab">
+            Rabbit Holes<span class="count">· 2</span>
           </button>
         </div>
 
@@ -3142,6 +3192,26 @@ Tickets below</p></div>
         <!-- END_LI_POSTS -->
         </ul>
 
+        <!-- Rabbit Holes — long-form essays with a sticky timeline -->
+        <ul class="rh-shelf" id="rh-shelf" hidden>
+          <li>
+            <a href="/writing/rabbit-holes/history-of-education/" class="rh-shelf__card">
+              <span class="rh-shelf__eyebrow">Rabbit Hole · ~14 min</span>
+              <h3 class="rh-shelf__title">A History of Education</h3>
+              <p class="rh-shelf__subtitle">From play and imitation to Prussian classrooms — how schooling came to be.</p>
+              <span class="rh-shelf__cta">Read the essay →</span>
+            </a>
+          </li>
+          <li>
+            <a href="/writing/rabbit-holes/social-classes-and-mobility/" class="rh-shelf__card">
+              <span class="rh-shelf__eyebrow">Rabbit Hole · ~15 min</span>
+              <h3 class="rh-shelf__title">Social Classes and Mobility</h3>
+              <p class="rh-shelf__subtitle">How class emerged, hardened, and softened across ten thousand years.</p>
+              <span class="rh-shelf__cta">Read the essay →</span>
+            </a>
+          </li>
+        </ul>
+
         <div style="margin-top:4rem;text-align:center;" id="writing-cta-letters">
           <a href="https://jamesfloyd.substack.com" target="_blank" rel="noopener noreferrer" class="btn btn-outline">
             Subscribe on Substack
@@ -3211,6 +3281,7 @@ Tickets below</p></div>
     // ── Tab + count wiring ────────────────────────────────────────────────
     var lettersList = document.getElementById('post-list');
     var postsList = document.getElementById('li-post-list');
+    var rhShelf = document.getElementById('rh-shelf');
     var liControls = document.getElementById('li-controls');
     var ctaLetters = document.getElementById('writing-cta-letters');
     var ctaPosts = document.getElementById('writing-cta-posts');
@@ -3233,12 +3304,17 @@ Tickets below</p></div>
       lettersList.hidden = name !== 'letters';
       postsList.hidden = name !== 'posts';
       liControls.hidden = name !== 'posts';
+      if (rhShelf) rhShelf.hidden = name !== 'rabbit-holes';
+      // CTAs — Substack for letters, LinkedIn for posts, none for rabbit holes
       ctaLetters.hidden = name !== 'letters';
       ctaPosts.hidden = name !== 'posts';
     }
     document.querySelectorAll('.writing-tab').forEach(function(t) {
       t.addEventListener('click', function() { showTab(t.dataset.tab); });
     });
+    // Honor #rabbit-holes in the URL so the back-link from an essay lands on
+    // the right tab.
+    if (location.hash === '#rabbit-holes') showTab('rabbit-holes');
 
     // ── Substack post buttons → modal ─────────────────────────────────────
     document.querySelectorAll('.post-list-btn').forEach(function(btn) {

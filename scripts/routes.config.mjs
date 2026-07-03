@@ -275,6 +275,24 @@ export const ROUTES = [
   },
 
   {
+    path: '/writing/rabbit-holes/history-of-education',
+    title: 'A History of Education',
+    description:
+      'From play and imitation to Prussian classrooms — how schooling came to be. A rabbit hole essay by James Floyd.',
+    priority: 0.6,
+    changefreq: 'monthly',
+  },
+
+  {
+    path: '/writing/rabbit-holes/social-classes-and-mobility',
+    title: 'Social Classes and Mobility',
+    description:
+      'How class emerged, hardened, and softened across ten thousand years. A rabbit hole essay by James Floyd.',
+    priority: 0.6,
+    changefreq: 'monthly',
+  },
+
+  {
     path: '/content',
     title: 'Content',
     description:

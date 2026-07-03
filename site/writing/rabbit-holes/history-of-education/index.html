@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A History of Education — Rabbit Hole — James Floyd</title>
+  <meta name="description" content="From play and imitation to Prussian classrooms — how schooling came to be.">
+  <link rel="canonical" href="https://jamesfloyds.world/writing/rabbit-holes/history-of-education/">
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="A History of Education">
+  <meta property="og:description" content="From play and imitation to Prussian classrooms — how schooling came to be.">
+  <meta property="og:url" content="https://jamesfloyds.world/writing/rabbit-holes/history-of-education/">
+
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=DM+Mono:wght@300;400&family=Lora:ital,wght@0,400;0,500;1,400&family=Space+Mono:wght@400;700&display=swap">
+  <link rel="stylesheet" href="/css/site.css">
+
+  <style>
+    .rh-shell {
+      display: grid;
+      grid-template-columns: 220px minmax(0, 720px);
+      gap: 56px;
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 0 clamp(16px, 4vw, 24px);
+    }
+
+    /* Timeline (left column, sticky) */
+    .rh-timeline {
+      position: sticky;
+      top: 96px;
+      align-self: start;
+      max-height: calc(100vh - 120px);
+      overflow-y: auto;
+      padding-right: 8px;
+      scrollbar-width: thin;
+    }
+    .rh-timeline__list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      position: relative;
+    }
+    .rh-timeline__list::before {
+      content: '';
+      position: absolute;
+      left: 4px;
+      top: 6px;
+      bottom: 6px;
+      width: 1px;
+      background: var(--fg-15);
+    }
+    .rh-timeline__item {
+      position: relative;
+      padding: 0 0 12px 22px;
+    }
+    .rh-timeline__item::before {
+      content: '';
+      position: absolute;
+      left: 1px;
+      top: 6px;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--bg, #000);
+      border: 1px solid var(--fg-35);
+      box-sizing: border-box;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .rh-timeline__item.is-active::before {
+      background: var(--fg);
+      border-color: var(--fg);
+    }
+    .rh-timeline__link {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--fg-45);
+      text-decoration: none;
+      line-height: 1.5;
+      transition: color 0.2s;
+    }
+    .rh-timeline__link:hover { color: var(--fg-80); }
+    .rh-timeline__item.is-active .rh-timeline__link { color: var(--fg); }
+
+    /* Article (right column) */
+    .rh-article { max-width: 680px; }
+    .rh-article__masthead {
+      margin-bottom: 48px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--fg-15);
+    }
+    .rh-article__eyebrow {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--fg-55);
+      margin-bottom: 12px;
+    }
+    .rh-article__title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 700;
+      font-size: clamp(2rem, 5vw, 3rem);
+      line-height: 1.15;
+      margin: 0 0 12px 0;
+      color: var(--fg);
+    }
+    .rh-article__subtitle {
+      font-family: 'Lora', Georgia, serif;
+      font-style: italic;
+      font-size: 1.05rem;
+      line-height: 1.5;
+      color: var(--fg-70);
+      margin: 0 0 8px 0;
+    }
+    .rh-article__meta {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--fg-45);
+    }
+
+    .rh-section { margin-bottom: 40px; scroll-margin-top: 96px; }
+    .rh-section h2 {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--fg-80);
+      margin: 0 0 20px 0;
+      padding-top: 8px;
+      border-top: 1px solid var(--fg-15);
+      padding-top: 16px;
+    }
+    .rh-section p {
+      font-family: 'Lora', Georgia, serif;
+      font-size: 1.02rem;
+      line-height: 1.8;
+      color: var(--fg-80);
+      margin: 0 0 1rem 0;
+    }
+    .rh-section .rh-list {
+      font-family: 'Lora', Georgia, serif;
+      font-size: 1rem;
+      line-height: 1.75;
+      color: var(--fg-80);
+      padding-left: 20px;
+      margin: 0 0 1rem 0;
+    }
+    .rh-section .rh-list li { margin-bottom: 6px; }
+
+    .rh-back {
+      display: inline-block;
+      margin: 48px 0 24px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--fg-55);
+      text-decoration: none;
+    }
+    .rh-back:hover { color: var(--fg); }
+
+    /* Mobile: timeline collapses to a horizontal chip row above the article */
+    @media (max-width: 900px) {
+      .rh-shell {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+      .rh-timeline {
+        position: static;
+        max-height: none;
+        overflow-x: auto;
+        overflow-y: visible;
+        padding-right: 0;
+        padding-bottom: 8px;
+        border-bottom: 1px solid var(--fg-15);
+        white-space: nowrap;
+      }
+      .rh-timeline__list { display: inline-flex; gap: 4px; }
+      .rh-timeline__list::before { display: none; }
+      .rh-timeline__item {
+        display: inline-block;
+        padding: 6px 10px;
+        border: 1px solid var(--fg-15);
+        border-radius: 999px;
+        flex-shrink: 0;
+      }
+      .rh-timeline__item::before { display: none; }
+      .rh-timeline__item.is-active {
+        background: var(--fg-10, rgba(255,255,255,0.08));
+        border-color: var(--fg-35);
+      }
+      .rh-timeline__link { font-size: 0.68rem; }
+      .rh-article__title { font-size: 1.75rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="site-header anim-slide-dn">
+    <a href="/" class="site-header__logo" aria-label="Return to home"><img src="/logo.svg" alt="JF"></a>
+    <button class="site-header__menu-btn" id="menu-btn" aria-expanded="false" aria-controls="site-nav">Menu</button>
+  </header>
+
+  <nav class="site-nav" id="site-nav" aria-label="Main navigation">
+    <ul class="site-nav__list">
+      <li class="site-nav__item"><a href="/sonder/" class="site-nav__link">Sonder Series</a></li>
+      <li class="site-nav__item"><a href="/portfolio/" class="site-nav__link">Portfolio</a></li>
+      <li class="site-nav__item" data-has-sub>
+        <a href="/projects/" class="site-nav__link">Projects</a>
+        <div class="site-nav__sub">
+          <a href="/portfolio/" class="site-nav__sub-link">Portfolio</a>
+          <a href="/resume/" class="site-nav__sub-link">Resume</a>
+          <a href="/references/" class="site-nav__sub-link">References</a>
+        </div>
+      </li>
+      <li class="site-nav__item" data-has-sub>
+        <a href="/content/" class="site-nav__link">Content</a>
+        <div class="site-nav__sub">
+          <a href="/writing/" class="site-nav__sub-link">Writing</a>
+          <a href="/poems/" class="site-nav__sub-link">Poems</a>
+          <a href="/pictures/" class="site-nav__sub-link">Memories</a>
+        </div>
+      </li>
+      <li class="site-nav__item"><a href="/network/" class="site-nav__link">Network</a></li>
+      <li class="site-nav__item"><a href="/blueprints/" class="site-nav__link">Blueprints</a></li>
+      <li class="site-nav__item" style="margin-top:24px;"><a href="/" class="site-nav__back">Back to Gallery</a></li>
+    </ul>
+    <button class="site-nav__close" id="nav-close">Close</button>
+  </nav>
+
+  <main class="page">
+    <div class="rh-shell anim-fade-up" style="animation-delay:0.3s">
+
+      <aside class="rh-timeline" aria-label="Essay timeline">
+        <ol class="rh-timeline__list">
+        <li class="rh-timeline__item is-active" data-section="pre-speech">
+          <a class="rh-timeline__link" href="#pre-speech">Pre-Speech</a>
+        </li>
+        <li class="rh-timeline__item" data-section="writing-emerges">
+          <a class="rh-timeline__link" href="#writing-emerges">Writing Emerges</a>
+        </li>
+        <li class="rh-timeline__item" data-section="full-class-systems-emerge">
+          <a class="rh-timeline__link" href="#full-class-systems-emerge">Full Class Systems Emerge</a>
+        </li>
+        <li class="rh-timeline__item" data-section="lets-begin-to-follow-greece-now">
+          <a class="rh-timeline__link" href="#lets-begin-to-follow-greece-now">Lets Begin to Follow Greece Now</a>
+        </li>
+        <li class="rh-timeline__item" data-section="rome">
+          <a class="rh-timeline__link" href="#rome">Rome</a>
+        </li>
+        <li class="rh-timeline__item" data-section="then-comes-the-medieval-ages">
+          <a class="rh-timeline__link" href="#then-comes-the-medieval-ages">Then comes the medieval ages</a>
+        </li>
+        <li class="rh-timeline__item" data-section="the-renaissance">
+          <a class="rh-timeline__link" href="#the-renaissance">The Renaissance</a>
+        </li>
+        <li class="rh-timeline__item" data-section="then-the-enlightenment-1680-1800">
+          <a class="rh-timeline__link" href="#then-the-enlightenment-1680-1800">Then the enlightenment ~1680 - 1800</a>
+        </li>
+        <li class="rh-timeline__item" data-section="the-industrial-revolution">
+          <a class="rh-timeline__link" href="#the-industrial-revolution">the Industrial revolution</a>
+        </li>
+        <li class="rh-timeline__item" data-section="where-the-classroom-design-actually-came-from">
+          <a class="rh-timeline__link" href="#where-the-classroom-design-actually-came-from">Where the classroom design actually came from</a>
+        </li>
+        <li class="rh-timeline__item" data-section="myths">
+          <a class="rh-timeline__link" href="#myths">Myths</a>
+        </li>
+        </ol>
+      </aside>
+
+      <article class="rh-article">
+        <header class="rh-article__masthead">
+          <span class="rh-article__eyebrow">Rabbit Hole · ~14 min</span>
+          <h1 class="rh-article__title">A History of Education</h1>
+          <p class="rh-article__subtitle">From play and imitation to Prussian classrooms — how schooling came to be.</p>
+          <p class="rh-article__meta">by James Floyd</p>
+        </header>
+
+        <section id="pre-speech" class="rh-section">
+          <h2>Pre-Speech</h2>
+          <p>Social mobility and education was simply done through play and imitation resulting in skill.</p>
+          <p>In the hunter and gatherer stage Education was mostly play and likely eventually working alongside mentors/parents</p>
+          <p>In prehistory, people learned by imitation, storytelling, and practical apprenticeship rather than schools.</p>
+          <ul class="rh-list"><li>People have learned life lessons via stories for a long time. Basically complex knowledge is taught through simple stories and modeling</li><li>How to be a man, what being a good partner is like</li></ul>
+          <p>Child mortality was about 50%</p>
+        </section>
+        <section id="writing-emerges" class="rh-section">
+          <h2>Writing Emerges</h2>
+          <p>The Next Stage as writing emerged, 'Teaching' was created to instruct the elites children on how to fill jobs as politicians, scribes, accountants, priests, etc</p>
+          <p>Writing emerged in Mesopotamia, Egypt</p>
+          <p>It emerged as symbols and accounting marks</p>
+          <p>And teaching in its earliest form was repetition, examples, and copying.</p>
+        </section>
+        <section id="full-class-systems-emerge" class="rh-section">
+          <h2>Full Class Systems Emerge</h2>
+          <p>Sons of upper class people were put into classes to learn skills by repetition, copying, and imitation. While stories continued to bear the weight of values, and philosophy.</p>
+          <p>Eventually schools are created to train sons of the elite in important functions like leadership, scribing, war, but it is still the great minority of people that are in schools. Everyone else just imitates their parents, or a different adult in some way. Stories are how lessons are passed down. The most well recorded and possibly earliest instance of schools is a 'Eduba' which translates to 'tablet house'. Scribing and accounting schools in Mesopotamia around 2500-1500 BCE where more advanced students lead most of the teaching. Access to this school as said before was mostly those with money and/or connections.</p>
+          <p>Schools were then developed in Egypt. From there formal schooling spread at very different times. Old Europe and Asia from around 500 BCE, the Islamic Middle East from about 700 CE, West Africa a few centuries after that, and Mesoamerica last, in the 1400s CE.</p>
+          <p>Each civilization had different takes on the how of schools and separately education, but most in practice or law gated this teaching to high social class youth.</p>
+          <p>Mesopotamia had Edubas teaching everything needed to be a scribe. Land surveying, geometry, arithmetic, law, and more, but all of it was tied to the job of being a scribe. Egypt, some generations later was the same.</p>
+          <p>Only when we look at Greece does 'school' in the more modern sense emerge.</p>
+          <p>These different places also approached education differently.</p>
+          <p>Basically post the Edubas in Mesopotamia and similar schools in Egypt, basically trade schools for the administrative class (Mostly called Scribes). Many different societies began their own unique approaches to education and teaching.</p>
+          <p>While most of it was still, imitation, and repetition, it began much earlier and removed some of the play mechanics from earlier societies.</p>
+          <p>The Spartans had their state led military training for upper class boys. Same with the Han in China who had schools to train officials.</p>
+          <p>Basically, early school was training nepo babies in government jobs.</p>
+          <p>Confucious in China is one of the first to teach to anyone and one of the first to focus on honing mind and character of people rather than a specific job. This paved the way for some meritocratic practices later in China. However, Confucious' teachings were still private mentorship rather than more formal schools.</p>
+          <p>In the Abbasid Caliphate, they had schools with endowments and portable credentials. Essentially assigning the merit to a person through a license. One of the first (if not first). This allowed social mobility because students without money could still study.</p>
+          <p>In Mesoamerica later they had what is likely one of the earliest forms of universal schooling. Although based on social class people were taught different subjects, everyone was educated in something by the state. Upper Class people were taught literacy, the calendar, rhetoric, and other skills for leading. While commoners were taught war, and civic skills.</p>
+        </section>
+        <section id="lets-begin-to-follow-greece-now" class="rh-section">
+          <h2>Lets Begin to Follow Greece Now</h2>
+          <p>In Greece around 450 BCE is where more modern schools began. Ones that still influence the American society today. They were also one of the first societies begin educating the minds and characters of people specifically, rather than training for work. They also had sophists who traveled around teaching rhetoric to anyone who could pay. (Still gated by means but technically accessible to all)</p>
+          <p>People like Aristotle and plato had schools focused on different classes within what they called, eleutherioi technai, &quot;skills of the free.&quot;</p>
+          <p>In fact the Greeks called education 'paideia', the formation of a free citizen. and called the crafts done by paid laborers, banausoi technai, Mechanical arts.</p>
+          <p>And it goes one step further, the word school comes from the word leisure in greek. (skholē). Because the upper class/leisure class in Greece didn't have to earn, so the whole learning arts and rhetoric and whatever was basically status signaling and learning governing skills. The ones that went to school and learned 'arts' were the ones with leisure time, 85% worked. Aristotle even argued that learning for the sake of earning with that knowledge was low. Like the craftsmen who serves others needs.</p>
+          <p>Essentially 'education' was assigned to the managerial skills like speaking, selling, etc because ruling was not considered a job whereas doing things was looked at as a job and lower status.</p>
+          <p>The whole thing rested on slavery. There were enough slaves doing the mechanical work that the ruling class could play arts and chat.</p>
+        </section>
+        <section id="rome" class="rh-section">
+          <h2>Rome</h2>
+          <p>In Rome they standardized these schools even more, but school stayed accessible only to the elite through money. School went in 3 sections.</p><ul class="rh-list"><li>ages seven to eleven went to litterator which was basic letters and arithmetic</li><li>ages 12-15 did grammaticus which was literature, greek, and grammar</li><li>ages 15+ did rhetor which was rhetoric and public speaking</li></ul>
+          <p>In the 300s the church absorbed the school system and kept it alive in monasteries and cathedrals but gated it only to those in the clergy which is why Europe inherited it.</p>
+        </section>
+        <section id="then-comes-the-medieval-ages" class="rh-section">
+          <h2>Then comes the medieval ages</h2>
+          <p>In terms of education around 5% of families could spare a kid to go to school through the church. Well under a tenth of a percent would decide to go to universities that were beginning like Bologna and Oxford, and a formal guild and process was formed for many of the trades. So education remained mostly imitation, and stories passed down generationally.</p>
+        </section>
+        <section id="the-renaissance" class="rh-section">
+          <h2>The Renaissance</h2>
+          <p>As the Black Plague fucks shit up, and the printing press drops in the 1400s the church loses its hold on schooling. Merchants, and others start schools for younger children and anyone literate can read works copied from the Islamic states, Greece, Rome, and beyond.</p>
+          <p>Still many people are working and therefore illiterate. The Protestants begin to push literacy so people could read the bible.</p>
+        </section>
+        <section id="then-the-enlightenment-1680-1800" class="rh-section">
+          <h2>Then the enlightenment ~1680 - 1800</h2>
+          <p>In Europe 'thinkers' are transitioning to beliefs like John Locke's of the minds blank slate. That ones mind is born without fixed nature and can be decided through essentially nurturing and work.</p>
+          <p>In other places Japans Samurai schools are creating literacy, Chinas Keju Exam still offers a mobility path, and the Islamic states have lost to the Ottoman Empire and are falling behind some in education.</p>
+        </section>
+        <section id="the-industrial-revolution" class="rh-section">
+          <h2>the Industrial revolution</h2>
+          <p>As technology exploded so did the need for literacy, numbers, and other skills for workers.</p>
+          <p>In the western world more and more people moved to cities and with that came the need for a different education system to feed the different class system.</p>
+          <p>Essentially, schools no longer needed to feed admin workers to the top class, instead it needed to increase literacy for factories, make loyal citizens, and develop minds of children because it was now believed to be a right. Only some old aristocratic schools continued to teach rhetoric and character. Much of that was done through stories, religion, or imitation. ( I expand on this more in a moment)</p>
+          <p>Education in the west evolved further in terms of structure. It went from a one teacher one student, or master and a few students to a classroom, 30-50 kids in a room learning from one teacher.</p>
+          <p>In the East Japan Adopts the Industrial age and compulsory schooling China abolishes the Keju exam, and the colonized states are mostly excluded from this expansion.</p>
+          <p>The state begins to pay for and enforce schooling in country after country.</p>
+          <p>However, in America (where I'm trying to focus this on) the upper class still went to elite academies with pipelines to the Ivy League. The Middle class went to public high schools, and the lower class didn't go at all. In 1900 about 10% of teenagers were enrolled in high school at all, and only about 6% actually graduated. By 1940 enrollment had climbed to about 70%, and graduation had climbed to around half.</p>
+          <p>The elementary schools served the lower class kids teaching the basics and many of them had to leave after 8th grade to work.</p>
+        </section>
+        <section id="where-the-classroom-design-actually-came-from" class="rh-section">
+          <h2>Where the classroom design actually came from</h2>
+          <p>Prussia built the model long before any war. In the early 1700s the state made school compulsory: one room, one teacher at the front, a whole group of kids taught the same lesson on the same schedule. The reason was religion, not factories. Prussia was a stronghold of Pietism, a Lutheran movement that held salvation depended on reading the Bible yourself, not having a priest read it to you. Every child needed to read, so every child needed school. A minister named Francke ran schools in Halle built around a strict hour-by-hour timetable, and that timetable became the template everyone copied. Attendance became compulsory on royal land in 1717 and across all of Prussia by 1763. There were no factories yet. Prussia was poor and thinly populated, so a literate, orderly population also helped fill the army and pay taxes, but the trigger was Scripture, not industry.</p>
+          <p>The war changed the purpose, not the shape. Prussia lost to Napoleon in 1806. The whole state rebuilt itself: serfs freed, the army remade, and education handed to a scholar named Wilhelm von Humboldt. Humboldt mostly left the elementary classroom alone and built on top of it. In 1810 he opened the University of Berlin, the first school to fuse teaching with original research, a design most universities still copy. Formal teacher certification arrived the same year. By 1812 an exit exam called the Abitur controlled who could enter university at all. Humboldt's stated goal was closer to freedom than control, a broadly educated citizen who could think independently rather than a specialist trained for one job. The state still gained from it, since it needed educated officials to run the new Prussia, but &quot;produce obedient factory workers&quot; was never the actual language used.</p>
+          <p>America imported the elementary layer, not the university layer. Horace Mann visited Prussia in 1843 and came home impressed by the organization: children grouped by age, trained teachers, a state that actually paid for schools. Massachusetts passed the first statewide compulsory attendance law in the country in 1852, built on what Mann had seen. Boston's Quincy Grammar School, opened in 1848, is usually cited as the first fully graded American school, splitting kids into separate rooms by age instead of one big room holding every age at once.</p>
+          <p>Piece by piece, where the rest of the current system came from:</p><ul class="rh-list"><li>Compulsory attendance: Prussia, 1717, all fifty US states by 1918</li><li>One teacher facing a same-age group: Halle, around 1700</li><li>State-funded, state-run schools: written into Prussian law in 1794</li><li>Trained, certified teachers: Prussia's first teacher college in 1748, formal state certification in 1810</li><li>A standard exit exam deciding who moves on: Prussia's Abitur, first used in 1788, locked in under Humboldt by 1812</li><li>Class periods marked off by bells: settled into the current 45-minute length around 1880</li><li>Mass standardized testing: began with the US Army's IQ tests in World War One, 1917, then spread into schools</li><li>Coursework measured in standard credit hours: the Carnegie unit, 1906</li><li>Federal standardized testing tied directly to school funding: No Child Left Behind, 2002</li><li>The most recent nationwide curriculum standard: Common Core, adopted by most states starting 2010</li></ul>
+          <p>School wise pre-k is different by social class. K-12 is about 90% of people in public school and 10% in private. Funding is done for public schools at a ratio of 45% local (property taxes), 45% state, 10% federal. Still built on the model Mann brought back from Prussia - age-graded classrooms, bells, standardized curriculum, one teacher to 20-30 kids.</p>
+          <p>For K-12 layers exist by class still. About 62% of a graduating class enrolls in college the same year, most at a four-year school. But highly selective colleges stay a thin slice of that: about 7% of low-income grads get in, against 37% of high-income grads.</p>
+          <p>So of the roughly 50 million K-12 kids today, the overwhelming majority sit inside the same basic format Mann brought back in the 1850s. Only a thin slice, weighted heavily toward wealthier families, moves through anything structurally different, like elite private schools or the pipeline into a highly selective college.</p>
+          <p>Meaning kids are going to school in a pre-internet, pre-social media, pre-clean water, no slavery, women's rights, design of schools.</p>
+          <p>The problem with all of these systems is that entrance was mostly gated by social class. The endowments helped some, much like today, but families needed workers their children could work so in the end, not everyone was set up for success.</p>
+        </section>
+        <section id="myths" class="rh-section">
+          <h2>Myths</h2>
+          <p>Horace Mann and worker docility. The common story says Mann wanted schools that produced factory workers who wouldn't unionize or riot, and that classroom discipline existed to make people docile at work. That isn't what Mann argued. In his real reports through the 1840s, Mann gathered testimony from employers who said educated workers were steadier and more productive and worth paying more. He argued that money spent on schools saved money spent on prisons later. He called education the balance wheel of the social machinery, the thing that would ease tension between rich and poor by giving everyone a real shot at rising, not the thing that would keep the poor in their place. When critics in his own era accused Prussian-style schooling of teaching blind obedience to the state, Mann pushed back and denied it directly. The docility story traces to economists writing more than a century later, in the 1970s, who read a control motive into Mann's arguments about order and productivity. It's a modern interpretation laid on top of Mann, not something Mann said himself.</p>
+        </section>
+
+        <a href="/writing/#rabbit-holes" class="rh-back">← Back to Writing</a>
+      </article>
+
+    </div>
+  </main>
+
+  <script>
+    // ── Nav (menu open/close), copy of the pattern used across the site
+    (function() {
+      var btn = document.getElementById('menu-btn');
+      var nav = document.getElementById('site-nav');
+      var close = document.getElementById('nav-close');
+      if (btn && nav) {
+        btn.addEventListener('click', function() {
+          var open = nav.classList.toggle('is-open');
+          btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+      }
+      if (close && nav) {
+        close.addEventListener('click', function() {
+          nav.classList.remove('is-open');
+          btn && btn.setAttribute('aria-expanded', 'false');
+        });
+      }
+    })();
+
+    // ── Timeline highlight: mark the section whose heading has most recently
+    //    crossed a "read line" 30% down from the top of the viewport. Simple
+    //    scroll listener beats IntersectionObserver here because a long
+    //    section keeps intersecting even after the reader has moved past.
+    (function() {
+      var sections = Array.from(document.querySelectorAll('.rh-section'));
+      var itemMap = new Map();
+      document.querySelectorAll('.rh-timeline__item').forEach(function(it) {
+        itemMap.set(it.dataset.section, it);
+      });
+      if (!sections.length || !itemMap.size) return;
+
+      var lastActive = null;
+      function update() {
+        var readLine = window.innerHeight * 0.3;
+        var active = sections[0];
+        for (var i = 0; i < sections.length; i++) {
+          if (sections[i].getBoundingClientRect().top <= readLine) active = sections[i];
+          else break;
+        }
+        if (active === lastActive) return;
+        lastActive = active;
+        itemMap.forEach(function(it) { it.classList.remove('is-active'); });
+        var el = itemMap.get(active.id);
+        if (el) {
+          el.classList.add('is-active');
+          if (window.innerWidth <= 900) {
+            el.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' });
+          }
+        }
+      }
+      var ticking = false;
+      window.addEventListener('scroll', function() {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(function() { update(); ticking = false; });
+      }, { passive: true });
+      update();
+    })();
+  </script>
+</body>
+</html>
