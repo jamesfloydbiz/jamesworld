@@ -253,24 +253,6 @@ Correlated to social mobility:
 4. Health
 
 
-In this study I went back to Pre-Speech, to when society was egalitarian. Where there were no social classes. In fact, if anyone was too dominant they were torn down quickly. Much like the revolutions we see in greater civilizations.
-
-
-Now this, and the more recent history like how the church preserved literacy after the fall of Rome, how Prussia pioneered the modern version of school because they were salty about losing to Napoleon in War, and the recent historical statistics like zipcode and parental status predicting more about a childs outcome than their schooling, help to inform me about where we are now.
-
-
-In Horace Mann's (father of U.S. education) era, the 1850's, only white dudes could move up, but their chance was around 15-20%.
-
-
-100 years later that mobility was still around 18% for most groups, but after 1980 we see it fall. According to Raj Chetty's data the chance of bottom-to-top mobility was only 7.5%.
-
-
-As the early data is coming in, today it's even worse in the U.S. In fact, even in 1980, with the Millenials, the 'American Dream' was statistically more alive in other countries than it was here in the U.S.
-
-
-E.g. in Canada the bottom-to-top mobility chance was 13.5% in 1980.
-
-
 Patterns
 
 
