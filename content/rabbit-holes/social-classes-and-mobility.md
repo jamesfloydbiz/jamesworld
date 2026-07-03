@@ -144,7 +144,7 @@ The Renaissance
 Most people are still broke, but big ocean boats drop and a new merchant class grows.
 
 
-Then the enlightenment ~1680 - 1800
+The Enlightenment
 
 
 In reality, mobility remains with birth, although philosophically people are refuting Aristotles argument that nature decides.

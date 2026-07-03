@@ -188,6 +188,10 @@
       text-decoration: none;
     }
     .rh-back:hover { color: var(--fg); }
+    .rh-back--top {
+      margin: 0 0 24px 0;
+      grid-column: 1 / -1;
+    }
 
     /* Mobile: timeline collapses to a horizontal chip row above the article */
     @media (max-width: 900px) {
@@ -262,6 +266,8 @@
 
   <main class="page">
     <div class="rh-shell anim-fade-up" style="animation-delay:0.3s">
+
+      <a href="/writing/#rabbit-holes" class="rh-back rh-back--top">← Back to Writing</a>
 
       <aside class="rh-timeline" aria-label="Essay timeline">
         <ol class="rh-timeline__list">

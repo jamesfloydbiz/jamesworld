@@ -47,22 +47,22 @@ const META = {
     subtitle: 'How class emerged, hardened, and softened across ten thousand years.',
     reading: '~15 min',
     sections: [
-      { name: 'Pre-Speech' },
-      { name: 'Speech Emerges' },
-      { name: 'Symbolism Emerges' },
-      { name: 'Social Classes Emerge' },
-      { name: 'Writing Emerges' },
-      { name: 'Full Class Systems Emerge' },
-      { name: 'Different takes on Social Mobility' },
-      { name: 'Rome' },
-      { name: 'Then comes the medieval ages' },
-      { name: 'The Renaissance' },
-      { name: 'Then the enlightenment ~1680 - 1800' },
-      { name: 'the Industrial revolution' },
-      { name: "1980-2020's" },
-      { name: 'Today' },
-      { name: 'Patterns' },
-      { name: 'To add' },
+      { name: 'Pre-Speech',                         date: '~2M – 100k BCE' },
+      { name: 'Speech Emerges',                     date: '~100k – 50k BCE' },
+      { name: 'Symbolism Emerges',                  date: '~50k – 12k BCE' },
+      { name: 'Social Classes Emerge',              date: '~12k – 4000 BCE' },
+      { name: 'Writing Emerges',                    date: '~3200 BCE' },
+      { name: 'Full Class Systems Emerge',          date: '~3000 BCE onward' },
+      { name: 'Different takes on Social Mobility', date: '~600 BCE – 500 CE' },
+      { name: 'Rome',                               date: '~300 BCE – 400 CE' },
+      { name: 'Then comes the medieval ages',       date: '~500 – 1400 CE' },
+      { name: 'The Renaissance',                    date: '~1400 – 1600 CE' },
+      { name: 'The Enlightenment',                  date: '~1680 – 1800' },
+      { name: 'the Industrial revolution',          date: '~1760 – 1900 CE' },
+      { name: "1980-2020's",                        date: '~1980 – now' },
+      { name: 'Today',                              date: '' },
+      { name: 'Patterns',                           date: '' },
+      { name: 'To add',                             date: '' },
     ],
   },
 };
@@ -372,6 +372,10 @@ function pageTemplate(slug, meta, timelineItems, articleHtml) {
       text-decoration: none;
     }
     .rh-back:hover { color: var(--fg); }
+    .rh-back--top {
+      margin: 0 0 24px 0;
+      grid-column: 1 / -1;
+    }
 
     /* Mobile: timeline collapses to a horizontal chip row above the article */
     @media (max-width: 900px) {
@@ -446,6 +450,8 @@ function pageTemplate(slug, meta, timelineItems, articleHtml) {
 
   <main class="page">
     <div class="rh-shell anim-fade-up" style="animation-delay:0.3s">
+
+      <a href="/writing/#rabbit-holes" class="rh-back rh-back--top">← Back to Writing</a>
 
       <aside class="rh-timeline" aria-label="Essay timeline">
         <ol class="rh-timeline__list">
