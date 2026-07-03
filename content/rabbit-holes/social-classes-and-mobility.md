@@ -240,9 +240,6 @@ Social classes are sorted by financial success mostly.
 The trends for Millinials and Gen Z are trending lower for social mobility and it looks like
 
 
-But does that matter? I said in the beginning, social mobility isn't tied to schools.
-
-
 Here is the list of correlated points, and controllable points:
 
 
