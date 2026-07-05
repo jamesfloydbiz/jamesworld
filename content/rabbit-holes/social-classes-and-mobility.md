@@ -27,7 +27,7 @@ Eventually the mobile hunters and gatherers found places that provided a storabl
 3. War prisoners used as slaves
 
 
-Social mobility was basically nonexistent since territory was passed through family. (Or was it chiefs so you could be skilled and get it?)
+Social mobility was basically nonexistent since territory was passed through family.
 
 
 Writing Emerges
@@ -119,10 +119,10 @@ Rome collapses, and with it literacy and mobility in that area, but other countr
 China, Middle East, West Africa.
 
 
-In modern-day Europe, the status quo is turned backwards to feudalism. Social classes are decided by land, because land means income. Everyone else worked for those with land. Land was passed through families.
+In Europe, the status quo is turned backwards to feudalism. Social classes are decided by land, because land means income. Everyone else worked for those with land. Land was passed through families.
 
 
-The paths of social mobility were the church, due to celibacy required, and interestingly that also meant they would be 'educated' due to the church's knowledge of Roman education.
+The main path of social mobility was the church, due to celibacy required, and interestingly that also meant they would be 'educated' due to the church's knowledge of Roman education.
 
 
 Eventually, around the 1000s, towns arose again, and the phrase "town air makes free" (Stadtluft macht frei) became common. If a serf could make it in a town for a year, by law they were free. The urban middle class formed, the Bourgeoisie. Whereas in the countryside, things remained the same: feudalism.
@@ -147,7 +147,7 @@ In reality, mobility remains with birth, although philosophically people are ref
 As Locke and others eventually take hold through the French Revolution and American Revolution, human rights are put into law. 'Everyone is equal at birth.' First changes in law that reflect mobility possibilities. In practice, it takes time to change. And later, civil rights revolutions.
 
 
-Here we see the takedown in much of the western world of the 5 class system.
+Here we see the 5-class system taken down in much of the western world.
 
 
 No longer is the class system: leader dude, officials, craftsmen and merchants, peasants, slaves.
@@ -174,7 +174,7 @@ The class system was in 4 parts: a small upper class, upper middle class of mana
 Elsewhere, Western Europe built out social safety nets and programs, Asia had state-sponsored education, and South Korea went from one of the poorest countries to one of the richest in about 50 years (1950-2000).
 
 
-1980-2020's
+1980-2020s
 
 
 However, for social mobility, 1980 in the U.S. is when things began to change from this boom.
@@ -222,10 +222,7 @@ So why is social mobility falling in the U.S.?
 Marriages are working less, networks are more closed, places that have high-paying jobs are less accessible, and the cost of a degree to get a high-paying job is higher than ever.
 
 
-Statistically, about two-thirds of someone's economic outcome is determined by factors outside their control. The remaining third, which is real, runs through the three paths I named at the start of this essay. Skills (the right credential or trade). Relationships (networks, marriage). Assets (savings, eventually ownership).
-
-
-Social classes are sorted by financial success mostly.
+Statistically, about two-thirds of someone's economic outcome is determined by factors outside their control. The remaining third, which is real, runs through the three paths I named at the start of this essay. Skills (the right credential or trade). Relationships (networks, marriage). Assets (savings, eventually ownership). Social classes are sorted by financial success mostly.
 
 
 The trends for Millennials and Gen Z are trending lower for social mobility.
@@ -239,6 +236,14 @@ Correlated to social mobility:
 2. Zipcode you're born in (Schools, Safety, etc.)
 3. Social Capital
 4. Health
+
+
+Controllable in social mobility:
+1. Family status
+2. Zipcode
+3. School
+4. Health
+5. Child regulation and control of self
 
 
 Patterns

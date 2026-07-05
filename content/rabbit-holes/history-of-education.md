@@ -56,7 +56,7 @@ Sparta, Han, Confucius, Abbasid, Mesoamerica
 These different places also approached education differently.
 
 
-Basically post the Edubas in Mesopotamia and similar schools in Egypt, basically trade schools for the administrative class (mostly called scribes), many different societies began their own unique approaches to education and teaching.
+After the Edubas in Mesopotamia and similar schools in Egypt — basically trade schools for the administrative class (mostly called scribes) — many different societies began their own unique approaches to education and teaching.
 
 
 While most of it was still imitation and repetition, it began much earlier and removed some of the play mechanics from earlier societies.
