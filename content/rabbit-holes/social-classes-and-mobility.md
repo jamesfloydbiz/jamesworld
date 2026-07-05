@@ -1,7 +1,7 @@
 Pre-Speech
 
 
-There were essentially no social classes. People would sabotage anyone getting too much power, and so hierarchically society stayed flat. Not really much the strongest rule. Eventually, like chimpanzees, there were coalitions and alliances that began to emerge that created two ways to social power: 1. being Darwinism, and 2. being prestige (social skills, essentially).
+There were essentially no social classes. People would sabotage anyone getting too much power, and so hierarchically society stayed flat. The strongest didn't rule. Eventually, like chimpanzees, there were coalitions and alliances that began to emerge that created two ways to social power: 1. being Darwinism, and 2. being prestige (social skills, essentially).
 
 
 Speech Emerges
@@ -62,12 +62,6 @@ There are 3 paths:
 Basically, if you weren't born to a strong family, you make a relationship that can get you into training for 1 or 2, or you learn a skill.
 
 
-As a note, most of the rest of this will talk about Old to Modern Europe and the developments from there since they are first chronologically when it comes to schools in this form, and later industrialization. I will still include things I find interesting in the way other societies did education and social mobility, because it's always either first or best.
-
-
-These different societies approached social mobility differently.
-
-
 Different takes on Social Mobility
 
 
@@ -83,7 +77,7 @@ Expanded Social Mobility:
 In the Mediterranean, Solon of Athens changed classes to be determined by wealth over birth. This was specific to free men, but still increased mobility.
 
 
-In Rome, manumission (DEF) freed slaves into citizenship, and their children were full citizens.
+In Rome, manumission (the legal act of freeing a slave) freed slaves into citizenship, and their children were full citizens.
 
 
 In later Chinese dynasties, they created an entrance exam for government positions, making status and class associated with those positions earnable.
@@ -293,17 +287,17 @@ To add
 
 Black Death (mid-1300s)
 
-Around a third of Europe died, which made labor scarce. Surviving peasants could demand higher pay and walk away from bad lords, and in Western Europe this helped break serfdom. In Eastern Europe the lords tightened their grip and serfdom got worse. The same shock produced opposite results depending on who held power locally. This one fits inside the medieval section as a dated event.
+Around a third of Europe died, which made labor scarce. Surviving peasants could demand higher pay and walk away from bad lords, and in Western Europe this helped break serfdom. In Eastern Europe the lords tightened their grip and serfdom got worse. The same shock produced opposite results depending on who held power locally.
 
 
 Race-based slavery in the Americas (1500s to 1865)
 
-For roughly three centuries the Americas ran on slavery fixed to race. It was a class you were born into and could not leave, held in place by law. Freedom came in 1865, then closed again fast. A short opening under Reconstruction gave way to Jim Crow laws that pushed Black Americans back down for about ninety years, until the 1960s. This is the clearest case in the whole timeline of a group's mobility being turned on and then off, and it sits under the race gap in the modern numbers.
+For roughly three centuries the Americas ran on slavery fixed to race. It was a class you were born into and could not leave, held in place by law. Freedom came in 1865, then closed again fast. A short opening under Reconstruction gave way to Jim Crow laws that pushed Black Americans back down for about ninety years, until the 1960s. This is the clearest case in the whole timeline of a group's mobility being turned on and then off.
 
 
 Immigration
 
-Moving to a new country has been one of the strongest ways up, above all in the United States. Poor immigrants often stayed poor themselves, but their children and grandchildren tended to climb. Work that tracks families across a hundred years finds this held for the old European waves and holds again for recent ones. It is a core part of the American Dream story and is missing from the piece.
+Moving to a new country has been one of the strongest ways up, above all in the United States. Poor immigrants often stayed poor themselves, but their children and grandchildren tended to climb. Work that tracks families across a hundred years finds this held for the old European waves and holds again for recent ones.
 
 
 Women and mobility
@@ -313,12 +307,12 @@ The history here runs father to son. For most of the past, a woman's main route 
 
 Unions
 
-Organized labor is the missing cause behind the mid-century middle class. When workers bargained as a group, a factory job could pay a wage that reached the middle class. Membership peaked around the 1950s and dropped after 1980, and the wage gains faded with it. The piece shows the result — factory workers earning enough to live middle class — without the thing that produced it.
+Organized labor is the missing cause behind the mid-century middle class. When workers bargained as a group, a factory job could pay a wage that reached the middle class. Membership peaked around the 1950s and dropped after 1980, and the wage gains faded with it.
 
 
 Homeownership
 
-The main way ordinary families built wealth in the twentieth century was buying a home with cheap, government-backed loans. That is the "assets" path from your three paths, working at scale. The same setup that opened home wealth for white families through the GI Bill shut it off for Black families through redlining, which is part of why the racial wealth gap stays wide.
+The main way ordinary families built wealth in the twentieth century was buying a home with cheap, government-backed loans. The same setup that opened home wealth for white families through the GI Bill shut it off for Black families through redlining, which is part of why the racial wealth gap stays wide.
 
 
 Men and women, by the numbers

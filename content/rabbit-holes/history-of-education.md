@@ -199,7 +199,7 @@ For K-12, layers exist by class still. About 62% of a graduating class enrolls i
 So of the roughly 50 million K-12 kids today, the overwhelming majority sit inside the same basic format Mann brought back in the 1850s. Only a thin slice, weighted heavily toward wealthier families, moves through anything structurally different, like elite private schools or the pipeline into a highly selective college.
 
 
-Meaning kids are going to school in a pre-internet, pre-social media, pre-clean water, no slavery, women's rights, design of schools.
+Meaning kids are going to school in a pre-internet, pre-social media, pre-clean-water, pre-abolition, pre-women's-rights design of schools.
 
 
 The problem with all of these systems is that entrance was mostly gated by social class. The endowments helped some, much like today, but families needed workers and their children could work, so in the end, not everyone was set up for success.
