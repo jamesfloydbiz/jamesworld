@@ -61,8 +61,6 @@ const META = {
       { name: 'The Industrial Revolution',          date: '~1760 – 1980 CE' },
       { name: '1980-2020s',                         date: '~1980 – now' },
       { name: 'Today',                              date: '' },
-      { name: 'Patterns',                           date: '' },
-      { name: 'To add',                             date: '' },
     ],
   },
 };
