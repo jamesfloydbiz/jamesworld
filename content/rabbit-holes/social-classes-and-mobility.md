@@ -231,17 +231,7 @@ Statistically, about two-thirds of someone's economic outcome is determined by f
 The trends for Millennials and Gen Z are trending lower for social mobility.
 
 
-Here is the list of correlated points, and controllable points:
-
-
-Correlated to social mobility:
-1. Family Background (Income, Parental relationship, Investment in you)
-2. Zipcode you're born in (Schools, Safety, etc.)
-3. Social Capital
-4. Health
-
-
-Controllable in social mobility:
+Correlated most to social mobility:
 1. Family status
 2. Zipcode
 3. School
