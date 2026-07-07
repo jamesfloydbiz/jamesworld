@@ -1,0 +1,775 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CCAT Trainer</title>
+<meta name="description" content="Practice + spaced-repetition trainer for the CCAT cognitive aptitude test. Exam mode (50Q/15min), adaptive practice with Leitner, and flashcards with SM-2-lite. All state in localStorage.">
+<link rel="canonical" href="https://jamesfloyds.world/builds/ccat-trainer/">
+<meta name="robots" content="noindex">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  :root { --bg:#0a0a0a; --fg:#eaeaea; --dim:#888; --card:#151515; --border:#252525; --acc:#4ade80; --bad:#f87171; --warn:#facc15; }
+  html,body{background:var(--bg);color:var(--fg);font-family:ui-monospace,Menlo,Consolas,monospace;}
+  body{margin:0;min-height:100vh;}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:8px;}
+  .btn{border:1px solid var(--border);background:#111;color:var(--fg);border-radius:6px;padding:10px 16px;cursor:pointer;font-family:inherit;font-size:14px;transition:all .15s;}
+  .btn:hover{background:#1c1c1c;border-color:#3a3a3a;}
+  .btn:disabled{opacity:.4;cursor:not-allowed;}
+  .btn-p{background:var(--fg);color:#0a0a0a;border-color:var(--fg);}
+  .btn-p:hover{background:#fff;border-color:#fff;}
+  .opt{display:block;width:100%;text-align:left;padding:14px 18px;background:#111;border:1px solid var(--border);border-radius:8px;color:var(--fg);cursor:pointer;transition:all .15s;font-family:inherit;font-size:15px;}
+  .opt:hover:not(:disabled){background:#1c1c1c;border-color:#444;}
+  .opt.ok{background:rgba(74,222,128,.12);border-color:var(--acc);}
+  .opt.no{background:rgba(248,113,113,.12);border-color:var(--bad);}
+  .opt:disabled{cursor:default;}
+  .kbd{display:inline-block;font-family:ui-monospace,Menlo,monospace;font-size:11px;padding:1px 6px;border:1px solid var(--border);border-radius:3px;color:var(--dim);}
+  .tab{padding:8px 14px;border:none;background:transparent;color:var(--dim);cursor:pointer;font-family:inherit;font-size:14px;border-bottom:2px solid transparent;margin-bottom:-1px;}
+  .tab.on{color:var(--fg);border-bottom-color:var(--fg);}
+  .tab:hover{color:var(--fg);}
+  .pill{display:inline-block;padding:2px 8px;font-size:11px;border-radius:99px;background:#1a1a1a;border:1px solid var(--border);color:var(--dim);}
+  .bar{height:6px;background:#1a1a1a;border-radius:99px;overflow:hidden;}
+  .bar > div{height:100%;background:var(--acc);transition:width .3s;}
+  .mono{font-family:ui-monospace,Menlo,monospace;}
+  input[type=number],select{background:#111;color:var(--fg);border:1px solid var(--border);border-radius:4px;padding:4px 8px;font-family:inherit;}
+  .flash{display:none;padding:12px 16px;background:rgba(250,204,21,.1);border:1px solid var(--warn);border-radius:6px;color:var(--warn);margin-bottom:16px;}
+  .flash.on{display:block;}
+</style>
+</head>
+<body>
+
+<div class="max-w-4xl mx-auto px-4 py-6 md:py-10">
+
+  <!-- Header -->
+  <header class="mb-6 flex items-start justify-between gap-4 flex-wrap">
+    <div>
+      <a href="/builds/" class="text-xs text-gray-500 hover:text-white">← Builds</a>
+      <h1 class="text-2xl md:text-3xl font-bold mt-1">CCAT Trainer</h1>
+      <p class="text-xs text-gray-500 mt-1">50Q / 15 min · adaptive drill · spaced repetition · all local</p>
+    </div>
+    <div class="text-right text-xs text-gray-500">
+      <div id="pom-clock" class="mono text-lg text-white"></div>
+      <div id="pom-status">Idle</div>
+      <button id="pom-toggle" class="btn mt-2 text-xs">Start Pomodoro</button>
+    </div>
+  </header>
+
+  <!-- Tabs -->
+  <nav class="flex gap-2 border-b border-neutral-800 mb-6 overflow-x-auto">
+    <button class="tab on" data-tab="practice">Practice</button>
+    <button class="tab" data-tab="exam">Exam</button>
+    <button class="tab" data-tab="learning">Learning</button>
+    <button class="tab" data-tab="stats">Stats</button>
+  </nav>
+
+  <!-- Views -->
+  <main id="views"></main>
+
+</div>
+
+<!-- Tab-blur warning modal (exam mode) -->
+<div id="blur-modal" style="display:none;" class="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
+  <div class="card p-6 max-w-md text-center">
+    <div class="text-4xl mb-2">⚠️</div>
+    <h3 class="text-lg font-bold mb-2">Focus warning</h3>
+    <p class="text-sm text-gray-400 mb-4">On the real CCAT, switching tabs auto-DQs you. This is a warning only.</p>
+    <button class="btn btn-p" onclick="document.getElementById('blur-modal').style.display='none'">Back to the test</button>
+  </div>
+</div>
+
+<script>
+// ==================== DATA / STATE ====================
+const CATS = ["Verbal","Numerical","Logic","Spatial"];
+const WEIGHTS = {Verbal:.34, Numerical:.34, Spatial:.22, Logic:.10};
+const EXAM_LEN = 50, EXAM_TIME = 15*60, PASS = 35;
+const LS = {
+  itemStats: "ccat.stats.v1",        // {id: {seen, correct, box, lastSession}}
+  history:   "ccat.history.v1",      // [{ts, score, total, dur, catAcc}]
+  cards:     "ccat.cards.v1",        // {cardId: {ease, iv, due}}
+  settings:  "ccat.settings.v1",
+  session:   "ccat.session.v1",
+};
+function ls(k, d){ try{const v=localStorage.getItem(k); return v?JSON.parse(v):d;}catch(e){return d;} }
+function save(k,v){ localStorage.setItem(k, JSON.stringify(v)); }
+
+let QUESTIONS = [], STATS = ls(LS.itemStats,{}), HIST = ls(LS.history,[]), CARDS = ls(LS.cards,{});
+let SETTINGS = ls(LS.settings,{pomLen:25, pomBreak:5, deepSet:false, confidence:false, sessionCount:0});
+
+// ==================== FLASHCARD DECKS ====================
+const DECKS = [
+  {name:"Squares (11–20)", cards:["11²=121","12²=144","13²=169","14²=196","15²=225","16²=256","17²=289","18²=324","19²=361","20²=400"].map(s=>{const [q,a]=s.split("=");return{q,a};})},
+  {name:"Cubes (2–10)", cards:["2³=8","3³=27","4³=64","5³=125","6³=216","7³=343","8³=512","9³=729","10³=1000"].map(s=>{const [q,a]=s.split("=");return{q,a};})},
+  {name:"Fraction ↔ Percent", cards:[
+    {q:"1/2",a:"0.5 = 50%"},{q:"1/3",a:"≈0.333 = 33.3%"},{q:"2/3",a:"≈0.667 = 66.7%"},{q:"1/4",a:"0.25 = 25%"},
+    {q:"3/4",a:"0.75 = 75%"},{q:"1/5",a:"0.2 = 20%"},{q:"2/5",a:"0.4 = 40%"},{q:"1/6",a:"≈0.167 = 16.7%"},
+    {q:"1/8",a:"0.125 = 12.5%"},{q:"3/8",a:"0.375 = 37.5%"},{q:"5/8",a:"0.625 = 62.5%"},{q:"1/10",a:"0.1 = 10%"},{q:"1/12",a:"≈0.083 = 8.3%"}
+  ]},
+  {name:"Percent shortcuts", cards:[
+    {q:"10% of anything",a:"Move the decimal one place"},
+    {q:"5%",a:"Half of 10%"},
+    {q:"15%",a:"10% + 5%"},
+    {q:"20%",a:"Double 10%"},
+    {q:"25%",a:"÷4"},
+    {q:"50%",a:"÷2"},
+    {q:"1%",a:"Move decimal two places"},
+    {q:"X% of Y",a:"= Y% of X (e.g. 8% of 25 = 25% of 8 = 2)"}
+  ]},
+  {name:"Series families", cards:[
+    {q:"Arithmetic",a:"+constant each step"},
+    {q:"Geometric",a:"×constant each step"},
+    {q:"Squares",a:"1, 4, 9, 16, 25…"},
+    {q:"Cubes",a:"1, 8, 27, 64, 125…"},
+    {q:"Fibonacci",a:"Each = sum of prior two (1,1,2,3,5,8,13)"},
+    {q:"Primes",a:"2, 3, 5, 7, 11, 13, 17…"},
+    {q:"Triangular",a:"1, 3, 6, 10, 15, 21"},
+    {q:"Growing gaps",a:"+1, +2, +3, +4…"},
+    {q:"Interleaved",a:"Two series shuffled together"},
+    {q:"Alternating +/−",a:"Sign flips each step"}
+  ]},
+  {name:"Core formulas", cards:[
+    {q:"Distance",a:"= Rate × Time"},
+    {q:"Average",a:"= Sum ÷ Count"},
+    {q:"% change",a:"= (New − Old) ÷ Old"},
+    {q:"Ratio a:b of T",a:"Each part = T ÷ (a+b)"},
+    {q:"Work rate trap",a:"5 machines / 5 widgets / 5 min → 100/100 = 5 min. Rate is constant."}
+  ]},
+  {name:"Classic traps", cards:[
+    {q:"Pen + cap $1.10, pen $1 more",a:"Cap = $0.05 (not $0.10)"},
+    {q:"5 machines / 5 widgets / 5 min → 100/100?",a:"5 min. Rate stays constant."},
+    {q:"+20% then −20%",a:"−4% net (1.2 × 0.8 = 0.96)"},
+    {q:"'Some flowers fade' + 'all roses are flowers'",a:"No conclusion about roses"},
+    {q:"Modus tollens: P→Q, NOT Q",a:"Therefore NOT P"}
+  ]},
+  {name:"Word roots", cards:[
+    {q:"bene-",a:"good (benevolent)"},{q:"mal-",a:"bad (malicious)"},{q:"circum-",a:"around (circumvent)"},
+    {q:"-verse / -vert",a:"turn (averse, invert)"},{q:"loqu- / loc-",a:"speak (loquacious)"},{q:"magn-",a:"great (magnify)"},
+    {q:"ambi- / amphi-",a:"both (ambivalent)"},{q:"pac-",a:"peace (pacify)"},{q:"ten- / tain-",a:"hold (tenacious)"},{q:"luc-",a:"light (lucid)"}
+  ]},
+  {name:"Analogy types", cards:[
+    {q:"Part → Whole",a:"Finger : Hand"},{q:"Tool → User",a:"Wrench : Mechanic"},
+    {q:"Cause → Effect",a:"Fire : Smoke"},{q:"Category → Member",a:"Bird : Robin"},
+    {q:"Degree (small→large)",a:"Warm : Hot"},{q:"Function (object→use)",a:"Pen : Write"},
+    {q:"Worker → Product",a:"Baker : Bread"},{q:"Object → Location",a:"Book : Library"}
+  ]},
+  {name:"Spatial heuristics", cards:[
+    {q:"Rotation",a:"Track ONE feature (arrow tip / corner) and step it. CW vs CCW."},
+    {q:"Reflection",a:"Mirror across a line. b↔d, p↔q."},
+    {q:"Odd-one-out",a:"State the shared property, then find the violator."},
+    {q:"Counting figures",a:"Count a single changing attribute (sides, dots), not the whole figure."}
+  ]}
+];
+
+// give each card a stable id (deck idx + card idx)
+DECKS.forEach((d,di)=>d.cards.forEach((c,ci)=>c.id=`${di}-${ci}`));
+
+// ==================== SVG TOKEN RENDER ====================
+function tok(t){
+  if(!t) return '<div class="w-14 h-14"></div>';
+  if(t==='QMARK') return `<svg viewBox="0 0 40 40" class="w-14 h-14"><text x="20" y="28" text-anchor="middle" font-size="28" fill="#eaeaea">?</text></svg>`;
+  if(t.startsWith('ARROW:')){
+    const deg = +t.slice(6);
+    return `<svg viewBox="0 0 40 40" class="w-14 h-14"><g transform="rotate(${deg} 20 20)"><line x1="20" y1="32" x2="20" y2="8" stroke="#eaeaea" stroke-width="2"/><polyline points="14,14 20,8 26,14" fill="none" stroke="#eaeaea" stroke-width="2"/></g></svg>`;
+  }
+  if(t.startsWith('CORNER:')){
+    const pos = t.slice(7);
+    const map={TL:[6,6],TR:[26,6],BL:[6,26],BR:[26,26]};
+    const [x,y]=map[pos]||[6,6];
+    return `<svg viewBox="0 0 40 40" class="w-14 h-14"><rect x="6" y="6" width="28" height="28" stroke="#eaeaea" stroke-width="2" fill="none"/><rect x="${x}" y="${y}" width="8" height="8" fill="#eaeaea"/></svg>`;
+  }
+  if(t.startsWith('DOTS:')){
+    const n = +t.slice(5);
+    let dots=''; for(let i=0;i<n;i++){const cx=8+(i%3)*12, cy=8+Math.floor(i/3)*12; dots+=`<circle cx="${cx}" cy="${cy}" r="3" fill="#eaeaea"/>`;}
+    return `<svg viewBox="0 0 40 40" class="w-14 h-14">${dots}</svg>`;
+  }
+  if(t.startsWith('SHAPE:')){
+    const s = t.slice(6);
+    const sides = {tri:3, sq:4, pent:5, hex:6}[s];
+    if(s==='circ') return `<svg viewBox="0 0 40 40" class="w-14 h-14"><circle cx="20" cy="20" r="14" stroke="#eaeaea" stroke-width="2" fill="none"/></svg>`;
+    let pts=''; for(let i=0;i<sides;i++){const a=(i*2*Math.PI/sides)-Math.PI/2; pts+=`${20+14*Math.cos(a)},${20+14*Math.sin(a)} `;}
+    return `<svg viewBox="0 0 40 40" class="w-14 h-14"><polygon points="${pts}" stroke="#eaeaea" stroke-width="2" fill="none"/></svg>`;
+  }
+  return `<div class="text-xs">${t}</div>`;
+}
+
+// render option content (text or token)
+function optRender(o){
+  if(typeof o==='string' && /^(ARROW|CORNER|SHAPE|DOTS|QMARK)/.test(o)) return `<div class="flex items-center justify-center">${tok(o)}</div>`;
+  return o;
+}
+
+// ==================== STATS HELPERS ====================
+function statFor(id){ return STATS[id] || (STATS[id]={seen:0,correct:0,box:0,lastSession:-1}); }
+function rec(id, correct){
+  const s = statFor(id);
+  s.seen++;
+  if(correct){ s.correct++; s.box = Math.min(4, s.box+1); }
+  else { s.box = 0; }
+  s.lastSession = SETTINGS.sessionCount;
+  save(LS.itemStats, STATS);
+}
+function acc(id){ const s=STATS[id]; return s && s.seen ? s.correct/s.seen : 0.5; }
+function catAcc(cat){
+  const ids = QUESTIONS.filter(q=>q.c===cat).map(q=>q.id);
+  let seen=0, correct=0;
+  ids.forEach(id=>{const s=STATS[id]; if(s){seen+=s.seen; correct+=s.correct;}});
+  return {seen, correct, acc: seen?correct/seen:0};
+}
+function weakestSub(){
+  const bySub = {};
+  QUESTIONS.forEach(q=>{
+    const s = STATS[q.id]; if(!s || s.seen<3) return;
+    const k = `${q.c}/${q.sub}`;
+    if(!bySub[k]) bySub[k]={seen:0,correct:0};
+    bySub[k].seen += s.seen; bySub[k].correct += s.correct;
+  });
+  const arr = Object.entries(bySub).map(([k,v])=>({k, acc:v.correct/v.seen, seen:v.seen}));
+  arr.sort((a,b)=>a.acc-b.acc);
+  return arr[0];
+}
+
+// ==================== VIEWS ====================
+const V = document.getElementById('views');
+let currentTab = 'practice';
+
+function switchTab(name){
+  currentTab = name;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('on', t.dataset.tab===name));
+  render();
+}
+document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>switchTab(t.dataset.tab)));
+
+function render(){
+  if(currentTab==='practice') renderPractice();
+  else if(currentTab==='exam') renderExam();
+  else if(currentTab==='learning') renderLearning();
+  else if(currentTab==='stats') renderStats();
+}
+
+// ==================== PRACTICE ====================
+let practiceState = null;
+
+function pickPracticeItem(cat){
+  const pool = cat==='all' ? QUESTIONS.slice() : QUESTIONS.filter(q=>q.c===cat);
+  // due Leitner items first (box>0 items that haven't been seen this session)
+  const due = pool.filter(q=>{const s=STATS[q.id]; return s && s.box>0 && s.lastSession!==SETTINGS.sessionCount;});
+  if(due.length && Math.random()<.7){
+    return due[Math.floor(Math.random()*due.length)];
+  }
+  // adaptive: target current difficulty
+  const level = practiceState?.level || 2;
+  const near = pool.filter(q=>Math.abs(q.d-level)<=0.5);
+  const src = near.length? near : pool;
+  // interleave: avoid same subtype as last
+  const lastSub = practiceState?.lastSub;
+  const notSame = lastSub ? src.filter(q=>q.sub!==lastSub) : src;
+  const final = notSame.length? notSame : src;
+  return final[Math.floor(Math.random()*final.length)];
+}
+
+function renderPractice(){
+  if(!practiceState){
+    practiceState = {level:2, streak:{correct:0,miss:0}, cat:'all', lastSub:null, sessionQ:0, sessionOk:0, times:[], startT:Date.now(), current:null, showAns:false};
+  }
+  if(!practiceState.current){
+    practiceState.current = pickPracticeItem(practiceState.cat);
+    practiceState.qStart = Date.now();
+  }
+  const q = practiceState.current;
+  const weak = weakestSub();
+  V.innerHTML = `
+    <div class="mb-4 flex flex-wrap items-center gap-3">
+      <label class="text-xs text-gray-500">Category
+        <select id="p-cat" class="ml-2">
+          <option value="all"${practiceState.cat==='all'?' selected':''}>Mixed (interleaved)</option>
+          ${CATS.map(c=>`<option value="${c}"${practiceState.cat===c?' selected':''}>${c}</option>`).join('')}
+        </select>
+      </label>
+      <span class="text-xs text-gray-500">Difficulty: <span class="mono text-white">d${practiceState.level.toFixed(1)}</span></span>
+      <span class="text-xs text-gray-500">Session: <span class="mono text-white">${practiceState.sessionOk}/${practiceState.sessionQ}</span></span>
+      ${weak? `<span class="pill">Weakest: ${weak.k} (${(weak.acc*100).toFixed(0)}%)</span>`:''}
+    </div>
+
+    <div class="card p-6 mb-4">
+      <div class="flex items-center justify-between mb-4">
+        <span class="pill">${q.c} · ${q.sub}</span>
+        <span class="pill mono">d${q.d}</span>
+      </div>
+      ${q.vis? `<div class="flex gap-3 justify-center mb-6 flex-wrap">${q.vis.map(tok).join('')}</div>`:''}
+      <div class="text-lg md:text-xl mb-6 leading-relaxed">${q.q}</div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="p-opts">
+        ${q.o.map((o,i)=>`<button class="opt" data-i="${i}"><span class="kbd mr-2">${i+1}</span> ${optRender(o)}</button>`).join('')}
+      </div>
+      <div id="p-feedback" class="mt-4"></div>
+    </div>
+
+    <div class="flex justify-between text-xs text-gray-500">
+      <div>Keys: <span class="kbd">1</span><span class="kbd ml-1">2</span><span class="kbd ml-1">3</span><span class="kbd ml-1">4</span> · <span class="kbd">→</span> next</div>
+      <button class="btn text-xs" id="p-reset">Reset session</button>
+    </div>
+  `;
+  document.getElementById('p-cat').addEventListener('change', e=>{
+    practiceState.cat = e.target.value; practiceState.current = null; render();
+  });
+  document.getElementById('p-reset').addEventListener('click', ()=>{
+    practiceState = null; render();
+  });
+  document.querySelectorAll('#p-opts .opt').forEach(b=>b.addEventListener('click', ()=>answerPractice(+b.dataset.i)));
+}
+
+function answerPractice(idx){
+  const q = practiceState.current;
+  if(practiceState.showAns) return;
+  const correct = idx === q.a;
+  practiceState.showAns = true;
+  practiceState.sessionQ++;
+  practiceState.times.push((Date.now()-practiceState.qStart)/1000);
+  if(correct){
+    practiceState.sessionOk++;
+    practiceState.streak.correct++;
+    practiceState.streak.miss = 0;
+    if(practiceState.streak.correct>=2 && practiceState.level<3){
+      practiceState.level = Math.min(3, practiceState.level+0.5);
+      practiceState.streak.correct = 0;
+    }
+  } else {
+    practiceState.streak.miss++;
+    practiceState.streak.correct = 0;
+    if(practiceState.streak.miss>=2 && practiceState.level>1){
+      practiceState.level = Math.max(1, practiceState.level-0.5);
+      practiceState.streak.miss = 0;
+    }
+  }
+  rec(q.id, correct);
+  document.querySelectorAll('#p-opts .opt').forEach((b,i)=>{
+    b.disabled = true;
+    if(i===q.a) b.classList.add('ok');
+    else if(i===idx) b.classList.add('no');
+  });
+  practiceState.lastSub = q.sub;
+  const fb = document.getElementById('p-feedback');
+  fb.innerHTML = `
+    <div class="p-4 rounded-lg" style="background:${correct?'rgba(74,222,128,.08)':'rgba(248,113,113,.08)'};border:1px solid ${correct?'var(--acc)':'var(--bad)'};">
+      <div class="font-bold mb-1" style="color:${correct?'var(--acc)':'var(--bad)'};">${correct?'Correct':'Wrong'}</div>
+      <div class="text-sm text-gray-300">${q.e}</div>
+      <button class="btn btn-p mt-3" id="p-next">Next →</button>
+    </div>
+  `;
+  document.getElementById('p-next').addEventListener('click', ()=>{
+    practiceState.current = null; practiceState.showAns = false; render();
+  });
+}
+
+// ==================== EXAM ====================
+let examState = null;
+
+function buildExam(){
+  const byCat = {};
+  CATS.forEach(c=> byCat[c] = QUESTIONS.filter(q=>q.c===c).slice());
+  const targets = {};
+  CATS.forEach(c=> targets[c] = Math.round(EXAM_LEN*WEIGHTS[c]));
+  // adjust rounding to hit EXAM_LEN
+  let total = Object.values(targets).reduce((a,b)=>a+b,0);
+  while(total<EXAM_LEN){ targets.Verbal++; total++; }
+  while(total>EXAM_LEN){ targets.Verbal--; total--; }
+  let picked = [];
+  CATS.forEach(c=>{
+    const src = byCat[c];
+    for(let i=src.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[src[i],src[j]]=[src[j],src[i]];}
+    picked = picked.concat(src.slice(0, Math.min(targets[c], src.length)));
+  });
+  // ramp difficulty easy→hard
+  picked.sort((a,b)=>a.d-b.d);
+  // when we run out of a real bank, pad by resampling
+  while(picked.length<EXAM_LEN){ picked.push(QUESTIONS[Math.floor(Math.random()*QUESTIONS.length)]); }
+  return picked.slice(0,EXAM_LEN);
+}
+
+function renderExam(){
+  if(!examState){
+    V.innerHTML = `
+      <div class="card p-6">
+        <h2 class="text-xl font-bold mb-3">Exam Mode</h2>
+        <p class="text-sm text-gray-400 mb-2">50 questions · 15:00 countdown · ~18 sec/question · <strong class="text-white">no going back</strong>.</p>
+        <p class="text-sm text-gray-400 mb-2">Category mix: Verbal 34% · Numerical 34% · Spatial 22% · Logic 10%. Difficulty ramps easy → hard.</p>
+        <p class="text-sm text-gray-400 mb-4">Pass line: <strong class="text-white">${PASS}/${EXAM_LEN}</strong>. On the real test, switching tabs auto-DQs — this app warns you.</p>
+        <div class="text-xs text-gray-500 mb-4">Questions available: ${QUESTIONS.length}. If we run out, we resample — the exam order and timing still simulate the real thing.</div>
+        <button class="btn btn-p" id="e-start">Start 15:00 exam</button>
+      </div>
+    `;
+    document.getElementById('e-start').addEventListener('click', startExam);
+    return;
+  }
+  if(examState.finished){ renderExamResults(); return; }
+  const q = examState.qs[examState.i];
+  const pct = ((EXAM_TIME - examState.timeLeft) / EXAM_TIME) * 100;
+  V.innerHTML = `
+    <div class="flash on mb-4" style="background:rgba(250,204,21,.08);border-color:rgba(250,204,21,.3);color:#fef3c7;">
+      Exam in progress · Q ${examState.i+1} of ${EXAM_LEN} · ${examState.tabBlurs>0?`<span style="color:var(--bad);">Focus warnings: ${examState.tabBlurs}</span>`:'stay in this tab'}
+    </div>
+    <div class="mb-4 flex items-center gap-4">
+      <div class="mono text-2xl ${examState.timeLeft<60?'text-red-400':'text-white'}" id="e-clock">${fmtTime(examState.timeLeft)}</div>
+      <div class="flex-1 bar"><div style="width:${pct}%"></div></div>
+    </div>
+    <div class="card p-6 mb-4">
+      <div class="flex items-center justify-between mb-4">
+        <span class="pill">Q ${examState.i+1} / ${EXAM_LEN}</span>
+        <span class="pill">${q.c}</span>
+      </div>
+      ${q.vis? `<div class="flex gap-3 justify-center mb-6 flex-wrap">${q.vis.map(tok).join('')}</div>`:''}
+      <div class="text-lg md:text-xl mb-6 leading-relaxed">${q.q}</div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="e-opts">
+        ${q.o.map((o,i)=>`<button class="opt" data-i="${i}"><span class="kbd mr-2">${i+1}</span> ${optRender(o)}</button>`).join('')}
+      </div>
+    </div>
+    <div class="text-xs text-gray-500 text-center">Answers hidden until the end · no going back · <span class="kbd">1</span><span class="kbd ml-1">2</span><span class="kbd ml-1">3</span><span class="kbd ml-1">4</span></div>
+  `;
+  document.querySelectorAll('#e-opts .opt').forEach(b=>b.addEventListener('click', ()=>answerExam(+b.dataset.i)));
+}
+
+function startExam(){
+  examState = {qs:buildExam(), i:0, ans:[], timeLeft:EXAM_TIME, tabBlurs:0, finished:false, startAt:Date.now()};
+  window.addEventListener('blur', examBlurHandler);
+  document.addEventListener('visibilitychange', examBlurHandler);
+  examState.timer = setInterval(()=>{
+    examState.timeLeft--;
+    const el = document.getElementById('e-clock');
+    if(el){ el.textContent = fmtTime(examState.timeLeft); if(examState.timeLeft<60) el.classList.add('text-red-400'); }
+    if(examState.timeLeft<=0) finishExam();
+  }, 1000);
+  render();
+}
+
+function examBlurHandler(){
+  if(!examState || examState.finished) return;
+  if(document.hidden || !document.hasFocus()){
+    examState.tabBlurs++;
+    document.getElementById('blur-modal').style.display = 'flex';
+  }
+}
+
+function answerExam(idx){
+  const q = examState.qs[examState.i];
+  examState.ans.push({id:q.id, chosen:idx, correct:idx===q.a, cat:q.c, sub:q.sub});
+  examState.i++;
+  if(examState.i>=EXAM_LEN) finishExam();
+  else render();
+}
+
+function finishExam(){
+  clearInterval(examState.timer);
+  window.removeEventListener('blur', examBlurHandler);
+  document.removeEventListener('visibilitychange', examBlurHandler);
+  examState.finished = true;
+  const score = examState.ans.filter(a=>a.correct).length;
+  const dur = EXAM_TIME - examState.timeLeft;
+  const catAcc = {};
+  CATS.forEach(c=>{
+    const in_c = examState.ans.filter(a=>a.cat===c);
+    catAcc[c] = in_c.length? in_c.filter(a=>a.correct).length/in_c.length : 0;
+  });
+  const entry = {ts:Date.now(), score, total:EXAM_LEN, dur, catAcc, tabBlurs:examState.tabBlurs};
+  HIST.push(entry); save(LS.history, HIST);
+  // credit stats too
+  examState.ans.forEach(a=>rec(a.id, a.correct));
+  render();
+}
+
+function percentile(score){
+  // rough curve from spec: 24→50, 31→80, 35→86, 40→95
+  if(score>=40) return 95;
+  if(score>=35) return 86;
+  if(score>=31) return 80;
+  if(score>=24) return 50;
+  return Math.max(1, Math.round(score*2));
+}
+
+function renderExamResults(){
+  const score = examState.ans.filter(a=>a.correct).length;
+  const pass = score>=PASS;
+  const pct = percentile(score);
+  const dur = EXAM_TIME - examState.timeLeft;
+  V.innerHTML = `
+    <div class="card p-6 mb-4 text-center">
+      <div class="text-xs text-gray-500 mb-1">Result</div>
+      <div class="text-5xl font-bold mb-2" style="color:${pass?'var(--acc)':'var(--bad)'};">${score} / ${EXAM_LEN}</div>
+      <div class="text-lg mb-1">${pass?'PASS':'Below pass line'} · ~${pct}th percentile</div>
+      <div class="text-sm text-gray-500">Time: ${fmtTime(dur)} / ${fmtTime(EXAM_TIME)} · Pass line: ${PASS}${examState.tabBlurs>0?` · Focus lost ${examState.tabBlurs}×`:''}</div>
+    </div>
+
+    <div class="card p-6 mb-4">
+      <h3 class="font-bold mb-3">By category</h3>
+      ${CATS.map(c=>{
+        const in_c = examState.ans.filter(a=>a.cat===c);
+        const ok = in_c.filter(a=>a.correct).length;
+        const p = in_c.length? Math.round(ok/in_c.length*100):0;
+        return `<div class="mb-3"><div class="flex justify-between text-sm mb-1"><span>${c}</span><span class="mono">${ok}/${in_c.length} · ${p}%</span></div><div class="bar"><div style="width:${p}%"></div></div></div>`;
+      }).join('')}
+    </div>
+
+    <div class="card p-6 mb-4">
+      <h3 class="font-bold mb-3">Review your answers</h3>
+      <div class="space-y-3 max-h-96 overflow-y-auto pr-2">
+        ${examState.ans.map((a,i)=>{
+          const q = examState.qs[i];
+          return `<div class="text-sm p-3 rounded border" style="border-color:${a.correct?'rgba(74,222,128,.3)':'rgba(248,113,113,.3)'};">
+            <div class="text-xs text-gray-500 mb-1">Q${i+1} · ${q.c}/${q.sub}</div>
+            <div class="mb-2">${q.q}</div>
+            <div class="text-xs mb-1"><span class="text-gray-500">Your answer:</span> ${a.chosen>=0?q.o[a.chosen]:'—'} ${a.correct?'✓':'✗'}</div>
+            ${!a.correct?`<div class="text-xs mb-1"><span class="text-gray-500">Correct:</span> ${q.o[q.a]}</div>`:''}
+            <div class="text-xs text-gray-400">${q.e}</div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>
+
+    <button class="btn btn-p" onclick="examState=null; render();">Back to exam menu</button>
+  `;
+}
+
+// ==================== LEARNING (Flashcards + SM-2-lite) ====================
+let learnState = null;
+
+function cardStat(id){ return CARDS[id] || (CARDS[id]={ease:2.5, iv:0, due:0}); }
+
+function gradeCard(id, grade){
+  // grade: 0=Again, 1=Hard, 2=Good, 3=Easy
+  const c = cardStat(id);
+  const now = Date.now();
+  if(grade===0){ c.iv=0; c.ease=Math.max(1.3, c.ease-0.2); }
+  else{
+    c.ease = Math.max(1.3, c.ease + (grade===3? .15 : grade===2? 0 : -0.1));
+    if(c.iv===0) c.iv = grade===1? 1 : grade===2? 2 : 4;
+    else c.iv = Math.max(1, Math.round(c.iv * (grade===1? 1.2 : grade===2? c.ease : c.ease*1.3)));
+  }
+  c.due = now + c.iv * 24*60*60*1000;
+  save(LS.cards, CARDS);
+}
+
+function isDue(id){ const c=CARDS[id]; return !c || c.due<=Date.now(); }
+
+function buildLearnQueue(deckFilter){
+  const decks = deckFilter==='all'? DECKS : DECKS.filter((_,i)=>i===+deckFilter);
+  let due=[], fresh=[];
+  decks.forEach(d=>d.cards.forEach(c=>{
+    const cs = CARDS[c.id];
+    if(!cs) fresh.push({card:c, deck:d.name});
+    else if(isDue(c.id)) due.push({card:c, deck:d.name});
+  }));
+  // interleave: shuffle within
+  for(const arr of [due, fresh]){
+    for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}
+  }
+  return due.concat(fresh);
+}
+
+function renderLearning(){
+  if(!learnState){ learnState = {deck:'all', queue:null, revealed:false, done:0}; }
+  if(!learnState.queue) learnState.queue = buildLearnQueue(learnState.deck);
+  if(learnState.queue.length===0){
+    V.innerHTML = `
+      <div class="mb-4 flex flex-wrap gap-3 items-center">
+        <label class="text-xs text-gray-500">Deck
+          <select id="l-deck" class="ml-2">
+            <option value="all"${learnState.deck==='all'?' selected':''}>All decks (interleaved)</option>
+            ${DECKS.map((d,i)=>`<option value="${i}"${learnState.deck===String(i)?' selected':''}>${d.name}</option>`).join('')}
+          </select>
+        </label>
+        <span class="text-xs text-gray-500">Cards reviewed this session: <span class="mono text-white">${learnState.done}</span></span>
+      </div>
+      <div class="card p-8 text-center">
+        <div class="text-4xl mb-2">✓</div>
+        <div class="text-lg mb-2">All caught up!</div>
+        <div class="text-sm text-gray-500 mb-4">No cards due right now. Spaced repetition works in your favor — come back tomorrow.</div>
+        <button class="btn" onclick="learnState.queue=null;learnState.done=0;render();">Force-review anyway</button>
+      </div>
+    `;
+    document.getElementById('l-deck').addEventListener('change', e=>{learnState.deck=e.target.value; learnState.queue=null; render();});
+    return;
+  }
+  const cur = learnState.queue[0];
+  const {card, deck} = cur;
+  const dueCount = learnState.queue.filter(x=>{const cs=CARDS[x.card.id]; return cs && isDue(x.card.id);}).length;
+  const freshCount = learnState.queue.length - dueCount;
+  V.innerHTML = `
+    <div class="mb-4 flex flex-wrap gap-3 items-center">
+      <label class="text-xs text-gray-500">Deck
+        <select id="l-deck" class="ml-2">
+          <option value="all"${learnState.deck==='all'?' selected':''}>All decks (interleaved)</option>
+          ${DECKS.map((d,i)=>`<option value="${i}"${learnState.deck===String(i)?' selected':''}>${d.name}</option>`).join('')}
+        </select>
+      </label>
+      <span class="pill">${learnState.queue.length} left · ${dueCount} due · ${freshCount} new</span>
+      <span class="text-xs text-gray-500">Reviewed: <span class="mono text-white">${learnState.done}</span></span>
+    </div>
+
+    <div class="card p-8 mb-4 text-center min-h-64 flex flex-col justify-center">
+      <div class="text-xs text-gray-500 mb-2">${deck}</div>
+      <div class="text-2xl md:text-3xl mb-6 font-bold">${card.q}</div>
+      ${learnState.revealed
+        ? `<div class="text-lg text-gray-300 mb-6">${card.a}</div>
+           <div class="text-xs text-gray-500 mb-3">How well did you know it?</div>
+           <div class="grid grid-cols-4 gap-2 max-w-xl mx-auto w-full">
+             <button class="btn" data-g="0" style="border-color:var(--bad);color:var(--bad);">Again</button>
+             <button class="btn" data-g="1" style="border-color:var(--warn);color:var(--warn);">Hard</button>
+             <button class="btn" data-g="2" style="border-color:var(--acc);color:var(--acc);">Good</button>
+             <button class="btn" data-g="3">Easy</button>
+           </div>`
+        : `<button class="btn btn-p" id="l-reveal">Reveal answer</button>`
+      }
+    </div>
+    <div class="text-xs text-gray-500 text-center">Keys: <span class="kbd">Space</span> reveal · <span class="kbd">1</span>–<span class="kbd">4</span> grade</div>
+  `;
+  document.getElementById('l-deck').addEventListener('change', e=>{learnState.deck=e.target.value; learnState.queue=null; render();});
+  if(!learnState.revealed){
+    document.getElementById('l-reveal').addEventListener('click', ()=>{learnState.revealed=true; render();});
+  } else {
+    document.querySelectorAll('[data-g]').forEach(b=>b.addEventListener('click', ()=>{
+      gradeCard(card.id, +b.dataset.g);
+      learnState.queue.shift();
+      learnState.done++;
+      learnState.revealed=false;
+      render();
+    }));
+  }
+}
+
+// ==================== STATS ====================
+function renderStats(){
+  const totalSeen = Object.values(STATS).reduce((s,x)=>s+x.seen,0);
+  const totalCorrect = Object.values(STATS).reduce((s,x)=>s+x.correct,0);
+  const rolling = totalSeen? Math.round(totalCorrect/totalSeen*100) : 0;
+  const boxes = [0,0,0,0,0];
+  Object.values(STATS).forEach(x=>boxes[x.box]++);
+  const last = HIST[HIST.length-1];
+  const bestExam = HIST.reduce((b,e)=>e.score>b?e.score:b, 0);
+  const readiness = Math.min(100, Math.round((bestExam/PASS)*100));
+  V.innerHTML = `
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+      <div class="card p-5">
+        <div class="text-xs text-gray-500">Rolling accuracy</div>
+        <div class="text-3xl font-bold mono">${rolling}%</div>
+        <div class="text-xs text-gray-500 mt-1">${totalCorrect}/${totalSeen} answered</div>
+      </div>
+      <div class="card p-5">
+        <div class="text-xs text-gray-500">Best exam</div>
+        <div class="text-3xl font-bold mono" style="color:${bestExam>=PASS?'var(--acc)':'var(--fg)'};">${bestExam || '—'}<span class="text-lg text-gray-500">/${EXAM_LEN}</span></div>
+        <div class="text-xs text-gray-500 mt-1">Pass line: ${PASS}</div>
+      </div>
+      <div class="card p-5">
+        <div class="text-xs text-gray-500">Readiness (vs pass)</div>
+        <div class="text-3xl font-bold mono">${readiness}%</div>
+        <div class="bar mt-2"><div style="width:${readiness}%"></div></div>
+      </div>
+    </div>
+
+    <div class="card p-5 mb-4">
+      <h3 class="font-bold mb-3">Accuracy by category</h3>
+      ${CATS.map(c=>{
+        const a = catAcc(c);
+        const p = a.seen? Math.round(a.acc*100):0;
+        return `<div class="mb-3"><div class="flex justify-between text-sm mb-1"><span>${c}</span><span class="mono text-gray-500">${a.correct}/${a.seen} · ${p}%</span></div><div class="bar"><div style="width:${p}%"></div></div></div>`;
+      }).join('')}
+    </div>
+
+    <div class="card p-5 mb-4">
+      <h3 class="font-bold mb-3">Leitner distribution</h3>
+      <div class="flex gap-2">
+        ${boxes.map((n,i)=>`<div class="flex-1 text-center"><div class="text-xs text-gray-500 mb-1">Box ${i}</div><div class="mono text-lg">${n}</div></div>`).join('')}
+      </div>
+      <div class="text-xs text-gray-500 mt-2">Box 0 = missed / new · higher = deeper memory. Practice mode surfaces due items first.</div>
+    </div>
+
+    <div class="card p-5 mb-4">
+      <h3 class="font-bold mb-3">Exam history</h3>
+      ${HIST.length===0? `<div class="text-sm text-gray-500">No exams yet. Take one from the Exam tab.</div>` :
+        `<div class="space-y-2">${HIST.slice().reverse().map(e=>{
+          const pass = e.score>=PASS;
+          const d = new Date(e.ts);
+          const pct = percentile(e.score);
+          return `<div class="flex justify-between items-center text-sm p-3 rounded border" style="border-color:${pass?'rgba(74,222,128,.2)':'rgba(248,113,113,.2)'};">
+            <span>${d.toLocaleDateString()} ${d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</span>
+            <span class="mono">${e.score}/${e.total} · ~p${pct} · ${fmtTime(e.dur)}${e.tabBlurs?` · ⚠${e.tabBlurs}`:''}</span>
+          </div>`;
+        }).join('')}</div>`}
+    </div>
+
+    <div class="card p-5">
+      <h3 class="font-bold mb-3">Wipe local data</h3>
+      <p class="text-xs text-gray-500 mb-3">Everything is stored in your browser. Clear to start fresh.</p>
+      <button class="btn text-xs" onclick="if(confirm('Wipe all CCAT progress?')){[LS.itemStats,LS.history,LS.cards,LS.settings,LS.session].forEach(k=>localStorage.removeItem(k)); location.reload();}">Reset all</button>
+    </div>
+  `;
+}
+
+// ==================== POMODORO ====================
+let pomTimer = null;
+let pomState = {running:false, mode:'focus', secLeft:0};
+function pomTick(){
+  if(!pomState.running) return;
+  pomState.secLeft--;
+  updatePomUI();
+  if(pomState.secLeft<=0){
+    pomState.mode = pomState.mode==='focus'?'break':'focus';
+    pomState.secLeft = (pomState.mode==='focus'? (SETTINGS.deepSet?50:SETTINGS.pomLen): (SETTINGS.deepSet?10:SETTINGS.pomBreak))*60;
+    SETTINGS.sessionCount++; save(LS.settings, SETTINGS);
+    updatePomUI();
+  }
+}
+function updatePomUI(){
+  const clock = document.getElementById('pom-clock');
+  const status = document.getElementById('pom-status');
+  const btn = document.getElementById('pom-toggle');
+  if(pomState.running){
+    clock.textContent = fmtTime(pomState.secLeft);
+    status.textContent = pomState.mode==='focus'? 'Focus':'Break';
+    btn.textContent = 'Stop';
+  } else {
+    clock.textContent = '--:--';
+    status.textContent = 'Idle';
+    btn.textContent = 'Start Pomodoro';
+  }
+}
+document.getElementById('pom-toggle').addEventListener('click', ()=>{
+  if(pomState.running){
+    pomState.running=false; clearInterval(pomTimer);
+  } else {
+    pomState.running=true; pomState.mode='focus';
+    pomState.secLeft = (SETTINGS.deepSet?50:SETTINGS.pomLen)*60;
+    pomTimer = setInterval(pomTick, 1000);
+  }
+  updatePomUI();
+});
+updatePomUI();
+
+// ==================== KEYS ====================
+document.addEventListener('keydown', e=>{
+  if(e.target.tagName==='INPUT'||e.target.tagName==='SELECT'||e.target.tagName==='TEXTAREA') return;
+  const k = e.key;
+  if(currentTab==='practice' && practiceState){
+    if(!practiceState.showAns && ['1','2','3','4'].includes(k)){ answerPractice(+k-1); }
+    else if(practiceState.showAns && (k==='ArrowRight' || k==='Enter')){ practiceState.current=null; practiceState.showAns=false; render(); }
+  } else if(currentTab==='exam' && examState && !examState.finished){
+    if(['1','2','3','4'].includes(k)) answerExam(+k-1);
+  } else if(currentTab==='learning' && learnState){
+    if(k===' '||k==='Enter'){ if(!learnState.revealed){ learnState.revealed=true; render(); e.preventDefault(); } }
+    else if(learnState.revealed && ['1','2','3','4'].includes(k)){
+      const cur = learnState.queue[0];
+      if(cur){ gradeCard(cur.card.id, +k-1); learnState.queue.shift(); learnState.done++; learnState.revealed=false; render(); }
+    }
+  }
+});
+
+// ==================== UTIL ====================
+function fmtTime(s){ const m=Math.floor(s/60), r=s%60; return `${String(m).padStart(2,'0')}:${String(r).padStart(2,'0')}`; }
+
+// ==================== BOOT ====================
+fetch('questions.json').then(r=>r.json()).then(q=>{
+  QUESTIONS = q;
+  SETTINGS.sessionCount++; save(LS.settings, SETTINGS);
+  render();
+}).catch(err=>{
+  V.innerHTML = `<div class="card p-6 text-red-400">Failed to load questions.json: ${err.message}</div>`;
+});
+</script>
+</body>
+</html>
