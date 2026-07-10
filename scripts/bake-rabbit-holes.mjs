@@ -218,6 +218,7 @@ function pageTemplate(slug, meta, timelineItems, articleHtml) {
       top: 96px;
       align-self: start;
       max-height: calc(100vh - 120px);
+      max-height: calc(100dvh - 120px);
       overflow-y: auto;
       padding-right: 8px;
       scrollbar-width: thin;

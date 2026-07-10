@@ -58,6 +58,7 @@
 
     .home {
       height: 100vh;
+      height: 100dvh;
       display: flex;
       flex-direction: column;
       overflow: hidden;
@@ -67,7 +68,7 @@
        allow normal scrolling instead of clipping the salutation + signature. */
     @media (max-width: 768px), (max-height: 760px) {
       html, body { height: auto; overflow: auto; }
-      .home { height: auto; min-height: 100vh; overflow: visible; }
+      .home { height: auto; min-height: 100vh; min-height: 100dvh; overflow: visible; }
       .home__content { overflow: visible; padding-top: 8px; padding-bottom: 32px; }
     }
 

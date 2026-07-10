@@ -190,7 +190,14 @@ ul, ol { list-style: none; }
 /* ── Page base (pages with nav) ────────────────────────────────────────── */
 .page {
   padding-top: var(--nav-h);
+  /* 100vh is the viewport as if the URL bar were hidden — on iOS Safari that
+     causes a nasty bug on short-content pages: as you start to scroll, the
+     URL bar retracts, the real viewport grows to match 100vh, the page
+     suddenly fits, and Safari snaps you back to the top. `100dvh` is the
+     dynamic viewport height (grows/shrinks with the URL bar) and prevents
+     that snap. Keep the 100vh line as a fallback for very old browsers. */
   min-height: 100vh;
+  min-height: 100dvh;
 }
 
 /* ── Inline text link (used in letter + prose) ─────────────────────────── */

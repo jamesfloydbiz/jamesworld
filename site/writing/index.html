@@ -3322,8 +3322,13 @@ Tickets below</p></div>
       t.addEventListener('click', function() { showTab(t.dataset.tab); });
     });
     // Honor #rabbit-holes in the URL so the back-link from an essay lands on
-    // the right tab.
-    if (location.hash === '#rabbit-holes') showTab('rabbit-holes');
+    // the right tab. Then strip the hash — on iOS Safari, a hash fragment that
+    // doesn't match any element on the page can cause scroll snap-back to the
+    // top as the URL bar shows/hides during scroll.
+    if (location.hash === '#rabbit-holes') {
+      showTab('rabbit-holes');
+      history.replaceState(null, '', location.pathname);
+    }
 
     // ── Substack post buttons → modal ─────────────────────────────────────
     document.querySelectorAll('.post-list-btn').forEach(function(btn) {
