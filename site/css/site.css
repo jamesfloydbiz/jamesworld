@@ -485,7 +485,13 @@ ul, ol { list-style: none; }
 .photo-frame img { width: 100%; height: auto; display: block; filter: grayscale(1); }
 
 /* ── Modal (native <dialog>) ───────────────────────────────────────────── */
-dialog {
+/* Force closed dialogs to stay hidden. The browser default is `display: none`
+   for a closed <dialog>, but any author rule that sets `display: flex` on the
+   plain `dialog` selector overrides that default and makes the dialog render
+   inline in the document flow (its "LinkedIn Daily Posts" body content
+   showed on /projects/ before this fix). Scope the flex box to [open]. */
+dialog:not([open]) { display: none; }
+dialog[open] {
   background: var(--card-bg);
   color: var(--fg);
   border: 1px solid var(--border);
