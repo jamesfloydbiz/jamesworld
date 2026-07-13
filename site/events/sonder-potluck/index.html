@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Sonder Series Potluck — James Floyd</title>
+  <meta name="description" content="The Sonder Series Potluck — a gathering with invites to all 100 interviews from the Sonder Series. Saturday, June 13, 5:30–7:30 PM. Central Park, NYC.">
+  <link rel="canonical" href="https://jamesfloyds.world/events/sonder-potluck/">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="The Sonder Series Potluck">
+  <meta property="og:description" content="A gathering with invites to all 100 interviews from the Sonder Series.">
+  <meta property="og:image" content="https://jamesfloyds.world/events/sonder-potluck/1.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="The Sonder Series Potluck">
+  <meta name="twitter:description" content="A gathering with invites to all 100 interviews from the Sonder Series.">
+  <meta name="twitter:image" content="https://jamesfloyds.world/events/sonder-potluck/1.jpg">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=DM+Mono:wght@300;400&family=Lora:ital,wght@0,400;0,500;1,400&family=Space+Mono:wght@400;700&display=swap">
+  <link rel="stylesheet" href="/css/site.css">
+  <style>
+    .ev-hero {
+      position: relative;
+      aspect-ratio: 16 / 9;
+      max-height: 60vh;
+      overflow: hidden;
+      border-radius: 4px;
+      margin-bottom: 32px;
+    }
+    .ev-hero img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+    }
+    .ev-hero__gradient {
+      position: absolute; inset: 0;
+      background: linear-gradient(180deg, transparent 40%, rgba(0,0,0,0.65) 100%);
+    }
+    .ev-hero__caption {
+      position: absolute; left: 0; right: 0; bottom: 0;
+      padding: 24px 28px;
+      color: #fff;
+    }
+    .ev-hero__eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      opacity: 0.85;
+      margin-bottom: 8px;
+    }
+    .ev-hero__title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 700;
+      font-size: clamp(1.8rem, 5vw, 3rem);
+      line-height: 1.1;
+      margin: 0;
+    }
+
+    .ev-meta {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 24px;
+      padding: 20px 24px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      margin-bottom: 32px;
+    }
+    .ev-meta__label {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--fg-55);
+      margin-bottom: 4px;
+    }
+    .ev-meta__value {
+      font-family: 'Lora', Georgia, serif;
+      font-size: 1rem;
+      color: var(--fg);
+    }
+
+    .ev-body {
+      max-width: 42rem;
+      margin-bottom: 40px;
+    }
+    .ev-body p {
+      font-family: 'Lora', Georgia, serif;
+      font-size: 1.05rem;
+      line-height: 1.8;
+      color: var(--fg-80);
+      margin: 0 0 1em 0;
+    }
+
+    /* Photo gallery — masonry columns */
+    .ev-gallery {
+      columns: 1;
+      column-gap: 12px;
+      margin-bottom: 40px;
+    }
+    @media (min-width: 640px) { .ev-gallery { columns: 2; } }
+    @media (min-width: 1024px) { .ev-gallery { columns: 3; } }
+    .ev-gallery__item {
+      break-inside: avoid;
+      margin-bottom: 12px;
+      cursor: pointer;
+      overflow: hidden;
+      border-radius: 3px;
+      background: #1a1a1a;
+      display: block;
+      border: none;
+      padding: 0;
+      width: 100%;
+    }
+    .ev-gallery__item img {
+      width: 100%; height: auto; display: block;
+      transition: transform 0.3s;
+    }
+    .ev-gallery__item:hover img { transform: scale(1.02); }
+
+    /* Invite card block — inspired by the Partiful invite */
+    .ev-invite {
+      display: block;
+      max-width: 480px;
+      margin: 0 0 40px 0;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .ev-invite img { width: 100%; height: auto; display: block; }
+
+    /* Lightbox */
+    .img-lightbox {
+      max-width: 96vw;
+      max-height: 92vh;
+      background: transparent;
+      border: none;
+      padding: 0;
+    }
+    .img-lightbox::backdrop {
+      background: hsl(0 0% 0% / 0.95);
+    }
+    .img-lightbox img {
+      max-width: 100%;
+      max-height: 90vh;
+      object-fit: contain;
+      cursor: pointer;
+      display: block;
+    }
+    .ev-back {
+      display: inline-block;
+      margin-bottom: 16px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--fg-55);
+      text-decoration: none;
+    }
+    .ev-back:hover { color: var(--fg); }
+  </style>
+</head>
+<body>
+
+  <header class="site-header anim-slide-dn">
+    <a href="/" class="site-header__logo" aria-label="Return to home"><img src="/logo.svg" alt="JF"></a>
+    <button class="site-header__menu-btn" id="menu-btn" aria-expanded="false" aria-controls="site-nav">Menu</button>
+  </header>
+
+  <nav class="site-nav" id="site-nav" aria-label="Main navigation">
+    <ul class="site-nav__list">
+      <li class="site-nav__item"><a href="/sonder/" class="site-nav__link">Sonder Series</a></li>
+      <li class="site-nav__item"><a href="/portfolio/" class="site-nav__link">Portfolio</a></li>
+      <li class="site-nav__item" data-has-sub>
+        <a href="/projects/" class="site-nav__link">Projects</a>
+        <div class="site-nav__sub">
+          <a href="/portfolio/" class="site-nav__sub-link">Portfolio</a>
+          <a href="/resume/" class="site-nav__sub-link">Resume</a>
+          <a href="/references/" class="site-nav__sub-link">References</a>
+        </div>
+      </li>
+      <li class="site-nav__item" data-has-sub>
+        <a href="/content/" class="site-nav__link">Content</a>
+        <div class="site-nav__sub">
+          <a href="/writing/" class="site-nav__sub-link">Writing</a>
+          <a href="/poems/" class="site-nav__sub-link">Poems</a>
+          <a href="/pictures/" class="site-nav__sub-link">Memories</a>
+        </div>
+      </li>
+      <li class="site-nav__item"><a href="/network/" class="site-nav__link">Network</a></li>
+      <li class="site-nav__item"><a href="/blueprints/" class="site-nav__link">Blueprints</a></li>
+      <li class="site-nav__item" style="margin-top:24px;"><a href="/" class="site-nav__back">Back to Gallery</a></li>
+    </ul>
+    <button class="site-nav__close" id="nav-close">Close</button>
+  </nav>
+
+  <main class="page">
+    <div class="page-content anim-fade-up" style="animation-delay:0.3s;">
+
+      <a href="/events/" class="ev-back">← Events</a>
+
+      <!-- Hero image -->
+      <div class="ev-hero">
+        <img src="/events/sonder-potluck/3.jpg" alt="The Sonder Series Potluck in Central Park at golden hour" loading="eager">
+        <div class="ev-hero__gradient"></div>
+        <div class="ev-hero__caption">
+          <p class="ev-hero__eyebrow">June 13, 2026 · Central Park</p>
+          <h1 class="ev-hero__title">The Sonder Series Potluck</h1>
+        </div>
+      </div>
+
+      <!-- Meta strip -->
+      <div class="ev-meta">
+        <div>
+          <span class="ev-meta__label">When</span>
+          <span class="ev-meta__value">Saturday, June 13 · 5:30–7:30 PM</span>
+        </div>
+        <div>
+          <span class="ev-meta__label">Where</span>
+          <span class="ev-meta__value">A park near you (NYC)</span>
+        </div>
+        <div>
+          <span class="ev-meta__label">Who</span>
+          <span class="ev-meta__value">All 100 Sonder Series interviewees + friends</span>
+        </div>
+      </div>
+
+      <!-- Description -->
+      <section class="ev-body">
+        <p>
+          A gathering with invites to all 100 interviews from
+          <a href="/sonder/" class="prose-link">the Sonder Series</a>.
+        </p>
+        <p>
+          One hundred interviews. Five boroughs. One potluck. After thirty-two days walking 180 miles across the city and asking strangers three questions, the idea was simple: bring everyone into the same field at golden hour and see who shows up.
+        </p>
+      </section>
+
+      <!-- Invite card -->
+      <figure class="ev-invite">
+        <img src="/events/sonder-potluck/5.jpg" alt="Partiful invite for the Sonder Series Potluck — Saturday, June 13, 5:30–7:30 PM">
+      </figure>
+
+      <!-- Gallery -->
+      <h2 style="font-family: var(--font-mono); font-size: 0.85rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--fg-80); margin: 0 0 16px 0; padding-top: 16px; border-top: 1px solid var(--fg-15);">The Day</h2>
+
+      <div class="ev-gallery">
+        <button class="ev-gallery__item" data-lightbox="/events/sonder-potluck/4.jpg">
+          <img src="/events/sonder-potluck/4.jpg" alt="Sitting on the picnic blanket, food out, catching up" loading="lazy">
+        </button>
+        <button class="ev-gallery__item" data-lightbox="/events/sonder-potluck/3.jpg">
+          <img src="/events/sonder-potluck/3.jpg" alt="Guests arriving at Central Park at golden hour" loading="lazy">
+        </button>
+        <button class="ev-gallery__item" data-lightbox="/events/sonder-potluck/2.jpg">
+          <img src="/events/sonder-potluck/2.jpg" alt="Two friends at sunset in Central Park" loading="lazy">
+        </button>
+        <button class="ev-gallery__item" data-lightbox="/events/sonder-potluck/1.jpg">
+          <img src="/events/sonder-potluck/1.jpg" alt="Two guests with a big potluck bag before the gathering" loading="lazy">
+        </button>
+        <button class="ev-gallery__item" data-lightbox="/events/sonder-potluck/5.jpg">
+          <img src="/events/sonder-potluck/5.jpg" alt="The Partiful invite" loading="lazy">
+        </button>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Lightbox -->
+  <dialog class="img-lightbox" id="img-lightbox">
+    <img id="lightbox-img" src="" alt="" onclick="document.getElementById('img-lightbox').close()">
+  </dialog>
+
+  <script src="/js/site.js"></script>
+  <script>
+    var lightbox = document.getElementById('img-lightbox');
+    var lightboxImg = document.getElementById('lightbox-img');
+    document.querySelectorAll('[data-lightbox]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        lightboxImg.src = btn.getAttribute('data-lightbox');
+        lightboxImg.alt = btn.querySelector('img')?.alt || '';
+        lightbox.showModal();
+      });
+    });
+    lightbox.addEventListener('click', function(e){
+      if (e.target === lightbox) lightbox.close();
+    });
+  </script>
+</body>
+</html>

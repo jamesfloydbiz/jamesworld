@@ -293,6 +293,24 @@ export const ROUTES = [
   },
 
   {
+    path: '/events',
+    title: 'Events',
+    description:
+      'Gatherings, hullabaloos, and some serendipitous shenanigans — events produced or hosted by James Floyd.',
+    priority: 0.7,
+    changefreq: 'monthly',
+  },
+
+  {
+    path: '/events/sonder-potluck',
+    title: 'The Sonder Series Potluck',
+    description:
+      'A gathering with invites to all 100 interviews from the Sonder Series. June 13, 2026, Central Park, NYC.',
+    priority: 0.6,
+    changefreq: 'monthly',
+  },
+
+  {
     path: '/content',
     title: 'Content',
     description:
