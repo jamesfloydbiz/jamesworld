@@ -311,6 +311,15 @@ export const ROUTES = [
   },
 
   {
+    path: '/events/pithy-party',
+    title: 'Pithy Party',
+    description:
+      'A set of short, sharp talks, that were full of meaning. Friday, July 10, 2026, NYC.',
+    priority: 0.6,
+    changefreq: 'monthly',
+  },
+
+  {
     path: '/content',
     title: 'Content',
     description:

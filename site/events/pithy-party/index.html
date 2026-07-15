@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pithy Party — James Floyd</title>
+  <meta name="description" content="Pithy Party — a set of short, sharp talks, that were full of meaning. Friday, July 10, 2026, 7 PM, NYC.">
+  <link rel="canonical" href="https://jamesfloyds.world/events/pithy-party/">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Pithy Party">
+  <meta property="og:description" content="A set of short, sharp talks, that were full of meaning.">
+  <meta property="og:image" content="https://jamesfloyds.world/events/pithy-party/1.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Pithy Party">
+  <meta name="twitter:description" content="A set of short, sharp talks, that were full of meaning.">
+  <meta name="twitter:image" content="https://jamesfloyds.world/events/pithy-party/1.jpg">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700;1,9..144,400&family=DM+Mono:wght@300;400&display=swap">
+  <link rel="stylesheet" href="/css/site.css">
+  <style>
+    /* Palette lifted from the Pithy Party invite:
+       tan paper background, deep purple headline, red badge accent. */
+    :root {
+      --pp-paper: #E8E0CC;
+      --pp-ink: #1c1610;
+      --pp-purple: #4A2568;
+      --pp-red: #B23A3E;
+      --pp-soft: rgba(28,22,16,0.55);
+    }
+
+    html, body { background: var(--pp-paper); color: var(--pp-ink); }
+    .site-header { background: transparent; }
+    .site-header__logo { opacity: 0.55; }
+    .site-header__logo:hover { opacity: 1; }
+    .site-header__menu-btn { color: var(--pp-ink); }
+
+    .pp-stage {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 32px clamp(16px, 4vw, 40px) 40px;
+    }
+    .pp-back {
+      display: inline-block;
+      font-family: 'Courier Prime', monospace;
+      font-size: 12px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--pp-soft);
+      text-decoration: none;
+      margin-bottom: 24px;
+    }
+    .pp-back:hover { color: var(--pp-ink); }
+
+    /* Hero — invite poster as the visual */
+    .pp-hero {
+      display: block;
+      width: 100%;
+      max-width: 560px;
+      margin: 0 auto clamp(32px, 6vw, 56px);
+      box-shadow: 0 24px 56px rgba(28,18,10,0.28);
+      border-radius: 3px;
+      overflow: hidden;
+      background: var(--pp-paper);
+    }
+    .pp-hero img { width: 100%; height: auto; display: block; }
+
+    /* Title block — echoes the poster's purple + serif */
+    .pp-header {
+      text-align: center;
+      margin-bottom: clamp(24px, 4vw, 40px);
+    }
+    .pp-eyebrow {
+      font-family: 'Courier Prime', monospace;
+      font-size: 12px;
+      letter-spacing: 0.34em;
+      text-transform: uppercase;
+      color: var(--pp-red);
+      margin-bottom: 8px;
+    }
+    .pp-title {
+      font-family: 'Fraunces', 'Playfair Display', serif;
+      font-weight: 700;
+      font-size: clamp(2.6rem, 8vw, 5rem);
+      line-height: 1.02;
+      color: var(--pp-purple);
+      margin: 0;
+      letter-spacing: -0.02em;
+    }
+    .pp-lede {
+      font-family: 'Newsreader', Georgia, serif;
+      font-style: italic;
+      font-size: clamp(1.05rem, 1.6vw, 1.35rem);
+      line-height: 1.5;
+      color: var(--pp-ink);
+      max-width: 32rem;
+      margin: 20px auto 0;
+    }
+
+    /* Details strip */
+    .pp-details {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+      max-width: 640px;
+      margin: 0 auto clamp(32px, 6vw, 56px);
+      padding: 24px 28px;
+      background: rgba(28,22,16,0.04);
+      border: 1px solid rgba(28,22,16,0.12);
+      border-radius: 4px;
+    }
+    @media (min-width: 640px) { .pp-details { grid-template-columns: repeat(3, 1fr); } }
+    .pp-details__k {
+      font-family: 'Courier Prime', monospace;
+      font-size: 10px;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: var(--pp-soft);
+      margin-bottom: 6px;
+    }
+    .pp-details__v {
+      font-family: 'Newsreader', Georgia, serif;
+      font-size: 1rem;
+      color: var(--pp-ink);
+      line-height: 1.4;
+    }
+
+    /* Definition callout — riffs on the invite's "pithy /'piTHē/ (adj.)" block */
+    .pp-def {
+      max-width: 640px;
+      margin: 0 auto clamp(48px, 8vw, 72px);
+      padding: 28px 32px;
+      border-left: 3px solid var(--pp-purple);
+      font-family: 'Newsreader', Georgia, serif;
+      font-size: 1.05rem;
+      line-height: 1.7;
+      color: var(--pp-ink);
+    }
+    .pp-def strong { font-family: 'Fraunces', serif; font-weight: 700; color: var(--pp-purple); }
+    .pp-def em { font-style: italic; color: var(--pp-soft); }
+
+    /* Photo mosaic */
+    .pp-mosaic {
+      columns: 1;
+      column-gap: 12px;
+      margin-bottom: 40px;
+    }
+    @media (min-width: 640px) { .pp-mosaic { columns: 2; } }
+    .pp-mosaic__item {
+      break-inside: avoid;
+      display: block;
+      width: 100%;
+      margin-bottom: 12px;
+      padding: 0;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      overflow: hidden;
+      border-radius: 3px;
+    }
+    .pp-mosaic__item img {
+      width: 100%; height: auto; display: block;
+      transition: transform 0.4s;
+    }
+    .pp-mosaic__item:hover img { transform: scale(1.02); }
+
+    /* Lightbox */
+    .img-lightbox { max-width: 96vw; max-height: 92vh; background: transparent; border: none; padding: 0; }
+    .img-lightbox::backdrop { background: hsl(20 15% 5% / 0.95); }
+    .img-lightbox img { max-width: 100%; max-height: 90vh; object-fit: contain; cursor: pointer; display: block; }
+  </style>
+</head>
+<body>
+
+  <header class="site-header anim-slide-dn">
+    <a href="/" class="site-header__logo" aria-label="Return to home"><img src="/logo.svg" alt="JF"></a>
+    <button class="site-header__menu-btn" id="menu-btn" aria-expanded="false" aria-controls="site-nav">Menu</button>
+  </header>
+
+  <nav class="site-nav" id="site-nav" aria-label="Main navigation">
+    <ul class="site-nav__list">
+      <li class="site-nav__item"><a href="/sonder/" class="site-nav__link">Sonder Series</a></li>
+      <li class="site-nav__item"><a href="/portfolio/" class="site-nav__link">Portfolio</a></li>
+      <li class="site-nav__item" data-has-sub>
+        <a href="/projects/" class="site-nav__link">Projects</a>
+        <div class="site-nav__sub">
+          <a href="/portfolio/" class="site-nav__sub-link">Portfolio</a>
+          <a href="/resume/" class="site-nav__sub-link">Resume</a>
+          <a href="/references/" class="site-nav__sub-link">References</a>
+        </div>
+      </li>
+      <li class="site-nav__item" data-has-sub>
+        <a href="/content/" class="site-nav__link">Content</a>
+        <div class="site-nav__sub">
+          <a href="/writing/" class="site-nav__sub-link">Writing</a>
+          <a href="/poems/" class="site-nav__sub-link">Poems</a>
+          <a href="/pictures/" class="site-nav__sub-link">Memories</a>
+        </div>
+      </li>
+      <li class="site-nav__item"><a href="/network/" class="site-nav__link">Network</a></li>
+      <li class="site-nav__item"><a href="/blueprints/" class="site-nav__link">Blueprints</a></li>
+      <li class="site-nav__item" style="margin-top:24px;"><a href="/" class="site-nav__back">Back to Gallery</a></li>
+    </ul>
+    <button class="site-nav__close" id="nav-close">Close</button>
+  </nav>
+
+  <main>
+    <div class="pp-stage anim-fade-up" style="animation-delay:0.2s;">
+
+      <a href="/events/" class="pp-back">← Events</a>
+
+      <!-- Poster hero -->
+      <figure class="pp-hero">
+        <img src="/events/pithy-party/1.jpg" alt="Pithy Party invitation — Friday, July 10, 7 PM">
+      </figure>
+
+      <!-- Title block -->
+      <header class="pp-header">
+        <p class="pp-eyebrow">July 10, 2026 · NYC</p>
+        <h1 class="pp-title">Pithy Party</h1>
+        <p class="pp-lede">A set of short, sharp talks, that were full of meaning.</p>
+      </header>
+
+      <!-- Details -->
+      <div class="pp-details">
+        <div>
+          <p class="pp-details__k">When</p>
+          <p class="pp-details__v">Friday · July 10, 2026 · 7 PM</p>
+        </div>
+        <div>
+          <p class="pp-details__k">Where</p>
+          <p class="pp-details__v">NYC</p>
+        </div>
+        <div>
+          <p class="pp-details__k">Format</p>
+          <p class="pp-details__v">Living-room talks</p>
+        </div>
+      </div>
+
+      <!-- Definition -->
+      <blockquote class="pp-def">
+        <strong>pithy</strong> <em>/ˈpiTHē/ (adj.)</em> — a piece of writing or speech that is <strong>short</strong>, <strong>sharp</strong>, and <strong>full of meaning</strong>.
+      </blockquote>
+
+      <!-- Photo mosaic -->
+      <div class="pp-mosaic">
+        <button class="pp-mosaic__item" data-lightbox="/events/pithy-party/2.jpg">
+          <img src="/events/pithy-party/2.jpg" alt="The room mid-talk — audience gathered on the couch under record-shaped pendant lights" loading="lazy">
+        </button>
+        <button class="pp-mosaic__item" data-lightbox="/events/pithy-party/3.jpg">
+          <img src="/events/pithy-party/3.jpg" alt="A speaker mid-talk in front of the TV" loading="lazy">
+        </button>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Lightbox -->
+  <dialog class="img-lightbox" id="img-lightbox">
+    <img id="lightbox-img" src="" alt="" onclick="document.getElementById('img-lightbox').close()">
+  </dialog>
+
+  <script src="/js/site.js"></script>
+  <script>
+    var lightbox = document.getElementById('img-lightbox');
+    var lightboxImg = document.getElementById('lightbox-img');
+    document.querySelectorAll('[data-lightbox]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        lightboxImg.src = btn.getAttribute('data-lightbox');
+        lightboxImg.alt = btn.querySelector('img')?.alt || '';
+        lightbox.showModal();
+      });
+    });
+    lightbox.addEventListener('click', function(e){
+      if (e.target === lightbox) lightbox.close();
+    });
+  </script>
+</body>
+</html>
