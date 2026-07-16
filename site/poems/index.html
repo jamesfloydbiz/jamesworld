@@ -100,6 +100,60 @@
       margin: 0 auto;
       cursor: pointer;
     }
+
+    /* Text poem — a card without a handwritten image (set in type instead) */
+    .poem-card--text .poem-card__cover {
+      aspect-ratio: 1;
+      width: 100%;
+      margin-bottom: 0.5rem;
+      background: #111;
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 1.25rem;
+      overflow: hidden;
+    }
+    .poem-card--text .poem-card__cover span {
+      font-family: 'Lora', Georgia, serif;
+      font-style: italic;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      color: var(--fg-70);
+    }
+    .poem-card--text .poem-card__cover em {
+      display: block;
+      font-family: var(--font-mono);
+      font-style: normal;
+      font-size: 0.6rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--fg-40);
+      margin-top: 0.75rem;
+    }
+
+    /* Text mode for the lightbox body */
+    .poem-lightbox__text {
+      max-width: 40rem;
+      margin: 0 auto;
+    }
+    .poem-lightbox__context {
+      font-family: 'Lora', Georgia, serif;
+      font-size: 0.95rem;
+      line-height: 1.65;
+      color: var(--fg-60);
+      padding-bottom: 1.25rem;
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .poem-lightbox__context a { color: var(--fg-80); text-decoration: underline; text-underline-offset: 3px; }
+    .poem-lightbox__poem {
+      font-family: 'Lora', Georgia, serif;
+      font-size: 1.05rem;
+      line-height: 1.8;
+      color: var(--fg-85);
+      white-space: pre-wrap;
+    }
   </style>
 </head>
 <body>
@@ -141,19 +195,98 @@
 
       <div style="display:flex;align-items:baseline;gap:1rem;margin-bottom:1rem;">
         <h1 class="page-title" style="margin-bottom:0;">All Poems</h1>
-        <span class="tag">26 pieces</span>
+        <span class="tag">27 pieces</span>
       </div>
 
       <p style="max-width:42rem;color:var(--fg-70);line-height:1.7;margin-bottom:3rem;">
-        Twenty-six poems written between the middle of 2025 and 2026, handwritten on whatever was nearby —
+        Poems written between the middle of 2025 and 2026, handwritten on whatever was nearby —
         torn notebook pages, the back of a receipt, a stranger's napkin. The handwriting is
         part of the piece, so each one is photographed as-is rather than retyped. Themes run
         across wisdom, struggle, love, manhood, fight, peace, energy, sleep, contradictions,
         possibility, eyes, home, abundance, death, and the small honest observations in
-        between. Click any thumbnail to read full-size.
+        between. One older piece, <em>I Come From</em> — written in high school — is set in
+        type instead. Click any thumbnail to read.
       </p>
 
       <div class="poems-grid">
+
+        <div class="poem-card poem-card--text" data-poem-text="icomefrom" data-title="I Come From" role="button" tabindex="0">
+          <div class="poem-card__cover">
+            <span>"I come from a bubble, a bubble of green, a bubble of athleticism, a bubble of pressure and high expectations…"</span>
+            <em>Set in type · High school</em>
+          </div>
+          <p class="poem-card__title">I Come From</p>
+          <template class="poem-text-tpl">
+            <div class="poem-lightbox__context">
+              Written when I was in high school and presented here unchanged. It first appeared in
+              <a href="https://jamesfloyd.substack.com/p/the-james-floyd-update-10" target="_blank" rel="noopener noreferrer">The James Floyd Update #10</a>,
+              an issue on how to make kids better than their parents.
+            </div>
+            <div class="poem-lightbox__poem">I come from a bubble,
+a bubble of green,
+a bubble of athleticism,
+a bubble of pressure and high expectations,
+a bubble I have explored in every which way.
+
+From the thump of shoes on the pavement
+to the grinding of gears on a bike, racing to go play video games at a friend's house,
+to the pounding of bass in a car speeding to get to a faraway place.
+
+I come from a hand reaching through the confines of his prison
+yearning for the cereal that was just out of reach,
+timid because of the warden and his abuse,
+timid because of his cellmate.
+I was scared to imagine, to dream
+of the things that will be accomplished when he's allowed to fly.
+Of freedom
+of cool shoes,
+of close, loving relationships with people,
+of bettering the world one smile at a time.
+
+I come from the sweat that drips off of a sculpted muscle
+a passion growing from fear of hurt
+from a feeling, not so far from that of prey.
+
+I come from the pitter-patter of feet on the pavement
+a wave of working, throbbing, machines rolling over every hill in their way.
+
+I come from the bruises and bumps of bodying up
+But no more do I play.
+Life took that away.
+
+I now come from building myself quietly
+Readying myself for the next chapter in my story.
+
+I come from a life of laying my own foundation because there was no one to build me up.
+
+I come from nights with red and blue lights.
+
+I come from locked doors and nightmares.
+
+I come from a survival mindset.
+
+I come from a slowly rotating disc readying my sustenance.
+
+I come from warm, soapy water and the clinking of dishes.
+
+I come from brown confetti stacked in a pile waiting for someone.
+
+I come from flowing and changing like a raging river.
+
+I come from vivid memories seared into my brain.
+
+I come from a life constantly reminding me of my past.
+
+I come from talking to people,
+bettering myself because I will always be constant.
+
+I come from building my mind like legos,
+working and reworking my habits every time I get a new set.
+
+I come from being mellow in my bubble.</div>
+          </template>
+        </div>
+
 
         <div class="poem-card" data-poem="WearyWoman" data-title="Weary Woman" role="button" tabindex="0">
           <img class="poem-card__img" src="/poems/WearyWoman.png" alt="Weary Woman" loading="eager">
@@ -298,6 +431,7 @@
     </div>
     <div class="poem-lightbox__body">
       <img class="poem-lightbox__img" id="poem-dialog-img" src="" alt="">
+      <div class="poem-lightbox__text" id="poem-dialog-text" hidden></div>
     </div>
   </dialog>
 
@@ -306,21 +440,41 @@
     var dialog = document.getElementById('poem-dialog');
     var dialogTitle = document.getElementById('poem-dialog-title');
     var dialogImg = document.getElementById('poem-dialog-img');
+    var dialogText = document.getElementById('poem-dialog-text');
     var dialogClose = document.getElementById('poem-dialog-close');
+    var dialogBody = dialog.querySelector('.poem-lightbox__body');
 
     function openPoem(file, title) {
       dialogTitle.textContent = title;
       dialogImg.src = '/poems/' + file + '.png';
       dialogImg.alt = title;
+      dialogImg.hidden = false;
+      dialogText.hidden = true;
+      dialogText.innerHTML = '';
       dialog.showModal();
+      dialogBody.scrollTop = 0;
+    }
+
+    function openTextPoem(card, title) {
+      dialogTitle.textContent = title;
+      dialogImg.hidden = true;
+      dialogImg.src = '';
+      var tpl = card.querySelector('.poem-text-tpl');
+      dialogText.innerHTML = '';
+      if (tpl) dialogText.appendChild(tpl.content.cloneNode(true));
+      dialogText.hidden = false;
+      dialog.showModal();
+      dialogBody.scrollTop = 0;
     }
 
     document.querySelectorAll('.poem-card').forEach(function(card) {
-      card.addEventListener('click', function() {
-        openPoem(card.dataset.poem, card.dataset.title);
-      });
+      function open() {
+        if (card.classList.contains('poem-card--text')) openTextPoem(card, card.dataset.title);
+        else openPoem(card.dataset.poem, card.dataset.title);
+      }
+      card.addEventListener('click', open);
       card.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter' || e.key === ' ') openPoem(card.dataset.poem, card.dataset.title);
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); }
       });
     });
 

@@ -194,12 +194,27 @@ function decodeEntitiesPlain(s) {
     .replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&apos;/g, "'");
 }
 
+// Sort each Substack post into one of three writing-page categories.
+// The /writing/ page shows Updates / Letters / Poems as separate tabs, all
+// filtering this one baked list by the data-category attribute.
+function categorize(post) {
+  const title = (post.title || '').trim().toLowerCase();
+  const sub = (post.subtitle || '').toLowerCase();
+  if (/james (floyd )?update|james update/.test(title)) return 'update';
+  // The poem posts — an explicit list (some, like "Madman", have no "poem"
+  // keyword in the subtitle) plus a keyword fallback for future poem posts.
+  const poemTitles = ['madman', 'on wandering', 'weary woman', 'aimless?'];
+  if (poemTitles.includes(title) || /\bpoem\b|\bpoetic\b/.test(sub)) return 'poem';
+  return 'letter';
+}
+
 function renderPostListHtml(posts) {
   const lines = [];
   for (const p of posts) {
     const subtitleText = p.subtitle ? decodeEntitiesPlain(p.subtitle) : '';
     const excerptText = p.excerpt ? decodeEntitiesPlain(p.excerpt) : '';
-    lines.push(`          <li class="post-list-item">`);
+    const category = categorize(p);
+    lines.push(`          <li class="post-list-item" data-category="${category}">`);
     lines.push(`            <button class="post-list-btn" type="button" data-link="${escAttr(p.link)}" data-date="${escAttr(p.displayDate)}"${subtitleText ? ` data-subtitle="${escAttr(subtitleText)}"` : ''}>`);
     lines.push(`              <h2 class="post-title">${escText(p.title)}</h2>`);
     lines.push(`              <p class="post-meta">${escText(p.displayDate)}${subtitleText ? ' · ' + escText(subtitleText) : ''}</p>`);
