@@ -21,6 +21,50 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=DM+Mono:wght@300;400&family=Lora:ital,wght@0,400;0,500;1,400&family=Space+Mono:wght@400;700&display=swap">
   <link rel="stylesheet" href="/css/site.css">
+  <style>
+    /* Uniform content cards — consistent structure, footer pinned to the
+       bottom of every card, poem preview capped so it can't blow up its row. */
+    .content-grid { align-items: stretch; }
+    .content-card {
+      display: flex;
+      flex-direction: column;
+      min-height: 300px;
+      padding: 1.5rem;
+      gap: 0;
+    }
+    .content-card__tag {
+      align-self: flex-start;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 0.25em 0.7em;
+      background: var(--secondary-bg);
+      color: var(--fg);
+      margin-bottom: 1rem;
+    }
+    .content-card__title {
+      font-size: 1.2rem;
+      line-height: 1.25;
+      margin: 0 0 0.4rem;
+    }
+    .content-card__desc {
+      color: var(--fg-70);
+      font-size: 0.9rem;
+      line-height: 1.5;
+      margin: 0;
+    }
+    .content-card__meta {
+      color: var(--fg-55);
+      font-size: 0.78rem;
+      margin: 0.6rem 0 0;
+    }
+    /* Footer pinned to the bottom of every card for aligned "View" links */
+    .content-card__foot {
+      margin-top: auto;
+      padding-top: 1.25rem;
+    }
+  </style>
 </head>
 <body>
 
@@ -76,67 +120,70 @@
       <div class="divider"></div>
 
       <!-- Content cards -->
-      <div class="grid-3">
+      <div class="grid-3 content-grid">
 
         <!-- 1. Instagram -->
-        <article class="card">
-          <p class="tag" style="margin-bottom:0.75rem;">Instagram</p>
-          <h3>A peek into my life</h3>
-          <p>Place to place, lesson on top of lesson, saved for my future</p>
-          <p style="color:var(--fg-60); font-size:0.8rem; margin-top:0.5rem;">20+ &nbsp;·&nbsp; 42T views</p>
-          <div class="btn-row">
+        <article class="card content-card">
+          <p class="content-card__tag">Instagram</p>
+          <h3 class="content-card__title">A peek into my life</h3>
+          <p class="content-card__desc">Place to place, lesson on top of lesson, saved for my future</p>
+          <p class="content-card__meta">20+ &nbsp;·&nbsp; 42T views</p>
+          <div class="content-card__foot">
             <a href="https://www.instagram.com/jamesfloydsworld/" class="text-link" target="_blank" rel="noopener noreferrer">View ↗</a>
           </div>
         </article>
 
         <!-- 2. Podcast -->
-        <article class="card">
-          <p class="tag" style="margin-bottom:0.75rem;">Podcast</p>
-          <h3>The best crib podcast in town</h3>
-          <p>Me and my boy, in a baby crib...</p>
-          <p style="color:var(--fg-60); font-size:0.8rem; margin-top:0.5rem;">35:30 &nbsp;·&nbsp; Helped 1 person laugh</p>
-          <div class="btn-row">
+        <article class="card content-card">
+          <p class="content-card__tag">Podcast</p>
+          <h3 class="content-card__title">The best crib podcast in town</h3>
+          <p class="content-card__desc">Me and my boy, in a baby crib...</p>
+          <p class="content-card__meta">35:30 &nbsp;·&nbsp; Helped 1 person laugh</p>
+          <div class="content-card__foot">
             <a href="https://youtu.be/8Wm_p2j7ius" class="text-link" target="_blank" rel="noopener noreferrer">View ↗</a>
           </div>
         </article>
 
-        <!-- 3. Poem (no external link, has image) -->
-        <article class="card">
-          <p class="tag" style="margin-bottom:0.75rem;">Poem</p>
-          <h3>Into the Darkness</h3>
-          <p>Hello again Mr. Darkness, its good to see you</p>
-          <p style="color:var(--fg-60); font-size:0.8rem; margin-top:0.5rem;">1 min read &nbsp;·&nbsp; The scars make the man</p>
-          <img src="/poems/IntotheDarkness.png" alt="Into the Darkness poem" style="width:100%; margin-top:1rem; border:1px solid var(--border);">
+        <!-- 3. Poem (no external link, has image preview) -->
+        <article class="card content-card">
+          <p class="content-card__tag">Poem</p>
+          <h3 class="content-card__title">Into the Darkness</h3>
+          <p class="content-card__desc">Hello again Mr. Darkness, its good to see you</p>
+          <p class="content-card__meta">1 min read &nbsp;·&nbsp; The scars make the man</p>
+          <div class="content-card__foot">
+            <a href="/poems/" class="text-link">Read ↗</a>
+          </div>
         </article>
 
         <!-- 4. Instagram -->
-        <article class="card">
-          <p class="tag" style="margin-bottom:0.75rem;">Instagram</p>
-          <h3>Philosophies and Poems</h3>
-          <p>Brain Food</p>
-          <p style="color:var(--fg-60); font-size:0.8rem; margin-top:0.5rem;">80+ &nbsp;·&nbsp; 26B views</p>
-          <div class="btn-row">
+        <article class="card content-card">
+          <p class="content-card__tag">Instagram</p>
+          <h3 class="content-card__title">Philosophies and Poems</h3>
+          <p class="content-card__desc">Brain Food</p>
+          <p class="content-card__meta">80+ &nbsp;·&nbsp; 26B views</p>
+          <div class="content-card__foot">
             <a href="https://www.instagram.com/jamesfloydsstuff" class="text-link" target="_blank" rel="noopener noreferrer">View ↗</a>
           </div>
         </article>
 
         <!-- 5. Podcast -->
-        <article class="card">
-          <p class="tag" style="margin-bottom:0.75rem;">Podcast</p>
-          <h3>A conversation with Angie Parker</h3>
-          <p>A great, and a friend</p>
-          <p style="color:var(--fg-60); font-size:0.8rem; margin-top:0.5rem;">52:10 &nbsp;·&nbsp; A real one</p>
-          <div class="btn-row">
+        <article class="card content-card">
+          <p class="content-card__tag">Podcast</p>
+          <h3 class="content-card__title">A conversation with Angie Parker</h3>
+          <p class="content-card__desc">A great, and a friend</p>
+          <p class="content-card__meta">52:10 &nbsp;·&nbsp; A real one</p>
+          <div class="content-card__foot">
             <a href="https://youtu.be/N_SEwMZsg6U" class="text-link" target="_blank" rel="noopener noreferrer">View ↗</a>
           </div>
         </article>
 
         <!-- 6. Substack -->
-        <article class="card">
-          <p class="tag" style="margin-bottom:0.75rem;">Substack</p>
-          <h3>James' Updates and Essays</h3>
-          <p>read, talk, read, talk → write</p>
-          <div class="btn-row">
+        <article class="card content-card">
+          <p class="content-card__tag">Substack</p>
+          <h3 class="content-card__title">James' Updates and Essays</h3>
+          <p class="content-card__desc">read, talk, read, talk → write</p>
+          <p class="content-card__meta">Letters, poems &amp; late-night essays</p>
+          <div class="content-card__foot">
             <a href="https://jamesfloyd.substack.com" class="text-link" target="_blank" rel="noopener noreferrer">View ↗</a>
           </div>
         </article>
