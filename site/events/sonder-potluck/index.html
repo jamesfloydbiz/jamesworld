@@ -55,19 +55,25 @@
     .sp-logo:hover { opacity: 1; }
     .sp-logo img { width: 32px; height: 32px; display: block; }
 
-    /* Back link (top-right) */
+    /* Back link (top-right) — generous padding so the whole area is
+       clickable, not just the small text baseline. */
     .sp-back {
       position: absolute;
-      top: 32px; right: 24px;
+      top: 16px; right: 8px;
       z-index: 20;
+      display: inline-flex;
+      align-items: center;
+      padding: 16px 24px;
       font-family: 'DM Mono', monospace;
       font-size: 11px;
       letter-spacing: 0.2em;
       text-transform: uppercase;
       color: var(--sp-soft);
       text-decoration: none;
+      border-radius: 4px;
+      transition: color 0.2s, background 0.2s;
     }
-    .sp-back:hover { color: var(--sp-ink); }
+    .sp-back:hover { color: var(--sp-ink); background: rgba(33,27,20,0.06); }
 
     /* ── Hero (echoes /sonder/'s typewriter hero) ────────────────────── */
     .sp-hero {
@@ -90,30 +96,6 @@
     }
     @media (min-width: 768px) {
       .sp-hero__pre { font-size: 15px; margin-bottom: 28px; }
-    }
-
-    /* Photo strip that spells the event visually — a horizontal band of
-       curated interview photos, matching /sonder/'s letter-photos band. */
-    .sp-hero__strip {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 4px;
-      width: 100%;
-      max-width: 640px;
-      margin: 0 auto 24px;
-    }
-    @media (min-width: 768px) {
-      .sp-hero__strip { gap: 6px; max-width: 720px; margin-bottom: 32px; }
-    }
-    .sp-hero__strip .cell {
-      aspect-ratio: 1;
-      overflow: hidden;
-      background: #2a2018;
-    }
-    .sp-hero__strip .cell img {
-      width: 100%; height: 100%;
-      object-fit: cover; display: block;
-      filter: saturate(0.9) brightness(0.99) contrast(1.02);
     }
 
     .sp-hero__title {
@@ -357,24 +339,121 @@
       margin-top: 4px;
     }
 
-    /* Poem (from postcard v2 back) */
-    .sp-poem {
-      max-width: 640px;
-      margin: 96px auto 0;
-      padding: 0 24px;
+    /* Postcard-back preview tile (sits in the Pictures grid, opens dialog) */
+    .sp-pic--poem .sp-pic__frame {
+      background: var(--sp-paper);
+      cursor: pointer;
+      display: block;
+      position: relative;
+    }
+    .sp-poemcard {
+      position: absolute; inset: 0;
+      padding: 20px 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      justify-content: space-between;
+      /* subtle paper-texture look */
+      background:
+        radial-gradient(120% 80% at 20% 0%, rgba(33,27,20,0.05) 0%, rgba(33,27,20,0) 60%),
+        radial-gradient(90% 60% at 100% 100%, rgba(33,27,20,0.05) 0%, rgba(33,27,20,0) 55%);
+    }
+    .sp-poemcard__kicker {
+      font-family: 'DM Mono', monospace;
+      font-size: 9.5px;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: var(--sp-soft);
+      margin: 0;
+    }
+    .sp-poemcard__preview {
+      font-family: 'Newsreader', Georgia, serif;
+      font-size: 0.95rem;
+      line-height: 1.55;
+      color: var(--sp-ink);
+      margin: 0;
+      text-align: left;
+    }
+    .sp-poemcard__preview em { font-style: italic; }
+    .sp-poemcard__sig {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.34em;
+      text-transform: uppercase;
+      color: var(--sp-accent);
+      margin: 0;
+    }
+    .sp-poemcard__cta {
+      font-family: 'DM Mono', monospace;
+      font-size: 9.5px;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: var(--sp-soft);
+      align-self: flex-end;
+    }
+
+    /* Poem dialog (opens when the postcard-back tile is tapped) */
+    .sp-poem-dialog {
+      background: var(--sp-paper);
+      color: var(--sp-ink);
+      border: 1px solid rgba(33,27,20,0.15);
+      border-radius: 2px;
+      max-width: min(680px, 94vw);
+      width: 100%;
+      max-height: 90vh;
+      max-height: 90dvh;
+      padding: 0;
+      overflow: hidden;
+      margin: auto;
+    }
+    .sp-poem-dialog::backdrop {
+      background: hsl(20 15% 5% / 0.7);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+    }
+    .sp-poem-dialog__close {
+      position: absolute;
+      top: 12px; right: 12px;
+      padding: 10px 14px;
+      background: transparent;
+      border: none;
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--sp-soft);
+      cursor: pointer;
+      border-radius: 4px;
+      transition: color 0.2s, background 0.2s;
+    }
+    .sp-poem-dialog__close:hover { color: var(--sp-ink); background: rgba(33,27,20,0.06); }
+    .sp-poem-dialog__body {
+      padding: 48px 32px 40px;
+      overflow-y: auto;
+      max-height: 90vh;
+      max-height: 90dvh;
+      text-align: center;
+    }
+    .sp-poem-dialog__kicker {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.34em;
+      text-transform: uppercase;
+      color: var(--sp-soft);
+      margin: 0 0 32px 0;
+    }
+    .sp-poem-dialog__poem {
       font-family: 'Newsreader', Georgia, serif;
       font-style: italic;
       font-size: 1.125rem;
       line-height: 1.8;
       color: var(--sp-ink);
-      text-align: center;
     }
-    .sp-poem p { margin: 0 0 0.4em 0; }
-    .sp-poem p.gap { margin-bottom: 1.4em; }
-    .sp-poem__sig {
-      margin-top: 32px;
+    .sp-poem-dialog__poem p { margin: 0 0 0.4em 0; }
+    .sp-poem-dialog__poem p.gap { margin-bottom: 1.4em; }
+    .sp-poem-dialog__sig {
+      margin-top: 40px;
       font-family: 'DM Mono', monospace;
-      font-style: normal;
       font-size: 11px;
       letter-spacing: 0.34em;
       text-transform: uppercase;
@@ -403,32 +482,22 @@
   <a href="/" class="sp-logo" aria-label="Return to home"><img src="/logo.svg" alt="JF"></a>
   <a href="/events/" class="sp-back">← Events</a>
 
-  <!-- Hero (typewriter-band style, mirroring /sonder/) -->
+  <!-- Hero (kicker + title only — matches /sonder/'s pattern of restraint) -->
   <section class="sp-hero" aria-label="The Sonder Series Potluck">
     <p class="sp-hero__pre">The Sonder Series</p>
-    <div class="sp-hero__strip" aria-hidden="true">
-      <div class="cell"><img src="/events/sonder-potluck/grid/g07.jpg" alt=""></div>
-      <div class="cell"><img src="/events/sonder-potluck/grid/g12.jpg" alt=""></div>
-      <div class="cell"><img src="/events/sonder-potluck/grid/g03.jpg" alt=""></div>
-      <div class="cell"><img src="/events/sonder-potluck/grid/g18.jpg" alt=""></div>
-      <div class="cell"><img src="/events/sonder-potluck/grid/g09.jpg" alt=""></div>
-      <div class="cell"><img src="/events/sonder-potluck/grid/g22.jpg" alt=""></div>
-      <div class="cell"><img src="/events/sonder-potluck/grid/g14.jpg" alt=""></div>
-    </div>
     <h1 class="sp-hero__title">Potluck</h1>
     <p class="sp-hero__byline">a gathering with all 100 interviews · June 13, 2026</p>
   </section>
 
   <main>
 
-    <!-- Definition card (mirrors /sonder/ definition-card) -->
+    <!-- About + Facts strip interleaved (first paragraph, then When/Where/Who, then closing paragraph) -->
     <div class="sp-section">
-      <div class="sp-defcard">
-        <h2 class="sp-defcard__h">Potluck</h2>
-        <div class="sp-defcard__phon">/ˈpät.lək/&nbsp;&nbsp;&nbsp;<em>noun</em></div>
-        <p class="sp-defcard__text">
-          A gathering where each guest brings a dish to share.
-          Here: one hundred interviews, five boroughs, one park at golden hour.
+      <div class="sp-about">
+        <p>
+          I spent a month getting to know NYC. One of my most common findings?
+          People want connection. This was me saying thank you for joining
+          my journey and giving connection.
         </p>
       </div>
     </div>
@@ -451,14 +520,9 @@
       </div>
     </div>
 
-    <!-- About -->
-    <div class="sp-section" style="margin-top:80px;">
+    <!-- Second about paragraph -->
+    <div class="sp-section" style="margin-top:56px;">
       <div class="sp-about">
-        <p>
-          I spent a month getting to know NYC. One of my most common findings?
-          People want connection. This was me saying thank you for joining
-          my journey and giving connection.
-        </p>
         <p>
           The <a href="/sonder/">Sonder Series</a> was one hundred interviews,
           five boroughs, thirty-two days, one hundred and eighty miles walked —
@@ -514,9 +578,9 @@
           <p class="sp-pic__label"><strong>Sunset</strong><span>photo</span></p>
         </li>
 
-        <!-- Invite card — rendered inline as an HTML "picture" -->
+        <!-- Invite (front) — rendered inline as an HTML "picture" -->
         <li class="sp-pic sp-pic--invite">
-          <div class="sp-pic__frame" aria-label="Partiful invite">
+          <div class="sp-pic__frame" aria-label="Partiful invite (front)">
             <div class="sp-invite">
               <p class="sp-invite__kicker">The Sonder Series — Est. NYC</p>
               <div>
@@ -531,28 +595,50 @@
               </div>
             </div>
           </div>
-          <p class="sp-pic__label"><strong>Partiful</strong><span>invite</span></p>
+          <p class="sp-pic__label"><strong>Partiful</strong><span>invite · front</span></p>
+        </li>
+
+        <!-- Poem card (back of the postcard) — click to expand -->
+        <li class="sp-pic sp-pic--poem">
+          <button class="sp-pic__frame" id="sp-poem-open" aria-label="Read the poem on the back of the postcard">
+            <div class="sp-poemcard">
+              <p class="sp-poemcard__kicker">The Sonder Series — Postcard, back</p>
+              <p class="sp-poemcard__preview">
+                <em>The realization that a random passerby is living<br>
+                a life as vivid &amp; complex as your own…</em>
+              </p>
+              <p class="sp-poemcard__sig">Sonder · 100</p>
+              <span class="sp-poemcard__cta">Tap to read →</span>
+            </div>
+          </button>
+          <p class="sp-pic__label"><strong>Postcard</strong><span>poem · back</span></p>
         </li>
       </ul>
     </div>
 
-    <!-- Poem (from postcard v2 back — kept from prior version) -->
-    <section class="sp-poem">
-      <p>The realization that a random passerby is living</p>
-      <p class="gap">a life as vivid &amp; complex as your own.</p>
-      <p>A feeling that happens only when you put down your phone,</p>
-      <p>when you loan your attention to the present</p>
-      <p class="gap">and awaken from the slumber of distraction.</p>
-      <p>When you let the light of the world touch you without refraction,</p>
-      <p>in that way each of us has had an interaction</p>
-      <p class="gap">a moment without fight where our stories swirled.</p>
-      <p class="gap">Such is the way of serendipity and Sonder.</p>
-      <p>So as I ponder the time we spent and queries of life,</p>
-      <p>I am grateful to you for being part of the series.</p>
-      <p class="sp-poem__sig">Sonder · 100</p>
-    </section>
-
   </main>
+
+  <!-- Poem dialog — full text of the postcard back, opens on tap -->
+  <dialog class="sp-poem-dialog" id="sp-poem-dialog" aria-labelledby="sp-poem-dialog-title">
+    <button type="button" class="sp-poem-dialog__close" id="sp-poem-close" aria-label="Close">Close ×</button>
+    <div class="sp-poem-dialog__body">
+      <p class="sp-poem-dialog__kicker" id="sp-poem-dialog-title">Sonder — the back of the postcard</p>
+      <div class="sp-poem-dialog__poem">
+        <p>The realization that a random passerby is living</p>
+        <p class="gap">a life as vivid &amp; complex as your own.</p>
+        <p>A feeling that happens only when you put down your phone,</p>
+        <p>when you loan your attention to the present</p>
+        <p class="gap">and awaken from the slumber of distraction.</p>
+        <p>When you let the light of the world touch you without refraction,</p>
+        <p>in that way each of us has had an interaction</p>
+        <p class="gap">a moment without fight where our stories swirled.</p>
+        <p class="gap">Such is the way of serendipity and Sonder.</p>
+        <p>So as I ponder the time we spent and queries of life,</p>
+        <p>I am grateful to you for being part of the series.</p>
+      </div>
+      <p class="sp-poem-dialog__sig">Sonder · 100</p>
+    </div>
+  </dialog>
 
   <!-- Lightbox -->
   <dialog class="img-lightbox" id="img-lightbox">
@@ -571,6 +657,18 @@
     });
     lightbox.addEventListener('click', function(e){
       if (e.target === lightbox) lightbox.close();
+    });
+
+    // Postcard-back tile opens the poem dialog
+    var poemDialog = document.getElementById('sp-poem-dialog');
+    document.getElementById('sp-poem-open').addEventListener('click', function(){
+      poemDialog.showModal();
+    });
+    document.getElementById('sp-poem-close').addEventListener('click', function(){
+      poemDialog.close();
+    });
+    poemDialog.addEventListener('click', function(e){
+      if (e.target === poemDialog) poemDialog.close();
     });
   </script>
 </body>
