@@ -9,11 +9,11 @@
   <meta property="og:type" content="article">
   <meta property="og:title" content="Pithy Party">
   <meta property="og:description" content="A set of short, sharp talks, that were full of meaning.">
-  <meta property="og:image" content="https://jamesfloyds.world/events/pithy-party/1.jpg">
+  <meta property="og:image" content="https://jamesfloyds.world/events/pithy-party/invite.png">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Pithy Party">
   <meta name="twitter:description" content="A set of short, sharp talks, that were full of meaning.">
-  <meta name="twitter:image" content="https://jamesfloyds.world/events/pithy-party/1.jpg">
+  <meta name="twitter:image" content="https://jamesfloyds.world/events/pithy-party/invite.png">
   <link rel="icon" href="/favicon.ico" sizes="any">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -156,13 +156,24 @@
       line-height: 1.3;
     }
 
-    /* Photos — 2 up, larger, no card chrome */
+    /* The night — short body copy */
+    .pp-body {
+      font-family: 'Newsreader', Georgia, serif;
+      font-size: 1.05rem;
+      line-height: 1.7;
+      color: var(--pp-ink);
+      max-width: 40rem;
+      margin: 0 0 32px 0;
+    }
+    .pp-body p { margin: 0; }
+
     .pp-photos {
       display: grid;
       grid-template-columns: 1fr;
       gap: 12px;
     }
     @media (min-width: 560px) { .pp-photos { grid-template-columns: 1fr 1fr; } }
+    @media (min-width: 860px) { .pp-photos { grid-template-columns: repeat(3, 1fr); } }
     .pp-photo {
       display: block;
       width: 100%;
@@ -203,7 +214,7 @@
     <!-- Hero: poster + title/lede side-by-side -->
     <section class="pp-hero">
       <figure class="pp-hero__poster">
-        <img src="/events/pithy-party/1.jpg" alt="Pithy Party invitation — Friday, July 10, 7 PM">
+        <img src="/events/pithy-party/invite.png" alt="Pithy Party invitation — Friday, July 10, 7 PM">
       </figure>
       <div class="pp-hero__text">
         <p class="pp-eyebrow">July 10, 2026 · NYC</p>
@@ -221,25 +232,37 @@
     <div class="pp-facts">
       <div>
         <span class="pp-facts__k">When</span>
-        <span class="pp-facts__v">Fri · Jul 10, 2026 · 7 PM</span>
+        <span class="pp-facts__v">Fri · Jul 10, 2026 · 7–8:30 PM</span>
       </div>
       <div>
         <span class="pp-facts__k">Where</span>
-        <span class="pp-facts__v">NYC</span>
+        <span class="pp-facts__v">2nd-floor common room · NYC</span>
       </div>
       <div>
         <span class="pp-facts__k">Format</span>
-        <span class="pp-facts__v">Living-room talks</span>
+        <span class="pp-facts__v">Short talks + games</span>
       </div>
     </div>
 
-    <!-- Photos (2 up) -->
+    <!-- The night -->
+    <section class="pp-body">
+      <p>
+        As many short talks (5 minutes or less) as we could fit — and we
+        wanted to hear yours. Then some pithy rounds of Cards Against Humanity
+        to close the night out.
+      </p>
+    </section>
+
+    <!-- Photos (3 up) -->
     <div class="pp-photos">
-      <button class="pp-photo" data-lightbox="/events/pithy-party/2.jpg">
-        <img src="/events/pithy-party/2.jpg" alt="The room mid-talk" loading="lazy">
+      <button class="pp-photo" data-lightbox="/events/pithy-party/room.jpg">
+        <img src="/events/pithy-party/room.jpg" alt="The room mid-talk — guests gathered under record-shaped pendant lights" loading="lazy">
       </button>
-      <button class="pp-photo" data-lightbox="/events/pithy-party/3.jpg">
-        <img src="/events/pithy-party/3.jpg" alt="A speaker mid-talk" loading="lazy">
+      <button class="pp-photo" data-lightbox="/events/pithy-party/talk-1.jpg">
+        <img src="/events/pithy-party/talk-1.jpg" alt="A speaker mid-talk in front of the TV" loading="lazy">
+      </button>
+      <button class="pp-photo" data-lightbox="/events/pithy-party/talk-2.jpg">
+        <img src="/events/pithy-party/talk-2.jpg" alt="The speaker, hands together, mid-point" loading="lazy">
       </button>
     </div>
 
