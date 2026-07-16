@@ -44,10 +44,10 @@
       min-height: 100dvh;
     }
 
-    /* Top-left logo (matches /sonder/) */
+    /* Top-right logo (matches /sonder/) */
     .sp-logo {
       position: absolute;
-      top: 24px; left: 24px;
+      top: 24px; right: 24px;
       z-index: 20;
       opacity: 0.5;
       transition: opacity 0.2s;
@@ -55,11 +55,11 @@
     .sp-logo:hover { opacity: 1; }
     .sp-logo img { width: 32px; height: 32px; display: block; }
 
-    /* Back link (top-right) — generous padding so the whole area is
+    /* Back link (top-left) — generous padding so the whole area is
        clickable, not just the small text baseline. */
     .sp-back {
       position: absolute;
-      top: 16px; right: 8px;
+      top: 16px; left: 8px;
       z-index: 20;
       display: inline-flex;
       align-items: center;
