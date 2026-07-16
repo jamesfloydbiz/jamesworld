@@ -26,10 +26,10 @@
        design (Sonder Series.zip). */
 
     :root {
-      --sp-paper: #F2EADF;
-      --sp-paper-bg: #cfc7b8;
-      --sp-ink: #211B14;
-      --sp-soft: rgba(33,27,20,0.55);
+      --sp-paper: #ffffff;
+      --sp-paper-bg: #ffffff;
+      --sp-ink: #000000;
+      --sp-soft: rgba(0,0,0,0.55);
       --sp-accent: #B14B33;
       --sp-olive: #6E6B36;
     }
@@ -73,17 +73,15 @@
       border-radius: 4px;
       transition: color 0.2s, background 0.2s;
     }
-    .sp-back:hover { color: var(--sp-ink); background: rgba(33,27,20,0.06); }
+    .sp-back:hover { color: var(--sp-ink); background: rgba(0,0,0,0.06); }
 
     /* ── Hero (echoes /sonder/'s typewriter hero) ────────────────────── */
     .sp-hero {
-      min-height: 60vh;
-      min-height: 60dvh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 96px 24px 48px;
+      padding: 128px 24px 8px;
       text-align: center;
     }
     .sp-hero__pre {
@@ -120,17 +118,20 @@
     /* ── Sections (mirroring /sonder/'s .sonder-section pattern) ─────── */
     .sp-section {
       max-width: 720px;
-      margin: 80px auto 0;
+      margin: 56px auto 0;
       padding: 0 24px;
     }
+    /* First section after the hero sits closer — the hero already has
+       breathing room built into its padding. */
+    .sp-hero + .sp-section { margin-top: 32px; }
     .sp-section.wide {
       max-width: 1080px;
     }
 
     /* Definition card — direct clone of /sonder/'s definition-card look */
     .sp-defcard {
-      background: rgba(33,27,20,0.03);
-      border: 1px solid rgba(33,27,20,0.15);
+      background: rgba(0,0,0,0.03);
+      border: 1px solid rgba(0,0,0,0.15);
       padding: 40px 28px;
       text-align: center;
     }
@@ -167,7 +168,7 @@
       grid-template-columns: 1fr;
       gap: 20px;
       padding: 24px 28px;
-      border: 1px solid rgba(33,27,20,0.15);
+      border: 1px solid rgba(0,0,0,0.15);
       background: var(--sp-paper);
     }
     @media (min-width: 640px) { .sp-facts { grid-template-columns: repeat(3, 1fr); } }
@@ -232,7 +233,7 @@
     @media (min-width: 900px)  { .sp-pics { grid-template-columns: repeat(3, 1fr); } }
     .sp-pic {
       background: #fff;
-      border: 1px solid rgba(33,27,20,0.2);
+      border: 1px solid rgba(0,0,0,0.2);
       display: flex;
       flex-direction: column;
       overflow: hidden;
@@ -242,7 +243,7 @@
     .sp-pic__frame {
       aspect-ratio: 4 / 3;
       overflow: hidden;
-      background: rgba(33,27,20,0.05);
+      background: rgba(0,0,0,0.05);
       cursor: pointer;
       border: none;
       padding: 0;
@@ -355,8 +356,8 @@
       justify-content: space-between;
       /* subtle paper-texture look */
       background:
-        radial-gradient(120% 80% at 20% 0%, rgba(33,27,20,0.05) 0%, rgba(33,27,20,0) 60%),
-        radial-gradient(90% 60% at 100% 100%, rgba(33,27,20,0.05) 0%, rgba(33,27,20,0) 55%);
+        radial-gradient(120% 80% at 20% 0%, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0) 60%),
+        radial-gradient(90% 60% at 100% 100%, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0) 55%);
     }
     .sp-poemcard__kicker {
       font-family: 'DM Mono', monospace;
@@ -396,7 +397,7 @@
     .sp-poem-dialog {
       background: var(--sp-paper);
       color: var(--sp-ink);
-      border: 1px solid rgba(33,27,20,0.15);
+      border: 1px solid rgba(0,0,0,0.15);
       border-radius: 2px;
       max-width: min(680px, 94vw);
       width: 100%;
@@ -426,7 +427,7 @@
       border-radius: 4px;
       transition: color 0.2s, background 0.2s;
     }
-    .sp-poem-dialog__close:hover { color: var(--sp-ink); background: rgba(33,27,20,0.06); }
+    .sp-poem-dialog__close:hover { color: var(--sp-ink); background: rgba(0,0,0,0.06); }
     .sp-poem-dialog__body {
       padding: 48px 32px 40px;
       overflow-y: auto;
