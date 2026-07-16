@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Great 2026 NYC Summer Field Day — James Floyd</title>
+  <meta name="description" content="The Great 2026 NYC Summer Field Day — Saturday, July 25, 2026, 12–3 PM, Sheep's Meadow in Central Park. Four teams, relay races, dodgeball, cornhole. Be festive, be themed.">
+  <link rel="canonical" href="https://jamesfloyds.world/events/nyc-field-day/">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="The Great 2026 NYC Summer Field Day">
+  <meta property="og:description" content="Four teams. Sheep's Meadow. Relay races, dodgeball, cornhole. Be festive, be themed.">
+  <meta property="og:image" content="https://jamesfloyds.world/events/nyc-field-day/poster.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="The Great 2026 NYC Summer Field Day">
+  <meta name="twitter:description" content="Four teams. Sheep's Meadow. Be festive, be themed.">
+  <meta name="twitter:image" content="https://jamesfloyds.world/events/nyc-field-day/poster.png">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700;1,9..144,400&family=Alfa+Slab+One&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&family=DM+Mono:wght@300;400&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap">
+
+  <style>
+    /* Palette drawn from the Partiful poster (Sheep's Meadow illustration).
+       Olive field / cream sky / brick accent. */
+    :root {
+      --fd-field:  #75874A;   /* Partiful poster bgColor */
+      --fd-paper:  #F5EFDD;
+      --fd-cream:  #FBF6E7;
+      --fd-ink:    #1e2211;
+      --fd-brick:  #B14B33;
+      --fd-soft:   rgba(30,34,17,0.55);
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      background: var(--fd-paper);
+      color: var(--fd-ink);
+      font-family: 'EB Garamond', Georgia, serif;
+      min-height: 100vh;
+      min-height: 100dvh;
+    }
+
+    /* Top-left logo */
+    .fd-logo {
+      position: absolute; top: 24px; left: 24px; z-index: 20;
+      opacity: 0.55; transition: opacity 0.2s;
+    }
+    .fd-logo:hover { opacity: 1; }
+    .fd-logo img { width: 32px; height: 32px; display: block; }
+
+    /* Back link (top-right) — big hit area */
+    .fd-back {
+      position: absolute; top: 16px; right: 8px; z-index: 20;
+      display: inline-flex; align-items: center;
+      padding: 16px 24px;
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--fd-soft);
+      text-decoration: none;
+      border-radius: 4px;
+      transition: color 0.2s, background 0.2s;
+    }
+    .fd-back:hover { color: var(--fd-ink); background: rgba(30,34,17,0.06); }
+
+    .fd-wrap {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 96px clamp(20px, 4vw, 40px) 96px;
+    }
+
+    /* Hero: poster + title stacked cleanly */
+    .fd-hero {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 32px;
+      align-items: center;
+      margin-bottom: 40px;
+    }
+    @media (min-width: 720px) {
+      .fd-hero {
+        grid-template-columns: minmax(240px, 320px) 1fr;
+        gap: 40px;
+      }
+    }
+    .fd-hero__poster {
+      display: block;
+      width: 100%;
+      background: var(--fd-field);
+      border-radius: 6px;
+      overflow: hidden;
+      box-shadow: 0 18px 42px rgba(20,30,10,0.25);
+    }
+    .fd-hero__poster img { width: 100%; height: auto; display: block; }
+    .fd-hero__text .fd-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.34em;
+      text-transform: uppercase;
+      color: var(--fd-brick);
+      margin: 0 0 12px 0;
+    }
+    .fd-hero__title {
+      font-family: 'Fraunces', 'Playfair Display', serif;
+      font-weight: 700;
+      font-size: clamp(2.2rem, 5vw, 3.2rem);
+      line-height: 1.02;
+      letter-spacing: -0.02em;
+      color: var(--fd-field);
+      margin: 0 0 14px 0;
+    }
+    .fd-hero__lede {
+      font-family: 'Newsreader', Georgia, serif;
+      font-style: italic;
+      font-size: clamp(1rem, 1.4vw, 1.15rem);
+      line-height: 1.5;
+      color: var(--fd-ink);
+      margin: 0;
+    }
+
+    /* Facts row (chips) */
+    .fd-facts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px 40px;
+      padding: 16px 0;
+      border-top: 1px solid rgba(30,34,17,0.12);
+      border-bottom: 1px solid rgba(30,34,17,0.12);
+      margin-bottom: 40px;
+    }
+    .fd-facts__k {
+      display: block;
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: var(--fd-soft);
+      margin-bottom: 4px;
+    }
+    .fd-facts__v {
+      font-family: 'EB Garamond', Georgia, serif;
+      font-size: 1rem;
+      line-height: 1.3;
+    }
+
+    /* Body / description */
+    .fd-body {
+      font-family: 'EB Garamond', Georgia, serif;
+      font-size: 1.125rem;
+      line-height: 1.7;
+      margin-bottom: 40px;
+    }
+    .fd-body p + p { margin-top: 1em; }
+    .fd-body h2 {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 1.35rem;
+      color: var(--fd-field);
+      margin: 32px 0 12px;
+    }
+
+    /* Teams strip */
+    .fd-teams {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin: 24px 0 40px;
+    }
+    .fd-team {
+      text-align: center;
+      padding: 16px 6px;
+      border-radius: 4px;
+      color: #fff;
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+    }
+    .fd-team--red   { background: #B14B33; }
+    .fd-team--blue  { background: #34566A; }
+    .fd-team--green { background: var(--fd-field); }
+    .fd-team--black { background: #201f1a; }
+
+    /* RSVP button */
+    .fd-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 22px;
+      background: var(--fd-brick);
+      color: #fff;
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      text-decoration: none;
+      border-radius: 999px;
+      transition: transform 0.15s, filter 0.2s;
+    }
+    .fd-cta:hover { transform: translateY(-1px); filter: brightness(1.05); }
+  </style>
+</head>
+<body>
+
+  <a href="/" class="fd-logo" aria-label="Return to home"><img src="/logo.svg" alt="JF"></a>
+  <a href="/events/" class="fd-back">← Events</a>
+
+  <div class="fd-wrap">
+
+    <section class="fd-hero">
+      <figure class="fd-hero__poster">
+        <img src="/events/nyc-field-day/poster.png" alt="The Great 2026 NYC Summer Field Day poster — Sheep's Meadow, Central Park">
+      </figure>
+      <div class="fd-hero__text">
+        <p class="fd-eyebrow">July 25, 2026 · Central Park</p>
+        <h1 class="fd-hero__title">The Great 2026 NYC Summer Field Day</h1>
+        <p class="fd-hero__lede">Four teams. Sheep's Meadow. Relay races, dodgeball, cornhole. Be festive, be themed.</p>
+      </div>
+    </section>
+
+    <div class="fd-facts">
+      <div>
+        <span class="fd-facts__k">When</span>
+        <span class="fd-facts__v">Sat · Jul 25, 2026 · 12–3 PM</span>
+      </div>
+      <div>
+        <span class="fd-facts__k">Where</span>
+        <span class="fd-facts__v">Sheep's Meadow · Central Park</span>
+      </div>
+      <div>
+        <span class="fd-facts__k">Format</span>
+        <span class="fd-facts__v">Field day, four teams</span>
+      </div>
+    </div>
+
+    <section class="fd-body">
+      <p>Join us for the best field day of your life, in our very own central park. 🏃🏃‍♀️</p>
+      <p>
+        There will be four teams — Red, Blue, Green, and Black. We'll be drawing
+        colors one week before. Be festive, be themed.
+      </p>
+      <div class="fd-teams" aria-label="The four teams">
+        <div class="fd-team fd-team--red">Red</div>
+        <div class="fd-team fd-team--blue">Blue</div>
+        <div class="fd-team fd-team--green">Green</div>
+        <div class="fd-team fd-team--black">Black</div>
+      </div>
+
+      <h2>What is a field day?</h2>
+      <p>
+        A competitive and fun few hours of games played with friends — relay
+        races, dodgeball, egg drops, water balloon toss, cornhole. Get ready
+        to compete.
+      </p>
+
+      <p>
+        <a href="https://partiful.com/e/gOvZL9bS5zbBCl7CzQlk?c=rdjUls8e" class="fd-cta" target="_blank" rel="noopener noreferrer">
+          RSVP on Partiful
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        </a>
+      </p>
+    </section>
+
+  </div>
+
+</body>
+</html>

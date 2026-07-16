@@ -320,6 +320,15 @@ export const ROUTES = [
   },
 
   {
+    path: '/events/nyc-field-day',
+    title: 'The Great 2026 NYC Summer Field Day',
+    description:
+      "Four teams. Sheep's Meadow, Central Park. Relay races, dodgeball, cornhole. July 25, 2026, 12–3 PM.",
+    priority: 0.6,
+    changefreq: 'monthly',
+  },
+
+  {
     path: '/content',
     title: 'Content',
     description:
