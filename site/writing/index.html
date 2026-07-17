@@ -74,22 +74,17 @@
     /* ── Tab strip: Letters / Posts ─────────────────────────────────────── */
     .writing-tabs {
       display: flex;
-      gap: 0;
+      flex-wrap: wrap;
+      gap: 0 2px;
       border-bottom: 1px solid var(--border);
       margin: 0 0 2.5rem;
-      /* Five tabs won't fit on a phone — let them scroll horizontally
-         instead of clipping. Hide the scrollbar for a clean strip. */
-      overflow-x: auto;
-      scrollbar-width: none;
-      -webkit-overflow-scrolling: touch;
     }
-    .writing-tabs::-webkit-scrollbar { display: none; }
     .writing-tab {
       font-family: var(--font-mono);
       font-size: 11px;
-      letter-spacing: 0.2em;
+      letter-spacing: 0.14em;
       text-transform: uppercase;
-      padding: 12px 22px;
+      padding: 12px 14px;
       border: none;
       background: none;
       color: var(--fg-40);
@@ -101,14 +96,16 @@
       transition: color 0.2s, border-color 0.2s;
     }
     @media (max-width: 560px) {
-      .writing-tab { padding: 12px 14px; letter-spacing: 0.1em; }
+      .writing-tab { padding: 10px 10px; letter-spacing: 0.08em; }
     }
     .writing-tab:hover { color: var(--fg-70); }
     .writing-tab.is-active { color: var(--fg); border-bottom-color: var(--fg); }
     .writing-tab .count { color: var(--fg-30); margin-left: 6px; }
 
-    /* The two lists swap based on the active tab */
-    .post-list[hidden], .li-post-list[hidden], .li-controls[hidden], .rh-shelf[hidden] { display: none !important; }
+    /* The lists/grids swap based on the active tab. Each sets its own display
+       (grid/flex), so a plain [hidden] attribute isn't enough — force it. */
+    .post-list[hidden], .li-post-list[hidden], .li-controls[hidden],
+    .rh-shelf[hidden], .poems-grid[hidden] { display: none !important; }
 
     /* Rabbit Holes shelf — cards linking out to long-form essay pages */
     .rh-shelf { list-style: none; padding: 0; margin: 0; display: grid; gap: 20px; }
