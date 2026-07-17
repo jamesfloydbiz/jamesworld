@@ -24,7 +24,7 @@
   .opt.no{background:rgba(248,113,113,.12);border-color:var(--bad);}
   .opt:disabled{cursor:default;}
   .kbd{display:inline-block;font-family:ui-monospace,Menlo,monospace;font-size:11px;padding:1px 6px;border:1px solid var(--border);border-radius:3px;color:var(--dim);}
-  .tab{padding:8px 14px;border:none;background:transparent;color:var(--dim);cursor:pointer;font-family:inherit;font-size:14px;border-bottom:2px solid transparent;margin-bottom:-1px;}
+  .tab{padding:8px 10px;border:none;background:transparent;color:var(--dim);cursor:pointer;font-family:inherit;font-size:14px;border-bottom:2px solid transparent;margin-bottom:-1px;}
   .tab.on{color:var(--fg);border-bottom-color:var(--fg);}
   .tab:hover{color:var(--fg);}
   .pill{display:inline-block;padding:2px 8px;font-size:11px;border-radius:99px;background:#1a1a1a;border:1px solid var(--border);color:var(--dim);}
@@ -55,7 +55,7 @@
   </header>
 
   <!-- Tabs -->
-  <nav class="flex gap-2 border-b border-neutral-800 mb-6 overflow-x-auto">
+  <nav class="flex flex-wrap gap-2 border-b border-neutral-800 mb-6">
     <button class="tab on" data-tab="practice">Practice</button>
     <button class="tab" data-tab="exam">Exam</button>
     <button class="tab" data-tab="learning">Learning</button>

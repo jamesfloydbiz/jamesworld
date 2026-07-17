@@ -499,8 +499,18 @@
         var el = itemMap.get(active.id);
         if (el) {
           el.classList.add('is-active');
+          // On mobile the timeline is a horizontal chip strip at the top of the
+          // page. Keep the active chip centered by scrolling ONLY the strip
+          // horizontally — never el.scrollIntoView(), which also scrolls the
+          // window vertically and yanks the reader back up to the top.
           if (window.innerWidth <= 900) {
-            el.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' });
+            var strip = el.closest('.rh-timeline');
+            if (strip && strip.scrollWidth > strip.clientWidth) {
+              strip.scrollTo({
+                left: el.offsetLeft - strip.clientWidth / 2 + el.offsetWidth / 2,
+                behavior: 'smooth'
+              });
+            }
           }
         }
       }
