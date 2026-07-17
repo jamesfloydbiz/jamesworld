@@ -316,6 +316,132 @@
       flex-wrap: wrap;
       gap: 12px;
     }
+
+    /* ── Poems grid (merged in from the old standalone /poems/ page) ───────── */
+    .poems-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+    @media (min-width: 480px) { .poems-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (min-width: 768px) { .poems-grid { grid-template-columns: repeat(4, 1fr); } }
+    .poem-card {
+      border: 1px solid var(--border);
+      padding: 0.75rem;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+    .poem-card:hover { border-color: hsl(0 0% 40%); }
+    .poem-card:hover .poem-card__title { text-decoration: underline; text-underline-offset: 4px; }
+    .poem-card__img { aspect-ratio: 1; width: 100%; object-fit: cover; display: block; margin-bottom: 0.5rem; }
+    .poem-card__title { font-size: 0.875rem; color: var(--fg-80); }
+
+    /* Text poem — a card without a handwritten image (set in type instead) */
+    .poem-card--text .poem-card__cover {
+      aspect-ratio: 1;
+      width: 100%;
+      margin-bottom: 0.5rem;
+      background: #111;
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 1.25rem;
+      overflow: hidden;
+    }
+    .poem-card--text .poem-card__cover span {
+      font-family: 'Lora', Georgia, serif;
+      font-style: italic;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      color: var(--fg-70);
+    }
+    .poem-card--text .poem-card__cover em {
+      display: block;
+      font-family: var(--font-mono);
+      font-style: normal;
+      font-size: 0.6rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--fg-40);
+      margin-top: 0.75rem;
+    }
+
+    /* Poem lightbox */
+    .poem-lightbox {
+      max-width: min(720px, 96vw);
+      width: 100%;
+      height: 92vh;
+      background: var(--bg);
+      border: none;
+      padding: 0;
+      overflow: hidden;
+      flex-direction: column;
+    }
+    .poem-lightbox::backdrop {
+      background: hsl(0 0% 0% / 0.95);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+    }
+    .poem-lightbox__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .poem-lightbox__title {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--fg-70);
+    }
+    .poem-lightbox__close {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--fg-40);
+      background: none;
+      border: none;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+    .poem-lightbox__close:hover { color: var(--fg); }
+    .poem-lightbox__body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      display: block;
+    }
+    .poem-lightbox__img {
+      display: block;
+      max-width: 100%;
+      width: auto;
+      height: auto;
+      margin: 0 auto;
+      cursor: pointer;
+    }
+    .poem-lightbox__text { max-width: 40rem; margin: 0 auto; }
+    .poem-lightbox__context {
+      font-family: 'Lora', Georgia, serif;
+      font-size: 0.95rem;
+      line-height: 1.65;
+      color: var(--fg-60);
+      padding-bottom: 1.25rem;
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .poem-lightbox__context a { color: var(--fg-80); text-decoration: underline; text-underline-offset: 3px; }
+    .poem-lightbox__poem {
+      font-family: 'Lora', Georgia, serif;
+      font-size: 1.05rem;
+      line-height: 1.8;
+      color: var(--fg-85);
+      white-space: pre-wrap;
+    }
   </style>
 </head>
 <body>
@@ -341,7 +467,7 @@
         <a href="/content/" class="site-nav__link">Content</a>
         <div class="site-nav__sub">
           <a href="/writing/" class="site-nav__sub-link">Writing</a>
-          <a href="/poems/" class="site-nav__sub-link">Poems</a>
+          <a href="/writing/#poems" class="site-nav__sub-link">Poems</a>
           <a href="/pictures/" class="site-nav__sub-link">Memories</a>
         </div>
       </li>
@@ -360,9 +486,9 @@
           <h1 class="page-title" style="margin-bottom:0;">Writing</h1>
         </div>
         <p class="page-subtitle">
-          Updates, letters, and poems from
+          Updates and letters from
           <a href="https://jamesfloyd.substack.com" target="_blank" rel="noopener noreferrer" class="prose-link">Substack</a>,
-          posts from
+          handwritten poems, posts from
           <a href="https://www.linkedin.com/in/jamesfloydl/" target="_blank" rel="noopener noreferrer" class="prose-link">LinkedIn</a>,
           and long-form rabbit holes. Click any of them to read here.
         </p>
@@ -3331,6 +3457,193 @@ Tickets below</p></div>
         <!-- END_LI_POSTS -->
         </ul>
 
+        <!-- Poems — handwritten grid merged in from the old /poems/ page -->
+        <div class="poems-grid" id="poems-grid" hidden>
+
+          <div class="poem-card poem-card--text" data-poem-text="icomefrom" data-title="I Come From" role="button" tabindex="0">
+            <div class="poem-card__cover">
+              <span>"I come from a bubble, a bubble of green, a bubble of athleticism, a bubble of pressure and high expectations…"</span>
+              <em>Set in type · High school</em>
+            </div>
+            <p class="poem-card__title">I Come From</p>
+            <template class="poem-text-tpl">
+              <div class="poem-lightbox__context">
+                Written when I was in high school and presented here unchanged. It first appeared in
+                <a href="https://jamesfloyd.substack.com/p/the-james-floyd-update-10" target="_blank" rel="noopener noreferrer">The James Floyd Update #10</a>,
+                an issue on how to make kids better than their parents.
+              </div>
+              <div class="poem-lightbox__poem">I come from a bubble,
+a bubble of green,
+a bubble of athleticism,
+a bubble of pressure and high expectations,
+a bubble I have explored in every which way.
+
+From the thump of shoes on the pavement
+to the grinding of gears on a bike, racing to go play video games at a friend's house,
+to the pounding of bass in a car speeding to get to a faraway place.
+
+I come from a hand reaching through the confines of his prison
+yearning for the cereal that was just out of reach,
+timid because of the warden and his abuse,
+timid because of his cellmate.
+I was scared to imagine, to dream
+of the things that will be accomplished when he's allowed to fly.
+Of freedom
+of cool shoes,
+of close, loving relationships with people,
+of bettering the world one smile at a time.
+
+I come from the sweat that drips off of a sculpted muscle
+a passion growing from fear of hurt
+from a feeling, not so far from that of prey.
+
+I come from the pitter-patter of feet on the pavement
+a wave of working, throbbing, machines rolling over every hill in their way.
+
+I come from the bruises and bumps of bodying up
+But no more do I play.
+Life took that away.
+
+I now come from building myself quietly
+Readying myself for the next chapter in my story.
+
+I come from a life of laying my own foundation because there was no one to build me up.
+
+I come from nights with red and blue lights.
+
+I come from locked doors and nightmares.
+
+I come from a survival mindset.
+
+I come from a slowly rotating disc readying my sustenance.
+
+I come from warm, soapy water and the clinking of dishes.
+
+I come from brown confetti stacked in a pile waiting for someone.
+
+I come from flowing and changing like a raging river.
+
+I come from vivid memories seared into my brain.
+
+I come from a life constantly reminding me of my past.
+
+I come from talking to people,
+bettering myself because I will always be constant.
+
+I come from building my mind like legos,
+working and reworking my habits every time I get a new set.
+
+I come from being mellow in my bubble.</div>
+            </template>
+          </div>
+
+          <div class="poem-card" data-poem="WearyWoman" data-title="Weary Woman" role="button" tabindex="0">
+            <img class="poem-card__img" src="/poems/WearyWoman.png" alt="Weary Woman" loading="lazy">
+            <p class="poem-card__title">Weary Woman</p>
+          </div>
+          <div class="poem-card" data-poem="TheWanderer" data-title="The Wanderer" role="button" tabindex="0">
+            <img class="poem-card__img" src="/poems/TheWanderer.png" alt="The Wanderer" loading="lazy">
+            <p class="poem-card__title">The Wanderer</p>
+          </div>
+          <div class="poem-card" data-poem="Madman" data-title="Madman" role="button" tabindex="0">
+            <img class="poem-card__img" src="/poems/Madman.png" alt="Madman" loading="lazy">
+            <p class="poem-card__title">Madman</p>
+          </div>
+          <div class="poem-card" data-poem="Abundance" data-title="Abundance" role="button" tabindex="0">
+            <img class="poem-card__img" src="/poems/Abundance.png" alt="Abundance" loading="lazy">
+            <p class="poem-card__title">Abundance</p>
+          </div>
+          <div class="poem-card" data-poem="AloneAgain" data-title="Alone Again" role="button" tabindex="0">
+            <img class="poem-card__img" src="/poems/AloneAgain.png" alt="Alone Again" loading="lazy">
+            <p class="poem-card__title">Alone Again</p>
+          </div>
+          <div class="poem-card" data-poem="Contradictions" data-title="Contradictions" role="button" tabindex="0">
+            <img class="poem-card__img" src="/poems/Contradictions.png" alt="Contradictions" loading="lazy">
+            <p class="poem-card__title">Contradictions</p>
+          </div>
+          <div class="poem-card" data-poem="Energy" data-title="Energy" role="button" tabindex="0">
+            <img class="poem-card__img" src="/poems/Energy.png" alt="Energy" loading="lazy">
+            <p class="poem-card__title">Energy</p>
+          </div>
+          <div class="poem-card" data-poem="Eyes" data-title="Eyes" role="button" tabindex="0">
+            <img class="poem-card__img" src="/poems/Eyes.png" alt="Eyes" loading="lazy">
+            <p class="poem-card__title">Eyes</p>
+          </div>
+          <div class="poem-card" data-poem="Flow" data-title="Flow" role="button" tabindex="0">
+            <img class="poem-card__img" src="/poems/Flow.png" alt="Flow" loading="lazy">
+            <p class="poem-card__title">Flow</p>
+          </div>
+          <div class="poem-card" data-poem="HiImJames" data-title="Hi Im James" role="button" tabindex="0">
+            <img class="poem-card__img" src="/poems/HiImJames.png" alt="Hi Im James" loading="lazy">
+            <p class="poem-card__title">Hi Im James</p>
+          </div>
+          <div class="poem-card" data-poem="Home" data-title="Home" role="button" tabindex="0">
+            <img class="poem-card__img" src="/poems/Home.png" alt="Home" loading="lazy">
+            <p class="poem-card__title">Home</p>
+          </div>
+          <div class="poem-card" data-poem="IntotheDarkness" data-title="Into the Darkness" role="button" tabindex="0">
+            <img class="poem-card__img" src="/poems/IntotheDarkness.png" alt="Into the Darkness" loading="lazy">
+            <p class="poem-card__title">Into the Darkness</p>
+          </div>
+          <div class="poem-card" data-poem="LoveBegetsLove" data-title="Love Begets Love" role="button" tabindex="0">
+            <img class="poem-card__img" src="/poems/LoveBegetsLove.png" alt="Love Begets Love" loading="lazy">
+            <p class="poem-card__title">Love Begets Love</p>
+          </div>
+          <div class="poem-card" data-poem="Manhood" data-title="Manhood" role="button" tabindex="0">
+            <img class="poem-card__img" src="/poems/Manhood.png" alt="Manhood" loading="lazy">
+            <p class="poem-card__title">Manhood</p>
+          </div>
+          <div class="poem-card" data-poem="NoSleep" data-title="No Sleep" role="button" tabindex="0">
+            <img class="poem-card__img" src="/poems/NoSleep.png" alt="No Sleep" loading="lazy">
+            <p class="poem-card__title">No Sleep</p>
+          </div>
+          <div class="poem-card" data-poem="Odetoforever" data-title="Ode to forever" role="button" tabindex="0">
+            <img class="poem-card__img" src="/poems/Odetoforever.png" alt="Ode to forever" loading="lazy">
+            <p class="poem-card__title">Ode to forever</p>
+          </div>
+          <div class="poem-card" data-poem="Off" data-title="Off" role="button" tabindex="0">
+            <img class="poem-card__img" src="/poems/Off.png" alt="Off" loading="lazy">
+            <p class="poem-card__title">Off</p>
+          </div>
+          <div class="poem-card" data-poem="Peace" data-title="Peace" role="button" tabindex="0">
+            <img class="poem-card__img" src="/poems/Peace.png" alt="Peace" loading="lazy">
+            <p class="poem-card__title">Peace</p>
+          </div>
+          <div class="poem-card" data-poem="Possibility" data-title="Possibility" role="button" tabindex="0">
+            <img class="poem-card__img" src="/poems/Possibility.png" alt="Possibility" loading="lazy">
+            <p class="poem-card__title">Possibility</p>
+          </div>
+          <div class="poem-card" data-poem="Sleep" data-title="Sleep" role="button" tabindex="0">
+            <img class="poem-card__img" src="/poems/Sleep.png" alt="Sleep" loading="lazy">
+            <p class="poem-card__title">Sleep</p>
+          </div>
+          <div class="poem-card" data-poem="TheDancewithDeath" data-title="The Dance with Death" role="button" tabindex="0">
+            <img class="poem-card__img" src="/poems/TheDancewithDeath.png" alt="The Dance with Death" loading="lazy">
+            <p class="poem-card__title">The Dance with Death</p>
+          </div>
+          <div class="poem-card" data-poem="TheFight" data-title="The Fight" role="button" tabindex="0">
+            <img class="poem-card__img" src="/poems/TheFight.png" alt="The Fight" loading="lazy">
+            <p class="poem-card__title">The Fight</p>
+          </div>
+          <div class="poem-card" data-poem="ThetrialsofDanger" data-title="The trials of Danger" role="button" tabindex="0">
+            <img class="poem-card__img" src="/poems/ThetrialsofDanger.png" alt="The trials of Danger" loading="lazy">
+            <p class="poem-card__title">The trials of Danger</p>
+          </div>
+          <div class="poem-card" data-poem="ToHer" data-title="To Her" role="button" tabindex="0">
+            <img class="poem-card__img" src="/poems/ToHer.png" alt="To Her" loading="lazy">
+            <p class="poem-card__title">To Her</p>
+          </div>
+          <div class="poem-card" data-poem="TotheStrivers" data-title="To the Strivers" role="button" tabindex="0">
+            <img class="poem-card__img" src="/poems/TotheStrivers.png" alt="To the Strivers" loading="lazy">
+            <p class="poem-card__title">To the Strivers</p>
+          </div>
+          <div class="poem-card" data-poem="WisdomisPain" data-title="Wisdom is Pain" role="button" tabindex="0">
+            <img class="poem-card__img" src="/poems/WisdomisPain.png" alt="Wisdom is Pain" loading="lazy">
+            <p class="poem-card__title">Wisdom is Pain</p>
+          </div>
+
+        </div>
+
         <!-- Rabbit Holes — long-form essays with a sticky timeline -->
         <ul class="rh-shelf" id="rh-shelf" hidden>
           <li>
@@ -3389,6 +3702,18 @@ Tickets below</p></div>
     </div>
   </dialog>
 
+  <!-- Poem lightbox (image + text poems) -->
+  <dialog class="poem-lightbox" id="poem-dialog" aria-labelledby="poem-dialog-title">
+    <div class="poem-lightbox__header">
+      <p class="poem-lightbox__title" id="poem-dialog-title"></p>
+      <button class="poem-lightbox__close" id="poem-dialog-close">Close ×</button>
+    </div>
+    <div class="poem-lightbox__body">
+      <img class="poem-lightbox__img" id="poem-dialog-img" src="" alt="">
+      <div class="poem-lightbox__text" id="poem-dialog-text" hidden></div>
+    </div>
+  </dialog>
+
   <script src="/js/site.js"></script>
   <script>
     var modal = document.getElementById('post-modal');
@@ -3421,6 +3746,7 @@ Tickets below</p></div>
     var lettersList = document.getElementById('post-list');
     var postsList = document.getElementById('li-post-list');
     var rhShelf = document.getElementById('rh-shelf');
+    var poemsGrid = document.getElementById('poems-grid');
     var liControls = document.getElementById('li-controls');
     var ctaLetters = document.getElementById('writing-cta-letters');
     var ctaPosts = document.getElementById('writing-cta-posts');
@@ -3437,12 +3763,14 @@ Tickets below</p></div>
       if (catCounts[c] === undefined) catCounts[c] = 0;
       catCounts[c]++;
     });
-    // The three Substack tabs each map to a data-category value.
-    var SUBSTACK_TABS = { updates: 'update', letters: 'letter', poems: 'poem' };
+    // Updates and Letters map to a data-category value. Poems is its own grid
+    // (the handwritten collection merged in from the old /poems/ page).
+    var SUBSTACK_TABS = { updates: 'update', letters: 'letter' };
+    var poemCount = poemsGrid ? poemsGrid.querySelectorAll('.poem-card').length : 0;
 
     document.getElementById('updates-count').textContent = '· ' + catCounts.update;
     document.getElementById('letters-count').textContent = '· ' + catCounts.letter;
-    document.getElementById('poems-count').textContent = '· ' + catCounts.poem;
+    document.getElementById('poems-count').textContent = '· ' + poemCount;
     document.getElementById('posts-count').textContent = '· ' + postsTotal;
     var liTotalLbl = document.getElementById('li-total');
     if (liTotalLbl) liTotalLbl.textContent = '(' + postsTotal + ')';
@@ -3465,7 +3793,8 @@ Tickets below</p></div>
       postsList.hidden = name !== 'posts';
       liControls.hidden = name !== 'posts';
       if (rhShelf) rhShelf.hidden = name !== 'rabbit-holes';
-      // CTAs — Substack (subscribe) for the three Substack tabs, LinkedIn for posts
+      if (poemsGrid) poemsGrid.hidden = name !== 'poems';
+      // CTAs — Substack (subscribe) for Updates/Letters, LinkedIn for posts.
       ctaLetters.hidden = !isSubstack;
       ctaPosts.hidden = name !== 'posts';
     }
@@ -3482,6 +3811,53 @@ Tickets below</p></div>
     if (location.hash === '#rabbit-holes') {
       showTab('rabbit-holes');
       history.replaceState(null, '', location.pathname);
+    } else if (location.hash === '#poems') {
+      showTab('poems');
+      history.replaceState(null, '', location.pathname);
+    }
+
+    // ── Poem lightbox (image + text poems) ────────────────────────────────
+    var poemDialog = document.getElementById('poem-dialog');
+    if (poemDialog) {
+      var poemTitle = document.getElementById('poem-dialog-title');
+      var poemImg = document.getElementById('poem-dialog-img');
+      var poemText = document.getElementById('poem-dialog-text');
+      var poemBody = poemDialog.querySelector('.poem-lightbox__body');
+
+      function openPoem(file, title) {
+        poemTitle.textContent = title;
+        poemImg.src = '/poems/' + file + '.png';
+        poemImg.alt = title;
+        poemImg.hidden = false;
+        poemText.hidden = true;
+        poemText.innerHTML = '';
+        poemDialog.showModal();
+        poemBody.scrollTop = 0;
+      }
+      function openTextPoem(card, title) {
+        poemTitle.textContent = title;
+        poemImg.hidden = true;
+        poemImg.src = '';
+        var tpl = card.querySelector('.poem-text-tpl');
+        poemText.innerHTML = '';
+        if (tpl) poemText.appendChild(tpl.content.cloneNode(true));
+        poemText.hidden = false;
+        poemDialog.showModal();
+        poemBody.scrollTop = 0;
+      }
+      document.querySelectorAll('.poem-card').forEach(function(card) {
+        function open() {
+          if (card.classList.contains('poem-card--text')) openTextPoem(card, card.dataset.title);
+          else openPoem(card.dataset.poem, card.dataset.title);
+        }
+        card.addEventListener('click', open);
+        card.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); }
+        });
+      });
+      document.getElementById('poem-dialog-close').addEventListener('click', function() { poemDialog.close(); });
+      poemImg.addEventListener('click', function() { poemDialog.close(); });
+      poemDialog.addEventListener('click', function(e) { if (e.target === poemDialog) poemDialog.close(); });
     }
 
     // ── Substack post buttons → modal ─────────────────────────────────────
