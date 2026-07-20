@@ -133,6 +133,7 @@
       color: var(--fg-70);
       margin: 0 0 8px 0;
     }
+    .rh-listen { margin-top: 18px; }
     .rh-article__meta {
       font-family: var(--font-mono);
       font-size: 0.72rem;
@@ -352,8 +353,15 @@
           <h1 class="rh-article__title">A History of Education</h1>
           <p class="rh-article__subtitle">From play and imitation to Prussian classrooms — how schooling came to be.</p>
           <p class="rh-article__meta">by James Floyd</p>
+          <div class="rh-listen">
+            <button class="read-aloud" type="button" data-read-aloud="#rh-readable" aria-pressed="false" aria-label="Read this essay aloud">
+              <span class="read-aloud__ico" aria-hidden="true">▶</span>
+              <span class="read-aloud__label">Listen</span>
+            </button>
+          </div>
         </header>
 
+        <div id="rh-readable">
         <section id="pre-speech" class="rh-section">
           <h2>Pre-Speech <span class="rh-section__date">~2M – 100k BCE</span></h2>
           <p>Social mobility and education were simply done through play and imitation, resulting in skill.</p>
@@ -446,6 +454,7 @@
           <h2>Myths</h2>
           <p>Horace Mann and worker docility. The common story says Mann wanted schools that produced factory workers who wouldn't unionize or riot, and that classroom discipline existed to make people docile at work. That isn't what Mann argued. In his real reports through the 1840s, Mann gathered testimony from employers who said educated workers were steadier and more productive and worth paying more. He argued that money spent on schools saved money spent on prisons later. He called education the balance wheel of the social machinery, the thing that would ease tension between rich and poor by giving everyone a real shot at rising, not the thing that would keep the poor in their place. When critics in his own era accused Prussian-style schooling of teaching blind obedience to the state, Mann pushed back and denied it directly. The docility story traces to economists writing more than a century later, in the 1970s, who read a control motive into Mann's arguments about order and productivity. It's a modern interpretation laid on top of Mann, not something Mann said himself.</p>
         </section>
+        </div>
 
         <a href="/writing/#rabbit-holes" class="rh-back">← Back to Writing</a>
       </article>
@@ -523,5 +532,6 @@
       update();
     })();
   </script>
+  <script src="/js/read-aloud.js"></script>
 </body>
 </html>
