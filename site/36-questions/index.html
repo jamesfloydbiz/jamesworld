@@ -287,6 +287,57 @@
     }
     .q-cite a { color: var(--fg-60); text-decoration: underline; text-underline-offset: 3px; }
 
+    /* ── Views (intro / deck) ──────────────────────────────────────────── */
+    @keyframes qViewIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+    .q-deck-view:not([hidden]) { animation: qViewIn 0.4s ease; }
+
+    /* Intro is centered and calm */
+    .q-intro-view { text-align: center; padding-top: clamp(1rem, 6vh, 4rem); }
+    .q-intro-view .q-title { margin-bottom: 0.5rem; }
+    .q-intro-view .q-sub { margin-bottom: 0; }
+    .q-intro-view .q-how { margin-top: 0.75rem; }
+    .q-intro-view .q-note { margin-top: 3rem; }
+    .q-intro-view .q-cite { text-align: center; }
+
+    .q-begin-row { margin-top: 2.75rem; }
+    .q-begin {
+      min-height: 54px;
+      padding: 0 34px;
+      border: 1px solid var(--fg);
+      border-radius: 999px;
+      background: var(--fg);
+      color: var(--bg);
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.15s;
+    }
+    .q-begin:hover { opacity: 0.88; transform: translateY(-1px); }
+
+    /* Minimal jump toggle */
+    .q-jump-toggle-row { text-align: center; margin-top: 1.75rem; }
+    .q-jumpbtn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px 10px;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--fg-45);
+      transition: color 0.2s;
+    }
+    .q-jumpbtn:hover { color: var(--fg-70); }
+    .q-jumpbtn.is-open { color: var(--fg-80); }
+    .q-jumpbtn__ico { font-size: 0.95rem; line-height: 1; }
+    .q-jump { margin-top: 1.25rem; }
+
     @media (max-width: 420px) {
       .q-num { width: 34px; height: 34px; font-size: 0.75rem; }
       .q-arrow { padding: 0 14px; font-size: 0.72rem; }
@@ -331,83 +382,94 @@
     <div class="page-content anim-fade-up" style="animation-delay:0.4s">
       <div class="q-wrap">
 
-        <div class="q-intro">
-          <h1 class="page-title" style="margin-bottom:0.5rem;">36 Questions</h1>
-          <p class="page-subtitle" style="margin-bottom:0;">The questions that build closeness — done right.</p>
-          <p class="q-how">
-            Two people, taking turns, through three sets that go deeper as you climb.
-            Jump to any question below, or move through in order at your own pace.
-          </p>
-        </div>
+        <!-- ══════════ INTRO VIEW ══════════ -->
+        <section class="q-view q-intro-view" id="q-intro">
+          <h1 class="page-title q-title">36 Questions</h1>
+          <p class="page-subtitle q-sub">The questions that build closeness — done right.</p>
+          <p class="q-how">Two people, taking turns, through three sets that go deeper as you climb.</p>
 
-        <!-- Question card -->
-        <section class="q-card q-in" id="q-card" aria-live="polite">
-          <span class="q-progress" id="q-progress"></span>
-          <div class="q-body">
-            <p class="q-eyebrow" id="q-eyebrow"></p>
-            <p class="q-text" id="q-text"></p>
+          <!-- Note from James -->
+          <div class="q-note" id="q-note">
+            <button class="q-note__toggle" id="q-note-toggle" type="button" aria-expanded="false" aria-controls="q-note-letter">
+              <span class="q-env" aria-hidden="true">
+                <span class="q-env__back"></span>
+                <span class="q-env__paper"></span>
+                <span class="q-env__front"></span>
+                <span class="q-env__flap"></span>
+              </span>
+              <span class="q-note__label">Note from James</span>
+            </button>
+            <div class="q-note__letter" id="q-note-letter">
+              <p>I was enjoying these questions with my person, but not the 36questions site — so I made a better one.</p>
+              <p>Credit for most of the content goes to Dr. Arthur Aron and his research team, who created these questions in a 1997 study — and to Mandy Len Catron, whose New York Times “Modern Love” essay sent them around the world.</p>
+              <p class="q-note__sign">— James</p>
+            </div>
           </div>
+
+          <div class="q-begin-row">
+            <button class="q-begin" id="q-begin" type="button">Begin →</button>
+          </div>
+
+          <p class="q-cite">
+            Questions from Aron et&nbsp;al. (1997), “The Experimental Generation of Interpersonal Closeness.”
+            Popularized by Mandy Len Catron,
+            <a href="https://www.nytimes.com/2015/01/11/style/modern-love-to-fall-in-love-with-anyone-do-this.html" target="_blank" rel="noopener noreferrer">The&nbsp;New&nbsp;York&nbsp;Times</a>, 2015.
+          </p>
         </section>
 
-        <!-- Arrow controls -->
-        <div class="q-controls">
-          <button class="q-arrow" id="q-prev" type="button" aria-label="Previous question">
-            <span class="q-arrow__ico" aria-hidden="true">‹</span> Prev
-          </button>
-          <span class="q-count" id="q-count">01 / 36</span>
-          <button class="q-arrow" id="q-next" type="button" aria-label="Next question">
-            Next <span class="q-arrow__ico" aria-hidden="true">›</span>
-          </button>
-        </div>
+        <!-- ══════════ DECK VIEW ══════════ -->
+        <section class="q-view q-deck-view" id="q-deck" hidden>
 
-        <!-- Jump grid -->
-        <div class="q-jump" id="q-jump">
-          <div class="q-jump__group">
-            <span class="q-jump__label">Set I · Warming up</span>
-            <div class="q-jump__nums" data-start="1" data-end="12"></div>
-          </div>
-          <div class="q-jump__group">
-            <span class="q-jump__label">Set II · Getting personal</span>
-            <div class="q-jump__nums" data-start="13" data-end="24"></div>
-          </div>
-          <div class="q-jump__group">
-            <span class="q-jump__label">Set III · Most vulnerable</span>
-            <div class="q-jump__nums" data-start="25" data-end="36"></div>
-          </div>
-        </div>
+          <section class="q-card q-in" id="q-card" aria-live="polite">
+            <span class="q-progress" id="q-progress"></span>
+            <div class="q-body">
+              <p class="q-eyebrow" id="q-eyebrow"></p>
+              <p class="q-text" id="q-text"></p>
+            </div>
+          </section>
 
-        <!-- Finale -->
-        <div class="q-finale">
-          When you finish, the original study ends with <strong>four minutes of silent eye contact</strong>.
-          <div class="q-timer">
-            <span class="q-timer__clock" id="q-clock">4:00</span>
-            <button class="q-timer__btn" id="q-timer-btn" type="button">Start</button>
+          <div class="q-controls">
+            <button class="q-arrow" id="q-prev" type="button" aria-label="Previous question">
+              <span class="q-arrow__ico" aria-hidden="true">‹</span> Prev
+            </button>
+            <span class="q-count" id="q-count">01 / 36</span>
+            <button class="q-arrow" id="q-next" type="button" aria-label="Next question">
+              Next <span class="q-arrow__ico" aria-hidden="true">›</span>
+            </button>
           </div>
-        </div>
 
-        <!-- Note from James -->
-        <div class="q-note" id="q-note">
-          <button class="q-note__toggle" id="q-note-toggle" type="button" aria-expanded="false" aria-controls="q-note-letter">
-            <span class="q-env" aria-hidden="true">
-              <span class="q-env__back"></span>
-              <span class="q-env__paper"></span>
-              <span class="q-env__front"></span>
-              <span class="q-env__flap"></span>
-            </span>
-            <span class="q-note__label">Note from James</span>
-          </button>
-          <div class="q-note__letter" id="q-note-letter">
-            <p>I was enjoying these questions with my person, but not the 36questions site — so I made a better one.</p>
-            <p>Credit for most of the content goes to Dr. Arthur Aron and his research team, who created these questions in a 1997 study — and to Mandy Len Catron, whose New York Times “Modern Love” essay sent them around the world.</p>
-            <p class="q-note__sign">— James</p>
+          <!-- Jump grid, hidden behind a minimal toggle -->
+          <div class="q-jump-toggle-row">
+            <button class="q-jumpbtn" id="q-jump-btn" type="button" aria-expanded="false" aria-controls="q-jump">
+              <span class="q-jumpbtn__ico" aria-hidden="true">▦</span>
+              <span class="q-jumpbtn__txt">Jump to a question</span>
+            </button>
           </div>
-        </div>
+          <div class="q-jump" id="q-jump" hidden>
+            <div class="q-jump__group">
+              <span class="q-jump__label">Set I · Warming up</span>
+              <div class="q-jump__nums" data-start="1" data-end="12"></div>
+            </div>
+            <div class="q-jump__group">
+              <span class="q-jump__label">Set II · Getting personal</span>
+              <div class="q-jump__nums" data-start="13" data-end="24"></div>
+            </div>
+            <div class="q-jump__group">
+              <span class="q-jump__label">Set III · Most vulnerable</span>
+              <div class="q-jump__nums" data-start="25" data-end="36"></div>
+            </div>
+          </div>
 
-        <p class="q-cite">
-          Questions from Aron et&nbsp;al. (1997), “The Experimental Generation of Interpersonal Closeness.”
-          Popularized by Mandy Len Catron,
-          <a href="https://www.nytimes.com/2015/01/11/style/modern-love-to-fall-in-love-with-anyone-do-this.html" target="_blank" rel="noopener noreferrer">The&nbsp;New&nbsp;York&nbsp;Times</a>, 2015.
-        </p>
+          <!-- Finale — only shown once you reach Q36 -->
+          <div class="q-finale" id="q-finale" hidden>
+            You made it. The original study ends with <strong>four minutes of silent eye contact</strong>.
+            <div class="q-timer">
+              <span class="q-timer__clock" id="q-clock">4:00</span>
+              <button class="q-timer__btn" id="q-timer-btn" type="button">Start</button>
+            </div>
+          </div>
+
+        </section>
 
       </div>
     </div>
@@ -464,6 +526,18 @@
     var progressEl = document.getElementById('q-progress');
     var prevBtn = document.getElementById('q-prev');
     var nextBtn = document.getElementById('q-next');
+    var finaleEl = document.getElementById('q-finale');
+    var introView = document.getElementById('q-intro');
+    var deckView = document.getElementById('q-deck');
+    var beginBtn = document.getElementById('q-begin');
+    var jumpBtn = document.getElementById('q-jump-btn');
+    var jumpPanel = document.getElementById('q-jump');
+
+    function closeJump() {
+      jumpPanel.hidden = true;
+      jumpBtn.classList.remove('is-open');
+      jumpBtn.setAttribute('aria-expanded', 'false');
+    }
 
     var current = 0;
 
@@ -479,7 +553,7 @@
           b.className = 'q-num';
           b.textContent = idx + 1;
           b.setAttribute('aria-label', 'Go to question ' + (idx + 1));
-          b.addEventListener('click', function () { render(idx); });
+          b.addEventListener('click', function () { render(idx); closeJump(); });
           row.appendChild(b);
           numButtons[idx] = b;
         })(n - 1);
@@ -505,6 +579,8 @@
       for (var k = 0; k < numButtons.length; k++) {
         numButtons[k].classList.toggle('is-active', k === i);
       }
+      // The eye-contact timer only appears once you've reached the last question.
+      finaleEl.hidden = (i !== TOTAL - 1);
       // Restart the entrance animation (reflow forces it to replay from 0).
       card.classList.remove('q-in');
       void card.offsetWidth;
@@ -515,12 +591,29 @@
     nextBtn.addEventListener('click', function () { render(current + 1); });
 
     document.addEventListener('keydown', function (e) {
+      if (deckView.hidden) return;               // arrows only matter inside the deck
       if (e.metaKey || e.ctrlKey || e.altKey) return;
       if (e.key === 'ArrowRight') { render(current + 1); }
       else if (e.key === 'ArrowLeft') { render(current - 1); }
     });
 
     render(0);
+
+    // ── Intro → deck ──────────────────────────────────────────────────────
+    beginBtn.addEventListener('click', function () {
+      introView.hidden = true;
+      deckView.hidden = false;
+      render(0);
+      window.scrollTo(0, 0);
+    });
+
+    // ── Jump grid behind a minimal toggle ────────────────────────────────
+    jumpBtn.addEventListener('click', function () {
+      var opening = jumpPanel.hidden;
+      jumpPanel.hidden = !opening;
+      jumpBtn.classList.toggle('is-open', opening);
+      jumpBtn.setAttribute('aria-expanded', opening ? 'true' : 'false');
+    });
 
     // ── Note envelope: hover opens on desktop; tap toggles on touch ───────
     var note = document.getElementById('q-note');
