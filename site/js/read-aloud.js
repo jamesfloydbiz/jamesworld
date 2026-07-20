@@ -1,11 +1,15 @@
 /* ═══════════════════════════════════════════════════════════════════════════
    Read-aloud — narrates page content in a natural neural voice (Kokoro TTS,
-   voice "am_michael"), running 100% in the browser. The model (~80MB) loads
-   lazily on the first Listen click and is cached after. Falls back to the
-   browser's built-in speech engine if Kokoro can't load (old browser, etc.).
-   Any <button data-read-aloud="#selector"> reads that element's text.
-   Exposes window.ReadAloud.stopAll() so pages can stop narration (e.g. on
-   closing a modal).
+   voice "am_michael"), running 100% in the browser. The model (~86MB, q8)
+   loads lazily on the first Listen click and is cached after. Falls back to the
+   browser's built-in speech engine if Kokoro can't load.
+
+   Playback goes through the Web Audio API, and the AudioContext is resumed
+   INSIDE the click handler (a user gesture) — otherwise browsers (iOS Safari
+   especially) block audio that starts after the async model load + generation.
+
+   Any <button data-read-aloud="#selector"> reads that element's text. Buttons
+   ship hidden and are revealed here. window.ReadAloud.stopAll() stops narration.
    ═════════════════════════════════════════════════════════════════════════ */
 (function () {
   var VOICE = 'am_michael';
@@ -15,7 +19,8 @@
   var synth = HAS_SPEECH ? window.speechSynthesis : null;
 
   var controls = [];
-  var K = { tts: null, promise: null, failed: false };  // shared Kokoro engine
+  var K = { tts: null, promise: null, failed: false };
+  var progressCb = null;   // set by whichever control is currently loading
 
   function loadKokoro() {
     if (K.tts) return Promise.resolve(K.tts);
@@ -23,21 +28,33 @@
     if (K.promise) return K.promise;
     K.promise = (async function () {
       var mod = await import(CDN);
-      var device = ('gpu' in navigator) ? 'webgpu' : 'wasm';
-      return await mod.KokoroTTS.from_pretrained(MODEL, {
-        dtype: device === 'webgpu' ? 'fp32' : 'q8',
-        device: device
-      });
+      function make(device) {
+        return mod.KokoroTTS.from_pretrained(MODEL, {
+          dtype: 'q8',
+          device: device,
+          progress_callback: function (p) {
+            if (progressCb && p && p.status === 'progress' && p.total && /\.onnx/i.test(p.file || '')) {
+              progressCb(Math.round((p.loaded / p.total) * 100));
+            }
+          }
+        });
+      }
+      if ('gpu' in navigator) {
+        try { return await make('webgpu'); } catch (e) { /* fall back to wasm */ }
+      }
+      return await make('wasm');
     })();
     K.promise.then(function (tts) { K.tts = tts; }, function () { K.failed = true; });
     return K.promise;
   }
 
-  var audioEl = null;
-  function audio() {
-    if (!audioEl) { audioEl = document.createElement('audio'); audioEl.setAttribute('aria-hidden', 'true'); document.body.appendChild(audioEl); }
-    return audioEl;
+  // Web Audio context — created + resumed inside a click so playback is allowed.
+  var actx = null;
+  function ctx() {
+    if (!actx) { var C = window.AudioContext || window.webkitAudioContext; if (C) actx = new C(); }
+    return actx;
   }
+  function unlock() { var c = ctx(); if (c && c.state === 'suspended') { try { c.resume(); } catch (e) {} } }
 
   function getText(el) {
     var t = (el.innerText || el.textContent || '');
@@ -63,13 +80,13 @@
   }
 
   function makeControl(btn, target) {
-    var chunks = [], idx = 0, state = 'idle', fallback = false, prefetch = null, token = 0;
+    var chunks = [], idx = 0, state = 'idle', fallback = false, prefetch = null, token = 0, srcNode = null;
     var labelEl = btn.querySelector('.read-aloud__label');
     var icoEl = btn.querySelector('.read-aloud__ico');
 
-    function set(s) {
+    function set(s, text) {
       state = s; btn.dataset.state = s;
-      var t = s === 'loading' ? 'Loading…' : s === 'playing' ? 'Pause' : s === 'paused' ? 'Resume' : 'Listen';
+      var t = text || (s === 'loading' ? 'Loading…' : s === 'playing' ? 'Pause' : s === 'paused' ? 'Resume' : 'Listen');
       if (labelEl) labelEl.textContent = t;
       if (icoEl) icoEl.textContent = s === 'playing' ? '⏸' : s === 'loading' ? '…' : '▶';
       btn.setAttribute('aria-pressed', s === 'playing' ? 'true' : 'false');
@@ -87,66 +104,79 @@
       synth.speak(u);
     }
 
-    // ── Kokoro path ──────────────────────────────────────────────────────
-    async function genChunk(i) {
+    // ── Kokoro path (Web Audio) ──────────────────────────────────────────
+    async function genRaw(i) {
       if (i >= chunks.length) return null;
       var out = await K.tts.generate(chunks[i], { voice: VOICE });
-      return URL.createObjectURL(out.toBlob());
+      return { data: out.audio, rate: out.sampling_rate };
+    }
+    function playBuffer(raw, onEnd) {
+      var c = ctx();
+      if (!c || !raw || !raw.data) { onEnd(); return; }
+      var buf = c.createBuffer(1, raw.data.length, raw.rate);
+      buf.getChannelData(0).set(raw.data);
+      srcNode = c.createBufferSource();
+      srcNode.buffer = buf;
+      srcNode.connect(c.destination);
+      srcNode.onended = onEnd;
+      srcNode.start();
     }
     async function kokoroPlay(i) {
       var mine = token;
       if (state === 'idle' || mine !== token) return;
       if (i >= chunks.length) { stop(); return; }
       idx = i;
-      var url;
-      try { url = prefetch || await genChunk(i); }
+      var raw;
+      try { raw = prefetch || await genRaw(i); }
       catch (e) { stop(); return; }
       prefetch = null;
-      if (state === 'idle' || mine !== token) { if (url) URL.revokeObjectURL(url); return; }
-      var a = audio();
-      a.src = url;
-      a.onended = function () { URL.revokeObjectURL(url); if (state !== 'idle' && mine === token) kokoroPlay(i + 1); };
-      try { await a.play(); } catch (e) {}
+      if (state === 'idle' || mine !== token) return;
+      playBuffer(raw, function () { if (state !== 'idle' && mine === token) kokoroPlay(i + 1); });
       set('playing');
       // Prefetch the next chunk while this one plays (smoother transitions).
-      genChunk(i + 1).then(function (u) { if (mine === token) prefetch = u; else if (u) URL.revokeObjectURL(u); }, function () {});
+      genRaw(i + 1).then(function (r) { if (mine === token) prefetch = r; }, function () {});
     }
 
     async function start() {
       var txt = getText(target); if (!txt) return;
       chunks = chunkText(txt); idx = 0; token++;
       set('loading');
+      progressCb = function (pct) { if (state === 'loading') set('loading', 'Loading ' + pct + '%'); };
       try {
         await loadKokoro();
+        progressCb = null;
         if (state !== 'loading') return;   // cancelled during load
-        state = 'playing';
-        kokoroPlay(0);
+        set('loading', 'Starting…');
+        kokoroPlay(idx);
       } catch (e) {
-        if (HAS_SPEECH) { fallback = true; state = 'playing'; set('playing'); speechNext(); }
-        else { set('idle'); }
+        progressCb = null;
+        if (HAS_SPEECH) { fallback = true; set('playing'); speechNext(); }
+        else { set('idle', 'Unavailable'); }
       }
     }
     function pause() {
       if (fallback) { try { synth.pause(); } catch (e) {} }
-      else { audio().pause(); }
+      else if (actx) { try { actx.suspend(); } catch (e) {} }
       set('paused');
     }
     function resume() {
       if (fallback) { try { synth.resume(); } catch (e) {} }
-      else { audio().play().catch(function () {}); }
+      else if (actx) { try { actx.resume(); } catch (e) {} }
       set('playing');
     }
     function stop() {
       token++;
       if (fallback) { try { synth.cancel(); } catch (e) {} fallback = false; }
-      else if (audioEl) { audioEl.pause(); audioEl.onended = null; try { audioEl.removeAttribute('src'); audioEl.load(); } catch (e) {} }
-      if (prefetch) { URL.revokeObjectURL(prefetch); prefetch = null; }
-      idx = 0; set('idle');
+      else {
+        if (srcNode) { try { srcNode.onended = null; srcNode.stop(); } catch (e) {} srcNode = null; }
+        if (actx && actx.state === 'suspended') { try { actx.resume(); } catch (e) {} }
+      }
+      prefetch = null; idx = 0; set('idle');
     }
 
     btn.addEventListener('click', function () {
-      if (state === 'idle') { stopOthers(ctrl); start(); }
-      else if (state === 'loading') { stop(); }        // cancel while loading
+      if (state === 'idle') { unlock(); stopOthers(ctrl); start(); }   // unlock audio in the gesture
+      else if (state === 'loading') { stop(); }                        // cancel while loading
       else if (state === 'playing') { pause(); }
       else if (state === 'paused') { resume(); }
     });
