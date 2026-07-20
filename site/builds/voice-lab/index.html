@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Voice Lab — James Floyd</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=EB+Garamond:ital,wght@0,400;1,400&family=DM+Mono:wght@300;400&family=Newsreader:ital,wght@0,400;1,400&display=swap">
+  <link rel="stylesheet" href="/css/site.css">
+  <style>
+    .vl-wrap { max-width: 760px; margin: 0 auto; }
+    .vl-note {
+      font-family: 'EB Garamond', Georgia, serif;
+      color: var(--fg-70); line-height: 1.6; font-size: 1rem;
+      border-left: 2px solid var(--border); padding-left: 1rem; margin: 1.25rem 0 2rem;
+    }
+    .vl-sample {
+      width: 100%; min-height: 90px; resize: vertical;
+      background: var(--secondary-bg, #17130f); color: var(--fg);
+      border: 1px solid var(--border); border-radius: 6px; padding: 12px 14px;
+      font-family: 'Newsreader', Georgia, serif; font-size: 1rem; line-height: 1.5;
+    }
+    .vl-bar { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin: 1rem 0 0.5rem; }
+    .vl-btn {
+      min-height: 46px; padding: 0 20px; border: 1px solid var(--fg); border-radius: 999px;
+      background: var(--fg); color: var(--bg); cursor: pointer;
+      font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.14em; text-transform: uppercase;
+      transition: opacity 0.2s;
+    }
+    .vl-btn:hover { opacity: 0.88; }
+    .vl-btn:disabled { opacity: 0.4; cursor: default; }
+    .vl-status {
+      font-family: var(--font-mono); font-size: 0.75rem; color: var(--fg-60); letter-spacing: 0.04em;
+      min-height: 1.2em; margin: 0.25rem 0 1.25rem;
+    }
+    .vl-progress { height: 4px; background: var(--border); border-radius: 4px; overflow: hidden; margin-top: 8px; }
+    .vl-progress__fill { height: 100%; width: 0; background: var(--fg); transition: width 0.2s; }
+    .vl-group__label {
+      font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--fg-45); margin: 1.5rem 0 0.75rem;
+    }
+    .vl-voices { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+    .vl-voice {
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 14px; border: 1px solid var(--border); border-radius: 6px;
+      background: none; color: var(--fg-80); cursor: pointer; text-align: left;
+      font-family: var(--font-mono); font-size: 0.8rem;
+      transition: border-color 0.2s, color 0.2s, background 0.2s;
+    }
+    .vl-voice:hover:not(:disabled) { border-color: var(--fg-45); color: var(--fg); }
+    .vl-voice:disabled { opacity: 0.35; cursor: default; }
+    .vl-voice.is-playing { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+    .vl-voice__id { font-size: 0.62rem; color: var(--fg-45); margin-left: auto; }
+    .vl-voice.is-playing .vl-voice__id { color: var(--bg); opacity: 0.7; }
+    .vl-hidden { display: none; }
+  </style>
+</head>
+<body>
+
+  <header class="site-header anim-slide-dn">
+    <a href="/" class="site-header__logo" aria-label="Return to home"><img src="/logo.svg" alt="JF"></a>
+    <a href="/builds/" style="font-family:var(--font-mono);font-size:0.72rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--fg-55);text-decoration:none;">← Builds</a>
+  </header>
+
+  <main class="page">
+    <div class="page-content" style="padding-top:24px;">
+      <div class="vl-wrap">
+
+        <h1 class="page-title" style="margin-bottom:0.5rem;">Voice Lab</h1>
+        <p class="page-subtitle" style="margin-bottom:0;">Audition the Kokoro voices and pick the one the whole site will use.</p>
+
+        <div class="vl-note">
+          Private tool (not linked or indexed). Click <strong>Load the voice engine</strong> once — it downloads
+          the neural model (~80&nbsp;MB, cached after). Then tap any voice to hear the sample below in that voice.
+          When you find the one you like, tell me its <strong>id</strong> (e.g. <code>am_michael</code>) and I'll make
+          it the voice every visitor hears.
+        </div>
+
+        <textarea class="vl-sample" id="vl-sample">Thank you for your curiosity. My name is James Floyd. I was born in Yolo County, California, but now live in New York City.</textarea>
+
+        <div class="vl-bar">
+          <button class="vl-btn" id="vl-load" type="button">Load the voice engine</button>
+          <label style="font-family:var(--font-mono);font-size:0.7rem;letter-spacing:0.1em;color:var(--fg-60);display:inline-flex;align-items:center;gap:6px;">
+            <input type="checkbox" id="vl-webgpu" checked> Use WebGPU (faster)
+          </label>
+        </div>
+        <div class="vl-status" id="vl-status">Idle — the engine hasn't loaded yet.</div>
+        <div class="vl-progress vl-hidden" id="vl-progress-wrap"><div class="vl-progress__fill" id="vl-progress"></div></div>
+
+        <div id="vl-voice-area" class="vl-hidden"></div>
+
+        <audio id="vl-audio" class="vl-hidden"></audio>
+      </div>
+    </div>
+  </main>
+
+  <script src="/js/site.js"></script>
+  <script type="module">
+    var VOICES = {
+      'American — Female': [
+        ['Heart', 'af_heart'], ['Bella', 'af_bella'], ['Nicole', 'af_nicole'], ['Aoede', 'af_aoede'],
+        ['Kore', 'af_kore'], ['Sarah', 'af_sarah'], ['Nova', 'af_nova'], ['Sky', 'af_sky'],
+        ['Alloy', 'af_alloy'], ['Jessica', 'af_jessica'], ['River', 'af_river']
+      ],
+      'American — Male': [
+        ['Michael', 'am_michael'], ['Fenrir', 'am_fenrir'], ['Puck', 'am_puck'], ['Echo', 'am_echo'],
+        ['Eric', 'am_eric'], ['Liam', 'am_liam'], ['Onyx', 'am_onyx'], ['Adam', 'am_adam'], ['Santa', 'am_santa']
+      ],
+      'British — Female': [
+        ['Emma', 'bf_emma'], ['Isabella', 'bf_isabella'], ['Alice', 'bf_alice'], ['Lily', 'bf_lily']
+      ],
+      'British — Male': [
+        ['George', 'bm_george'], ['Fable', 'bm_fable'], ['Daniel', 'bm_daniel'], ['Lewis', 'bm_lewis']
+      ]
+    };
+
+    var statusEl = document.getElementById('vl-status');
+    var loadBtn = document.getElementById('vl-load');
+    var progWrap = document.getElementById('vl-progress-wrap');
+    var progFill = document.getElementById('vl-progress');
+    var area = document.getElementById('vl-voice-area');
+    var audio = document.getElementById('vl-audio');
+    var sampleEl = document.getElementById('vl-sample');
+    var webgpuBox = document.getElementById('vl-webgpu');
+
+    var tts = null, busy = false, activeBtn = null;
+
+    function status(msg) { statusEl.textContent = msg; }
+
+    function buildVoiceUI() {
+      area.innerHTML = '';
+      Object.keys(VOICES).forEach(function (group) {
+        var lbl = document.createElement('div');
+        lbl.className = 'vl-group__label';
+        lbl.textContent = group;
+        area.appendChild(lbl);
+        var grid = document.createElement('div');
+        grid.className = 'vl-voices';
+        VOICES[group].forEach(function (v) {
+          var b = document.createElement('button');
+          b.className = 'vl-voice';
+          b.type = 'button';
+          b.innerHTML = '<span>▶ ' + v[0] + '</span><span class="vl-voice__id">' + v[1] + '</span>';
+          b.addEventListener('click', function () { speak(v[1], b); });
+          grid.appendChild(b);
+        });
+        area.appendChild(grid);
+      });
+      area.classList.remove('vl-hidden');
+    }
+
+    async function speak(voiceId, btn) {
+      if (!tts || busy) return;
+      busy = true;
+      if (activeBtn) activeBtn.classList.remove('is-playing');
+      activeBtn = btn; btn.classList.add('is-playing');
+      status('Generating “' + voiceId + '”…');
+      try {
+        var text = (sampleEl.value || 'Hello.').trim();
+        var out = await tts.generate(text, { voice: voiceId });
+        var blob = out.toBlob();
+        if (audio.src) URL.revokeObjectURL(audio.src);
+        audio.src = URL.createObjectURL(blob);
+        audio.classList.remove('vl-hidden');
+        await audio.play();
+        status('Playing “' + voiceId + '”. Like it? Tell me this id: ' + voiceId);
+      } catch (e) {
+        status('Error generating ' + voiceId + ': ' + (e && e.message ? e.message : e));
+      } finally {
+        busy = false;
+      }
+    }
+
+    loadBtn.addEventListener('click', async function () {
+      loadBtn.disabled = true;
+      progWrap.classList.remove('vl-hidden');
+      status('Loading the voice engine… first time downloads ~80 MB.');
+      try {
+        var mod = await import('https://esm.sh/kokoro-js@1.2.1');
+        var KokoroTTS = mod.KokoroTTS;
+        var device = (webgpuBox.checked && 'gpu' in navigator) ? 'webgpu' : 'wasm';
+        status('Loading model on ' + device + '…');
+        tts = await KokoroTTS.from_pretrained('onnx-community/Kokoro-82M-v1.0-ONNX', {
+          dtype: device === 'webgpu' ? 'fp32' : 'q8',
+          device: device,
+          progress_callback: function (p) {
+            if (p && p.status === 'progress' && p.total) {
+              var pct = Math.round((p.loaded / p.total) * 100);
+              progFill.style.width = pct + '%';
+              status('Downloading model… ' + pct + '%');
+            }
+          }
+        });
+        progFill.style.width = '100%';
+        status('Ready on ' + device + '. Tap a voice below.');
+        buildVoiceUI();
+      } catch (e) {
+        status('Failed to load: ' + (e && e.message ? e.message : e) + ' — try unchecking WebGPU, or a different browser.');
+        loadBtn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
