@@ -33,3 +33,6 @@ public/sonder/.png_originals/
 .env
 .env.*
 !.env.example
+
+# Audio-gen cache metadata (regenerated locally by scripts/gen-audio.mjs)
+public/audio/*.sha1
