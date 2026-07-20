@@ -56,6 +56,15 @@
   }
   function unlock() { var c = ctx(); if (c && c.state === 'suspended') { try { c.resume(); } catch (e) {} } }
 
+  // Reject after `ms` — used so a device that can't generate (no WebGPU / too
+  // slow / a hang) doesn't leave the button stuck; it falls back to the voice.
+  function withTimeout(promise, ms) {
+    return new Promise(function (resolve, reject) {
+      var t = setTimeout(function () { reject(new Error('timeout')); }, ms);
+      promise.then(function (v) { clearTimeout(t); resolve(v); }, function (e) { clearTimeout(t); reject(e); });
+    });
+  }
+
   function getText(el) {
     var t = (el.innerText || el.textContent || '');
     return t.replace(/\s*\/(?=[a-z])/gi, ' ').replace(/\s+/g, ' ').trim();
@@ -140,16 +149,25 @@
     async function start() {
       var txt = getText(target); if (!txt) return;
       chunks = chunkText(txt); idx = 0; token++;
+      var mine = token;
       set('loading');
       progressCb = function (pct) { if (state === 'loading') set('loading', 'Loading ' + pct + '%'); };
       try {
         await loadKokoro();
         progressCb = null;
-        if (state !== 'loading') return;   // cancelled during load
-        set('loading', 'Starting…');
-        kokoroPlay(idx);
+        if (mine !== token || state !== 'loading') return;   // cancelled during load
+        set('loading', 'Generating…');
+        // Generate the first chunk with a timeout. If the device can't do it in
+        // time (no WebGPU, too slow, or a hang), fall back to the browser voice
+        // rather than leaving the button stuck.
+        var first = await withTimeout(genRaw(0), 25000);
+        if (mine !== token || state !== 'loading') return;
+        prefetch = first;
+        state = 'playing';
+        kokoroPlay(0);
       } catch (e) {
         progressCb = null;
+        if (mine !== token) return;
         if (HAS_SPEECH) { fallback = true; set('playing'); speechNext(); }
         else { set('idle', 'Unavailable'); }
       }

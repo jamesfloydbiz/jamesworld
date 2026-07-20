@@ -108,12 +108,16 @@ function renderPost(p) {
   if (carouselCount) chips.push(`<span class="li-post-chip">${carouselCount} carousel</span>`);
 
   return `          <li class="li-post-item" ${dataAttrs}>
-            <button class="li-post-btn" type="button">
-              <p class="li-post-meta">${escText(meta.join(' · '))}${chips.length ? ` · ${chips.join(' ')}` : ''}</p>
-              <h3 class="li-post-hook">${escText(hook)}</h3>
-              <span class="li-post-cta">Read full post →</span>
-            </button>
-            <div class="li-post-body-html" hidden>${bodyParts.join('\n')}</div>
+            <details class="li-post">
+              <summary class="li-post__summary">
+                <p class="li-post-meta">${escText(meta.join(' · '))}${chips.length ? ` · ${chips.join(' ')}` : ''}</p>
+                <h3 class="li-post-hook">${escText(hook)}</h3>
+                <span class="li-post-cta">Read the post →</span>
+              </summary>
+              <div class="li-post__body">${bodyParts.join('\n')}
+                ${p.url ? `<p class="post-source"><a href="${escAttr(p.url)}" target="_blank" rel="noopener noreferrer">Read on LinkedIn ↗</a></p>` : ''}
+              </div>
+            </details>
           </li>`;
 }
 

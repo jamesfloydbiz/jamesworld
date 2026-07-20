@@ -214,14 +214,20 @@ function renderPostListHtml(posts) {
     const subtitleText = p.subtitle ? decodeEntitiesPlain(p.subtitle) : '';
     const excerptText = p.excerpt ? decodeEntitiesPlain(p.excerpt) : '';
     const category = categorize(p);
+    // Native <details> — the full post is real, accessible HTML that reads
+    // fine with JavaScript off. No modal, no hidden div, no JS to open it.
     lines.push(`          <li class="post-list-item" data-category="${category}">`);
-    lines.push(`            <button class="post-list-btn" type="button" data-link="${escAttr(p.link)}" data-date="${escAttr(p.displayDate)}"${subtitleText ? ` data-subtitle="${escAttr(subtitleText)}"` : ''}>`);
-    lines.push(`              <h2 class="post-title">${escText(p.title)}</h2>`);
-    lines.push(`              <p class="post-meta">${escText(p.displayDate)}${subtitleText ? ' · ' + escText(subtitleText) : ''}</p>`);
-    lines.push(`              <p class="post-excerpt">${escText(excerptText)}</p>`);
-    lines.push(`              <span class="post-cta">Read full post →</span>`);
-    lines.push(`            </button>`);
-    lines.push(`            <div class="post-body-html" hidden>${p.bodyHtml}</div>`);
+    lines.push(`            <details class="post-details">`);
+    lines.push(`              <summary class="post-summary">`);
+    lines.push(`                <h2 class="post-title">${escText(p.title)}</h2>`);
+    lines.push(`                <p class="post-meta">${escText(p.displayDate)}${subtitleText ? ' · ' + escText(subtitleText) : ''}</p>`);
+    lines.push(`                <p class="post-excerpt">${escText(excerptText)}</p>`);
+    lines.push(`                <span class="post-cta">Read the post →</span>`);
+    lines.push(`              </summary>`);
+    lines.push(`              <div class="post-body">${p.bodyHtml}`);
+    lines.push(`                <p class="post-source"><a href="${escAttr(p.link)}" target="_blank" rel="noopener noreferrer">Read on Substack ↗</a></p>`);
+    lines.push(`              </div>`);
+    lines.push(`            </details>`);
     lines.push(`          </li>`);
   }
   return lines.join('\n');
