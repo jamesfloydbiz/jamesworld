@@ -449,6 +449,17 @@ ul, ol { list-style: none; }
 }
 .text-link:hover { text-decoration-color: var(--fg); }
 
+/* No-JS description — an "alt text" for interactive/JS-driven blocks */
+.noscript-note {
+  font-family: 'Lora', Georgia, serif;
+  color: var(--fg-70);
+  line-height: 1.6;
+  font-size: 0.95rem;
+  border-left: 2px solid var(--border);
+  padding: 0.25rem 0 0.25rem 1rem;
+  margin: 1.25rem 0;
+}
+
 /* Read-aloud button */
 .read-aloud {
   display: inline-flex;

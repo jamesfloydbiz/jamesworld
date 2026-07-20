@@ -162,6 +162,7 @@
       var target = document.querySelector(btn.getAttribute('data-read-aloud'));
       if (!target) { btn.hidden = true; return; }
       controls.push(makeControl(btn, target));
+      btn.hidden = false;   // reveal only now that JS can drive it
     });
   }
 

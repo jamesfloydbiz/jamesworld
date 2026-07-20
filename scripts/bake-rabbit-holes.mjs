@@ -466,7 +466,7 @@ ${timelineItems}
           <p class="rh-article__subtitle">${esc(meta.subtitle)}</p>
           <p class="rh-article__meta">by James Floyd</p>
           <div class="rh-listen">
-            <button class="read-aloud" type="button" data-read-aloud="#rh-readable" aria-pressed="false" aria-label="Read this essay aloud">
+            <button class="read-aloud" type="button" data-read-aloud="#rh-readable" aria-pressed="false" aria-label="Read this essay aloud" hidden>
               <span class="read-aloud__ico" aria-hidden="true">▶</span>
               <span class="read-aloud__label">Listen</span>
             </button>

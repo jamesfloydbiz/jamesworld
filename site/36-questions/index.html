@@ -381,6 +381,23 @@
     }
     .q-jump__intro:hover { color: var(--fg); border-color: var(--fg-45); }
 
+    /* Canonical HTML list (shown when JS is off; source for the deck) */
+    .q-list { margin-top: 2.5rem; }
+    .q-list__group { margin-bottom: 2rem; }
+    .q-list__set {
+      font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--fg-45); margin: 0 0 0.9rem;
+    }
+    .q-list__ol {
+      margin: 0; padding-left: 1.7rem;
+      font-family: 'Newsreader', 'Lora', Georgia, serif; color: var(--fg-85);
+    }
+    .q-list__ol li { font-size: 1.05rem; line-height: 1.5; margin-bottom: 0.75rem; }
+    .q-noscript {
+      font-family: 'Lora', Georgia, serif; color: var(--fg-70); line-height: 1.6;
+      border-left: 2px solid var(--border); padding-left: 1rem; margin: 1.5rem 0 0;
+    }
+
     @media (max-width: 420px) {
       .q-num { width: 34px; height: 34px; font-size: 0.75rem; }
       .q-arrow { padding: 0 14px; font-size: 0.72rem; }
@@ -450,8 +467,12 @@
           </div>
 
           <div class="q-begin-row">
-            <button class="q-begin" id="q-begin" type="button">Begin →</button>
+            <button class="q-begin" id="q-begin" type="button" hidden>Begin →</button>
           </div>
+
+          <noscript>
+            <p class="q-noscript">The interactive, one-card-at-a-time version needs JavaScript. With it off, all 36 questions are listed in full below.</p>
+          </noscript>
 
           <p class="q-cite">
             Questions from Aron et&nbsp;al. (1997), “The Experimental Generation of Interpersonal Closeness.”
@@ -517,6 +538,64 @@
 
         </section>
 
+        <!-- ══════════ CANONICAL LIST ══════════
+             All 36 questions as plain HTML. This is the real content: it reads
+             fine with JavaScript off, and the interactive deck above is built
+             from these list items. JS hides this list and shows the deck. -->
+        <section class="q-list" id="q-list" aria-label="All 36 questions">
+          <div class="q-list__group">
+            <h2 class="q-list__set" data-set="1">Set I · Warming up</h2>
+            <ol class="q-list__ol" start="1">
+              <li>Given the choice of anyone in the world, whom would you want as a dinner guest?</li>
+              <li>Would you like to be famous? In what way?</li>
+              <li>Before making a telephone call, do you ever rehearse what you are going to say? Why?</li>
+              <li>What would constitute a “perfect” day for you?</li>
+              <li>When did you last sing to yourself? To someone else?</li>
+              <li>If you were able to live to the age of 90 and retain either the mind or body of a 30-year-old for the last 60 years of your life, which would you want?</li>
+              <li>Do you have a secret hunch about how you will die?</li>
+              <li>Name three things you and your partner appear to have in common.</li>
+              <li>For what in your life do you feel most grateful?</li>
+              <li>If you could change anything about the way you were raised, what would it be?</li>
+              <li>Take four minutes and tell your partner your life story in as much detail as possible.</li>
+              <li>If you could wake up tomorrow having gained any one quality or ability, what would it be?</li>
+            </ol>
+          </div>
+          <div class="q-list__group">
+            <h2 class="q-list__set" data-set="2">Set II · Getting personal</h2>
+            <ol class="q-list__ol" start="13">
+              <li>If a crystal ball could tell you the truth about yourself, your life, the future or anything else, what would you want to know?</li>
+              <li>Is there something that you've dreamed of doing for a long time? Why haven't you done it?</li>
+              <li>What is the greatest accomplishment of your life?</li>
+              <li>What do you value most in a friendship?</li>
+              <li>What is your most treasured memory?</li>
+              <li>What is your most terrible memory?</li>
+              <li>If you knew that in one year you would die suddenly, would you change anything about the way you are now living? Why?</li>
+              <li>What does friendship mean to you?</li>
+              <li>What roles do love and affection play in your life?</li>
+              <li>Alternate sharing something you consider a positive characteristic of your partner. Share a total of five items.</li>
+              <li>How close and warm is your family? Do you feel your childhood was happier than most other people's?</li>
+              <li>How do you feel about your relationship with your mother?</li>
+            </ol>
+          </div>
+          <div class="q-list__group">
+            <h2 class="q-list__set" data-set="3">Set III · Most vulnerable</h2>
+            <ol class="q-list__ol" start="25">
+              <li>Make three true “we” statements each. For instance, “We are both in this room feeling …”</li>
+              <li>Complete this sentence: “I wish I had someone with whom I could share …”</li>
+              <li>If you were going to become a close friend with your partner, please share what would be important for him or her to know.</li>
+              <li>Tell your partner what you like about them; be very honest this time, saying things that you might not say to someone you've just met.</li>
+              <li>Share with your partner an embarrassing moment in your life.</li>
+              <li>When did you last cry in front of another person? By yourself?</li>
+              <li>Tell your partner something that you like about them already.</li>
+              <li>What, if anything, is too serious to be joked about?</li>
+              <li>If you were to die this evening with no opportunity to communicate with anyone, what would you most regret not having told someone? Why haven't you told them yet?</li>
+              <li>Your house, containing everything you own, catches fire. After saving your loved ones and pets, you have time to safely make a final dash to save any one item. What would it be? Why?</li>
+              <li>Of all the people in your family, whose death would you find most disturbing? Why?</li>
+              <li>Share a personal problem and ask your partner's advice on how he or she might handle it. Also, ask your partner to reflect back to you how you seem to be feeling about the problem you have chosen.</li>
+            </ol>
+          </div>
+        </section>
+
       </div>
     </div>
   </main>
@@ -525,46 +604,20 @@
 
   <script src="/js/site.js"></script>
   <script>
-    // ── The 36 questions (Aron et al., 1997) ──────────────────────────────
-    var QUESTIONS = [
-      { s: 1, t: `Given the choice of anyone in the world, whom would you want as a dinner guest?` },
-      { s: 1, t: `Would you like to be famous? In what way?` },
-      { s: 1, t: `Before making a telephone call, do you ever rehearse what you are going to say? Why?` },
-      { s: 1, t: `What would constitute a “perfect” day for you?` },
-      { s: 1, t: `When did you last sing to yourself? To someone else?` },
-      { s: 1, t: `If you were able to live to the age of 90 and retain either the mind or body of a 30-year-old for the last 60 years of your life, which would you want?` },
-      { s: 1, t: `Do you have a secret hunch about how you will die?` },
-      { s: 1, t: `Name three things you and your partner appear to have in common.` },
-      { s: 1, t: `For what in your life do you feel most grateful?` },
-      { s: 1, t: `If you could change anything about the way you were raised, what would it be?` },
-      { s: 1, t: `Take four minutes and tell your partner your life story in as much detail as possible.` },
-      { s: 1, t: `If you could wake up tomorrow having gained any one quality or ability, what would it be?` },
-      { s: 2, t: `If a crystal ball could tell you the truth about yourself, your life, the future or anything else, what would you want to know?` },
-      { s: 2, t: `Is there something that you've dreamed of doing for a long time? Why haven't you done it?` },
-      { s: 2, t: `What is the greatest accomplishment of your life?` },
-      { s: 2, t: `What do you value most in a friendship?` },
-      { s: 2, t: `What is your most treasured memory?` },
-      { s: 2, t: `What is your most terrible memory?` },
-      { s: 2, t: `If you knew that in one year you would die suddenly, would you change anything about the way you are now living? Why?` },
-      { s: 2, t: `What does friendship mean to you?` },
-      { s: 2, t: `What roles do love and affection play in your life?` },
-      { s: 2, t: `Alternate sharing something you consider a positive characteristic of your partner. Share a total of five items.` },
-      { s: 2, t: `How close and warm is your family? Do you feel your childhood was happier than most other people's?` },
-      { s: 2, t: `How do you feel about your relationship with your mother?` },
-      { s: 3, t: `Make three true “we” statements each. For instance, “We are both in this room feeling …”` },
-      { s: 3, t: `Complete this sentence: “I wish I had someone with whom I could share …”` },
-      { s: 3, t: `If you were going to become a close friend with your partner, please share what would be important for him or her to know.` },
-      { s: 3, t: `Tell your partner what you like about them; be very honest this time, saying things that you might not say to someone you've just met.` },
-      { s: 3, t: `Share with your partner an embarrassing moment in your life.` },
-      { s: 3, t: `When did you last cry in front of another person? By yourself?` },
-      { s: 3, t: `Tell your partner something that you like about them already.` },
-      { s: 3, t: `What, if anything, is too serious to be joked about?` },
-      { s: 3, t: `If you were to die this evening with no opportunity to communicate with anyone, what would you most regret not having told someone? Why haven't you told them yet?` },
-      { s: 3, t: `Your house, containing everything you own, catches fire. After saving your loved ones and pets, you have time to safely make a final dash to save any one item. What would it be? Why?` },
-      { s: 3, t: `Of all the people in your family, whose death would you find most disturbing? Why?` },
-      { s: 3, t: `Share a personal problem and ask your partner's advice on how he or she might handle it. Also, ask your partner to reflect back to you how you seem to be feeling about the problem you have chosen.` }
-    ];
-    var SET_NAMES = { 1: 'Set I · Warming up', 2: 'Set II · Getting personal', 3: 'Set III · Most vulnerable' };
+    // ── The 36 questions — read from the canonical HTML list (#q-list) so the
+    //    content lives in HTML, not JavaScript. The interactive deck is built
+    //    from these list items; with JS off, the list itself is the page.
+    var listEl = document.getElementById('q-list');
+    var QUESTIONS = [];
+    var SET_NAMES = {};
+    Array.prototype.forEach.call(listEl.querySelectorAll('.q-list__group'), function (g) {
+      var head = g.querySelector('.q-list__set');
+      var setNum = parseInt(head.getAttribute('data-set'), 10);
+      SET_NAMES[setNum] = head.textContent.trim();
+      Array.prototype.forEach.call(g.querySelectorAll('.q-list__ol > li'), function (li) {
+        QUESTIONS.push({ s: setNum, t: li.textContent.trim() });
+      });
+    });
     var TOTAL = QUESTIONS.length;
 
     var card = document.getElementById('q-card');
@@ -727,6 +780,10 @@
 
     render(current);
     beginBtn.textContent = current > 0 ? 'Resume →' : 'Begin →';
+    // JS is running: reveal the interactive controls and hide the raw list
+    // (the deck now presents the questions one at a time).
+    beginBtn.hidden = false;
+    if (listEl) listEl.hidden = true;
 
     beginBtn.addEventListener('click', function () { showDeck(current); });
     toIntroBtn.addEventListener('click', function () { showIntro(); });
