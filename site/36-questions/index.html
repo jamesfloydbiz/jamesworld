@@ -35,11 +35,17 @@
     }
 
     /* ── The question card ─────────────────────────────────────────────── */
+    /* The stage reserves the tallest question's height (set in JS) so the box
+       can grow and shrink while the arrows below never move. */
+    .q-stage {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
     .q-card {
       border: 1px solid var(--border);
       border-radius: 6px;
       padding: clamp(24px, 5vw, 44px) clamp(20px, 5vw, 40px);
-      min-height: 240px;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -338,6 +344,43 @@
     .q-jumpbtn__ico { font-size: 0.95rem; line-height: 1; }
     .q-jump { margin-top: 1.25rem; }
 
+    /* Hover preview of a question (helps find your spot) */
+    .q-tip {
+      position: fixed;
+      z-index: 100;
+      max-width: 260px;
+      padding: 10px 12px;
+      background: var(--secondary-bg, #17130f);
+      border: 1px solid var(--fg-45, rgba(255,255,255,0.35));
+      border-radius: 6px;
+      font-family: 'Newsreader', 'Lora', Georgia, serif;
+      font-size: 0.9rem;
+      line-height: 1.35;
+      color: var(--fg-85);
+      box-shadow: 0 12px 34px rgba(0,0,0,0.55);
+      opacity: 0;
+      transform: translateY(4px);
+      transition: opacity 0.14s ease, transform 0.14s ease;
+      pointer-events: none;
+    }
+    .q-tip.is-visible { opacity: 1; transform: none; }
+
+    /* 'Back to intro' box inside the jump panel */
+    .q-jump__intro {
+      display: inline-flex; align-items: center; gap: 8px;
+      margin-bottom: 1.5rem;
+      padding: 9px 16px;
+      border: 1px dashed var(--fg-30, rgba(255,255,255,0.25));
+      border-radius: 6px;
+      background: none;
+      color: var(--fg-60);
+      font-family: var(--font-mono);
+      font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase;
+      cursor: pointer;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .q-jump__intro:hover { color: var(--fg); border-color: var(--fg-45); }
+
     @media (max-width: 420px) {
       .q-num { width: 34px; height: 34px; font-size: 0.75rem; }
       .q-arrow { padding: 0 14px; font-size: 0.72rem; }
@@ -420,13 +463,15 @@
         <!-- ══════════ DECK VIEW ══════════ -->
         <section class="q-view q-deck-view" id="q-deck" hidden>
 
-          <section class="q-card q-in" id="q-card" aria-live="polite">
-            <span class="q-progress" id="q-progress"></span>
-            <div class="q-body">
-              <p class="q-eyebrow" id="q-eyebrow"></p>
-              <p class="q-text" id="q-text"></p>
-            </div>
-          </section>
+          <div class="q-stage" id="q-stage">
+            <section class="q-card q-in" id="q-card" aria-live="polite">
+              <span class="q-progress" id="q-progress"></span>
+              <div class="q-body">
+                <p class="q-eyebrow" id="q-eyebrow"></p>
+                <p class="q-text" id="q-text"></p>
+              </div>
+            </section>
+          </div>
 
           <div class="q-controls">
             <button class="q-arrow" id="q-prev" type="button" aria-label="Previous question">
@@ -446,6 +491,7 @@
             </button>
           </div>
           <div class="q-jump" id="q-jump" hidden>
+            <button class="q-jump__intro" id="q-to-intro" type="button">↩ Back to intro</button>
             <div class="q-jump__group">
               <span class="q-jump__label">Set I · Warming up</span>
               <div class="q-jump__nums" data-start="1" data-end="12"></div>
@@ -474,6 +520,8 @@
       </div>
     </div>
   </main>
+
+  <div class="q-tip" id="q-tip" role="tooltip" aria-hidden="true"></div>
 
   <script src="/js/site.js"></script>
   <script>
@@ -532,6 +580,9 @@
     var beginBtn = document.getElementById('q-begin');
     var jumpBtn = document.getElementById('q-jump-btn');
     var jumpPanel = document.getElementById('q-jump');
+    var stage = document.getElementById('q-stage');
+    var tip = document.getElementById('q-tip');
+    var toIntroBtn = document.getElementById('q-to-intro');
 
     function closeJump() {
       jumpPanel.hidden = true;
@@ -539,7 +590,38 @@
       jumpBtn.setAttribute('aria-expanded', 'false');
     }
 
-    var current = 0;
+    // ── Hover preview of a question (helps you find your spot) ─────────────
+    function showTip(el, idx) {
+      tip.textContent = QUESTIONS[idx].t;
+      tip.classList.add('is-visible');
+      tip.setAttribute('aria-hidden', 'false');
+      var r = el.getBoundingClientRect();
+      var tr = tip.getBoundingClientRect();
+      var left = r.left + r.width / 2 - tr.width / 2;
+      left = Math.max(8, Math.min(left, window.innerWidth - tr.width - 8));
+      var top = r.top - tr.height - 10;
+      if (top < 8) top = r.bottom + 10;   // flip below if there's no room above
+      tip.style.left = left + 'px';
+      tip.style.top = top + 'px';
+    }
+    function hideTip() {
+      tip.classList.remove('is-visible');
+      tip.setAttribute('aria-hidden', 'true');
+    }
+
+    // ── Persistence: remember their spot across visits ────────────────────
+    var STORE_I = 'q36-index', STORE_BEGUN = 'q36-begun';
+    function saveIndex() { try { localStorage.setItem(STORE_I, String(current)); } catch (e) {} }
+    function loadIndex() {
+      try {
+        var v = parseInt(localStorage.getItem(STORE_I), 10);
+        return isNaN(v) ? 0 : Math.max(0, Math.min(QUESTIONS.length - 1, v));
+      } catch (e) { return 0; }
+    }
+    function markBegun() { try { localStorage.setItem(STORE_BEGUN, '1'); } catch (e) {} }
+    function hasBegun() { try { return localStorage.getItem(STORE_BEGUN) === '1'; } catch (e) { return false; } }
+
+    var current = loadIndex();
 
     // Build the jump grid
     var numButtons = new Array(TOTAL);
@@ -553,7 +635,11 @@
           b.className = 'q-num';
           b.textContent = idx + 1;
           b.setAttribute('aria-label', 'Go to question ' + (idx + 1));
-          b.addEventListener('click', function () { render(idx); closeJump(); });
+          b.addEventListener('click', function () { render(idx); closeJump(); hideTip(); });
+          b.addEventListener('mouseenter', function () { showTip(b, idx); });
+          b.addEventListener('mouseleave', hideTip);
+          b.addEventListener('focus', function () { showTip(b, idx); });
+          b.addEventListener('blur', hideTip);
           row.appendChild(b);
           numButtons[idx] = b;
         })(n - 1);
@@ -585,6 +671,7 @@
       card.classList.remove('q-in');
       void card.offsetWidth;
       card.classList.add('q-in');
+      saveIndex();
     }
 
     prevBtn.addEventListener('click', function () { render(current - 1); });
@@ -597,15 +684,52 @@
       else if (e.key === 'ArrowLeft') { render(current - 1); }
     });
 
-    render(0);
+    // Reserve the tallest question's height so Prev/Next never move. Measure
+    // every question in an off-screen clone at the current card width.
+    function computeStageHeight() {
+      if (deckView.hidden) return;
+      var probe = card.cloneNode(true);
+      probe.classList.remove('q-in');
+      probe.style.position = 'absolute';
+      probe.style.left = '-9999px';
+      probe.style.top = '0';
+      probe.style.visibility = 'hidden';
+      probe.style.width = card.getBoundingClientRect().width + 'px';
+      stage.appendChild(probe);
+      var pEye = probe.querySelector('.q-eyebrow');
+      var pText = probe.querySelector('.q-text');
+      var max = 0;
+      for (var i = 0; i < QUESTIONS.length; i++) {
+        pEye.textContent = SET_NAMES[QUESTIONS[i].s] + '  ·  Question ' + (i + 1);
+        pText.textContent = QUESTIONS[i].t;
+        if (probe.offsetHeight > max) max = probe.offsetHeight;
+      }
+      stage.removeChild(probe);
+      stage.style.minHeight = max + 'px';
+    }
 
-    // ── Intro → deck ──────────────────────────────────────────────────────
-    beginBtn.addEventListener('click', function () {
+    function showDeck(i) {
       introView.hidden = true;
       deckView.hidden = false;
-      render(0);
+      markBegun();
+      render(i);
+      computeStageHeight();
       window.scrollTo(0, 0);
-    });
+    }
+    function showIntro() {
+      closeJump();
+      hideTip();
+      deckView.hidden = true;
+      introView.hidden = false;
+      beginBtn.textContent = current > 0 ? 'Resume →' : 'Begin →';
+      window.scrollTo(0, 0);
+    }
+
+    render(current);
+    beginBtn.textContent = current > 0 ? 'Resume →' : 'Begin →';
+
+    beginBtn.addEventListener('click', function () { showDeck(current); });
+    toIntroBtn.addEventListener('click', function () { showIntro(); });
 
     // ── Jump grid behind a minimal toggle ────────────────────────────────
     jumpBtn.addEventListener('click', function () {
@@ -613,7 +737,18 @@
       jumpPanel.hidden = !opening;
       jumpBtn.classList.toggle('is-open', opening);
       jumpBtn.setAttribute('aria-expanded', opening ? 'true' : 'false');
+      if (!opening) hideTip();
     });
+
+    // Re-measure the reserved height on resize (wrapping changes heights).
+    var rzT = null;
+    window.addEventListener('resize', function () {
+      clearTimeout(rzT);
+      rzT = setTimeout(computeStageHeight, 150);
+    });
+
+    // Return visit: pick up exactly where they left off.
+    if (hasBegun()) { showDeck(current); }
 
     // ── Note envelope: hover opens on desktop; tap toggles on touch ───────
     var note = document.getElementById('q-note');
