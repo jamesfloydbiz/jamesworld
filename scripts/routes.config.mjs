@@ -263,6 +263,20 @@ export const ROUTES = [
   },
 
   {
+    path: '/36-questions',
+    title: '36 Questions',
+    description:
+      'The 36 questions that build closeness (Aron et al., 1997) — a cleaner, faster way to go through them with your person. Jump to any question, move at your own pace.',
+    priority: 0.6,
+    changefreq: 'monthly',
+    body: wrap(`
+      <h1>36 Questions</h1>
+      <p>The 36 questions that build closeness — an interactive, self-paced version you can go through with another person. Jump to any question, or move through the three sets in order.</p>
+      <p>Questions from Aron et al. (1997), "The Experimental Generation of Interpersonal Closeness," popularized by Mandy Len Catron's 2015 New York Times "Modern Love" essay.</p>
+    `),
+  },
+
+  {
     path: '/writing',
     title: 'Writing',
     description:
