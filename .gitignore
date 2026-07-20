@@ -28,3 +28,8 @@ dist-ssr
 # Local backup of pre-normalization Sonder letter PNGs — not needed in deploy
 public/sonder/_letter_originals/
 public/sonder/.png_originals/
+
+# Environment files (contain Supabase keys — keep out of the public repo)
+.env
+.env.*
+!.env.example
