@@ -137,6 +137,7 @@
 
     <!-- Letter -->
     <div class="home__content">
+      <div class="home__letter-wrap" style="max-width:512px; width:100%;">
       <article class="home__letter">
 
         <h1 class="home__salutation">Dear Reader,</h1>
@@ -194,8 +195,18 @@
         </p>
 
       </article>
+
+        <div style="margin-top:1.75rem;">
+          <button class="read-aloud" type="button" data-read-aloud=".home__letter" aria-pressed="false" aria-label="Read this letter aloud">
+            <span class="read-aloud__ico" aria-hidden="true">▶</span>
+            <span class="read-aloud__label">Listen</span>
+          </button>
+        </div>
+      </div>
     </div>
 
   </div>
+
+  <script src="/js/site.js"></script>
 </body>
 </html>

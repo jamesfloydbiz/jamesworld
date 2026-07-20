@@ -449,6 +449,28 @@ ul, ol { list-style: none; }
 }
 .text-link:hover { text-decoration-color: var(--fg); }
 
+/* Read-aloud button */
+.read-aloud {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: none;
+  color: var(--fg-70);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+}
+.read-aloud:hover { color: var(--fg); border-color: var(--fg-45); }
+.read-aloud[data-state="playing"],
+.read-aloud[data-state="paused"] { color: var(--fg); border-color: var(--fg-45); }
+.read-aloud__ico { font-size: 0.72rem; line-height: 1; }
+
 /* Tag / badge */
 .tag {
   display: inline-block;

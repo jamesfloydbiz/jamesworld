@@ -3881,6 +3881,10 @@ At the least I will write my story in my own font, and have a life not gaunt.</d
       <div class="post-body post-modal__content" id="modal-body"></div>
     </div>
     <div class="post-modal__footer">
+      <button class="read-aloud" type="button" data-read-aloud="#modal-body" aria-pressed="false" aria-label="Read this post aloud">
+        <span class="read-aloud__ico" aria-hidden="true">▶</span>
+        <span class="read-aloud__label">Listen</span>
+      </button>
       <a id="modal-source-link" href="#" target="_blank" rel="noopener noreferrer" class="btn btn-outline" style="font-size:0.8rem;">
         <span id="modal-source-text">Read on Substack</span>
         <svg style="display:inline;margin-left:4px;vertical-align:middle;" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
@@ -3925,9 +3929,17 @@ At the least I will write my story in my own font, and have a life not gaunt.</d
       modal.showModal();
     }
 
-    document.getElementById('modal-close').addEventListener('click', function() { modal.close(); });
-    document.getElementById('modal-close-footer').addEventListener('click', function() { modal.close(); });
-    modal.addEventListener('click', function(e) { if (e.target === modal) modal.close(); });
+    // Close the post and stop any narration (don't rely on the dialog 'close'
+    // event alone — stop directly on every close path).
+    function closePost() {
+      if (window.ReadAloud) window.ReadAloud.stopAll();
+      modal.close();
+    }
+    document.getElementById('modal-close').addEventListener('click', closePost);
+    document.getElementById('modal-close-footer').addEventListener('click', closePost);
+    modal.addEventListener('click', function(e) { if (e.target === modal) closePost(); });
+    // Esc-to-close fires the native 'close' event — stop narration there too.
+    modal.addEventListener('close', function() { if (window.ReadAloud) window.ReadAloud.stopAll(); });
 
     // ── Tab + count wiring ────────────────────────────────────────────────
     var lettersList = document.getElementById('post-list');
