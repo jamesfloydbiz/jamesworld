@@ -553,7 +553,6 @@ ${articleHtml}
       update();
     })();
   </script>
-  <script src="/js/read-aloud.js"></script>
 </body>
 </html>
 `;
