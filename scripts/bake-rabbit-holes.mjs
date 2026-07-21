@@ -315,7 +315,6 @@ function pageTemplate(slug, meta, timelineItems, articleHtml) {
       color: var(--fg-70);
       margin: 0 0 8px 0;
     }
-    .rh-listen { margin-top: 18px; }
     .rh-article__meta {
       font-family: var(--font-mono);
       font-size: 0.72rem;
@@ -465,12 +464,6 @@ ${timelineItems}
           <h1 class="rh-article__title">${esc(meta.title)}</h1>
           <p class="rh-article__subtitle">${esc(meta.subtitle)}</p>
           <p class="rh-article__meta">by James Floyd</p>
-          <div class="rh-listen">
-            <button class="read-aloud" type="button" data-audio="/audio/essay-${slug}.mp3" aria-pressed="false" aria-label="Listen to this essay" hidden>
-              <span class="read-aloud__ico" aria-hidden="true">▶</span>
-              <span class="read-aloud__label">Listen</span>
-            </button>
-          </div>
         </header>
 
         <div id="rh-readable">

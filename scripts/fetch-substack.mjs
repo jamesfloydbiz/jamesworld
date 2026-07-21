@@ -214,8 +214,6 @@ function renderPostListHtml(posts) {
     const subtitleText = p.subtitle ? decodeEntitiesPlain(p.subtitle) : '';
     const excerptText = p.excerpt ? decodeEntitiesPlain(p.excerpt) : '';
     const category = categorize(p);
-    // Matches the audio id produced by scripts/gen-audio.mjs
-    const audioSlug = ((p.link || '').split('/p/')[1] || '').replace(/[^a-z0-9-]/gi, '');
     // Native <details> — the full post is real, accessible HTML that reads
     // fine with JavaScript off. No modal, no hidden div, no JS to open it.
     lines.push(`          <li class="post-list-item" data-category="${category}">`);
@@ -227,11 +225,6 @@ function renderPostListHtml(posts) {
     lines.push(`                <span class="post-cta">Read the post →</span>`);
     lines.push(`              </summary>`);
     lines.push(`              <div class="post-body">`);
-    if (audioSlug) {
-      lines.push(`                <button class="read-aloud" type="button" data-audio="/audio/substack-${audioSlug}.mp3" aria-pressed="false" aria-label="Listen to this post" hidden>`);
-      lines.push(`                  <span class="read-aloud__ico" aria-hidden="true">▶</span><span class="read-aloud__label">Listen</span>`);
-      lines.push(`                </button>`);
-    }
     lines.push(`                ${p.bodyHtml}`);
     lines.push(`                <p class="post-source"><a href="${escAttr(p.link)}" target="_blank" rel="noopener noreferrer">Read on Substack ↗</a></p>`);
     lines.push(`              </div>`);
