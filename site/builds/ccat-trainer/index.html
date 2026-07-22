@@ -92,6 +92,7 @@ const LS = {
   itemStats: "ccat.stats.v1",        // {id: {seen, correct, box, lastSession}}
   history:   "ccat.history.v1",      // [{ts, score, total, dur, catAcc}]
   cards:     "ccat.cards.v1",        // {cardId: {ease, iv, due}}
+  subStats:  "ccat.substats.v1",     // {"Cat/sub": {att, ok, recent:[1,0,…]}}
   settings:  "ccat.settings.v1",
   session:   "ccat.session.v1",
 };
@@ -99,7 +100,23 @@ function ls(k, d){ try{const v=localStorage.getItem(k); return v?JSON.parse(v):d
 function save(k,v){ localStorage.setItem(k, JSON.stringify(v)); }
 
 let QUESTIONS = [], STATS = ls(LS.itemStats,{}), HIST = ls(LS.history,[]), CARDS = ls(LS.cards,{});
+let SUBSTAT = ls(LS.subStats,{});
 let SETTINGS = ls(LS.settings,{pomLen:25, pomBreak:5, deepSet:false, confidence:false, sessionCount:0});
+
+// ==================== MASTERY MODEL ====================
+// Mastery is measured PER SUBTYPE over a rolling window of recent attempts —
+// not a lifetime average (which never recovers from an early cold streak).
+// A subtype is "mastered" once you clear the accuracy criterion across a full
+// window. Mastered subtypes get retired to a light maintenance trickle so
+// practice time flows to whatever you haven't proven yet.
+const MASTERY_WIN = 8;      // rolling window of recent attempts per subtype
+const MASTERY_ACC = 0.85;   // criterion accuracy over the window to "master"
+const MASTERY_MIN = 6;      // min attempts before mastery can be declared
+// Bank-derived difficulty bounds — filled at boot from the actual questions so
+// the ZPD band and adaptivity aren't clamped to a guessed ceiling.
+let MIND = 1, MAXD = 3, QMAP = {}, ALLSUBS = [];
+const clamp = (x,lo,hi)=>Math.max(lo,Math.min(hi,x));
+const subKey = q => `${q.c}/${q.sub}`;
 
 // ==================== FLASHCARD DECKS ====================
 const DECKS = [
@@ -205,32 +222,73 @@ function optRender(o){
 
 // ==================== STATS HELPERS ====================
 function statFor(id){ return STATS[id] || (STATS[id]={seen:0,correct:0,box:0,lastSession:-1}); }
-function rec(id, correct){
+function rec(id, correct, assisted){
   const s = statFor(id);
   s.seen++;
-  if(correct){ s.correct++; s.box = Math.min(4, s.box+1); }
+  // A hint-assisted correct answer is not clean evidence of mastery — record
+  // the attempt but don't promote the Leitner box. A miss always demotes.
+  if(correct){ s.correct++; if(!assisted) s.box = Math.min(4, s.box+1); }
   else { s.box = 0; }
   s.lastSession = SETTINGS.sessionCount;
   save(LS.itemStats, STATS);
+  const q = QMAP[id];
+  if(q) recSub(q, correct, assisted);
 }
+// Roll a subtype's mastery window. Assisted CORRECT answers are excluded from
+// the window (no mastery credit for a nudge); assisted misses still count.
+function recSub(q, correct, assisted){
+  const k = subKey(q);
+  const ss = SUBSTAT[k] || (SUBSTAT[k] = {att:0, ok:0, recent:[]});
+  ss.att++; if(correct) ss.ok++;
+  if(!assisted || !correct){
+    ss.recent.push(correct?1:0);
+    if(ss.recent.length > MASTERY_WIN) ss.recent.shift();
+  }
+  save(LS.subStats, SUBSTAT);
+}
+// Mastery snapshot for one subtype key.
+function masteryFor(k){
+  const ss = SUBSTAT[k];
+  if(!ss || ss.att===0) return {att:0, wacc:0, pct:0, tier:'new', mastered:false};
+  const win = ss.recent;
+  const wacc = win.length ? win.reduce((a,b)=>a+b,0)/win.length : 0;
+  const mastered = win.length>=MASTERY_MIN && wacc>=MASTERY_ACC;
+  const pct = mastered ? 100 :
+    Math.round(Math.min(1, win.length/MASTERY_MIN) * Math.min(1, wacc/MASTERY_ACC) * 100);
+  const tier = mastered ? 'mastered' : (ss.att>=3 ? 'learning' : 'new');
+  return {att:ss.att, wacc, pct, tier, mastered};
+}
+function isMastered(k){ return masteryFor(k).mastered; }
 function acc(id){ const s=STATS[id]; return s && s.seen ? s.correct/s.seen : 0.5; }
+// Empirical difficulty: nudge the authored d by how the item actually plays.
+// An item everyone misses is effectively harder than its label; one everyone
+// aces is easier. Only kicks in after a few attempts so it stays stable.
+function effD(q){
+  const s = STATS[q.id];
+  if(!s || s.seen < 3) return q.d;
+  const a = s.correct/s.seen;
+  return clamp(q.d + (0.55 - a)*1.5, MIND, MAXD);
+}
 function catAcc(cat){
   const ids = QUESTIONS.filter(q=>q.c===cat).map(q=>q.id);
   let seen=0, correct=0;
   ids.forEach(id=>{const s=STATS[id]; if(s){seen+=s.seen; correct+=s.correct;}});
   return {seen, correct, acc: seen?correct/seen:0};
 }
-function weakestSub(){
-  const bySub = {};
-  QUESTIONS.forEach(q=>{
-    const s = STATS[q.id]; if(!s || s.seen<3) return;
-    const k = `${q.c}/${q.sub}`;
-    if(!bySub[k]) bySub[k]={seen:0,correct:0};
-    bySub[k].seen += s.seen; bySub[k].correct += s.correct;
-  });
-  const arr = Object.entries(bySub).map(([k,v])=>({k, acc:v.correct/v.seen, seen:v.seen}));
-  arr.sort((a,b)=>a.acc-b.acc);
-  return arr[0];
+// The weakest subtype you have NOT yet mastered — this is the remediation
+// target Practice steers toward. Mastered subtypes are excluded so effort
+// keeps flowing to open gaps rather than re-drilling proven ground.
+function weakestOpenSub(){
+  const open = ALLSUBS
+    .map(k=>({k, m:masteryFor(k)}))
+    .filter(x=>x.m.att>=3 && !x.m.mastered)
+    .sort((a,b)=>a.m.wacc-b.m.wacc);
+  return open[0] ? {k:open[0].k, acc:open[0].m.wacc, pct:open[0].m.pct} : null;
+}
+// Overall mastery: share of all subtypes cleared.
+function masteryProgress(){
+  const mastered = ALLSUBS.filter(isMastered).length;
+  return {mastered, total:ALLSUBS.length, pct: ALLSUBS.length? Math.round(mastered/ALLSUBS.length*100):0};
 }
 
 // ==================== VIEWS ====================
@@ -254,34 +312,110 @@ function render(){
 // ==================== PRACTICE ====================
 let practiceState = null;
 
+const rand = arr => arr[Math.floor(Math.random()*arr.length)];
+// Keep a candidate set inside the learner's zone of proximal development:
+// items whose EFFECTIVE difficulty sits within a band of the current level.
+function zpdBand(arr, level){
+  const near = arr.filter(q=>Math.abs(effD(q)-level)<=0.75);
+  return near.length ? near : arr;
+}
+// Interleave: prefer a different subtype than the one just answered.
+function interleave(arr, lastSub){
+  const diff = lastSub ? arr.filter(q=>q.sub!==lastSub) : arr;
+  return diff.length ? diff : arr;
+}
+// Practice item selection, in priority order:
+//   1. Spaced review  — a "due" Leitner item (retrieval at the edge of forgetting)
+//   2. Remediation    — the weakest un-mastered subtype, inside the ZPD band
+//   3. Maintenance    — an occasional mastered-subtype item to keep it sharp
+//   4. Exploration    — anything in-band, interleaved
+// Everything is filtered to the ZPD and interleaved before it's served.
 function pickPracticeItem(cat){
   const pool = cat==='all' ? QUESTIONS.slice() : QUESTIONS.filter(q=>q.c===cat);
-  // due Leitner items first (box>0 items that haven't been seen this session)
-  const due = pool.filter(q=>{const s=STATS[q.id]; return s && s.box>0 && s.lastSession!==SETTINGS.sessionCount;});
-  if(due.length && Math.random()<.7){
-    return due[Math.floor(Math.random()*due.length)];
-  }
-  // adaptive: target current difficulty
   const level = practiceState?.level || 2;
-  const near = pool.filter(q=>Math.abs(q.d-level)<=0.5);
-  const src = near.length? near : pool;
-  // interleave: avoid same subtype as last
   const lastSub = practiceState?.lastSub;
-  const notSame = lastSub ? src.filter(q=>q.sub!==lastSub) : src;
-  const final = notSame.length? notSame : src;
-  return final[Math.floor(Math.random()*final.length)];
+  const notMastered = pool.filter(q=>!isMastered(subKey(q)));
+  const r = Math.random();
+
+  // 1) Spaced review — due box>0 items not already seen this session.
+  const due = pool.filter(q=>{const s=STATS[q.id]; return s && s.box>0 && s.lastSession!==SETTINGS.sessionCount;});
+  if(due.length && r<0.30){
+    return rand(interleave(zpdBand(due, level), lastSub));
+  }
+
+  // 2) Remediation — steer toward the weakest open subtype.
+  const weak = weakestOpenSub();
+  if(weak && r<0.75){
+    const [wc, ws] = weak.k.split('/');
+    const wItems = pool.filter(q=>q.c===wc && q.sub===ws);
+    if(wItems.length) return rand(zpdBand(wItems, level));
+  }
+
+  // 3) Maintenance — a light trickle of already-mastered material (~1 in 8).
+  const mastered = pool.filter(q=>isMastered(subKey(q)));
+  if(mastered.length && notMastered.length && r>0.875){
+    return rand(interleave(zpdBand(mastered, level), lastSub));
+  }
+
+  // 4) Exploration — in-band, interleaved; bias toward not-yet-mastered.
+  const base = notMastered.length ? notMastered : pool;
+  return rand(interleave(zpdBand(base, level), lastSub));
 }
+
+// One-line strategy nudges for the hint scaffold — a "more knowledgeable other"
+// prompt that supports the attempt without giving the answer. Keyed by subtype
+// with a per-category fallback, so it degrades gracefully for any bank.
+const STRATEGY_SUB = {
+  // Numerical
+  series:"Find the step between terms — constant? multiplying? gaps growing? two series interleaved?",
+  percent:"10% moves the decimal one place; build the rest from that.",
+  wordmath:"Translate each phrase into an equation before you compute anything.",
+  average:"Average = sum ÷ count. Work back to the total sum first.",
+  ratio:"Split the total by (a+b) to size one part, then scale.",
+  // Verbal
+  synonym:"Guess the word's meaning in a sentence, then find the closest match.",
+  antonym:"Pin down the word's meaning first, then look for its opposite — not a synonym trap.",
+  analogy:"Name the relationship in the first pair, then apply that exact relationship.",
+  oddoneout:"State the property the others share, then find the one that breaks it.",
+  sentence:"Read for the logical connector (but, because, however) — it dictates the missing word.",
+  // Logic
+  deduction:"Only what MUST follow counts. Reject anything merely possible.",
+  syllogism:"'Some/all' don't chain. Only a valid form (e.g. modus tollens) yields a conclusion.",
+  ordering:"Sketch the sequence on scratch — anchor the fixed clues first.",
+  relations:"Map who-relates-to-whom as a small diagram before answering.",
+  letterpattern:"Convert letters to positions (A=1, B=2…) and look for the number pattern.",
+  // Spatial
+  abstractpattern:"Track a single changing attribute across the set — count, rotation, or shading.",
+  rotation:"Track ONE feature (an arrow tip or corner) and step it around. CW vs CCW.",
+  corner:"Follow one marked corner through each step.",
+  count:"Count a single changing element (sides, dots), not the whole figure.",
+  oddfigure:"State the shared rule, then find the figure that violates it.",
+  mirror:"Mirror across the line — b↔d, p↔q. Chirality flips; rotation doesn't.",
+  polygon:"Count sides / vertices and track how that number changes.",
+};
+const STRATEGY_CAT = {
+  Numerical:"Estimate first to kill obviously-wrong options, then compute.",
+  Verbal:"Define the key word precisely; eliminate options that don't fit the relationship.",
+  Logic:"Only what MUST follow counts — reject anything merely plausible.",
+  Spatial:"Track a single changing attribute, not the whole figure.",
+};
+function hintFor(q){ return STRATEGY_SUB[q.sub] || STRATEGY_CAT[q.c] || "Eliminate what can't be right, then decide between the rest."; }
 
 function renderPractice(){
   if(!practiceState){
-    practiceState = {level:2, streak:{correct:0,miss:0}, cat:'all', lastSub:null, sessionQ:0, sessionOk:0, times:[], startT:Date.now(), current:null, showAns:false};
+    practiceState = {level:2, streak:{correct:0,miss:0}, cat:'all', lastSub:null, sessionQ:0, sessionOk:0, times:[], startT:Date.now(), current:null, showAns:false, hintUsed:false, assisted:false};
   }
   if(!practiceState.current){
     practiceState.current = pickPracticeItem(practiceState.cat);
     practiceState.qStart = Date.now();
+    practiceState.hintUsed = false;
+    practiceState.assisted = false;
   }
   const q = practiceState.current;
-  const weak = weakestSub();
+  const weak = weakestOpenSub();
+  const mp = masteryProgress();
+  const cm = masteryFor(subKey(q));
+  const tierColor = {mastered:'var(--acc)', learning:'var(--fg)', new:'#9ca3af'}[cm.tier];
   V.innerHTML = `
     <div class="mb-4 flex flex-wrap items-center gap-3">
       <label class="text-xs text-gray-500">Category
@@ -292,24 +426,33 @@ function renderPractice(){
       </label>
       <span class="text-xs text-gray-500">Difficulty: <span class="mono text-white">d${practiceState.level.toFixed(1)}</span></span>
       <span class="text-xs text-gray-500">Session: <span class="mono text-white">${practiceState.sessionOk}/${practiceState.sessionQ}</span></span>
-      ${weak? `<span class="pill">Weakest: ${weak.k} (${(weak.acc*100).toFixed(0)}%)</span>`:''}
+      <span class="pill" title="Subtypes mastered — ${mp.mastered} of ${mp.total}">Mastery: ${mp.pct}% (${mp.mastered}/${mp.total})</span>
+      ${weak? `<span class="pill" style="border-color:var(--bad);color:var(--bad);">Focus: ${weak.k} (${(weak.acc*100).toFixed(0)}%)</span>`:''}
     </div>
 
     <div class="card p-6 mb-4">
-      <div class="flex items-center justify-between mb-4">
+      <div class="flex items-center justify-between mb-2">
         <span class="pill">${q.c} · ${q.sub}</span>
         <span class="pill mono">d${q.d}</span>
+      </div>
+      <div class="mb-4">
+        <div class="flex justify-between text-xs mb-1" style="color:${tierColor};">
+          <span>${cm.tier==='mastered'?'✓ Mastered':cm.tier==='learning'?'Learning this subtype':'New subtype'}</span>
+          <span class="mono">${cm.pct}%</span>
+        </div>
+        <div class="bar"><div style="width:${cm.pct}%;background:${tierColor};"></div></div>
       </div>
       ${q.vis? `<div class="flex gap-3 justify-center mb-6 flex-wrap">${q.vis.map(tok).join('')}</div>`:''}
       <div class="text-lg md:text-xl mb-6 leading-relaxed">${q.q}</div>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="p-opts">
         ${q.o.map((o,i)=>`<button class="opt" data-i="${i}"><span class="kbd mr-2">${i+1}</span> ${optRender(o)}</button>`).join('')}
       </div>
+      <div id="p-hint" class="mt-4"></div>
       <div id="p-feedback" class="mt-4"></div>
     </div>
 
     <div class="flex justify-between text-xs text-gray-500">
-      <div>Keys: <span class="kbd">1</span><span class="kbd ml-1">2</span><span class="kbd ml-1">3</span><span class="kbd ml-1">4</span> · <span class="kbd">→</span> next</div>
+      <div>Keys: <span class="kbd">1</span><span class="kbd ml-1">2</span><span class="kbd ml-1">3</span><span class="kbd ml-1">4</span> · <span class="kbd">H</span> hint · <span class="kbd">→</span> next</div>
       <button class="btn text-xs" id="p-reset">Reset session</button>
     </div>
   `;
@@ -320,32 +463,64 @@ function renderPractice(){
     practiceState = null; render();
   });
   document.querySelectorAll('#p-opts .opt').forEach(b=>b.addEventListener('click', ()=>answerPractice(+b.dataset.i)));
+  renderHintArea();
+}
+
+// The hint scaffold: a strategy nudge + one wrong option removed. Using it
+// flags the attempt as "assisted" so a correct answer earns no mastery credit.
+function renderHintArea(){
+  const el = document.getElementById('p-hint');
+  if(!el) return;
+  const q = practiceState.current;
+  if(practiceState.showAns){ el.innerHTML=''; return; }
+  if(practiceState.hintUsed){
+    el.innerHTML = `<div class="p-3 rounded-lg text-sm" style="background:rgba(234,179,8,.08);border:1px solid rgba(234,179,8,.4);color:#eab308;">💡 ${hintFor(q)}</div>`;
+    return;
+  }
+  el.innerHTML = `<button class="btn text-xs" id="p-hint-btn">💡 Need a nudge? (removes one wrong answer)</button>`;
+  document.getElementById('p-hint-btn').addEventListener('click', useHint);
+}
+function useHint(){
+  if(practiceState.showAns || practiceState.hintUsed) return;
+  const q = practiceState.current;
+  practiceState.hintUsed = true;
+  practiceState.assisted = true;
+  // Disable one wrong, still-enabled option.
+  const wrong = [...document.querySelectorAll('#p-opts .opt')].filter(b=>+b.dataset.i!==q.a && !b.disabled);
+  if(wrong.length){ const b = rand(wrong); b.disabled = true; b.style.opacity = .35; b.style.textDecoration = 'line-through'; }
+  renderHintArea();
 }
 
 function answerPractice(idx){
   const q = practiceState.current;
   if(practiceState.showAns) return;
   const correct = idx === q.a;
+  const assisted = practiceState.assisted;
   practiceState.showAns = true;
   practiceState.sessionQ++;
   practiceState.times.push((Date.now()-practiceState.qStart)/1000);
+  // Adaptive difficulty rides the full bank range (MIND..MAXD), not a fixed cap.
+  // Assisted correct answers don't push difficulty up — they weren't unaided.
   if(correct){
     practiceState.sessionOk++;
-    practiceState.streak.correct++;
-    practiceState.streak.miss = 0;
-    if(practiceState.streak.correct>=2 && practiceState.level<3){
-      practiceState.level = Math.min(3, practiceState.level+0.5);
-      practiceState.streak.correct = 0;
+    if(!assisted){
+      practiceState.streak.correct++;
+      practiceState.streak.miss = 0;
+      if(practiceState.streak.correct>=2 && practiceState.level<MAXD){
+        practiceState.level = Math.min(MAXD, practiceState.level+0.5);
+        practiceState.streak.correct = 0;
+      }
     }
   } else {
     practiceState.streak.miss++;
     practiceState.streak.correct = 0;
-    if(practiceState.streak.miss>=2 && practiceState.level>1){
-      practiceState.level = Math.max(1, practiceState.level-0.5);
+    if(practiceState.streak.miss>=2 && practiceState.level>MIND){
+      practiceState.level = Math.max(MIND, practiceState.level-0.5);
       practiceState.streak.miss = 0;
     }
   }
-  rec(q.id, correct);
+  rec(q.id, correct, assisted);
+  const hintEl = document.getElementById('p-hint'); if(hintEl) hintEl.innerHTML='';
   document.querySelectorAll('#p-opts .opt').forEach((b,i)=>{
     b.disabled = true;
     if(i===q.a) b.classList.add('ok');
@@ -355,7 +530,8 @@ function answerPractice(idx){
   const fb = document.getElementById('p-feedback');
   fb.innerHTML = `
     <div class="p-4 rounded-lg" style="background:${correct?'rgba(74,222,128,.08)':'rgba(248,113,113,.08)'};border:1px solid ${correct?'var(--acc)':'var(--bad)'};">
-      <div class="font-bold mb-1" style="color:${correct?'var(--acc)':'var(--bad)'};">${correct?'Correct':'Wrong'}</div>
+      <div class="font-bold mb-1" style="color:${correct?'var(--acc)':'var(--bad)'};">${correct?(assisted?'Correct (with a hint)':'Correct'):'Wrong'}</div>
+      ${correct&&assisted?`<div class="text-xs mb-1" style="color:#eab308;">No mastery credit — try the next one unaided.</div>`:''}
       <div class="text-sm text-gray-300">${q.e}</div>
       <button class="btn btn-p mt-3" id="p-next">Next →</button>
     </div>
@@ -640,6 +816,41 @@ function renderLearning(){
 }
 
 // ==================== STATS ====================
+// Per-subtype mastery ladder — the criterion-referenced view. Each subtype is
+// New (untested) → Learning → Mastered (cleared the rolling criterion). This is
+// the map Practice remediates against.
+function renderMasteryPanel(){
+  const mp = masteryProgress();
+  const tierMeta = {mastered:{c:'var(--acc)',l:'Mastered'}, learning:{c:'#eab308',l:'Learning'}, new:{c:'#6b7280',l:'New'}};
+  const groups = CATS.map(cat=>{
+    const subs = ALLSUBS.filter(k=>k.split('/')[0]===cat).sort();
+    if(!subs.length) return '';
+    const rows = subs.map(k=>{
+      const m = masteryFor(k);
+      const meta = tierMeta[m.tier];
+      const sub = k.split('/')[1];
+      return `<div class="mb-2">
+        <div class="flex justify-between text-sm mb-1">
+          <span>${sub} <span class="text-xs" style="color:${meta.c};">· ${meta.l}</span></span>
+          <span class="mono text-gray-500">${m.att? m.pct+'%':'—'}</span>
+        </div>
+        <div class="bar"><div style="width:${m.pct}%;background:${meta.c};"></div></div>
+      </div>`;
+    }).join('');
+    return `<div class="mb-4"><div class="text-xs uppercase tracking-wide text-gray-500 mb-2">${cat}</div>${rows}</div>`;
+  }).join('');
+  return `
+    <div class="card p-5 mb-4">
+      <div class="flex justify-between items-center mb-1">
+        <h3 class="font-bold">Mastery by subtype</h3>
+        <span class="pill" style="border-color:var(--acc);color:var(--acc);">${mp.mastered}/${mp.total} mastered</span>
+      </div>
+      <div class="bar mb-2"><div style="width:${mp.pct}%;background:var(--acc);"></div></div>
+      <div class="text-xs text-gray-500 mb-4">Mastered = ≥${Math.round(MASTERY_ACC*100)}% over your last ${MASTERY_WIN} attempts (min ${MASTERY_MIN}). Practice steers toward your weakest un-mastered subtype and retires the rest to a light maintenance trickle.</div>
+      ${groups}
+    </div>`;
+}
+
 function renderStats(){
   const totalSeen = Object.values(STATS).reduce((s,x)=>s+x.seen,0);
   const totalCorrect = Object.values(STATS).reduce((s,x)=>s+x.correct,0);
@@ -677,6 +888,8 @@ function renderStats(){
       }).join('')}
     </div>
 
+    ${renderMasteryPanel()}
+
     <div class="card p-5 mb-4">
       <h3 class="font-bold mb-3">Leitner distribution</h3>
       <div class="flex gap-2">
@@ -702,7 +915,7 @@ function renderStats(){
     <div class="card p-5">
       <h3 class="font-bold mb-3">Wipe local data</h3>
       <p class="text-xs text-gray-500 mb-3">Everything is stored in your browser. Clear to start fresh.</p>
-      <button class="btn text-xs" onclick="if(confirm('Wipe all CCAT progress?')){[LS.itemStats,LS.history,LS.cards,LS.settings,LS.session].forEach(k=>localStorage.removeItem(k)); location.reload();}">Reset all</button>
+      <button class="btn text-xs" onclick="if(confirm('Wipe all CCAT progress?')){[LS.itemStats,LS.history,LS.cards,LS.subStats,LS.settings,LS.session].forEach(k=>localStorage.removeItem(k)); location.reload();}">Reset all</button>
     </div>
   `;
 }
@@ -752,7 +965,8 @@ document.addEventListener('keydown', e=>{
   if(e.target.tagName==='INPUT'||e.target.tagName==='SELECT'||e.target.tagName==='TEXTAREA') return;
   const k = e.key;
   if(currentTab==='practice' && practiceState){
-    if(!practiceState.showAns && ['1','2','3','4'].includes(k)){ answerPractice(+k-1); }
+    if(!practiceState.showAns && (k==='h'||k==='H')){ if(!practiceState.hintUsed) useHint(); }
+    else if(!practiceState.showAns && ['1','2','3','4'].includes(k)){ answerPractice(+k-1); }
     else if(practiceState.showAns && (k==='ArrowRight' || k==='Enter')){ practiceState.current=null; practiceState.showAns=false; render(); }
   } else if(currentTab==='exam' && examState && !examState.finished){
     if(['1','2','3','4'].includes(k)) answerExam(+k-1);
@@ -771,6 +985,11 @@ function fmtTime(s){ const m=Math.floor(s/60), r=s%60; return `${String(m).padSt
 // ==================== BOOT ====================
 fetch('questions.json').then(r=>r.json()).then(q=>{
   QUESTIONS = q;
+  // Derive the bank's real shape once, up front.
+  QMAP = {}; QUESTIONS.forEach(x=>QMAP[x.id]=x);
+  ALLSUBS = [...new Set(QUESTIONS.map(subKey))];
+  const ds = QUESTIONS.map(x=>x.d);
+  MIND = Math.min(...ds); MAXD = Math.max(...ds);
   SETTINGS.sessionCount++; save(LS.settings, SETTINGS);
   render();
 }).catch(err=>{
