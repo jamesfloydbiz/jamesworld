@@ -324,12 +324,26 @@ function interleave(arr, lastSub){
   const diff = lastSub ? arr.filter(q=>q.sub!==lastSub) : arr;
   return diff.length ? diff : arr;
 }
+// Serve one item from a candidate set, avoiding recent repeats. When a small
+// subtype pool (e.g. only ~10 deduction items) is getting hammered by
+// remediation, this spreads items out instead of re-drawing the same handful
+// back-to-back. Falls back gracefully so it never returns nothing.
+function serveFresh(cands, lastSub){
+  if(!cands.length) return null;
+  let pool = interleave(cands, lastSub);
+  const recent = (practiceState && practiceState.recentIds) || [];
+  let fresh = pool.filter(q=>!recent.includes(q.id));       // not shown recently
+  if(!fresh.length) fresh = pool.filter(q=>q.id!==(practiceState&&practiceState.lastId)); // at least not the exact last one
+  if(!fresh.length) fresh = pool;
+  return rand(fresh);
+}
 // Practice item selection, in priority order:
 //   1. Spaced review  — a "due" Leitner item (retrieval at the edge of forgetting)
 //   2. Remediation    — the weakest un-mastered subtype, inside the ZPD band
 //   3. Maintenance    — an occasional mastered-subtype item to keep it sharp
 //   4. Exploration    — anything in-band, interleaved
-// Everything is filtered to the ZPD and interleaved before it's served.
+// Everything is filtered to the ZPD, interleaved, and de-duped against recent
+// items before it's served.
 function pickPracticeItem(cat){
   const pool = cat==='all' ? QUESTIONS.slice() : QUESTIONS.filter(q=>q.c===cat);
   const level = practiceState?.level || 2;
@@ -340,26 +354,29 @@ function pickPracticeItem(cat){
   // 1) Spaced review — due box>0 items not already seen this session.
   const due = pool.filter(q=>{const s=STATS[q.id]; return s && s.box>0 && s.lastSession!==SETTINGS.sessionCount;});
   if(due.length && r<0.30){
-    return rand(interleave(zpdBand(due, level), lastSub));
+    return serveFresh(zpdBand(due, level), lastSub);
   }
 
-  // 2) Remediation — steer toward the weakest open subtype.
+  // 2) Remediation — steer toward the weakest open subtype. Use the FULL
+  // subtype pool (not the ZPD band): remediation is about covering the whole
+  // subtype, and banding a small pool (e.g. ~10 deduction items) down to a
+  // couple in-band items is exactly what causes visible repeats.
   const weak = weakestOpenSub();
   if(weak && r<0.75){
     const [wc, ws] = weak.k.split('/');
     const wItems = pool.filter(q=>q.c===wc && q.sub===ws);
-    if(wItems.length) return rand(zpdBand(wItems, level));
+    if(wItems.length) return serveFresh(wItems, null);
   }
 
   // 3) Maintenance — a light trickle of already-mastered material (~1 in 8).
   const mastered = pool.filter(q=>isMastered(subKey(q)));
   if(mastered.length && notMastered.length && r>0.875){
-    return rand(interleave(zpdBand(mastered, level), lastSub));
+    return serveFresh(zpdBand(mastered, level), lastSub);
   }
 
   // 4) Exploration — in-band, interleaved; bias toward not-yet-mastered.
   const base = notMastered.length ? notMastered : pool;
-  return rand(interleave(zpdBand(base, level), lastSub));
+  return serveFresh(zpdBand(base, level), lastSub);
 }
 
 // One-line strategy nudges for the hint scaffold — a "more knowledgeable other"
@@ -403,13 +420,21 @@ function hintFor(q){ return STRATEGY_SUB[q.sub] || STRATEGY_CAT[q.c] || "Elimina
 
 function renderPractice(){
   if(!practiceState){
-    practiceState = {level:2, streak:{correct:0,miss:0}, cat:'all', lastSub:null, sessionQ:0, sessionOk:0, times:[], startT:Date.now(), current:null, showAns:false, hintUsed:false, assisted:false};
+    practiceState = {level:2, streak:{correct:0,miss:0}, cat:'all', lastSub:null, sessionQ:0, sessionOk:0, times:[], startT:Date.now(), current:null, showAns:false, hintUsed:false, assisted:false, recentIds:[], lastId:null};
   }
   if(!practiceState.current){
     practiceState.current = pickPracticeItem(practiceState.cat);
     practiceState.qStart = Date.now();
     practiceState.hintUsed = false;
     practiceState.assisted = false;
+    // Remember what we just served so the next picks avoid immediate repeats.
+    // Ring length is bounded so small subtype pools never filter to empty.
+    const cur = practiceState.current;
+    if(cur){
+      practiceState.lastId = cur.id;
+      practiceState.recentIds.push(cur.id);
+      if(practiceState.recentIds.length > 10) practiceState.recentIds.shift();
+    }
   }
   const q = practiceState.current;
   const weak = weakestOpenSub();
