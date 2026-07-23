@@ -62,7 +62,8 @@
 
   <!-- Tabs -->
   <nav class="flex flex-wrap gap-2 border-b border-neutral-800 mb-6">
-    <button class="tab on" data-tab="practice">Practice</button>
+    <button class="tab on" data-tab="intro">Start here</button>
+    <button class="tab" data-tab="practice">Practice</button>
     <button class="tab" data-tab="exam">Exam</button>
     <button class="tab" data-tab="learning">Learning</button>
     <button class="tab" data-tab="stats">Stats</button>
@@ -93,6 +94,8 @@ const LS = {
   history:   "ccat.history.v1",      // [{ts, score, total, dur, catAcc}]
   cards:     "ccat.cards.v1",        // {cardId: {ease, iv, due}}
   subStats:  "ccat.substats.v1",     // {"Cat/sub": {att, ok, recent:[1,0,…]}}
+  recent:    "ccat.recent.v1",       // [1,0,…] last N practice/exam outcomes (current form)
+  progress:  "ccat.progress.v1",     // {"YYYY-MM-DD": {answered, life, form, mastered, bestExam}}
   settings:  "ccat.settings.v1",
   session:   "ccat.session.v1",
 };
@@ -101,6 +104,9 @@ function save(k,v){ localStorage.setItem(k, JSON.stringify(v)); }
 
 let QUESTIONS = [], STATS = ls(LS.itemStats,{}), HIST = ls(LS.history,[]), CARDS = ls(LS.cards,{});
 let SUBSTAT = ls(LS.subStats,{});
+let RECENT = ls(LS.recent,[]);        // rolling window of the last answers (0/1)
+let PROGRESS = ls(LS.progress,{});    // one snapshot per calendar day
+const FORM_WIN = 40;                  // "current form" = accuracy over last 40 answers
 let SETTINGS = ls(LS.settings,{pomLen:25, pomBreak:5, deepSet:false, confidence:false, sessionCount:0});
 
 // ==================== MASTERY MODEL ====================
@@ -233,6 +239,39 @@ function rec(id, correct, assisted){
   save(LS.itemStats, STATS);
   const q = QMAP[id];
   if(q) recSub(q, correct, assisted);
+  // Current-form window + daily progress snapshot.
+  RECENT.push(correct?1:0);
+  if(RECENT.length > FORM_WIN) RECENT.shift();
+  save(LS.recent, RECENT);
+  logProgress();
+}
+// "Current form" — accuracy over the recent window. Unlike lifetime accuracy,
+// this recovers as you improve, so it's the honest "am I getting better?" number.
+function formAcc(){ return RECENT.length ? RECENT.reduce((a,b)=>a+b,0)/RECENT.length : 0; }
+// Local calendar date key (YYYY-MM-DD) for daily snapshots.
+function dayKey(ts){ const d = ts?new Date(ts):new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
+// Upsert today's snapshot so the improvement view has one point per day.
+function logProgress(){
+  const answered = Object.values(STATS).reduce((s,x)=>s+x.seen,0);
+  const life = answered ? Object.values(STATS).reduce((s,x)=>s+x.correct,0)/answered : 0;
+  const mastered = ALLSUBS.filter(isMastered).length;
+  const bestExam = HIST.reduce((b,e)=>e.score>b?e.score:b, 0);
+  PROGRESS[dayKey()] = {answered, life:+life.toFixed(3), form:+formAcc().toFixed(3), mastered, bestExam};
+  save(LS.progress, PROGRESS);
+}
+// Minimal inline sparkline (no libs) for a 0..1 series.
+function sparkline(vals, w=220, h=36){
+  if(vals.length<2) return '';
+  const max=Math.max(...vals,0.01), min=Math.min(...vals,0);
+  const rng = (max-min)||1;
+  const pts = vals.map((v,i)=>{
+    const x = (i/(vals.length-1))*(w-4)+2;
+    const y = h-2-((v-min)/rng)*(h-4);
+    return `${x.toFixed(1)},${y.toFixed(1)}`;
+  }).join(' ');
+  return `<svg viewBox="0 0 ${w} ${h}" width="100%" height="${h}" preserveAspectRatio="none" role="img" aria-hidden="true">
+    <polyline points="${pts}" fill="none" stroke="var(--acc)" stroke-width="2" vector-effect="non-scaling-stroke"/>
+  </svg>`;
 }
 // Roll a subtype's mastery window. Assisted CORRECT answers are excluded from
 // the window (no mastery credit for a nudge); assisted misses still count.
@@ -293,7 +332,7 @@ function masteryProgress(){
 
 // ==================== VIEWS ====================
 const V = document.getElementById('views');
-let currentTab = 'practice';
+let currentTab = 'intro';
 
 function switchTab(name){
   currentTab = name;
@@ -303,10 +342,75 @@ function switchTab(name){
 document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>switchTab(t.dataset.tab)));
 
 function render(){
-  if(currentTab==='practice') renderPractice();
+  if(currentTab==='intro') renderIntro();
+  else if(currentTab==='practice') renderPractice();
   else if(currentTab==='exam') renderExam();
   else if(currentTab==='learning') renderLearning();
   else if(currentTab==='stats') renderStats();
+}
+
+// ==================== INTRO ====================
+function renderIntro(){
+  const mp = ALLSUBS.length ? masteryProgress() : {mastered:0,total:0};
+  V.innerHTML = `
+    <div class="card p-6 mb-4">
+      <h2 class="text-xl font-bold mb-2">What the CCAT is</h2>
+      <p class="text-sm text-gray-300 leading-relaxed mb-3">
+        The <strong>Criteria Cognitive Aptitude Test</strong> is a pre-employment test of raw problem-solving and
+        learning speed — <strong>50 questions in 15 minutes</strong> (about 18 seconds each). It's deliberately
+        too long to finish: almost nobody answers all 50, and there's <strong>no penalty for wrong answers</strong>,
+        so a smart guess beats a blank. Your score is simply the number correct; the average is around 24/50, and
+        most roles look for roughly 30–42 depending on seniority.
+      </p>
+      <p class="text-sm text-gray-300 leading-relaxed">
+        It doesn't test knowledge — it tests how fast you <em>think</em>. Three abilities, mixed together and
+        ramping from easy to hard:
+      </p>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mt-3">
+        <div class="p-3 rounded-lg" style="background:#111;border:1px solid var(--border);">
+          <div class="font-bold text-sm mb-1">Verbal</div>
+          <div class="text-xs text-gray-400">Analogies, synonyms/antonyms, odd-one-out, sentence logic — vocabulary and verbal reasoning.</div>
+        </div>
+        <div class="p-3 rounded-lg" style="background:#111;border:1px solid var(--border);">
+          <div class="font-bold text-sm mb-1">Numerical &amp; Logic</div>
+          <div class="text-xs text-gray-400">Number series, word problems, percentages, ratios, deductions — quick math and reasoning under time.</div>
+        </div>
+        <div class="p-3 rounded-lg" style="background:#111;border:1px solid var(--border);">
+          <div class="font-bold text-sm mb-1">Spatial</div>
+          <div class="text-xs text-gray-400">Rotations, mirrors, next-in-pattern — visual pattern recognition.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card p-6 mb-4">
+      <h2 class="text-xl font-bold mb-3">How each part of this trainer helps</h2>
+      <div class="space-y-4">
+        <div>
+          <div class="font-bold text-sm mb-1" style="color:var(--acc);">Practice → accuracy + pattern recognition</div>
+          <p class="text-xs text-gray-400 leading-relaxed">Adaptive drill that keeps questions at the edge of your ability, interleaves the question types (like the real mixed test), and gives an explanation after every answer. It steers toward your weakest subtype and spaces out review of what you've already got — so you fix gaps instead of re-drilling strengths. Stuck? A hint removes one wrong option (no mastery credit, so you stay honest).</p>
+        </div>
+        <div>
+          <div class="font-bold text-sm mb-1" style="color:var(--acc);">Learning → speed on the memorizable stuff</div>
+          <p class="text-xs text-gray-400 leading-relaxed">Flashcards (spaced repetition) for the facts worth making automatic — squares, cubes, fraction↔percent, percent shortcuts, word roots, common traps. When these are instant, your 18 seconds go to <em>thinking</em>, not arithmetic.</p>
+        </div>
+        <div>
+          <div class="font-bold text-sm mb-1" style="color:var(--acc);">Exam → speed, stamina, and test-day calm</div>
+          <p class="text-xs text-gray-400 leading-relaxed">A full simulation: 50 questions, 15-minute countdown, real category mix, no going back, and a focus warning (the real test auto-disqualifies if you switch tabs). Practice the <em>conditions</em>, not just the content.</p>
+        </div>
+        <div>
+          <div class="font-bold text-sm mb-1" style="color:var(--acc);">Stats → what to drill next, and proof you're improving</div>
+          <p class="text-xs text-gray-400 leading-relaxed">A mastery bar per subtype (New → Learning → Mastered), plus an improvement graph tracking your recent-form accuracy, subtypes mastered, and best exam over time. Everything is stored locally in your browser — nothing leaves your device.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex flex-wrap gap-3">
+      <button class="btn btn-p" data-go="practice">Start practicing →</button>
+      <button class="btn" data-go="exam">Take a timed exam</button>
+      ${mp.total? `<span class="pill self-center">Mastered ${mp.mastered}/${mp.total} subtypes so far</span>`:''}
+    </div>
+  `;
+  V.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>switchTab(b.dataset.go)));
 }
 
 // ==================== PRACTICE ====================
@@ -678,6 +782,7 @@ function finishExam(){
   HIST.push(entry); save(LS.history, HIST);
   // credit stats too
   examState.ans.forEach(a=>rec(a.id, a.correct));
+  logProgress();
   render();
 }
 
@@ -876,6 +981,44 @@ function renderMasteryPanel(){
     </div>`;
 }
 
+// Improvement over time — the "how much have I improved?" view. Compares the
+// earliest recorded day to now across current-form accuracy, subtypes mastered,
+// and best exam, with a sparkline of the daily form curve.
+function renderImprovement(){
+  logProgress(); // make sure today's point reflects the latest answer
+  const days = Object.keys(PROGRESS).sort();
+  const pts = days.map(d=>PROGRESS[d]);
+  const now = pts[pts.length-1];
+  if(!days.length || (now && now.answered===0)){
+    return `<div class="card p-5 mb-4"><h3 class="font-bold mb-2">Your improvement</h3>
+      <div class="text-sm text-gray-500">Answer some questions and your progress graph shows up here — recent-form accuracy, subtypes mastered, and best exam, tracked day by day.</div></div>`;
+  }
+  const first = pts[0];
+  const multiDay = days.length >= 2;
+  const delta = (a,b)=>{ const d=Math.round((b-a)); return d>0?`<span style="color:var(--acc);">▲ ${d}</span>`:d<0?`<span style="color:var(--bad);">▼ ${Math.abs(d)}</span>`:`<span class="text-gray-500">—</span>`; };
+  const formSeries = pts.map(p=>p.form);
+  const spark = sparkline(formSeries);
+  const stat = (label, val, sub) => `<div class="p-3 rounded-lg" style="background:#111;border:1px solid var(--border);">
+      <div class="text-xs text-gray-500">${label}</div>
+      <div class="text-2xl font-bold mono">${val}</div>
+      <div class="text-xs text-gray-500 mt-1">${sub}</div>
+    </div>`;
+  return `
+    <div class="card p-5 mb-4">
+      <div class="flex justify-between items-center mb-1">
+        <h3 class="font-bold">Your improvement</h3>
+        <span class="pill">${days.length} day${days.length>1?'s':''} tracked</span>
+      </div>
+      <div class="text-xs text-gray-500 mb-3">Current form = accuracy over your last ${FORM_WIN} answers${multiDay?`, since ${days[0]}`:''}.</div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+        ${stat('Current form', Math.round(now.form*100)+'%', multiDay?`from ${Math.round(first.form*100)}% &nbsp; ${delta(first.form*100, now.form*100)}`:'first day — keep going')}
+        ${stat('Subtypes mastered', `${now.mastered}<span class="text-base text-gray-500">/${ALLSUBS.length}</span>`, multiDay?`from ${first.mastered} &nbsp; ${delta(first.mastered, now.mastered)}`:'start of your run')}
+        ${stat('Best exam', now.bestExam?`${now.bestExam}<span class="text-base text-gray-500">/${EXAM_LEN}</span>`:'—', multiDay&&first.bestExam?`from ${first.bestExam} &nbsp; ${delta(first.bestExam, now.bestExam)}`:'take one in Exam')}
+      </div>
+      ${multiDay? `<div class="text-xs text-gray-500 mb-1">Form trend</div>${spark}`:''}
+    </div>`;
+}
+
 function renderStats(){
   const totalSeen = Object.values(STATS).reduce((s,x)=>s+x.seen,0);
   const totalCorrect = Object.values(STATS).reduce((s,x)=>s+x.correct,0);
@@ -903,6 +1046,8 @@ function renderStats(){
         <div class="bar mt-2"><div style="width:${readiness}%"></div></div>
       </div>
     </div>
+
+    ${renderImprovement()}
 
     <div class="card p-5 mb-4">
       <h3 class="font-bold mb-3">Accuracy by category</h3>
@@ -940,7 +1085,7 @@ function renderStats(){
     <div class="card p-5">
       <h3 class="font-bold mb-3">Wipe local data</h3>
       <p class="text-xs text-gray-500 mb-3">Everything is stored in your browser. Clear to start fresh.</p>
-      <button class="btn text-xs" onclick="if(confirm('Wipe all CCAT progress?')){[LS.itemStats,LS.history,LS.cards,LS.subStats,LS.settings,LS.session].forEach(k=>localStorage.removeItem(k)); location.reload();}">Reset all</button>
+      <button class="btn text-xs" onclick="if(confirm('Wipe all CCAT progress?')){[LS.itemStats,LS.history,LS.cards,LS.subStats,LS.recent,LS.progress,LS.settings,LS.session].forEach(k=>localStorage.removeItem(k)); location.reload();}">Reset all</button>
     </div>
   `;
 }
