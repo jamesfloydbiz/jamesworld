@@ -164,19 +164,19 @@ const DECKS = [
     {q:"1%",a:"Move decimal two places",why:"1% of 240 → 2.4. Build odd percents from 1% + 10% pieces."},
     {q:"X% of Y = Y% of X",a:"The two are always equal",why:"8% of 25 is hard, but 25% of 8 = 2 is easy — same answer. Flip it when one side is friendlier."}
   ]},
-  {name:"Series families", prompt:"What's the rule for this kind of pattern?",
-   method:"To name a sequence, look at the STEP between terms: same amount added = arithmetic; same amount multiplied = geometric; steps that grow = squares/triangular; each term = the last two added = Fibonacci.",
+  {name:"Spot the series", prompt:"What kind of sequence is this — and what comes next?",
+   method:"Look at the STEP between terms. Same amount added → arithmetic. Same amount multiplied → geometric. The gap itself grows → squares or triangular. Each term = the two before it added → Fibonacci. No neat step but familiar numbers → primes.",
    cards:[
-    {q:"Arithmetic",a:"+ constant each step",why:"2, 5, 8, 11 → +3 every time. Find the gap; it never changes."},
-    {q:"Geometric",a:"× constant each step",why:"3, 6, 12, 24 → ×2 every time. If terms grow fast, test multiplying."},
-    {q:"Squares",a:"1, 4, 9, 16, 25…",why:"Each term is n×n. Gaps between them grow by 2 (odd numbers)."},
-    {q:"Cubes",a:"1, 8, 27, 64, 125…",why:"Each term is n×n×n. Grows very fast — a giveaway for cubes."},
-    {q:"Fibonacci",a:"Each = sum of prior two",why:"1,1,2,3,5,8,13 → 5+8 = 13. If a term equals the two before it, it's Fibonacci."},
-    {q:"Primes",a:"2, 3, 5, 7, 11, 13…",why:"Numbers with no divisors but 1 and themselves. Irregular gaps = check primes."},
-    {q:"Triangular",a:"1, 3, 6, 10, 15, 21",why:"Add 1, then 2, then 3… Running total of the counting numbers."},
-    {q:"Growing gaps",a:"+1, +2, +3, +4…",why:"The amount added increases each step. 2, 3, 5, 8, 12 → gaps 1,2,3,4."},
-    {q:"Interleaved",a:"Two series shuffled together",why:"Look at every OTHER term. 1,10,2,20,3,30 is really 1,2,3 and 10,20,30."},
-    {q:"Alternating +/−",a:"Sign flips each step",why:"The operation switches: +5, −3, +5, −3… Watch for a zig-zag."}
+    {q:"4, 7, 10, 13, ___",a:"Arithmetic (+3) → 16",why:"Same amount added each time. Find the gap (+3); it never changes."},
+    {q:"3, 6, 12, 24, ___",a:"Geometric (×2) → 48",why:"Same amount multiplied each time. Terms grow fast → test multiplying."},
+    {q:"1, 4, 9, 16, ___",a:"Squares → 25",why:"Each term is n×n (1²,2²,3²,4²,5²). The gaps grow by odd numbers."},
+    {q:"1, 8, 27, 64, ___",a:"Cubes → 125",why:"Each term is n×n×n (1³,2³,3³,4³,5³). Grows very fast — a giveaway."},
+    {q:"1, 1, 2, 3, 5, 8, ___",a:"Fibonacci → 13",why:"Each term = the two before it added: 5 + 8 = 13."},
+    {q:"2, 3, 5, 7, 11, ___",a:"Primes → 13",why:"Numbers divisible only by 1 and themselves. Odd, irregular gaps → check primes."},
+    {q:"1, 3, 6, 10, ___",a:"Triangular → 15",why:"Add 1, then 2, then 3, then 4… a running total of the counting numbers."},
+    {q:"2, 3, 5, 8, 12, ___",a:"Growing gaps → 17",why:"The gap itself grows: +1, +2, +3, +4, then +5."},
+    {q:"1, 10, 2, 20, 3, ___",a:"Interleaved → 30",why:"Two series zipped together: 1,2,3 and 10,20,30. Read every other term."},
+    {q:"5, −5, 5, −5, ___",a:"Alternating → 5",why:"The sign flips each step. Watch for a zig-zag."}
   ]},
   {name:"Core formulas", prompt:"What's the formula?",
    method:"Learn how the three quantities relate, then plug in the two you're given to solve for the third.",
@@ -210,25 +210,29 @@ const DECKS = [
     {q:"ten- / tain-",a:"hold",why:"reTAIN (keep hold of), conTAIN (hold inside), susTAIN (hold up), TENacious (holding on stubbornly)."},
     {q:"luc- / lum-",a:"light",why:"LUCid (clear), eLUCidate (shed light on), transLUCent (light passes through), LUMinous (glowing)."}
   ]},
-  {name:"Analogy types", prompt:"What's the link, and an example pair?",
-   method:"Say the exact link in the first pair OUT LOUD ('a finger is PART OF a hand'), then find the pair with the same link. Naming the bridge is the whole trick.",
+  {name:"Complete the analogy", prompt:"What word completes it — and what's the link?",
+   method:"Say the link in the first pair OUT LOUD as a sentence ('a finger is PART OF a hand'), then plug the third word into the same sentence to find the fourth. Naming the bridge is the whole trick.",
    cards:[
-    {q:"Part → Whole",a:"Finger : Hand",why:"A finger is a part of a hand. Match: Petal : Flower, Page : Book."},
-    {q:"Tool → User",a:"Wrench : Mechanic",why:"A mechanic uses a wrench. Match: Scalpel : Surgeon, Brush : Painter."},
-    {q:"Cause → Effect",a:"Fire : Smoke",why:"Fire produces smoke. Match: Rain : Flood, Joke : Laughter."},
-    {q:"Category → Member",a:"Bird : Robin",why:"A robin is a kind of bird. Match: Metal : Copper, Tree : Oak."},
-    {q:"Degree (small → large)",a:"Warm : Hot",why:"Same idea, stronger. Match: Big : Huge, Sad : Devastated."},
-    {q:"Function (object → use)",a:"Pen : Write",why:"A pen is used to write. Match: Knife : Cut, Key : Unlock."},
-    {q:"Worker → Product",a:"Baker : Bread",why:"A baker makes bread. Match: Author : Book, Poet : Poem."},
-    {q:"Object → Location",a:"Book : Library",why:"A book belongs in a library. Match: Car : Garage, Painting : Museum."}
+    {q:"Finger : Hand :: Petal : ___",a:"Flower — link: part → whole",why:"A finger is part of a hand; a petal is part of a flower."},
+    {q:"Wrench : Mechanic :: Scalpel : ___",a:"Surgeon — link: tool → who uses it",why:"A mechanic uses a wrench; a surgeon uses a scalpel."},
+    {q:"Fire : Smoke :: Rain : ___",a:"Flood — link: cause → effect",why:"Fire produces smoke; heavy rain produces a flood."},
+    {q:"Bird : Robin :: Metal : ___",a:"Copper — link: category → a member of it",why:"A robin is a kind of bird; copper is a kind of metal."},
+    {q:"Warm : Hot :: Big : ___",a:"Huge — link: same idea, stronger (degree)",why:"Hot is a stronger 'warm'; huge is a stronger 'big'. It's about intensity — nothing to do with temperature."},
+    {q:"Pen : Write :: Knife : ___",a:"Cut — link: object → what it's for",why:"A pen is for writing; a knife is for cutting."},
+    {q:"Baker : Bread :: Author : ___",a:"Book — link: worker → what they make",why:"A baker makes bread; an author makes a book."},
+    {q:"Book : Library :: Car : ___",a:"Garage — link: object → where it belongs",why:"A book belongs in a library; a car belongs in a garage."}
   ]},
-  {name:"Spatial heuristics", prompt:"What's the strategy for this type?",
-   method:"Never try to hold the whole figure in your head. Pick ONE feature and follow only it through every step — the rest is noise.",
+  {name:"Rotations & mirrors", prompt:"Picture it — what's the answer?",
+   method:"Think of a clock. 90° clockwise = a quarter-turn to the right (12→3→6→9). 180° = half turn, straight opposite. A MIRROR is different from a turn: it swaps left↔right (b↔d) and reverses the shape's handedness, which no rotation can do.",
    cards:[
-    {q:"Rotation",a:"Track ONE feature and step it",why:"Follow a single arrow tip or corner as it turns. Decide clockwise vs counter-clockwise, then move it that way."},
-    {q:"Reflection (mirror)",a:"Flip across a line",why:"A mirror swaps left and right: b↔d, p↔q. Unlike rotation, a reflection reverses the shape (its 'handedness')."},
-    {q:"Odd-one-out",a:"State the shared rule, find the breaker",why:"Say what 3 of the 4 have in common ('all point left'), then the one that breaks that rule is your answer."},
-    {q:"Counting figures",a:"Count ONE changing attribute",why:"Track just the sides, or just the dots — not the whole picture. Counting everything at once is how you miscount."}
+    {q:"A clock hand points to 12. Turn it 90° clockwise. It now points to?",a:"3 o'clock",why:"90° clockwise = a quarter-turn right: 12 → 3 → 6 → 9."},
+    {q:"An arrow points up. Rotate it 180°. It now points?",a:"Down",why:"180° is a half turn — always the straight opposite."},
+    {q:"An arrow points right. Rotate it 90° clockwise. It points?",a:"Down",why:"Quarter-turn clockwise: right → down → left → up."},
+    {q:"A clock hand at 3. Turn it 90° counter-clockwise. It points to?",a:"12 o'clock",why:"Counter-clockwise = turn left: 3 → 12."},
+    {q:"Mirror image (left-right flip) of the letter 'b'?",a:"d",why:"A vertical mirror swaps left and right: b↔d, p↔q."},
+    {q:"The letter 'M' turned upside down (180°)?",a:"W",why:"A half turn flips top↔bottom, and M becomes W."},
+    {q:"Which one flips a shape's handedness: a rotation or a mirror?",a:"A mirror (reflection)",why:"A rotation only turns the shape; only a mirror reverses left/right, like b → d."},
+    {q:"An arrow points up. Rotate it 90° counter-clockwise. It points?",a:"Left",why:"Counter-clockwise quarter-turn: up → left → down → right."}
   ]}
 ];
 
