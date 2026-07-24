@@ -129,20 +129,20 @@ const subKey = q => `${q.c}/${q.sub}`;
 // don't know still builds the skill), and many cards add a `why` — the trick,
 // derivation, or examples behind the bare answer.
 const DECKS = [
-  {name:"Squares (11–20)",
+  {name:"Squares (11–20)", prompt:"What does this equal?",
    method:"Build from 10²=100 with (10+n)² = 100 + 20n + n². 13² → 100+60+9 = 169. Numbers ending in 5: tens digit t → t·(t+1) then '25' (15² → 1·2=2 → 225).",
    cards:["11²=121","12²=144","13²=169","14²=196","15²=225","16²=256","17²=289","18²=324","19²=361","20²=400"].map(s=>{const [q,a]=s.split("=");return{q,a};})},
-  {name:"Cubes (2–10)",
+  {name:"Cubes (2–10)", prompt:"What does this equal?",
    method:"n³ = n × n². Use a square you already know: 7³ = 7×49 = 343; 4³ = 4×16 = 64.",
    cards:["2³=8","3³=27","4³=64","5³=125","6³=216","7³=343","8³=512","9³=729","10³=1000"].map(s=>{const [q,a]=s.split("=");return{q,a};})},
-  {name:"Fraction ↔ Percent",
+  {name:"Fraction ↔ Percent", prompt:"What is this as a decimal and a percent?",
    method:"Divide top ÷ bottom to get the decimal, then move the point two places right for the percent. 3/8 → 3÷8 = 0.375 → 37.5%. Thirds and sixths repeat forever (1/3 = 0.333…).",
    cards:[
     {q:"1/2",a:"0.5 = 50%"},{q:"1/3",a:"≈0.333 = 33.3%"},{q:"2/3",a:"≈0.667 = 66.7%"},{q:"1/4",a:"0.25 = 25%"},
     {q:"3/4",a:"0.75 = 75%"},{q:"1/5",a:"0.2 = 20%"},{q:"2/5",a:"0.4 = 40%"},{q:"1/6",a:"≈0.167 = 16.7%"},
     {q:"1/8",a:"0.125 = 12.5%"},{q:"3/8",a:"0.375 = 37.5%"},{q:"5/8",a:"0.625 = 62.5%"},{q:"1/10",a:"0.1 = 10%"},{q:"1/12",a:"≈0.083 = 8.3%"}
   ]},
-  {name:"Percent shortcuts",
+  {name:"Percent shortcuts", prompt:"What's the fast way to find this?",
    method:"Anchor everything on 10% (move the decimal one place left). Then halve it for 5%, double it for 20%, or add pieces for 15%. 1% = move two places.",
    cards:[
     {q:"10% of anything",a:"Move the decimal one place",why:"10% of 240 → 24. This is the anchor you build every other percent from."},
@@ -154,7 +154,7 @@ const DECKS = [
     {q:"1%",a:"Move decimal two places",why:"1% of 240 → 2.4. Build odd percents from 1% + 10% pieces."},
     {q:"X% of Y = Y% of X",a:"The two are always equal",why:"8% of 25 is hard, but 25% of 8 = 2 is easy — same answer. Flip it when one side is friendlier."}
   ]},
-  {name:"Series families",
+  {name:"Series families", prompt:"What's the rule for this kind of pattern?",
    method:"To name a sequence, look at the STEP between terms: same amount added = arithmetic; same amount multiplied = geometric; steps that grow = squares/triangular; each term = the last two added = Fibonacci.",
    cards:[
     {q:"Arithmetic",a:"+ constant each step",why:"2, 5, 8, 11 → +3 every time. Find the gap; it never changes."},
@@ -168,7 +168,7 @@ const DECKS = [
     {q:"Interleaved",a:"Two series shuffled together",why:"Look at every OTHER term. 1,10,2,20,3,30 is really 1,2,3 and 10,20,30."},
     {q:"Alternating +/−",a:"Sign flips each step",why:"The operation switches: +5, −3, +5, −3… Watch for a zig-zag."}
   ]},
-  {name:"Core formulas",
+  {name:"Core formulas", prompt:"What's the formula?",
    method:"Learn how the three quantities relate, then plug in the two you're given to solve for the third.",
    cards:[
     {q:"Distance",a:"= Rate × Time",why:"So Rate = Distance ÷ Time, and Time = Distance ÷ Rate. 180 mi in 3 h → 60 mph."},
@@ -177,7 +177,7 @@ const DECKS = [
     {q:"Ratio a:b of T",a:"Each part = T ÷ (a+b)",why:"Add the ratio numbers for total parts, divide, then multiply back. 120 in 2:3 → 120÷5=24 → 48 and 72."},
     {q:"Work-rate trap",a:"Rate stays constant",why:"5 machines make 5 widgets in 5 min → 1 machine makes 1 widget in 5 min → 100 machines make 100 in 5 min. The time doesn't change."}
   ]},
-  {name:"Classic traps",
+  {name:"Classic traps", prompt:"What's the trap — and the real answer?",
    method:"On these, the FIRST answer that pops into your head is the wrong one. Learn the catch once and you'll spot it under time pressure.",
    cards:[
     {q:"Bat + ball cost $1.10; bat is $1 more than ball. Ball?",a:"$0.05 (not $0.10)",why:"If the ball were $0.10 the bat would be $1.10 and the total $1.20. Ball $0.05 + bat $1.05 = $1.10. ✓"},
@@ -186,7 +186,7 @@ const DECKS = [
     {q:"'Some flowers fade' + 'all roses are flowers' → about roses?",a:"No valid conclusion",why:"The roses might be the flowers that DON'T fade. 'Some' tells you nothing about roses specifically."},
     {q:"Modus tollens: if P→Q and NOT Q, then?",a:"NOT P",why:"If rain → wet ground, and the ground is NOT wet, then it did NOT rain."}
   ]},
-  {name:"Word roots",
+  {name:"Word roots", prompt:"What does this root mean?",
    method:"A root carries its meaning into every word it appears in. Memorize the root + a couple of example words, then you can decode words you've never seen on the test.",
    cards:[
     {q:"bene-",a:"good / well",why:"BENEfit, BENEvolent, BENEficial — all positive. It's the opposite of mal-. So 'benevolent leader' = a good-hearted one."},
@@ -200,7 +200,7 @@ const DECKS = [
     {q:"ten- / tain-",a:"hold",why:"reTAIN (keep hold of), conTAIN (hold inside), susTAIN (hold up), TENacious (holding on stubbornly)."},
     {q:"luc- / lum-",a:"light",why:"LUCid (clear), eLUCidate (shed light on), transLUCent (light passes through), LUMinous (glowing)."}
   ]},
-  {name:"Analogy types",
+  {name:"Analogy types", prompt:"What's the link, and an example pair?",
    method:"Say the exact link in the first pair OUT LOUD ('a finger is PART OF a hand'), then find the pair with the same link. Naming the bridge is the whole trick.",
    cards:[
     {q:"Part → Whole",a:"Finger : Hand",why:"A finger is a part of a hand. Match: Petal : Flower, Page : Book."},
@@ -212,7 +212,7 @@ const DECKS = [
     {q:"Worker → Product",a:"Baker : Bread",why:"A baker makes bread. Match: Author : Book, Poet : Poem."},
     {q:"Object → Location",a:"Book : Library",why:"A book belongs in a library. Match: Car : Garage, Painting : Museum."}
   ]},
-  {name:"Spatial heuristics",
+  {name:"Spatial heuristics", prompt:"What's the strategy for this type?",
    method:"Never try to hold the whole figure in your head. Pick ONE feature and follow only it through every step — the rest is noise.",
    cards:[
     {q:"Rotation",a:"Track ONE feature and step it",why:"Follow a single arrow tip or corner as it turns. Decide clockwise vs counter-clockwise, then move it that way."},
@@ -937,6 +937,7 @@ function renderLearning(){
   // Teaching line shown on reveal: the card's own `why`, else the deck's method.
   const deckObj = DECKS[+String(card.id).split('-')[0]];
   const teach = card.why || (deckObj && deckObj.method) || '';
+  const prompt = (deckObj && deckObj.prompt) || '';
   const dueCount = learnState.queue.filter(x=>{const cs=CARDS[x.card.id]; return cs && isDue(x.card.id);}).length;
   const freshCount = learnState.queue.length - dueCount;
   V.innerHTML = `
@@ -952,7 +953,8 @@ function renderLearning(){
     </div>
 
     <div class="card p-8 mb-4 text-center min-h-64 flex flex-col justify-center">
-      <div class="text-xs text-gray-500 mb-2">${deck}</div>
+      <div class="text-xs text-gray-500 mb-1">${deck}</div>
+      ${prompt? `<div class="text-sm text-gray-400 mb-4">${prompt}</div>`:''}
       <div class="text-2xl md:text-3xl mb-6 font-bold">${card.q}</div>
       ${learnState.revealed
         ? `<div class="text-lg text-gray-300 mb-3">${card.a}</div>
