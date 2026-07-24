@@ -125,66 +125,100 @@ const clamp = (x,lo,hi)=>Math.max(lo,Math.min(hi,x));
 const subKey = q => `${q.c}/${q.sub}`;
 
 // ==================== FLASHCARD DECKS ====================
+// Every deck has a `method` that TEACHES how to get the answer (so a card you
+// don't know still builds the skill), and many cards add a `why` — the trick,
+// derivation, or examples behind the bare answer.
 const DECKS = [
-  {name:"Squares (11–20)", cards:["11²=121","12²=144","13²=169","14²=196","15²=225","16²=256","17²=289","18²=324","19²=361","20²=400"].map(s=>{const [q,a]=s.split("=");return{q,a};})},
-  {name:"Cubes (2–10)", cards:["2³=8","3³=27","4³=64","5³=125","6³=216","7³=343","8³=512","9³=729","10³=1000"].map(s=>{const [q,a]=s.split("=");return{q,a};})},
-  {name:"Fraction ↔ Percent", cards:[
+  {name:"Squares (11–20)",
+   method:"Build from 10²=100 with (10+n)² = 100 + 20n + n². 13² → 100+60+9 = 169. Numbers ending in 5: tens digit t → t·(t+1) then '25' (15² → 1·2=2 → 225).",
+   cards:["11²=121","12²=144","13²=169","14²=196","15²=225","16²=256","17²=289","18²=324","19²=361","20²=400"].map(s=>{const [q,a]=s.split("=");return{q,a};})},
+  {name:"Cubes (2–10)",
+   method:"n³ = n × n². Use a square you already know: 7³ = 7×49 = 343; 4³ = 4×16 = 64.",
+   cards:["2³=8","3³=27","4³=64","5³=125","6³=216","7³=343","8³=512","9³=729","10³=1000"].map(s=>{const [q,a]=s.split("=");return{q,a};})},
+  {name:"Fraction ↔ Percent",
+   method:"Divide top ÷ bottom to get the decimal, then move the point two places right for the percent. 3/8 → 3÷8 = 0.375 → 37.5%. Thirds and sixths repeat forever (1/3 = 0.333…).",
+   cards:[
     {q:"1/2",a:"0.5 = 50%"},{q:"1/3",a:"≈0.333 = 33.3%"},{q:"2/3",a:"≈0.667 = 66.7%"},{q:"1/4",a:"0.25 = 25%"},
     {q:"3/4",a:"0.75 = 75%"},{q:"1/5",a:"0.2 = 20%"},{q:"2/5",a:"0.4 = 40%"},{q:"1/6",a:"≈0.167 = 16.7%"},
     {q:"1/8",a:"0.125 = 12.5%"},{q:"3/8",a:"0.375 = 37.5%"},{q:"5/8",a:"0.625 = 62.5%"},{q:"1/10",a:"0.1 = 10%"},{q:"1/12",a:"≈0.083 = 8.3%"}
   ]},
-  {name:"Percent shortcuts", cards:[
-    {q:"10% of anything",a:"Move the decimal one place"},
-    {q:"5%",a:"Half of 10%"},
-    {q:"15%",a:"10% + 5%"},
-    {q:"20%",a:"Double 10%"},
-    {q:"25%",a:"÷4"},
-    {q:"50%",a:"÷2"},
-    {q:"1%",a:"Move decimal two places"},
-    {q:"X% of Y",a:"= Y% of X (e.g. 8% of 25 = 25% of 8 = 2)"}
+  {name:"Percent shortcuts",
+   method:"Anchor everything on 10% (move the decimal one place left). Then halve it for 5%, double it for 20%, or add pieces for 15%. 1% = move two places.",
+   cards:[
+    {q:"10% of anything",a:"Move the decimal one place",why:"10% of 240 → 24. This is the anchor you build every other percent from."},
+    {q:"5%",a:"Half of 10%",why:"Find 10% first, then halve. 5% of 240 → 24 → 12."},
+    {q:"15%",a:"10% + 5%",why:"15% of 240 → 24 + 12 = 36. (This is the tip-jar trick.)"},
+    {q:"20%",a:"Double 10%",why:"20% of 240 → 24 × 2 = 48."},
+    {q:"25%",a:"÷4",why:"25% = one quarter. 25% of 240 → 240 ÷ 4 = 60."},
+    {q:"50%",a:"÷2",why:"50% = half. 50% of 240 → 120."},
+    {q:"1%",a:"Move decimal two places",why:"1% of 240 → 2.4. Build odd percents from 1% + 10% pieces."},
+    {q:"X% of Y = Y% of X",a:"The two are always equal",why:"8% of 25 is hard, but 25% of 8 = 2 is easy — same answer. Flip it when one side is friendlier."}
   ]},
-  {name:"Series families", cards:[
-    {q:"Arithmetic",a:"+constant each step"},
-    {q:"Geometric",a:"×constant each step"},
-    {q:"Squares",a:"1, 4, 9, 16, 25…"},
-    {q:"Cubes",a:"1, 8, 27, 64, 125…"},
-    {q:"Fibonacci",a:"Each = sum of prior two (1,1,2,3,5,8,13)"},
-    {q:"Primes",a:"2, 3, 5, 7, 11, 13, 17…"},
-    {q:"Triangular",a:"1, 3, 6, 10, 15, 21"},
-    {q:"Growing gaps",a:"+1, +2, +3, +4…"},
-    {q:"Interleaved",a:"Two series shuffled together"},
-    {q:"Alternating +/−",a:"Sign flips each step"}
+  {name:"Series families",
+   method:"To name a sequence, look at the STEP between terms: same amount added = arithmetic; same amount multiplied = geometric; steps that grow = squares/triangular; each term = the last two added = Fibonacci.",
+   cards:[
+    {q:"Arithmetic",a:"+ constant each step",why:"2, 5, 8, 11 → +3 every time. Find the gap; it never changes."},
+    {q:"Geometric",a:"× constant each step",why:"3, 6, 12, 24 → ×2 every time. If terms grow fast, test multiplying."},
+    {q:"Squares",a:"1, 4, 9, 16, 25…",why:"Each term is n×n. Gaps between them grow by 2 (odd numbers)."},
+    {q:"Cubes",a:"1, 8, 27, 64, 125…",why:"Each term is n×n×n. Grows very fast — a giveaway for cubes."},
+    {q:"Fibonacci",a:"Each = sum of prior two",why:"1,1,2,3,5,8,13 → 5+8 = 13. If a term equals the two before it, it's Fibonacci."},
+    {q:"Primes",a:"2, 3, 5, 7, 11, 13…",why:"Numbers with no divisors but 1 and themselves. Irregular gaps = check primes."},
+    {q:"Triangular",a:"1, 3, 6, 10, 15, 21",why:"Add 1, then 2, then 3… Running total of the counting numbers."},
+    {q:"Growing gaps",a:"+1, +2, +3, +4…",why:"The amount added increases each step. 2, 3, 5, 8, 12 → gaps 1,2,3,4."},
+    {q:"Interleaved",a:"Two series shuffled together",why:"Look at every OTHER term. 1,10,2,20,3,30 is really 1,2,3 and 10,20,30."},
+    {q:"Alternating +/−",a:"Sign flips each step",why:"The operation switches: +5, −3, +5, −3… Watch for a zig-zag."}
   ]},
-  {name:"Core formulas", cards:[
-    {q:"Distance",a:"= Rate × Time"},
-    {q:"Average",a:"= Sum ÷ Count"},
-    {q:"% change",a:"= (New − Old) ÷ Old"},
-    {q:"Ratio a:b of T",a:"Each part = T ÷ (a+b)"},
-    {q:"Work rate trap",a:"5 machines / 5 widgets / 5 min → 100/100 = 5 min. Rate is constant."}
+  {name:"Core formulas",
+   method:"Learn how the three quantities relate, then plug in the two you're given to solve for the third.",
+   cards:[
+    {q:"Distance",a:"= Rate × Time",why:"So Rate = Distance ÷ Time, and Time = Distance ÷ Rate. 180 mi in 3 h → 60 mph."},
+    {q:"Average",a:"= Sum ÷ Count",why:"To find a missing value: multiply the average by the count to get the Sum, then subtract the ones you know."},
+    {q:"% change",a:"= (New − Old) ÷ Old",why:"Always divide by the OLD value. 40 → 50 is (50−40)/40 = 25% up."},
+    {q:"Ratio a:b of T",a:"Each part = T ÷ (a+b)",why:"Add the ratio numbers for total parts, divide, then multiply back. 120 in 2:3 → 120÷5=24 → 48 and 72."},
+    {q:"Work-rate trap",a:"Rate stays constant",why:"5 machines make 5 widgets in 5 min → 1 machine makes 1 widget in 5 min → 100 machines make 100 in 5 min. The time doesn't change."}
   ]},
-  {name:"Classic traps", cards:[
-    {q:"Pen + cap $1.10, pen $1 more",a:"Cap = $0.05 (not $0.10)"},
-    {q:"5 machines / 5 widgets / 5 min → 100/100?",a:"5 min. Rate stays constant."},
-    {q:"+20% then −20%",a:"−4% net (1.2 × 0.8 = 0.96)"},
-    {q:"'Some flowers fade' + 'all roses are flowers'",a:"No conclusion about roses"},
-    {q:"Modus tollens: P→Q, NOT Q",a:"Therefore NOT P"}
+  {name:"Classic traps",
+   method:"On these, the FIRST answer that pops into your head is the wrong one. Learn the catch once and you'll spot it under time pressure.",
+   cards:[
+    {q:"Bat + ball cost $1.10; bat is $1 more than ball. Ball?",a:"$0.05 (not $0.10)",why:"If the ball were $0.10 the bat would be $1.10 and the total $1.20. Ball $0.05 + bat $1.05 = $1.10. ✓"},
+    {q:"5 machines make 5 widgets in 5 min. 100 machines make 100 widgets in?",a:"5 min",why:"Each machine makes 1 widget in 5 min no matter how many machines. Rate is constant."},
+    {q:"Price goes +20% then −20%. Net?",a:"−4%",why:"1.20 × 0.80 = 0.96. The −20% acts on a bigger number, so you end up lower."},
+    {q:"'Some flowers fade' + 'all roses are flowers' → about roses?",a:"No valid conclusion",why:"The roses might be the flowers that DON'T fade. 'Some' tells you nothing about roses specifically."},
+    {q:"Modus tollens: if P→Q and NOT Q, then?",a:"NOT P",why:"If rain → wet ground, and the ground is NOT wet, then it did NOT rain."}
   ]},
-  {name:"Word roots", cards:[
-    {q:"bene-",a:"good (benevolent)"},{q:"mal-",a:"bad (malicious)"},{q:"circum-",a:"around (circumvent)"},
-    {q:"-verse / -vert",a:"turn (averse, invert)"},{q:"loqu- / loc-",a:"speak (loquacious)"},{q:"magn-",a:"great (magnify)"},
-    {q:"ambi- / amphi-",a:"both (ambivalent)"},{q:"pac-",a:"peace (pacify)"},{q:"ten- / tain-",a:"hold (tenacious)"},{q:"luc-",a:"light (lucid)"}
+  {name:"Word roots",
+   method:"A root carries its meaning into every word it appears in. Memorize the root + a couple of example words, then you can decode words you've never seen on the test.",
+   cards:[
+    {q:"bene-",a:"good / well",why:"BENEfit, BENEvolent, BENEficial — all positive. It's the opposite of mal-. So 'benevolent leader' = a good-hearted one."},
+    {q:"mal-",a:"bad / evil",why:"MALfunction, MALice, MALady, disMAL — all bad. So 'malevolent' = wishing bad on someone."},
+    {q:"circum-",a:"around",why:"Think circle. CIRCUMference (around the edge), CIRCUMnavigate (sail around), CIRCUMvent (get around a rule)."},
+    {q:"-vert / -verse",a:"turn",why:"From Latin 'to turn'. reVERSE (turn back), inVERT (turn upside down), conVERT (turn into), diVERT (turn aside)."},
+    {q:"loqu- / loc-",a:"speak",why:"eLOQUent (speaks well), LOQUacious (talks a lot), ventriLOQUist (throws their voice), elocution (speech)."},
+    {q:"magn-",a:"great / large",why:"MAGNify (make bigger), MAGNitude (size), MAGNificent (grand), magnate (a big-shot businessperson)."},
+    {q:"ambi- / amphi-",a:"both",why:"AMBIdextrous (both hands), AMBIguous (both meanings at once), AMPHIbian (lives both on land and in water)."},
+    {q:"pac-",a:"peace",why:"From Latin 'pax'. PACify (calm down), PACifist (anti-war), the PACific Ocean ('the peaceful one')."},
+    {q:"ten- / tain-",a:"hold",why:"reTAIN (keep hold of), conTAIN (hold inside), susTAIN (hold up), TENacious (holding on stubbornly)."},
+    {q:"luc- / lum-",a:"light",why:"LUCid (clear), eLUCidate (shed light on), transLUCent (light passes through), LUMinous (glowing)."}
   ]},
-  {name:"Analogy types", cards:[
-    {q:"Part → Whole",a:"Finger : Hand"},{q:"Tool → User",a:"Wrench : Mechanic"},
-    {q:"Cause → Effect",a:"Fire : Smoke"},{q:"Category → Member",a:"Bird : Robin"},
-    {q:"Degree (small→large)",a:"Warm : Hot"},{q:"Function (object→use)",a:"Pen : Write"},
-    {q:"Worker → Product",a:"Baker : Bread"},{q:"Object → Location",a:"Book : Library"}
+  {name:"Analogy types",
+   method:"Say the exact link in the first pair OUT LOUD ('a finger is PART OF a hand'), then find the pair with the same link. Naming the bridge is the whole trick.",
+   cards:[
+    {q:"Part → Whole",a:"Finger : Hand",why:"A finger is a part of a hand. Match: Petal : Flower, Page : Book."},
+    {q:"Tool → User",a:"Wrench : Mechanic",why:"A mechanic uses a wrench. Match: Scalpel : Surgeon, Brush : Painter."},
+    {q:"Cause → Effect",a:"Fire : Smoke",why:"Fire produces smoke. Match: Rain : Flood, Joke : Laughter."},
+    {q:"Category → Member",a:"Bird : Robin",why:"A robin is a kind of bird. Match: Metal : Copper, Tree : Oak."},
+    {q:"Degree (small → large)",a:"Warm : Hot",why:"Same idea, stronger. Match: Big : Huge, Sad : Devastated."},
+    {q:"Function (object → use)",a:"Pen : Write",why:"A pen is used to write. Match: Knife : Cut, Key : Unlock."},
+    {q:"Worker → Product",a:"Baker : Bread",why:"A baker makes bread. Match: Author : Book, Poet : Poem."},
+    {q:"Object → Location",a:"Book : Library",why:"A book belongs in a library. Match: Car : Garage, Painting : Museum."}
   ]},
-  {name:"Spatial heuristics", cards:[
-    {q:"Rotation",a:"Track ONE feature (arrow tip / corner) and step it. CW vs CCW."},
-    {q:"Reflection",a:"Mirror across a line. b↔d, p↔q."},
-    {q:"Odd-one-out",a:"State the shared property, then find the violator."},
-    {q:"Counting figures",a:"Count a single changing attribute (sides, dots), not the whole figure."}
+  {name:"Spatial heuristics",
+   method:"Never try to hold the whole figure in your head. Pick ONE feature and follow only it through every step — the rest is noise.",
+   cards:[
+    {q:"Rotation",a:"Track ONE feature and step it",why:"Follow a single arrow tip or corner as it turns. Decide clockwise vs counter-clockwise, then move it that way."},
+    {q:"Reflection (mirror)",a:"Flip across a line",why:"A mirror swaps left and right: b↔d, p↔q. Unlike rotation, a reflection reverses the shape (its 'handedness')."},
+    {q:"Odd-one-out",a:"State the shared rule, find the breaker",why:"Say what 3 of the 4 have in common ('all point left'), then the one that breaks that rule is your answer."},
+    {q:"Counting figures",a:"Count ONE changing attribute",why:"Track just the sides, or just the dots — not the whole picture. Counting everything at once is how you miscount."}
   ]}
 ];
 
@@ -352,62 +386,60 @@ function render(){
 // ==================== INTRO ====================
 function renderIntro(){
   const mp = ALLSUBS.length ? masteryProgress() : {mastered:0,total:0};
+  const term = (name, body) => `
+    <div class="mb-3">
+      <div class="font-bold text-sm mb-1" style="color:var(--acc);">${name}</div>
+      <p class="text-sm text-gray-300 leading-relaxed">${body}</p>
+    </div>`;
   V.innerHTML = `
     <div class="card p-6 mb-4">
       <h2 class="text-xl font-bold mb-2">What the CCAT is</h2>
       <p class="text-sm text-gray-300 leading-relaxed mb-3">
-        The <strong>Criteria Cognitive Aptitude Test</strong> is a pre-employment test of raw problem-solving and
-        learning speed — <strong>50 questions in 15 minutes</strong> (about 18 seconds each). It's deliberately
-        too long to finish: almost nobody answers all 50, and there's <strong>no penalty for wrong answers</strong>,
-        so a smart guess beats a blank. Your score is simply the number correct; the average is around 24/50, and
-        most roles look for roughly 30–42 depending on seniority.
+        The <strong>CCAT</strong> is a test some jobs make you take. You get <strong>50 questions and only 15 minutes</strong> —
+        about 18 seconds each. It's meant to be too long to finish, so answer fast and <strong>always guess</strong> when
+        you're not sure (wrong answers don't cost you anything). It doesn't check what you know — it checks how fast you
+        can think. There are three kinds of questions:
       </p>
-      <p class="text-sm text-gray-300 leading-relaxed">
-        It doesn't test knowledge — it tests how fast you <em>think</em>. Three abilities, mixed together and
-        ramping from easy to hard:
-      </p>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mt-3">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
         <div class="p-3 rounded-lg" style="background:#111;border:1px solid var(--border);">
-          <div class="font-bold text-sm mb-1">Verbal</div>
-          <div class="text-xs text-gray-400">Analogies, synonyms/antonyms, odd-one-out, sentence logic — vocabulary and verbal reasoning.</div>
+          <div class="font-bold text-sm mb-1">Word (Verbal)</div>
+          <div class="text-xs text-gray-400">Word meanings, opposites, and matching pairs.</div>
         </div>
         <div class="p-3 rounded-lg" style="background:#111;border:1px solid var(--border);">
-          <div class="font-bold text-sm mb-1">Numerical &amp; Logic</div>
-          <div class="text-xs text-gray-400">Number series, word problems, percentages, ratios, deductions — quick math and reasoning under time.</div>
+          <div class="font-bold text-sm mb-1">Number &amp; Logic</div>
+          <div class="text-xs text-gray-400">Quick math, patterns, and "what must be true" puzzles.</div>
         </div>
         <div class="p-3 rounded-lg" style="background:#111;border:1px solid var(--border);">
-          <div class="font-bold text-sm mb-1">Spatial</div>
-          <div class="text-xs text-gray-400">Rotations, mirrors, next-in-pattern — visual pattern recognition.</div>
+          <div class="font-bold text-sm mb-1">Shape (Spatial)</div>
+          <div class="text-xs text-gray-400">Turning, flipping, and "what comes next" pictures.</div>
         </div>
       </div>
     </div>
 
     <div class="card p-6 mb-4">
-      <h2 class="text-xl font-bold mb-3">How each part of this trainer helps</h2>
-      <div class="space-y-4">
-        <div>
-          <div class="font-bold text-sm mb-1" style="color:var(--acc);">Practice → accuracy + pattern recognition</div>
-          <p class="text-xs text-gray-400 leading-relaxed">Adaptive drill that keeps questions at the edge of your ability, interleaves the question types (like the real mixed test), and gives an explanation after every answer. It steers toward your weakest subtype and spaces out review of what you've already got — so you fix gaps instead of re-drilling strengths. Stuck? A hint removes one wrong option (no mastery credit, so you stay honest).</p>
-        </div>
-        <div>
-          <div class="font-bold text-sm mb-1" style="color:var(--acc);">Learning → speed on the memorizable stuff</div>
-          <p class="text-xs text-gray-400 leading-relaxed">Flashcards (spaced repetition) for the facts worth making automatic — squares, cubes, fraction↔percent, percent shortcuts, word roots, common traps. When these are instant, your 18 seconds go to <em>thinking</em>, not arithmetic.</p>
-        </div>
-        <div>
-          <div class="font-bold text-sm mb-1" style="color:var(--acc);">Exam → speed, stamina, and test-day calm</div>
-          <p class="text-xs text-gray-400 leading-relaxed">A full simulation: 50 questions, 15-minute countdown, real category mix, no going back, and a focus warning (the real test auto-disqualifies if you switch tabs). Practice the <em>conditions</em>, not just the content.</p>
-        </div>
-        <div>
-          <div class="font-bold text-sm mb-1" style="color:var(--acc);">Stats → what to drill next, and proof you're improving</div>
-          <p class="text-xs text-gray-400 leading-relaxed">A mastery bar per subtype (New → Learning → Mastered), plus an improvement graph tracking your recent-form accuracy, subtypes mastered, and best exam over time. Everything is stored locally in your browser — nothing leaves your device.</p>
-        </div>
+      <h2 class="text-xl font-bold mb-3">The four parts</h2>
+      <div class="space-y-3">
+        ${term('Practice', 'Answer questions one at a time. After each one, you see why the answer is right. Stuck? Ask for a hint and it takes away a wrong choice.')}
+        ${term('Learning', 'Flashcards for facts worth knowing by heart — like squares and percents. Each card also shows you <em>how</em> to figure it out, not just the answer.')}
+        ${term('Exam', 'A full pretend test: 50 questions, a 15-minute timer, and no going back. It gets you used to the real pressure.')}
+        ${term('Stats', 'See what you\'ve mastered and watch yourself get better over time.')}
       </div>
+    </div>
+
+    <div class="card p-6 mb-4">
+      <h2 class="text-xl font-bold mb-1">The ideas behind it</h2>
+      <p class="text-sm text-gray-400 mb-4">This trainer is built on a few proven ways people learn:</p>
+      ${term('Retrieval practice', 'Trying to remember an answer <em>before</em> you check it. That little struggle is what makes it stick — way better than just re-reading.')}
+      ${term('Spaced repetition', 'Reviewing something right before you\'d forget it. As you get a card right, the trainer waits longer before showing it again.')}
+      ${term('Interleaving', 'Mixing different question types together instead of doing one kind at a time. It feels harder, but you remember more.')}
+      ${term('Zone of proximal development', 'The "just right" zone — questions that are a little hard, but not too hard. Too easy is boring; too hard is discouraging. Practice keeps you right in that sweet spot.')}
+      ${term('Mastery', 'You\'ve <em>mastered</em> a type when you get it right most of the time, over and over — not just once by luck. The trainer tracks this for each type and points you at what you haven\'t mastered yet.')}
     </div>
 
     <div class="flex flex-wrap gap-3">
       <button class="btn btn-p" data-go="practice">Start practicing →</button>
       <button class="btn" data-go="exam">Take a timed exam</button>
-      ${mp.total? `<span class="pill self-center">Mastered ${mp.mastered}/${mp.total} subtypes so far</span>`:''}
+      ${mp.total? `<span class="pill self-center">Mastered ${mp.mastered}/${mp.total} types so far</span>`:''}
     </div>
   `;
   V.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>switchTab(b.dataset.go)));
@@ -900,6 +932,9 @@ function renderLearning(){
   }
   const cur = learnState.queue[0];
   const {card, deck} = cur;
+  // Teaching line shown on reveal: the card's own `why`, else the deck's method.
+  const deckObj = DECKS[+String(card.id).split('-')[0]];
+  const teach = card.why || (deckObj && deckObj.method) || '';
   const dueCount = learnState.queue.filter(x=>{const cs=CARDS[x.card.id]; return cs && isDue(x.card.id);}).length;
   const freshCount = learnState.queue.length - dueCount;
   V.innerHTML = `
@@ -918,7 +953,8 @@ function renderLearning(){
       <div class="text-xs text-gray-500 mb-2">${deck}</div>
       <div class="text-2xl md:text-3xl mb-6 font-bold">${card.q}</div>
       ${learnState.revealed
-        ? `<div class="text-lg text-gray-300 mb-6">${card.a}</div>
+        ? `<div class="text-lg text-gray-300 mb-3">${card.a}</div>
+           ${teach? `<div class="text-sm text-gray-400 leading-relaxed mb-6 max-w-xl mx-auto text-left p-3 rounded-lg" style="background:#111;border:1px solid var(--border);"><span style="color:var(--acc);">How:</span> ${teach}</div>`:''}
            <div class="text-xs text-gray-500 mb-3">How well did you know it?</div>
            <div class="grid grid-cols-4 gap-2 max-w-xl mx-auto w-full">
              <button class="btn" data-g="0" style="border-color:var(--bad);color:var(--bad);">Again</button>
