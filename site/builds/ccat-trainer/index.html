@@ -386,10 +386,10 @@ function render(){
 // ==================== INTRO ====================
 function renderIntro(){
   const mp = ALLSUBS.length ? masteryProgress() : {mastered:0,total:0};
-  const term = (name, body) => `
+  const term = (name, body, how) => `
     <div class="mb-3">
       <div class="font-bold text-sm mb-1" style="color:var(--acc);">${name}</div>
-      <p class="text-sm text-gray-300 leading-relaxed">${body}</p>
+      <p class="text-sm text-gray-300 leading-relaxed">${body}${how? ` <span class="text-gray-500"><strong>In this trainer:</strong> ${how}</span>`:''}</p>
     </div>`;
   V.innerHTML = `
     <div class="card p-6 mb-4">
@@ -427,13 +427,15 @@ function renderIntro(){
     </div>
 
     <div class="card p-6 mb-4">
-      <h2 class="text-xl font-bold mb-1">The ideas behind it</h2>
-      <p class="text-sm text-gray-400 mb-4">This trainer is built on a few proven ways people learn:</p>
-      ${term('Retrieval practice', 'Trying to remember an answer <em>before</em> you check it. That little struggle is what makes it stick — way better than just re-reading.')}
-      ${term('Spaced repetition', 'Reviewing something right before you\'d forget it. As you get a card right, the trainer waits longer before showing it again.')}
-      ${term('Interleaving', 'Mixing different question types together instead of doing one kind at a time. It feels harder, but you remember more.')}
-      ${term('Zone of proximal development', 'The "just right" zone — questions that are a little hard, but not too hard. Too easy is boring; too hard is discouraging. Practice keeps you right in that sweet spot.')}
-      ${term('Mastery', 'You\'ve <em>mastered</em> a type when you get it right most of the time, over and over — not just once by luck. The trainer tracks this for each type and points you at what you haven\'t mastered yet.')}
+      <h2 class="text-xl font-bold mb-1">The learning science behind this trainer</h2>
+      <p class="text-sm text-gray-400 mb-4">Every part is built on a proven idea from how people actually learn. Here's each one in plain English, and how the trainer uses it:</p>
+      ${term('Retrieval practice (the testing effect)', 'Trying to pull an answer out of your own head <em>before</em> you check it. That little struggle is what locks it in — far better than just re-reading.', 'every question and flashcard makes you answer first, then shows the answer.')}
+      ${term('Spaced repetition', 'Reviewing something right before you\'d forget it, with longer and longer gaps as it sticks. Beats cramming for anything you need to keep.', 'Practice brings back older questions on a schedule, and flashcards wait longer before repeating a card you keep getting right.')}
+      ${term('Interleaving', 'Mixing different question types together instead of doing one kind at a time. It feels harder, but you remember more — and it matches the real, all-mixed test.', '"Mixed" practice and shuffled flashcards are the default.')}
+      ${term('Desirable difficulty & the zone of proximal development', 'The "just right" zone — questions a little hard, but not too hard. Too easy is boring; too hard is discouraging. Learning happens fastest at the edge of what you can do.', 'Practice watches your streak and nudges the difficulty up or down to keep you in that zone.')}
+      ${term('Feedback that teaches', 'Good feedback explains <em>why</em>, not just right or wrong. Knowing the reason is what turns a miss into a skill.', 'every answer comes with a short explanation, and each flashcard shows the method — the "How" — behind the answer.')}
+      ${term('Mastery learning', 'You\'ve <em>mastered</em> a type when you get it right most of the time, over and over — not once by luck. Real progress means moving on only after something is solid.', 'it tracks mastery for each type, steers you toward what you haven\'t mastered yet, and eases off the ones you have.')}
+      ${term('Test-like practice (transfer)', 'You perform best when practice looks like the real thing — same timing, same pressure. It makes test day feel familiar and calms the nerves.', 'Exam mode copies the real format exactly: 50 questions, a 15-minute timer, and no going back.')}
     </div>
 
     <div class="flex flex-wrap gap-3">
