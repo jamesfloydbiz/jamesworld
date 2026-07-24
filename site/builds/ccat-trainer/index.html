@@ -162,7 +162,7 @@ const DECKS = [
     {q:"25%",a:"÷4",why:"25% = one quarter. 25% of 240 → 240 ÷ 4 = 60."},
     {q:"50%",a:"÷2",why:"50% = half. 50% of 240 → 120."},
     {q:"1%",a:"Move decimal two places",why:"1% of 240 → 2.4. Build odd percents from 1% + 10% pieces."},
-    {q:"X% of Y = Y% of X",a:"The two are always equal",why:"8% of 25 is hard, but 25% of 8 = 2 is easy — same answer. Flip it when one side is friendlier."}
+    {q:"What's 8% of 25? (there's a shortcut)",a:"2 — flip it to 25% of 8",why:"'X% of Y' always equals 'Y% of X.' 8% of 25 is ugly, but 25% of 8 = 8 ÷ 4 = 2. Same answer, easier."}
   ]},
   {name:"Spot the series", prompt:"What kind of sequence is this — and what comes next?",
    method:"Look at the STEP between terms. Same amount added → arithmetic. Same amount multiplied → geometric. The gap itself grows → squares or triangular. Each term = the two before it added → Fibonacci. No neat step but familiar numbers → primes.",
@@ -184,8 +184,8 @@ const DECKS = [
     {q:"Distance",a:"= Rate × Time",why:"So Rate = Distance ÷ Time, and Time = Distance ÷ Rate. 180 mi in 3 h → 60 mph."},
     {q:"Average",a:"= Sum ÷ Count",why:"To find a missing value: multiply the average by the count to get the Sum, then subtract the ones you know."},
     {q:"% change",a:"= (New − Old) ÷ Old",why:"Always divide by the OLD value. 40 → 50 is (50−40)/40 = 25% up."},
-    {q:"Ratio a:b of T",a:"Each part = T ÷ (a+b)",why:"Add the ratio numbers for total parts, divide, then multiply back. 120 in 2:3 → 120÷5=24 → 48 and 72."},
-    {q:"Work-rate trap",a:"Rate stays constant",why:"5 machines make 5 widgets in 5 min → 1 machine makes 1 widget in 5 min → 100 machines make 100 in 5 min. The time doesn't change."}
+    {q:"Ratio",a:"Total ÷ number of parts, then multiply each side",why:"Split 120 in a 2:3 ratio: parts = 2 + 3 = 5; 120 ÷ 5 = 24; then 2×24 = 48 and 3×24 = 72."},
+    {q:"Work rate",a:"Rate = 1 job ÷ time; add rates that work together",why:"A tap filling a tub in 4 hours does 1/4 per hour. Two taps: 1/4 + 1/4 = 1/2 per hour → 2 hours. (Adding workers doesn't change one worker's rate.)"}
   ]},
   {name:"Classic traps", prompt:"What's the trap — and the real answer?",
    method:"On these, the FIRST answer that pops into your head is the wrong one. Learn the catch once and you'll spot it under time pressure.",
@@ -193,8 +193,9 @@ const DECKS = [
     {q:"Bat + ball cost $1.10; bat is $1 more than ball. Ball?",a:"$0.05 (not $0.10)",why:"If the ball were $0.10 the bat would be $1.10 and the total $1.20. Ball $0.05 + bat $1.05 = $1.10. ✓"},
     {q:"5 machines make 5 widgets in 5 min. 100 machines make 100 widgets in?",a:"5 min",why:"Each machine makes 1 widget in 5 min no matter how many machines. Rate is constant."},
     {q:"Price goes +20% then −20%. Net?",a:"−4%",why:"1.20 × 0.80 = 0.96. The −20% acts on a bigger number, so you end up lower."},
-    {q:"'Some flowers fade' + 'all roses are flowers' → about roses?",a:"No valid conclusion",why:"The roses might be the flowers that DON'T fade. 'Some' tells you nothing about roses specifically."},
-    {q:"Modus tollens: if P→Q and NOT Q, then?",a:"NOT P",why:"If rain → wet ground, and the ground is NOT wet, then it did NOT rain."}
+    {q:"\"Some flowers fade fast. All roses are flowers.\" So do roses fade fast?",a:"Can't tell",why:"The roses might be flowers that DON'T fade. 'Some flowers' never lets you conclude anything about roses in particular."},
+    {q:"If it rains, the ground gets wet. The ground IS wet. Did it rain?",a:"Can't tell — a sprinkler could've wet it",why:"The trap is answering 'yes.' 'Rain → wet' does NOT mean 'wet → rain.' Wet ground has other causes."},
+    {q:"If it rains, the ground gets wet. The ground is NOT wet. Did it rain?",a:"No, it didn't rain",why:"This one you CAN answer: no wet ground means no rain. (The reverse of the trap above.)"}
   ]},
   {name:"Word roots", prompt:"What does this root mean?",
    method:"A root carries its meaning into every word it appears in. Memorize the root + a couple of example words, then you can decode words you've never seen on the test.",
