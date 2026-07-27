@@ -399,6 +399,14 @@ function render(){
 }
 
 // ==================== INTRO ====================
+// Compact per-page header (title + one-line description) shown at the top of
+// each mode, so the "Start here" intro can stay minimal.
+function modeHead(title, desc){
+  return `<div class="mb-5">
+      <h2 class="text-lg font-bold">${title}</h2>
+      <p class="text-xs text-gray-500 leading-relaxed" style="max-width:44rem;">${desc}</p>
+    </div>`;
+}
 function renderIntro(){
   const mp = ALLSUBS.length ? masteryProgress() : {mastered:0,total:0};
   const term = (name, body, how, studies) => `
@@ -429,16 +437,6 @@ function renderIntro(){
           <div class="font-bold text-sm mb-1">Shape (Spatial)</div>
           <div class="text-xs text-gray-400">Turning, flipping, and "what comes next" pictures.</div>
         </div>
-      </div>
-    </div>
-
-    <div class="card p-6 mb-4">
-      <h2 class="text-xl font-bold mb-3">The four parts</h2>
-      <div class="space-y-3">
-        ${term('Practice', 'Answer questions one at a time. After each one, you see why the answer is right. Stuck? Ask for a hint and it takes away a wrong choice.')}
-        ${term('Fact Fluency', 'Flashcards for facts worth knowing by heart — like squares and percents. Each card also shows you <em>how</em> to figure it out, not just the answer.')}
-        ${term('Exam', 'A full pretend test: 50 questions, a 15-minute timer, and no going back. It gets you used to the real pressure.')}
-        ${term('Stats', 'See what you\'ve mastered and watch yourself get better over time.')}
       </div>
     </div>
 
@@ -627,6 +625,7 @@ function renderPractice(){
   const cm = masteryFor(subKey(q));
   const tierColor = {mastered:'var(--acc)', learning:'var(--fg)', new:'#9ca3af'}[cm.tier];
   V.innerHTML = `
+    ${modeHead('Practice', 'Answer one at a time; after each, see why the answer is right. Stuck? Hit the hint to drop a wrong choice.')}
     <div class="mb-4 flex flex-wrap items-center gap-3">
       <label class="text-xs text-gray-500">Category
         <select id="p-cat" class="ml-2">
@@ -988,6 +987,7 @@ function renderLearning(){
   const dueCount = learnState.queue.filter(x=>{const cs=CARDS[x.card.id]; return cs && isDue(x.card.id);}).length;
   const freshCount = learnState.queue.length - dueCount;
   V.innerHTML = `
+    ${modeHead('Fact Fluency', 'Flashcards for the facts worth knowing cold — squares, percents, roots. Each card also shows you <em>how</em>, not just the answer.')}
     <div class="mb-4 flex flex-wrap gap-3 items-center">
       <label class="text-xs text-gray-500">Deck
         <select id="l-deck" class="ml-2">
@@ -1116,6 +1116,7 @@ function renderStats(){
   const bestExam = HIST.reduce((b,e)=>e.score>b?e.score:b, 0);
   const readiness = Math.min(100, Math.round((bestExam/PASS)*100));
   V.innerHTML = `
+    ${modeHead('Stats', 'See what you have mastered, and watch yourself get better over time.')}
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
       <div class="card p-5">
         <div class="text-xs text-gray-500">Rolling accuracy</div>
