@@ -329,7 +329,7 @@
 {"id":328,"c":"Logic","sub":"letterpattern","q":"Next: A, C, E, G, ___","o":["H","I","J","K"],"a":1,"e":"Skip one letter each → I.","vis":null,"d":1},
 {"id":329,"c":"Logic","sub":"letterpattern","q":"Next: Z, X, V, T, ___","o":["S","R","Q","P"],"a":1,"e":"Back two letters each → R.","vis":null,"d":2},
 {"id":330,"c":"Logic","sub":"letterpattern","q":"Next: B, D, G, K, ___","o":["N","O","P","Q"],"a":2,"e":"Positions 2,4,7,11 (gaps +2,+3,+4,+5) → 16 = P.","vis":null,"d":3},
-{"id":331,"c":"Logic","sub":"letterpattern","q":"Next: A, B, D, H, ___","o":["J","N","O","P"],"a":3,"e":"Double the letter's position each step → 16 = P.","vis":null,"d":3},
+{"id":331,"c":"Logic","sub":"letterpattern","q":"Next: A, B, D, H, ___","o":["J","N","O","P"],"a":3,"e":"The gaps double: +1, +2, +4, then +8 → H + 8 = P (positions 1, 2, 4, 8, 16).","vis":null,"d":3},
 {"id":332,"c":"Logic","sub":"relations","q":"Tom is taller than Sam. Sam is taller than Joe. Who is shortest?","o":["Tom","Sam","Joe","Can't tell"],"a":2,"e":"Tom > Sam > Joe.","vis":null,"d":1},
 {"id":333,"c":"Logic","sub":"relations","q":"If Blue means Fast and Fast means Strong, then Blue means:","o":["Weak","Strong","Slow","Blue"],"a":1,"e":"Transitive chain: Blue → Fast → Strong.","vis":null,"d":2},
 {"id":334,"c":"Logic","sub":"relations","q":"Pat is heavier than Lee but lighter than Kim. Who is heaviest?","o":["Pat","Lee","Kim","Can't tell"],"a":2,"e":"Kim > Pat > Lee.","vis":null,"d":2},
