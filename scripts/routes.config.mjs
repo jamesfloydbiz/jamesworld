@@ -53,9 +53,9 @@ const wrap = (html) =>
 export const ROUTES = [
   {
     path: '/',
-    title: 'Builder, Creator, Explorer',
+    title: 'Making kids better than their parents',
     description:
-      'James Floyd — builder, creator, and explorer connecting people, ideas, and conviction. Discover projects, AI builds, content, and a life lived without limits.',
+      "Born in Yolo County, now in New York. I'm spending my life helping kids create as much as they consume — re-learning how we learn, and building the tools to do it.",
     priority: 1.0,
     changefreq: 'weekly',
     body: wrap(`
