@@ -201,6 +201,24 @@
       transition: transform 0.15s, filter 0.2s;
     }
     .fd-cta:hover { transform: translateY(-1px); filter: brightness(1.05); }
+
+    /* Group photo */
+    .fd-photo { margin: 8px 0 0; }
+    .fd-photo img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 6px;
+      box-shadow: 0 18px 42px rgba(20,30,10,0.22);
+    }
+    .fd-photo figcaption {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--fd-soft);
+      padding: 12px 2px 0;
+    }
   </style>
 </head>
 <body>
@@ -264,6 +282,11 @@
         </a>
       </p>
     </section>
+
+    <figure class="fd-photo">
+      <img src="/events/nyc-field-day/group.avif" alt="The Great 2026 NYC Summer Field Day — the group" loading="lazy">
+      <figcaption>The 2026 crew</figcaption>
+    </figure>
 
   </div>
 
