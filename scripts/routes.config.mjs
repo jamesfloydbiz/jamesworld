@@ -55,7 +55,7 @@ export const ROUTES = [
     path: '/',
     title: 'Making kids better than their parents',
     description:
-      "Born in Yolo County, now in New York. I'm spending my life helping kids create as much as they consume — re-learning how we learn, and building the tools to do it.",
+      "Born in Yolo County, now in New York. I'm spending my life helping kids create more than they consume — re-learning learning, and building the tools to do it.",
     priority: 1.0,
     changefreq: 'weekly',
     body: wrap(`
