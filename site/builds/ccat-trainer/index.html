@@ -399,6 +399,39 @@ function render(){
 }
 
 // ==================== INTRO ====================
+// Dependency-free confetti burst — a temporary full-screen canvas that rains
+// squares and removes itself. Fired on a subtype mastered and on exam finish.
+function confetti(opts){
+  opts = opts || {};
+  const count = opts.big ? 170 : 90;
+  const cvs = document.createElement('canvas');
+  cvs.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:9999;';
+  document.body.appendChild(cvs);
+  const ctx = cvs.getContext('2d');
+  const W = cvs.width = window.innerWidth, H = cvs.height = window.innerHeight;
+  const colors = ['#4ade80','#facc15','#f87171','#60a5fa','#c084fc','#fb923c'];
+  const parts = Array.from({length:count}, () => ({
+    x: Math.random()*W, y: -20 - Math.random()*H*0.4,
+    r: 4 + Math.random()*6, c: colors[Math.floor(Math.random()*colors.length)],
+    vx: -2.5 + Math.random()*5, vy: 2 + Math.random()*4,
+    rot: Math.random()*6.28, vr: -0.25 + Math.random()*0.5,
+  }));
+  const dur = 2800; let t0 = null;
+  (function frame(ts){
+    if(t0 === null) t0 = ts;
+    const el = ts - t0;
+    ctx.clearRect(0,0,W,H);
+    for(const p of parts){
+      p.x += p.vx; p.y += p.vy; p.vy += 0.05; p.rot += p.vr;
+      ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rot);
+      ctx.globalAlpha = Math.max(0, 1 - el/dur); ctx.fillStyle = p.c;
+      ctx.fillRect(-p.r/2, -p.r/2, p.r, p.r*0.6);
+      ctx.restore();
+    }
+    if(el < dur) requestAnimationFrame(frame); else cvs.remove();
+  })(0);
+}
+
 // Compact per-page header (title + one-line description) shown at the top of
 // each mode, so the "Start here" intro can stay minimal.
 function modeHead(title, desc){
@@ -728,7 +761,10 @@ function answerPractice(idx){
       practiceState.streak.miss = 0;
     }
   }
+  const wasMastered = isMastered(subKey(q));
   rec(q.id, correct, assisted);
+  const justMastered = !wasMastered && isMastered(subKey(q));
+  if(justMastered) confetti();
   const hintEl = document.getElementById('p-hint'); if(hintEl) hintEl.innerHTML='';
   document.querySelectorAll('#p-opts .opt').forEach((b,i)=>{
     b.disabled = true;
@@ -741,6 +777,7 @@ function answerPractice(idx){
     <div class="p-4 rounded-lg" style="background:${correct?'rgba(74,222,128,.08)':'rgba(248,113,113,.08)'};border:1px solid ${correct?'var(--acc)':'var(--bad)'};">
       <div class="font-bold mb-1" style="color:${correct?'var(--acc)':'var(--bad)'};">${correct?(assisted?'Correct (with a hint)':'Correct'):'Wrong'}</div>
       ${correct&&assisted?`<div class="text-xs mb-1" style="color:#eab308;">No mastery credit — try the next one unaided.</div>`:''}
+      ${justMastered?`<div class="text-sm mb-1" style="color:var(--acc);font-weight:700;">🎉 Mastered: ${q.c} · ${q.sub}!</div>`:''}
       <div class="text-sm text-gray-300">${q.e}</div>
       <button class="btn btn-p mt-3" id="p-next">Next →</button>
     </div>
@@ -864,6 +901,7 @@ function finishExam(){
   examState.ans.forEach(a=>rec(a.id, a.correct));
   logProgress();
   render();
+  confetti({big: score >= PASS});
 }
 
 function percentile(score){
