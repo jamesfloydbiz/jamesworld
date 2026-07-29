@@ -95,6 +95,7 @@ const LS = {
   cards:     "ccat.cards.v1",        // {cardId: {ease, iv, due}}
   subStats:  "ccat.substats.v1",     // {"Cat/sub": {att, ok, recent:[1,0,…]}}
   recent:    "ccat.recent.v1",       // [1,0,…] last N practice/exam outcomes (current form)
+  pace:      "ccat.pace.v1",         // [seconds,…] last N practice answer times
   progress:  "ccat.progress.v1",     // {"YYYY-MM-DD": {answered, life, form, mastered, bestExam}}
   settings:  "ccat.settings.v1",
   session:   "ccat.session.v1",
@@ -105,6 +106,7 @@ function save(k,v){ localStorage.setItem(k, JSON.stringify(v)); }
 let QUESTIONS = [], STATS = ls(LS.itemStats,{}), HIST = ls(LS.history,[]), CARDS = ls(LS.cards,{});
 let SUBSTAT = ls(LS.subStats,{});
 let RECENT = ls(LS.recent,[]);        // rolling window of the last answers (0/1)
+let PACE = ls(LS.pace,[]);            // rolling window of recent answer times (seconds)
 let PROGRESS = ls(LS.progress,{});    // one snapshot per calendar day
 const FORM_WIN = 40;                  // "current form" = accuracy over last 40 answers
 let SETTINGS = ls(LS.settings,{pomLen:25, pomBreak:5, deepSet:false, confidence:false, sessionCount:0});
@@ -360,15 +362,21 @@ function masteryFor(k){
 }
 function isMastered(k){ return masteryFor(k).mastered; }
 function acc(id){ const s=STATS[id]; return s && s.seen ? s.correct/s.seen : 0.5; }
-// Empirical difficulty: nudge the authored d by how the item actually plays.
-// An item everyone misses is effectively harder than its label; one everyone
-// aces is easier. Only kicks in after a few attempts so it stays stable.
-function effD(q){
+// ---- Continuous, self-calibrating difficulty (Elo-lite) ----
+// Every item carries a live `rating` (seeded from the authored d, then nudged by
+// how it actually plays — including how FAST it's answered). The learner carries
+// a `level`; after each answer both drift toward each other, so difficulty is a
+// precise moving number instead of three fixed buckets.
+function itemRating(q){            // read-only: live rating, or authored d if unrated
   const s = STATS[q.id];
-  if(!s || s.seen < 3) return q.d;
-  const a = s.correct/s.seen;
-  return clamp(q.d + (0.55 - a)*1.5, MIND, MAXD);
+  return (s && s.rating != null) ? s.rating : q.d;
 }
+function effD(q){ return itemRating(q); }
+// Seconds we'd expect for an item of this rating — harder items earn more time.
+// Beating par is "sharp" and counts as stronger evidence of ability.
+function parTime(rating){ return 7 + 4*rating; }
+// Logistic expected chance the learner (level L) gets an item (rating R) right.
+function expectSuccess(L, R){ return 1 / (1 + Math.pow(10, (R - L)/1.1)); }
 function catAcc(cat){
   const ids = QUESTIONS.filter(q=>q.c===cat).map(q=>q.id);
   let seen=0, correct=0;
@@ -496,7 +504,7 @@ function renderIntro(){
         ['https://journals.sagepub.com/doi/10.3102/00346543060002265','Kulik, Kulik & Bangert-Drowns (1990), Review of Educational Research — meta-analysis of mastery learning'],
         ['https://doi.org/10.1080/00220671.1988.10885824','Guskey & Pigott (1988), Journal of Educational Research — meta-analysis of group-based mastery learning']
       ])}
-      ${term('Zone of proximal development', 'The "just right" zone — questions a little hard, but not too hard (a "desirable difficulty"). Too easy is boring; too hard is discouraging. Learning happens fastest at the edge of what you can do, with a little support.', 'Practice watches your streak and nudges the difficulty up or down to keep you there, and a hint is one step of support when you\'re stuck.', [
+      ${term('Zone of proximal development', 'The "just right" zone — questions a little hard, but not too hard (a "desirable difficulty"). Too easy is boring; too hard is discouraging. Learning happens fastest at the edge of what you can do, with a little support.', 'Practice rates every question and you on the same scale and adjusts after each answer — using how fast you responded too — to hold you near the ~85% sweet spot; a hint is one step of support when you\'re stuck.', [
         ['https://doi.org/10.1016/j.jml.2004.12.001','Metcalfe & Kornell (2005), Journal of Memory and Language — the "region of proximal learning" (the just-right difficulty)'],
         ['https://doi.org/10.1111/j.1469-7610.1976.tb00381.x','Wood, Bruner & Ross (1976), J. Child Psychology & Psychiatry — scaffolding, the operationalization of the ZPD'],
         ['https://doi.org/10.3102/0034654316670999','Belland et al. (2017), Review of Educational Research — meta-analysis of scaffolding']
@@ -684,6 +692,7 @@ function renderPractice(){
       </label>
       <span class="text-xs text-gray-500">Difficulty: <span class="mono text-white">d${practiceState.level.toFixed(1)}</span></span>
       <span class="text-xs text-gray-500">Session: <span class="mono text-white">${practiceState.sessionOk}/${practiceState.sessionQ}</span></span>
+      ${practiceState.sessionQ?`<span class="text-xs text-gray-500">Pace: <span class="mono text-white">${(practiceState.paceSum/practiceState.sessionQ).toFixed(0)}s</span>${practiceState.sharp?` · <span class="mono" style="color:var(--acc);">${practiceState.sharp} sharp</span>`:''}</span>`:''}
       <span class="pill" title="Subtypes mastered — ${mp.mastered} of ${mp.total}">Mastery: ${mp.pct}% (${mp.mastered}/${mp.total})</span>
       ${weak? `<span class="pill" style="border-color:var(--bad);color:var(--bad);">Focus: ${weak.k} (${(weak.acc*100).toFixed(0)}%)</span>`:''}
     </div>
@@ -756,27 +765,27 @@ function answerPractice(idx){
   const assisted = practiceState.assisted;
   practiceState.showAns = true;
   practiceState.sessionQ++;
-  practiceState.times.push((Date.now()-practiceState.qStart)/1000);
-  // Adaptive difficulty rides the full bank range (MIND..MAXD), not a fixed cap.
-  // Assisted correct answers don't push difficulty up — they weren't unaided.
-  if(correct){
-    practiceState.sessionOk++;
-    if(!assisted){
-      practiceState.streak.correct++;
-      practiceState.streak.miss = 0;
-      if(practiceState.streak.correct>=2 && practiceState.level<MAXD){
-        practiceState.level = Math.min(MAXD, practiceState.level+0.5);
-        practiceState.streak.correct = 0;
-      }
-    }
-  } else {
-    practiceState.streak.miss++;
-    practiceState.streak.correct = 0;
-    if(practiceState.streak.miss>=2 && practiceState.level>MIND){
-      practiceState.level = Math.max(MIND, practiceState.level-0.5);
-      practiceState.streak.miss = 0;
-    }
+  const t = (Date.now()-practiceState.qStart)/1000;
+  practiceState.times.push(t);
+  if(correct) practiceState.sessionOk++;
+  const R0 = itemRating(q);
+  const fast = correct && t <= parTime(R0);
+  // Elo-style update — continuous level + per-item rating, weighted by SPEED.
+  // A fast-correct is full evidence; a slow-correct is partial; assisted doesn't count.
+  if(!assisted){
+    const L = practiceState.level;
+    const p = expectSuccess(L, R0);
+    const o = correct ? (fast ? 1 : 0.7) : 0;
+    practiceState.level = clamp(L + 0.20*(o - p), MIND-0.3, MAXD+0.3);
+    const s = statFor(q.id);
+    s.rating = clamp((s.rating==null?q.d:s.rating) + 0.10*(p - o), 0.5, MAXD+0.5);
+    save(LS.itemStats, STATS);
   }
+  // Pace tracking (this session + a rolling window for Stats).
+  practiceState.paceSum = (practiceState.paceSum||0) + t;
+  if(fast) practiceState.sharp = (practiceState.sharp||0) + 1;
+  PACE.push(Math.round(t*10)/10); if(PACE.length>FORM_WIN) PACE.shift();
+  save(LS.pace, PACE);
   const wasMastered = isMastered(subKey(q));
   rec(q.id, correct, assisted);
   const justMastered = !wasMastered && isMastered(subKey(q));
@@ -822,7 +831,7 @@ function buildExam(){
     picked = picked.concat(src.slice(0, Math.min(targets[c], src.length)));
   });
   // ramp difficulty easy→hard
-  picked.sort((a,b)=>a.d-b.d);
+  picked.sort((a,b)=>itemRating(a)-itemRating(b));
   // when we run out of a real bank, pad by resampling
   while(picked.length<EXAM_LEN){ picked.push(QUESTIONS[Math.floor(Math.random()*QUESTIONS.length)]); }
   return picked.slice(0,EXAM_LEN);
@@ -1156,6 +1165,7 @@ function renderImprovement(){
         ${stat('Subtypes mastered', `${now.mastered}<span class="text-base text-gray-500">/${ALLSUBS.length}</span>`, multiDay?`from ${first.mastered} &nbsp; ${delta(first.mastered, now.mastered)}`:'start of your run')}
         ${stat('Best exam', now.bestExam?`${now.bestExam}<span class="text-base text-gray-500">/${EXAM_LEN}</span>`:'—', multiDay&&first.bestExam?`from ${first.bestExam} &nbsp; ${delta(first.bestExam, now.bestExam)}`:'take one in Exam')}
       </div>
+      ${PACE.length? `<div class="text-xs text-gray-500 mb-3">Speed: <span class="mono text-white">${(PACE.reduce((a,b)=>a+b,0)/PACE.length).toFixed(1)}s</span>/question over your last ${PACE.length} — the real test gives you ~18s each.</div>`:''}
       ${multiDay? `<div class="text-xs text-gray-500 mb-1">Form trend</div>${spark}`:''}
     </div>`;
 }
@@ -1227,7 +1237,7 @@ function renderStats(){
     <div class="card p-5">
       <h3 class="font-bold mb-3">Wipe local data</h3>
       <p class="text-xs text-gray-500 mb-3">Everything is stored in your browser. Clear to start fresh.</p>
-      <button class="btn text-xs" onclick="if(confirm('Wipe all CCAT progress?')){[LS.itemStats,LS.history,LS.cards,LS.subStats,LS.recent,LS.progress,LS.settings,LS.session].forEach(k=>localStorage.removeItem(k)); location.reload();}">Reset all</button>
+      <button class="btn text-xs" onclick="if(confirm('Wipe all CCAT progress?')){[LS.itemStats,LS.history,LS.cards,LS.subStats,LS.recent,LS.pace,LS.progress,LS.settings,LS.session].forEach(k=>localStorage.removeItem(k)); location.reload();}">Reset all</button>
     </div>
   `;
 }
