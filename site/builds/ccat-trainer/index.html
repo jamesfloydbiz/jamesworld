@@ -275,6 +275,18 @@ function optRender(o){
   return o;
 }
 
+// Render a question's visual: a flat row by default, or a 3×3 grid of bordered
+// cells when q.layout === 'grid' (for matrix questions).
+function renderVis(q){
+  if(!q.vis || !q.vis.length) return '';
+  if(q.layout==='grid'){
+    return `<div class="grid grid-cols-3 gap-2 mb-6 mx-auto" style="max-width:220px;">${
+      q.vis.map(t=>`<div class="flex items-center justify-center" style="background:#111;border:1px solid var(--border);border-radius:6px;aspect-ratio:1;">${tok(t)}</div>`).join('')
+    }</div>`;
+  }
+  return `<div class="flex gap-3 justify-center mb-6 flex-wrap">${q.vis.map(tok).join('')}</div>`;
+}
+
 // ==================== STATS HELPERS ====================
 function statFor(id){ return STATS[id] || (STATS[id]={seen:0,correct:0,box:0,lastSession:-1}); }
 function rec(id, correct, assisted){
@@ -625,6 +637,10 @@ const STRATEGY_SUB = {
   oddfigure:"State the shared rule, then find the figure that violates it.",
   mirror:"Mirror across the line — b↔d, p↔q. Chirality flips; rotation doesn't.",
   polygon:"Count sides / vertices and track how that number changes.",
+  attention:"Compare one character at a time; the difference is usually a single swapped digit or letter.",
+  graph:"Find only the row/column the question asks about; ignore the rest of the table.",
+  imageseries:"Spot the one thing that changes each step — count, sides, or rotation — then apply it once more.",
+  matrix:"Look across each row AND down each column; the missing cell must fit both rules.",
 };
 const STRATEGY_CAT = {
   Numerical:"Estimate first to kill obviously-wrong options, then compute.",
@@ -684,7 +700,7 @@ function renderPractice(){
         </div>
         <div class="bar"><div style="width:${cm.pct}%;background:${tierColor};"></div></div>
       </div>
-      ${q.vis? `<div class="flex gap-3 justify-center mb-6 flex-wrap">${q.vis.map(tok).join('')}</div>`:''}
+      ${renderVis(q)}
       <div class="text-lg md:text-xl mb-6 leading-relaxed">${q.q}</div>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="p-opts">
         ${q.o.map((o,i)=>`<button class="opt" data-i="${i}"><span class="kbd mr-2">${i+1}</span> ${optRender(o)}</button>`).join('')}
@@ -843,7 +859,7 @@ function renderExam(){
         <span class="pill">Q ${examState.i+1} / ${EXAM_LEN}</span>
         <span class="pill">${q.c}</span>
       </div>
-      ${q.vis? `<div class="flex gap-3 justify-center mb-6 flex-wrap">${q.vis.map(tok).join('')}</div>`:''}
+      ${renderVis(q)}
       <div class="text-lg md:text-xl mb-6 leading-relaxed">${q.q}</div>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="e-opts">
         ${q.o.map((o,i)=>`<button class="opt" data-i="${i}"><span class="kbd mr-2">${i+1}</span> ${optRender(o)}</button>`).join('')}
