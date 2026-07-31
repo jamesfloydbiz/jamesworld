@@ -12,15 +12,14 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=DM+Mono:wght@300;400&display=swap">
   <style>
     :root {
-      --paper: #f7f1e3;
-      --paper-deep: #efe6d0;
+      --paper: #faf7ef;
       --ink: #2b2620;
       --soft: rgba(43,38,32,.55);
     }
     * { box-sizing: border-box; }
     html, body {
       margin: 0;
-      background: linear-gradient(180deg, #a9c2d8 0%, #cfdde9 30%, var(--paper) 100%);
+      background: linear-gradient(180deg, #a9c2d8 0%, #cfdde9 30%, #f7f1e3 100%);
       color: var(--ink);
       font-family: 'Newsreader', Georgia, serif;
       min-height: 100vh; min-height: 100dvh;
@@ -50,48 +49,68 @@
     .cm-stage { display: flex; justify-content: center; padding: 18px 10px 30px; }
     #book { width: min(96vw, 1060px); }
 
-    /* ── Pages ──
-       Like Where the Wild Things Are, the art starts small on the page and
-       grows as the story climbs — nothing is ever cropped; the white frames
-       baked into some paintings are part of that progression. */
-    .page {
-      background: var(--paper);
-      border: 1px solid rgba(43,38,32,.12);
-      overflow: hidden;
+    /* ── The Wild Things arc ──
+       Early spreads: the text sits alone, low on a blank page; the painting
+       floats small on the facing page. The art grows spread by spread until,
+       at the summit, it swallows both pages whole. Nothing is ever cropped
+       except the deliberate full-bleed summit spreads. */
+    .page { background: var(--paper); border: 1px solid rgba(43,38,32,.1); overflow: hidden; }
+    .page .inner { display: flex; flex-direction: column; height: 100%; padding: 5% 6%; }
+
+    /* Text pages — words low on the page, Sendak-style */
+    .page.tpage .inner { justify-content: flex-end; padding-bottom: 16%; }
+    .page.tpage .txt { font-size: clamp(.72rem, 1.55vw, 1rem); line-height: 1.65; }
+    .page.tpage .txt p { margin: 0 0 .75em; }
+    .page.tpage .txt p:last-child { margin-bottom: 0; }
+    .page.tpage .folio {
+      position: absolute; left: 0; right: 0; bottom: 3.2%;
+      text-align: center; font-family: 'DM Mono', monospace;
+      font-size: 9px; letter-spacing: .3em; color: rgba(43,38,32,.35);
     }
-    .page .inner { display: flex; flex-direction: column; height: 100%; padding: 4% 4.4%; }
-    .page .art { margin: 0 auto; }
-    .page .art img {
+    .page.tpage { position: relative; }
+
+    /* Art pages — the painting centered in white, growing through the book */
+    .page.apage .inner { justify-content: center; padding: 5%; }
+    .page.apage .art { margin: 0 auto; }
+    .page.apage .art img {
       display: block; width: 100%; height: auto;
-      box-shadow: 0 6px 18px rgba(43,38,32,.13);
+      box-shadow: 0 6px 18px rgba(43,38,32,.12);
       border-radius: 2px;
     }
-    /* size ladder: the book breathes bigger as it goes */
-    .art.s1 { width: 72%; }   /* early — small art, wide margins */
-    .art.s2 { width: 86%; }   /* mid — growing */
-    .art.s3 { width: 100%; }  /* late — full width */
-    .art.p1 { width: 58%; }   /* portrait art, early/mid (taller, so narrower) */
-    .art.p2 { width: 64%; }   /* portrait art, later */
-    /* triptych — three horizontal panels stacked (spreads 7 and 15) */
-    .art.trip { width: 60%; display: flex; flex-direction: column; gap: 8px; }
-    .art.trip img { box-shadow: 0 4px 12px rgba(43,38,32,.12); }
-    /* near-full-bleed pages at the summit */
-    .page.edge .inner { padding: 2.4% 2.6%; }
+    .art.trip { display: flex; flex-direction: column; gap: 8px; }
+    .art.trip img { box-shadow: 0 4px 12px rgba(43,38,32,.11); }
+    /* the size ladder */
+    .g1 { width: 58%; } .g2 { width: 62%; } .g3 { width: 66%; }
+    .g4 { width: 70%; } .g5 { width: 74%; } .g6 { width: 78%; }
+    .g7 { width: 84%; } .g8 { width: 90%; } .g9 { width: 96%; }
+    .w1 { width: 72%; } /* wide art, early */
+    .t1 { width: 56%; } /* triptych, mid */
+    .t2 { width: 70%; } /* triptych, late */
 
-    .page .txt { padding: 4.5% 2% 0; font-size: clamp(.7rem, 1.5vw, .98rem); line-height: 1.5; }
-    .page .txt p { margin: 0 0 .6em; }
-    .page .txt p:last-child { margin-bottom: 0; }
-    .page .folio {
-      margin-top: auto; text-align: center;
-      font-family: 'DM Mono', monospace; font-size: 9px;
-      letter-spacing: .3em; color: var(--soft); padding-top: 6px;
+    /* Summit spreads — full-bleed art split across both facing pages.
+       Page aspect is fixed at 500:680 by the flip engine, so the halves are
+       positioned with percentages: each 16:9 painting spans the pair, showing
+       [8.7%..50%] on the left page and [50%..91.3%] on the right. */
+    .page.half { position: relative; padding: 0; }
+    .page.half img {
+      position: absolute; top: 0; height: 100%; width: auto; max-width: none;
     }
+    .page.half-l img { left: 0; transform: translateX(-8.06%); }
+    .page.half-r img { right: 0; transform: translateX(8.06%); }
+    .page.half .band {
+      position: absolute; left: 0; right: 0; bottom: 0; z-index: 2;
+      background: linear-gradient(180deg, rgba(250,247,239,0) 0%, rgba(250,247,239,.88) 34%, rgba(250,247,239,.96) 100%);
+      padding: 26px 8% 14px;
+      font-size: clamp(.7rem, 1.5vw, .96rem); line-height: 1.55;
+    }
+    .page.half .band p { margin: 0 0 .5em; }
+    .page.half .band p:last-child { margin-bottom: 0; }
 
     /* Covers */
     .page.cover { background: linear-gradient(180deg, #9db9d3 0%, #c6d7e6 55%, #dbe4d2 100%); }
     .page.cover .inner { justify-content: center; text-align: center; }
-    .page.cover .art { width: 56%; }
-    .page.cover .art img { box-shadow: 0 14px 34px rgba(30,40,50,.3); }
+    .page.cover .art { width: 56%; margin: 0 auto; }
+    .page.cover .art img { display:block; width:100%; height:auto; box-shadow: 0 14px 34px rgba(30,40,50,.3); border-radius: 2px; }
     .page.cover h2 {
       font-family: 'Fraunces', serif; font-weight: 700;
       font-size: clamp(1.3rem, 3vw, 2rem); letter-spacing: -.02em;
@@ -113,12 +132,13 @@
       text-transform: uppercase; cursor: pointer; transition: background .15s, transform .12s;
     }
     .cm-btn:hover { background: #fff; transform: translateY(-1px); }
-    #pageno { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: .18em; color: var(--soft); min-width: 90px; text-align: center; }
+    #pageno { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: .18em; color: var(--soft); min-width: 100px; text-align: center; }
 
-    /* No-JS fallback: the pages stack as a scroll of art + text */
+    /* No-JS fallback: pages stack in reading order */
     .no-js #book { width: min(94vw, 720px); }
-    .no-js .page { margin: 0 auto 26px; border-radius: 6px; }
-    .no-js .page .inner { padding: 22px; }
+    .no-js .page { margin: 0 auto 26px; border-radius: 6px; min-height: 300px; }
+    .no-js .page.tpage .inner { padding: 40px 30px; }
+    .no-js .page.half { min-height: 420px; }
     .no-js .cm-controls, .no-js .cm-hint { display: none; }
     .js .page { display: none; } /* PageFlip re-mounts them */
   </style>
@@ -146,125 +166,178 @@
         </div>
       </div>
 
-      <!-- SPREADS -->
-      <div class="page"><div class="inner">
-        <div class="art s1"><img src="/books/climbing-machine/spread-01.jpg" alt="A class gets off a yellow school bus at the trailhead as Floyd points up the mountain"></div>
+      <!-- S1 -->
+      <div class="page tpage"><div class="inner">
         <div class="txt"><p>“I want climb to the top of the mountain today,” said James.</p><p>“All the way?” he heard his teacher Floyd say.</p></div>
-        <div class="folio">2 · 3</div>
+        <div class="folio">2</div>
+      </div></div>
+      <div class="page apage"><div class="inner">
+        <div class="art w1"><img src="/books/climbing-machine/spread-01.jpg" alt="A class gets off a yellow school bus at the trailhead as Floyd points up the mountain"></div>
       </div></div>
 
-      <div class="page"><div class="inner">
-        <div class="art p1"><img src="/books/climbing-machine/spread-02.jpg" alt="James and Floyd stand at the trailhead fence beneath the huge mountain"></div>
+      <!-- S2 -->
+      <div class="page tpage"><div class="inner">
         <div class="txt"><p>It was a big mountain, but James was trying to be brave.</p><p>From effort he gave to his 2 hour learning apps he had found that he could do hard things.</p></div>
-        <div class="folio">4 · 5</div>
+        <div class="folio">4</div>
+      </div></div>
+      <div class="page apage"><div class="inner">
+        <div class="art g1"><img src="/books/climbing-machine/spread-02.jpg" alt="James and Floyd stand at the trailhead fence beneath the huge mountain"></div>
       </div></div>
 
-      <div class="page"><div class="inner">
-        <div class="art p1"><img src="/books/climbing-machine/spread-03.jpg" alt="James talks excitedly to Floyd while classmates walk past"></div>
+      <!-- S3 -->
+      <div class="page tpage"><div class="inner">
         <div class="txt"><p>James responded, “I will be a climbing machine.”</p><p>His little legs were bouncing nervously in his blue jeans.</p></div>
-        <div class="folio">6 · 7</div>
+        <div class="folio">6</div>
+      </div></div>
+      <div class="page apage"><div class="inner">
+        <div class="art g2"><img src="/books/climbing-machine/spread-03.jpg" alt="James talks excitedly to Floyd while classmates walk past"></div>
       </div></div>
 
-      <div class="page"><div class="inner">
-        <div class="art p1"><img src="/books/climbing-machine/spread-04.jpg" alt="Framed painting: James watches tiny hikers wind up the mountain trail"></div>
+      <!-- S4 -->
+      <div class="page tpage"><div class="inner">
         <div class="txt"><p>James watched other hikers as they went up and up and up the trail until they looked bite size.</p></div>
-        <div class="folio">8 · 9</div>
+        <div class="folio">8</div>
+      </div></div>
+      <div class="page apage"><div class="inner">
+        <div class="art g3"><img src="/books/climbing-machine/spread-04.jpg" alt="Framed painting: James watches tiny hikers wind up the mountain trail"></div>
       </div></div>
 
-      <div class="page"><div class="inner">
-        <div class="art p1"><img src="/books/climbing-machine/spread-05.jpg" alt="Framed painting: James looks small before the towering peak"></div>
+      <!-- S5 -->
+      <div class="page tpage"><div class="inner">
         <div class="txt"><p>Was he even the right size to do this?</p><p>Would he have the might to rise to this?</p></div>
-        <div class="folio">10 · 11</div>
+        <div class="folio">10</div>
+      </div></div>
+      <div class="page apage"><div class="inner">
+        <div class="art g4"><img src="/books/climbing-machine/spread-05.jpg" alt="Framed painting: James looks small before the towering peak"></div>
       </div></div>
 
-      <div class="page"><div class="inner">
-        <div class="art p1"><img src="/books/climbing-machine/spread-06.jpg" alt="Floyd throws his arms wide in front of the class"></div>
+      <!-- S6 -->
+      <div class="page tpage"><div class="inner">
         <div class="txt"><p>Floyd reminded everyone “Remember, at Alpha we are Limitless!”</p><p>“I really want to finish this,” thought James, his heart beating fast.</p></div>
-        <div class="folio">12 · 13</div>
+        <div class="folio">12</div>
+      </div></div>
+      <div class="page apage"><div class="inner">
+        <div class="art g5"><img src="/books/climbing-machine/spread-06.jpg" alt="Floyd throws his arms wide in front of the class"></div>
       </div></div>
 
-      <!-- Spread 7 — three panels stacked -->
-      <div class="page"><div class="inner">
-        <div class="art trip">
+      <!-- S7 — triptych -->
+      <div class="page tpage"><div class="inner">
+        <div class="txt"><p>As the class stood at the start of the path, James looked up to the top.</p><p>He told his classmates “I’ll go in the back. Let’s swap spots.”</p></div>
+        <div class="folio">14</div>
+      </div></div>
+      <div class="page apage"><div class="inner">
+        <div class="art trip t1">
           <img src="/books/climbing-machine/spread-07a.jpg" alt="Floyd crouches beside James at the start of the path as classmates walk ahead">
           <img src="/books/climbing-machine/spread-07b.jpg" alt="James stands at the back watching the class start up the trail">
           <img src="/books/climbing-machine/spread-07c.jpg" alt="The class moves farther up the path ahead of James">
         </div>
-        <div class="txt"><p>As the class stood at the start of the path, James looked up to the top.</p><p>He told his classmates “I’ll go in the back. Let’s swap spots.”</p></div>
-        <div class="folio">14 · 15</div>
       </div></div>
 
-      <div class="page"><div class="inner">
-        <div class="art p2"><img src="/books/climbing-machine/spread-08.jpg" alt="James kneels to tie his shoe and fakes a cough while Floyd watches"></div>
+      <!-- S8 -->
+      <div class="page tpage"><div class="inner">
         <div class="txt"><p>They started to climb. Up and up. He didn’t want to whine so he stopped to tie his shoe.</p><p>Then he faked a cough. “Maybe I can pretend I have the flu,” he thought.</p></div>
-        <div class="folio">16 · 17</div>
+        <div class="folio">16</div>
+      </div></div>
+      <div class="page apage"><div class="inner">
+        <div class="art g5"><img src="/books/climbing-machine/spread-08.jpg" alt="James kneels to tie his shoe and fakes a cough while Floyd watches"></div>
       </div></div>
 
-      <!-- Spreads 9 and 10 share one painting -->
-      <div class="page"><div class="inner">
-        <div class="art p2"><img src="/books/climbing-machine/spread-09.jpg" alt="Floyd sits with his arm around James at the side of the trail"></div>
+      <!-- S9 — shares its painting with S10 -->
+      <div class="page tpage"><div class="inner">
         <div class="txt"><p>Floyd knew what James was up to. “How you doing, buddy? You’re looking a little pale.”</p><p>Floyd pulled James to the side of the trail, where they flopped onto a patch of soft grass.</p><p>With a huge breath James let his feelings go.</p><p>“My legs ache and I don’t want to fail. I want to keep up with the class!”</p></div>
-        <div class="folio">18 · 19</div>
+        <div class="folio">18</div>
+      </div></div>
+      <div class="page apage"><div class="inner">
+        <div class="art g6"><img src="/books/climbing-machine/spread-09.jpg" alt="Floyd sits with his arm around James at the side of the trail"></div>
       </div></div>
 
-      <div class="page"><div class="inner">
-        <div class="art p2"><img src="/books/climbing-machine/spread-09.jpg" alt="Floyd points up the trail while sitting with James"></div>
+      <!-- S10 -->
+      <div class="page tpage"><div class="inner">
         <div class="txt"><p>James felt like he was in a funk.</p><p>“You’ve won already! We’re done with a little chunk!” Floyd encouraged.</p></div>
-        <div class="folio">20 · 21</div>
+        <div class="folio">20</div>
+      </div></div>
+      <div class="page apage"><div class="inner">
+        <div class="art g6"><img src="/books/climbing-machine/spread-09.jpg" alt="Floyd points up the trail while sitting with James"></div>
       </div></div>
 
-      <div class="page"><div class="inner">
-        <div class="art p2"><img src="/books/climbing-machine/spread-11.jpg" alt="Sitting on the slope, Floyd and James look up toward the top"></div>
+      <!-- S11 -->
+      <div class="page tpage"><div class="inner">
         <div class="txt"><p>But as they sat looking up to the top, James said “Maybe I can try again another day.”</p><p>Floyd looked at James and said, “we make a big goals at Alpha School, and I think you can reach them. I’m right here all the way too.”</p></div>
-        <div class="folio">22 · 23</div>
+        <div class="folio">22</div>
+      </div></div>
+      <div class="page apage"><div class="inner">
+        <div class="art g7"><img src="/books/climbing-machine/spread-11.jpg" alt="Sitting on the slope, Floyd and James look up toward the top"></div>
       </div></div>
 
-      <div class="page"><div class="inner">
-        <div class="art p2"><img src="/books/climbing-machine/spread-12.jpg" alt="Floyd points to a big rock up the trail as the game begins"></div>
+      <!-- S12 -->
+      <div class="page tpage"><div class="inner">
         <div class="txt"><p>Floyd knew James loved games.</p><p>So he pointed to a big rock a little bit up the trail.</p><p>“Sometimes, I like to make hard things into games so they’re fun. I bet you it’s one-hundred steps to that rock.”</p><p>This time James didn’t balk, he got up and started walking, counting each step.</p></div>
-        <div class="folio">24 · 25</div>
+        <div class="folio">24</div>
+      </div></div>
+      <div class="page apage"><div class="inner">
+        <div class="art g7"><img src="/books/climbing-machine/spread-12.jpg" alt="Floyd points to a big rock up the trail as the game begins"></div>
       </div></div>
 
-      <div class="page"><div class="inner">
-        <div class="art p2"><img src="/books/climbing-machine/spread-13.jpg" alt="Floyd points at a big tree up the trail as James runs ahead"></div>
+      <!-- S13 -->
+      <div class="page tpage"><div class="inner">
         <div class="txt"><p>When they were done, Floyd pointed at a big tree up the trail and asked “How many steps if you run there?”</p><p>James took a deep breath of air, guessed, and went off. Up and up and up.</p></div>
-        <div class="folio">26 · 27</div>
+        <div class="folio">26</div>
+      </div></div>
+      <div class="page apage"><div class="inner">
+        <div class="art g8"><img src="/books/climbing-machine/spread-13.jpg" alt="Floyd points at a big tree up the trail as James runs ahead"></div>
       </div></div>
 
-      <div class="page"><div class="inner">
-        <div class="art p2"><img src="/books/climbing-machine/spread-14.jpg" alt="James and Floyd stand by the big tree as the class walks up to them"></div>
+      <!-- S14 -->
+      <div class="page tpage"><div class="inner">
         <div class="txt"><p>When they reached the tree James looked at Floyd and said “I’m a climbing machine.”</p><p>He was keen to keep going.</p></div>
-        <div class="folio">28 · 29</div>
+        <div class="folio">28</div>
+      </div></div>
+      <div class="page apage"><div class="inner">
+        <div class="art g8"><img src="/books/climbing-machine/spread-14.jpg" alt="James and Floyd stand by the big tree as the class walks up to them"></div>
       </div></div>
 
-      <!-- Spread 15 — three panels stacked -->
-      <div class="page"><div class="inner">
-        <div class="art trip">
+      <!-- S15 — triptych, nearly full -->
+      <div class="page tpage"><div class="inner">
+        <div class="txt"><p>Chunk by chunk, James’ funk subsided.</p><p>His legs ached more, but he felt lighter. They went up and up and up. Higher and higher.</p></div>
+        <div class="folio">30</div>
+      </div></div>
+      <div class="page apage"><div class="inner">
+        <div class="art trip t2">
           <img src="/books/climbing-machine/spread-15a.jpg" alt="Floyd leads the class up the trail past a tree">
           <img src="/books/climbing-machine/spread-15b.jpg" alt="The class crosses the rocky mountain face">
           <img src="/books/climbing-machine/spread-15c.jpg" alt="The class climbs steep rocky steps, higher and higher">
         </div>
-        <div class="txt"><p>Chunk by chunk, James’ funk subsided.</p><p>His legs ached more, but he felt lighter. They went up and up and up. Higher and higher.</p></div>
-        <div class="folio">30 · 31</div>
       </div></div>
 
-      <div class="page edge"><div class="inner">
-        <div class="art s3"><img src="/books/climbing-machine/spread-16.jpg" alt="James points at the flag on the summit as the class looks on"></div>
-        <div class="txt"><p>James finally pointed at the top and said “Bet you can’t stop me! I’m a climbing machine!!”</p><p>The sun gleamed, and James beamed.</p></div>
-        <div class="folio">32 · 33</div>
-      </div></div>
+      <!-- S16 — full double-page spread -->
+      <div class="page half half-l">
+        <img src="/books/climbing-machine/spread-16.jpg" alt="James points at the flag on the summit as the class looks on">
+        <div class="band"><p>James finally pointed at the top and said “Bet you can’t stop me! I’m a climbing machine!!”</p></div>
+      </div>
+      <div class="page half half-r">
+        <img src="/books/climbing-machine/spread-16.jpg" alt="">
+        <div class="band"><p>The sun gleamed, and James beamed.</p></div>
+      </div>
 
-      <div class="page edge"><div class="inner">
-        <div class="art s3"><img src="/books/climbing-machine/spread-17.jpg" alt="From the summit, James and Floyd look out over the whole valley"></div>
-        <div class="txt"><p>On the summit James looked out as far as he could see.</p><p>Past the big tree, the big rock, past the spot he worried he’d fail, past the start of the trail, and out to another mountaintop. It all looked itty bitty.</p></div>
-        <div class="folio">34 · 35</div>
-      </div></div>
+      <!-- S17 — full double-page spread -->
+      <div class="page half half-l">
+        <img src="/books/climbing-machine/spread-17.jpg" alt="From the summit, James and Floyd look out over the whole valley">
+        <div class="band"><p>On the summit James looked out as far as he could see.</p></div>
+      </div>
+      <div class="page half half-r">
+        <img src="/books/climbing-machine/spread-17.jpg" alt="">
+        <div class="band"><p>Past the big tree, the big rock, past the spot he worried he’d fail, past the start of the trail, and out to another mountaintop. It all looked itty bitty.</p></div>
+      </div>
 
-      <div class="page edge"><div class="inner">
-        <div class="art s3"><img src="/books/climbing-machine/spread-18.jpg" alt="James points to a distant mountaintop"></div>
-        <div class="txt"><p>He pointed and told Floyd, “I am going to the top there.”</p><p>Floyd asked, “All the way?”</p><p>James looked him in the eye and said, “I’m a climbing machine.”</p></div>
-        <div class="folio">36 · 37</div>
-      </div></div>
+      <!-- S18 — full double-page spread -->
+      <div class="page half half-l">
+        <img src="/books/climbing-machine/spread-18.jpg" alt="James points to a distant mountaintop">
+        <div class="band"><p>He pointed and told Floyd, “I am going to the top there.”</p><p>Floyd asked, “All the way?”</p></div>
+      </div>
+      <div class="page half half-r">
+        <img src="/books/climbing-machine/spread-18.jpg" alt="">
+        <div class="band"><p>James looked him in the eye and said, “I’m a climbing machine.”</p></div>
+      </div>
 
       <!-- BACK COVER -->
       <div class="page cover backc" data-density="hard">
@@ -286,7 +359,7 @@
 
   <noscript>
     <p style="max-width:640px;margin:0 auto 40px;text-align:center;color:var(--soft);font-style:italic;">
-      The page-turning reader needs JavaScript — but the whole book is right here above, art and words in order.
+      The page-turning reader needs JavaScript — but the whole book is right here above, words and art in order.
     </p>
   </noscript>
 
@@ -311,9 +384,12 @@
       var label = document.getElementById('pageno');
       function update(){
         var i = flip.getCurrentPageIndex();
-        label.textContent = i === 0 ? 'Cover' : (i >= total - 1 ? 'The End' : 'Spread ' + i + ' / 18');
+        if (i === 0) { label.textContent = 'Cover'; return; }
+        if (i >= total - 1) { label.textContent = 'The End'; return; }
+        label.textContent = 'Spread ' + Math.min(18, Math.ceil(i / 2)) + ' / 18';
       }
       flip.on('flip', update); update();
+      window.__flip = flip;
 
       document.getElementById('next').addEventListener('click', function(){ flip.flipNext(); });
       document.getElementById('prev').addEventListener('click', function(){ flip.flipPrev(); });
