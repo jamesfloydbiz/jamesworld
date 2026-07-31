@@ -57,8 +57,8 @@
     .page { background: var(--paper); border: 1px solid rgba(43,38,32,.1); overflow: hidden; }
     .page .inner { display: flex; flex-direction: column; height: 100%; padding: 5% 6%; }
 
-    /* Text pages — words low on the page, Sendak-style */
-    .page.tpage .inner { justify-content: flex-end; padding-bottom: 16%; }
+    /* Text pages — words floating near the middle of the blank page */
+    .page.tpage .inner { justify-content: center; }
     .page.tpage .txt { font-size: clamp(.72rem, 1.55vw, 1rem); line-height: 1.65; }
     .page.tpage .txt p { margin: 0 0 .75em; }
     .page.tpage .txt p:last-child { margin-bottom: 0; }
@@ -80,12 +80,13 @@
     .art.trip { display: flex; flex-direction: column; gap: 8px; }
     .art.trip img { box-shadow: 0 4px 12px rgba(43,38,32,.11); }
     /* the size ladder */
-    .g0 { width: 54%; }
-    .g1 { width: 58%; } .g2 { width: 62%; } .g3 { width: 66%; }
-    .g4 { width: 70%; } .g5 { width: 74%; } .g6 { width: 78%; }
+    .g0 { width: 65%; }  /* S1: was 54, +20% */
+    .g1 { width: 64%; } .g2 { width: 74%; } .g3 { width: 69%; }  /* +10, +20, +5 */
+    .g4 { width: 74%; } .g5 { width: 81%; } .g6 { width: 78%; }  /* +5, +10 */
+    .g4b { width: 74%; } /* holds S8 at its previous size */
     .g7 { width: 84%; } .g8 { width: 90%; } .g9 { width: 96%; }
     .w1 { width: 72%; } /* wide art, early */
-    .t1 { width: 56%; } /* triptych, mid */
+    .t1 { width: 60%; gap: 26px; } /* triptych, mid — borders trimmed, panels breathe apart */
     .t2 { width: 70%; } /* triptych, late */
 
     /* Summit spreads — full-bleed art split across both facing pages.
@@ -178,7 +179,7 @@
 
       <!-- S2 -->
       <div class="page tpage"><div class="inner">
-        <div class="txt"><p>It was a big mountain, but James was trying to be brave.</p><p>From effort he gave to his 2 hour learning apps he had found that he could do hard things.</p></div>
+        <div class="txt"><p>It was a big mountain, but James was trying to be brave.</p><p>From the effort he gave his 2 hour learning apps he had found that he could do hard things.</p></div>
         <div class="folio">4</div>
       </div></div>
       <div class="page apage"><div class="inner">
@@ -240,7 +241,7 @@
         <div class="folio">16</div>
       </div></div>
       <div class="page apage"><div class="inner">
-        <div class="art g5"><img src="/books/climbing-machine/spread-08.jpg" alt="James kneels to tie his shoe and fakes a cough while Floyd watches"></div>
+        <div class="art g4b"><img src="/books/climbing-machine/spread-08.jpg" alt="James kneels to tie his shoe and fakes a cough while Floyd watches"></div>
       </div></div>
 
       <!-- S9 — shares its painting with S10 -->
