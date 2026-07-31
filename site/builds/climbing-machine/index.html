@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>I'm a Climbing Machine — James Floyd</title>
+  <meta name="description" content="I'm a Climbing Machine — a children's book by James Floyd.">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=DM+Mono:wght@300;400&display=swap">
+  <style>
+    :root {
+      --paper: #f7f1e3;
+      --paper-deep: #efe6d0;
+      --ink: #2b2620;
+      --soft: rgba(43,38,32,.55);
+      --sky: #b8cde0;
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      background: linear-gradient(180deg, #a9c2d8 0%, #cfdde9 30%, var(--paper) 100%);
+      color: var(--ink);
+      font-family: 'Newsreader', Georgia, serif;
+      min-height: 100vh; min-height: 100dvh;
+    }
+    .cm-back {
+      position: fixed; top: 14px; left: 10px; z-index: 40;
+      padding: 12px 18px;
+      font-family: 'DM Mono', monospace; font-size: 11px;
+      letter-spacing: .2em; text-transform: uppercase;
+      color: var(--soft); text-decoration: none; border-radius: 6px;
+    }
+    .cm-back:hover { color: var(--ink); background: rgba(43,38,32,.06); }
+
+    .cm-head { text-align: center; padding: 40px 16px 6px; }
+    .cm-head h1 {
+      font-family: 'Fraunces', serif; font-weight: 700;
+      font-size: clamp(1.6rem, 4.5vw, 2.6rem);
+      letter-spacing: -.02em; margin: 0 0 4px;
+    }
+    .cm-head p { margin: 0; font-style: italic; color: var(--soft); }
+    .cm-hint {
+      text-align: center; font-family: 'DM Mono', monospace;
+      font-size: 10px; letter-spacing: .22em; text-transform: uppercase;
+      color: var(--soft); padding: 8px 0 0;
+    }
+
+    .cm-stage { display: flex; justify-content: center; padding: 18px 10px 30px; }
+    #book { width: min(96vw, 1060px); }
+
+    /* Page look */
+    .page {
+      background: var(--paper);
+      border: 1px solid rgba(43,38,32,.12);
+      overflow: hidden;
+    }
+    .page .inner { display: flex; flex-direction: column; height: 100%; padding: 4.2% 4.6%; }
+    .page .art {
+      flex: 0 0 auto; width: 100%;
+      background: var(--paper-deep);
+      border-radius: 4px; overflow: hidden;
+      box-shadow: 0 8px 22px rgba(43,38,32,.14);
+    }
+    .page .art img { display: block; width: 100%; height: 100%; object-fit: cover; }
+    .page .art.wide { aspect-ratio: 16/9; }
+    .page .art.tall { aspect-ratio: 4/5; max-height: 62%; }
+    .page .txt { padding: 5.5% 1% 0; font-size: clamp(.72rem, 1.55vw, 1.02rem); line-height: 1.55; }
+    .page .txt p { margin: 0 0 .7em; }
+    .page .txt p:last-child { margin-bottom: 0; }
+    .page .folio {
+      margin-top: auto; text-align: center;
+      font-family: 'DM Mono', monospace; font-size: 9px;
+      letter-spacing: .3em; color: var(--soft); padding-top: 6px;
+    }
+
+    /* Covers */
+    .page.cover { background: linear-gradient(180deg, #9db9d3 0%, #c6d7e6 55%, #dbe4d2 100%); }
+    .page.cover .inner { justify-content: center; text-align: center; }
+    .page.cover .art { box-shadow: 0 14px 34px rgba(30,40,50,.3); }
+    .page.cover h2 {
+      font-family: 'Fraunces', serif; font-weight: 700;
+      font-size: clamp(1.3rem, 3vw, 2.1rem); letter-spacing: -.02em;
+      margin: 7% 0 2%;
+    }
+    .page.cover .by { font-style: italic; color: rgba(43,38,32,.65); margin: 0; }
+    .page.cover.backc h2 { font-size: clamp(1.05rem, 2.2vw, 1.5rem); }
+    .page.cover.backc p { color: rgba(43,38,32,.7); font-size: clamp(.78rem, 1.5vw, 1rem); }
+
+    /* Controls */
+    .cm-controls {
+      display: flex; justify-content: center; align-items: center; gap: 18px;
+      padding-bottom: 46px;
+    }
+    .cm-btn {
+      appearance: none; border: 1px solid rgba(43,38,32,.25); background: rgba(255,255,255,.5);
+      color: var(--ink); border-radius: 999px; padding: 10px 20px;
+      font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: .14em;
+      text-transform: uppercase; cursor: pointer; transition: background .15s, transform .12s;
+    }
+    .cm-btn:hover { background: #fff; transform: translateY(-1px); }
+    #pageno { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: .18em; color: var(--soft); min-width: 90px; text-align: center; }
+
+    /* No-JS fallback: stack the pages as a scroll of art + text */
+    .no-js #book { width: min(94vw, 720px); }
+    .no-js .page { margin: 0 auto 26px; border-radius: 6px; }
+    .no-js .page .inner { padding: 22px; }
+    .no-js .cm-controls, .no-js .cm-hint { display: none; }
+    .js .page { display: none; } /* PageFlip re-mounts them */
+  </style>
+</head>
+<body class="no-js">
+<script>document.body.classList.replace('no-js','js');</script>
+
+  <a href="/builds/" class="cm-back">← Builds</a>
+
+  <header class="cm-head">
+    <h1>I'm a Climbing Machine</h1>
+    <p>a children's book by James Floyd</p>
+  </header>
+  <p class="cm-hint">Drag a corner, tap the edges, or use ← → to turn the pages</p>
+
+  <div class="cm-stage">
+    <div id="book">
+
+      <!-- COVER -->
+      <div class="page cover" data-density="hard">
+        <div class="inner">
+          <div class="art tall" style="max-height:56%;"><img src="/books/climbing-machine/spread-05.jpg" alt="A boy with a backpack looks up at a huge mountain trail"></div>
+          <h2>I'm a Climbing Machine</h2>
+          <p class="by">by James Floyd</p>
+        </div>
+      </div>
+
+      <!-- SPREADS -->
+      <div class="page"><div class="inner">
+        <div class="art wide"><img src="/books/climbing-machine/spread-01.jpg" alt="A class gets off a yellow school bus at the trailhead as the teacher points up the mountain"></div>
+        <div class="txt"><p>“I want climb to the top of the mountain today,” said James.</p><p>“All the way?” he heard his teacher Floyd say.</p></div>
+        <div class="folio">2 · 3</div>
+      </div></div>
+
+      <div class="page"><div class="inner">
+        <div class="art tall"><img src="/books/climbing-machine/spread-02.jpg" alt="James and Floyd stand at the trailhead fence beneath the huge mountain"></div>
+        <div class="txt"><p>It was a big mountain, but James was trying to be brave.</p><p>From effort he gave to his 2 hour learning apps he had found that he could do hard things.</p></div>
+        <div class="folio">4 · 5</div>
+      </div></div>
+
+      <div class="page"><div class="inner">
+        <div class="art tall"><img src="/books/climbing-machine/spread-03.jpg" alt="James talks excitedly to Floyd while classmates walk past"></div>
+        <div class="txt"><p>James responded, “I will be a climbing machine.”</p><p>His little legs were bouncing nervously in his blue jeans.</p></div>
+        <div class="folio">6 · 7</div>
+      </div></div>
+
+      <div class="page"><div class="inner">
+        <div class="art tall"><img src="/books/climbing-machine/spread-04.jpg" alt="James watches tiny hikers wind up the mountain trail"></div>
+        <div class="txt"><p>James watched other hikers as they went up and up and up the trail until they looked bite size.</p></div>
+        <div class="folio">8 · 9</div>
+      </div></div>
+
+      <div class="page"><div class="inner">
+        <div class="art tall"><img src="/books/climbing-machine/spread-05.jpg" alt="James looks small before the towering peak"></div>
+        <div class="txt"><p>Was he even the right size to do this?</p><p>Would he have the might to rise to this?</p></div>
+        <div class="folio">10 · 11</div>
+      </div></div>
+
+      <div class="page"><div class="inner">
+        <div class="art tall"><img src="/books/climbing-machine/spread-06.jpg" alt="Floyd throws his arms wide in front of the class"></div>
+        <div class="txt"><p>Floyd reminded everyone “Remember, at Alpha we are Limitless!”</p><p>“I really want to finish this,” thought James, his heart beating fast.</p></div>
+        <div class="folio">12 · 13</div>
+      </div></div>
+
+      <div class="page"><div class="inner">
+        <div class="art wide"><img src="/books/climbing-machine/spread-07.jpg" alt="James stands at the back watching the class start up the path"></div>
+        <div class="txt"><p>As the class stood at the start of the path, James looked up to the top.</p><p>He told his classmates “I’ll go in the back. Let’s swap spots.”</p></div>
+        <div class="folio">14 · 15</div>
+      </div></div>
+
+      <div class="page"><div class="inner">
+        <div class="art tall"><img src="/books/climbing-machine/spread-08.jpg" alt="James kneels to tie his shoe and fakes a cough while Floyd watches"></div>
+        <div class="txt"><p>They started to climb. Up and up. He didn’t want to whine so he stopped to tie his shoe.</p><p>Then he faked a cough. “Maybe I can pretend I have the flu,” he thought.</p></div>
+        <div class="folio">16 · 17</div>
+      </div></div>
+
+      <div class="page"><div class="inner">
+        <div class="art wide"><img src="/books/climbing-machine/spread-09.jpg" alt="Floyd crouches to check in on James"></div>
+        <div class="txt"><p>Floyd knew what James was up to. “How you doing, buddy? You’re looking a little pale.”</p><p>Floyd pulled James to the side of the trail, where they flopped onto a patch of soft grass.</p><p>With a huge breath James let his feelings go.</p><p>“My legs ache and I don’t want to fail. I want to keep up with the class!”</p></div>
+        <div class="folio">18 · 19</div>
+      </div></div>
+
+      <div class="page"><div class="inner">
+        <div class="art wide"><img src="/books/climbing-machine/spread-10.jpg" alt="James watches the class climb ahead of him"></div>
+        <div class="txt"><p>James felt like he was in a funk.</p><p>“You’ve won already! We’re done with a little chunk!” Floyd encouraged.</p></div>
+        <div class="folio">20 · 21</div>
+      </div></div>
+
+      <div class="page"><div class="inner">
+        <div class="art tall"><img src="/books/climbing-machine/spread-11.jpg" alt="Sitting on the slope, Floyd points up the mountain with his arm around James"></div>
+        <div class="txt"><p>But as they sat looking up to the top, James said “Maybe I can try again another day.”</p><p>Floyd looked at James and said, “we make a big goals at Alpha School, and I think you can reach them. I’m right here all the way too.”</p></div>
+        <div class="folio">22 · 23</div>
+      </div></div>
+
+      <div class="page"><div class="inner">
+        <div class="art wide"><img src="/books/climbing-machine/spread-12.jpg" alt="The class climbs big rocky steps, counting as they go"></div>
+        <div class="txt"><p>Floyd knew James loved games.</p><p>So he pointed to a big rock a little bit up the trail.</p><p>“Sometimes, I like to make hard things into games so they’re fun. I bet you it’s one-hundred steps to that rock.”</p><p>This time James didn’t balk, he got up and started walking, counting each step.</p></div>
+        <div class="folio">24 · 25</div>
+      </div></div>
+
+      <div class="page"><div class="inner">
+        <div class="art wide"><img src="/books/climbing-machine/spread-13.jpg" alt="Floyd leads the tired class up the trail past a tree"></div>
+        <div class="txt"><p>When they were done, Floyd pointed at a big tree up the trail and asked “How many steps if you run there?”</p><p>James took a deep breath of air, guessed, and went off. Up and up and up.</p></div>
+        <div class="folio">26 · 27</div>
+      </div></div>
+
+      <div class="page"><div class="inner">
+        <div class="art tall"><img src="/books/climbing-machine/spread-14.jpg" alt="James and Floyd stand by the big tree as the class walks up to them"></div>
+        <div class="txt"><p>When they reached the tree James looked at Floyd and said “I’m a climbing machine.”</p><p>He was keen to keep going.</p></div>
+        <div class="folio">28 · 29</div>
+      </div></div>
+
+      <div class="page"><div class="inner">
+        <div class="art wide"><img src="/books/climbing-machine/spread-15.jpg" alt="Floyd leads the class along the high rocky trail"></div>
+        <div class="txt"><p>Chunk by chunk, James’ funk subsided.</p><p>His legs ached more, but he felt lighter. They went up and up and up. Higher and higher.</p></div>
+        <div class="folio">30 · 31</div>
+      </div></div>
+
+      <div class="page"><div class="inner">
+        <div class="art wide"><img src="/books/climbing-machine/spread-16.jpg" alt="James points at the flag on the summit as the class looks on"></div>
+        <div class="txt"><p>James finally pointed at the top and said “Bet you can’t stop me! I’m a climbing machine!!”</p><p>The sun gleamed, and James beamed.</p></div>
+        <div class="folio">32 · 33</div>
+      </div></div>
+
+      <div class="page"><div class="inner">
+        <div class="art wide"><img src="/books/climbing-machine/spread-17.jpg" alt="From the summit, James and Floyd look out over the whole valley"></div>
+        <div class="txt"><p>On the summit James looked out as far as he could see.</p><p>Past the big tree, the big rock, past the spot he worried he’d fail, past the start of the trail, and out to another mountaintop. It all looked itty bitty.</p></div>
+        <div class="folio">34 · 35</div>
+      </div></div>
+
+      <div class="page"><div class="inner">
+        <div class="art wide"><img src="/books/climbing-machine/spread-18.jpg" alt="James points to a distant mountaintop"></div>
+        <div class="txt"><p>He pointed and told Floyd, “I am going to the top there.”</p><p>Floyd asked, “All the way?”</p><p>James looked him in the eye and said, “I’m a climbing machine.”</p></div>
+        <div class="folio">36 · 37</div>
+      </div></div>
+
+      <!-- BACK COVER -->
+      <div class="page cover backc" data-density="hard">
+        <div class="inner">
+          <h2>The End</h2>
+          <p>Written for the kids (and the grown-ups)<br>still learning that hard things<br>come one chunk at a time.</p>
+          <p class="by" style="margin-top:8%;">James Floyd · 2026</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="cm-controls">
+    <button class="cm-btn" id="prev">← Back</button>
+    <span id="pageno">Cover</span>
+    <button class="cm-btn" id="next">Next →</button>
+  </div>
+
+  <noscript>
+    <p style="max-width:640px;margin:0 auto 40px;text-align:center;color:var(--soft);font-style:italic;">
+      The page-turning reader needs JavaScript — but the whole book is right here above, art and words in order.
+    </p>
+  </noscript>
+
+  <script src="/books/climbing-machine/page-flip.js"></script>
+  <script>
+    (function(){
+      if (typeof St === 'undefined' || !St.PageFlip) return;
+      var el = document.getElementById('book');
+      var flip = new St.PageFlip(el, {
+        width: 500, height: 680,
+        size: 'stretch',
+        minWidth: 280, maxWidth: 620,
+        minHeight: 380, maxHeight: 840,
+        maxShadowOpacity: 0.35,
+        showCover: true,
+        mobileScrollSupport: true,
+        flippingTime: 700
+      });
+      flip.loadFromHTML(document.querySelectorAll('.page'));
+
+      var total = flip.getPageCount();
+      var label = document.getElementById('pageno');
+      function update(){
+        var i = flip.getCurrentPageIndex();
+        label.textContent = i === 0 ? 'Cover' : (i >= total - 1 ? 'The End' : 'Spread ' + i + ' / 18');
+      }
+      flip.on('flip', update); update();
+
+      document.getElementById('next').addEventListener('click', function(){ flip.flipNext(); });
+      document.getElementById('prev').addEventListener('click', function(){ flip.flipPrev(); });
+      document.addEventListener('keydown', function(e){
+        if (e.key === 'ArrowRight') flip.flipNext();
+        if (e.key === 'ArrowLeft') flip.flipPrev();
+      });
+    })();
+  </script>
+</body>
+</html>
