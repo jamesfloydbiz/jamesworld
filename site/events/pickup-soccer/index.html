@@ -197,6 +197,11 @@
       transition: transform 0.15s, filter 0.2s;
     }
     .sc-cta:hover { transform: translateY(-1px); filter: brightness(1.4); }
+    .sc-past a {
+      color: var(--sc-soft); text-decoration: none; font-size: .95rem;
+      border-bottom: 1px solid rgba(22,22,26,.2);
+    }
+    .sc-past a:hover { color: var(--sc-ink); border-bottom-color: var(--sc-ink); }
   </style>
 </head>
 <body>
@@ -219,8 +224,8 @@
 
     <div class="sc-facts">
       <div>
-        <span class="sc-facts__k">When</span>
-        <span class="sc-facts__v">Sundays · time set by vote</span>
+        <span class="sc-facts__k">Next game</span>
+        <span class="sc-facts__v">Sun · Aug 9 · 4:15–5:30 PM</span>
       </div>
       <div>
         <span class="sc-facts__k">Cost</span>
@@ -235,26 +240,21 @@
     <section class="sc-body">
       <p>Come ball. And tell your people. 🖤🤍</p>
       <p>
-        Casual pickup soccer on Sundays in the city — no cost, no pressure, just
+        Free, quality, simple soccer on Sundays — no cost, no pressure, just
         show up and play. Wear black or white so we can split sides fast.
+        Spots are limited, so grab yours.
       </p>
 
-      <h2>Pick a time</h2>
       <p>
-        The kickoff time floats week to week — vote on Partiful and we'll lock in
-        whichever slot has the most people. <strong>RSVP by Friday.</strong>
-      </p>
-      <div class="sc-times" aria-label="Time options to vote on">
-        <div class="sc-time">10 AM<span>Sunday</span></div>
-        <div class="sc-time">1 PM<span>Sunday</span></div>
-        <div class="sc-time">5 PM<span>Sunday</span></div>
-      </div>
-
-      <p>
-        <a href="https://partiful.com/e/EkfHWYn9dt1fiWPxoisp" class="sc-cta" target="_blank" rel="noopener noreferrer">
+        <a href="https://partiful.com/e/IZB24VsKzsO1NGeb4U1M" class="sc-cta" target="_blank" rel="noopener noreferrer">
           RSVP on Partiful
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
         </a>
+      </p>
+
+      <h2>Past sessions</h2>
+      <p class="sc-past">
+        <a href="https://partiful.com/e/EkfHWYn9dt1fiWPxoisp" target="_blank" rel="noopener noreferrer">First run — Sunday kickoff, time set by vote ↗</a>
       </p>
     </section>
 
