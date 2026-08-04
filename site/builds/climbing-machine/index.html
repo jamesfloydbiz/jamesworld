@@ -33,11 +33,11 @@
     }
     .cm-back:hover { color: var(--ink); background: rgba(43,38,32,.06); }
 
-    .cm-head { text-align: center; padding: 40px 16px 6px; }
+    .cm-head { text-align: center; padding: 22px 16px 4px; }
     .cm-head h1 {
       font-family: 'Fraunces', serif; font-weight: 700;
-      font-size: clamp(1.6rem, 4.5vw, 2.6rem);
-      letter-spacing: -.02em; margin: 0 0 4px;
+      font-size: clamp(1.4rem, 3.6vw, 2.1rem);
+      letter-spacing: -.02em; margin: 0 0 3px;
     }
     .cm-head p { margin: 0; font-style: italic; color: var(--soft); }
     .cm-hint {
@@ -46,8 +46,8 @@
       color: var(--soft); padding: 8px 0 0;
     }
 
-    .cm-stage { display: flex; justify-content: center; padding: 18px 10px 30px; }
-    #book { width: min(96vw, 1060px); }
+    .cm-stage { display: flex; justify-content: center; padding: 12px 10px 18px; }
+    #book { width: min(96vw, 940px); }
 
     /* ── The Wild Things arc ──
        Early spreads: the text sits alone, low on a blank page; the painting
@@ -87,7 +87,7 @@
     .g7 { width: 84%; } .g8 { width: 90%; } .g9 { width: 96%; }
     .w1 { width: 72%; } /* wide art, early */
     .t1 { width: 60%; gap: 26px; } /* triptych, mid — borders trimmed, panels breathe apart */
-    .t2 { width: 70%; } /* triptych, late */
+    .t2 { width: 62%; } /* triptych, late */
 
     /* Summit spreads — full-bleed art split across both facing pages.
        Page aspect is fixed at 500:680 by the flip engine, so the halves are
@@ -97,8 +97,10 @@
     .page.half img {
       position: absolute; top: 0; height: 100%; width: auto; max-width: none;
     }
-    .page.half-l img { left: 0; transform: translateX(-8.06%); }
-    .page.half-r img { right: 0; transform: translateX(8.06%); }
+    /* page is 4:5 now — each 16:9 painting spans the pair showing
+       [5.9%..50%] on the left page and [50%..94.1%] on the right */
+    .page.half-l img { left: 0; transform: translateX(-5.9%); }
+    .page.half-r img { right: 0; transform: translateX(5.9%); }
     .page.half .band {
       position: absolute; left: 0; right: 0; bottom: 0; z-index: 2;
       background: linear-gradient(180deg, rgba(250,247,239,0) 0%, rgba(250,247,239,.88) 34%, rgba(250,247,239,.96) 100%);
@@ -144,7 +146,7 @@
     /* Controls */
     .cm-controls {
       display: flex; justify-content: center; align-items: center; gap: 18px;
-      padding-bottom: 46px;
+      padding-bottom: 26px;
     }
     .cm-btn {
       appearance: none; border: 1px solid rgba(43,38,32,.25); background: rgba(255,255,255,.5);
@@ -389,11 +391,16 @@
     (function(){
       if (typeof St === 'undefined' || !St.PageFlip) return;
       var el = document.getElementById('book');
+      // Size pages (4:5) from the viewport so the whole book + controls fit
+      // on screen with breathing room; ~250px is header/hint/controls chrome.
+      var vh = window.innerHeight || 800, vw = window.innerWidth || 1280;
+      var pageH = Math.max(360, Math.min(600, vh - 250));
+      var pageW = Math.round(pageH * 0.8);
+      var maxW = Math.floor(vw * 0.48) - 8;
+      if (pageW > maxW && maxW > 200) { pageW = maxW; pageH = Math.round(pageW / 0.8); }
       var flip = new St.PageFlip(el, {
-        width: 500, height: 680,
-        size: 'stretch',
-        minWidth: 280, maxWidth: 620,
-        minHeight: 380, maxHeight: 840,
+        width: pageW, height: pageH,
+        size: 'fixed',
         maxShadowOpacity: 0.35,
         showCover: true,
         mobileScrollSupport: true,
