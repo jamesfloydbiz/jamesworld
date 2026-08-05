@@ -93,14 +93,16 @@
        Page aspect is fixed at 500:680 by the flip engine, so the halves are
        positioned with percentages: each 16:9 painting spans the pair, showing
        [8.7%..50%] on the left page and [50%..91.3%] on the right. */
-    .page.half { position: relative; padding: 0; }
+    .page.half { position: relative; padding: 0; background: var(--paper); }
+    /* The whole painting spans the pair at FULL width — nothing cropped.
+       Each page shows exactly half; the ~10% left over becomes slim paper
+       bands above and below (the text band sits in the lower one). */
     .page.half img {
-      position: absolute; top: 0; height: 100%; width: auto; max-width: none;
+      position: absolute; top: 50%; transform: translateY(-50%);
+      width: 200%; height: auto; max-width: none;
     }
-    /* page is 4:5 now — each 16:9 painting spans the pair showing
-       [5.9%..50%] on the left page and [50%..94.1%] on the right */
-    .page.half-l img { left: 0; transform: translateX(-5.9%); }
-    .page.half-r img { right: 0; transform: translateX(5.9%); }
+    .page.half-l img { left: 0; }
+    .page.half-r img { left: -100%; }
     .page.half .band {
       position: absolute; left: 0; right: 0; bottom: 0; z-index: 2;
       background: linear-gradient(180deg, rgba(250,247,239,0) 0%, rgba(250,247,239,.88) 34%, rgba(250,247,239,.96) 100%);
