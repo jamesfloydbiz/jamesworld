@@ -1,0 +1,1038 @@
+<!doctype html>
+<html lang="en" data-theme="paper">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FRONTIER — The frontier of learning</title>
+<meta name="description" content="A field manual for the frontier of learning. The schools reinventing the model, the thinkers who defined the field, and the science that actually replicates.">
+<link rel="canonical" href="https://jamesfloyds.world/builds/frontier-ed/">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Serif:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+
+<style>
+/* ═══════════════════════════════════════════════════════════════════════
+   FRONTIER — the frontier of learning
+   Plainspoken Monument: ink and paper, editorial serif on a mono grid.
+   Palette straight from JF_Brand_System. Accents (forest, earth) are used
+   the way a botanist tints a field note — a rule, a tick, never the words.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --ink:      #101010;
+  --paper:    #F7F5EF;
+  --bright:   #FCFBF7;
+  --graphite: #6E6E68;
+  --ash:      #A8A8A2;
+  --forest:   #404C3A;
+  --earth:    #6B5544;
+
+  --fg:      var(--ink);
+  --bg:      var(--paper);
+  --surface: var(--bright);
+  --muted:   var(--graphite);
+  --faint:   var(--ash);
+  --rule:    rgba(16,16,16,0.16);
+  --hair:    rgba(16,16,16,0.08);
+  --accent:  var(--forest);
+  --accent2: var(--earth);
+
+  --serif:   'IBM Plex Serif', Georgia, serif;
+  --display: 'Instrument Serif', Georgia, serif;
+  --mono:    'IBM Plex Mono', ui-monospace, Menlo, monospace;
+
+  --pad: clamp(20px, 4vw, 56px);
+}
+
+/* The ink side of the same system. Same values, inverted ground. */
+html[data-theme="ink"] {
+  --fg:      #F2F0EA;
+  --bg:      #0C0C0C;
+  --surface: #131313;
+  --muted:   #8E8E88;
+  --faint:   #5C5C58;
+  --rule:    rgba(242,240,234,0.16);
+  --hair:    rgba(242,240,234,0.07);
+  --accent:  #7E9B70;
+  --accent2: #A98868;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+html { background: var(--bg); -webkit-font-smoothing: antialiased; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--serif);
+  overflow-x: hidden;
+  transition: background 0.35s, color 0.35s;
+}
+a { color: inherit; text-decoration: none; }
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+
+/* Graph-paper ground — barely there, like the tooth of good stock. */
+body::before {
+  content: "";
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background-image:
+    linear-gradient(to right,  var(--hair) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--hair) 1px, transparent 1px);
+  background-size: 96px 96px;
+  opacity: 0.55;
+}
+body > * { position: relative; z-index: 1; }
+
+.mono {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* ── Masthead rule ─────────────────────────────────────────────────── */
+.bar {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px;
+  padding: 14px var(--pad);
+  border-bottom: 1px solid var(--rule);
+}
+.bar__mark {
+  font-family: var(--mono); font-weight: 500;
+  font-size: 12px; letter-spacing: 0.36em; text-transform: uppercase;
+}
+.bar__right { display: flex; align-items: center; gap: 18px; }
+.status { display: inline-flex; align-items: center; gap: 8px; }
+.status__tick {
+  width: 6px; height: 6px; background: var(--accent);
+  border-radius: 50%; animation: breathe 3.2s ease-in-out infinite;
+}
+@keyframes breathe { 0%,100% { opacity: 1 } 50% { opacity: 0.28 } }
+.toggle {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--muted);
+  border: 1px solid var(--rule); border-radius: 2px;
+  padding: 5px 10px; transition: color 0.2s, border-color 0.2s;
+}
+.toggle:hover { color: var(--fg); border-color: var(--fg); }
+.home { color: var(--muted); }
+.home:hover { color: var(--fg); }
+
+/* ── The tape ──────────────────────────────────────────────────────── */
+.tape {
+  overflow: hidden; white-space: nowrap;
+  border-bottom: 1px solid var(--rule);
+  background: var(--surface);
+}
+.tape__track { display: inline-block; padding: 7px 0; will-change: transform; }
+.tape--l .tape__track { animation: rollL 96s linear infinite; }
+.tape--r .tape__track { animation: rollR 124s linear infinite; }
+@keyframes rollL { from { transform: translateX(0) }      to { transform: translateX(-50%) } }
+@keyframes rollR { from { transform: translateX(-50%) }   to { transform: translateX(0) } }
+.tk {
+  display: inline-flex; align-items: baseline; gap: 9px; padding: 0 20px;
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--fg);
+}
+.tk em { font-style: normal; color: var(--muted); }
+.tk i  { font-style: normal; color: var(--accent); }
+
+/* ── Hero ──────────────────────────────────────────────────────────── */
+.hero {
+  display: grid; grid-template-columns: 1fr; gap: clamp(28px, 5vw, 64px);
+  align-items: center;
+  padding: clamp(40px, 7vw, 96px) var(--pad) clamp(36px, 6vw, 80px);
+  max-width: 1400px; margin: 0 auto;
+}
+@media (min-width: 940px) { .hero { grid-template-columns: 1.05fr 0.95fr; } }
+
+.dateline { margin: 0 0 clamp(18px, 3vw, 30px); }
+.wordmark {
+  font-family: var(--display); font-weight: 400;
+  font-size: clamp(76px, 15.5vw, 208px);
+  line-height: 0.84; letter-spacing: -0.015em;
+  margin: 0; text-transform: uppercase;
+}
+.tagline {
+  font-family: var(--display); font-style: italic;
+  font-size: clamp(22px, 3.3vw, 38px); line-height: 1.12;
+  margin: clamp(16px, 2.4vw, 26px) 0 0; max-width: 15ch;
+}
+.subtag { margin: 14px 0 0; }
+.subtag b { color: var(--accent); font-weight: 400; }
+.lede {
+  font-size: 16px; line-height: 1.62; color: var(--muted);
+  max-width: 46ch; margin: clamp(18px, 2.6vw, 28px) 0 0;
+  border-left: 1px solid var(--rule); padding-left: 16px;
+}
+.cta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: clamp(22px, 3vw, 34px); }
+.btn {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 13px 20px; border: 1px solid var(--fg);
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.18em;
+  text-transform: uppercase;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+.btn--solid { background: var(--fg); color: var(--bg); }
+.btn--solid:hover { background: transparent; color: var(--fg); }
+.btn--ghost { border-color: var(--rule); color: var(--muted); }
+.btn--ghost:hover { border-color: var(--fg); color: var(--fg); }
+
+/* ── The plate ─────────────────────────────────────────────────────── */
+.plate { margin: 0; }
+.plate__frame {
+  position: relative; background: var(--surface);
+  border: 1px solid var(--rule); padding: 14px;
+}
+/* registration corners */
+.plate__frame::before, .plate__frame::after {
+  content: ""; position: absolute; width: 11px; height: 11px; pointer-events: none;
+  border: 1px solid var(--faint);
+}
+.plate__frame::before { top: -1px;    left: -1px;  border-right: 0; border-bottom: 0; }
+.plate__frame::after  { bottom: -1px; right: -1px; border-left: 0;  border-top: 0; }
+.plate canvas { display: block; width: 100%; height: auto; }
+.plate__cap {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: 20px; margin-top: 14px;
+}
+.plate__title { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--fg); }
+.plate__src   { display: block; margin-top: 6px; font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; color: var(--muted); text-transform: uppercase; }
+.plate__note  { margin: 8px 0 0; font-size: 14.5px; line-height: 1.55; color: var(--muted); max-width: 48ch; font-style: italic; }
+.plate__dots { display: flex; gap: 7px; flex-shrink: 0; padding-top: 3px; }
+.dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  border: 1px solid var(--faint); background: transparent;
+  padding: 0; transition: background 0.25s, border-color 0.25s;
+}
+.dot[aria-selected="true"] { background: var(--accent); border-color: var(--accent); }
+
+/* ── Sections ──────────────────────────────────────────────────────── */
+main { max-width: 1400px; margin: 0 auto; padding: 0 var(--pad) clamp(60px, 8vw, 110px); }
+.sec { margin-top: clamp(56px, 8vw, 104px); }
+.sec__rule {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 20px;
+  border-top: 1px solid var(--fg); padding-top: 12px;
+}
+.sec__h {
+  font-family: var(--display); font-weight: 400;
+  font-size: clamp(30px, 4.4vw, 54px); line-height: 1; margin: 12px 0 0;
+}
+.sec__sub { margin: 12px 0 0; font-size: 16px; line-height: 1.62; color: var(--muted); max-width: 62ch; }
+
+/* filter chips */
+.chips { display: flex; flex-wrap: wrap; gap: 7px; margin: clamp(22px, 3vw, 32px) 0 18px; }
+.chip {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 8px 13px; border: 1px solid var(--rule);
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--muted); transition: all 0.18s;
+}
+.chip:hover { border-color: var(--fg); color: var(--fg); }
+.chip[aria-pressed="true"] { background: var(--fg); border-color: var(--fg); color: var(--bg); }
+.chip__tick { width: 6px; height: 6px; border-radius: 50%; }
+.t-schools    { background: var(--accent); }
+.t-thinkers   { background: var(--fg); }
+.t-motivation { background: var(--accent2); }
+.t-science    { background: var(--faint); }
+.chip[aria-pressed="true"] .t-thinkers { background: var(--bg); }
+
+/* the wall */
+/* Ruled like a ledger: every cell draws its own right and bottom hairline, so a
+   short last row simply ends instead of leaving filled-in empty slots. */
+.wall {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(196px, 1fr));
+  gap: 0;
+  border-top: 1px solid var(--rule);
+  border-left: 1px solid var(--rule);
+}
+.cell {
+  position: relative; background: var(--bg);
+  border-right: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  padding: 22px 16px 20px; min-height: 106px;
+  display: flex; flex-direction: column; justify-content: flex-end;
+  transition: background 0.18s;
+}
+.cell:hover { background: var(--surface); }
+.cell__no {
+  position: absolute; top: 10px; left: 14px;
+  font-family: var(--mono); font-size: 9px; letter-spacing: 0.12em; color: var(--faint);
+}
+.cell__tick {
+  position: absolute; top: 13px; right: 14px;
+  width: 6px; height: 6px; border-radius: 50%;
+}
+.cell__nm { font-family: var(--serif); font-size: 16.5px; line-height: 1.2; }
+.cell__rl {
+  font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--muted); margin-top: 7px;
+}
+
+/* the desk */
+.desk { display: grid; grid-template-columns: repeat(auto-fill, minmax(268px, 1fr)); gap: 18px; margin-top: clamp(22px, 3vw, 32px); }
+.card {
+  display: flex; flex-direction: column;
+  background: var(--surface); border: 1px solid var(--rule);
+  padding: 24px 22px 20px; transition: border-color 0.2s, transform 0.2s;
+}
+a.card:hover { border-color: var(--fg); transform: translateY(-2px); }
+.card__kick { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.card__stat { font-family: var(--mono); font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; padding: 3px 7px; border: 1px solid var(--rule); color: var(--muted); }
+.card__stat--live { color: var(--accent); border-color: var(--accent); }
+.card__h { font-family: var(--display); font-size: 25px; font-weight: 400; margin: 14px 0 0; line-height: 1.08; }
+.card__p { font-size: 14.5px; line-height: 1.58; color: var(--muted); margin: 9px 0 0; }
+.card__go { font-family: var(--mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; margin-top: 18px; color: var(--fg); }
+.card--soon .card__go { color: var(--faint); }
+
+/* ── Footer ────────────────────────────────────────────────────────── */
+footer { border-top: 1px solid var(--rule); background: var(--surface); }
+.foot {
+  max-width: 1400px; margin: 0 auto; padding: 40px var(--pad);
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 22px;
+}
+.foot__mark { display: flex; align-items: center; gap: 16px; }
+.foot__mark img { width: 38px; height: 38px; }
+html[data-theme="paper"] .m-paper, html[data-theme="ink"] .m-ink { display: none; }
+.foot__word { font-family: var(--display); font-size: 30px; letter-spacing: 0.02em; text-transform: uppercase; }
+.foot__note { font-size: 14px; line-height: 1.55; color: var(--muted); max-width: 44ch; }
+.foot__note a { border-bottom: 1px solid var(--rule); }
+.foot__note a:hover { border-bottom-color: var(--fg); }
+
+/* On a phone the masthead has room for the mark and the switch, nothing else. */
+@media (max-width: 620px) {
+  .status { display: none; }
+  .bar__mark { letter-spacing: 0.26em; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tape__track { animation: none !important; }
+  .status__tick { animation: none; }
+  a.card:hover { transform: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── masthead ──────────────────────────────────────────────────────── -->
+<div class="bar">
+  <a class="bar__mark home" href="/" aria-label="James Floyd — home">JF · Frontier</a>
+  <div class="bar__right">
+    <span class="status mono"><span class="status__tick"></span> The frontier of learning</span>
+    <button class="toggle" id="themeBtn" aria-label="Switch to ink">Ink</button>
+  </div>
+</div>
+
+<div class="tape tape--l"><span class="tape__track" id="tapeA"></span></div>
+<div class="tape tape--r"><span class="tape__track" id="tapeB"></span></div>
+
+<!-- ── hero ──────────────────────────────────────────────────────────── -->
+<section class="hero">
+  <div>
+    <p class="dateline mono" id="dateline">Vol. 01 · A field manual</p>
+    <h1 class="wordmark">Frontier</h1>
+    <p class="tagline">The best of how humans learn.</p>
+    <p class="subtag mono">Education <b>·</b> Motivation <b>·</b> Learning science</p>
+    <p class="lede">
+      Not a ranking. A record — kept in the open — of the schools reinventing the
+      model, the thinkers who drew the map, and the findings that actually replicate.
+      Everything here has a source and a date.
+    </p>
+    <div class="cta">
+      <a class="btn btn--solid" href="#canon">Read the canon →</a>
+      <a class="btn btn--ghost" href="#desk">The desk</a>
+    </div>
+  </div>
+
+  <figure class="plate">
+    <div class="plate__frame">
+      <canvas id="plate" width="900" height="620" role="img"
+              aria-label="Animated diagrams from learning science: the two sigma problem, the forgetting curve, the zone of proximal development, and the flow channel."></canvas>
+    </div>
+    <div class="plate__cap">
+      <div>
+        <span class="plate__title" id="plateTitle">Plate I — The Two Sigma Problem</span>
+        <span class="plate__src" id="plateSrc">Bloom · 1984</span>
+      </div>
+      <div class="plate__dots" id="plateDots" role="tablist" aria-label="Choose a plate"></div>
+    </div>
+    <p class="plate__note" id="plateNote"></p>
+  </figure>
+</section>
+
+<main>
+
+  <!-- ── the canon ───────────────────────────────────────────────────── -->
+  <section class="sec" id="canon">
+    <div class="sec__rule">
+      <span class="mono">§ 01 — The canon</span>
+      <span class="mono" id="canonCount"></span>
+    </div>
+    <h2 class="sec__h">The Canon</h2>
+    <p class="sec__sub">
+      The people and institutions pushing learning forward. Schools reinventing the model,
+      the thinkers who defined the field, the work on motivation, and the science that
+      holds up under replication. Curated, not ranked — inclusion means it earned a place
+      in the argument.
+    </p>
+    <div class="chips" id="chips"></div>
+    <div class="wall" id="wall"></div>
+  </section>
+
+  <!-- ── the desk ────────────────────────────────────────────────────── -->
+  <section class="sec" id="desk">
+    <div class="sec__rule">
+      <span class="mono">§ 02 — The desk</span>
+      <span class="mono">Working files</span>
+    </div>
+    <h2 class="sec__h">The Desk</h2>
+    <p class="sec__sub">
+      The dashboards and instruments behind FRONTIER. What's live is live; what's still
+      being set in type says so.
+    </p>
+
+    <div class="desk">
+      <div class="card card--soon">
+        <div class="card__kick">
+          <span class="mono">Live dashboard</span>
+          <span class="card__stat">In port</span>
+        </div>
+        <h3 class="card__h">Frontier-Ed Intel</h3>
+        <p class="card__p">Twenty companies reinventing K-12, sorted into six model types — profiles, scale, money, buzz, sources.</p>
+        <span class="card__go">Moving in →</span>
+      </div>
+
+      <div class="card card--soon">
+        <div class="card__kick">
+          <span class="mono">Deep dives</span>
+          <span class="card__stat">In port</span>
+        </div>
+        <h3 class="card__h">Company Profiles</h3>
+        <p class="card__p">One page per company. Alpha School is the reference model — 2 Hour Learning, the backstop, the Timeback platform.</p>
+        <span class="card__go">Moving in →</span>
+      </div>
+
+      <a class="card" href="/builds/ccat-trainer/">
+        <div class="card__kick">
+          <span class="mono">Instrument</span>
+          <span class="card__stat card__stat--live">Live</span>
+        </div>
+        <h3 class="card__h">CCAT Trainer</h3>
+        <p class="card__p">Mastery-based practice for the cognitive aptitude test — spaced retrieval, an adaptive difficulty ladder, real explanations.</p>
+        <span class="card__go">Open →</span>
+      </a>
+
+      <div class="card card--soon">
+        <div class="card__kick">
+          <span class="mono">Research ops</span>
+          <span class="card__stat">In port</span>
+        </div>
+        <h3 class="card__h">The Sweep</h3>
+        <p class="card__p">The standing brief that finds the next wave — new companies, new studies, new law. Every entry carries a source and a confidence flag.</p>
+        <span class="card__go">Moving in →</span>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="foot">
+    <div class="foot__mark">
+      <img class="m-ink"   src="/brand/monogram-ink.svg"   alt="" width="38" height="38">
+      <img class="m-paper" src="/brand/monogram-paper.svg" alt="" width="38" height="38">
+      <span class="foot__word">Frontier</span>
+    </div>
+    <p class="foot__note">
+      The crème de la crème of education, motivation and learning science.
+      Kept by <a href="/">James Floyd</a> — making kids better than their parents.
+    </p>
+  </div>
+</footer>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════════════
+   1 — Theme
+   ═══════════════════════════════════════════════════════════════════════ */
+var root = document.documentElement;
+var themeBtn = document.getElementById('themeBtn');
+try {
+  var saved = localStorage.getItem('frontier-theme');
+  if (saved) root.setAttribute('data-theme', saved);
+} catch (e) {}
+function syncBtn() {
+  var ink = root.getAttribute('data-theme') === 'ink';
+  themeBtn.textContent = ink ? 'Paper' : 'Ink';
+  themeBtn.setAttribute('aria-label', ink ? 'Switch to paper' : 'Switch to ink');
+}
+syncBtn();
+themeBtn.addEventListener('click', function () {
+  var next = root.getAttribute('data-theme') === 'ink' ? 'paper' : 'ink';
+  root.setAttribute('data-theme', next);
+  try { localStorage.setItem('frontier-theme', next); } catch (e) {}
+  syncBtn();
+  drawPlate(currentPlate, plateProgress);   // canvas colors are theme-bound
+});
+
+/* Dateline — a real one, set at load. */
+(function () {
+  var d = new Date();
+  var mo = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getMonth()];
+  var day = String(d.getDate()).padStart(2, '0');
+  document.getElementById('dateline').textContent =
+    'Vol. 01 · ' + day + ' ' + mo + ' ' + d.getFullYear() + ' · New York';
+})();
+
+/* ═══════════════════════════════════════════════════════════════════════
+   2 — The canon
+   ═══════════════════════════════════════════════════════════════════════ */
+var CANON = [
+  // Schools & models — the frontier as it is actually being built
+  ['Alpha School',            '2 Hour Learning',      'schools'],
+  ['Unbound Academy',         'AI-led charter',       'schools'],
+  ['GT School',               'Gifted, accelerated',  'schools'],
+  ['Synthesis',               'Simulation + tutor',   'schools'],
+  ['Astra Nova',              'Conundrums',           'schools'],
+  ['Primer',                  'Microschools',         'schools'],
+  ['Prenda',                  'Microschools',         'schools'],
+  ['Acton Academy',           'Learner-driven',       'schools'],
+  ['KaiPod Learning',         'Learning pods',        'schools'],
+  ['Galileo Education',       'Microschool OS',       'schools'],
+  ['Wildflower Schools',      'Montessori network',   'schools'],
+  ['Wonderschool',            'Early years',          'schools'],
+  ['Sora Schools',            'Project-based',        'schools'],
+  ['Prisma',                  'Live online',          'schools'],
+  ['Crimson Global Academy',  'Online, exam-track',   'schools'],
+  ['Khan World School',       'Mastery online',       'schools'],
+  ['Khan Academy',            'Free the world',       'schools'],
+  ['Math Academy',            'Mastery + science',    'schools'],
+  ['Fusion Academy',          'One to one',           'schools'],
+  ['Boundless Life',          'School as travel',     'schools'],
+  ['Forge Prep',              'Built for 2040',       'schools'],
+  ['Odyssey',                 'ESA marketplace',      'schools'],
+  ['Montessori',              'The original',         'schools'],
+
+  // Thinkers & authors — the ones who drew the map
+  ['Maria Montessori',        'Pedagogy pioneer',     'thinkers'],
+  ['John Dewey',              'Learning by doing',    'thinkers'],
+  ['Jean Piaget',             'Constructivism',       'thinkers'],
+  ['Lev Vygotsky',            'Zone of prox. dev.',   'thinkers'],
+  ['Seymour Papert',          'Constructionism',      'thinkers'],
+  ['Benjamin Bloom',          'Two sigma / mastery',  'thinkers'],
+  ['Sal Khan',                'Khan Academy',         'thinkers'],
+  ['Michael Horn',            'Disrupting Class',     'thinkers'],
+  ['Daniel Willingham',       'Why students learn',   'thinkers'],
+  ['Jal Mehta',               'Deeper learning',      'thinkers'],
+
+  // Motivation — why anyone keeps going
+  ['Mihaly Csikszentmihalyi', 'Flow',                 'motivation'],
+  ['David Yeager',            '10 to 25',             'motivation'],
+  ['Carol Dweck',             'Growth mindset',       'motivation'],
+  ['Angela Duckworth',        'Grit',                 'motivation'],
+  ['Daniel Pink',             'Drive',                'motivation'],
+  ['Deci & Ryan',             'Self-determination',   'motivation'],
+  ['BJ Fogg',                 'Tiny Habits',          'motivation'],
+  ['James Clear',             'Atomic Habits',        'motivation'],
+  ['Cal Newport',             'Deep Work',            'motivation'],
+
+  // Learning science — what replicates
+  ['Robert Bjork',            'Desirable difficulty', 'science'],
+  ['Anders Ericsson',         'Deliberate practice',  'science'],
+  ['Hermann Ebbinghaus',      'The forgetting curve', 'science'],
+  ['Henry Roediger',          'The testing effect',   'science'],
+  ['Pooja Agarwal',           'Retrieval practice',   'science'],
+  ['John Sweller',            'Cognitive load',       'science'],
+  ['Paul Kirschner',          'Evidence-informed',    'science'],
+  ['Barbara Oakley',          'Learning how to learn','science'],
+  ['Make It Stick',           'The evidence, bound',  'science'],
+  ['Scott Young',             'Ultralearning',        'science']
+];
+
+var CATS = [
+  ['all',        'All'],
+  ['schools',    'Schools & models'],
+  ['thinkers',   'Thinkers & authors'],
+  ['motivation', 'Motivation'],
+  ['science',    'Learning science']
+];
+
+var wall = document.getElementById('wall');
+var chips = document.getElementById('chips');
+var canonCount = document.getElementById('canonCount');
+
+function esc(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function renderWall(filter) {
+  var rows = CANON.filter(function (c) { return filter === 'all' || c[2] === filter; });
+  wall.innerHTML = rows.map(function (c, i) {
+    return '<div class="cell">' +
+      '<span class="cell__no">' + String(i + 1).padStart(2, '0') + '</span>' +
+      '<span class="cell__tick t-' + c[2] + '"></span>' +
+      '<span class="cell__nm">' + esc(c[0]) + '</span>' +
+      '<span class="cell__rl">' + esc(c[1]) + '</span>' +
+    '</div>';
+  }).join('');
+  canonCount.textContent = rows.length + ' entries · ' + (CATS.length - 1) + ' categories';
+}
+
+chips.innerHTML = CATS.map(function (c, i) {
+  var tick = c[0] === 'all' ? '' : '<span class="chip__tick t-' + c[0] + '"></span>';
+  return '<button class="chip" data-cat="' + c[0] + '" aria-pressed="' + (i === 0) + '">' +
+           tick + c[1] +
+         '</button>';
+}).join('');
+
+chips.addEventListener('click', function (e) {
+  var b = e.target.closest('.chip');
+  if (!b) return;
+  Array.prototype.forEach.call(chips.children, function (x) { x.setAttribute('aria-pressed', 'false'); });
+  b.setAttribute('aria-pressed', 'true');
+  renderWall(b.dataset.cat);
+});
+renderWall('all');
+
+/* ═══════════════════════════════════════════════════════════════════════
+   3 — The tape
+   ═══════════════════════════════════════════════════════════════════════ */
+function tapeHTML(list) {
+  var items = list.map(function (c) {
+    return '<span class="tk">' + esc(c[0]) + ' <em>' + esc(c[1]) + '</em> <i>◆</i></span>';
+  }).join('');
+  return items + items;               // doubled so the loop is seamless
+}
+document.getElementById('tapeA').innerHTML = tapeHTML(CANON.filter(function (_, i) { return i % 2 === 0; }));
+document.getElementById('tapeB').innerHTML = tapeHTML(CANON.filter(function (_, i) { return i % 2 === 1; }));
+
+/* ═══════════════════════════════════════════════════════════════════════
+   4 — The plates
+   ───────────────────────────────────────────────────────────────────────
+   Four diagrams that carry the whole argument of the field, drawn as
+   hairline plates in a field manual rather than decoration. Each one
+   draws itself in, holds, and hands off to the next.
+   ═══════════════════════════════════════════════════════════════════════ */
+var cv  = document.getElementById('plate');
+var ctx = cv.getContext('2d');
+var W = 0, H = 0, B = null;            // B = plot box
+
+function css(name) {
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+}
+function C() {
+  return {
+    fg: css('--fg'), muted: css('--muted'), faint: css('--faint'),
+    accent: css('--accent'), accent2: css('--accent2'), surface: css('--surface')
+  };
+}
+
+function sizeCanvas() {
+  var box = cv.parentNode.getBoundingClientRect();
+  var cssW = Math.max(280, box.width - 28);          // minus the frame padding
+  var cssH = Math.round(cssW * 0.68);
+  var dpr = Math.min(window.devicePixelRatio || 1, 2);
+  cv.style.height = cssH + 'px';
+  cv.width  = Math.round(cssW * dpr);
+  cv.height = Math.round(cssH * dpr);
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  W = cssW; H = cssH;
+  B = { l: 54, r: 26, t: 30, b: 54 };
+  B.w = W - B.l - B.r;
+  B.h = H - B.t - B.b;
+}
+
+/* plot-space → pixel-space (u, v both 0..1, v measured up from the floor) */
+function X(u) { return B.l + u * B.w; }
+function Y(v) { return B.t + (1 - v) * B.h; }
+
+var SURF = '#FCFBF7';   // set per draw; used to knock text out of a rule
+
+/* `knock` clears a small patch of ground behind the text, the way a draftsman
+   breaks a line to let a callout sit on it. */
+function label(text, x, y, color, align, size, knock) {
+  var sz = size || 9.5;
+  ctx.save();
+  ctx.font = '500 ' + sz + 'px "IBM Plex Mono", ui-monospace, monospace';
+  ctx.textAlign = align || 'left';
+  ctx.textBaseline = 'middle';
+  ctx.letterSpacing = '0.12em';
+  if (knock) {
+    var w = ctx.measureText(text).width + 10;
+    var h = sz + 9;
+    var x0 = align === 'center' ? x - w / 2 : (align === 'right' ? x - w + 4 : x - 5);
+    ctx.fillStyle = SURF;
+    ctx.fillRect(x0, y - h / 2, w, h);
+  }
+  ctx.fillStyle = color;
+  ctx.fillText(text, x, y);
+  ctx.restore();
+}
+
+/* A polyline through f(u) for u in [0,1], revealed up to `p`. */
+function curve(f, p, color, opts) {
+  opts = opts || {};
+  var N = 160, cut = Math.max(2, Math.round(N * Math.max(0, Math.min(1, p))));
+  ctx.save();
+  ctx.beginPath();
+  for (var i = 0; i < cut; i++) {
+    var u = i / (N - 1);
+    var pt = f(u);
+    if (i === 0) ctx.moveTo(X(pt[0]), Y(pt[1]));
+    else ctx.lineTo(X(pt[0]), Y(pt[1]));
+  }
+  if (opts.fill) {
+    ctx.save();
+    ctx.lineTo(X((cut - 1) / (N - 1)), Y(0));
+    ctx.lineTo(X(0), Y(0));
+    ctx.closePath();
+    ctx.globalAlpha = 0.10;
+    ctx.fillStyle = color;
+    ctx.fill();
+    ctx.restore();
+  }
+  ctx.strokeStyle = color;
+  ctx.lineWidth = opts.w || 1.25;
+  if (opts.dash) ctx.setLineDash(opts.dash);
+  ctx.stroke();
+  ctx.restore();
+  return cut;
+}
+
+function axes(xlab, ylab, colors, xdy) {
+  ctx.save();
+  ctx.strokeStyle = colors.faint;
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(X(0), Y(1.02)); ctx.lineTo(X(0), Y(0)); ctx.lineTo(X(1.02), Y(0));
+  ctx.stroke();
+  ctx.restore();
+  if (xlab) label(xlab, X(1.02), Y(0) + (xdy || 18), colors.muted, 'right');
+  if (ylab) {
+    ctx.save();
+    ctx.translate(B.l - 34, B.t + B.h / 2);
+    ctx.rotate(-Math.PI / 2);
+    label(ylab, 0, 0, colors.muted, 'center');
+    ctx.restore();
+  }
+}
+
+/* diagonal hatching inside an arbitrary clip path */
+function hatch(clipFn, color, spacing, alpha) {
+  ctx.save();
+  ctx.beginPath();
+  clipFn();
+  ctx.clip();
+  ctx.globalAlpha = alpha || 0.5;
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 0.7;
+  var step = spacing || 9;
+  ctx.beginPath();
+  for (var x = -H; x < W + H; x += step) {
+    ctx.moveTo(x, B.t + B.h);
+    ctx.lineTo(x + H, B.t);
+  }
+  ctx.stroke();
+  ctx.restore();
+}
+
+function bell(x, mu, sd) { return Math.exp(-((x - mu) * (x - mu)) / (2 * sd * sd)); }
+
+/* ── Plate I — the two sigma problem ─────────────────────────────────── */
+function plateSigma(p, k) {
+  axes('Achievement →', 'Students', k, 16);
+  var sd = 0.095;
+  var band = [
+    { mu: 0.24, c: k.faint,  lab: 'Conventional', dash: [3, 3] },
+    { mu: 0.46, c: k.muted,  lab: 'Mastery + 1σ', dash: null   },
+    { mu: 0.68, c: k.accent, lab: 'Tutored + 2σ', dash: null, fill: true, w: 1.6 }
+  ];
+  for (var i = 0; i < band.length; i++) {
+    var b = band[i];
+    var sub = Math.max(0, Math.min(1, (p - i * 0.26) / 0.5));   // staggered reveal
+    if (sub <= 0) continue;
+    curve((function (bb) {
+      return function (u) { return [u, bell(u, bb.mu, sd) * 0.82]; };
+    })(b), sub, b.c, { dash: b.dash, fill: b.fill, w: b.w });
+
+    // legend, stacked top-left where no curve reaches
+    if (sub > 0.6) {
+      var ly = B.t + 8 + i * 15;
+      ctx.save();
+      ctx.strokeStyle = b.c; ctx.lineWidth = b.w || 1.25;
+      if (b.dash) ctx.setLineDash(b.dash);
+      ctx.fillStyle = SURF;
+      ctx.fillRect(X(0.02) - 3, ly - 8, 22, 16);
+      ctx.beginPath(); ctx.moveTo(X(0.02), ly); ctx.lineTo(X(0.02) + 16, ly); ctx.stroke();
+      ctx.restore();
+      label(b.lab, X(0.02) + 23, ly, b.c, 'left', 9.5, true);
+    }
+  }
+  if (p > 0.94) {                                     // the 2σ bracket
+    var y = Y(0) + 32;
+    ctx.save();
+    ctx.strokeStyle = k.accent; ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(X(0.24), y - 5); ctx.lineTo(X(0.24), y);
+    ctx.lineTo(X(0.68), y);     ctx.lineTo(X(0.68), y - 5);
+    ctx.stroke();
+    ctx.restore();
+    label('Two standard deviations', X(0.46), y + 12, k.accent, 'center');
+  }
+}
+
+/* ── Plate II — the forgetting curve ─────────────────────────────────── */
+function plateForgetting(p, k) {
+  axes('Time →', 'Retention', k, 32);
+  // untouched memory
+  curve(function (u) { return [u, Math.exp(-3.4 * u) * 0.92 + 0.03]; },
+        Math.min(1, p / 0.45), k.faint, { dash: [3, 3] });
+  if (p > 0.42) label('No review', X(0.99), Y(0.19), k.faint, 'right');
+
+  // spaced retrieval — each review resets it, and the decay gets shallower
+  var reviews = [0, 0.14, 0.34, 0.58, 0.84];
+  var decay   = [3.2, 1.9, 1.1, 0.62, 0.34];
+  function spaced(u) {
+    var seg = 0;
+    for (var i = 0; i < reviews.length; i++) if (u >= reviews[i]) seg = i;
+    return [u, Math.exp(-decay[seg] * (u - reviews[seg])) * 0.92 + 0.03];
+  }
+  var sub = Math.max(0, (p - 0.32) / 0.6);
+  if (sub > 0) {
+    curve(spaced, Math.min(1, sub), k.accent, { w: 1.6 });
+    // review ticks, drawn as they are passed
+    var reach = Math.min(1, sub);
+    for (var j = 1; j < reviews.length; j++) {
+      if (reviews[j] > reach) continue;
+      var rx = X(reviews[j]);
+      ctx.save();
+      ctx.strokeStyle = k.accent; ctx.globalAlpha = 0.45; ctx.lineWidth = 1;
+      ctx.setLineDash([2, 3]);
+      ctx.beginPath(); ctx.moveTo(rx, Y(0)); ctx.lineTo(rx, Y(0.95)); ctx.stroke();
+      ctx.restore();
+      ctx.save();
+      ctx.fillStyle = k.accent;
+      ctx.beginPath(); ctx.arc(rx, Y(0.95), 2.6, 0, 7); ctx.fill();
+      ctx.restore();
+    }
+    if (reach > 0.9) label('Retrieval, spaced out', X(0.28), Y(0.95) - 15, k.accent, 'left');
+  }
+  label('1 d', X(0.14), Y(0) + 15, k.muted, 'center');
+  label('3 d', X(0.34), Y(0) + 15, k.muted, 'center');
+  label('1 wk', X(0.58), Y(0) + 15, k.muted, 'center');
+  label('1 mo', X(0.84), Y(0) + 15, k.muted, 'center');
+}
+
+/* ── Plate III — the zone of proximal development ────────────────────── */
+function plateZPD(p, k) {
+  var cx = X(0.24), cy = B.t + B.h / 2;
+  var R  = Math.min(B.h * 0.46, B.w * 0.28);
+  var shelf = cx + R + 26;                     // where every callout lands
+  var rings = [
+    { r: 1.00, c: k.faint,  lab: 'Not yet',      a:  54, dash: [3, 3] },
+    { r: 0.68, c: k.accent, lab: 'The zone',     a:  10, dash: null, w: 1.6 },
+    { r: 0.36, c: k.muted,  lab: 'Can do alone', a: -48, dash: null }
+  ];
+  // the zone itself — the band that everything is actually about
+  if (p > 0.36) {
+    var g = Math.min(1, (p - 0.36) / 0.4);
+    hatch(function () {
+      ctx.arc(cx, cy, R * 0.68, 0, Math.PI * 2);
+      ctx.arc(cx, cy, R * 0.36, 0, Math.PI * 2, true);
+    }, k.accent, 10, 0.22 * g);
+  }
+  for (var i = 0; i < rings.length; i++) {
+    var g2 = Math.max(0, Math.min(1, (p - i * 0.16) / 0.55));
+    if (g2 <= 0) continue;
+    ctx.save();
+    ctx.strokeStyle = rings[i].c;
+    ctx.lineWidth = rings[i].w || 1.2;
+    if (rings[i].dash) ctx.setLineDash(rings[i].dash);
+    ctx.beginPath();
+    ctx.arc(cx, cy, R * rings[i].r, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * g2);
+    ctx.stroke();
+    ctx.restore();
+    // one leader per ring, out to a common shelf — a drafting callout
+    if (g2 > 0.92) {
+      var rad = rings[i].a * Math.PI / 180;
+      var rr = R * rings[i].r;
+      var px = cx + rr * Math.cos(rad), py = cy - rr * Math.sin(rad);
+      ctx.save();
+      ctx.strokeStyle = rings[i].c; ctx.lineWidth = 0.9; ctx.globalAlpha = 0.7;
+      ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(shelf - 7, py); ctx.stroke();
+      ctx.globalAlpha = 1; ctx.fillStyle = rings[i].c;
+      ctx.beginPath(); ctx.arc(px, py, 1.7, 0, 7); ctx.fill();
+      ctx.restore();
+      label(rings[i].lab, shelf, py, rings[i].c, 'left', 9.5, true);
+    }
+  }
+}
+
+/* ── Plate IV — the flow channel ─────────────────────────────────────── */
+function plateFlow(p, k) {
+  axes('Skill →', 'Challenge →', k);
+  var half = 0.13;
+  if (p > 0.1) {
+    var g = Math.min(1, (p - 0.1) / 0.35);
+    hatch(function () {
+      ctx.moveTo(X(0), Y(half));
+      ctx.lineTo(X(1 - half), Y(1));
+      ctx.lineTo(X(1), Y(1));
+      ctx.lineTo(X(1), Y(1 - half));
+      ctx.lineTo(X(half), Y(0));
+      ctx.lineTo(X(0), Y(0));
+      ctx.closePath();
+    }, k.accent, 11, 0.20 * g);
+    ctx.save();
+    ctx.strokeStyle = k.accent; ctx.lineWidth = 1.2; ctx.globalAlpha = g;
+    ctx.beginPath(); ctx.moveTo(X(0), Y(half));     ctx.lineTo(X(1 - half), Y(1)); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(X(half), Y(0));     ctx.lineTo(X(1), Y(1 - half)); ctx.stroke();
+    ctx.restore();
+  }
+  if (p > 0.4) {
+    label('Anxiety', X(0.22), Y(0.82), k.muted, 'center');
+    label('Boredom', X(0.80), Y(0.16), k.muted, 'center');
+    ctx.save();
+    ctx.translate(X(0.52), Y(0.52));
+    ctx.rotate(-Math.atan2(B.h, B.w));
+    label('Flow', 0, -12, k.accent, 'center', 11);
+    ctx.restore();
+  }
+  // the staircase: skill rises, then challenge is raised to meet it
+  var steps = [[0.10,0.10],[0.30,0.10],[0.30,0.30],[0.52,0.30],[0.52,0.52],[0.74,0.52],[0.74,0.74]];
+  var sub = Math.max(0, (p - 0.35) / 0.6);
+  if (sub > 0) {
+    var total = steps.length - 1;
+    var reach = Math.min(total, sub * total);
+    ctx.save();
+    ctx.strokeStyle = k.fg; ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(X(steps[0][0]), Y(steps[0][1]));
+    var hx = steps[0][0], hy = steps[0][1];
+    for (var s = 1; s <= Math.ceil(reach); s++) {
+      var a = steps[s - 1], b2 = steps[s];
+      var f = Math.max(0, Math.min(1, reach - (s - 1)));
+      hx = a[0] + (b2[0] - a[0]) * f;
+      hy = a[1] + (b2[1] - a[1]) * f;
+      ctx.lineTo(X(hx), Y(hy));
+    }
+    ctx.stroke();
+    ctx.fillStyle = k.fg;
+    ctx.beginPath(); ctx.arc(X(hx), Y(hy), 3.2, 0, 7); ctx.fill();
+    ctx.restore();
+  }
+}
+
+var PLATES = [
+  { t: 'Plate I — The Two Sigma Problem', s: 'Bloom · 1984',
+    n: 'One tutor, taught to mastery, moved the average student past 98% of the class taught conventionally. Everything on this page is an attempt to do that without one tutor per child.',
+    f: plateSigma },
+  { t: 'Plate II — The Forgetting Curve', s: 'Ebbinghaus · 1885 → Roediger · 2006',
+    n: 'Memory falls off a cliff on its own. Pull it back out at widening intervals and the cliff flattens into a shelf. Re-reading does not do this. Retrieval does.',
+    f: plateForgetting },
+  { t: 'Plate III — The Zone of Proximal Development', s: 'Vygotsky · 1978',
+    n: 'The band between what a learner can do alone and what they cannot do yet. Teaching that lands anywhere else is either boring or lost.',
+    f: plateZPD },
+  { t: 'Plate IV — The Flow Channel', s: 'Csikszentmihalyi · 1975',
+    n: 'Motivation is not a personality trait. It is what happens when the challenge keeps rising to meet a rising skill — a staircase, not a straight line.',
+    f: plateFlow }
+];
+
+var currentPlate = 0;
+var plateProgress = 0;
+var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function drawPlate(idx, p) {
+  if (!B) return;
+  var k = C();
+  SURF = k.surface;
+  ctx.clearRect(0, 0, W, H);
+  PLATES[idx].f(p, k);
+  // registration crosses in the plate corners
+  ctx.save();
+  ctx.strokeStyle = k.faint; ctx.lineWidth = 0.8; ctx.globalAlpha = 0.7;
+  [[B.l, B.t], [B.l + B.w, B.t], [B.l, B.t + B.h], [B.l + B.w, B.t + B.h]].forEach(function (pt) {
+    ctx.beginPath();
+    ctx.moveTo(pt[0] - 4, pt[1]); ctx.lineTo(pt[0] + 4, pt[1]);
+    ctx.moveTo(pt[0], pt[1] - 4); ctx.lineTo(pt[0], pt[1] + 4);
+    ctx.stroke();
+  });
+  ctx.restore();
+}
+
+var elTitle = document.getElementById('plateTitle');
+var elSrc   = document.getElementById('plateSrc');
+var elNote  = document.getElementById('plateNote');
+var elDots  = document.getElementById('plateDots');
+
+elDots.innerHTML = PLATES.map(function (pl, i) {
+  return '<button class="dot" role="tab" data-i="' + i + '" aria-selected="' + (i === 0) +
+         '" aria-label="' + esc(pl.t) + '"></button>';
+}).join('');
+
+function setPlate(i, instant) {
+  currentPlate = i;
+  plateProgress = instant ? 1 : 0;
+  elTitle.textContent = PLATES[i].t;
+  elSrc.textContent   = PLATES[i].s;
+  elNote.textContent  = PLATES[i].n;
+  Array.prototype.forEach.call(elDots.children, function (d, j) {
+    d.setAttribute('aria-selected', String(j === i));
+  });
+  drawPlate(i, plateProgress);
+}
+
+elDots.addEventListener('click', function (e) {
+  var b = e.target.closest('.dot');
+  if (!b) return;
+  hold = 0;
+  setPlate(+b.dataset.i, reduce);
+});
+
+/* the loop: draw in over ~1.7s, hold ~6s, advance */
+var last = 0, hold = 0;
+var DRAW_MS = 1700, HOLD_MS = 6200;
+function tick(ts) {
+  if (!last) last = ts;
+  var dt = ts - last;
+  last = ts;
+  // A backgrounded tab stops firing frames; on return dt is enormous and the
+  // hold timer would skip a plate instantly. Treat any long gap as one frame.
+  if (dt > 120) dt = 16;
+  if (plateProgress < 1) {
+    plateProgress = Math.min(1, plateProgress + dt / DRAW_MS);
+    drawPlate(currentPlate, plateProgress);
+  } else if (!reduce) {
+    hold += dt;
+    if (hold > HOLD_MS) { hold = 0; setPlate((currentPlate + 1) % PLATES.length, false); }
+  }
+  requestAnimationFrame(tick);
+}
+
+var booted = false;
+function boot() {
+  if (booted) return;
+  booted = true;
+  sizeCanvas();
+  setPlate(0, reduce);
+  if (!reduce) requestAnimationFrame(tick);
+}
+
+var rt;
+window.addEventListener('resize', function () {
+  clearTimeout(rt);
+  rt = setTimeout(function () { sizeCanvas(); drawPlate(currentPlate, plateProgress); }, 140);
+});
+
+// Wait for the mono face so the plate labels measure right — but never wait
+// forever if the font request is blocked.
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(boot);
+else window.addEventListener('load', boot);
+setTimeout(boot, 1500);
+</script>
+
+</body>
+</html>
