@@ -1017,9 +1017,21 @@ function boot() {
   if (booted) return;
   booted = true;
   sizeCanvas();
-  setPlate(0, reduce);
+  // A tab that starts hidden gets no frames, so draw the finished plate rather
+  // than leaving an empty frame; it re-animates once it is actually on screen.
+  setPlate(0, reduce || document.hidden);
   if (!reduce) requestAnimationFrame(tick);
 }
+
+// Belt and braces: if frames never arrive at all, finish the drawing anyway.
+setTimeout(function () {
+  if (booted && plateProgress < 0.05) { plateProgress = 1; drawPlate(currentPlate, 1); }
+}, 2500);
+
+document.addEventListener('visibilitychange', function () {
+  last = 0;                                  // don't carry a stale timestamp in
+  if (!document.hidden) drawPlate(currentPlate, plateProgress);
+});
 
 var rt;
 window.addEventListener('resize', function () {
