@@ -1,622 +1,1223 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Alpha School — Intel</title>
-<meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
-<meta name="referrer" content="no-referrer">
-<link rel="icon" href="/favicon.ico" sizes="any">
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Alpha Intel Dashboard — James Floyd</title>
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex"/>
+<meta name="referrer" content="no-referrer"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Serif:ital,wght@0,400;0,500;1,400&display=swap">
-
 <style>
-/* ═══════════════════════════════════════════════════════════════════════
-   Alpha School — Intel.  Private research dashboard.
-   Ink ground, editorial serif on a monospace grid; forest and earth used
-   only for rules, ticks and flags. Palette from JF_Brand_System.
-   ═══════════════════════════════════════════════════════════════════════ */
-:root {
-  --ink:     #0B0B0C;
-  --panel:   #121214;
-  --panel2:  #17171A;
-  --fg:      #F2F0EA;
-  --muted:   #948F86;
-  --faint:   #5E5A54;
-  --rule:    rgba(242,240,234,0.13);
-  --hair:    rgba(242,240,234,0.06);
-  --forest:  #8AA87B;
-  --earth:   #BE9A73;
-  --red:     #C97A72;
+  /* ═════════════════════════════════════════════════════════════════════
+     Alpha Intel Dashboard — James Floyd's own file, restyled.
+     The markup, the tabs, the tables and every figure below are his,
+     unchanged. This stylesheet is the only thing that was swapped:
+     ink ground, Instrument Serif over an IBM Plex Mono grid.
+     ═══════════════════════════════════════════════════════════════════ */
+  :root{
+    --ink:#0B0B0C; --panel:#121214; --panel2:#17171A;
+    --fg:#F2F0EA; --muted:#948F86; --faint:#5E5A54;
+    --line:rgba(242,240,234,.13); --hair:rgba(242,240,234,.06);
+    --navy:#F2F0EA;                 /* his accent → paper, this is monochrome */
+    --blue:#8AA87B;                 /* his link accent → forest */
+    --open:#8AA87B; --soon:#BE9A73; --warn:#BE9A73; --bad:#C97A72;
+    --display:'Instrument Serif',Georgia,serif;
+    --serif:'IBM Plex Serif',Georgia,serif;
+    --mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
+  }
+  *{box-sizing:border-box}
+  html{background:var(--ink);-webkit-font-smoothing:antialiased}
+  body{margin:0;font-family:var(--serif);color:var(--fg);background:var(--ink);line-height:1.62;font-size:15.5px}
 
-  --display: 'Instrument Serif', Georgia, serif;
-  --serif:   'IBM Plex Serif', Georgia, serif;
-  --mono:    'IBM Plex Mono', ui-monospace, Menlo, monospace;
-  --pad: clamp(20px, 4vw, 44px);
-}
-* { box-sizing: border-box; }
-html, body { margin: 0; }
-html { background: var(--ink); -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
-body { background: var(--ink); color: var(--fg); font-family: var(--serif); font-size: 16px; line-height: 1.62; }
-a { color: inherit; }
-h1, h2, h3 { font-weight: 400; margin: 0; }
+  /* header */
+  header{background:var(--ink);color:var(--fg);padding:clamp(30px,5vw,52px) clamp(20px,4vw,44px) clamp(20px,3vw,30px);border-bottom:1px solid var(--line);max-width:1080px;margin:0 auto}
+  header h1{margin:0;font-family:var(--display);font-weight:400;font-size:clamp(38px,6.5vw,68px);line-height:1;letter-spacing:-.015em}
+  header p{margin:14px 0 0;font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);opacity:1;line-height:1.9}
+  header .warnline{margin-top:10px;color:var(--bad);font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase}
+  .backline{max-width:1080px;margin:0 auto;padding:14px clamp(20px,4vw,44px) 0;font-family:var(--mono);font-size:10.5px;letter-spacing:.2em;text-transform:uppercase}
+  .backline a{color:var(--muted);text-decoration:none}
+  .backline a:hover{color:var(--fg)}
 
-/* a barely-there graph ground */
-body::before {
-  content: ""; position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: .5;
-  background-image: linear-gradient(to right, var(--hair) 1px, transparent 1px),
-                    linear-gradient(to bottom, var(--hair) 1px, transparent 1px);
-  background-size: 112px 112px;
-}
-body > * { position: relative; z-index: 1; }
+  /* tabs */
+  nav{position:sticky;top:0;z-index:20;background:rgba(11,11,12,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);display:flex;flex-wrap:nowrap;overflow-x:auto;gap:2px;padding:8px clamp(20px,4vw,44px);scrollbar-width:none}
+  nav::-webkit-scrollbar{display:none}
+  nav button{flex:none;border:none;background:none;padding:7px 12px;cursor:pointer;color:var(--muted);border-bottom:none;border-radius:2px;
+    font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;white-space:nowrap;transition:color .18s,background .18s}
+  nav button:hover{color:var(--fg)}
+  nav button.on{color:var(--ink);background:var(--fg)}
 
-.wrap { max-width: 1080px; margin: 0 auto; padding: 0 var(--pad); }
-.mono { font-family: var(--mono); font-size: 10.5px; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); }
+  .wrap{max-width:1080px;margin:0 auto;padding:clamp(26px,4vw,44px) clamp(20px,4vw,44px) 80px}
+  section{display:none}
+  section.on{display:block}
 
-/* ── masthead ─────────────────────────────────────────────────────────── */
-.top { border-bottom: 1px solid var(--rule); }
-.top__in { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 0; }
-.top a { text-decoration: none; }
-.top a:hover { color: var(--fg); }
+  /* headings */
+  h2.s{font-family:var(--display);font-weight:400;font-size:clamp(27px,3.8vw,40px);line-height:1.04;color:var(--fg);margin:0 0 14px;border-bottom:none;padding-bottom:0}
+  h3.s{font-family:var(--display);font-weight:400;font-size:clamp(19px,2.4vw,25px);color:var(--fg);margin:34px 0 8px}
 
-.head { padding: clamp(40px, 7vw, 74px) 0 clamp(24px, 4vw, 40px); }
-.head h1 { font-family: var(--display); font-size: clamp(44px, 8vw, 92px); line-height: .96; letter-spacing: -.015em; }
-.head h1 em { font-style: italic; color: var(--muted); }
-.head .sub { margin: 16px 0 0; color: var(--muted); max-width: 56ch; font-size: 17px; }
+  p{margin:1em 0 0}
+  b,strong{font-weight:500;color:#fff}
+  a{color:var(--blue)}
 
-.private {
-  display: flex; gap: 12px; align-items: flex-start;
-  margin: 26px 0 0; padding: 13px 16px;
-  border: 1px solid rgba(201,122,114,.4); border-left-width: 2px;
-  background: rgba(201,122,114,.06); border-radius: 2px;
-  font-size: 13.5px; line-height: 1.55; color: #E4D9D5;
-}
-.private b { color: var(--red); font-weight: 500; }
+  /* tiles */
+  .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(158px,1fr));gap:0;margin:20px 0 22px;border-top:1px solid var(--line);border-left:1px solid var(--line)}
+  .tile{background:transparent;border:none;border-right:1px solid var(--line);border-bottom:1px solid var(--line);border-radius:0;padding:18px 16px 16px}
+  .tile .n{font-family:var(--display);font-size:clamp(26px,3.2vw,38px);font-weight:400;line-height:1;color:var(--fg);letter-spacing:-.01em}
+  .tile .l{font-family:var(--mono);font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);margin-top:9px;line-height:1.5}
 
-/* ── section nav ──────────────────────────────────────────────────────── */
-.rail { position: sticky; top: 0; z-index: 20; background: rgba(11,11,12,.93); backdrop-filter: blur(8px); border-bottom: 1px solid var(--rule); }
-.rail__in { display: flex; gap: 4px; overflow-x: auto; padding: 9px 0; scrollbar-width: none; }
-.rail__in::-webkit-scrollbar { display: none; }
-.rail a {
-  flex: none; text-decoration: none; padding: 6px 11px; border-radius: 2px;
-  font-family: var(--mono); font-size: 10px; letter-spacing: .16em; text-transform: uppercase;
-  color: var(--muted); white-space: nowrap; transition: color .18s, background .18s;
-}
-.rail a:hover { color: var(--fg); }
-.rail a.on { color: var(--ink); background: var(--fg); }
+  /* pinned cards */
+  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(238px,1fr));gap:14px}
+  .pin{background:var(--panel);border:1px solid var(--line);border-radius:2px;padding:17px 18px;text-decoration:none;color:inherit;display:block;transition:border-color .2s,transform .2s}
+  .pin:hover{border-color:var(--fg);box-shadow:none;transform:translateY(-2px)}
+  .pin .t{font-family:var(--display);font-weight:400;font-size:20px;color:var(--fg)}
+  .pin .d{font-size:13.5px;color:var(--muted);margin-top:6px;line-height:1.55}
+  .pin .tag{display:inline-block;font-family:var(--mono);font-size:9px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);background:none;border:1px solid var(--line);border-radius:2px;padding:3px 7px;margin-top:12px}
 
-/* ── sections ─────────────────────────────────────────────────────────── */
-section { padding: clamp(48px, 7vw, 86px) 0 0; scroll-margin-top: 56px; }
-.sec__rule { display: flex; align-items: baseline; justify-content: space-between; gap: 20px; border-top: 1px solid var(--fg); padding-top: 11px; }
-.sec__h { font-family: var(--display); font-size: clamp(30px, 4.6vw, 52px); line-height: 1.02; margin: 14px 0 0; }
-.sec__lede { color: var(--muted); margin: 12px 0 0; max-width: 66ch; }
-h3.sub { font-family: var(--display); font-size: clamp(20px, 2.6vw, 27px); margin: clamp(30px,4vw,44px) 0 10px; }
+  /* tables */
+  table{border-collapse:collapse;width:100%;font-size:14px;background:transparent;border:none;border-radius:0;overflow:visible;margin-top:16px}
+  th,td{text-align:left;padding:11px 14px 11px 0;border-bottom:1px solid var(--hair)}
+  th{background:none;color:var(--muted);font-family:var(--mono);font-size:9.5px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;border-bottom:1px solid var(--line);padding-bottom:9px}
+  tr:last-child td{border-bottom:none}
+  .pay{font-family:var(--mono);font-size:13px;font-weight:400;color:var(--open);white-space:nowrap}
 
-p { margin: 1em 0 0; }
-p:first-child { margin-top: 0; }
-strong, b { font-weight: 500; color: #fff; }
-em { font-style: italic; }
+  /* callouts */
+  .callout{background:var(--panel);border:none;border-left:2px solid var(--warn);border-radius:0 2px 2px 0;padding:14px 18px;font-size:14.5px;line-height:1.6;margin:20px 0}
+  .callout b{color:#fff}
+  .muted{color:var(--muted);font-size:13.5px}
 
-/* ── tiles ────────────────────────────────────────────────────────────── */
-/* ruled per cell, so a short last row just ends instead of leaving filled slots */
-.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0; border-top: 1px solid var(--rule); border-left: 1px solid var(--rule); margin-top: 26px; }
-.tile { border-right: 1px solid var(--rule); border-bottom: 1px solid var(--rule); padding: 20px 16px 17px; }
-/* the eight-up snapshot gets a fixed count so it lands as two full rows */
-.tiles--8 { grid-template-columns: repeat(2, 1fr); }
-@media (min-width: 620px) { .tiles--8 { grid-template-columns: repeat(4, 1fr); } }
-.tile .n { font-family: var(--display); font-size: clamp(28px, 3.6vw, 42px); line-height: 1; letter-spacing: -.01em; }
-.tile .n small { font-size: .5em; color: var(--muted); letter-spacing: 0; }
-.tile .l { font-family: var(--mono); font-size: 9.5px; letter-spacing: .13em; text-transform: uppercase; color: var(--muted); margin-top: 9px; line-height: 1.45; }
-.tile.hot .n { color: var(--forest); }
+  /* lists */
+  ul.tight{margin:14px 0 0;padding-left:0;list-style:none}
+  ul.tight li{position:relative;margin:9px 0;padding-left:18px;font-size:15px;line-height:1.6}
+  ul.tight li::before{content:"—";position:absolute;left:0;color:var(--faint)}
 
-/* ── panels, notes, quotes ────────────────────────────────────────────── */
-.panel { background: var(--panel); border: 1px solid var(--rule); border-radius: 2px; padding: 20px 22px; margin-top: 20px; }
-.note { border-left: 2px solid var(--forest); background: var(--panel); padding: 14px 18px; margin-top: 20px; font-size: 14.5px; line-height: 1.6; border-radius: 0 2px 2px 0; }
-.note.warn { border-left-color: var(--earth); }
-.note.bad  { border-left-color: var(--red); }
-.note b { color: #fff; }
+  /* research docs */
+  .doc{background:var(--panel);border:1px solid var(--line);border-radius:2px;margin:12px 0;overflow:hidden}
+  .doc>summary{cursor:pointer;padding:15px 18px;font-family:var(--display);font-weight:400;color:var(--fg);font-size:20px;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:16px}
+  .doc>summary::-webkit-details-marker{display:none}
+  .doc>summary:hover{background:var(--panel2)}
+  .doc>summary .c{font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:400;flex:none}
+  .doc[open]>summary{border-bottom:1px solid var(--line);background:var(--panel2)}
+  .md{padding:6px 20px 20px}
+  .md h2{font-family:var(--mono);font-size:10px;color:var(--muted);margin:24px 0 8px;text-transform:uppercase;letter-spacing:.2em;font-weight:500}
+  .md h3{font-family:var(--display);font-weight:400;font-size:19px;color:var(--fg);margin:20px 0 6px}
+  .md p{margin:9px 0;font-size:14.5px;line-height:1.62}
+  .md ul{margin:9px 0;padding-left:0;list-style:none}
+  .md li{position:relative;margin:7px 0;padding-left:17px;font-size:14.5px;line-height:1.6}
+  .md li::before{content:"—";position:absolute;left:0;color:var(--faint)}
+  .md em{color:var(--muted);font-style:italic}
+  .md strong{color:#fff;font-weight:500}
+  .md a{color:var(--blue);text-decoration:none;border-bottom:1px solid var(--hair);word-break:break-word}
+  .md a:hover{border-bottom-color:var(--blue)}
+  .md hr{border:none;border-top:1px solid var(--line);margin:22px 0}
+  .md code{font-family:var(--mono);font-size:12.5px;background:var(--panel2);padding:1px 5px;border-radius:2px}
 
-blockquote { margin: 22px 0 0; padding-left: 20px; border-left: 1px solid var(--rule); font-family: var(--display); font-style: italic; font-size: clamp(19px, 2.4vw, 25px); line-height: 1.34; color: #EDE9E1; }
-blockquote cite { display: block; margin-top: 10px; font: 400 10.5px/1 var(--mono); letter-spacing: .18em; text-transform: uppercase; color: var(--muted); font-style: normal; }
+  /* to-do */
+  .todo-add{display:flex;gap:8px;margin:16px 0}
+  .todo-add input{flex:1;padding:11px 14px;border:1px solid var(--line);border-radius:2px;font-size:14.5px;font-family:var(--serif);background:var(--panel);color:var(--fg)}
+  .todo-add input::placeholder{color:var(--faint)}
+  .todo-add input:focus{outline:none;border-color:var(--fg)}
+  .todo-add button{padding:11px 18px;border:1px solid var(--fg);background:var(--fg);color:var(--ink);border-radius:2px;font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;cursor:pointer}
+  .todo-add button:hover{background:transparent;color:var(--fg)}
+  ul.todo{list-style:none;margin:10px 0;padding:0}
+  ul.todo li{display:flex;align-items:flex-start;gap:12px;background:var(--panel);border:1px solid var(--line);border-radius:2px;padding:12px 14px;margin-bottom:8px;font-size:14.5px}
+  ul.todo li.done span{text-decoration:line-through;color:var(--faint)}
+  ul.todo input[type=checkbox]{margin-top:4px;width:15px;height:15px;accent-color:var(--open)}
+  ul.todo .x{margin-left:auto;color:var(--faint);cursor:pointer;font-size:18px;line-height:1}
+  ul.todo .x:hover{color:var(--bad)}
 
-ul { margin: 14px 0 0; padding: 0; list-style: none; }
-li { position: relative; padding-left: 18px; margin: 9px 0; }
-li::before { content: "—"; position: absolute; left: 0; color: var(--faint); }
-ul.plain li::before { content: ""; }
+  /* buttons */
+  .pinrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+  .btn{display:inline-block;padding:10px 16px;border:1px solid var(--line);border-radius:2px;background:transparent;color:var(--fg);text-decoration:none;font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;font-weight:500}
+  .btn:hover{border-color:var(--fg)}
 
-/* ── tables ───────────────────────────────────────────────────────────── */
-.scroll { overflow-x: auto; margin-top: 20px; }
-table { width: 100%; border-collapse: collapse; font-size: 14.5px; min-width: 480px; }
-th { text-align: left; font: 500 9.5px/1.4 var(--mono); letter-spacing: .16em; text-transform: uppercase; color: var(--muted); padding: 0 14px 9px 0; border-bottom: 1px solid var(--rule); }
-td { padding: 11px 14px 11px 0; border-bottom: 1px solid var(--hair); vertical-align: top; }
-tr:last-child td { border-bottom: 0; }
-td.num { font-family: var(--mono); font-size: 13px; white-space: nowrap; }
-td.num.up { color: var(--forest); }
+  /* one tile in the original carries an inline light-mode colour — neutralise
+     it here rather than editing his markup */
+  .tile[style]{background:transparent!important;border-color:var(--line)!important}
+  .tile[style] .n{color:var(--open)}
 
-/* ── chips ────────────────────────────────────────────────────────────── */
-.chip { display: inline-block; font: 500 9px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; padding: 4px 7px; border: 1px solid var(--rule); border-radius: 2px; color: var(--muted); white-space: nowrap; }
-.chip.hi   { color: var(--forest); border-color: rgba(138,168,123,.5); }
-.chip.med  { color: var(--earth);  border-color: rgba(190,154,115,.5); }
-.chip.lo   { color: var(--red);    border-color: rgba(201,122,114,.5); }
-.chip.claim{ color: var(--earth);  border-color: rgba(190,154,115,.5); }
+  /* links that point at files sitting in the local folder, not on the web */
+  .islocal{opacity:.55;cursor:default}
+  .islocal::after{content:" · local file";font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--soon)}
+  .pin.islocal::after{display:block;margin-top:8px}
 
-/* ── two-up (content pairs, not a page column) ────────────────────────── */
-.pair { display: grid; grid-template-columns: 1fr; gap: 1px; background: var(--rule); border: 1px solid var(--rule); margin-top: 22px; }
-@media (min-width: 760px) { .pair { grid-template-columns: 1fr 1fr; } }
-.pair > div { background: var(--ink); padding: 20px 22px; }
-.pair h4 { margin: 0 0 10px; font: 500 10px/1 var(--mono); letter-spacing: .18em; text-transform: uppercase; }
-.pair .up h4 { color: var(--forest); }
-.pair .down h4 { color: var(--red); }
-.pair li { font-size: 14.5px; }
-
-/* ── project cards ────────────────────────────────────────────────────── */
-.works { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; margin-top: 24px; }
-.work { display: flex; flex-direction: column; background: var(--panel); border: 1px solid var(--rule); border-radius: 2px; padding: 20px; text-decoration: none; transition: border-color .2s, transform .2s; }
-a.work:hover { border-color: var(--fg); transform: translateY(-2px); }
-.work__k { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
-.work h4 { font-family: var(--display); font-size: 23px; margin: 13px 0 0; font-weight: 400; }
-.work p { font-size: 14px; color: var(--muted); margin: 8px 0 0; }
-.work .go { margin-top: 16px; font: 500 10px/1 var(--mono); letter-spacing: .18em; text-transform: uppercase; }
-
-/* ── sources ──────────────────────────────────────────────────────────── */
-.srcs { columns: 1; margin-top: 22px; font-size: 13.5px; }
-@media (min-width: 740px) { .srcs { columns: 2; column-gap: 44px; } }
-.srcs li { break-inside: avoid; margin: 0 0 11px; }
-.srcs a { color: var(--muted); text-decoration: none; border-bottom: 1px solid var(--hair); }
-.srcs a:hover { color: var(--fg); border-bottom-color: var(--fg); }
-
-footer { margin-top: clamp(56px, 8vw, 96px); border-top: 1px solid var(--rule); padding: 30px 0 56px; color: var(--muted); font-size: 13.5px; }
+  footer{max-width:1080px;margin:0 auto;padding:0 clamp(20px,4vw,44px) 60px;font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);line-height:2}
 </style>
 </head>
 <body>
-
-<div class="top"><div class="wrap top__in">
-  <a class="mono" href="/builds/">← Builds</a>
-  <span class="mono">Private · not linked, not indexed</span>
-</div></div>
-
-<div class="wrap">
-  <header class="head">
-    <h1>Alpha School<br><em>the intel</em></h1>
-    <p class="sub">Everything I know about the company, the money, the machine that
-      hires, and the way in. Compiled from public sources, one parent info session,
-      and ten pages of my own notes.</p>
-    <p class="mono" style="margin-top:20px">Compiled June 2026 · last worked August 2026 · James Floyd</p>
-
-    <div class="private">
-      <span class="mono" style="color:var(--red);flex:none;padding-top:2px">⚠</span>
-      <div><b>This page is unlisted, not secret.</b> It carries no index, no links point
-      to it, and the address is deliberately unguessable — but anyone holding the URL
-      can read it, and this site's robots file welcomes every crawler including the AI
-      trainers. Don't paste the link anywhere you wouldn't paste the notes.</div>
-    </div>
-  </header>
-</div>
-
-<nav class="rail"><div class="wrap rail__in">
-  <a href="#snapshot">Snapshot</a>
-  <a href="#company">The company</a>
-  <a href="#money">The money</a>
-  <a href="#growth">Growth</a>
-  <a href="#hiring">The gauntlet</a>
-  <a href="#parents">Parents' room</a>
-  <a href="#read">The read</a>
-  <a href="#wayin">My way in</a>
-  <a href="#sources">Sources</a>
-</div></nav>
-
+<div class="backline"><a href="/builds/">← Builds</a></div>
+<header>
+  <h1>Alpha Intel Dashboard</h1>
+  <p>James Floyd's command center on alpha.school · built &amp; fact-checked June 2026 · the sibling files live in the local folder</p>
+  <p class="warnline">Unlisted, not secret · anyone with this URL can read it</p>
+</header>
+<nav id="nav"></nav>
 <div class="wrap">
 
-<!-- ═══ SNAPSHOT ═══════════════════════════════════════════════════════ -->
-<section id="snapshot">
-  <div class="sec__rule"><span class="mono">§ 00 — Snapshot</span><span class="mono">Their numbers</span></div>
-  <h2 class="sec__h">Where it stands</h2>
-  <p class="sec__lede">The figures Alpha publishes about itself, plus what the job board
-    and the press add. Anything sourced to their own internal data carries a flag.</p>
-
-  <div class="tiles tiles--8">
-    <div class="tile"><div class="n">13</div><div class="l">campuses open now</div></div>
-    <div class="tile"><div class="n">24</div><div class="l">opening Fall 2026</div></div>
-    <div class="tile hot"><div class="n">~50</div><div class="l">campuses targeted 2026–27 · Axios</div></div>
-    <div class="tile"><div class="n">38</div><div class="l">open Alpha roles</div></div>
-    <div class="tile"><div class="n">67</div><div class="l">roles across the Crossover board</div></div>
-    <div class="tile"><div class="n">80k</div><div class="l">guide applicants last year</div></div>
-    <div class="tile"><div class="n">97<small>%</small></div><div class="l">re-enrolment · their claim</div></div>
-    <div class="tile hot"><div class="n">$1B</div><div class="l">Liemandt capital, 2022 — funding, not revenue</div></div>
-  </div>
-
-  <div class="note warn"><b>Read every number twice.</b> "2× faster," "top 1% nationwide,"
-    "97% re-enrolment" and the MAP percentiles all come from Alpha's own internal data or
-    the info session. No independent outcome study exists. Tuition and job pay are public
-    and solid; student counts are estimates.</div>
-
-  <blockquote>We're using artificial intelligence to raise human intelligence.
-    <cite>MacKenzie Price, co-founder</cite></blockquote>
-</section>
-
-<!-- ═══ COMPANY ════════════════════════════════════════════════════════ -->
-<section id="company">
-  <div class="sec__rule"><span class="mono">§ 01 — The company</span><span class="mono">Structure &amp; control</span></div>
-  <h2 class="sec__h">It is a holding company with schools attached</h2>
-  <p class="sec__lede">No official org chart exists publicly. This is reconstructed from
-    Dan Meyer, Bucks County Beacon, Wikipedia and Colossus. Critics call it a
-    Liemandt-controlled keiretsu, and the structure itself is the controversy.</p>
-
-  <h3 class="sub">The loop</h3>
-  <div class="panel" style="font-family:var(--mono);font-size:12.5px;line-height:2.1;letter-spacing:.02em;color:#DDD8D0">
-    Joe&nbsp;Liemandt&nbsp;→&nbsp;<b>ESW&nbsp;Capital</b>&nbsp;(private&nbsp;equity,&nbsp;the&nbsp;top)<br>
-    &nbsp;&nbsp;└─ owns the for-profit vendors:<br>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:var(--forest)">2 Hour Learning</span> — the platform · <span style="color:var(--forest)">Crossover</span> — all hiring<br>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:var(--forest)">Trilogy Enterprises</span> — finance · <span style="color:var(--forest)">YYYYY&nbsp;LLC</span> — G&amp;A<br>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:var(--forest)">Future of Education LLC</span> — advocacy / political<br>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↓ &nbsp;sell platform, hiring, finance, G&amp;A to<br>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:var(--earth)">the non-profit schools</span> — Alpha (13+ campuses, Alpha High)<br>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:var(--earth)">sister brands on the same engine</span> — GT School, NextGen,<br>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Nova, Texas Sports Academy, Montessorium, Waypoint, Unbound<br>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↳ &nbsp;money and control return to the same circle
-  </div>
-
-  <div class="note bad"><b>The critique, stated plainly.</b> Non-profit schools contract
-    services from for-profit vendors owned and managed by the same people — 100% of
-    Unbound Academy's named board is affiliated with the vendors. Know it cold, and
-    never take a job whose brief is defending it.</div>
-
-  <h3 class="sub">The controlling circle</h3>
-  <div class="scroll"><table>
-    <tr><th>Person</th><th>Seat</th><th>Why they matter</th></tr>
-    <tr><td><b>Joe Liemandt</b></td><td>Principal · ESW Capital</td><td>Owns and controls everything. Systems-obsessed Trilogy DNA, avoids front-of-house. Reach him last, with proof, never a pitch.</td></tr>
-    <tr><td><b>MacKenzie Price</b></td><td>Co-founder · public face</td><td>Podcasts, SXSW, press; hosts <em>Future of Education</em>. This is the front door.</td></tr>
-    <tr><td><b>Andy Price</b></td><td>CFO across Trilogy, Crossover, Ignite, ESW</td><td>Co-founded 2 Hour Learning. Liemandt was best man at their wedding — the inner circle is tiny and personal.</td></tr>
-    <tr><td><b>Brian Holtz</b></td><td>Co-founder</td><td>The educator behind "your standards are too low… talk to me in 100 days."</td></tr>
-    <tr><td><b>Timothy Eyerman</b></td><td>Charter entities</td><td>Heads the charter-school vehicles, e.g. Unbound.</td></tr>
-    <tr><td><b>Dr. Stefanie Baduria</b></td><td>Director of K-8 · board</td><td>Sits on both sides of the vendor/school line.</td></tr>
-  </table></div>
-
-  <h3 class="sub">What the product actually is</h3>
-  <ul>
-    <li><b>"AI" here means adaptive learning apps</b> — IXL / Khan-style — <em>not</em> large language models. The branding outruns the tech, and that gap is where most of the criticism lives.</li>
-    <li><b>2 Hour Learning is the real product.</b> Alpha is the flagship storefront; the engine is licensed across every sister school. "Alpha Anywhere" plus the virtual map says the play is software distribution — the buildings are demos.</li>
-    <li><b>Guides, not teachers.</b> Humans do motivation and life skills; the software does academics. Hired for coaching, not credentials — ex-LA Galaxy director of education, a Harvard learning-design master's, mindset coaches from Nike and the NFL.</li>
-    <li><b>The stated end state:</b> the model out to a billion kids on a sub-$1,000 tablet. The front door costs $40,000 a year.</li>
-  </ul>
-</section>
-
-<!-- ═══ MONEY ══════════════════════════════════════════════════════════ -->
-<section id="money">
-  <div class="sec__rule"><span class="mono">§ 02 — The money</span><span class="mono">Revenue &amp; the backstop</span></div>
-  <h2 class="sec__h">Tuition is the operating layer. The billion is the floor.</h2>
-  <p class="sec__lede">Revenue is solid — published tuition times students. Student counts
-    are estimates and costs are assumptions Alpha has never disclosed, so contribution is
-    directional, not actual.</p>
-
-  <div class="tiles">
-    <div class="tile"><div class="n">~$57.7M</div><div class="l">est. revenue, campuses open now</div></div>
-    <div class="tile"><div class="n">~1,340</div><div class="l">est. students, open now</div></div>
-    <div class="tile"><div class="n">~$16.2M</div><div class="l">est. contribution at 28% · assumption</div></div>
-    <div class="tile"><div class="n">~$105M</div><div class="l">est. revenue incl. Fall 2026 (~2,300 kids)</div></div>
-  </div>
-
-  <blockquote>When GenAI hit in 2022, I took a billion dollars out of my software company.
-    <cite>Joe Liemandt</cite></blockquote>
-
-  <div class="note"><b>Why that line matters more than the model.</b> A billion dollars of
-    owner capital is <em>funding, not recurring revenue</em>. It pays for the multi-city
-    land grab, the subsidised campuses (Brownsville at $10k), R&amp;D and any operating
-    losses — which means Alpha does not need positive tuition margins to keep expanding.
-    Everything below sits on top of that floor.</div>
-
-  <h3 class="sub">Biggest revenue campuses, open now</h3>
-  <div class="scroll"><table>
-    <tr><th>Campus</th><th>Students (est.)</th><th>Tuition</th><th>Revenue (est.)</th><th>Conf.</th></tr>
-    <tr><td>Austin · PreK-8</td><td>~639 <span style="color:var(--faint)">PrivateSchoolReview</span></td><td class="num">$40,000</td><td class="num up">~$25.6M</td><td><span class="chip med">Med</span></td></tr>
-    <tr><td>Alpha High Austin</td><td>~152 <span style="color:var(--faint)">Wikipedia</span></td><td class="num">$40,000*</td><td class="num up">~$6.1M</td><td><span class="chip lo">Low</span></td></tr>
-    <tr><td>San Francisco</td><td>~50 <span style="color:var(--faint)">25–60 range</span></td><td class="num">$75,000</td><td class="num up">~$3.8M</td><td><span class="chip lo">Low</span></td></tr>
-    <tr><td>Miami</td><td>~64 <span style="color:var(--faint)">Niche / US News</span></td><td class="num">$50,000</td><td class="num up">~$3.2M</td><td><span class="chip med">Med</span></td></tr>
-    <tr><td>New York City</td><td>22 now → 160 target <span style="color:var(--faint)">Axios</span></td><td class="num">$65,000</td><td class="num up">~$1.4M → ~$10.4M</td><td><span class="chip hi">High</span></td></tr>
-  </table></div>
-  <p style="color:var(--muted);font-size:13.5px">Austin alone is roughly 44% of estimated
-    open-campus revenue — the flagship carries the network. * tuition assumed.</p>
-
-  <h3 class="sub">How the math works</h3>
-  <ul>
-    <li><b>Revenue</b> = published tuition × students per campus.</li>
-    <li><b>Costs, estimated:</b> guides = (students ÷ ~7) × ~$110k; fixed leadership and ops ~$450k per campus; rent ~$400k per campus; platform and G&amp;A ~15% of revenue.</li>
-    <li><b>The loop, in the P&amp;L:</b> the non-profit schools pay the for-profit vendors, so that "platform and G&amp;A" line is essentially the take flowing back to Liemandt's entities.</li>
-  </ul>
-</section>
-
-<!-- ═══ GROWTH ═════════════════════════════════════════════════════════ -->
-<section id="growth">
-  <div class="sec__rule"><span class="mono">§ 03 — Growth</span><span class="mono">The land grab</span></div>
-  <h2 class="sec__h">A decade as one quiet microschool, then ten cities at once</h2>
-  <p class="sec__lede">Axios, 2 August 2026: scaling from about a dozen campuses to roughly
-    fifty in the 2026 school year. Tuition band confirmed network-wide at $45,000–$75,000.</p>
-
-  <div class="pair">
-    <div class="up">
-      <h4>Live now</h4>
-      <ul class="plain">
-        <li>Austin · Brownsville · Plano · Fort Worth (TX)</li>
-        <li>Scottsdale (AZ) · Santa Barbara · San Francisco · Orange County (CA)</li>
-        <li>Miami · Palm Beach (FL) · New York City · Chantilly (VA/DC)</li>
-      </ul>
+  <!-- OVERVIEW -->
+  <section id="overview" class="on">
+    <h2 class="s">Snapshot</h2>
+    <div class="tiles">
+      <div class="tile"><div class="n">38</div><div class="l">open Alpha roles</div></div>
+      <div class="tile"><div class="n">67</div><div class="l">roles across Crossover board</div></div>
+      <div class="tile"><div class="n">13</div><div class="l">campuses open now</div></div>
+      <div class="tile"><div class="n">24</div><div class="l">opening Fall 2026</div></div>
+      <div class="tile"><div class="n">~50</div><div class="l">campuses targeted 2026-27 (Axios)</div></div>
+      <div class="tile"><div class="n">97%</div><div class="l">reenrollment (per info session)</div></div>
+      <div class="tile"><div class="n">80k</div><div class="l">guide applicants last yr</div></div>
     </div>
-    <div>
-      <h4 style="color:var(--earth)">Opening Fall 2026</h4>
-      <ul class="plain">
-        <li>East Bay · Palo Alto · Santa Monica · Atlanta · Chicago</li>
-        <li>Charlotte · Raleigh · Dorado (PR) · The Woodlands · Southlake</li>
-        <li>Plus Greenwich CT, Boston, and "Alpha Anywhere" virtual</li>
-      </ul>
+
+    <h2 class="s">Pinned assets</h2>
+    <p class="muted">Research sheets are embedded under the “Research” tab. These open the underlying working files (same folder) or Drive.</p>
+    <div class="cards">
+      <a class="pin" href="Alpha-Locations-Directory.html"><div class="t">Org Chart + Locations</div><div class="d">Exec team → 38 campuses, filterable, with bios + LinkedIn.</div><span class="tag">interactive</span></a>
+      <a class="pin" href="#" onclick="go('research');return false"><div class="t">Joe Liemandt — Research</div><div class="d">Verbatim quotes, dad+Welch, dreams now, weird details.</div><span class="tag">embedded</span></a>
+      <a class="pin" href="#" onclick="go('research');return false"><div class="t">MacKenzie Price — Research</div><div class="d">Origin, beliefs, numbers, contradictions.</div><span class="tag">embedded</span></a>
+      <a class="pin" href="#" onclick="go('research');return false"><div class="t">Alpha School — Breakdown</div><div class="d">Model, structure map, FiDi campus, tensions.</div><span class="tag">embedded</span></a>
+      <a class="pin" href="#" onclick="go('parents');return false"><div class="t">Parents' Q&amp;A (info session)</div><div class="d">Live questions + Alpha's answers. Links to Drive.</div><span class="tag">embedded</span></a>
+      <a class="pin" href="#" onclick="go('jobs');return false"><div class="t">Job Demand</div><div class="d">What they're hiring for most, with pay bands.</div><span class="tag">analysis</span></a>
+      <a class="pin" href="Alpha-Money-Model.xlsx"><div class="t">Money Model (Excel)</div><div class="d">Per-campus revenue + cost estimates. Editable.</div><span class="tag">spreadsheet</span></a>
+      <a class="pin" href="Alpha-Permissionless-Campaign-WORKING-COPY.md"><div class="t">Campaign / Staging (your notes)</div><div class="d">Your own strategy doc — opens the file.</div><span class="tag">file</span></a>
+      <a class="pin" href="James-Floyd-Resume-Alpha-WORKING-COPY.pdf"><div class="t">Tailored Resume</div><div class="d">One-page ATS, youth + CoS. Opens PDF.</div><span class="tag">file</span></a>
+      <a class="pin" href="#" onclick="go('ideas');return false"><div class="t">Project Ideas</div><div class="d">Your permissionless-project brainstorm (17).</div><span class="tag">embedded</span></a>
+      <a class="pin" href="#" onclick="go('notes');return false"><div class="t">Handwritten Notes</div><div class="d">Liemandt + Alpha model, verbatim.</div><span class="tag">embedded</span></a>
     </div>
-  </div>
+    <div class="callout" style="margin-top:18px"><b>Heads up:</b> figures like “2x faster,” “top 1%,” “97% reenrollment” come from Alpha's own internal data / info session — not independently verified. Treat as their claims.</div>
+  </section>
 
-  <div class="note warn"><b>The real bottleneck is real estate.</b> Finding suitable
-    buildings has been hard and has already delayed openings — an on-the-ground constraint
-    on the fifty-campus push, and the most concrete opening for someone who can source
-    space and community in a city they actually live in.</div>
+  <!-- JOBS -->
+  <section id="jobs">
+    <h2 class="s">Job Demand — what Alpha is hiring for most</h2>
+    <p class="muted">Pulled live from the Crossover board (June 2026). 67 roles total across all their entities; 38 are Alpha.</p>
 
-  <h3 class="sub">Alpha New York — the campus on my doorstep</h3>
-  <div class="scroll"><table>
-    <tr><th>Field</th><th>Detail</th></tr>
-    <tr><td>Address</td><td>180 Maiden Lane, New York 10038 — FiDi, by the East River, a block from Imagination Playground</td></tr>
-    <tr><td>Grades &amp; day</td><td>Rising PreK (age 4) through 9th · 8:15am–4:00pm · ~60 min unstructured outdoor play · movement workshops Tue/Thu</td></tr>
-    <tr><td>Tuition</td><td class="num">$65,000/yr</td></tr>
-    <tr><td>Enrolment</td><td>~22 now, targeting 160 this school year — a hard first-year ramp</td></tr>
-    <tr><td>Catchment ZIPs</td><td>10005, 10006, 10007, 10038, 10002, 10003, 10011, plus 11201 — Bed-Stuy is <em>not</em> listed</td></tr>
-    <tr><td>On the ground</td><td>Dr. Tasha Arnold (Head) · Nancy Torvund (Admissions) · Julianne Braime (Campus Coordinator)</td></tr>
-    <tr><td>The bench</td><td>Stacked with international-school, startup and ex-finance résumés — Harvard learning-design, ex-Goldman VP who founded admissions at Multiverse, NYC public-school veterans</td></tr>
-  </table></div>
-  <p style="color:var(--muted);font-size:13.5px">Only NYC campus, no second location in the
-    Fall 2026 list. Nearest new openings are Greenwich CT and Boston.</p>
-</section>
+    <div class="callout"><b>The one-line read:</b> by raw headcount, demand is overwhelmingly <b>Guides (classroom coaching)</b> across ~20 cities — they're staffing a multi-city land grab. By seniority &amp; pay, the hiring clusters in <b>admissions/enrollment</b>, <b>Deans of Parents (retention)</b>, and <b>campus operations</b> — the launch machine. There is <b>no “Chief of Staff” or “Head of Special Projects”</b> by title; the closest senior generalist roles are VP / Regional VP of Campus Operations, Head of Marketing, and Director of Academics.</p></div>
 
-<!-- ═══ HIRING ═════════════════════════════════════════════════════════ -->
-<section id="hiring">
-  <div class="sec__rule"><span class="mono">§ 04 — The gauntlet</span><span class="mono">How they hire</span></div>
-  <h2 class="sec__h">Roughly one in a thousand gets through</h2>
-  <p class="sec__lede">All hiring routes through Crossover. MacKenzie Price puts the guide
-    bar at about 0.1% of candidates — "like getting into Harvard" — against 80,000
-    applicants last year, at $100k+.</p>
+    <h3 class="s">Where the demand concentrates</h3>
+    <ul class="tight">
+      <li><b>Teaching / coaching (biggest volume):</b> Guide, Guide K-3, Guide II, Lead Guide, Lead Guide II, Elite Guide, PreK, High School — dozens of postings across ~20 cities. This is the #1 demand.</li>
+      <li><b>Enrollment / launch:</b> Directors of Admissions (SF, Eastern, Central, Seattle/Park City), Admissions Associates (NYC, SF), Senior Admissions Specialists (remote). Standing up new cities.</li>
+      <li><b>Parent experience / retention:</b> Dean of Parents (Miami, $400K), Associate Dean of Parents (~18 cities), Associate Dean of Parents – CA.</li>
+      <li><b>Campus operations leadership:</b> VP of Campus Operations, Regional VP of Campus Operations (Central TX, NW), Campus Operations Specialist, Campus Logistics Coordinator, Campus Coordinator.</li>
+      <li><b>Marketing / narrative:</b> Head of Media ($400K), Head of Marketing ($200K).</li>
+      <li><b>Academics / specialists:</b> Director of Academics ($400K — 2HL's “academic north star”), Reading Specialists (in-person, many cities).</li>
+      <li><b>Tech:</b> Principal AI Engineer, Technical Team Lead, L2 Customer Support Engineer (remote).</li>
+    </ul>
 
-  <h3 class="sub">The five steps to the title</h3>
-  <div class="scroll"><table>
-    <tr><th>#</th><th>Step</th><th>What it actually tests</th></tr>
-    <tr><td class="num">01</td><td><b>CCAT</b> — 85th percentile or higher, <em>twice</em>, the second proctored</td><td>50 questions in 15 minutes. Pass bar 35/50. Verbal ~34%, numerical ~34%, spatial ~22%, logic ~10%. Spatial is where most people die. No calculator; switching tabs disqualifies.</td></tr>
-    <tr><td class="num">02</td><td><b>Essays</b> on coaching others to high standards</td><td>Reflection, real experience, clarity, conviction. Long written prompts.</td></tr>
-    <tr><td class="num">03</td><td><b>The Trojan Horse video</b></td><td>Tell the story of the Trojan Horse as if to a room of kids. No slides, no gimmicks. Reviewed by Crossover HR, the hiring team, and an AI pass.</td></tr>
-    <tr><td class="num">04</td><td><b>Interviews</b> with a Lead Guide or Head of K-8</td><td>They are hunting for "the spark" — can you light up a room of kids <em>and</em> adults.</td></tr>
-    <tr><td class="num">05</td><td><b>Shadow day</b> — only ~5% reach it</td><td>A full day onsite, watched closely. Can you make a child feel seen within minutes? Command attention without controlling? Are students begging you to come back? ~60–70% pass.</td></tr>
-  </table></div>
+    <h3 class="s">Top-paid roles on the whole board</h3>
+    <table>
+      <tr><th>Role</th><th>Pay</th><th>Type</th></tr>
+      <tr><td>Director of Academics (2 Hour Learning)</td><td class="pay">$400K</td><td>Corporate · academic leadership</td></tr>
+      <tr><td>Head of Media</td><td class="pay">$400K</td><td>Corporate · narrative</td></tr>
+      <tr><td>Dean of Parents — Miami</td><td class="pay">$400K</td><td>Campus · retention</td></tr>
+      <tr><td>Director of Admissions — SF &amp; Area</td><td class="pay">$250K</td><td>Enrollment</td></tr>
+      <tr><td>VP of Campus Operations</td><td class="pay">$200K</td><td>Ops leadership</td></tr>
+      <tr><td>Regional VP of Campus Operations (Central TX / NW)</td><td class="pay">$200K</td><td>Ops leadership</td></tr>
+      <tr><td>Head of Marketing</td><td class="pay">$200K</td><td>Growth</td></tr>
+      <tr><td>Principal AI Engineer · Technical Team Lead</td><td class="pay">$200K</td><td>Tech</td></tr>
+      <tr><td>Associate Dean of Parents (~18 cities)</td><td class="pay">$200K</td><td>Retention</td></tr>
+      <tr><td>Lead Guide II / Lead Guide II K-3 / Elite Guide (Entrepreneurship)</td><td class="pay">$200K</td><td>Teaching</td></tr>
+    </table>
 
-  <div class="note"><b>The Trojan Horse is the whole application in one artifact.</b> It is a
-    required step <em>and</em> a perfectly shareable piece of work — do it in public, before
-    they ask, and it doubles as the cold-email hook and the centre of any launch video.
-    This is the highest-leverage single thing on this page.</div>
+    <h3 class="s">NYC-based openings (your city)</h3>
+    <ul class="tight">
+      <li>Lead Guide II — $200K · Lead Guide II K-3 — $200K</li>
+      <li>Elite Guide — $150K · PreK Guide II — $120K · Reading Specialist II — $120K</li>
+      <li>Admissions Associate — New York — $100K</li>
+    </ul>
+    <p class="muted">All NYC roles are in-person at 180 Maiden Lane. Corporate roles (Director of Academics, Head of Media/Marketing, VP Campus Ops) are mostly remote/flex or Austin-leaning.</p>
+  </section>
 
-  <h3 class="sub">What they say they screen for</h3>
-  <div class="tiles">
-    <div class="tile"><div class="n">Smarts</div><div class="l">top ~15% cognitive aptitude — the CCAT bar</div></div>
-    <div class="tile"><div class="n">Support</div><div class="l">can you motivate kids and be accountable for them loving school</div></div>
-    <div class="tile"><div class="n">Love</div><div class="l">"the coach who pushed you, the mentor who believed in you"</div></div>
-  </div>
+  <!-- RESEARCH -->
+  <section id="research">
+    <h2 class="s">Research Sheets (pinned)</h2>
+    <p class="muted">Full working notes, embedded. Click to expand. The standalone .md files are in the same folder.</p>
+    <details class="doc"><summary>Joe Liemandt — Research Notes <span class="c">expand ▾</span></summary><div class="md" data-doc="liemandt"></div></details>
+    <details class="doc"><summary>MacKenzie Price — Research Notes <span class="c">expand ▾</span></summary><div class="md" data-doc="price"></div></details>
+    <details class="doc"><summary>Alpha School — Breakdown (model, structure, FiDi, tensions) <span class="c">expand ▾</span></summary><div class="md" data-doc="alpha"></div></details>
+  </section>
 
-  <h3 class="sub">Where the demand actually concentrates</h3>
-  <p>By raw headcount it is overwhelmingly <b>guides</b>, across about twenty cities — they
-    are staffing a land grab. By seniority and pay it clusters in <b>admissions and
-    enrolment</b>, <b>Deans of Parents</b> (retention) and <b>campus operations</b>: the
-    launch machine. There is <b>no Chief of Staff or Head of Special Projects by title</b>
-    anywhere on the board — the closest senior generalist seats are VP / Regional VP of
-    Campus Operations, Head of Marketing, and Director of Academics.</p>
-
-  <div class="scroll"><table>
-    <tr><th>Role</th><th>Pay</th><th>Lane</th></tr>
-    <tr><td>Director of Academics · 2 Hour Learning</td><td class="num up">$400K</td><td>Academic north star</td></tr>
-    <tr><td>Head of Media</td><td class="num up">$400K</td><td>Narrative</td></tr>
-    <tr><td>Dean of Parents · Miami</td><td class="num up">$400K</td><td>Retention</td></tr>
-    <tr><td>Director of Admissions · SF &amp; area</td><td class="num">$250K</td><td>Enrolment</td></tr>
-    <tr><td>VP / Regional VP of Campus Operations</td><td class="num">$200K</td><td>Ops leadership</td></tr>
-    <tr><td>Head of Marketing</td><td class="num">$200K</td><td>Growth</td></tr>
-    <tr><td>Associate Dean of Parents · ~18 cities</td><td class="num">$200K</td><td>Retention</td></tr>
-    <tr><td>Lead Guide II · Elite Guide (Entrepreneurship)</td><td class="num">$200K</td><td>Teaching</td></tr>
-  </table></div>
-
-  <h3 class="sub">Open in New York</h3>
-  <ul>
-    <li>Lead Guide II — $200K · Lead Guide II K-3 — $200K</li>
-    <li>Elite Guide — $150K · PreK Guide II — $120K · Reading Specialist II — $120K</li>
-    <li>Admissions Associate, New York — $100K</li>
-  </ul>
-  <p style="color:var(--muted);font-size:13.5px">All in person at 180 Maiden Lane. The
-    corporate seats — Director of Academics, Head of Media, VP Campus Ops — are remote or
-    Austin-leaning.</p>
-</section>
-
-<!-- ═══ PARENTS ════════════════════════════════════════════════════════ -->
-<section id="parents">
-  <div class="sec__rule"><span class="mono">§ 05 — Parents' room</span><span class="mono">Live info session</span></div>
-  <h2 class="sec__h">What they tell parents when the room is full</h2>
-  <p class="sec__lede">From the live session, with my margin notes. These are the numbers
-    they volunteer — which makes them the numbers they are comfortable defending.</p>
-
-  <ul>
-    <li><b>97% re-enrolment.</b> <span class="chip claim">Their claim</span></li>
-    <li><b>80,000 applicants</b> for guide roles last year. Guides hold a bachelor's; credentials are not required — they are hired for coaching.</li>
-    <li><b>Ratios:</b> ~1:5 elementary, ~1:10 middle, ~1:15 high school.</li>
-    <li><b>New campuses open with 40–50 students</b> (SF ~60), and <b>they will not open a campus until 25 are enrolled.</b> My margin note: <em>"So 25 × price."</em></li>
-    <li><b>$100 application fee</b>, rolling admissions, and a <b>shadow day is required to apply</b> — for the kid, not just the adult.</li>
-    <li><b>Mastery-based, 90%+ to advance</b>, no letter grades. About 50 total graduates so far — "all became entrepreneurs or went to their top-choice university." <span class="chip claim">Their claim</span></li>
-    <li><b>Subject and learning specialists are a national remote team</b>; reading specialists are on campus. My margin note: <em>"this is the tutors from other places potentially."</em></li>
-    <li><b>Alpha Anywhere</b> (homeschool) covers grades 3–8. They license the engine to private schools, do not franchise, and are not taking new licensees right now.</li>
-    <li><b>"Radical transparency"</b> — their words — about parent surveys, MAP tests and student survey results.</li>
-  </ul>
-
-  <div class="note warn"><b>The internal currency.</b> One student testimonial on their own
-    site: "we have our own currency that motivates us to do more work." Kids earn something
-    for doing work. It is the motivation engine in miniature and the most debatable design
-    choice in the model — worth having a real opinion about before anyone asks.</div>
-</section>
-
-<!-- ═══ THE READ ═══════════════════════════════════════════════════════ -->
-<section id="read">
-  <div class="sec__rule"><span class="mono">§ 06 — The read</span><span class="mono">Tensions &amp; sentiment</span></div>
-  <h2 class="sec__h">Where the fire is</h2>
-  <p class="sec__lede">Polarised: ecstatic parents at one end, burned parents and ed-world
-    critics at the other, a thoughtful skeptical middle. The press turned noticeably harder
-    across 2025–26 at the WIRED and 404 inflection.</p>
-
-  <div class="pair">
-    <div class="up">
-      <h4>What holds up</h4>
-      <ul class="plain">
-        <li>The proof point isn't the test scores — it's that kids beg to skip summer break.</li>
-        <li>Afternoons are the real differentiator: leadership, entrepreneurship, financial literacy, public speaking, fencing, robotics.</li>
-        <li>Alpha High "masterpiece projects" are genuinely extraordinary — one student raised $350K and built Texas' biggest mountain-bike park; another made a cancer documentary seen 4.5M times.</li>
-        <li>Scott Alexander's ACX review — the most balanced long-read — lands in the middle: skeptical of the extraordinary claims, but found it more real than pure critics allow. Outcome tracks student <em>fit</em>.</li>
-      </ul>
+  <!-- PARENTS -->
+  <section id="parents">
+    <h2 class="s">Parents' Q&amp;A — from the live info session</h2>
+    <div class="pinrow">
+      <a class="btn" href="https://docs.google.com/document/d/1pMdfYzDdpSfSoEvZkIexJZRID87RnykZAFPULOwQGKI/edit" target="_blank">Open “Alpha School questions from parents” (Drive) ↗</a>
     </div>
-    <div class="down">
-      <h4>What burns</h4>
-      <ul class="plain">
-        <li><b>The #1 recurring complaint:</b> parents find out their kid fell behind months after it happened. The dashboard didn't surface it, or they trusted it too long.</li>
-        <li><b>Brownsville.</b> Around six families raised concerns in 2023–24; the most vocal said kids were "so stressed out" while the school used them as evidence the model works. WIRED surfaced 9-year-olds denied snacks until they hit metrics.</li>
-        <li><b>Surveillance.</b> Webcams — at home too, unless a parent opts out — plus eye, mouse and scroll tracking. The top concern among cited experts.</li>
-        <li><b>IXL deactivated their account</b> for a terms violation and stated its product is not a replacement for trained, caring teachers. That one cuts at the core pitch.</li>
-        <li><b>AI lesson quality.</b> Internal documents flagged AI-generated lessons as sometimes doing "more harm than good."</li>
-      </ul>
+    <p class="muted" style="margin-top:8px">Working copy of your doc. Original “Alpha.School” left untouched. Highlights below.</p>
+    <h3 class="s">Numbers &amp; facts they gave</h3>
+    <ul class="tight">
+      <li><b>97%</b> reenrollment rate.</li>
+      <li><b>80,000</b> applicants for guide roles last year; guides hold a bachelor's, <b>not</b> required to be credentialed (hired for coaching).</li>
+      <li>Guide-to-student ratios: <b>~1:5</b> elementary, <b>~1:10</b> middle, <b>~1:15</b> high school.</li>
+      <li>New campuses usually open with <b>40–50</b> students (SF ~60). <b>They won't open a campus until 25 students are enrolled.</b></li>
+      <li><b>$100</b> application fee; rolling admissions; a <b>shadow day</b> is required to apply.</li>
+      <li>Mastery-based (90%+ to advance), no letter grades. ~<b>50</b> total graduates — “all became entrepreneurs or went to their top-choice university.”</li>
+      <li>Subject/learning specialists = a <b>national remote team</b>; reading specialists are on-campus.</li>
+      <li>Alpha Anywhere (homeschool) = grades <b>3–8</b>. They <b>license</b> the engine to private schools (don't franchise; not taking new licensees right now).</li>
+      <li>Financial aid offered at larger campuses. Average ~99th percentile on MAP (their claim).</li>
+    </ul>
+    <h3 class="s">Expansion notes dropped in the chat</h3>
+    <ul class="tight">
+      <li>The Woodlands = only Houston campus this fall (under renovation). Chicago renovating, opens PK-8. OC expanding into Irvine/Newport. Greenwich CT campus for the fall. Marin/Sausalito still hunting real estate.</li>
+      <li>K-12 in Austin; high school expanding to SF, Santa Barbara, NYC, Miami, OKC. New campuses usually open K-8 then grow to K-12.</li>
+      <li>Toronto admissions contact given: <b>Kevin.ly@alpha.school</b>.</li>
+    </ul>
+    <h3 class="s">Your margin notes (verbatim from the doc)</h3>
+    <ul class="tight">
+      <li>“They won't open a school until they have 25 students … So 25 × Price.”</li>
+      <li>“Radical Transparency” · “Transparent about parent survey, MAP tests, student survey results.”</li>
+      <li>“^^ this is the tutors from other places potentially” (re: subject specialists).</li>
+      <li>Jamal Gross — Airbnb / Alpha School Ambassador; James &amp; Amy Wong — SF Founding Family; “Theo brought Alpha to Santa Barbara”; Tammy Nazari.</li>
+    </ul>
+  </section>
+
+  <!-- TODO -->
+  <section id="todo">
+    <h2 class="s">To-Do</h2>
+    <p class="muted">Yours to run — saved in this browser (localStorage). Seeded with a few intel-maintenance items; edit or delete freely.</p>
+    <div class="todo-add">
+      <input id="todoInput" placeholder="Add a task and hit Enter…" onkeydown="if(event.key==='Enter')addTodo()"/>
+      <button onclick="addTodo()">Add</button>
     </div>
-  </div>
+    <ul class="todo" id="todoList"></ul>
+  </section>
 
-  <div class="note bad"><b>Two traps to avoid.</b> First, most Glassdoor material is for
-    "Alpha Public Schools," a separate California charter network — do not attribute it to
-    this Alpha. Second, the posture that draws the most anger is "it either works for your
-    child or it doesn't." If a role's brief is defending the governance or the surveillance
-    rather than fixing the trust, that's the line.</div>
+  <!-- MONEY -->
+  <section id="money">
+    <h2 class="s">Money — revenue &amp; cost model</h2>
+    <div class="pinrow"><a class="btn" href="Alpha-Money-Model.xlsx">Open the editable model (Excel) ↗</a></div>
+    <div class="callout"><b>Read this first:</b> Revenue is solid (tuition is public × students). <b>Student counts are mostly estimates</b> and costs are <b>assumptions Alpha hasn't disclosed</b> — so contribution/margin are directional, not actual. Edit the blue cells in the Excel as you get real numbers.</div>
+    <div class="callout"><b>The bigger funding source — Liemandt's ~$1B.</b> In his words: “When GenAI hit in 2022, I took a billion dollars out of my software company.” That's <b>capital, not recurring revenue</b> — a war chest funding the multi-city land grab, the cheap/subsidized campuses (Brownsville at $10k), R&D, and any operating losses. It means Alpha <b>doesn't need positive tuition margins to keep expanding</b>; the tuition model above is only the operating layer sitting on top of a billion-dollar backstop.</div>
 
-  <h3 class="sub">The three tensions, stated as questions</h3>
-  <ul>
-    <li>The dream is a billion kids on a cheap tablet. The front door is $40,000 a year. Brownsville and the public-school push are the stated answer — does it hold?</li>
-    <li>Kids earn currency for doing work. Motivation, or paying children to learn?</li>
-    <li>Results are real but internal. Who verifies them, and what happens the first time someone independent tries?</li>
-  </ul>
-</section>
-
-<!-- ═══ WAY IN ═════════════════════════════════════════════════════════ -->
-<section id="wayin">
-  <div class="sec__rule"><span class="mono">§ 07 — My way in</span><span class="mono">Strategy &amp; proof</span></div>
-  <h2 class="sec__h">Don't apply. Do the work first, in public.</h2>
-  <p class="sec__lede">The funnel only sells seats it has a job code for. The thing I do
-    best has no job code — so the move is to do it anyway, visibly, and let the work make
-    the ask.</p>
-
-  <blockquote>You're launching ten cities with nobody owning launch and community.
-    I fill new cities and build the IRL trust your model needs — the layer you can't
-    hire off Crossover.
-    <cite>The one-liner</cite></blockquote>
-
-  <h3 class="sub">Where the org is thin — my slots</h3>
-  <ul>
-    <li>Multi-city <b>launch</b> with no repeatable playbook owner.</li>
-    <li>Local parent <b>community and trust</b> per city — exactly what the WIRED and 404 pieces are eating.</li>
-    <li><b>Enrolment</b> that is IRL, not just ad spend.</li>
-    <li><b>Narrative</b> — Price is the only voice, and one voice doesn't scale.</li>
-    <li><b>Cross-entity coordination</b> between Alpha, 2HL and Crossover — orphan work nobody owns.</li>
-    <li><b>Real estate and space sourcing</b>, now that it's the admitted bottleneck.</li>
-  </ul>
-
-  <h3 class="sub">The work, already built</h3>
-  <div class="works">
-    <a class="work" href="/builds/climbing-machine/">
-      <div class="work__k"><span class="mono">Children's book</span><span class="chip hi">Live</span></div>
-      <h4>Climbing Machine</h4>
-      <p>Eighteen spreads, written and illustrated, about a kid at an Alpha life-skills workshop who decides he can finish the climb. Reads as a real book in the browser.</p>
-      <span class="go">Open →</span>
-    </a>
-    <a class="work" href="/builds/ccat-trainer/">
-      <div class="work__k"><span class="mono">Guide on-ramp</span><span class="chip hi">Live</span></div>
-      <h4>CCAT Trainer</h4>
-      <p>Mastery-based practice for the exact gate that filters 99% of applicants — spaced retrieval, adaptive difficulty, 559 questions, explanations that teach the method.</p>
-      <span class="go">Open →</span>
-    </a>
-    <div class="work">
-      <div class="work__k"><span class="mono">Life-skills workshop</span><span class="chip med">Drafted</span></div>
-      <h4>Cut and Donate</h4>
-      <p>Kids cut off the thirteen inches of hair I've grown for two years and send it to Wigs for Kids. Relationship building, generosity, and an adult trusting them with scissors.</p>
-      <span class="go">Document pending</span>
+    <div class="tiles">
+      <div class="tile"><div class="n">~$57.7M</div><div class="l">est. revenue, open campuses now</div></div>
+      <div class="tile"><div class="n">~1,340</div><div class="l">est. students, open now</div></div>
+      <div class="tile"><div class="n">~$16.2M</div><div class="l">est. contribution (28%) *assumptions</div></div>
+      <div class="tile"><div class="n">~$105M</div><div class="l">est. revenue incl. Fall 2026 (~2,300 kids)</div></div>
+      <div class="tile" style="background:#eef3fb;border-color:#cfe0f5"><div class="n">$1B</div><div class="l">Liemandt capital injected (2022) — funding, not revenue</div></div>
     </div>
-    <div class="work">
-      <div class="work__k"><span class="mono">Required step</span><span class="chip lo">Not started</span></div>
-      <h4>The Trojan Horse</h4>
-      <p>The video they ask every guide candidate for. Filming it in public turns a hiring hoop into a shareable artifact and a launch video at the same time.</p>
-      <span class="go">Next up</span>
-    </div>
-  </div>
 
-  <h3 class="sub">The sequence</h3>
-  <p>Interview MacKenzie Price to earn the room → produce one NYC parent-preview night as
-    the proof → turn it into City-Launch-in-a-Box so it scales → contract → indispensable →
-    titled. Give, prove, warm, contract. Never lead with "I want a job"; lead with
-    "here's the thing I already did for you."</p>
+    <h3 class="s">Biggest revenue campuses (open now, est.)</h3>
+    <table>
+      <tr><th>Campus</th><th>Students (est.)</th><th>Tuition</th><th>Revenue (est.)</th></tr>
+      <tr><td>Austin (PreK-8)</td><td>~639 <span class="muted">(PrivateSchoolReview)</span></td><td class="pay">$40,000</td><td class="pay">~$25.6M</td></tr>
+      <tr><td>Alpha High Austin</td><td>~152 <span class="muted">(Wikipedia)</span></td><td class="pay">$40,000*</td><td class="pay">~$6.1M</td></tr>
+      <tr><td>San Francisco</td><td>~50 <span class="muted">(25–60 range)</span></td><td class="pay">$75,000</td><td class="pay">~$3.8M</td></tr>
+      <tr><td>New York City</td><td>22 now → 160 target <span class="muted">(Axios Aug '26)</span></td><td class="pay">$65,000</td><td class="pay">~$1.4M now (~$10.4M at target)</td></tr>
+      <tr><td>Miami</td><td>~64 <span class="muted">(Niche/US News)</span></td><td class="pay">$50,000</td><td class="pay">~$3.2M</td></tr>
+    </table>
+    <p class="muted">Austin alone is ~44% of estimated open-campus revenue — the flagship carries the network. * = tuition assumed.</p>
 
-  <div class="note warn"><b>Keep your independence early.</b> Contract or project-based
-    first. The Trilogy pattern is to systematise people out of the loop and cut the rest —
-    stay the high-agency human on your own terms, and make sure the way in creates real
-    value for families, not just enrolment numbers.</div>
-</section>
+    <h3 class="s">How the math works</h3>
+    <ul class="tight">
+      <li><b>Revenue = tuition × students</b> per campus (tuition published; students estimated).</li>
+      <li><b>Costs (estimated):</b> guides = (students ÷ ~7) × ~$110k; fixed leadership/ops ~$450k/campus; rent ~$400k/campus; platform + G&amp;A ~15% of revenue. All editable in the Assumptions tab.</li>
+      <li><b>The loop:</b> the non-profit schools pay the for-profit vendors (2HL, Crossover, Trilogy, YYYYY) — so the "platform + G&amp;A" line is essentially the take that flows back to Liemandt's entities.</li>
+    </ul>
 
-<!-- ═══ SOURCES ════════════════════════════════════════════════════════ -->
-<section id="sources">
-  <div class="sec__rule"><span class="mono">§ 08 — Sources</span><span class="mono">Verify before quoting</span></div>
-  <h2 class="sec__h">Where all of this came from</h2>
-  <p class="sec__lede">Public sources plus one parent info session. Tuition, pay bands and
-    disclosed figures are high confidence; enrolment and anything internal is directional.</p>
+    <h3 class="s">Numbers to nail down (transcribe to upgrade the model)</h3>
+    <ul class="tight">
+      <li>"From 6 to 60 — How Parents Helped Build Alpha Miami" (video library) — Miami count.</li>
+      <li>Campus tour / "Spend a Day at Alpha School" + city parent videos — often state headcounts &amp; capacity.</li>
+      <li>The full info-session recording — staff sometimes give live totals.</li>
+      <li>Local press: SF Standard, NYT (Jul 2025), Austin Statesman/KUT, Community Impact.</li>
+    </ul>
+  </section>
 
-  <ul class="srcs">
-    <li><a href="https://colossus.com/article/joe-liemandt-class-dismissed/" target="_blank" rel="noopener noreferrer">Colossus — The Software Tycoon Scaling AI Education to a Billion Kids ↗</a></li>
-    <li><a href="https://www.axios.com/2026/08/02/alpha-schools-ai-expansion-50-campuses" target="_blank" rel="noopener noreferrer">Axios — Alpha expands to 50 campuses (Aug 2026) ↗</a></li>
-    <li><a href="https://futureofeducation.substack.com/p/ask-me-anything-12-how-do-you-hire" target="_blank" rel="noopener noreferrer">MacKenzie Price — AMA #12: How do you hire guides? ↗</a></li>
-    <li><a href="https://www.crossover.com/selection-process" target="_blank" rel="noopener noreferrer">Crossover — Selection process ↗</a></li>
-    <li><a href="https://ed.crossover.com/clients/alpha" target="_blank" rel="noopener noreferrer">Crossover — Alpha roles &amp; pay ↗</a></li>
-    <li><a href="https://www.astralcodexten.com/p/your-review-alpha-school" target="_blank" rel="noopener noreferrer">ACX — Your Review: Alpha School ↗</a></li>
-    <li><a href="https://www.wired.com/story/ai-teacher-inside-alpha-school/" target="_blank" rel="noopener noreferrer">WIRED — Parents Fell in Love… Then They Wanted Out ↗</a></li>
-    <li><a href="https://www.404media.co/students-are-being-treated-like-guinea-pigs-inside-an-ai-powered-private-school/" target="_blank" rel="noopener noreferrer">404 Media — Treated Like Guinea Pigs ↗</a></li>
-    <li><a href="https://danmeyer.substack.com/p/the-truth-about-2-hour-learning-and" target="_blank" rel="noopener noreferrer">Dan Meyer — The truth about 2 Hour Learning ↗</a></li>
-    <li><a href="https://en.wikipedia.org/wiki/Alpha_School" target="_blank" rel="noopener noreferrer">Wikipedia — Alpha School (governance, accreditation) ↗</a></li>
-    <li><a href="https://fs.blog/knowledge-project-podcast/joe-liemandt/" target="_blank" rel="noopener noreferrer">Farnam Street — Joe Liemandt ↗</a></li>
-    <li><a href="https://peterattiamd.com/joeliemandt/" target="_blank" rel="noopener noreferrer">The Peter Attia Drive #366 ↗</a></li>
-    <li><a href="https://news.ycombinator.com/item?id=45443552" target="_blank" rel="noopener noreferrer">Hacker News — current-parent deep dive ↗</a></li>
-    <li><a href="https://nepc.colorado.edu/blog/fprice-kids-pay" target="_blank" rel="noopener noreferrer">NEPC — The Price Kids Pay ↗</a></li>
-    <li><a href="https://alpha.school/" target="_blank" rel="noopener noreferrer">alpha.school — institutional language &amp; testimonials ↗</a></li>
-    <li><a href="https://www.cnn.com/2026/01/29/politics/alpha-school-trump-ai-teaching" target="_blank" rel="noopener noreferrer">CNN — Is AI schooling the future, or a risky bet? ↗</a></li>
-  </ul>
-</section>
+  <!-- HIRING -->
+  <section id="hiring">
+    <h2 class="s">Hiring — selection process &amp; how to beat it</h2>
+    <p class="muted">All Alpha hiring runs through Crossover's top-1% gauntlet. Details + prep below.</p>
+    <div class="md" data-doc="process"></div>
+  </section>
 
-<footer>
-  Alpha School — Intel · compiled by James Floyd from public sources and one info session ·
-  figures carry confidence flags · <a href="/">jamesfloyds.world</a>
-</footer>
+  <!-- BUZZ -->
+  <section id="buzz">
+    <h2 class="s">Buzz — what's being said online</h2>
+    <p class="muted">Synthesis from Reddit (via secondary accounts — Reddit blocks crawling), Hacker News, Glassdoor, press, parent accounts. Pulled June 2026.</p>
+    <div class="md" data-doc="buzz"></div>
+  </section>
+
+  <!-- IDEAS -->
+  <section id="ideas">
+    <h2 class="s">Project Ideas — your brainstorm</h2>
+    <p class="muted">Your own list, unranked. You pick. Ship one, then intros + application to build buzz.</p>
+    <div class="md" data-doc="ideas"></div>
+  </section>
+
+  <!-- NOTES -->
+  <section id="notes">
+    <h2 class="s">Liemandt / Alpha — Handwritten Notes</h2>
+    <p class="muted">Compiled from your voice summary + 10 pages of notes (with a verified reconcile up top).</p>
+    <div class="md" data-doc="notes"></div>
+  </section>
+
+  <!-- SECTOR -->
+  <section id="sector">
+    <h2 class="s">Education Sector (build-out)</h2>
+    <p class="muted">Placeholder for the broader sector intel you want to grow into. Nothing researched here yet — say the word and I'll populate it.</p>
+    <ul class="tight">
+      <li>Comparables to map later: Khan Academy / Khanmigo, Synthesis, Montessori networks, Acton Academy (Alpha's origin), Prenda, Sora, microschool networks.</li>
+      <li>Tailwinds: school-choice / ESA voucher expansion, AI-in-education, homeschool growth, “learning loss” narrative.</li>
+      <li>Open data gaps on Alpha: independent (non-internal) outcome studies; true unit economics; teacher/guide turnover.</li>
+    </ul>
+  </section>
 
 </div>
+<footer id="foot"></footer>
 
 <script>
-/* section nav highlight — the only script on the page */
-(function () {
-  var links = [].slice.call(document.querySelectorAll('.rail a'));
-  var secs = links.map(function (a) { return document.querySelector(a.getAttribute('href')); });
-  function mark() {
-    var y = window.scrollY + 90, best = 0;
-    for (var i = 0; i < secs.length; i++) if (secs[i] && secs[i].offsetTop <= y) best = i;
-    links.forEach(function (a, i) { a.classList.toggle('on', i === best); });
+const SHEETS = {};
+SHEETS.liemandt = `# JOE LIEMANDT — Research Notes (WORKING COPY)
+*Principal, Alpha School. Founder, Trilogy Software & ESW Capital.*
+*Raw material only — verbatim quotes, named characters, hard figures, the weird details. You write the questions.*
+*Pulled June 2026. Sources at bottom. Nothing paraphrased unless flagged.*
+
+---
+
+## THE FRAME
+
+- Stanford dropout — left first quarter of senior year, 1988. Founded Trilogy in a rented garage, $50/month, on Jolt Cola and beer.
+- Youngest member of the Forbes 400 in the '90s. ~$500M net worth by 27 (1996), past $600M soon after.
+- Then went dark. No interviews, no reporters, ~25 years. Quietly built ESW Capital into one of the most prolific software acquirers on earth — hundreds of companies.
+- Pulled $1B out of his software company in 2022 to run a grade school. Title: Principal.
+- The Colossus profile (Aug 2025) was his first time talking to a journalist in a quarter-century. He knows how strange it looks.
+
+## TRILOGY UNIVERSITY + THE NAVY SEAL EXCHANGE
+*(Your lead, James — flagged because it's the most interesting thread to you. Verified pieces below; the "exchange" framing is yours, push him on the specifics.)*
+
+- Trilogy University (TU) was Trilogy's legendary 3-month boot camp for new college recruits — modeled directly on Navy SEAL training. Harvard Business School wrote a case on it; the press (WSJ, Fast Company, Forbes, HBR) called it the most effective corporate boot camp in history.
+- The Navy SEAL EXCHANGE PROGRAM was a Trilogy thing (per James) — Trilogy and the SEALs ran an exchange. Get him to walk you through it: who went, what they did, what he stole from SEAL culture and baked into the company.
+- The throughline worth surfacing: SEAL-style intensity built the "cultlike" Trilogy bond (lots of '90s TU hires still work for him today). That same belief — push people past what they think they can do — is now aimed at five-year-olds at Alpha ("your standards are too low"). The SEAL DNA never left; it just changed targets.
+
+---
+
+## "OF ALL PEOPLE, ME"
+
+- "If you talk to anybody on the planet who knows me, they're thinking, 'Joe's doing education? What happened?'"
+- "If you took 100 people and asked, 'Who's the least likely to do this?' it would be freaking me."
+- Hated school, was great at it. Gamed Catholic school: calculated how many days he could skip to get suspended but not expelled.
+- Aimed for exactly 89.5% in every class — knew it rounds to 90, "as good of an A as 100%."
+- On tests where he was sure he'd nailed 90% of the questions, turned them in with the last 10% blank.
+- Read his father's business plans for fun as a kid. Wrote a high-school paper on neural nets in the mid-'80s. Has been an AI guy his whole life — Trilogy was an early "expert systems" company.
+
+## THE DAD + JACK WELCH
+*The emotional spine. Nobody pushes here.*
+
+- Father Gregory was Jack Welch's head of planning at GE. Joe moved every couple years as a kid following his dad's postings: Minnesota → Pittsfield MA → DC → Dallas.
+- Enrolled at Stanford "knowing he wanted to start a software company and build a product that Jack Welch would buy."
+- Dropping out, his father's exact words: "You're a moron."
+- After Gregory died, Welch told Joe he'd be there if he needed help. Joe flew to Connecticut — 27, fresh off the Forbes 400, ~$500M, "feeling himself."
+- Welch over lunch: "So you're basically a good product manager. Is that how I should think about you?"
+- Joe: "I run a company with a billion-dollar product." Welch: "GE Medical doesn't like your product."
+- Welch: "You could be doing 10 times more, Joe. Don't be such a wuss."
+- ⚠️ The "10x" line that now defines Alpha ("kids learn 10x faster") traces straight to Welch telling him he thought too small. He may not have connected it out loud.
+
+## THE 25 QUIET YEARS
+
+- Became a father to two daughters, built ESW/Crossover, felt "the shape of his own vocation changing."
+- Anonymous collaborator: "Joe is 98% the most normal guy ever, and 2% the craziest freaking dude… When you're in his presence, you can feel the waves of time and space bending to his vision. Things just seem possible with him that aren't true in normal life."
+- Trilogy-era legend, all while worth $600M+: drove a beat-up Saturn, ate at Wendy's, cut his hair at Supercuts, rented an apartment with no TV. Slept on the floor at Trilogy.
+
+## HOW THE DAUGHTERS CONVERTED HIM
+*He didn't found Alpha. MacKenzie Price (his best friend's wife — he was best man at her 2004 wedding) founded it in 2014. He thought it was a joke.*
+
+- First reaction: "I was like, MacKenzie, I'm not sending my kids to your weird, janky school. It was in a dude's garage. I was like, no way."
+- Turn #1: at dinner he asked the Price girls if a first-grader understood "perspective." The younger Price sister (first grade): "It's kind of like the way the Japanese look at World War II compared to Americans, or the Italians versus the French."
+- Turn #2: his daughters shadowed Alpha a week before summer camp, then sat their parents down: "We've decided we're not going to summer camp this year. We want to go back to Alpha."
+- Co-founder Brian Holtz, first parent-teacher conference: "Your kids can do much more than you think. Your standards are too low." Joe: "Oh, my standards for them are pretty extreme." Holtz: "No, they're not… They can learn twice as much… in two hours a day. Talk to me in 100 days."
+
+## DREAMS + GOALS NOW
+*Where he gets most animated. His words, recent, on the record.*
+
+- The big one, whole: "So that's my next 20 years. I literally wake up now and I'm like, I'm the luckiest guy in the world. I will work 7 by 24 for the next 20 years to fricking do this. The greatest 20 years of my life are right ahead of me. I don't think I'm going to lose. We're going to win."
+- The mission line: make the immediate future "the best time in human history to be a five-year-old."
+- The bet: "When GenAI hit in 2022, I took a billion dollars out of my software company… we're going to be able to take MacKenzie's 2x in 2 hours groundwork and get it out to a billion kids… There's going to be a tablet that costs less than $1,000 that is going to teach every kid on this planet everything they need to know in two hours a day and they're going to love it."
+- His "why now": "AI is the instrument inflection for learning science. Not chatbots. If you deploy ChatGPT to every student in America, we will become the dumbest country on the planet." (Compares AI to the microscope for biology, the telescope for physics.)
+- ⚠️ "I don't think I'm going to lose." A man who's never lost at scale, now betting the streak on five-year-olds.
+
+## OWN WORDS WORTH HAVING ON HAND
+
+- "It would be freaking me."
+- "Don't be such a wuss." (Welch, to him)
+- "I'm the luckiest guy in the world."
+- "We're going to win."
+- "Talk to me in 100 days." (Holtz, to him)
+
+## RANDOM / WEIRD DETAILS
+
+- Talks in systems language even about people. Verbatim: "The problem is things get really combinatorial as things get complex, and they go combinatoric."
+- Alpha is $40,000/year (Austin) but does NOT screen for academics or test scores in admissions. Sensitive to the "rich-kid selection effect" critique — heard it for 8 years.
+- Model: ~2 hrs AI-driven academics in the morning ("2x in 2 hours"), afternoons are "life skills" — leadership, entrepreneurship, teamwork. Teachers are "Guides." ("AI" at Alpha = adaptive apps, IXL/Khan-style, not LLMs.)
+- Kids reportedly score top 1% nationally. His real proof point: kids beg to keep school open over breaks — not the test scores.
+- MacKenzie Price (née Larson) has her own wild origin — pulled from her home by a guardian as a kid in North Dakota, worked a hog barn the summer before Stanford. If you get them together, that's a story.
+
+## ASKED-TO-DEATH (go a layer deeper or skip)
+
+- "How does the 2-hour model work?" — answered 100 times.
+- "Is AI replacing teachers?" — rehearsed answer.
+- Basic Trilogy origin (garage, dropout) — well-trodden; use only as a launchpad to the dad/Welch material.
+
+---
+*Sheet 2 (Alpha School, the institution) is the second file.*
+`;
+SHEETS.price = `# MACKENZIE PRICE — Research Notes (WORKING COPY)
+*Co-founder, Alpha School & 2hr Learning. The one who actually started it.*
+*Raw material only — verbatim quotes, named characters, hard figures, weird details. You write the questions.*
+*Pulled June 2026. Sources at bottom. Nothing paraphrased unless flagged.*
+
+---
+
+## THE FRAME
+
+- Co-founded Alpha School in 2014 with Brian Holtz. Liemandt (her best friend's husband, later Principal) didn't believe in it for years — she's the believer who dragged everyone else in.
+- Stanford grad. Swore she'd never set foot in a school again after graduating — then her own daughter's boredom pulled her back in.
+- Origin (per the Colossus profile): née MacKenzie Larson. Hard childhood in North Dakota — taken from her home as a kid. Worked a hog barn the summer before Stanford. The "weird, janky garage school" was hers.
+- Now runs a national network + the "2hr Learning" platform. Called "the Elon Musk of AI education" in some press (Tom's Guide). Hosts the "Future of Education" podcast.
+
+## THE ORIGIN MOMENT (she tells this one a lot — let her)
+
+- Her daughter, halfway through 2nd grade: "I don't want to go to school tomorrow… School is so boring."
+- Her read: "They've taken this kid who's tailor-made to wanna be a good student, and they've wiped away that passion."
+- She went to the principal. The principal — "incredible at her job" — told her: "MacKenzie, I understand all of your frustrations, but this is like trying to steer the Titanic. It just can't be done."
+- Her line: "At that moment I realized that was my cue to get out of there."
+- ⚠️ The "steer the Titanic" quote is her whole origin story in five words. She's told it on multiple shows. She lights up telling it — but she's never pushed on what she felt walking out of that office.
+
+## WHAT SHE BELIEVES (verbatim)
+
+- "The teacher in front of the classroom model of one person trying to educate many kids who are at wildly different levels of understanding just fundamentally doesn't work."
+- On the system's age: it's "a hundred-year model that started with the Industrial Revolution, where schools were training young people to become factory workers. So they needed to learn how to be compliant, how to follow directions and do exactly as they were told."
+- On teachers (she's careful here): "I think teachers are amazing people because they are underpaid, overworked and underappreciated. They've been given an impossible task."
+- On motivation: "Ninety percent of what makes a great learner is that you have to have a motivated student. If you don't have a motivated student, the lights are off and nobody's home."
+- On the unlock: "The best thing we can do to motivate students is [to give] back their most valuable resource, which is time to do what they actually want to do."
+- On AI as equalizer: "AI technology and adaptive app learning is the great equalizer. It doesn't care if you're white or black or brown… It's infinitely patient. It can literally raise the floor and explode the ceiling off what's possible."
+- The mission, her words: "I want parents to understand that their kids do not need six hours of sitting in a class all day to get their academics done. They can not only do it in two hours, but can crush their academics in two hours."
+- "We're using artificial intelligence to raise human intelligence."
+
+## THE NUMBERS SHE QUOTES (she's specific — match her specificity)
+
+- "At Alpha, they're learning twice as fast. Across the board, the average is 2.6 times faster. The top two-thirds of our students are learning 3.6 times faster, and the top 20% are learning 6.5 times faster."
+- Brownsville campus: a 2nd-grade class came in at the 31st percentile; one year later, 84th percentile in math, 71st in reading.
+- Started with 16 kids in a house, 2014. Austin campus now 150+ kids. First Alpha alumni graduated spring 2023.
+- ⚠️ Caveat for you: these are INTERNAL numbers (NWEA MAP), not independently verified. Pennsylvania regulators called the model "untested." Worth knowing before you repeat any stat back to her as fact.
+
+## THE KID STORIES SHE LOVES (her energy spikes — she glows telling these)
+
+- Rhett: Alpha High student who raised $350,000 in venture funding and opened Texas' biggest mountain bike park in Marble Falls — wrote the business plan, found investors, leased the land, hired contractors.
+- The cancer-documentary girl: got into epigenetics after her grandfather died of cancer, became self-taught, built a Twitter audience, made a documentary now viewed 4.5 million times.
+- The kindergartner + the Taylor Swift dance: every time she masters two units, she and her guide do a 30-second Taylor Swift dance party "because this guide knows this little girl loves Taylor."
+- The afternoons go HARD: Navy SEAL training, fencing, rock climbing, robotics, writing clubs, esports.
+
+## CONTRADICTIONS / SOFT SPOTS (where she's never pushed — handle with care)
+
+- She swore she'd "never step foot in a school again" — and built a school network. The thing she fled became her life's work.
+- "AI is the great equalizer… doesn't care if you're rich or poor" — but tuition runs $10K–$75K (most campuses ~$40K). The equalizer has a price tag.
+- Governance scrutiny she rarely gets asked about: the non-profit schools contract core services from for-profit vendors (2 Hour Learning, Trilogy, Crossover) tied to the same people — critics (Peter Greene, Bucks County Beacon) call it potential self-dealing. A $1M donation to Glenn Youngkin (2023) was routed through "Future of Education LLC," created the day before, listing the Price family residence as its address.
+- Multiple cyber-charter applications (Unbound Academy) were REJECTED — PA, NC, AR, UT said no; only AZ approved. She mostly talks about the wins.
+
+## ASKED-TO-DEATH (go deeper or skip)
+
+- "How does 2-hour learning work?" — her core stump speech.
+- "Aren't you just replacing teachers with AI?" — rehearsed.
+- The daughter/Titanic origin — she'll tell it well, but it's well-worn; use it as a door, not the room.
+
+---
+
+## SOURCES (verify before quoting live)
+
+- Austin Woman, "MacKenzie Price: Changing the Future of Education" (Jun 2024) — most of the verbatim quotes + the kid stories + her numbers. https://atxwoman.com/2024/06/01/mackenzieprice/
+- Colossus, "Class Dismissed" (Aug 2025) — her North Dakota origin, hog barn, founding story, relationship with Liemandt. https://colossus.com/article/joe-liemandt-class-dismissed/
+- Tom's Guide, "Who is MacKenzie Price?" — "Elon Musk of AI education" framing, $65K tuition. https://www.tomsguide.com/ai/have-you-heard-of-mackenzie-price-why-the-co-founder-of-the-usd65k-a-year-alpha-school-is-being-called-the-elon-musk-of-ai-education
+- Wikipedia, "Alpha School" — governance scrutiny, charter rejections, Youngkin donation, tuition range, the "AI = adaptive apps not LLMs" caveat. https://en.wikipedia.org/wiki/Alpha_School
+- Johnathan Bi interview transcript — long-form on the AI learning model. https://www.johnathanbi.com/p/transcript-of-interview-with-mackenzie-price
+`;
+SHEETS.alpha = `# ALPHA SCHOOL — Research Notes (WORKING COPY)
+*The institution, in its own words. alpha.school, pulled June 2026.*
+*Raw material only — verbatim site language, hard figures, the debatable design choices. You write the questions.*
+
+---
+
+## LATEST GROWTH NUMBERS (Axios, Aug 2 2026)
+- Scaling from ~a dozen campuses to **~50 campuses in the 2026 school year.**
+- **NYC (180 Maiden Ln): ~22 students now → targeting 160 this school year** — aggressive first-year ramp.
+- Tuition band confirmed network-wide: **$45,000–$75,000/yr.**
+- ⚠️ **Constraint: finding good real estate has been hard and has DELAYED campus openings** — a real bottleneck on the 50-campus push (on-the-ground intel). *(Way-in angle: NYC real estate / community sourcing.)*
+- Source: Axios, "AI-powered Alpha Schools expands to 50 campuses as AI debate grows" (Aug 2 2026). https://www.axios.com/2026/08/02/alpha-schools-ai-expansion-50-campuses
+
+---
+
+## WHAT IT SAYS IT IS
+
+- One-liner: "A school where kids crush academics in 2 hours, build life skills through workshops, and thrive beyond the classroom."
+- The 3 Commitments, verbatim:
+  - Love School — "Alpha students love school—it's engaging, inspiring, and built for them."
+  - Learn 2x in 2hrs — "Alpha classes learn twice as fast as their peers and rank in the top 1% nationwide."
+  - Learn Life Skills — "Alpha students spend afternoons developing life skills and exploring their passions."
+- Motivation pitch: "We motivate kids by giving them the gift of time to pursue the things they want to do." Time is the reward.
+- No teachers. "Guides" instead — shift "from traditional roles like grading and writing lesson plans, to supporting students' emotional and motivational needs." AI does academics; humans do motivation.
+- Cognia accredited. K-8 (Alpha High is separate; PreK-4 in Austin).
+
+## THE DREAM, AS THE BRAND TELLS IT
+
+- Expansion is the story. Live: Austin, Brownsville, Plano, Fort Worth (TX), Scottsdale (AZ), San Francisco, Santa Barbara, Orange County (CA), Miami, Palm Beach (FL), NYC, Chantilly (VA/DC).
+- Opening Fall 2026 (the land grab): East Bay, Palo Alto, Santa Monica, Atlanta, Chicago, Charlotte, Raleigh, Dorado (Puerto Rico), The Woodlands, Southlake. Plus "Alpha Anywhere" (virtual) and "Bring Alpha to your city."
+- Not one school — a system. Same "2hr Learning" engine runs sister brands: GT School, Montessorium, NextGen Academy, Nova Academy, Texas Sports Academy, Waypoint Academy.
+- Real number behind it (Liemandt, not the site): the model "out to a billion kids" on a sub-$1,000 tablet. The website is the consumer front end of that.
+- The funnel: "Alpha Summer" — "One week. That's all it takes to know if this is the school for your family." One-week trial as top of the enrollment funnel. Heavily productized.
+
+## WHAT THE KIDS SAY (the testimonials they chose)
+
+- Kai (L1): "I love Alpha because it's taught me to be limitless."
+- Shepard (L1): "What I love about Alpha is the freedom we get here that isn't like another school."
+- Rosie (L1): "I love Alpha because I'm surrounded by kids that like to work as hard as me."
+- Marshall (L1): "At Alpha, I don't have to stick just to second grade. I can learn third and fourth grade content, too."
+- Lulu (L2): "One of the reasons I love Alpha is because we have our own currency that motivates us to do more work."
+- ⚠️ Lulu's line: there's an internal CURRENCY. Kids get paid (in something) to do work. The motivation engine in miniature, and the most debatable design choice.
+
+## THE AFTERNOONS (the real differentiator)
+
+- Mornings = ~2 hrs academics. Afternoons = "life skills" workshops: leadership, entrepreneurship, financial literacy, public speaking, plus hands-on stuff like fencing, rock climbing, robotics, writing clubs, esports.
+- The whole sell of "time back": finish academics by lunch, spend the back half of the day on real-world skills a normal school never touches.
+- Alpha High runs "masterpiece projects": one student, Rhett, raised $350K of venture funding and built Texas' biggest mountain bike park in Marble Falls — wrote the plan, found investors, leased the land, hired contractors. Another built a documentary on cancer/epigenetics (after her grandfather died of it) that's been viewed 4.5M times.
+- (The Navy SEAL "exchange program" lives in the Liemandt notes — that's a TRILOGY thing, not Alpha.)
+
+## DETAILS WORTH HAVING
+
+- "AI" at Alpha = adaptive learning apps (IXL/Khan-style), NOT large language models. Worth knowing — the branding outruns the tech.
+- "2 Hour Learning" is the actual product/brand name — the engine licensed across all sister schools. Alpha is the flagship storefront.
+- Site leans hard on press logos courting mainstream legitimacy: NYT (Jul 2025), Forbes, TODAY, WSJ opinion ("Make America Smart Again"), Business Insider, USA Today.
+- Guides hired for coaching, not credentials: ex-LA Galaxy Director of Education, a Harvard Learning Design master's, a licensed therapist, mindset coaches who've worked with Nike/NFL.
+- It's political. WSJ "Make America Smart Again," Washington Times on the Trump education-department angle, Salon pushback. Alpha sits inside the school-choice / dismantle-the-DOE fight whether it wants to or not.
+- "Alpha Anywhere" + virtual map suggests the real play is software distribution, not real estate. The buildings are demos.
+
+## COMPANY STRUCTURE MAP (entities & control — intel)
+
+- No official public org chart exists. This is reconstructed from reporting (Dan Meyer, Bucks County Beacon, Wikipedia, Colossus). Critics call it a Liemandt-controlled "keiretsu."
+- **Joe Liemandt** — owns/controls everything. Sits on top via **ESW Capital** (his PE holding company).
+- **For-profit vendors (Liemandt-controlled):**
+  - 2 Hour Learning — the AI/adaptive-learning platform (founded by Andy + MacKenzie Price).
+  - Crossover (Crossover Markets) — recruits the remote "guides"/analysts; all Alpha hiring routes here.
+  - Trilogy Enterprises — financial services.
+  - YYYYY, LLC — general & administrative services.
+  - Future of Education (LLC) — advocacy/political arm (vehicle tied to the $1M Youngkin donation).
+- **Non-profit schools (buy services from those vendors):**
+  - Alpha Schools (flagship, 13+ campuses + Alpha High).
+  - Sister schools on the same 2HL engine: GT School, NextGen, Nova/Novatio, Texas Sports Academy, Montessorium, Waypoint, Unbound Academy (charter).
+- **The controlling circle (same names recur across vendors AND school boards):**
+  - Andy (Andrew) Price — CFO of Trilogy, Crossover, Ignite Technologies, and ESW; co-founded 2HL.
+  - MacKenzie Price — co-founder, public face.
+  - Brian Holtz — co-founder, Alpha.
+  - Timothy Eyerman — heads charter-school entities (e.g., Unbound).
+  - Dr. Stefanie Baduria — Director of K-8 / board.
+- ⚠️ The structure IS the controversy: non-profit schools contracting services from for-profit vendors owned/managed by the same people (e.g., 100% of Unbound Academy's named board is affiliated with the vendors) → the self-dealing / conflict-of-interest critique.
+- Flow: Liemandt → ESW → owns the for-profit vendors → vendors sell platform/hiring/finance/G&A to → the non-profit schools (which pay them). Money and control loop back to the same circle.
+
+## ALPHA NEW YORK — THE FiDi CAMPUS (intel)
+
+- Address: 180 Maiden Lane, New York, NY 10038 — Lower Manhattan / Financial District, by the East River waterfront & South Street Seaport, one block from Imagination Playground.
+- Grades: rising Pre-K (age 4) through 9th, billed K–12 (high-school application is separate). Daily schedule 8:15am–4:00pm, ~60 min unstructured outdoor play, movement workshops Tue/Thu.
+- Tuition: $65,000/yr. Accredited by Cognia. Labeled "Alpha Anywhere Center Private School." It's their FIRST NYC campus — chosen partly because the building's developer was a partner/enthusiast.
+- Contacts: admissions.newyork@alpha.school · (646) 363-6678 · apply.alpha.school/new-york · book a call: go.alpha.school/meetings/alpha-school/new-york-city
+- Reach from Bed-Stuy: a commute, not a neighborhood pick. ~5–6 miles, ~35–50 min by train (A/C to Fulton St; or J/M/Z to Broad St/Fulton). Their FAQ pushes the NYC Ferry for Brooklyn, but aimed at waterfront nabes (Bklyn Heights, DUMBO, Park Slope).
+- Stated catchment ZIPs: 10005, 10006, 10007, 10038, 10002, 10003, 10011 (Manhattan) + 11201 (Bklyn Heights/Downtown Bklyn). Bed-Stuy ZIPs are NOT listed — you're outside their named catchment but within commuting distance.
+- Enrollment: ~22 students now → targeting 160 this (2026) school year (Axios, Aug 2026). First-year campus ramping hard.
+- Only NYC campus. No second five-boroughs location now or in the Fall 2026 list; nearest new openings are Greenwich CT and Boston. 
+
+### Who runs Alpha NY (the people on the ground)
+- Dr. Tasha Arnold — Head of Alpha New York. International-school leader (US/Europe/Asia), IB/AP sciences background.
+- Nancy Torvund — Director of Admissions. Penn alum, Mensa, ex-Norwegian public-school teacher + teachers'-union leader; built an online learning system at a private school (shareholder/board).
+- Julianne Braime — Campus Coordinator (ops). Marine biology background, student-services.
+- Teaching bench incl.: Liam Stanton (Lead Teacher L2, Harvard master's in Learning Design, AI-in-education focus); Emily Lopez (Director of Experiential Learning, moving to a middle-level NYC teaching role); Chauncey Nartey (ex-Goldman VP, founding Director of Admissions at ed-tech unicorn Multiverse / $1.7B; ICF coach; Duke + UPenn); Jenna Petrungaro (6 yrs NYC public-school math, Long Island native); Nathan Witkin (philosophy + debate, coached Dalton & Bronx Science); Parthvi Harde (ex-startup ops / consultant); Jenna Klemm (reading specialist, Orton-Gillingham); Jesse Moskowitz (ex-librarian; NYU cybersecurity master's); Sam McDonald (UPenn, curriculum innovation London/Nairobi); Eric Salgado (20+ yrs, ex-principal/director).
+- Read: it's stacked with international-school + startup + ex-finance résumés, not just classroom teachers. Admissions/ops leadership is real and named — that's the front-line layer for a new campus.
+- Side note: SEAL motif shows up on the school side too — NY life-skills video "Inside Alpha's SEAL Team Swim." (Separate from the Trilogy exchange.)
+
+## THE TENSIONS (raw, for you to use)
+
+- Proof point isn't the test scores — it's that kids beg to skip summer break.
+- Internal currency: kids earn something for doing work. Motivation, or paying kids to learn?
+- The dream is a billion kids on a cheap tablet — the front door is $40,000/year. Brownsville + public-school push is the stated answer to the "rich-kid results" critique.
+
+---
+
+## SOURCES (verify before quoting live)
+
+- Colossus, "The Software Tycoon Scaling AI Education to a Billion Kids" (Aug 2025) — richest source; nearly all verbatim Liemandt/Welch/Holtz/Price quotes. https://colossus.com/article/joe-liemandt-class-dismissed/
+- Farnam Street / Knowledge Project, "Joe Liemandt: Alpha School and the Future of Education" (Mar 2026). https://fs.blog/knowledge-project-podcast/joe-liemandt/
+- The Peter Attia Drive #366 (Sep 2025). https://peterattiamd.com/joeliemandt/
+- No Priors (Sarah Guo / Elad Gil), "Reinventing K-12 Education Using AI." https://alpha.school/no-priors-reinventing-k-12-education-using-ai-with-alpha-school-principal-joe-liemandt/
+- Invest Like the Best EP.439 (Aug 2025). https://alpha.school/joe-liemandt-and-the-future-of-education/
+- Alpha School homepage — all institutional language + testimonials. https://alpha.school/
+`;
+
+SHEETS.buzz = `# ALPHA SCHOOL — ONLINE SENTIMENT (WORKING COPY)
+*What people actually say online — Reddit, Hacker News, Glassdoor, press, parent accounts. Pulled June 2026.*
+*Note: Reddit blocks direct crawling, so Reddit themes are reflected via secondary accounts that quote it. Flagged where that matters.*
+
+## THE SHAPE OF IT
+- Polarized. Ecstatic parents on one end, burned parents + ed-world critics on the other, and a thoughtful skeptical middle.
+- The most balanced long-read: Scott Alexander's ACX "Your Review: Alpha School." The reviewer talked to founders, curriculum leads, "guides," Brazilian Zoom coaches, ecstatic parents, skeptical parents, and the kids. Verdict ≈ middle ground — skeptical of the extraordinary claims but found it more real than pure critics allow; outcome depends on student FIT.
+- ACX frames the core question well: is Alpha "another program for the affluent propped up by selection effects," or "a clever way to turn children into joyless speed-reading calculators" — or neither? Backdrop: 20 years of shiny ed fixes that crashed (KIPP, AltSchool, Summit Learning, One-Laptop-Per-Child, MOOCs).
+
+## THE #1 RECURRING COMPLAINT (Reddit + parent accounts)
+- Parents discover their kid fell behind MONTHS after it happened. The AI/dashboard didn't surface it in time, or they trusted it too long. This is the single most-repeated grievance online.
+- Tied to the "no tutoring" posture: one parent asked for academic support and the school said it's not part of the model — "ALPHA either works for your child, or it doesn't." (They've since added national subject/learning specialists, per the info session.)
+
+## THE BROWNSVILLE BACKLASH (the sharpest material)
+- ~half a dozen families raised concerns in 2023-24. Jessica Lopez (most vocal) said kids were "so stressed out" while the school used them "as evidence why Alpha works"; she pulled her two daughters in 2024.
+- Accounts surfaced by WIRED: 9-year-olds denied snacks until they hit learning metrics; kids sobbing through endless multiplication drills; home surveillance enabled by default. Some parents pulled both kids out in November.
+- ⚠️ This is the emotionally heaviest thread. Brownsville is the $10k voucher campus — the one Alpha cites as its anti-"rich-kid" proof. The backlash there cuts straight at that defense.
+
+## CRITICS / ED-WORLD
+- Faulty AI lessons: 404 Media + WIRED — internal docs flagged AI-generated lesson plans as sometimes doing "more harm than good," with illogical multiple-choice questions.
+- IXL (their math engine) DEACTIVATED Alpha's account for a terms-of-service violation, and stated its product is "not intended... as a replacement for trained, caring teachers." Damaging to the core pitch.
+- Lost communal learning: ex-teachers argue the most important learning is communal; hyper-individualization loses it.
+- Privacy / surveillance: webcams (including at home unless a parent opts out), plus eye/mouse/scroll tracking — the top concern among cited experts (CBC, CNN, WBUR, EdWeek).
+- "Promised too much": The Economy of Meaning ("$65,000 AI School, Revisited"); TechBuzz ("AI-First Education Experiment Collapses in Texas").
+
+## SUPPORTERS (the other half — quieter online, but real)
+- Many families genuinely swear by it: "can we skip summer?" kids, time-back, motivated learners. ACX found ecstatic parents too.
+- Recurring framing across reviews: it "failed some parents and kept others" — results track student FIT more than brand.
+- A current-parent deep-dive on Hacker News (item 45443552) is cited as "lengthy and quite good" — sympathetic but honest insider view.
+
+## EMPLOYEE / GLASSDOOR SIGNAL (handle with care)
+- Themes that show up: burnout, low retention ("half gone by year-end"), below-market pay, staff pushed into "roles they didn't sign up for," thin resources.
+- ⚠️ BIG CONFLATION RISK: much of Glassdoor is for "ALPHA PUBLIC SCHOOLS" — a SEPARATE California charter network, NOT Liemandt's Alpha. Do not attribute those reviews to this Alpha. Liemandt's model runs on remote/Crossover guides globally with Trilogy-style performance-cut culture — a different shape. Treat employee sentiment as LOW confidence until verified against the right entity.
+
+## WHERE THE CONVERSATION LIVES
+- Press (skewed critical-to-balanced lately): WIRED, 404 Media, CNN, CBC, WBUR, The Week, EdWeek, NYT.
+- Independent / Substack: Dan Meyer (Mathworlds), NEPC ("The Price Kids Pay"), Bucks County Beacon, terryu ("Five Stories Buried in WIRED"), Economy of Meaning, Medium (James O'Hagan).
+- Forums: Reddit (parent complaints — fell-behind, stress, surveillance), Hacker News (analytical; the parent deep-dive).
+- Balanced long-read: ACX "Your Review: Alpha School."
+
+## NET READ (intel, not advice)
+- The model clearly works for a "fit" kid with engaged parents; it fails loudly for kids who need more human scaffolding — and the failure is often invisible until late.
+- The reputational fire is concentrated in four places: surveillance, AI-lesson quality, the "no support / it works or it doesn't" posture, and the Brownsville stress stories.
+- The press turned noticeably more skeptical across 2025-26 (the WIRED/404 inflection). Supporter voices are real but quieter online than the critics.
+
+## SOURCES
+- ACX, "Your Review: Alpha School." https://www.astralcodexten.com/p/your-review-alpha-school
+- WIRED, "Parents Fell in Love With Alpha School's Promise. Then They Wanted Out." https://www.wired.com/story/ai-teacher-inside-alpha-school/
+- 404 Media, "Students Are Being Treated Like Guinea Pigs." https://www.404media.co/students-are-being-treated-like-guinea-pigs-inside-an-ai-powered-private-school/
+- CNN (Jan 2026). https://www.cnn.com/2026/01/29/politics/alpha-school-trump-ai-teaching
+- CBC, "Can AI apps replace teachers?" https://www.cbc.ca/news/canada/ai-led-schooling-alpha-9.7148428
+- WBUR Here & Now (Mar 2026). https://www.wbur.org/hereandnow/2026/03/23/alpha-school-ai
+- Hacker News parent deep-dive. https://news.ycombinator.com/item?id=45443552
+- Glassdoor (⚠️ verify entity: "Alpha Public Schools" is a different CA charter network). https://www.glassdoor.com/Reviews/Alpha-Schools-Reviews-E4698308.htm
+- NEPC, "The Price Kids Pay." https://nepc.colorado.edu/blog/fprice-kids-pay
+- The Economy of Meaning, "$65,000 AI School, Revisited." https://theeconomyofmeaning.com/2026/02/24/the-65000-ai-school-revisited-inside-the-ai-classroom-that-promised-too-much/
+`;
+SHEETS.process = `# ALPHA / CROSSOVER — SELECTION PROCESS + TIPS (WORKING COPY)
+*How the hiring gauntlet works and how to beat it. Pulled June 2026. All Alpha hiring runs through Crossover.*
+
+## THE PROCESS (5 online stages, ~1–3 weeks, built to pass the top ~1%)
+- ~99% of applicants are filtered out; 5,000+ have been hired through this exact funnel. It's intentionally brutal — that's the point.
+1. **Application + AI screen** — a short 15–20 min conversation with an AI interviewer confirming your background/experience fit the role.
+2. **CCAT (Criteria Cognitive Aptitude Test)** — 50 questions in 15 minutes (~30 sec each). Three areas: logic/math, verbal, spatial reasoning. Difficulty ramps up as you go. **Two attempts total; fail the second and you're disqualified.**
+3. **English proficiency** — a short (~2 min) recorded audio sample of your spoken English.
+4. **Skill assessments** — short, targeted tests of the foundational skills the role needs.
+5. **Real Work Assessment (RWA)** — a job-specific task that mirrors the actual work, graded blindly (bias-stripped). **For guide/coaching roles the RWA is a FULL DAY ON CAMPUS coaching real Alpha students** — the last step before an offer.
+6. **Final interview** — a two-way, culture-fit conversation with the hiring manager. It's validation, not filtering; almost everyone who reaches it gets the offer.
+
+## CCAT — how to not die here (the biggest filter)
+- **Practice first.** Familiarity with format = less anxiety + more speed. Free/paid prep: 12MinPrep, JobTestPrep, PrepTerminal, CCATPracticeTest, TSA Test Prep. Do timed full-length runs.
+- **~30 seconds per question.** Never get stuck — skip and come back. Bank the easy early ones fast; questions get harder toward the end.
+- **Answer everything.** Standard CCAT has no wrong-answer penalty — never leave blanks; guess before time runs out.
+- **Setup matters:** quiet room, stable internet, scratch paper, no interruptions. No calculator — sharpen quick mental math (percentages, ratios, sequences, word problems).
+- **Don't waste attempt #1.** You only get two. Treat the first as real.
+
+## THE GUIDE RWA = a live audition (this is your arena)
+- The on-campus day is you holding a room of 8-year-olds: motivate, coach, high energy, keep them moving. They literally list the fit as "athletic coach, camp counselor, a tutor who wouldn't let a kid quit, a performer who could hold a room of eight-year-olds."
+- What they're grading: can you MOTIVATE and COACH (not lecture). Guides don't teach academics — the app does. You run energy, mindset, and life-skills.
+- Speak their language on the day: "give kids their time back," mastery (90%+), growth mindset, motivation is ~90% of learning, life-skills workshops, kids should love school.
+- ⚠️ This stage is where your events/IRL/high-energy edge beats the resume stack. It's the opposite of a paper screen.
+
+## ENGLISH + AI SCREEN + SKILL TESTS
+- English recording: speak clearly, structured, concise. Do a practice take first; treat it like a 2-min pitch.
+- AI screen: be crisp on background + why you fit THIS role; mirror the role's competencies (coaching, motivation, ownership).
+- Skill tests (guide): expect coaching / motivation / child-development / scenario judgment. Study the 2-Hour Learning model cold beforehand.
+
+## CULTURE FIT (what the final convo rewards)
+- Trilogy/Alpha DNA: audacity, extreme ownership, results over credentials, coachability, high standards ("your standards are too low"). Show outcomes you owned, and that you're coachable.
+- (Your references already echo this — Dom Rufran: "grit… and you're very coachable." That's exactly the trait this culture selects for.)
+
+## GLASSDOOR REALITY CHECK
+- Role-specific data is THIN: the "ALPHA Education Guide" Glassdoor page has ~1 interview report and ~1 review. Don't over-index on it.
+- ⚠️ "Alpha Schools" (2.8/5, ~21 reviews) and "Alpha Public Schools" (2.8/5, ~85 reviews) on Glassdoor appear to be DIFFERENT organizations, not Liemandt's Alpha. Don't treat their ratings as this Alpha's.
+- Net: the reliable intel is the Crossover process itself (well documented) + prep sites for the CCAT — not Glassdoor for this exact role.
+
+## PRECISE CCAT NUMBERS (verified June 2026)
+- **Pass bar: 35 / 50 correct** is the number Crossover documents as the cut. Average is 24/50 (50th pct).
+- Percentile map (approx): 24 = 50th · 31 = 80th · **35 = ~86th** · 37 = ~90th · 40 = ~95th · 43 = ~98th. Scoring is non-linear — 5 more right can jump you a lot of percentile.
+- Category weighting on the real test: **Verbal ~34% · Numerical/Math ~34% · Spatial/Abstract ~22% · Logic ~10%.** (Math + Logic together ≈ 44%.)
+- **Spatial is the section most people fail** — it's *visual* (figure rotation, matrices, paper-folding), and it "separates average from exceptional."
+- Difficulty **ramps up** — hard questions cluster at the end. Only ~1% finish all 50.
+- Hard rules: **no calculator; switching browser tabs = auto-disqualification; English only.** Retake generally allowed after **6 months** (some reports mention a second immediate attempt — treat the first as real).
+
+## THE OTHER TESTS IN THE FUNNEL (beyond CCAT)
+- **Profile/experience questionnaire** — your CV + background, up front.
+- **English proficiency** — a short (~2 min) recorded audio sample of spoken English. Treat it like a crisp 2-minute pitch; do a practice take.
+- **Subject-matter / skills test** — role-specific. Technical roles often get a HackerRank; non-technical (like guide) get a role questionnaire or short assignment. Not always required.
+- **Real Work Assessment** — the job-mirroring task. **For guide roles this is the full day on campus coaching real kids** (the last gate). Your arena.
+- **Final interview** — culture-fit validation; those who reach it almost always get the offer.
+
+## SOURCES
+- Crossover Selection Process. https://www.crossover.com/selection-process
+- Crossover Skill-Based Assessments (official). https://www.crossover.com/resources/crossover-s-skill-based-assessments-official-skill-test-guide
+- Crossover hiring process + CCAT overview. https://www.tsatestprep.com/crossover-hiring-process/
+- CCAT prep. https://www.12minprep.com/how-to-ace-the-crossover-ccat-test/ · https://www.jobtestprep.com/crossover-aptitude-tests
+- Glassdoor (thin/verify entity): https://www.glassdoor.com/Interview/ALPHA-Education-Guide-Interview-Questions-EI_IE4011057.0,15_KO16,21.htm
+`;
+SHEETS.ideas = `# ALPHA — PROJECT IDEAS (WORKING COPY)
+*James's own brainstorm for a permissionless way in. Unranked — you pick. Captured June 2026.*
+*Plan: get one project done → then fill out the application + line up intros from your people to create "buzz."*
+
+## The list
+
+1. Do an event for them in New York to pull in more parents/kids.
+2. Create a list of life-skills workshops I like and have experience running.
+3. Go one further — record myself running all those workshops with people in public, as proof.
+4. Make a public pitch video.
+5. Start a content series talking to parents in New York.
+6. Design a Trilogy-University-style bootcamp to put *myself* through to get into Alpha.
+7. Make a campaign for them to hire teachers/guides.
+8. Make art around MacKenzie's "steering the Titanic" quote.
+9. Make quick answer/cheat sheets of the learning methods they reference in podcasts (cognitive load theory, confidence building, etc.).
+10. Fill out the rest of the guide positions from what's available online.
+11. "Nike-style" marketing showing off kids' achievements. *(Note: don't really like this — keeping it in the spirit of brainstorming.)*
+12. A hype video around "the future of being a 5-year-old."
+13. Design the $1,000 tablet + product-launch ideas.
+14. Collect references as proof of my "life-skills" prowess. *(Note: doesn't really benefit them.)*
+15. Go make a video asking kids what they like / don't like about school right now (mirror of the parent one).
+16. **Write a children's book.** *(new)*
+17. **Build an adaptive learning system for the CCAT** (help candidates pass Crossover's gate) **+ guides/training for teaching** the Alpha way. *(new — ties to the CCAT trainer + memorization module already spec'd)*
+
+## Parking lot / notes
+- (Add your own reactions, combinations, or which one you're leaning toward here.)
+
+---
+*Reminder to self: don't apply cold — ship a project first, then intros + application together to build the "buzz."*
+`;
+SHEETS.notes = `# Joe Liemandt & Alpha School — Research Notes
+*Compiled from voice summary + 10 pages of handwritten notes. Added to the project June 2026.*
+
+> **Cross-check vs. our verified research (quick reconcile):**
+> - **The Andrew Price flag is correct.** Our research confirms **Andrew "Andy" Price** is MacKenzie Price's husband, co-founder of **2 Hour Learning**, and CFO across Trilogy/Crossover/IgniteTech/ESW. **Joe Liemandt is NOT MacKenzie's husband** — he's the Trilogy founder, Alpha's Principal, and the financier/backer of the underlying tech. So the notes' "McKenzie's husband / co-founder of alpha" conflates Liemandt with Andrew Price. Alpha's co-founders are **MacKenzie Price + Brian Holtz** (2014).
+> - **Money figures:** the notes say "over $100M into Alpha." Our sourced figure is that Liemandt "took a **billion dollars** out of my software company" in 2022 (his Colossus quote) as the broader capital backstop. Both can be true (>$100M into Alpha products specifically vs. ~$1B war chest). Treat the market figures ($50B private-school market, Texas $100B, Bloomberg "$200B" vouchers) as your-notes-as-written until sourced.
+> - **The Navy SEAL exchange program checks out** with what you told me earlier and with Trilogy University (a ~3-month boot camp modeled on SEAL training).
+
+---
+
+## Part 1 — Joe Liemandt, Chronological
+
+### Childhood & family
+- Went to Catholic school.
+- Childhood friend named Mark. The two took first and second in ski competitions. Their fathers set the standard: if you're going to ski, you take first and second. That framing — win or don't bother — carried forward.
+- His father died at some point (timing unclear in notes).
+
+### High school
+- Didn't like school. Almost expelled for skipping constantly.
+- Wrote a paper on AI in high school. One paragraph covered neural nets and concluded they were "a decade away."
+
+### Stanford
+- Got in, attended.
+- Ran a fund as part of the Stanford endowment.
+- Test-taking habit: he'd complete only as much of an exam as he needed to clear ~85%, then walk out.
+- Sat in Stanford's math library reading every paper on configurators (the domain Trilogy would later attack).
+- Read about Buffett and dismissed him — "that guy is an idiot" — before the dot-com crash. (He later reversed hard; see his learning practice below.)
+- Took classes but didn't care for it.
+
+### Trilogy (founding)
+- Dropped out of Stanford to start Trilogy, a configuration software company.
+- Started with ~5 people; ~3 dropped out.
+- Lived in a garage, slept on the floor, ate ramen. Built it up month over month.
+
+### Corporate world & influences
+- Moved in a big-corporate-executive world; friendly with people like Jack Welch (GE).
+- Every year he'd go up and spend a few days with a GE executive.
+- Worked with Navy SEALs — ran a ~3-month program modeled on SEAL Hell Week, with an exchange element.
+
+### From software to private equity
+- After the dot-com bust, a large supply of SaaS companies became cheap to acquire.
+- Trilogy got very good operationally — running acquired companies and pulling cash out of them.
+- Began rolling up companies; the operation turned into a PE-style firm.
+- Became a father around 25 (or "~25 years ago" — ambiguous in notes).
+- Youngest person on the Forbes list at the time.
+- Hired MacKenzie Price at Trilogy.
+- Dropped out of the public limelight to run the PE work.
+
+### Austin, MacKenzie Price & Alpha (~7–8 years ago)
+- Moved to Austin. Stayed friends with MacKenzie Price.
+- Was trying to out-recruit Bill Gates on talent.
+- MacKenzie had started Alpha School. She spent two years trying to get Joe to enroll his kids.
+- He finally did. The tell: Alpha's session ran later than his kids' other school, and his kids loved Alpha so much they asked to go back instead of going to summer camp. That's when he decided they had something real.
+- Tried to get Austin public schools to reform. His words: "super unsuccessfully."
+- Before committing to the education push, he talked to ~a dozen billionaires who'd each spent over a billion on education. Every one told him not to do it — low ROI.
+
+### The AI turn
+- When modern AI arrived, he saw the path to scale Alpha from a single campus to the world.
+- Put over $100M into Alpha (Alpha Read, Alpha Write, etc.).
+
+### Joe's personal operating system (how he learns)
+- Runs a custom Twitter/X timeline of specific authors, writers, and articles.
+- Reads an article, then summarizes it into a "brain lift" — a context doc / warehouse built for AIs to consume.
+- Aims for one DOK-3 insight per day (see Depth of Knowledge below).
+- Spends ~1 hour a day reading, then summarizing the work of the person he's studying.
+- Example of the method (via Alpha High's "Be an expert"): watch Buffett interviews and predict what he'll say before he says it.
+
+### Joe's biggest tasks now
+1. Recruit top 1% talent.
+2. Build a software product and a school product — system building.
+
+---
+
+## Part 2 — Alpha School, The Model
+
+### Core structure
+- Physical campuses. Two hours of academics in the morning (some notes say three-hour learning block in the morning).
+- AI generates each kid's lessons off their interest graph and knowledge graph.
+- Afternoons: project-based work and life skills.
+- School day split: Morning = academics. Afternoon = project-based / life skills.
+- Kids "crush" academics in ~2 hours a day.
+- Claim: kids love school more than vacation. High standards → kids love school.
+- Subject order: Math → Science → Language → Reading.
+- Average grade level per subject takes ~20–30 hours to master; done inside a 180-day year.
+
+### The closed-loop feedback system
+- Learning scientists make the lessons.
+- ↓ Kids do the apps.
+- First-time-through target: ~90% right. Track how long to get through.
+- ↓ Standardized tests confirm.
+- The AI-generated lesson software is only ~10% of the thing. The other ~90% is the motivation model wrapped around it.
+
+### Motivation model (the ~90%)
+- Survey kids every 6 weeks.
+- Pay kids; leaderboards, prizes, recognition.
+- Use money for daily habits — build the habit (video games / cash as "super enjoyable motivations"). Example: Alpha kids went to Ukraine to teach refugees, hit motivation problems, so $2.50/day was used to build the habit.
+- Use money to change someone's intrinsic view of themselves — e.g., every middle schooler gets $1,000 for hitting top 1%.
+- $100 for a 100 on the Texas STAAR.
+- Guardrails: kids must actually learn; no black-hat / addiction-type techniques.
+- "Be a creator, not a consumer."
+
+### Learning science principles referenced
+- Bloom's 2 Sigma problem.
+- Mastery-based learning.
+- Spaced repetition.
+- Zone of proximal development — target 80–85% correct.
+- Desirable difficulty vs. productive struggle.
+- Cognitive load theory (working memory vs. long-term); e.g., memorizing multiplication tables to reduce cognitive load.
+- Fact fluency: 3rd-grade fact fluency can be done in ~11 hours, saving potentially ~32 hours of downstream effort. With it, 4th-grade math takes ~30 hours instead of ~62.
+- Disengagement threshold: 66% or less.
+- Depth of Knowledge (DOK): DOK1 = facts; DOK2 = summarize the facts; DOK3 = insights; DOK4 = new knowledge / original insights.
+- Direct Instruction beats Inquiry Learning — "way better."
+- Framing: a teacher in front of a classroom is the "worst" way to learn — only better than no school at all.
+- Since the advent of learning science, many papers show learning can be done "2, 5, 10x" faster.
+- ~40–50 years ago universities started studying learning science.
+- Ed-tech failure rate: ~95%. "Ed tech failed."
+- Transparency: every parent can see every lesson and every read article.
+
+### Metrics & results claimed
+- Average freshman SAT 1400+ → 1500+ by senior year.
+- On the Texas STAAR (300-point scale): average student rises ~1 point; top students ~6 points (top 99%); growth slows in middle school.
+- With Alpha Anywhere, learning was cut 1.6x early on.
+- 3rd graders solve Rubik's cubes.
+
+### The school network / brands
+- Texas Sports Academy — ~40–50% of the market is kids who love sports. Baseball team just beat IMG. Basketball is #1. "Academics 10x better than IMG." Parent pay ~$500/mo with Texas vouchers (cheaper than sports academies generally).
+- Gifted academy — for the ~1/20 kids who love school; targeting the 100,000 smartest kids; "last humans smarter than AI." Montessori–GT ~$20–25K per kid per year.
+- Math Academy — best math.
+- Physics Academy — best physics.
+- Founders School — high school.
+- Alpha High — "Be an expert" (the Buffett-prediction method).
+- Alpha Core — life-skills learning.
+- Alpha X — projects.
+- Arts / music / theater school.
+- A SpaceX-linked school down in Brownsville — half SpaceX kids, half local kids on scholarship.
+- Mid-2025: Alpha took over the worst school in Austin (bottom 10% academically) as a public-school pilot.
+- Marketing line: "we educate the parents."
+
+### Economics & market
+- Private school market: ~$50B.
+- ~1 million kids could afford a $50K/yr school.
+- Texas spends ~$100B on education.
+- Many vouchers being released; Bloomberg "$200B" figure noted.
+- Goal cited elsewhere: 10,000 buildings/schools.
+- Put over $100M into Alpha.
+- The world spends $1T+/yr on education.
+- 2.5 billion kids in the world.
+- Vouchers/funding referenced: ESA/ECAA-type vouchers, SES-based / time-based framing, MTSS Tier 3, IEP plans. Bottom 10% is a motivation problem.
+
+### Tech & tooling
+- Alpha Anywhere — software to reach everyone; AI-generative, lesson-specific to the kid's interests and knowledge.
+- Limitless — product/launch (2-hour model).
+- Developing an EDU LLM (education-specific model).
+- Video-game developers are building a free-to-play, free-to-learn game around these concepts.
+- Running randomized controlled trials on ed-tech.
+- Dream Launcher → vision board, ikigai, 168 hours.
+- Ambition: sometime in the next 5 years, a tablet teaches every kid at low cost in 2 hours a day — around the world.
+
+### Philosophy / values
+- AI can be a good tool, not an evil one.
+- Storytelling — make the audience the hero.
+- The key to happiness is contributing to your community.
+- Maria Montessori was a proponent of paying kids for teaching.
+- "Kids must love school."
+- Joe's line: "it's spinach" (i.e., good for you).
+- Idea: a children's book for Alpha School — points for parents, points for kids, "Limitless" values.
+
+### People & sources referenced
+- Michael B. Horn — Harvard.
+- MacKenzie Price — co-founder / Trilogy hire.
+- IXL Learning.
+- The Math Academy Way — book on learning science.
+- Western Governors University — mastery model.
+- BASIS schools.
+- Fusion Academy.
+- Traditional "bundle" (the standard school package being unbundled).
+- "Those that succeed in the current system: high IQ + Big Five conscientiousness."
+- Teacher spec / job description: domain expert, able to teach, able to connect with and motivate students, parents, and admin.
+- Guides have "confidence anchors" with kids.
+- "Common core" listed as: reading, writing, arithmetic, math, science, language, English.
+- Ian school district — a great Austin district used as benchmark. (If this points to the well-known high-performer, it may be **Eanes ISD** — worth confirming.)
+- Parents need two things: a reference, and to see their kid do something they can't.
+- K–8 is often interest-led.
+- "Top 20 track" (colleges).
+
+---
+
+## Part 3 — Raw Notes, Verbatim (nothing omitted)
+*Transcribed page by page. \`[?]\` marks an uncertain read. Shorthand preserved.*
+
+### Page 1 (IMG_4322)
+- With alpha anywhere learning was cut 1.6x in the beginning
+- The key to happiness is contributing to my community
+- Maria Montessori was a proponent of $ to kids for teaching
+- IXL learning
+- Blooms 2 sigma
+- 10,000 learning science papers
+- The math academy way — Book on learning science
+- $1T+/yr on education
+- put in over 100M into Alpha read alpha write etc
+
+### Page 2 (IMG_4321)
+- Closed loop feedback system
+- Learning scientists make lessons → Kids do [their?] apps
+- 1st time 90% right? How long to get through → Standardized tests?
+- Inquiry learning vs [Direct instruction] (circled) — way better
+- Fact fluency saves time (can do 3rd grade fact fluency in 11 hrs, saves potentially ~32 hrs of effort)
+- Then 4th grade math is 30 hrs instead of 62
+- Every parent can see every lesson, every read article
+- Laws, values, customs, curriculum
+- Developing a[n] EDU LLM
+- Dream Launcher → vision board, ikigai, 168 hours
+
+### Page 3 (IMG_4320)
+- Ed tech failure rate → 95%
+- Learning science — mastery based learning
+- spaced repitition
+- Zone of proximal development
+- Avg freshman SAT 1400+ → HS 1500+
+- Michael B Horn — Harvard
+- SES based / Time based
+- ECAA vouchers
+- 50%[?] b1[?] (percentage uncertain)
+- Traditional bundle
+- Western gov university — Mastery
+- BASIS schools
+- Fusion Academy
+- Alpha core — life skills learning
+- Teacher spec — job description / skill sets
+- Domain expert, able to teach, connect & motivate students, parents, admin
+
+### Page 4 (IMG_4319)
+- "Those that succeed in current system: high IQ + Big 5 conscientiousness"
+- IEP plans
+- Sports schools cheaper — $500/mo parent pay w/ Tx vouchers
+- Montessori – GT around 20–25K price per kid per yr
+- Math academy — Best Math
+- Physics academy — Best Physics
+- 10,000 buildings/schools
+- Private school market is $50B
+- 1 million kids could afford 50K/yr school
+- Texas spends 100B on education
+- Many vouchers being released — Bloomberg "$200B"
+- Randomized control trials on ed-tech
+- Memorizing multiplication tables for cognitive load
+- MTSS [crossed out] → Bottom 10% Motivation problem — Tier 3
+- Pilots in public schools
+
+### Page 5 (IMG_4318)
+- Childrens Book for Alpha School
+- Points for Parents | Points for Kids
+- AI can be good tool not evil bad
+- Limitless Alpha values
+- Storytelling — make audience Hero
+- Learning science:
+- Zone of proximal development: 80–85% correct
+- 66% or less disengagement
+- Desirable difficulty vs productive struggle
+- Love school more than vacation
+- crush education/academics in 2 hours a day
+- High standards → Kids love school
+- Math → Science → Language → Reading
+- Avg HS goes up 1 point on a 300 point scale
+- Slows in middle school. Top 99% (6 points)
+- $100 for a 100 on Texas STAR
+
+### Page 6 (IMG_4317)
+- school down in brownsville — half local kids, half [scholarship]
+- spaceX kids
+- K–8 is often interest
+- Parents need two things — reference, see kids do something their kid can't
+- GT kids "last humans smarter than AI"
+- "Top 20 track (colleges)" — 3 hour learning in morning
+- Alpha X projects
+- Joe's biggest tasks:
+- Recruit top 1% talent | Build a software product + school product (System building)
+- Joe wrote a paper on AI in HS that had a paragraph on neural nets saying "this is a decade away"
+- Went to catholic school
+- Co-founder of alpha — "Kids must love school"
+- McKenzie's husband
+- Joe — its spinach
+- Days:
+- Limitless launch
+- 2 hours
+- Avg grade lvl subject 20–30 hrs to master in 180 days
+
+### Page 7 (IMG_4316)
+- "Be a creator not a consumer"
+- Survey kids every 6 weeks
+- Pay kids, leaderboards, prizes, recognition
+1. Use money for daily habits [side note: video games f cash — super enjoyable motivations]
+- Ian school district → great school district in Austin, they are benchmark.
+- Alpha kids went to Ukraine to teach refugees. Had motivation problems so $2.50 a day to build habit
+2. Use money to change someone['s] intrinsic view of themselves
+- Every middle schooler gets $1000 for top 1%
+- Alpha just took over the worst school in austin mid 2025 — worst 10% academically
+- – Kids must learn
+- – No black hat addiction type techniques
+- Texas Star — standardized test
+- Arts music theater school
+
+### Page 8 (IMG_4315)
+- "one of the first insights of learning science was: teacher in front of classroom is 'worst' way to learn — only better than no school"
+- There have been many papers published since advent of learning science showing learning can be done "2, 5, 10x" faster
+- Gave a talk to the ministers of education in many many countries
+- "The parents don't want you to send the kids home early"
+- "common core" — reading, writing, arithmetic, math, science, language, english
+- "Some time in next 5 years tablet teaches all kids at $ in 2 hours a day"
+- "around the world" — where else?
+- School day: Morning = Academics | Afternoon = Project Based / Life skills
+- 3rd graders do rubiks cubes
+- Guides have confidence anchors with kids
+
+### Page 9 (IMG_4313)
+- Learning science concept "depth of knowledge"
+- DOK1: Facts
+- DOK2: Summarize the facts
+- DOK3: Insights
+- DOK4: New Knowledge — original insights
+- Basically has a custom twitter timeline of authors/writers articles
+- He reads the article then summarizes it into "brain lift" context doc/warehouse for AIs.
+- Tries to have one DOK3 insight a day
+- Used to sit in Stanfords Math Library and read every paper on configurators (trilogy company)
+- Cognitive load theory (working memory vs long term)
+- Joe almost expelled from high school for skipping all the time
+- Joe tried to work with austin public schools to reform them "super unsuccessfully"
+- 2.5 Billion kids in the world
+- ~40–50 years ago universities started learning science
+
+### Page 10 (IMG_4312)
+- Texas Sports Academy — ~40–50% of market: kids who love sports
+- Gifted academy — 1/20 kids loves school
+- Baseball team just beat IMG
+- Basketball is #1
+- "Academics 10x better than IMG"
+- academics — 100,000 smartest kids
+- Founders school — highschool
+- "Ed tech failed"
+- Video game developers building video game w/ these concepts — free-to-play, free to learn
+- Before Joe started he talked to "a dozen" billionaires who had spent over a billion in education
+- every one said don't do it, low ROI
+- Was running fund / part of stanford endowment — read about Buffett and was like "that guy is an idiot" (before .com crash)
+- Alpha High → "Be an expert" — basically watching interviews of Buffett where he predicts what he'll say
+- 1 hour a day reading then summarizing the person you're studying['s] work
+- "Structure created called brain list[/lift]" — Role of human vs AI
+`;
+// minimal markdown -> html
+function md2html(src){
+  const lines = src.split('\n'); let out=[]; let inUl=false;
+  const inline = s => s
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/\[([^\]]+)\]\((https?:[^)]+)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>')
+    .replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>')
+    .replace(/(^|[^*])\*([^*]+)\*/g,'$1<em>$2</em>');
+  const closeUl=()=>{ if(inUl){out.push('</ul>');inUl=false;} };
+  for(let raw of lines){
+    let l=raw.replace(/\s+$/,'');
+    if(/^\s*---\s*$/.test(l)){closeUl();out.push('<hr>');continue;}
+    if(/^#### /.test(l)){closeUl();out.push('<h3>'+inline(l.replace(/^#### /,''))+'</h3>');continue;}
+    if(/^### /.test(l)){closeUl();out.push('<h3>'+inline(l.replace(/^### /,''))+'</h3>');continue;}
+    if(/^## /.test(l)){closeUl();out.push('<h2>'+inline(l.replace(/^## /,''))+'</h2>');continue;}
+    if(/^# /.test(l)){closeUl();out.push('<h2>'+inline(l.replace(/^# /,''))+'</h2>');continue;}
+    if(/^\s*[-*] /.test(l)){ if(!inUl){out.push('<ul>');inUl=true;} out.push('<li>'+inline(l.replace(/^\s*[-*] /,''))+'</li>'); continue; }
+    if(l.trim()===''){closeUl();continue;}
+    closeUl(); out.push('<p>'+inline(l)+'</p>');
   }
-  var tick = false;
-  addEventListener('scroll', function () {
-    if (tick) return; tick = true;
-    requestAnimationFrame(function () { mark(); tick = false; });
-  }, { passive: true });
-  mark();
-})();
+  closeUl(); return out.join('\n');
+}
+document.querySelectorAll('.md[data-doc]').forEach(el=>{ el.innerHTML = md2html(SHEETS[el.dataset.doc]||''); });
+
+// tabs
+const TABS=[['overview','Overview'],['jobs','Job Demand'],['money','Money'],['research','Research'],['parents',"Parents' Q&A"],['hiring','Hiring'],['buzz','Buzz'],['ideas','Ideas'],['notes','Notes'],['todo','To-Do'],['sector','Sector']];
+const nav=document.getElementById('nav');
+TABS.forEach(([id,label])=>{const b=document.createElement('button');b.textContent=label;b.dataset.id=id;b.onclick=()=>go(id);nav.appendChild(b);});
+function go(id){
+  document.querySelectorAll('section').forEach(s=>s.classList.toggle('on',s.id===id));
+  document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.id===id));
+  window.scrollTo(0,0);
+}
+go('overview');
+document.getElementById('foot').textContent='Sources: alpha.school, Crossover/ed.crossover.com (live), Colossus, WIRED, 404 Media, Wikipedia, your info-session doc. Pulled June 2026. Verify figures before quoting live.';
+
+// todo (localStorage)
+const KEY='alphaDashTodos';
+const SEED=[
+ 'Verify LinkedIn for NYC team (Nancy Torvund, Julianne Braime)',
+ 'Re-pull Crossover board monthly — roles/cities change fast',
+ 'Confirm Boca Raton, Park City, Kirkland campus details when pages load',
+ 'Populate the Sector tab (Khan, Synthesis, Acton, microschools)'
+];
+function loadTodos(){ try{return JSON.parse(localStorage.getItem(KEY))||null}catch(e){return null} }
+let todos = loadTodos() || SEED.map(t=>({t,done:false}));
+function saveTodos(){ localStorage.setItem(KEY, JSON.stringify(todos)); }
+function renderTodos(){
+  const ul=document.getElementById('todoList'); ul.innerHTML='';
+  todos.forEach((it,i)=>{
+    const li=document.createElement('li'); if(it.done)li.className='done';
+    li.innerHTML='<input type="checkbox" '+(it.done?'checked':'')+'><span></span><span class="x">×</span>';
+    li.querySelector('span').textContent=it.t;
+    li.querySelector('input').onchange=()=>{todos[i].done=!todos[i].done;saveTodos();renderTodos();};
+    li.querySelector('.x').onclick=()=>{todos.splice(i,1);saveTodos();renderTodos();};
+    ul.appendChild(li);
+  });
+}
+function addTodo(){ const inp=document.getElementById('todoInput'); const v=inp.value.trim(); if(!v)return; todos.unshift({t:v,done:false}); inp.value=''; saveTodos(); renderTodos(); }
+renderTodos();
 </script>
 
+<script>
+/* Added on top of James's file — nothing above was changed.
+   Links here point at the sibling files in his local folder; on the web
+   they would 404, so they are flagged and made inert instead. */
+(function () {
+  var els = document.querySelectorAll('a[href]');
+  for (var i = 0; i < els.length; i++) {
+    var h = els[i].getAttribute('href');
+    if (!h || /^(https?:|mailto:|#|\/)/.test(h)) continue;
+    els[i].classList.add('islocal');
+    els[i].removeAttribute('href');
+  }
+})();
+</script>
 </body>
 </html>
