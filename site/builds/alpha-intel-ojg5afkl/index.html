@@ -1,0 +1,622 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Alpha School — Intel</title>
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
+<meta name="referrer" content="no-referrer">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Serif:ital,wght@0,400;0,500;1,400&display=swap">
+
+<style>
+/* ═══════════════════════════════════════════════════════════════════════
+   Alpha School — Intel.  Private research dashboard.
+   Ink ground, editorial serif on a monospace grid; forest and earth used
+   only for rules, ticks and flags. Palette from JF_Brand_System.
+   ═══════════════════════════════════════════════════════════════════════ */
+:root {
+  --ink:     #0B0B0C;
+  --panel:   #121214;
+  --panel2:  #17171A;
+  --fg:      #F2F0EA;
+  --muted:   #948F86;
+  --faint:   #5E5A54;
+  --rule:    rgba(242,240,234,0.13);
+  --hair:    rgba(242,240,234,0.06);
+  --forest:  #8AA87B;
+  --earth:   #BE9A73;
+  --red:     #C97A72;
+
+  --display: 'Instrument Serif', Georgia, serif;
+  --serif:   'IBM Plex Serif', Georgia, serif;
+  --mono:    'IBM Plex Mono', ui-monospace, Menlo, monospace;
+  --pad: clamp(20px, 4vw, 44px);
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+html { background: var(--ink); -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
+body { background: var(--ink); color: var(--fg); font-family: var(--serif); font-size: 16px; line-height: 1.62; }
+a { color: inherit; }
+h1, h2, h3 { font-weight: 400; margin: 0; }
+
+/* a barely-there graph ground */
+body::before {
+  content: ""; position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: .5;
+  background-image: linear-gradient(to right, var(--hair) 1px, transparent 1px),
+                    linear-gradient(to bottom, var(--hair) 1px, transparent 1px);
+  background-size: 112px 112px;
+}
+body > * { position: relative; z-index: 1; }
+
+.wrap { max-width: 1080px; margin: 0 auto; padding: 0 var(--pad); }
+.mono { font-family: var(--mono); font-size: 10.5px; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); }
+
+/* ── masthead ─────────────────────────────────────────────────────────── */
+.top { border-bottom: 1px solid var(--rule); }
+.top__in { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 0; }
+.top a { text-decoration: none; }
+.top a:hover { color: var(--fg); }
+
+.head { padding: clamp(40px, 7vw, 74px) 0 clamp(24px, 4vw, 40px); }
+.head h1 { font-family: var(--display); font-size: clamp(44px, 8vw, 92px); line-height: .96; letter-spacing: -.015em; }
+.head h1 em { font-style: italic; color: var(--muted); }
+.head .sub { margin: 16px 0 0; color: var(--muted); max-width: 56ch; font-size: 17px; }
+
+.private {
+  display: flex; gap: 12px; align-items: flex-start;
+  margin: 26px 0 0; padding: 13px 16px;
+  border: 1px solid rgba(201,122,114,.4); border-left-width: 2px;
+  background: rgba(201,122,114,.06); border-radius: 2px;
+  font-size: 13.5px; line-height: 1.55; color: #E4D9D5;
+}
+.private b { color: var(--red); font-weight: 500; }
+
+/* ── section nav ──────────────────────────────────────────────────────── */
+.rail { position: sticky; top: 0; z-index: 20; background: rgba(11,11,12,.93); backdrop-filter: blur(8px); border-bottom: 1px solid var(--rule); }
+.rail__in { display: flex; gap: 4px; overflow-x: auto; padding: 9px 0; scrollbar-width: none; }
+.rail__in::-webkit-scrollbar { display: none; }
+.rail a {
+  flex: none; text-decoration: none; padding: 6px 11px; border-radius: 2px;
+  font-family: var(--mono); font-size: 10px; letter-spacing: .16em; text-transform: uppercase;
+  color: var(--muted); white-space: nowrap; transition: color .18s, background .18s;
+}
+.rail a:hover { color: var(--fg); }
+.rail a.on { color: var(--ink); background: var(--fg); }
+
+/* ── sections ─────────────────────────────────────────────────────────── */
+section { padding: clamp(48px, 7vw, 86px) 0 0; scroll-margin-top: 56px; }
+.sec__rule { display: flex; align-items: baseline; justify-content: space-between; gap: 20px; border-top: 1px solid var(--fg); padding-top: 11px; }
+.sec__h { font-family: var(--display); font-size: clamp(30px, 4.6vw, 52px); line-height: 1.02; margin: 14px 0 0; }
+.sec__lede { color: var(--muted); margin: 12px 0 0; max-width: 66ch; }
+h3.sub { font-family: var(--display); font-size: clamp(20px, 2.6vw, 27px); margin: clamp(30px,4vw,44px) 0 10px; }
+
+p { margin: 1em 0 0; }
+p:first-child { margin-top: 0; }
+strong, b { font-weight: 500; color: #fff; }
+em { font-style: italic; }
+
+/* ── tiles ────────────────────────────────────────────────────────────── */
+/* ruled per cell, so a short last row just ends instead of leaving filled slots */
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0; border-top: 1px solid var(--rule); border-left: 1px solid var(--rule); margin-top: 26px; }
+.tile { border-right: 1px solid var(--rule); border-bottom: 1px solid var(--rule); padding: 20px 16px 17px; }
+/* the eight-up snapshot gets a fixed count so it lands as two full rows */
+.tiles--8 { grid-template-columns: repeat(2, 1fr); }
+@media (min-width: 620px) { .tiles--8 { grid-template-columns: repeat(4, 1fr); } }
+.tile .n { font-family: var(--display); font-size: clamp(28px, 3.6vw, 42px); line-height: 1; letter-spacing: -.01em; }
+.tile .n small { font-size: .5em; color: var(--muted); letter-spacing: 0; }
+.tile .l { font-family: var(--mono); font-size: 9.5px; letter-spacing: .13em; text-transform: uppercase; color: var(--muted); margin-top: 9px; line-height: 1.45; }
+.tile.hot .n { color: var(--forest); }
+
+/* ── panels, notes, quotes ────────────────────────────────────────────── */
+.panel { background: var(--panel); border: 1px solid var(--rule); border-radius: 2px; padding: 20px 22px; margin-top: 20px; }
+.note { border-left: 2px solid var(--forest); background: var(--panel); padding: 14px 18px; margin-top: 20px; font-size: 14.5px; line-height: 1.6; border-radius: 0 2px 2px 0; }
+.note.warn { border-left-color: var(--earth); }
+.note.bad  { border-left-color: var(--red); }
+.note b { color: #fff; }
+
+blockquote { margin: 22px 0 0; padding-left: 20px; border-left: 1px solid var(--rule); font-family: var(--display); font-style: italic; font-size: clamp(19px, 2.4vw, 25px); line-height: 1.34; color: #EDE9E1; }
+blockquote cite { display: block; margin-top: 10px; font: 400 10.5px/1 var(--mono); letter-spacing: .18em; text-transform: uppercase; color: var(--muted); font-style: normal; }
+
+ul { margin: 14px 0 0; padding: 0; list-style: none; }
+li { position: relative; padding-left: 18px; margin: 9px 0; }
+li::before { content: "—"; position: absolute; left: 0; color: var(--faint); }
+ul.plain li::before { content: ""; }
+
+/* ── tables ───────────────────────────────────────────────────────────── */
+.scroll { overflow-x: auto; margin-top: 20px; }
+table { width: 100%; border-collapse: collapse; font-size: 14.5px; min-width: 480px; }
+th { text-align: left; font: 500 9.5px/1.4 var(--mono); letter-spacing: .16em; text-transform: uppercase; color: var(--muted); padding: 0 14px 9px 0; border-bottom: 1px solid var(--rule); }
+td { padding: 11px 14px 11px 0; border-bottom: 1px solid var(--hair); vertical-align: top; }
+tr:last-child td { border-bottom: 0; }
+td.num { font-family: var(--mono); font-size: 13px; white-space: nowrap; }
+td.num.up { color: var(--forest); }
+
+/* ── chips ────────────────────────────────────────────────────────────── */
+.chip { display: inline-block; font: 500 9px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; padding: 4px 7px; border: 1px solid var(--rule); border-radius: 2px; color: var(--muted); white-space: nowrap; }
+.chip.hi   { color: var(--forest); border-color: rgba(138,168,123,.5); }
+.chip.med  { color: var(--earth);  border-color: rgba(190,154,115,.5); }
+.chip.lo   { color: var(--red);    border-color: rgba(201,122,114,.5); }
+.chip.claim{ color: var(--earth);  border-color: rgba(190,154,115,.5); }
+
+/* ── two-up (content pairs, not a page column) ────────────────────────── */
+.pair { display: grid; grid-template-columns: 1fr; gap: 1px; background: var(--rule); border: 1px solid var(--rule); margin-top: 22px; }
+@media (min-width: 760px) { .pair { grid-template-columns: 1fr 1fr; } }
+.pair > div { background: var(--ink); padding: 20px 22px; }
+.pair h4 { margin: 0 0 10px; font: 500 10px/1 var(--mono); letter-spacing: .18em; text-transform: uppercase; }
+.pair .up h4 { color: var(--forest); }
+.pair .down h4 { color: var(--red); }
+.pair li { font-size: 14.5px; }
+
+/* ── project cards ────────────────────────────────────────────────────── */
+.works { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; margin-top: 24px; }
+.work { display: flex; flex-direction: column; background: var(--panel); border: 1px solid var(--rule); border-radius: 2px; padding: 20px; text-decoration: none; transition: border-color .2s, transform .2s; }
+a.work:hover { border-color: var(--fg); transform: translateY(-2px); }
+.work__k { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.work h4 { font-family: var(--display); font-size: 23px; margin: 13px 0 0; font-weight: 400; }
+.work p { font-size: 14px; color: var(--muted); margin: 8px 0 0; }
+.work .go { margin-top: 16px; font: 500 10px/1 var(--mono); letter-spacing: .18em; text-transform: uppercase; }
+
+/* ── sources ──────────────────────────────────────────────────────────── */
+.srcs { columns: 1; margin-top: 22px; font-size: 13.5px; }
+@media (min-width: 740px) { .srcs { columns: 2; column-gap: 44px; } }
+.srcs li { break-inside: avoid; margin: 0 0 11px; }
+.srcs a { color: var(--muted); text-decoration: none; border-bottom: 1px solid var(--hair); }
+.srcs a:hover { color: var(--fg); border-bottom-color: var(--fg); }
+
+footer { margin-top: clamp(56px, 8vw, 96px); border-top: 1px solid var(--rule); padding: 30px 0 56px; color: var(--muted); font-size: 13.5px; }
+</style>
+</head>
+<body>
+
+<div class="top"><div class="wrap top__in">
+  <a class="mono" href="/builds/">← Builds</a>
+  <span class="mono">Private · not linked, not indexed</span>
+</div></div>
+
+<div class="wrap">
+  <header class="head">
+    <h1>Alpha School<br><em>the intel</em></h1>
+    <p class="sub">Everything I know about the company, the money, the machine that
+      hires, and the way in. Compiled from public sources, one parent info session,
+      and ten pages of my own notes.</p>
+    <p class="mono" style="margin-top:20px">Compiled June 2026 · last worked August 2026 · James Floyd</p>
+
+    <div class="private">
+      <span class="mono" style="color:var(--red);flex:none;padding-top:2px">⚠</span>
+      <div><b>This page is unlisted, not secret.</b> It carries no index, no links point
+      to it, and the address is deliberately unguessable — but anyone holding the URL
+      can read it, and this site's robots file welcomes every crawler including the AI
+      trainers. Don't paste the link anywhere you wouldn't paste the notes.</div>
+    </div>
+  </header>
+</div>
+
+<nav class="rail"><div class="wrap rail__in">
+  <a href="#snapshot">Snapshot</a>
+  <a href="#company">The company</a>
+  <a href="#money">The money</a>
+  <a href="#growth">Growth</a>
+  <a href="#hiring">The gauntlet</a>
+  <a href="#parents">Parents' room</a>
+  <a href="#read">The read</a>
+  <a href="#wayin">My way in</a>
+  <a href="#sources">Sources</a>
+</div></nav>
+
+<div class="wrap">
+
+<!-- ═══ SNAPSHOT ═══════════════════════════════════════════════════════ -->
+<section id="snapshot">
+  <div class="sec__rule"><span class="mono">§ 00 — Snapshot</span><span class="mono">Their numbers</span></div>
+  <h2 class="sec__h">Where it stands</h2>
+  <p class="sec__lede">The figures Alpha publishes about itself, plus what the job board
+    and the press add. Anything sourced to their own internal data carries a flag.</p>
+
+  <div class="tiles tiles--8">
+    <div class="tile"><div class="n">13</div><div class="l">campuses open now</div></div>
+    <div class="tile"><div class="n">24</div><div class="l">opening Fall 2026</div></div>
+    <div class="tile hot"><div class="n">~50</div><div class="l">campuses targeted 2026–27 · Axios</div></div>
+    <div class="tile"><div class="n">38</div><div class="l">open Alpha roles</div></div>
+    <div class="tile"><div class="n">67</div><div class="l">roles across the Crossover board</div></div>
+    <div class="tile"><div class="n">80k</div><div class="l">guide applicants last year</div></div>
+    <div class="tile"><div class="n">97<small>%</small></div><div class="l">re-enrolment · their claim</div></div>
+    <div class="tile hot"><div class="n">$1B</div><div class="l">Liemandt capital, 2022 — funding, not revenue</div></div>
+  </div>
+
+  <div class="note warn"><b>Read every number twice.</b> "2× faster," "top 1% nationwide,"
+    "97% re-enrolment" and the MAP percentiles all come from Alpha's own internal data or
+    the info session. No independent outcome study exists. Tuition and job pay are public
+    and solid; student counts are estimates.</div>
+
+  <blockquote>We're using artificial intelligence to raise human intelligence.
+    <cite>MacKenzie Price, co-founder</cite></blockquote>
+</section>
+
+<!-- ═══ COMPANY ════════════════════════════════════════════════════════ -->
+<section id="company">
+  <div class="sec__rule"><span class="mono">§ 01 — The company</span><span class="mono">Structure &amp; control</span></div>
+  <h2 class="sec__h">It is a holding company with schools attached</h2>
+  <p class="sec__lede">No official org chart exists publicly. This is reconstructed from
+    Dan Meyer, Bucks County Beacon, Wikipedia and Colossus. Critics call it a
+    Liemandt-controlled keiretsu, and the structure itself is the controversy.</p>
+
+  <h3 class="sub">The loop</h3>
+  <div class="panel" style="font-family:var(--mono);font-size:12.5px;line-height:2.1;letter-spacing:.02em;color:#DDD8D0">
+    Joe&nbsp;Liemandt&nbsp;→&nbsp;<b>ESW&nbsp;Capital</b>&nbsp;(private&nbsp;equity,&nbsp;the&nbsp;top)<br>
+    &nbsp;&nbsp;└─ owns the for-profit vendors:<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:var(--forest)">2 Hour Learning</span> — the platform · <span style="color:var(--forest)">Crossover</span> — all hiring<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:var(--forest)">Trilogy Enterprises</span> — finance · <span style="color:var(--forest)">YYYYY&nbsp;LLC</span> — G&amp;A<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:var(--forest)">Future of Education LLC</span> — advocacy / political<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↓ &nbsp;sell platform, hiring, finance, G&amp;A to<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:var(--earth)">the non-profit schools</span> — Alpha (13+ campuses, Alpha High)<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:var(--earth)">sister brands on the same engine</span> — GT School, NextGen,<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Nova, Texas Sports Academy, Montessorium, Waypoint, Unbound<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↳ &nbsp;money and control return to the same circle
+  </div>
+
+  <div class="note bad"><b>The critique, stated plainly.</b> Non-profit schools contract
+    services from for-profit vendors owned and managed by the same people — 100% of
+    Unbound Academy's named board is affiliated with the vendors. Know it cold, and
+    never take a job whose brief is defending it.</div>
+
+  <h3 class="sub">The controlling circle</h3>
+  <div class="scroll"><table>
+    <tr><th>Person</th><th>Seat</th><th>Why they matter</th></tr>
+    <tr><td><b>Joe Liemandt</b></td><td>Principal · ESW Capital</td><td>Owns and controls everything. Systems-obsessed Trilogy DNA, avoids front-of-house. Reach him last, with proof, never a pitch.</td></tr>
+    <tr><td><b>MacKenzie Price</b></td><td>Co-founder · public face</td><td>Podcasts, SXSW, press; hosts <em>Future of Education</em>. This is the front door.</td></tr>
+    <tr><td><b>Andy Price</b></td><td>CFO across Trilogy, Crossover, Ignite, ESW</td><td>Co-founded 2 Hour Learning. Liemandt was best man at their wedding — the inner circle is tiny and personal.</td></tr>
+    <tr><td><b>Brian Holtz</b></td><td>Co-founder</td><td>The educator behind "your standards are too low… talk to me in 100 days."</td></tr>
+    <tr><td><b>Timothy Eyerman</b></td><td>Charter entities</td><td>Heads the charter-school vehicles, e.g. Unbound.</td></tr>
+    <tr><td><b>Dr. Stefanie Baduria</b></td><td>Director of K-8 · board</td><td>Sits on both sides of the vendor/school line.</td></tr>
+  </table></div>
+
+  <h3 class="sub">What the product actually is</h3>
+  <ul>
+    <li><b>"AI" here means adaptive learning apps</b> — IXL / Khan-style — <em>not</em> large language models. The branding outruns the tech, and that gap is where most of the criticism lives.</li>
+    <li><b>2 Hour Learning is the real product.</b> Alpha is the flagship storefront; the engine is licensed across every sister school. "Alpha Anywhere" plus the virtual map says the play is software distribution — the buildings are demos.</li>
+    <li><b>Guides, not teachers.</b> Humans do motivation and life skills; the software does academics. Hired for coaching, not credentials — ex-LA Galaxy director of education, a Harvard learning-design master's, mindset coaches from Nike and the NFL.</li>
+    <li><b>The stated end state:</b> the model out to a billion kids on a sub-$1,000 tablet. The front door costs $40,000 a year.</li>
+  </ul>
+</section>
+
+<!-- ═══ MONEY ══════════════════════════════════════════════════════════ -->
+<section id="money">
+  <div class="sec__rule"><span class="mono">§ 02 — The money</span><span class="mono">Revenue &amp; the backstop</span></div>
+  <h2 class="sec__h">Tuition is the operating layer. The billion is the floor.</h2>
+  <p class="sec__lede">Revenue is solid — published tuition times students. Student counts
+    are estimates and costs are assumptions Alpha has never disclosed, so contribution is
+    directional, not actual.</p>
+
+  <div class="tiles">
+    <div class="tile"><div class="n">~$57.7M</div><div class="l">est. revenue, campuses open now</div></div>
+    <div class="tile"><div class="n">~1,340</div><div class="l">est. students, open now</div></div>
+    <div class="tile"><div class="n">~$16.2M</div><div class="l">est. contribution at 28% · assumption</div></div>
+    <div class="tile"><div class="n">~$105M</div><div class="l">est. revenue incl. Fall 2026 (~2,300 kids)</div></div>
+  </div>
+
+  <blockquote>When GenAI hit in 2022, I took a billion dollars out of my software company.
+    <cite>Joe Liemandt</cite></blockquote>
+
+  <div class="note"><b>Why that line matters more than the model.</b> A billion dollars of
+    owner capital is <em>funding, not recurring revenue</em>. It pays for the multi-city
+    land grab, the subsidised campuses (Brownsville at $10k), R&amp;D and any operating
+    losses — which means Alpha does not need positive tuition margins to keep expanding.
+    Everything below sits on top of that floor.</div>
+
+  <h3 class="sub">Biggest revenue campuses, open now</h3>
+  <div class="scroll"><table>
+    <tr><th>Campus</th><th>Students (est.)</th><th>Tuition</th><th>Revenue (est.)</th><th>Conf.</th></tr>
+    <tr><td>Austin · PreK-8</td><td>~639 <span style="color:var(--faint)">PrivateSchoolReview</span></td><td class="num">$40,000</td><td class="num up">~$25.6M</td><td><span class="chip med">Med</span></td></tr>
+    <tr><td>Alpha High Austin</td><td>~152 <span style="color:var(--faint)">Wikipedia</span></td><td class="num">$40,000*</td><td class="num up">~$6.1M</td><td><span class="chip lo">Low</span></td></tr>
+    <tr><td>San Francisco</td><td>~50 <span style="color:var(--faint)">25–60 range</span></td><td class="num">$75,000</td><td class="num up">~$3.8M</td><td><span class="chip lo">Low</span></td></tr>
+    <tr><td>Miami</td><td>~64 <span style="color:var(--faint)">Niche / US News</span></td><td class="num">$50,000</td><td class="num up">~$3.2M</td><td><span class="chip med">Med</span></td></tr>
+    <tr><td>New York City</td><td>22 now → 160 target <span style="color:var(--faint)">Axios</span></td><td class="num">$65,000</td><td class="num up">~$1.4M → ~$10.4M</td><td><span class="chip hi">High</span></td></tr>
+  </table></div>
+  <p style="color:var(--muted);font-size:13.5px">Austin alone is roughly 44% of estimated
+    open-campus revenue — the flagship carries the network. * tuition assumed.</p>
+
+  <h3 class="sub">How the math works</h3>
+  <ul>
+    <li><b>Revenue</b> = published tuition × students per campus.</li>
+    <li><b>Costs, estimated:</b> guides = (students ÷ ~7) × ~$110k; fixed leadership and ops ~$450k per campus; rent ~$400k per campus; platform and G&amp;A ~15% of revenue.</li>
+    <li><b>The loop, in the P&amp;L:</b> the non-profit schools pay the for-profit vendors, so that "platform and G&amp;A" line is essentially the take flowing back to Liemandt's entities.</li>
+  </ul>
+</section>
+
+<!-- ═══ GROWTH ═════════════════════════════════════════════════════════ -->
+<section id="growth">
+  <div class="sec__rule"><span class="mono">§ 03 — Growth</span><span class="mono">The land grab</span></div>
+  <h2 class="sec__h">A decade as one quiet microschool, then ten cities at once</h2>
+  <p class="sec__lede">Axios, 2 August 2026: scaling from about a dozen campuses to roughly
+    fifty in the 2026 school year. Tuition band confirmed network-wide at $45,000–$75,000.</p>
+
+  <div class="pair">
+    <div class="up">
+      <h4>Live now</h4>
+      <ul class="plain">
+        <li>Austin · Brownsville · Plano · Fort Worth (TX)</li>
+        <li>Scottsdale (AZ) · Santa Barbara · San Francisco · Orange County (CA)</li>
+        <li>Miami · Palm Beach (FL) · New York City · Chantilly (VA/DC)</li>
+      </ul>
+    </div>
+    <div>
+      <h4 style="color:var(--earth)">Opening Fall 2026</h4>
+      <ul class="plain">
+        <li>East Bay · Palo Alto · Santa Monica · Atlanta · Chicago</li>
+        <li>Charlotte · Raleigh · Dorado (PR) · The Woodlands · Southlake</li>
+        <li>Plus Greenwich CT, Boston, and "Alpha Anywhere" virtual</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="note warn"><b>The real bottleneck is real estate.</b> Finding suitable
+    buildings has been hard and has already delayed openings — an on-the-ground constraint
+    on the fifty-campus push, and the most concrete opening for someone who can source
+    space and community in a city they actually live in.</div>
+
+  <h3 class="sub">Alpha New York — the campus on my doorstep</h3>
+  <div class="scroll"><table>
+    <tr><th>Field</th><th>Detail</th></tr>
+    <tr><td>Address</td><td>180 Maiden Lane, New York 10038 — FiDi, by the East River, a block from Imagination Playground</td></tr>
+    <tr><td>Grades &amp; day</td><td>Rising PreK (age 4) through 9th · 8:15am–4:00pm · ~60 min unstructured outdoor play · movement workshops Tue/Thu</td></tr>
+    <tr><td>Tuition</td><td class="num">$65,000/yr</td></tr>
+    <tr><td>Enrolment</td><td>~22 now, targeting 160 this school year — a hard first-year ramp</td></tr>
+    <tr><td>Catchment ZIPs</td><td>10005, 10006, 10007, 10038, 10002, 10003, 10011, plus 11201 — Bed-Stuy is <em>not</em> listed</td></tr>
+    <tr><td>On the ground</td><td>Dr. Tasha Arnold (Head) · Nancy Torvund (Admissions) · Julianne Braime (Campus Coordinator)</td></tr>
+    <tr><td>The bench</td><td>Stacked with international-school, startup and ex-finance résumés — Harvard learning-design, ex-Goldman VP who founded admissions at Multiverse, NYC public-school veterans</td></tr>
+  </table></div>
+  <p style="color:var(--muted);font-size:13.5px">Only NYC campus, no second location in the
+    Fall 2026 list. Nearest new openings are Greenwich CT and Boston.</p>
+</section>
+
+<!-- ═══ HIRING ═════════════════════════════════════════════════════════ -->
+<section id="hiring">
+  <div class="sec__rule"><span class="mono">§ 04 — The gauntlet</span><span class="mono">How they hire</span></div>
+  <h2 class="sec__h">Roughly one in a thousand gets through</h2>
+  <p class="sec__lede">All hiring routes through Crossover. MacKenzie Price puts the guide
+    bar at about 0.1% of candidates — "like getting into Harvard" — against 80,000
+    applicants last year, at $100k+.</p>
+
+  <h3 class="sub">The five steps to the title</h3>
+  <div class="scroll"><table>
+    <tr><th>#</th><th>Step</th><th>What it actually tests</th></tr>
+    <tr><td class="num">01</td><td><b>CCAT</b> — 85th percentile or higher, <em>twice</em>, the second proctored</td><td>50 questions in 15 minutes. Pass bar 35/50. Verbal ~34%, numerical ~34%, spatial ~22%, logic ~10%. Spatial is where most people die. No calculator; switching tabs disqualifies.</td></tr>
+    <tr><td class="num">02</td><td><b>Essays</b> on coaching others to high standards</td><td>Reflection, real experience, clarity, conviction. Long written prompts.</td></tr>
+    <tr><td class="num">03</td><td><b>The Trojan Horse video</b></td><td>Tell the story of the Trojan Horse as if to a room of kids. No slides, no gimmicks. Reviewed by Crossover HR, the hiring team, and an AI pass.</td></tr>
+    <tr><td class="num">04</td><td><b>Interviews</b> with a Lead Guide or Head of K-8</td><td>They are hunting for "the spark" — can you light up a room of kids <em>and</em> adults.</td></tr>
+    <tr><td class="num">05</td><td><b>Shadow day</b> — only ~5% reach it</td><td>A full day onsite, watched closely. Can you make a child feel seen within minutes? Command attention without controlling? Are students begging you to come back? ~60–70% pass.</td></tr>
+  </table></div>
+
+  <div class="note"><b>The Trojan Horse is the whole application in one artifact.</b> It is a
+    required step <em>and</em> a perfectly shareable piece of work — do it in public, before
+    they ask, and it doubles as the cold-email hook and the centre of any launch video.
+    This is the highest-leverage single thing on this page.</div>
+
+  <h3 class="sub">What they say they screen for</h3>
+  <div class="tiles">
+    <div class="tile"><div class="n">Smarts</div><div class="l">top ~15% cognitive aptitude — the CCAT bar</div></div>
+    <div class="tile"><div class="n">Support</div><div class="l">can you motivate kids and be accountable for them loving school</div></div>
+    <div class="tile"><div class="n">Love</div><div class="l">"the coach who pushed you, the mentor who believed in you"</div></div>
+  </div>
+
+  <h3 class="sub">Where the demand actually concentrates</h3>
+  <p>By raw headcount it is overwhelmingly <b>guides</b>, across about twenty cities — they
+    are staffing a land grab. By seniority and pay it clusters in <b>admissions and
+    enrolment</b>, <b>Deans of Parents</b> (retention) and <b>campus operations</b>: the
+    launch machine. There is <b>no Chief of Staff or Head of Special Projects by title</b>
+    anywhere on the board — the closest senior generalist seats are VP / Regional VP of
+    Campus Operations, Head of Marketing, and Director of Academics.</p>
+
+  <div class="scroll"><table>
+    <tr><th>Role</th><th>Pay</th><th>Lane</th></tr>
+    <tr><td>Director of Academics · 2 Hour Learning</td><td class="num up">$400K</td><td>Academic north star</td></tr>
+    <tr><td>Head of Media</td><td class="num up">$400K</td><td>Narrative</td></tr>
+    <tr><td>Dean of Parents · Miami</td><td class="num up">$400K</td><td>Retention</td></tr>
+    <tr><td>Director of Admissions · SF &amp; area</td><td class="num">$250K</td><td>Enrolment</td></tr>
+    <tr><td>VP / Regional VP of Campus Operations</td><td class="num">$200K</td><td>Ops leadership</td></tr>
+    <tr><td>Head of Marketing</td><td class="num">$200K</td><td>Growth</td></tr>
+    <tr><td>Associate Dean of Parents · ~18 cities</td><td class="num">$200K</td><td>Retention</td></tr>
+    <tr><td>Lead Guide II · Elite Guide (Entrepreneurship)</td><td class="num">$200K</td><td>Teaching</td></tr>
+  </table></div>
+
+  <h3 class="sub">Open in New York</h3>
+  <ul>
+    <li>Lead Guide II — $200K · Lead Guide II K-3 — $200K</li>
+    <li>Elite Guide — $150K · PreK Guide II — $120K · Reading Specialist II — $120K</li>
+    <li>Admissions Associate, New York — $100K</li>
+  </ul>
+  <p style="color:var(--muted);font-size:13.5px">All in person at 180 Maiden Lane. The
+    corporate seats — Director of Academics, Head of Media, VP Campus Ops — are remote or
+    Austin-leaning.</p>
+</section>
+
+<!-- ═══ PARENTS ════════════════════════════════════════════════════════ -->
+<section id="parents">
+  <div class="sec__rule"><span class="mono">§ 05 — Parents' room</span><span class="mono">Live info session</span></div>
+  <h2 class="sec__h">What they tell parents when the room is full</h2>
+  <p class="sec__lede">From the live session, with my margin notes. These are the numbers
+    they volunteer — which makes them the numbers they are comfortable defending.</p>
+
+  <ul>
+    <li><b>97% re-enrolment.</b> <span class="chip claim">Their claim</span></li>
+    <li><b>80,000 applicants</b> for guide roles last year. Guides hold a bachelor's; credentials are not required — they are hired for coaching.</li>
+    <li><b>Ratios:</b> ~1:5 elementary, ~1:10 middle, ~1:15 high school.</li>
+    <li><b>New campuses open with 40–50 students</b> (SF ~60), and <b>they will not open a campus until 25 are enrolled.</b> My margin note: <em>"So 25 × price."</em></li>
+    <li><b>$100 application fee</b>, rolling admissions, and a <b>shadow day is required to apply</b> — for the kid, not just the adult.</li>
+    <li><b>Mastery-based, 90%+ to advance</b>, no letter grades. About 50 total graduates so far — "all became entrepreneurs or went to their top-choice university." <span class="chip claim">Their claim</span></li>
+    <li><b>Subject and learning specialists are a national remote team</b>; reading specialists are on campus. My margin note: <em>"this is the tutors from other places potentially."</em></li>
+    <li><b>Alpha Anywhere</b> (homeschool) covers grades 3–8. They license the engine to private schools, do not franchise, and are not taking new licensees right now.</li>
+    <li><b>"Radical transparency"</b> — their words — about parent surveys, MAP tests and student survey results.</li>
+  </ul>
+
+  <div class="note warn"><b>The internal currency.</b> One student testimonial on their own
+    site: "we have our own currency that motivates us to do more work." Kids earn something
+    for doing work. It is the motivation engine in miniature and the most debatable design
+    choice in the model — worth having a real opinion about before anyone asks.</div>
+</section>
+
+<!-- ═══ THE READ ═══════════════════════════════════════════════════════ -->
+<section id="read">
+  <div class="sec__rule"><span class="mono">§ 06 — The read</span><span class="mono">Tensions &amp; sentiment</span></div>
+  <h2 class="sec__h">Where the fire is</h2>
+  <p class="sec__lede">Polarised: ecstatic parents at one end, burned parents and ed-world
+    critics at the other, a thoughtful skeptical middle. The press turned noticeably harder
+    across 2025–26 at the WIRED and 404 inflection.</p>
+
+  <div class="pair">
+    <div class="up">
+      <h4>What holds up</h4>
+      <ul class="plain">
+        <li>The proof point isn't the test scores — it's that kids beg to skip summer break.</li>
+        <li>Afternoons are the real differentiator: leadership, entrepreneurship, financial literacy, public speaking, fencing, robotics.</li>
+        <li>Alpha High "masterpiece projects" are genuinely extraordinary — one student raised $350K and built Texas' biggest mountain-bike park; another made a cancer documentary seen 4.5M times.</li>
+        <li>Scott Alexander's ACX review — the most balanced long-read — lands in the middle: skeptical of the extraordinary claims, but found it more real than pure critics allow. Outcome tracks student <em>fit</em>.</li>
+      </ul>
+    </div>
+    <div class="down">
+      <h4>What burns</h4>
+      <ul class="plain">
+        <li><b>The #1 recurring complaint:</b> parents find out their kid fell behind months after it happened. The dashboard didn't surface it, or they trusted it too long.</li>
+        <li><b>Brownsville.</b> Around six families raised concerns in 2023–24; the most vocal said kids were "so stressed out" while the school used them as evidence the model works. WIRED surfaced 9-year-olds denied snacks until they hit metrics.</li>
+        <li><b>Surveillance.</b> Webcams — at home too, unless a parent opts out — plus eye, mouse and scroll tracking. The top concern among cited experts.</li>
+        <li><b>IXL deactivated their account</b> for a terms violation and stated its product is not a replacement for trained, caring teachers. That one cuts at the core pitch.</li>
+        <li><b>AI lesson quality.</b> Internal documents flagged AI-generated lessons as sometimes doing "more harm than good."</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="note bad"><b>Two traps to avoid.</b> First, most Glassdoor material is for
+    "Alpha Public Schools," a separate California charter network — do not attribute it to
+    this Alpha. Second, the posture that draws the most anger is "it either works for your
+    child or it doesn't." If a role's brief is defending the governance or the surveillance
+    rather than fixing the trust, that's the line.</div>
+
+  <h3 class="sub">The three tensions, stated as questions</h3>
+  <ul>
+    <li>The dream is a billion kids on a cheap tablet. The front door is $40,000 a year. Brownsville and the public-school push are the stated answer — does it hold?</li>
+    <li>Kids earn currency for doing work. Motivation, or paying children to learn?</li>
+    <li>Results are real but internal. Who verifies them, and what happens the first time someone independent tries?</li>
+  </ul>
+</section>
+
+<!-- ═══ WAY IN ═════════════════════════════════════════════════════════ -->
+<section id="wayin">
+  <div class="sec__rule"><span class="mono">§ 07 — My way in</span><span class="mono">Strategy &amp; proof</span></div>
+  <h2 class="sec__h">Don't apply. Do the work first, in public.</h2>
+  <p class="sec__lede">The funnel only sells seats it has a job code for. The thing I do
+    best has no job code — so the move is to do it anyway, visibly, and let the work make
+    the ask.</p>
+
+  <blockquote>You're launching ten cities with nobody owning launch and community.
+    I fill new cities and build the IRL trust your model needs — the layer you can't
+    hire off Crossover.
+    <cite>The one-liner</cite></blockquote>
+
+  <h3 class="sub">Where the org is thin — my slots</h3>
+  <ul>
+    <li>Multi-city <b>launch</b> with no repeatable playbook owner.</li>
+    <li>Local parent <b>community and trust</b> per city — exactly what the WIRED and 404 pieces are eating.</li>
+    <li><b>Enrolment</b> that is IRL, not just ad spend.</li>
+    <li><b>Narrative</b> — Price is the only voice, and one voice doesn't scale.</li>
+    <li><b>Cross-entity coordination</b> between Alpha, 2HL and Crossover — orphan work nobody owns.</li>
+    <li><b>Real estate and space sourcing</b>, now that it's the admitted bottleneck.</li>
+  </ul>
+
+  <h3 class="sub">The work, already built</h3>
+  <div class="works">
+    <a class="work" href="/builds/climbing-machine/">
+      <div class="work__k"><span class="mono">Children's book</span><span class="chip hi">Live</span></div>
+      <h4>Climbing Machine</h4>
+      <p>Eighteen spreads, written and illustrated, about a kid at an Alpha life-skills workshop who decides he can finish the climb. Reads as a real book in the browser.</p>
+      <span class="go">Open →</span>
+    </a>
+    <a class="work" href="/builds/ccat-trainer/">
+      <div class="work__k"><span class="mono">Guide on-ramp</span><span class="chip hi">Live</span></div>
+      <h4>CCAT Trainer</h4>
+      <p>Mastery-based practice for the exact gate that filters 99% of applicants — spaced retrieval, adaptive difficulty, 559 questions, explanations that teach the method.</p>
+      <span class="go">Open →</span>
+    </a>
+    <div class="work">
+      <div class="work__k"><span class="mono">Life-skills workshop</span><span class="chip med">Drafted</span></div>
+      <h4>Cut and Donate</h4>
+      <p>Kids cut off the thirteen inches of hair I've grown for two years and send it to Wigs for Kids. Relationship building, generosity, and an adult trusting them with scissors.</p>
+      <span class="go">Document pending</span>
+    </div>
+    <div class="work">
+      <div class="work__k"><span class="mono">Required step</span><span class="chip lo">Not started</span></div>
+      <h4>The Trojan Horse</h4>
+      <p>The video they ask every guide candidate for. Filming it in public turns a hiring hoop into a shareable artifact and a launch video at the same time.</p>
+      <span class="go">Next up</span>
+    </div>
+  </div>
+
+  <h3 class="sub">The sequence</h3>
+  <p>Interview MacKenzie Price to earn the room → produce one NYC parent-preview night as
+    the proof → turn it into City-Launch-in-a-Box so it scales → contract → indispensable →
+    titled. Give, prove, warm, contract. Never lead with "I want a job"; lead with
+    "here's the thing I already did for you."</p>
+
+  <div class="note warn"><b>Keep your independence early.</b> Contract or project-based
+    first. The Trilogy pattern is to systematise people out of the loop and cut the rest —
+    stay the high-agency human on your own terms, and make sure the way in creates real
+    value for families, not just enrolment numbers.</div>
+</section>
+
+<!-- ═══ SOURCES ════════════════════════════════════════════════════════ -->
+<section id="sources">
+  <div class="sec__rule"><span class="mono">§ 08 — Sources</span><span class="mono">Verify before quoting</span></div>
+  <h2 class="sec__h">Where all of this came from</h2>
+  <p class="sec__lede">Public sources plus one parent info session. Tuition, pay bands and
+    disclosed figures are high confidence; enrolment and anything internal is directional.</p>
+
+  <ul class="srcs">
+    <li><a href="https://colossus.com/article/joe-liemandt-class-dismissed/" target="_blank" rel="noopener noreferrer">Colossus — The Software Tycoon Scaling AI Education to a Billion Kids ↗</a></li>
+    <li><a href="https://www.axios.com/2026/08/02/alpha-schools-ai-expansion-50-campuses" target="_blank" rel="noopener noreferrer">Axios — Alpha expands to 50 campuses (Aug 2026) ↗</a></li>
+    <li><a href="https://futureofeducation.substack.com/p/ask-me-anything-12-how-do-you-hire" target="_blank" rel="noopener noreferrer">MacKenzie Price — AMA #12: How do you hire guides? ↗</a></li>
+    <li><a href="https://www.crossover.com/selection-process" target="_blank" rel="noopener noreferrer">Crossover — Selection process ↗</a></li>
+    <li><a href="https://ed.crossover.com/clients/alpha" target="_blank" rel="noopener noreferrer">Crossover — Alpha roles &amp; pay ↗</a></li>
+    <li><a href="https://www.astralcodexten.com/p/your-review-alpha-school" target="_blank" rel="noopener noreferrer">ACX — Your Review: Alpha School ↗</a></li>
+    <li><a href="https://www.wired.com/story/ai-teacher-inside-alpha-school/" target="_blank" rel="noopener noreferrer">WIRED — Parents Fell in Love… Then They Wanted Out ↗</a></li>
+    <li><a href="https://www.404media.co/students-are-being-treated-like-guinea-pigs-inside-an-ai-powered-private-school/" target="_blank" rel="noopener noreferrer">404 Media — Treated Like Guinea Pigs ↗</a></li>
+    <li><a href="https://danmeyer.substack.com/p/the-truth-about-2-hour-learning-and" target="_blank" rel="noopener noreferrer">Dan Meyer — The truth about 2 Hour Learning ↗</a></li>
+    <li><a href="https://en.wikipedia.org/wiki/Alpha_School" target="_blank" rel="noopener noreferrer">Wikipedia — Alpha School (governance, accreditation) ↗</a></li>
+    <li><a href="https://fs.blog/knowledge-project-podcast/joe-liemandt/" target="_blank" rel="noopener noreferrer">Farnam Street — Joe Liemandt ↗</a></li>
+    <li><a href="https://peterattiamd.com/joeliemandt/" target="_blank" rel="noopener noreferrer">The Peter Attia Drive #366 ↗</a></li>
+    <li><a href="https://news.ycombinator.com/item?id=45443552" target="_blank" rel="noopener noreferrer">Hacker News — current-parent deep dive ↗</a></li>
+    <li><a href="https://nepc.colorado.edu/blog/fprice-kids-pay" target="_blank" rel="noopener noreferrer">NEPC — The Price Kids Pay ↗</a></li>
+    <li><a href="https://alpha.school/" target="_blank" rel="noopener noreferrer">alpha.school — institutional language &amp; testimonials ↗</a></li>
+    <li><a href="https://www.cnn.com/2026/01/29/politics/alpha-school-trump-ai-teaching" target="_blank" rel="noopener noreferrer">CNN — Is AI schooling the future, or a risky bet? ↗</a></li>
+  </ul>
+</section>
+
+<footer>
+  Alpha School — Intel · compiled by James Floyd from public sources and one info session ·
+  figures carry confidence flags · <a href="/">jamesfloyds.world</a>
+</footer>
+
+</div>
+
+<script>
+/* section nav highlight — the only script on the page */
+(function () {
+  var links = [].slice.call(document.querySelectorAll('.rail a'));
+  var secs = links.map(function (a) { return document.querySelector(a.getAttribute('href')); });
+  function mark() {
+    var y = window.scrollY + 90, best = 0;
+    for (var i = 0; i < secs.length; i++) if (secs[i] && secs[i].offsetTop <= y) best = i;
+    links.forEach(function (a, i) { a.classList.toggle('on', i === best); });
+  }
+  var tick = false;
+  addEventListener('scroll', function () {
+    if (tick) return; tick = true;
+    requestAnimationFrame(function () { mark(); tick = false; });
+  }, { passive: true });
+  mark();
+})();
+</script>
+
+</body>
+</html>
