@@ -42,7 +42,9 @@
   .backline a:hover{color:var(--fg)}
 
   /* tabs */
-  nav{position:sticky;top:0;z-index:20;background:rgba(11,11,12,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);display:flex;flex-wrap:nowrap;overflow-x:auto;gap:2px;padding:8px clamp(20px,4vw,44px);scrollbar-width:none}
+  nav{position:sticky;top:0;z-index:20;background:rgba(11,11,12,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);display:flex;flex-wrap:nowrap;justify-content:center;overflow-x:auto;gap:2px;padding:8px clamp(20px,4vw,44px);scrollbar-width:none}
+  /* centring plus horizontal scroll: keep the end padding when it does overflow */
+  nav::after{content:"";flex:none;width:1px}
   nav::-webkit-scrollbar{display:none}
   nav button{flex:none;border:none;background:none;padding:7px 12px;cursor:pointer;color:var(--muted);border-bottom:none;border-radius:2px;
     font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;white-space:nowrap;transition:color .18s,background .18s}
@@ -63,6 +65,9 @@
 
   /* tiles */
   .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(158px,1fr));gap:0;margin:20px 0 22px;border-top:1px solid var(--line);border-left:1px solid var(--line)}
+  /* the snapshot reads as one line of numbers */
+  #overview .tiles{grid-template-columns:repeat(2,1fr)}
+  @media (min-width:700px){#overview .tiles{grid-template-columns:repeat(5,1fr)}}
   .tile{background:transparent;border:none;border-right:1px solid var(--line);border-bottom:1px solid var(--line);border-radius:0;padding:18px 16px 16px}
   .tile .n{font-family:var(--display);font-size:clamp(26px,3.2vw,38px);font-weight:400;line-height:1;color:var(--fg);letter-spacing:-.01em}
   .tile .l{font-family:var(--mono);font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);margin-top:9px;line-height:1.5}
@@ -137,10 +142,13 @@
   .tile[style]{background:transparent!important;border-color:var(--line)!important}
   .tile[style] .n{color:var(--open)}
 
-  /* links that point at files sitting in the local folder, not on the web */
-  .islocal{opacity:.55;cursor:default}
-  .islocal::after{content:" · local file";font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--soon)}
-  .pin.islocal::after{display:block;margin-top:8px}
+  /* Cards whose file lives in the local folder look exactly like the rest —
+     no dimming, no badge. Clicking one says where the file is instead of
+     walking into a 404. */
+  .islocal{cursor:pointer}
+  .pin.islocal:hover{border-color:var(--fg);transform:translateY(-2px)}
+  .btn.islocal:hover{border-color:var(--fg)}
+  .said{color:var(--soon)!important;border-color:var(--soon)!important}
 
   footer{max-width:1080px;margin:0 auto;padding:0 clamp(20px,4vw,44px) 60px;font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);line-height:2}
 </style>
@@ -161,8 +169,6 @@
     <div class="tiles">
       <div class="tile"><div class="n">38</div><div class="l">open Alpha roles</div></div>
       <div class="tile"><div class="n">67</div><div class="l">roles across Crossover board</div></div>
-      <div class="tile"><div class="n">13</div><div class="l">campuses open now</div></div>
-      <div class="tile"><div class="n">24</div><div class="l">opening Fall 2026</div></div>
       <div class="tile"><div class="n">~50</div><div class="l">campuses targeted 2026-27 (Axios)</div></div>
       <div class="tile"><div class="n">97%</div><div class="l">reenrollment (per info session)</div></div>
       <div class="tile"><div class="n">80k</div><div class="l">guide applicants last yr</div></div>
@@ -1215,7 +1221,20 @@ renderTodos();
     var h = els[i].getAttribute('href');
     if (!h || /^(https?:|mailto:|#|\/)/.test(h)) continue;
     els[i].classList.add('islocal');
+    els[i].dataset.file = h;
     els[i].removeAttribute('href');
+    els[i].addEventListener('click', function (e) {
+      e.preventDefault();
+      var tag = this.querySelector('.tag') || this;
+      if (tag.dataset.said) return;
+      tag.dataset.said = tag.textContent;
+      tag.textContent = 'in your local folder · ' + this.dataset.file;
+      tag.classList.add('said');
+      var t = tag, self = this;
+      setTimeout(function () {
+        t.textContent = t.dataset.said; delete t.dataset.said; t.classList.remove('said');
+      }, 2600);
+    });
   }
 })();
 </script>
