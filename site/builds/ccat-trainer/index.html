@@ -929,13 +929,23 @@ function finishExam(){
   confetti({big: score >= PASS});
 }
 
+// The CCAT is scored on raw correct answers only — time is the constraint that
+// produces the distribution, not a scored dimension, and there's no penalty for
+// a wrong answer. Anchors below are the published approximations: 24=50th,
+// 31=80th, 35=86th, 37=90th, 40=95th, 43=98th, plus "only ~1% finish all 50"
+// for the top end. Interpolate between them rather than bucketing, so a better
+// score never reads as the same percentile as a worse one.
+const PCT_CURVE = [[0,1],[24,50],[31,80],[35,86],[37,90],[40,95],[43,98],[50,99]];
 function percentile(score){
-  // rough curve from spec: 24→50, 31→80, 35→86, 40→95
-  if(score>=40) return 95;
-  if(score>=35) return 86;
-  if(score>=31) return 80;
-  if(score>=24) return 50;
-  return Math.max(1, Math.round(score*2));
+  const s = Math.max(0, Math.min(50, score));
+  for(let i=1;i<PCT_CURVE.length;i++){
+    const [x0,y0] = PCT_CURVE[i-1], [x1,y1] = PCT_CURVE[i];
+    if(s<=x1){
+      const t = x1===x0 ? 0 : (s-x0)/(x1-x0);
+      return Math.max(1, Math.min(99, Math.round(y0 + t*(y1-y0))));
+    }
+  }
+  return 99;
 }
 
 function renderExamResults(){
