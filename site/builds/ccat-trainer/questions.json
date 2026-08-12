@@ -395,7 +395,7 @@
    "35"
   ],
   "a": 2,
-  "e": "5 parts×10; larger=3×10=30.",
+  "e": "2 + 3 = 5 shares, so one share is 50 ÷ 5 = 10. The larger part holds 3 shares: 3 × 10 = 30.",
   "vis": null,
   "d": 2
  },
@@ -411,7 +411,7 @@
    "36"
   ],
   "a": 2,
-  "e": "5 parts×8; larger=4×8=32.",
+  "e": "1 + 4 = 5 shares, so one share is 40 ÷ 5 = 8. The larger part holds 4 shares: 4 × 8 = 32.",
   "vis": null,
   "d": 2
  },
@@ -443,7 +443,7 @@
    "$3.50"
   ],
   "a": 1,
-  "e": "$0.50 each ×5=$2.50.",
+  "e": "Find one unit first: $1.50 ÷ 3 = $0.50 an apple. Then 5 × $0.50 = $2.50.",
   "vis": null,
   "d": 2
  },
@@ -2269,7 +2269,7 @@
    "33%"
   ],
   "a": 2,
-  "e": "Percent change = the change ÷ the START value: 20 ÷ 80 = 25% down.",
+  "e": "Percent change always divides by the START value: the drop is 20, and 20 ÷ 80 = 0.25, so 25% down. Your shortcut works too — 60/80 is 3/4, meaning three-quarters is left, so a quarter has gone.",
   "vis": null,
   "d": 2
  },
@@ -2381,7 +2381,7 @@
    "40"
   ],
   "a": 2,
-  "e": "5 parts of 12; larger=3×12=36.",
+  "e": "3 + 2 = 5 shares, so one share is 60 ÷ 5 = 12. The larger part holds 3 shares: 3 × 12 = 36.",
   "vis": null,
   "d": 2
  },
@@ -2397,7 +2397,7 @@
    "42"
   ],
   "a": 2,
-  "e": "7 parts of 12; smaller=3×12=36.",
+  "e": "3 + 4 = 7 shares, so one share is 84 ÷ 7 = 12. The smaller part holds 3 shares: 3 × 12 = 36.",
   "vis": null,
   "d": 2
  },
@@ -2413,7 +2413,7 @@
    "36"
   ],
   "a": 2,
-  "e": "15 parts of 6; middle=5×6=30.",
+  "e": "4 + 5 + 6 = 15 shares, so one share is 90 ÷ 15 = 6. The middle part holds 5 shares: 5 × 6 = 30.",
   "vis": null,
   "d": 3
  },
@@ -2429,7 +2429,7 @@
    "10"
   ],
   "a": 2,
-  "e": "12×2/3=8.",
+  "e": "You're given a part, not the total. Pens hold 3 shares, so one share is 12 ÷ 3 = 4. Pencils hold 2 shares: 2 × 4 = 8.",
   "vis": null,
   "d": 2
  },
@@ -2437,15 +2437,15 @@
   "id": 150,
   "c": "Numerical",
   "sub": "ratio",
-  "q": "Ratio boys:girls = 2:3. If 20 girls, boys?",
+  "q": "Ratio boys:girls = 2:3. If there are 21 girls, how many boys?",
   "o": [
-   "12",
-   "13",
    "14",
-   "15"
+   "12",
+   "15",
+   "18"
   ],
-  "a": 1,
-  "e": "20×2/3≈13.33 → but must be integer; 20/3 isn't clean. Use 20×2/3 → about 13. Closest is 13. Actually 20 girls / 3 = ratio unit, boys = 2 units → about 13.",
+  "a": 0,
+  "e": "Girls hold 3 shares and there are 21, so one share is 21 ÷ 3 = 7. Boys hold 2 shares: 2 × 7 = 14. Check it — 14:21 does reduce to 2:3.",
   "vis": null,
   "d": 3
  },
@@ -2493,7 +2493,7 @@
    "60"
   ],
   "a": 2,
-  "e": "Rate doubles → 50.",
+  "e": "Find the rate for one worker: 25 ÷ 5 = 5 widgets each per hour. Then 10 workers × 5 = 50. More workers, more output — the answer must go up.",
   "vis": null,
   "d": 2
  },
@@ -2557,7 +2557,7 @@
    "700"
   ],
   "a": 2,
-  "e": "100/machine × 6 = 600.",
+  "e": "Per machine first: 400 ÷ 4 = 100 units a day each. Then 6 × 100 = 600.",
   "vis": null,
   "d": 2
  },
@@ -2589,7 +2589,7 @@
    "$0.30"
   ],
   "a": 1,
-  "e": "Trap. e+p=3.30, p=e+3 → 2e=0.30 → e=$0.15.",
+  "e": "The classic trap is answering $0.30. If the eraser were $0.30 the pen would be $3.30 and the pair would cost $3.60. The $3 gap sits between them, so take it out first: $3.30 − $3 = $0.30 shared equally, giving $0.15 each. Eraser $0.15, pen $3.15.",
   "vis": null,
   "d": 3
  },
@@ -2605,7 +2605,7 @@
    "$80"
   ],
   "a": 1,
-  "e": "50×1.4=70.",
+  "e": "A 40% markup means you pay the whole cost plus 40% more — 140% of it. 10% of 50 is 5, so 40% is 20: $50 + $20 = $70.",
   "vis": null,
   "d": 2
  },
@@ -5081,7 +5081,7 @@
    "$80"
   ],
   "a": 2,
-  "e": "5 parts; each $24; 3×24 = $72.",
+  "e": "2 + 3 = 5 shares, so one share is $120 ÷ 5 = $24. The larger share holds 3: 3 × $24 = $72.",
   "vis": null,
   "d": 2
  },
@@ -5097,7 +5097,7 @@
    "9"
   ],
   "a": 1,
-  "e": "12 / 3 = 4 cups.",
+  "e": "Flour holds 3 shares, so one share is 12 ÷ 3 = 4 cups. Sugar holds 1 share: 4 cups.",
   "vis": null,
   "d": 1
  },
@@ -5113,7 +5113,7 @@
    "30"
   ],
   "a": 1,
-  "e": "9 parts = 45; 5×5 = 25.",
+  "e": "5 + 4 = 9 shares, so one share is 45 ÷ 9 = 5 students. Boys hold 5 shares: 5 × 5 = 25.",
   "vis": null,
   "d": 2
  },
@@ -5193,7 +5193,7 @@
    "12 days"
   ],
   "a": 2,
-  "e": "30 worker-days / 3 = 10 days.",
+  "e": "This is not a ratio you can apply directly — fewer workers means MORE days, so the answer must be above 6. Find the total work first: 5 workers × 6 days = 30 worker-days. Share that among 3: 30 ÷ 3 = 10 days.",
   "vis": null,
   "d": 2
  },
@@ -5209,7 +5209,7 @@
    "24 L"
   ],
   "a": 2,
-  "e": "8 × 2.5 = 20 L.",
+  "e": "250 km is 2.5 lots of 100 km. So multiply the per-100 figure by 2.5: 8 × 2.5 = 20 litres.",
   "vis": null,
   "d": 2
  },
@@ -5225,7 +5225,7 @@
    "15"
   ],
   "a": 1,
-  "e": "t + 2t + 10 = 40 → t = 10.",
+  "e": "Call Tom's age now t, so Sara is 2t. In 5 years BOTH have aged 5 — that is where the +10 comes from, 5 for each of them. So (t+5) + (2t+5) = 40, which is 3t + 10 = 40. Take off the 10: 3t = 30, so Tom is 10.",
   "vis": null,
   "d": 3
  },
@@ -7576,7 +7576,7 @@
    "6"
   ],
   "a": 3,
-  "e": "3 parts; 2×3 = 6.",
+  "e": "1 + 2 = 3 shares, so one share is 9 ÷ 3 = 3. The larger part holds 2 shares: 2 × 3 = 6.",
   "vis": null,
   "d": 2,
   "id": 467

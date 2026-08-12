@@ -123,6 +123,105 @@ const MASTERY_MIN = 6;      // min attempts before mastery can be declared
 // Bank-derived difficulty bounds — filled at boot from the actual questions so
 // the ZPD band and adaptivity aren't clamped to a guessed ceiling.
 let MIND = 1, MAXD = 3, QMAP = {}, ALLSUBS = [];
+
+// ==================== METHOD CARDS ====================
+// A per-item explanation tells you why THAT answer is right. It doesn't tell
+// you what to do when the next one has different numbers. These are the
+// transferable routines — the thing you actually carry into the exam room —
+// shown alongside every answer, and always when you get one wrong.
+const METHODS = {
+  "Numerical/percent":
+    "Anchor on 10%. Move the decimal one place to get 10%, then build: 5% is half of that, 20% is double, 15% is 10+5.\n" +
+    "For 'percent change', divide by the value you STARTED at, never the one you ended at.\n" +
+    "Up x% then down x% never returns to the start — the second move acts on a different number.",
+  "Numerical/ratio":
+    "Turn the ratio into SHARES and find what one share is worth.\n" +
+    "3:5 means 3+5 = 8 shares. Divide the total by 8, then multiply back up for the part you want.\n" +
+    "Careful: if you're given one part rather than the total, divide that part by ITS share count to get one share.",
+  "Numerical/average":
+    "Work in totals, not averages. Average × how many = the total.\n" +
+    "Missing value: find the total the average demands, subtract what you already have.\n" +
+    "'What do I need to raise my average to N?' — find the new total required, subtract the current total.",
+  "Numerical/wordmath":
+    "Name the quantity you want, then write one sentence of the problem at a time as maths.\n" +
+    "Watch for time passing: 'in 5 years' adds 5 to EVERY person's age, so two people add 10 between them.\n" +
+    "Rates: if more of something makes the job FASTER, multiply out the total work first (workers × time), then divide by the new count.\n" +
+    "Sanity-check the direction before you pick — fewer workers must mean more days.",
+  "Numerical/series":
+    "Write the gaps between terms underneath the numbers. If the gaps are constant, it's adding. If the gaps themselves grow evenly, it's a second layer.\n" +
+    "If the gaps look wild, test multiplying: divide each term by the one before it.\n" +
+    "Still nothing? Try ×2 then +something, or two rules alternating on odd and even positions.",
+  "Numerical/graph":
+    "Read the axis labels and units before the bars. Find the two points the question actually compares, then subtract or divide — never eyeball the gap.",
+  "Logic/deduction":
+    "Take the statements as absolutely true, even when they're silly. Ask only what MUST follow, not what probably does.\n" +
+    "If a conclusion could be false in even one imaginable case, it isn't valid.",
+  "Logic/syllogism":
+    "Draw two circles. 'All A are B' puts circle A entirely inside B. 'Some A are B' overlaps them. 'No A are B' separates them.\n" +
+    "Then check whether the conclusion is forced by the picture, or merely allowed by it. Only forced counts.",
+  "Logic/ordering":
+    "Draw a line and place the fixed facts first — the ones naming an exact position.\n" +
+    "Treat 'immediately before/after' as a block that moves together. Then slot the loose items into what's left.",
+  "Logic/relations":
+    "Rewrite each fact as an arrow in one consistent direction (taller-than, older-than) and chain them.\n" +
+    "Only compare two things if a chain of arrows actually connects them.",
+  "Logic/letterpattern":
+    "Convert letters to their position numbers (A=1 … Z=26), solve it as a number series, then convert back.\n" +
+    "Check for wrap-around past Z, and for two interleaved sequences on alternate letters.",
+  "Verbal/analogy":
+    "Say the relationship out loud as a full sentence before looking at the options: 'a X is a very extreme Y', 'a X is used by a Y'.\n" +
+    "Then test each option in the SAME sentence. The precise wording of the relationship is what eliminates the near-misses.",
+  "Verbal/synonym":
+    "If the word is unfamiliar, look for a root you know, and for whether it feels positive or negative.\n" +
+    "Eliminate on tone first — that usually kills two options immediately.",
+  "Verbal/antonym":
+    "Find the opposite BEFORE reading the options, or the synonym sitting in the list will pull you in.\n" +
+    "A synonym of the prompt word is the standard trap in antonym questions.",
+  "Verbal/sentence":
+    "Find the joint word — although, because, far from, yet — and it tells you whether the blank agrees with the rest of the sentence or contrasts with it.\n" +
+    "Predict your own word for the blank, then match it to the closest option.",
+  "Verbal/oddoneout":
+    "Look for the rule that covers exactly three of them. Try category, then material, then form.\n" +
+    "If two different rules each isolate a different item, you've found the wrong rule — keep going.",
+  "Verbal/attention":
+    "Don't read the strings — compare them field by field, one chunk at a time.\n" +
+    "The classic swaps are 0 for O, 1 for l, and two adjacent digits transposed.",
+  "Spatial/rotation":
+    "Pick one distinctive feature and track only that one through each step.\n" +
+    "Work out the rule per step, then apply it once more. Turns beyond 360° wrap around — subtract 360 and carry on.",
+  "Spatial/mirror":
+    "A mirror flips one axis only. A vertical mirror swaps left and right; a horizontal mirror swaps top and bottom.\n" +
+    "A 180° turn swaps BOTH, which is why a flip plus a turn equals a flip in the other axis.",
+  "Spatial/count":
+    "Count in fixed groups — rows, or threes — rather than sweeping your eye over the whole figure.\n" +
+    "Then look at how the count changes step to step, exactly like a number series.",
+  "Spatial/corner":
+    "Fix a direction, clockwise or counter-clockwise, and count how many corners the mark moves each step.\n" +
+    "Check the step is constant before predicting the next one.",
+  "Spatial/oddfigure":
+    "Test one property at a time across all four: number of sides, symmetry, curved versus straight, shaded versus open.\n" +
+    "The right property splits them 3 against 1 cleanly.",
+  "Spatial/polygon":
+    "Outside angles of any polygon always total 360°. Outside angle = 180 − inside angle.\n" +
+    "So sides = 360 ÷ (180 − the inside angle).",
+  "Spatial/abstractpattern":
+    "Read the sequence twice: once for what the shape is doing, once for what's being added or removed.\n" +
+    "Most of these carry two rules at the same time.",
+  "Spatial/imageseries":
+    "Track position, rotation and count as three separate stories. Solve whichever is clearest first, then use it to narrow the options.",
+  "Spatial/matrix":
+    "Read across the rows for one rule and down the columns for another. The missing cell has to satisfy both."
+};
+function methodFor(q){ return METHODS[q.c + "/" + q.sub] || null; }
+function methodHTML(q, open){
+  const m = methodFor(q);
+  if(!m) return '';
+  const body = m.split("\n").map(l=>`<div class="mb-1">${l}</div>`).join('');
+  return `<details class="mt-3" ${open?'open':''}>
+    <summary class="text-xs cursor-pointer" style="color:var(--acc);">How to attack any ${q.sub} question</summary>
+    <div class="text-sm text-gray-300 mt-2 pl-3" style="border-left:2px solid var(--border);">${body}</div>
+  </details>`;
+}
 const clamp = (x,lo,hi)=>Math.max(lo,Math.min(hi,x));
 const subKey = q => `${q.c}/${q.sub}`;
 
@@ -804,6 +903,7 @@ function answerPractice(idx){
       ${correct&&assisted?`<div class="text-xs mb-1" style="color:#eab308;">No mastery credit — try the next one unaided.</div>`:''}
       ${justMastered?`<div class="text-sm mb-1" style="color:var(--acc);font-weight:700;">🎉 Mastered: ${q.c} · ${q.sub}!</div>`:''}
       <div class="text-sm text-gray-300">${q.e}</div>
+      ${methodHTML(q, !correct)}
       <button class="btn btn-p mt-3" id="p-next">Next →</button>
     </div>
   `;
