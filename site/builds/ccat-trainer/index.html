@@ -815,26 +815,72 @@ function answerPractice(idx){
 // ==================== EXAM ====================
 let examState = null;
 
+function shuffle(a){
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+
+// The real test ramps hard — the back third is where people run out of road,
+// and only ~1% ever reach Q50. Drawing 50 uniformly at random from this bank
+// yields about 6 hard items, because the bank is 39% easy / 48% medium / 13%
+// hard. That flatters the taker: you finish early with time to spare, which
+// almost never happens on the real thing. So the exam is built in three
+// difficulty bands instead, and the hard band is the whole back third.
+const EXAM_BANDS = [ {d:1, n:15}, {d:2, n:18}, {d:3, n:17} ];
+
 function buildExam(){
-  const byCat = {};
-  CATS.forEach(c=> byCat[c] = QUESTIONS.filter(q=>q.c===c).slice());
-  const targets = {};
-  CATS.forEach(c=> targets[c] = Math.round(EXAM_LEN*WEIGHTS[c]));
-  // adjust rounding to hit EXAM_LEN
-  let total = Object.values(targets).reduce((a,b)=>a+b,0);
-  while(total<EXAM_LEN){ targets.Verbal++; total++; }
-  while(total>EXAM_LEN){ targets.Verbal--; total--; }
-  let picked = [];
-  CATS.forEach(c=>{
-    const src = byCat[c];
-    for(let i=src.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[src[i],src[j]]=[src[j],src[i]];}
-    picked = picked.concat(src.slice(0, Math.min(targets[c], src.length)));
+  const used = new Set();
+  const pool = (c,d) => QUESTIONS.filter(q => q.c===c && q.d===d && !used.has(q.id));
+  const take = (arr,n) => {
+    const out = shuffle(arr).slice(0, Math.max(0,n));
+    out.forEach(q => used.add(q.id));
+    return out;
+  };
+
+  const picked = [];
+  EXAM_BANDS.forEach(band => {
+    // category quota within the band, largest-remainder so it sums exactly
+    const quota = {}; let sum = 0;
+    CATS.forEach(c => { quota[c] = Math.floor(band.n*WEIGHTS[c]); sum += quota[c]; });
+    const byRemainder = CATS.slice().sort((a,b) =>
+      ((band.n*WEIGHTS[b])%1) - ((band.n*WEIGHTS[a])%1));
+    for(let i=0; sum<band.n; i++, sum++) quota[byRemainder[i%CATS.length]]++;
+
+    let got = [];
+    CATS.forEach(c => { got = got.concat(take(pool(c,band.d), quota[c])); });
+
+    // a (category, difficulty) cell can run dry — Verbal only has 11 hard items.
+    // backfill from the nearest difficulty so the band still runs full length.
+    const fallback = band.d===3 ? [2,1] : band.d===2 ? [3,1] : [2,3];
+    for(const d of fallback){
+      if(got.length >= band.n) break;
+      let alt = [];
+      CATS.forEach(c => { alt = alt.concat(pool(c,d)); });
+      got = got.concat(take(alt, band.n - got.length));
+    }
+    picked.push(...shuffle(got));   // bands stay in order; category order doesn't
   });
-  // ramp difficulty easy→hard
-  picked.sort((a,b)=>itemRating(a)-itemRating(b));
-  // when we run out of a real bank, pad by resampling
-  while(picked.length<EXAM_LEN){ picked.push(QUESTIONS[Math.floor(Math.random()*QUESTIONS.length)]); }
-  return picked.slice(0,EXAM_LEN);
+
+  // last resort if the bank ever shrinks: fill with anything unused
+  if(picked.length < EXAM_LEN){
+    picked.push(...take(QUESTIONS.filter(q=>!used.has(q.id)), EXAM_LEN - picked.length));
+  }
+
+  // Real difficulty doesn't arrive in three clean steps, and three clean steps
+  // are guessable after a couple of runs. Swap a few items across each seam —
+  // this changes only the order, never the mix.
+  let seam = 0;
+  EXAM_BANDS.slice(0,-1).forEach(b => {
+    seam += b.n;
+    const swaps = 2 + Math.floor(Math.random()*2);
+    for(let k=0;k<swaps;k++){
+      const i = seam - 1 - Math.floor(Math.random()*4);
+      const j = seam + Math.floor(Math.random()*4);
+      if(i>=0 && j<picked.length) [picked[i],picked[j]] = [picked[j],picked[i]];
+    }
+  });
+
+  return picked.slice(0, EXAM_LEN);
 }
 
 function renderExam(){
