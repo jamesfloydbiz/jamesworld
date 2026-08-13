@@ -107,6 +107,27 @@
   .fallback.on{display:flex;}
   .fallback a{color:var(--alpha-cyan);}
 
+  /* Autoplay is only allowed muted, so the page has to offer the sound back. */
+  .unmute{
+    position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+    z-index:5; display:inline-flex; align-items:center; gap:9px;
+    padding:11px 20px 11px 16px; border-radius:99px; cursor:pointer;
+    font-family:inherit; font-size:13.5px; font-weight:600; letter-spacing:.02em;
+    color:#04121a; background:var(--alpha-cyan); border:0;
+    box-shadow:0 0 34px rgba(71,196,230,.55), 0 10px 26px -12px #000;
+    animation:pulse 2.6s ease-in-out infinite;
+  }
+  .unmute[hidden]{display:none;}
+  .unmute:hover{background:#fff; box-shadow:0 0 42px rgba(255,255,255,.5);}
+  .unmute svg{width:17px; height:17px; fill:none; stroke:currentColor; stroke-width:2;
+    stroke-linecap:round; stroke-linejoin:round;}
+  .unmute svg path:first-child{fill:currentColor;}
+  @keyframes pulse{
+    0%,100%{box-shadow:0 0 30px rgba(71,196,230,.45), 0 10px 26px -12px #000;}
+    50%    {box-shadow:0 0 46px rgba(71,196,230,.85), 0 10px 26px -12px #000;}
+  }
+  @media (prefers-reduced-motion:reduce){ .unmute{animation:none;} }
+
   /* progress rail with a tick per unlock */
   .rail{position:relative; height:3px; margin:18px 2px 0; background:rgba(255,255,255,.10); border-radius:99px;}
   .rail-fill{position:absolute; left:0; top:0; bottom:0; width:0;
@@ -183,9 +204,30 @@
 
   footer{padding:48px 0 72px; text-align:center; font-size:12.5px; color:var(--faint);}
   footer a{color:var(--alpha-cyan); text-decoration:none;}
+
+  /* ── site mark, top left, same place on every page ────────────────── */
+  .mark{
+    position:fixed; top:18px; left:20px; z-index:80;
+    display:flex; align-items:center; gap:14px;
+  }
+  .mark a{
+    display:inline-flex; align-items:center; text-decoration:none;
+    color:rgba(255,255,255,.62); font-size:12.5px; font-weight:500;
+    letter-spacing:.04em; transition:color .2s, opacity .2s;
+  }
+  .mark a:hover{color:#fff;}
+  .mark .logo{width:30px; height:30px; opacity:.8;}
+  .mark .logo:hover{opacity:1;}
+  .mark .logo img{width:100%; height:100%; display:block;}
+  .mark .back::before{content:'\2190'; margin-right:7px;}
+  @media (max-width:600px){ .mark{top:12px; left:14px; gap:10px;} .mark .logo{width:26px;height:26px;} }
 </style>
 </head>
 <body>
+
+<div class="mark">
+  <a class="logo" href="/" aria-label="Return to home"><img src="/logo.svg" alt="JF"></a>
+</div>
 
 <div class="glow glow-l"></div><div class="glow glow-r"></div>
 <div class="edge edge-l"></div><div class="edge edge-r"></div>
@@ -197,6 +239,10 @@
       <div class="frame">
         <div class="slot">
           <div id="player"></div>
+          <button class="unmute" id="unmute" hidden>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg>
+            Tap for sound
+          </button>
           <div class="fallback" id="fb">
             <div>The player didn't load.</div>
             <a id="fbLink" href="#" target="_blank" rel="noopener">Watch it on YouTube &rarr;</a>
@@ -233,19 +279,19 @@
 const YT_ID = 'QsPpFkAnfyE';   // youtu.be/QsPpFkAnfyE
 
 const PROJECTS = [
-  { at: 120,
+  { at: 77,
     title: 'The Climbing Machine',
     blurb: 'A picture book about a kid who takes on a mountain in a life skills workshop, and the guide who believes he can. Written, illustrated and made print-ready — 40 pages, at the printer.',
     cta: 'Read it',
     href: '/builds/climbing-machine/' },
 
-  { at: 127,
+  { at: 92,
     title: 'CCAT Trainer',
     blurb: 'You screen with the CCAT. So I built the trainer for it — 606 questions, adaptive practice, spaced repetition, and a teaching line on every single answer explaining how to get there.',
     cta: 'Try it',
     href: '/builds/ccat-trainer/' },
 
-  { at: 130,
+  { at: 107,
     title: 'Cut and Donate 13\" of My Hair',
     blurb: 'A life skills workshop, written for you. Two years of hair, cut by your kids and mailed to a kid who lost theirs — because being trusted with something that matters is the lesson.',
     cta: 'Read the proposal',
@@ -366,22 +412,50 @@ function sample(){
     paint();
   }
   lastT = t;
+  syncMute();
 }
+
+// Keep the pill honest: it disappears the moment there is sound, whether that
+// came from this button or from YouTube's own volume control.
+function syncMute(){
+  const pill = document.getElementById('unmute');
+  if (!player || typeof player.isMuted !== 'function') return;
+  pill.hidden = !player.isMuted();
+}
+
+document.getElementById('unmute').addEventListener('click', () => {
+  player.unMute();
+  player.setVolume(100);
+  if (player.getPlayerState() !== 1) player.playVideo();
+  syncMute();
+});
 
 window.onYouTubeIframeAPIReady = function(){
   player = new YT.Player('player', {
     videoId: YT_ID,
-    host: 'https://www.youtube-nocookie.com',
+    // Standard host, not youtube-nocookie: the privacy domain is a separate,
+    // less-exercised embed path and audio dropping after a backward seek is a
+    // known complaint against it.
+    host: 'https://www.youtube.com',
+    // Autoplay is only permitted muted — every browser blocks audible
+    // autoplay without a user gesture — so it starts silent and the pill
+    // below turns the sound on.
     // origin is only meaningful over http(s); passing "null" from a file://
     // preview makes YouTube refuse the embed with a configuration error.
-    playerVars: Object.assign({ rel:0, modestbranding:1, playsinline:1 },
+    playerVars: Object.assign({ rel:0, modestbranding:1, playsinline:1, autoplay:1, mute:1 },
       location.protocol.startsWith('http') ? { origin: location.origin } : {}),
     events: {
       // The player object exists before its API methods do. onReady is the
       // only honest signal that it came up, so that — not the constructor
       // returning — is what clears the fallback.
-      onReady: () => { ready = true; document.getElementById('fb').classList.remove('on'); },
+      onReady: () => {
+        ready = true;
+        document.getElementById('fb').classList.remove('on');
+        player.playVideo();                    // muted, so the browser allows it
+        syncMute();
+      },
       onStateChange: e => {
+        syncMute();
         if (e.data === YT.PlayerState.PLAYING){
           lastT = player.getCurrentTime();
           clearInterval(poll);
