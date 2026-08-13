@@ -335,6 +335,80 @@ const DECKS = [
     {q:"The letter 'M' turned upside down (180°)?",a:"W",why:"A half turn flips top↔bottom, and M becomes W."},
     {q:"Which one flips a shape's handedness: a rotation or a mirror?",a:"A mirror (reflection)",why:"A rotation only turns the shape; only a mirror reverses left/right, like b → d."},
     {q:"An arrow points up. Rotate it 90° counter-clockwise. It points?",a:"Left",why:"Counter-clockwise quarter-turn: up → left → down → right."}
+  ]},
+
+  // ── Appended decks ──────────────────────────────────────────────────────
+  // Card ids are positional (`deckIndex-cardIndex`) and the review schedule in
+  // localStorage is keyed by them, so new decks go on the END. Inserting one
+  // higher up would silently re-point every saved card.
+  {name:"Times tables (2–12)", prompt:"What does this equal?",
+   method:"Each fact only has to be learned once — a×b and b×a are the same, so this deck asks each pair a single time. Where you don't know one cold, rebuild it: ×4 is double-double, ×8 is double-double-double, ×12 is (×10) + (×2), and ×9 is (×10) − one lot. The ×9 row also self-checks: its digits always add to 9.",
+   cards:(function(){
+     const hint = {
+       "6×7":"The one most people stall on. 6×7 = 42. Rebuild: 6×6 = 36, plus one more 6 → 42.",
+       "7×8":"Say it as a run of digits: 5, 6, 7, 8 → 56 = 7×8.",
+       "6×8":"Double 6×4. 6×4 = 24, doubled → 48. Six times an even number always ends in that same digit (6×8 → 8).",
+       "7×9":"Use the ×9 trick: 7 − 1 = 6 is the tens digit, and 6 + 3 = 9, so 63.",
+       "8×9":"×9 trick: 8 − 1 = 7 tens, and 7 + 2 = 9 → 72.",
+       "6×9":"×9 trick: 6 − 1 = 5 tens, and 5 + 4 = 9 → 54.",
+       "7×7":"49 — one less than 50, and one less than 7×8 minus 7.",
+       "8×8":"64. Also 2⁶, and 8³ ÷ 8.",
+       "9×9":"81. ×9 trick: 9 − 1 = 8 tens, 8 + 1 = 9.",
+       "12×12":"144. (×10) + (×2) → 120 + 24.",
+       "11×12":"132. (×10) + (×2) → 110 + 22.",
+       "7×12":"84. (×10) + (×2) → 70 + 14.",
+       "8×12":"96. (×10) + (×2) → 80 + 16.",
+       "9×12":"108. (×10) + (×2) → 90 + 18.",
+       "6×12":"72. (×10) + (×2) → 60 + 12.",
+       "7×11":"77 — for 2 through 9, ×11 just doubles the digit.",
+       "8×11":"88 — the digit doubled.",
+       "9×11":"99 — the digit doubled.",
+       "4×7":"28. Double 2×7 = 14 → 28.",
+       "4×8":"32. Double-double 8: 16 → 32.",
+       "3×7":"21. Three sevens; the ×3 row goes 21, 24, 27 at the end.",
+       "3×8":"24. Also 4! and the number of hours in a day.",
+       "4×9":"36. ×9 trick: 4 − 1 = 3 tens, 3 + 6 = 9.",
+       "6×6":"36 — same answer as 4×9.",
+       "8×7":"56 — the 5,6,7,8 run."
+     };
+     const out = [];
+     for (let a = 2; a <= 12; a++) {
+       for (let b = a; b <= 12; b++) {
+         if (a === 10 || b === 10) continue;   // ×10 is not worth a card
+         const k = a + "×" + b;
+         const c = { q: a + " × " + b, a: String(a * b) };
+         if (hint[k]) c.why = hint[k];
+         out.push(c);
+       }
+     }
+     return out;
+   })()},
+
+  {name:"Fraction → Decimal", prompt:"What is this as a decimal?",
+   method:"Three families cover almost everything. HALVING: /2, /4, /8, /16 come from halving 0.5 over and over — 0.5, 0.25, 0.125, 0.0625. DIVIDING TEN: /5, /20, /25, /50 are 0.2, 0.05, 0.04, 0.02. REPEATERS: /3, /6, /9, /11, /7 never terminate, and each has its own signature — learn the signature, not the long division. A bar over a digit means it repeats forever.",
+   cards:[
+    {q:"3/5",a:"0.6",why:"1/5 = 0.2, so three of them = 0.6. (Or 3/5 = 6/10.)"},
+    {q:"4/5",a:"0.8",why:"1/5 = 0.2, four of them = 0.8. (Or 8/10.)"},
+    {q:"5/6",a:"0.8333…",why:"1/6 = 0.1666…, so 5/6 = 1 − 0.1666… = 0.8333…. The 3 repeats."},
+    {q:"7/8",a:"0.875",why:"1/8 = 0.125, so 7/8 = 1 − 0.125 = 0.875. Faster than multiplying by 7."},
+    {q:"1/16",a:"0.0625",why:"Keep halving: 0.5 → 0.25 → 0.125 → 0.0625. Four halvings, because 16 = 2⁴."},
+    {q:"3/16",a:"0.1875",why:"1/16 = 0.0625. Three of them: 0.0625 × 3 = 0.1875. (Or 0.125 + 0.0625.)"},
+    {q:"5/16",a:"0.3125",why:"0.25 + 0.0625 — that is 4/16 + 1/16. Building from pieces beats multiplying."},
+    {q:"1/7",a:"0.142857…",why:"The famous one. The digits 142857 repeat forever, and every other seventh is those same six digits rotated. Worth memorizing outright."},
+    {q:"2/7",a:"0.285714…",why:"Same six digits as 1/7 (142857), just started in a different place: 285714. Double 0.142857 and you land on it."},
+    {q:"1/9",a:"0.111…",why:"Ninths are the easiest repeaters: n/9 is just n repeating. 1/9 = 0.111…, 2/9 = 0.222…, and so on."},
+    {q:"4/9",a:"0.444…",why:"n/9 = n repeating. So 4/9 = 0.444…. This holds all the way to 8/9 = 0.888…."},
+    {q:"1/11",a:"0.0909…",why:"Elevenths repeat in PAIRS: 1/11 = 0.0909…, 2/11 = 0.1818…, 3/11 = 0.2727…. The pair is the numerator × 09."},
+    {q:"1/20",a:"0.05",why:"Half of 1/10. 0.1 halved = 0.05."},
+    {q:"1/25",a:"0.04",why:"25 goes into 100 four times, so 1/25 = 4/100 = 0.04."},
+    {q:"1/50",a:"0.02",why:"50 goes into 100 twice → 2/100 = 0.02."},
+    {q:"5/12",a:"0.41666…",why:"1/12 = 0.08333…. Five of them = 0.41666…. (Or 0.5 − 1/12.)"},
+    {q:"7/12",a:"0.58333…",why:"0.5 + 1/12 = 0.5 + 0.08333… = 0.58333…."},
+    {q:"11/12",a:"0.91666…",why:"1 − 1/12 = 1 − 0.08333… = 0.91666…. Going from 1 is faster than multiplying by 11."},
+    {q:"Which fractions give a decimal that ENDS?",a:"Only those whose bottom is built from 2s and 5s",why:"/2, /4, /5, /8, /10, /16, /20, /25 all terminate. Anything with a 3, 7, 9 or 11 in the bottom (like /3, /6, /7, /9, /12) repeats forever. Knowing this tells you the answer's shape before you divide."},
+    {q:"0.375 — as a fraction?",a:"3/8",why:"0.375 = 0.25 + 0.125 = 2/8 + 1/8. Reading decimals back to eighths is the reverse skill and it gets tested."},
+    {q:"0.625 — as a fraction?",a:"5/8",why:"0.5 + 0.125 = 4/8 + 1/8 = 5/8."},
+    {q:"0.833… — as a fraction?",a:"5/6",why:"A trailing repeated 3 means sixths or thirds. 0.8333… sits just under 1, one sixth below it → 5/6."}
   ]}
 ];
 
@@ -1206,7 +1280,7 @@ function renderLearning(){
   const dueCount = learnState.queue.filter(x=>{const cs=CARDS[x.card.id]; return cs && isDue(x.card.id);}).length;
   const freshCount = learnState.queue.length - dueCount;
   V.innerHTML = `
-    ${modeHead('Fact Fluency', 'Flashcards for the facts worth knowing cold — squares, percents, roots. Each card also shows you <em>how</em>, not just the answer.')}
+    ${modeHead('Fact Fluency', 'Flashcards for the facts worth knowing cold — times tables, fraction-to-decimal, squares, percents. Each card also shows you <em>how</em>, not just the answer.')}
     <div class="mb-4 flex flex-wrap gap-3 items-center">
       <label class="text-xs text-gray-500">Deck
         <select id="l-deck" class="ml-2">

@@ -1,428 +1,222 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Climbing Machine — James Floyd</title>
-  <meta name="description" content="I'm a Climbing Machine — a children's book by James Floyd.">
-  <meta name="robots" content="noindex, nofollow">
-  <link rel="icon" href="/favicon.ico" sizes="any">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=DM+Mono:wght@300;400&display=swap">
-  <style>
-    :root {
-      --paper: #faf7ef;
-      --ink: #2b2620;
-      --soft: rgba(43,38,32,.55);
-    }
-    * { box-sizing: border-box; }
-    html, body {
-      margin: 0;
-      background: linear-gradient(180deg, #a9c2d8 0%, #cfdde9 30%, #f7f1e3 100%);
-      color: var(--ink);
-      font-family: 'Newsreader', Georgia, serif;
-      min-height: 100vh; min-height: 100dvh;
-    }
-    .cm-back {
-      position: fixed; top: 14px; left: 10px; z-index: 40;
-      padding: 12px 18px;
-      font-family: 'DM Mono', monospace; font-size: 11px;
-      letter-spacing: .2em; text-transform: uppercase;
-      color: var(--soft); text-decoration: none; border-radius: 6px;
-    }
-    .cm-back:hover { color: var(--ink); background: rgba(43,38,32,.06); }
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Climbing Machine</title>
+<meta name="description" content="Climbing Machine — a picture book. Read it cover to cover.">
+<link rel="canonical" href="https://jamesfloyds.world/builds/climbing-machine/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* ═══════════════════════════════════════════════════════════════════
+     The book, and nothing else. Pages are the real 40-page print build
+     rendered at 216 dpi and trimmed of their bleed, so what you flip
+     through here is exactly what comes off the press — plus the wrap's
+     front and back panels as the covers.
 
-    .cm-head { text-align: center; padding: 22px 16px 4px; }
-    .cm-head h1 {
-      font-family: 'Fraunces', serif; font-weight: 700;
-      font-size: clamp(1.4rem, 3.6vw, 2.1rem);
-      letter-spacing: -.02em; margin: 0 0 3px;
-    }
-    .cm-head p { margin: 0; font-style: italic; color: var(--soft); }
-    .cm-hint {
-      text-align: center; font-family: 'DM Mono', monospace;
-      font-size: 10px; letter-spacing: .22em; text-transform: uppercase;
-      color: var(--soft); padding: 8px 0 0;
-    }
+     The flip is a stack of leaves rotating about their spine edge. Each
+     leaf carries two faces, back-face hidden, so one rotation turns one
+     sheet and reveals the two pages beneath it.
+     ═══════════════════════════════════════════════════════════════════ */
+  :root{
+    --paper:#faf7ef;
+    --ink:#e8e4db;
+    --dim:rgba(232,228,219,.5);
+    --flip:.78s;
+  }
+  *{box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    margin:0; background:#08090b; color:var(--ink);
+    font-family:'Montserrat',-apple-system,BlinkMacSystemFont,sans-serif;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    overflow:hidden; -webkit-font-smoothing:antialiased;
+  }
+  /* a warm pool of light under the book, so it reads as an object on a table */
+  body::before{
+    content:''; position:fixed; inset:0; pointer-events:none;
+    background:radial-gradient(ellipse 70% 55% at 50% 48%, rgba(255,236,200,.10), transparent 70%);
+  }
 
-    .cm-stage { display: flex; justify-content: center; padding: 12px 10px 18px; }
-    #book { width: min(96vw, 940px); }
+  .stage{
+    position:relative; z-index:1;
+    perspective:2600px; perspective-origin:50% 46%;
+    width:min(92vw, 1180px);
+  }
 
-    /* ── The Wild Things arc ──
-       Early spreads: the text sits alone, low on a blank page; the painting
-       floats small on the facing page. The art grows spread by spread until,
-       at the summit, it swallows both pages whole. Nothing is ever cropped
-       except the deliberate full-bleed summit spreads. */
-    .page { background: var(--paper); border: 1px solid rgba(43,38,32,.1); overflow: hidden; }
-    .page .inner { display: flex; flex-direction: column; height: 100%; padding: 5% 6%; }
+  /* The book is two page-widths wide. Aspect 8:10 per page → 16:10 open. */
+  .book{
+    position:relative; margin:0 auto;
+    width:100%; aspect-ratio:16 / 10;
+    transform-style:preserve-3d;
+    transition:transform .6s cubic-bezier(.2,.7,.3,1);
+    transform:translateX(-25%);          /* closed: the shut book sits centred */
+  }
+  .book.open{transform:translateX(0);}
 
-    /* Text pages — words floating near the middle of the blank page */
-    .page.tpage .inner { justify-content: center; }
-    .page.tpage .txt { font-size: clamp(.72rem, 1.55vw, 1rem); line-height: 1.65; }
-    .page.tpage .txt p { margin: 0 0 .75em; }
-    .page.tpage .txt p:last-child { margin-bottom: 0; }
-    .page.tpage .folio {
-      position: absolute; left: 0; right: 0; bottom: 3.2%;
-      text-align: center; font-family: 'DM Mono', monospace;
-      font-size: 9px; letter-spacing: .3em; color: rgba(43,38,32,.35);
-    }
-    .page.tpage { position: relative; }
+  /* the slab under the leaves — gives the closed book some thickness */
+  .block{
+    position:absolute; top:0; left:50%; width:50%; height:100%;
+    background:#1a1712; border-radius:2px 5px 5px 2px;
+    box-shadow:0 30px 70px -25px rgba(0,0,0,.9), 0 2px 10px rgba(0,0,0,.6);
+  }
 
-    /* Art pages — the painting centered in white, growing through the book */
-    .page.apage .inner { justify-content: center; padding: 5%; }
-    .page.apage .art { margin: 0 auto; }
-    .page.apage .art img {
-      display: block; width: 100%; height: auto;
-      box-shadow: 0 6px 18px rgba(43,38,32,.12);
-      border-radius: 2px;
-    }
-    .art.trip { display: flex; flex-direction: column; gap: 8px; }
-    .art.trip img { box-shadow: 0 4px 12px rgba(43,38,32,.11); }
-    /* the size ladder */
-    .g0 { width: 65%; }  /* S1: was 54, +20% */
-    .g1 { width: 64%; } .g2 { width: 74%; } .g3 { width: 69%; }  /* +10, +20, +5 */
-    .g4 { width: 74%; } .g5 { width: 81%; } .g6 { width: 78%; }  /* +5, +10 */
-    .g4b { width: 74%; } /* holds S8 at its previous size */
-    .g7 { width: 84%; } .g8 { width: 90%; } .g9 { width: 96%; }
-    .w1 { width: 72%; } /* wide art, early */
-    .t1 { width: 60%; gap: 26px; } /* triptych, mid — borders trimmed, panels breathe apart */
-    .t2 { width: 62%; } /* triptych, late */
+  .leaf{
+    position:absolute; top:0; left:50%; width:50%; height:100%;
+    transform-origin:left center; transform-style:preserve-3d;
+    transition:transform var(--flip) cubic-bezier(.42,0,.35,1);
+  }
+  .leaf.flipped{transform:rotateY(-180deg);}
 
-    /* Summit spreads — full-bleed art split across both facing pages.
-       Page aspect is fixed at 500:680 by the flip engine, so the halves are
-       positioned with percentages: each 16:9 painting spans the pair, showing
-       [8.7%..50%] on the left page and [50%..91.3%] on the right. */
-    .page.half { position: relative; padding: 0; background: var(--paper); }
-    /* The whole painting spans the pair at FULL width — nothing cropped.
-       Each page shows exactly half; the ~10% left over becomes slim paper
-       bands above and below (the text band sits in the lower one). */
-    .page.half img {
-      position: absolute; top: 50%; transform: translateY(-50%);
-      width: 200%; height: auto; max-width: none;
-    }
-    .page.half-l img { left: 0; }
-    .page.half-r img { left: -100%; }
-    .page.half .band {
-      position: absolute; left: 0; right: 0; bottom: 0; z-index: 2;
-      background: linear-gradient(180deg, rgba(250,247,239,0) 0%, rgba(250,247,239,.88) 34%, rgba(250,247,239,.96) 100%);
-      padding: 26px 8% 14px;
-      font-size: clamp(.7rem, 1.5vw, .96rem); line-height: 1.55;
-    }
-    .page.half .band p { margin: 0 0 .5em; }
-    .page.half .band p:last-child { margin-bottom: 0; }
+  .face{
+    position:absolute; inset:0;
+    backface-visibility:hidden; -webkit-backface-visibility:hidden;
+    background:var(--paper) center/cover no-repeat;
+    overflow:hidden;
+  }
+  .face img{display:block; width:100%; height:100%; object-fit:cover;}
+  .face.back{transform:rotateY(180deg);}
+  /* gutter shading — the page darkens as it curves into the spine */
+  .face::after{
+    content:''; position:absolute; top:0; bottom:0; width:7%; pointer-events:none;
+  }
+  .face.front::after{left:0;  background:linear-gradient(90deg, rgba(0,0,0,.22), transparent);}
+  .face.back::after {right:0; background:linear-gradient(270deg, rgba(0,0,0,.22), transparent);}
 
-    /* Covers */
-    .page.cover { background: linear-gradient(180deg, #9db9d3 0%, #c6d7e6 55%, #dbe4d2 100%); }
-    /* Front cover: the painting bleeds to every edge, title floating in the sky */
-    .page.cover.full { position: relative; padding: 0; }
-    .page.cover.full .cover-art {
-      position: absolute; inset: 0; width: 100%; height: 100%;
-      object-fit: cover; object-position: center bottom;
-    }
-    .page.cover.full .cover-titles {
-      position: absolute; top: 9%; left: 0; right: 0; z-index: 2; text-align: center;
-    }
-    .page.cover.full .cover-titles h2 {
-      font-family: 'Fraunces', serif; font-weight: 700;
-      font-size: clamp(1.4rem, 3.4vw, 2.3rem); letter-spacing: -.02em;
-      margin: 0 0 4px; color: #22303c;
-      text-shadow: 0 1px 0 rgba(255,255,255,.55), 0 2px 18px rgba(255,255,255,.75);
-    }
-    .page.cover .inner { justify-content: center; text-align: center; }
-    .page.cover .art { width: 56%; margin: 0 auto; }
-    .page.cover .art img { display:block; width:100%; height:auto; box-shadow: 0 14px 34px rgba(30,40,50,.3); border-radius: 2px; }
-    .page.cover h2 {
-      font-family: 'Fraunces', serif; font-weight: 700;
-      font-size: clamp(1.3rem, 3vw, 2rem); letter-spacing: -.02em;
-      margin: 6% 0 2%;
-    }
-    .page.cover .by { font-style: italic; color: rgba(43,38,32,.65); margin: 0; }
-    .page.cover.backc h2 { font-size: clamp(1.05rem, 2.2vw, 1.5rem); }
-    .page.cover.backc p { color: rgba(43,38,32,.7); font-size: clamp(.78rem, 1.5vw, 1rem); }
+  /* click targets */
+  .zone{position:absolute; top:0; height:100%; width:50%; z-index:60; cursor:pointer; background:transparent;
+        border:0; padding:0;}
+  .zone.prev{left:0;}  .zone.next{right:0;}
+  .zone:disabled{cursor:default;}
 
-    /* Controls */
-    .cm-controls {
-      display: flex; justify-content: center; align-items: center; gap: 18px;
-      padding-bottom: 26px;
-    }
-    .cm-btn {
-      appearance: none; border: 1px solid rgba(43,38,32,.25); background: rgba(255,255,255,.5);
-      color: var(--ink); border-radius: 999px; padding: 10px 20px;
-      font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: .14em;
-      text-transform: uppercase; cursor: pointer; transition: background .15s, transform .12s;
-    }
-    .cm-btn:hover { background: #fff; transform: translateY(-1px); }
-    #pageno { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: .18em; color: var(--soft); min-width: 100px; text-align: center; }
+  .bar{
+    position:relative; z-index:1; margin-top:22px;
+    display:flex; align-items:center; gap:16px; font-size:12px; color:var(--dim);
+    letter-spacing:.05em;
+  }
+  .bar button{
+    background:transparent; border:1px solid rgba(232,228,219,.22); color:var(--ink);
+    border-radius:99px; width:34px; height:34px; cursor:pointer; font-size:14px;
+    font-family:inherit; transition:border-color .2s, background .2s;
+  }
+  .bar button:hover:not(:disabled){border-color:rgba(232,228,219,.6); background:rgba(255,255,255,.05);}
+  .bar button:disabled{opacity:.25; cursor:default;}
+  .count{min-width:104px; text-align:center; font-variant-numeric:tabular-nums;}
 
-    /* No-JS fallback: pages stack in reading order */
-    .no-js #book { width: min(94vw, 720px); }
-    .no-js .page { margin: 0 auto 26px; border-radius: 6px; min-height: 300px; }
-    .no-js .page.tpage .inner { padding: 40px 30px; }
-    .no-js .page.half { min-height: 420px; }
-    .no-js .cm-controls, .no-js .cm-hint { display: none; }
-    .js .page { display: none; } /* PageFlip re-mounts them */
-  </style>
+  @media (max-width:760px){
+    .stage{width:96vw;}
+    .bar{font-size:11px; gap:12px;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .leaf,.book{transition-duration:.01ms;}
+  }
+</style>
 </head>
-<body class="no-js">
-<script>document.body.classList.replace('no-js','js');</script>
+<body>
 
-  <a href="/builds/" class="cm-back">← Builds</a>
-
-  <header class="cm-head">
-    <h1>Climbing Machine</h1>
-    <p>a children's book</p>
-  </header>
-  <p class="cm-hint">Drag a corner, tap the edges, or use ← → to turn the pages</p>
-
-  <div class="cm-stage">
-    <div id="book">
-
-      <!-- COVER -->
-      <div class="page cover full" data-density="hard">
-        <img class="cover-art" src="/books/climbing-machine/cover.jpg" alt="A boy with a backpack looks up at a huge mountain trail">
-        <div class="cover-titles">
-          <h2>Climbing Machine</h2>
-        </div>
-      </div>
-
-      <!-- S1 -->
-      <div class="page tpage"><div class="inner">
-        <div class="txt"><p>“I want to climb to the top of the mountain today,” said James.</p><p>“All the way?” he heard his teacher Floyd say.</p></div>
-        <div class="folio">2</div>
-      </div></div>
-      <div class="page apage"><div class="inner">
-        <div class="art g0"><img src="/books/climbing-machine/spread-01.jpg" alt="At the trailhead, James points up at the huge mountain while Floyd listens"></div>
-      </div></div>
-
-      <!-- S2 -->
-      <div class="page tpage"><div class="inner">
-        <div class="txt"><p>It was a big mountain, but James was trying to be brave.</p><p>From the effort he gave his 2 hour learning apps he had found that he could do hard things.</p><p>Besides, this was an Alpha School life skills workshop and he knew the challenge each one brings.</p></div>
-        <div class="folio">4</div>
-      </div></div>
-      <div class="page apage"><div class="inner">
-        <div class="art g1"><img src="/books/climbing-machine/spread-02.jpg" alt="James and Floyd stand at the trailhead fence beneath the huge mountain"></div>
-      </div></div>
-
-      <!-- S3 -->
-      <div class="page tpage"><div class="inner">
-        <div class="txt"><p>James responded, “I will be a climbing machine.”</p><p>His little legs were bouncing nervously in his blue jeans.</p></div>
-        <div class="folio">6</div>
-      </div></div>
-      <div class="page apage"><div class="inner">
-        <div class="art g2"><img src="/books/climbing-machine/spread-03.jpg" alt="James talks excitedly to Floyd while classmates walk past"></div>
-      </div></div>
-
-      <!-- S4 -->
-      <div class="page tpage"><div class="inner">
-        <div class="txt"><p>James watched other hikers as they went up and up and up the trail until they looked bite size.</p></div>
-        <div class="folio">8</div>
-      </div></div>
-      <div class="page apage"><div class="inner">
-        <div class="art g3"><img src="/books/climbing-machine/spread-04.jpg" alt="Framed painting: James watches tiny hikers wind up the mountain trail"></div>
-      </div></div>
-
-      <!-- S5 -->
-      <div class="page tpage"><div class="inner">
-        <div class="txt"><p>Was he even the right size to do this?</p><p>Would he have the might to rise to this?</p></div>
-        <div class="folio">10</div>
-      </div></div>
-      <div class="page apage"><div class="inner">
-        <div class="art g4"><img src="/books/climbing-machine/spread-05.jpg" alt="Framed painting: James looks small before the towering peak"></div>
-      </div></div>
-
-      <!-- S6 -->
-      <div class="page tpage"><div class="inner">
-        <div class="txt"><p>Floyd reminded everyone “Remember, at Alpha we are limitless!”</p><p>“I really want to finish this,” thought James, his heart beating fast.</p></div>
-        <div class="folio">12</div>
-      </div></div>
-      <div class="page apage"><div class="inner">
-        <div class="art g5"><img src="/books/climbing-machine/spread-06.jpg" alt="Floyd throws his arms wide in front of the class"></div>
-      </div></div>
-
-      <!-- S7 — triptych -->
-      <div class="page tpage"><div class="inner">
-        <div class="txt"><p>As the class stood at the start of the path, James looked up to the top.</p><p>He told his classmates “I’ll go in the back. Let’s swap spots.”</p></div>
-        <div class="folio">14</div>
-      </div></div>
-      <div class="page apage"><div class="inner">
-        <div class="art trip t1">
-          <img src="/books/climbing-machine/spread-07a.jpg" alt="The class lines up at the trailhead as Floyd points up the mountain">
-          <img src="/books/climbing-machine/spread-07b.jpg" alt="Floyd crouches to talk with James as classmates walk ahead">
-          <img src="/books/climbing-machine/spread-07c.jpg" alt="James takes the back spot, watching the class start up the trail">
-        </div>
-      </div></div>
-
-      <!-- S8 -->
-      <div class="page tpage"><div class="inner">
-        <div class="txt"><p>They started to climb. Up and up. He didn’t want to whine so he stopped to tie his shoe.</p><p>Then he faked a cough. “Maybe I can pretend I have the flu,” he thought.</p></div>
-        <div class="folio">16</div>
-      </div></div>
-      <div class="page apage"><div class="inner">
-        <div class="art g4b"><img src="/books/climbing-machine/spread-08.jpg" alt="James kneels to tie his shoe and fakes a cough while Floyd watches"></div>
-      </div></div>
-
-      <!-- S9 — shares its painting with S10 -->
-      <div class="page tpage"><div class="inner">
-        <div class="txt"><p>Floyd knew what James was up to. “How you doing, buddy? You’re looking a little pale.”</p><p>Floyd pulled James to the side of the trail, where they flopped onto a patch of soft grass.</p><p>With a huge breath James let his feelings go.</p><p>“My legs ache and I don’t want to fail. I want to keep up with the class!”</p></div>
-        <div class="folio">18</div>
-      </div></div>
-      <div class="page apage"><div class="inner">
-        <div class="art g6"><img src="/books/climbing-machine/spread-09.jpg" alt="Floyd sits with his arm around James at the side of the trail"></div>
-      </div></div>
-
-      <!-- S10 -->
-      <div class="page tpage"><div class="inner">
-        <div class="txt"><p>James felt like he was in a funk.</p><p>“You’ve won already! We’re done with a little chunk!” Floyd encouraged.</p></div>
-        <div class="folio">20</div>
-      </div></div>
-      <div class="page apage"><div class="inner">
-        <div class="art g6"><img src="/books/climbing-machine/spread-09.jpg" alt="Floyd points up the trail while sitting with James"></div>
-      </div></div>
-
-      <!-- S11 -->
-      <div class="page tpage"><div class="inner">
-        <div class="txt"><p>But as they sat looking up to the top, James said “Maybe I can try again another day.”</p><p>Floyd looked at James and said, “we make big goals at Alpha School, and I think you can reach them. I’m right here all the way too.”</p></div>
-        <div class="folio">22</div>
-      </div></div>
-      <div class="page apage"><div class="inner">
-        <div class="art g7"><img src="/books/climbing-machine/spread-11.jpg" alt="Sitting on the slope, Floyd and James look up toward the top"></div>
-      </div></div>
-
-      <!-- S12 -->
-      <div class="page tpage"><div class="inner">
-        <div class="txt"><p>Floyd knew James loved games.</p><p>So he pointed to a big rock a little bit up the trail.</p><p>“Sometimes, I like to make hard things into games so they’re fun. I bet you it’s one-hundred steps to that rock.”</p><p>This time James didn’t balk, he got up and started walking, counting each step.</p></div>
-        <div class="folio">24</div>
-      </div></div>
-      <div class="page apage"><div class="inner">
-        <div class="art g7"><img src="/books/climbing-machine/spread-12.jpg" alt="Floyd points to a big rock up the trail as the game begins"></div>
-      </div></div>
-
-      <!-- S13 -->
-      <div class="page tpage"><div class="inner">
-        <div class="txt"><p>A little farther up the trail, Floyd pointed at a big tree and asked “How many steps if you run there?”</p><p>James took a deep breath of air, guessed, and went off. Up and up and up.</p></div>
-        <div class="folio">26</div>
-      </div></div>
-      <div class="page apage"><div class="inner">
-        <div class="art g8"><img src="/books/climbing-machine/spread-13.jpg" alt="Floyd points at a big tree up the trail as James runs ahead"></div>
-      </div></div>
-
-      <!-- S14 -->
-      <div class="page tpage"><div class="inner">
-        <div class="txt"><p>When they reached the tree James looked at Floyd and said “I’m a climbing machine.”</p><p>He was keen to keep going.</p></div>
-        <div class="folio">28</div>
-      </div></div>
-      <div class="page apage"><div class="inner">
-        <div class="art g8"><img src="/books/climbing-machine/spread-14.jpg" alt="James and Floyd stand by the big tree as the class walks up to them"></div>
-      </div></div>
-
-      <!-- S15 — triptych, nearly full -->
-      <div class="page tpage"><div class="inner">
-        <div class="txt"><p>Chunk by chunk, James’ funk subsided.</p><p>His legs ached more, but he felt lighter. They went up and up and up. Higher and higher.</p></div>
-        <div class="folio">30</div>
-      </div></div>
-      <div class="page apage"><div class="inner">
-        <div class="art trip t2">
-          <img src="/books/climbing-machine/spread-15a.jpg" alt="Floyd leads the class up the trail past a tree">
-          <img src="/books/climbing-machine/spread-15b.jpg" alt="The class crosses the rocky mountain face">
-          <img src="/books/climbing-machine/spread-15c.jpg" alt="The class climbs steep rocky steps, higher and higher">
-        </div>
-      </div></div>
-
-      <!-- S16 — full double-page spread -->
-      <div class="page half half-l">
-        <img src="/books/climbing-machine/spread-16.jpg" alt="James points at the flag on the summit as the class looks on">
-        <div class="band"><p>James finally pointed at the top and said “Bet you can’t stop me! I’m a climbing machine!!”</p></div>
-      </div>
-      <div class="page half half-r">
-        <img src="/books/climbing-machine/spread-16.jpg" alt="">
-        <div class="band"><p>The sun gleamed, and James beamed.</p></div>
-      </div>
-
-      <!-- S17 — full double-page spread -->
-      <div class="page half half-l">
-        <img src="/books/climbing-machine/spread-17.jpg" alt="From the summit, James and Floyd look out over the whole valley">
-        <div class="band"><p>On the summit James looked out as far as he could see.</p></div>
-      </div>
-      <div class="page half half-r">
-        <img src="/books/climbing-machine/spread-17.jpg" alt="">
-        <div class="band"><p>Past the big tree, the big rock, past the spot he worried he’d fail, past the start of the trail, and out to another mountaintop. It all looked itty bitty.</p></div>
-      </div>
-
-      <!-- S18 — full double-page spread -->
-      <div class="page half half-l">
-        <img src="/books/climbing-machine/spread-18.jpg" alt="James points to a distant mountaintop">
-        <div class="band"><p>He pointed and told Floyd, “I am going to the top there.”</p><p>Floyd asked, “All the way?”</p></div>
-      </div>
-      <div class="page half half-r">
-        <img src="/books/climbing-machine/spread-18.jpg" alt="">
-        <div class="band"><p>James looked him in the eye and said, “I’m a climbing machine.”</p></div>
-      </div>
-
-      <!-- BACK COVER -->
-      <div class="page cover backc" data-density="hard">
-        <div class="inner">
-          <h2>The End</h2>
-          <p>Written for the kids (and the grown-ups)<br>still learning that hard things<br>come one chunk at a time.</p>
-          <p class="by" style="margin-top:8%;">James Floyd · 2026</p>
-        </div>
-      </div>
-
-    </div>
+<div class="stage">
+  <div class="book" id="book">
+    <div class="block"></div>
   </div>
+  <button class="zone prev" id="prev" aria-label="Previous page"></button>
+  <button class="zone next" id="next" aria-label="Next page"></button>
+</div>
 
-  <div class="cm-controls">
-    <button class="cm-btn" id="prev">← Back</button>
-    <span id="pageno">Cover</span>
-    <button class="cm-btn" id="next">Next →</button>
-  </div>
+<div class="bar">
+  <button id="bprev" aria-label="Previous page">&#8249;</button>
+  <span class="count" id="count"></span>
+  <button id="bnext" aria-label="Next page">&#8250;</button>
+</div>
 
-  <noscript>
-    <p style="max-width:640px;margin:0 auto 40px;text-align:center;color:var(--soft);font-style:italic;">
-      The page-turning reader needs JavaScript — but the whole book is right here above, words and art in order.
-    </p>
-  </noscript>
+<script>
+/* Leaf 0 is the cover, leaves 1–20 are the 40 interior pages in order, and
+   the last leaf is the back cover. Pairing works out to the printed book:
+   after the cover turns, page 2 faces page 3, page 4 faces page 5, and so on. */
+const DIR = '/books/climbing-machine/read/';
+const PAGES = 40;
 
-  <script src="/books/climbing-machine/page-flip.js"></script>
-  <script>
-    (function(){
-      if (typeof St === 'undefined' || !St.PageFlip) return;
-      var el = document.getElementById('book');
-      // Size pages (4:5) from the viewport so the whole book + controls fit
-      // on screen with breathing room; ~250px is header/hint/controls chrome.
-      var vh = window.innerHeight || 800, vw = window.innerWidth || 1280;
-      var pageH = Math.max(360, Math.min(600, vh - 250));
-      var pageW = Math.round(pageH * 0.8);
-      var maxW = Math.floor(vw * 0.48) - 8;
-      if (pageW > maxW && maxW > 200) { pageW = maxW; pageH = Math.round(pageW / 0.8); }
-      var flip = new St.PageFlip(el, {
-        width: pageW, height: pageH,
-        size: 'fixed',
-        maxShadowOpacity: 0.35,
-        showCover: true,
-        mobileScrollSupport: true,
-        flippingTime: 700
-      });
-      flip.loadFromHTML(document.querySelectorAll('.page'));
+const leaves = [];
+leaves.push({ front: DIR + 'cover-front.jpg', back: null, label: 'Cover' });
+for (let i = 1; i <= PAGES; i += 2) {
+  leaves.push({ front: DIR + pad(i), back: DIR + pad(i + 1), label: null, n: i });
+}
+leaves.push({ front: null, back: DIR + 'cover-back.jpg', label: 'Back cover' });
 
-      var total = flip.getPageCount();
-      var label = document.getElementById('pageno');
-      function update(){
-        var i = flip.getCurrentPageIndex();
-        if (i === 0) { label.textContent = 'Cover'; return; }
-        if (i >= total - 1) { label.textContent = 'The End'; return; }
-        label.textContent = 'Spread ' + Math.min(18, Math.ceil(i / 2)) + ' / 18';
-      }
-      flip.on('flip', update); update();
-      window.__flip = flip;
+function pad(n){ return 'p' + String(n).padStart(2,'0') + '.jpg'; }
 
-      document.getElementById('next').addEventListener('click', function(){ flip.flipNext(); });
-      document.getElementById('prev').addEventListener('click', function(){ flip.flipPrev(); });
-      document.addEventListener('keydown', function(e){
-        if (e.key === 'ArrowRight') flip.flipNext();
-        if (e.key === 'ArrowLeft') flip.flipPrev();
-      });
-    })();
-  </script>
+const book = document.getElementById('book');
+const els = leaves.map((L, i) => {
+  const el = document.createElement('div');
+  el.className = 'leaf';
+  el.innerHTML =
+    `<div class="face front">${L.front ? `<img src="${L.front}" alt="" ${i>1?'loading="lazy"':''}>` : ''}</div>` +
+    `<div class="face back">${L.back ? `<img src="${L.back}" alt="" loading="lazy">` : ''}</div>`;
+  book.appendChild(el);
+  return el;
+});
+
+let at = 0;                       // how many leaves have been turned
+const last = leaves.length;
+
+function paint(){
+  els.forEach((el, i) => {
+    const turned = i < at;
+    el.classList.toggle('flipped', turned);
+    // Turned leaves stack upward on the left; untouched ones stack downward
+    // on the right, so the one you are about to turn is always on top.
+    el.style.zIndex = turned ? i + 1 : last - i;
+  });
+  book.classList.toggle('open', at > 0 && at < last);
+
+  const spread = at === 0 ? 'Cover'
+    : at >= last ? 'Back cover'
+    : (() => {
+        // Sheet number ≠ printed folio: two blanks and the dedication come
+        // first, so the number on the paper is the sheet minus two. Label by
+        // what the reader can actually see printed at the foot of the page.
+        const folio = n => (n >= 4 && n <= 39) ? n - 2 : null;
+        const l = 2 * at - 2, r = 2 * at - 1;      // sheets now showing
+        if (l >= PAGES) return 'End';
+        const fl = folio(l), fr = folio(r);
+        if (fl && fr) return `Pages ${fl}–${fr}`;
+        if (fr) return `Page ${fr}`;
+        if (fl) return `Page ${fl}`;
+        return at === 2 ? 'Dedication' : 'Opening';
+      })();
+  document.getElementById('count').textContent = spread;
+  for (const id of ['prev','bprev']) document.getElementById(id).disabled = at === 0;
+  for (const id of ['next','bnext']) document.getElementById(id).disabled = at >= last;
+}
+
+function go(d){
+  const next = Math.min(last, Math.max(0, at + d));
+  if (next === at) return;
+  at = next;
+  paint();
+}
+
+['next','bnext'].forEach(id => document.getElementById(id).addEventListener('click', () => go(1)));
+['prev','bprev'].forEach(id => document.getElementById(id).addEventListener('click', () => go(-1)));
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); go(1); }
+  if (e.key === 'ArrowLeft') { e.preventDefault(); go(-1); }
+  if (e.key === 'Home') go(-last);
+  if (e.key === 'End') go(last);
+});
+
+// swipe
+let x0 = null;
+document.addEventListener('touchstart', e => { x0 = e.changedTouches[0].clientX; }, {passive:true});
+document.addEventListener('touchend', e => {
+  if (x0 === null) return;
+  const dx = e.changedTouches[0].clientX - x0;
+  if (Math.abs(dx) > 45) go(dx < 0 ? 1 : -1);
+  x0 = null;
+}, {passive:true});
+
+paint();
+</script>
 </body>
 </html>

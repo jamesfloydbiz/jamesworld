@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cut and Donate 13&quot; of James' Hair — a life skills workshop</title>
+<meta name="description" content="A life skills workshop proposal for Alpha School.">
+<!-- Unlisted, same as /alpha/. Not in routes.config.mjs, so not in the sitemap. -->
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* Same palette and glow as /alpha/ — this is a child of that page. */
+  :root{
+    --alpha-blue:#0000EF; --alpha-cyan:#47C4E6;
+    --ink:#fff; --dim:rgba(255,255,255,.72); --faint:rgba(255,255,255,.42);
+    --hair:rgba(255,255,255,.13);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:#000; color:var(--ink);
+    font-family:'Montserrat',-apple-system,BlinkMacSystemFont,sans-serif;
+    font-weight:300; line-height:1.72; -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  .glow{position:fixed; top:0; bottom:0; width:min(26vw,330px); pointer-events:none; z-index:0;}
+  .glow::before,.glow::after{content:''; position:absolute; inset:0;}
+  .glow-l{left:0;} .glow-r{right:0; transform:scaleX(-1);}
+  .glow::before{background:linear-gradient(90deg,
+      rgba(0,0,239,.78) 0%, rgba(0,0,239,.34) 16%, rgba(0,0,239,.09) 38%, transparent 70%);
+    filter:blur(38px); animation:breathe 11s ease-in-out infinite;}
+  .glow::after{background:linear-gradient(90deg,
+      rgba(71,196,230,.62) 0%, rgba(71,196,230,.12) 11%, transparent 32%);
+    filter:blur(24px); animation:breathe 8s ease-in-out infinite reverse;}
+  .glow-r::before{animation-delay:-4s;} .glow-r::after{animation-delay:-2.5s;}
+  @keyframes breathe{
+    0%,100%{opacity:.72; transform:translateX(-6px) scaleX(1);}
+    50%{opacity:1; transform:translateX(0) scaleX(1.09);}
+  }
+  .edge{position:fixed; top:0; bottom:0; width:2px; z-index:1; pointer-events:none;
+    background:linear-gradient(180deg,transparent,var(--alpha-cyan) 18%,var(--alpha-cyan) 82%,transparent);
+    opacity:.5;}
+  .edge-l{left:0;} .edge-r{right:0;}
+  @media (prefers-reduced-motion:reduce){ .glow::before,.glow::after{animation:none;} }
+  @media (max-width:720px){ .glow{width:34vw;} }
+
+  .wrap{position:relative; z-index:2; max-width:680px; margin:0 auto; padding:0 24px 96px;}
+  .back{display:inline-block; margin:34px 0 0; font-size:12.5px; font-weight:500;
+    color:var(--alpha-cyan); text-decoration:none; letter-spacing:.04em;}
+  .back:hover{color:#fff;}
+
+  header{padding:44px 0 8px;}
+  .eyebrow{font-size:11px; letter-spacing:.22em; text-transform:uppercase;
+    color:var(--alpha-cyan); font-weight:600; margin:0 0 18px;}
+  h1{font-size:clamp(27px,4.6vw,42px); line-height:1.16; font-weight:700;
+    letter-spacing:-.015em; margin:0 0 14px;}
+  .shot{margin:0 0 36px;}
+  .shot img{display:block; width:100%; height:auto; border-radius:10px;
+    border:1px solid rgba(71,196,230,.24);
+    box-shadow:0 20px 60px -28px rgba(0,0,239,.85), 0 0 70px -40px rgba(71,196,230,.5);}
+  .shot figcaption{font-size:13px; color:var(--faint); font-style:italic; margin-top:12px;}
+
+  p{margin:0 0 20px; font-size:16.5px; color:var(--dim);}
+  strong{color:#fff; font-weight:600;}
+  .lede{font-size:18px; color:#fff; font-weight:300;}
+
+  h2{font-size:12px; letter-spacing:.2em; text-transform:uppercase; font-weight:600;
+    color:var(--faint); margin:46px 0 18px; padding-top:22px; border-top:1px solid var(--hair);}
+
+  .claim{
+    border-left:2px solid var(--alpha-cyan); padding:4px 0 4px 20px; margin:0 0 24px;
+    font-size:17.5px; color:#fff; font-weight:400;
+  }
+  ul{margin:0 0 22px; padding-left:20px;}
+  li{margin-bottom:14px; font-size:16px; color:var(--dim);}
+  ol{margin:0 0 22px; padding-left:22px; counter-reset:step;}
+  ol li{margin-bottom:13px;}
+  ol li::marker{color:var(--alpha-cyan); font-weight:600;}
+  .sign{margin-top:44px; padding-top:22px; border-top:1px solid var(--hair);
+    font-size:16px; color:var(--dim);}
+  .sign b{display:block; color:#fff; font-weight:600; margin-top:4px;}
+</style>
+</head>
+<body>
+
+<div class="glow glow-l"></div><div class="glow glow-r"></div>
+<div class="edge edge-l"></div><div class="edge edge-r"></div>
+
+<div class="wrap">
+  <a class="back" href="/alpha/">&larr; Back</a>
+
+  <header>
+    <p class="eyebrow">A life skills workshop</p>
+    <h1>Cut and Donate 13&quot; of James' Hair</h1>
+    <figure class="shot">
+      <img src="/pictures/Ep.%20082.jpeg" alt="James, hair down, interviewing Kate Lau at a picnic table with the Manhattan skyline behind them" width="1490" height="844">
+      <figcaption>James with Kate Lau, a student from Singapore</figcaption>
+    </figure>
+  </header>
+
+  <p class="lede">I've spent almost two years growing my hair out to 13&quot; long, but I want to cut it. As I was learning about Alpha School, your life skills workshops, and reflecting on the time I've spent working with kids I was excited to learn about the science behind many beliefs I had and the practices that come from them.</p>
+
+  <p>Treating kids like they're competent, having high standards and high support, believing that they are limitless, the list is limitless. I know that the biggest smiles, the biggest transformations, I've worked with kids to get, have been from my trust in them, and my walking alongside them.</p>
+
+  <p>So consider this my olive branch, my vote of confidence, my commitment to this belief.</p>
+
+  <p>Moreover, I believe a workshop</p>
+
+  <p class="claim">Having an adult trust them to cut off 2 years of hair is hugely valuable for their confidence.</p>
+
+  <p>But it also hits the following values of yours:</p>
+
+  <ul>
+    <li><strong>Relationship Building &amp; empathy:</strong> the hair goes to a kid who lost theirs; they're not doing a craft, they're changing a stranger's life. And they see it modeled right there in the chair: a barber's whole business runs on strangers trusting them enough to put sharp tools to their head and face. Relationships are just trust, made physical.</li>
+    <li><strong>Generosity, &ldquo;spend and donate&rdquo;:</strong> the same muscle as Alpha Savers and the Water for Life Project, except this time they give something that came off a person who trusted them.</li>
+  </ul>
+
+  <h2>What it looks like</h2>
+  <ol>
+    <li>Kids work on a BrainLift (or a lesson) about how many kids their age lose their hair to chemo, alopecia, and other causes, and what that's like.</li>
+    <li>Talk with a stylist about their business: the lessons from years of people in the chair, and how they build real relationships.</li>
+    <li>Learn the basic parts of a hair donation.</li>
+    <li>Make the measurements, the cuts, then package and mail the hair.</li>
+    <li>Learn the donating side: how nonprofits work and where the hair goes.</li>
+    <li>Wigs for Kids: meet the org the donation goes to.</li>
+  </ol>
+
+  <h2>Logistics</h2>
+  <ul>
+    <li><strong>Donation org:</strong> Wigs for Kids (12&quot; minimum). My 13&quot; clears it.</li>
+    <li><strong>Safety:</strong> a licensed stylist performs and oversees the actual cut; kids do the ceremonial cuts, measuring, and packaging.</li>
+    <li><strong>Materials:</strong> shears, hair ties, measuring tape, sealable bag + padded mailer, donation form, thank-you template.</li>
+  </ul>
+
+  <p class="sign">From the heart,<b>James Floyd</b></p>
+</div>
+</body>
+</html>

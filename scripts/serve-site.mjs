@@ -34,10 +34,17 @@ async function tryRead(filePath) {
 Bun.serve({
   port: PORT,
   async fetch(req) {
+    // pathname arrives percent-encoded, so a file with a space in its name
+    // ("Ep. 082.jpeg") would be looked up as "Ep.%20082.jpeg" and 404 locally
+    // even though it serves fine in production. Decode before touching disk.
     let pathname = new URL(req.url).pathname;
+    try { pathname = decodeURIComponent(pathname); } catch { /* leave as-is */ }
 
-    // Directory → index.html
+    // Directory → index.html. GitHub Pages redirects "/alpha" to "/alpha/"
+    // on its own; locally the bare path just 404'd, so previews disagreed
+    // with production. Treat any extensionless path as a directory too.
     if (pathname.endsWith('/')) pathname += 'index.html';
+    else if (!extname(pathname)) pathname += '/index.html';
 
     const ext = extname(pathname).toLowerCase();
     const mime = MIME[ext] || 'application/octet-stream';

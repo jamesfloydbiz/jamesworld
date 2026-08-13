@@ -1,0 +1,416 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>James Floyd — for Alpha School</title>
+<meta name="description" content="Three things I built for Alpha School.">
+<!-- Unlisted on purpose: not in routes.config.mjs, so not in the sitemap. -->
+<meta name="robots" content="noindex, nofollow">
+<meta property="og:title" content="James Floyd — for Alpha School">
+<meta property="og:description" content="Three things I built for Alpha School.">
+<meta property="og:image" content="https://jamesfloyds.world/alpha/poster.jpg">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ═══════════════════════════════════════════════════════════════════
+     Alpha School's own palette, read off alpha.school:
+       #0000EF  --e-global-color-primary   their electric blue
+       #47C4E6  --e-global-color-d26f039   their cyan accent
+       #C2ECFD                             pale tint
+     Pure #0000EF on black reads almost navy, so the edge glow layers the
+     blue underneath the cyan — blue for mass, cyan for the visible rim.
+     Typeface is Montserrat, which is what alpha.school runs on.
+     ═══════════════════════════════════════════════════════════════════ */
+  :root{
+    --alpha-blue:#0000EF;
+    --alpha-cyan:#47C4E6;
+    --alpha-pale:#C2ECFD;
+    --ink:#ffffff;
+    --dim:rgba(255,255,255,.62);
+    --faint:rgba(255,255,255,.36);
+    --hair:rgba(255,255,255,.13);
+    --maxw:1080px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0; background:#000; color:var(--ink);
+    font-family:'Montserrat',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    font-weight:400; line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+
+  /* ── the side glow ──────────────────────────────────────────────────
+     Two fixed columns pinned to the left and right edges. Each is a
+     stack: a wide soft blue wash for mass, a narrower cyan core for the
+     bright edge. They breathe on a slow, offset cycle so the page is
+     never quite still, and hold still for anyone who asked it to. */
+  .glow{position:fixed; top:0; bottom:0; width:min(26vw,330px); pointer-events:none; z-index:0;}
+  .glow::before,.glow::after{content:''; position:absolute; inset:0;}
+  .glow-l{left:0;}
+  .glow-r{right:0; transform:scaleX(-1);}
+  .glow::before{
+    background:linear-gradient(90deg,
+      rgba(0,0,239,.78) 0%, rgba(0,0,239,.34) 16%, rgba(0,0,239,.09) 38%, transparent 70%);
+    filter:blur(38px);
+    animation:breathe 11s ease-in-out infinite;
+  }
+  .glow::after{
+    background:linear-gradient(90deg,
+      rgba(71,196,230,.62) 0%, rgba(71,196,230,.12) 11%, transparent 32%);
+    filter:blur(24px);
+    animation:breathe 8s ease-in-out infinite reverse;
+  }
+  .glow-r::before{animation-delay:-4s;}
+  .glow-r::after{animation-delay:-2.5s;}
+  @keyframes breathe{
+    0%,100%{opacity:.72; transform:translateX(-6px) scaleX(1);}
+    50%    {opacity:1;   transform:translateX(0)    scaleX(1.09);}
+  }
+  /* a hairline of pure cyan right on the edge, so the glow has a source */
+  .edge{position:fixed; top:0; bottom:0; width:2px; z-index:1; pointer-events:none;
+        background:linear-gradient(180deg, transparent, var(--alpha-cyan) 18%, var(--alpha-cyan) 82%, transparent);
+        opacity:.5;}
+  .edge-l{left:0;} .edge-r{right:0;}
+  @media (prefers-reduced-motion:reduce){
+    .glow::before,.glow::after{animation:none;}
+    html{scroll-behavior:auto;}
+  }
+  @media (max-width:720px){ .glow{width:34vw;} }
+
+  .wrap{position:relative; z-index:2; max-width:var(--maxw); margin:0 auto; padding:0 24px;}
+
+  /* ── hero ───────────────────────────────────────────────────────────
+     No title, no standfirst. The video opens the page and the rail under
+     it is the only instruction. */
+  header{padding:clamp(44px,11vh,120px) 0 0; text-align:center;}
+
+  /* ── video ──────────────────────────────────────────────────────── */
+  .stage{margin:0 auto; max-width:900px;}
+  .frame{
+    position:relative; border-radius:14px; overflow:hidden; background:#050505;
+    border:1px solid rgba(71,196,230,.26);
+    box-shadow:0 0 0 1px rgba(0,0,239,.30), 0 30px 90px -30px rgba(0,0,239,.75),
+               0 0 120px -50px rgba(71,196,230,.60);
+  }
+  .frame .slot{position:relative; aspect-ratio:16/9; background:#000;}
+  .frame .slot iframe{position:absolute; inset:0; width:100%; height:100%; border:0;}
+  /* shown if the YouTube player fails to come up (blocked, offline, bad id) */
+  .fallback{
+    position:absolute; inset:0; display:none; flex-direction:column; align-items:center;
+    justify-content:center; gap:12px; text-align:center; padding:32px; color:var(--faint);
+  }
+  .fallback.on{display:flex;}
+  .fallback a{color:var(--alpha-cyan);}
+
+  /* progress rail with a tick per unlock */
+  .rail{position:relative; height:3px; margin:18px 2px 0; background:rgba(255,255,255,.10); border-radius:99px;}
+  .rail-fill{position:absolute; left:0; top:0; bottom:0; width:0;
+    background:linear-gradient(90deg,var(--alpha-blue),var(--alpha-cyan));
+    border-radius:99px; box-shadow:0 0 14px rgba(71,196,230,.75); transition:width .25s linear;}
+  .tick{position:absolute; top:50%; width:9px; height:9px; margin:-4.5px 0 0 -4.5px;
+    border-radius:50%; background:#0b0b0b; border:1.5px solid rgba(255,255,255,.34); transition:all .35s;}
+  .tick.hit{background:var(--alpha-cyan); border-color:var(--alpha-cyan);
+    box-shadow:0 0 12px var(--alpha-cyan); transform:scale(1.25);}
+  .railnote{margin:12px 0 0; font-size:12.5px; color:var(--faint); text-align:center;}
+  .railnote b{color:var(--alpha-cyan); font-weight:600;}
+
+  /* ── projects ───────────────────────────────────────────────────── */
+  section{padding:64px 0;}
+  .secthead{display:flex; align-items:baseline; gap:14px; margin-bottom:26px;}
+  .secthead h2{font-size:13px; letter-spacing:.2em; text-transform:uppercase;
+    font-weight:600; color:var(--faint); margin:0;}
+  .secthead .line{flex:1; height:1px; background:var(--hair);}
+
+  .cards{display:grid; gap:16px;}
+  @media (min-width:860px){ .cards{grid-template-columns:repeat(3,1fr);} }
+
+  .proj{
+    position:relative; border-radius:12px; padding:26px 24px 24px; min-height:230px;
+    border:1px solid var(--hair); background:rgba(255,255,255,.028);
+    display:flex; flex-direction:column;
+    transition:border-color .3s, background .3s, transform .3s;
+  }
+  .proj.locked{color:var(--faint);}
+  .proj.locked .proj-body{filter:blur(7px); opacity:.34; user-select:none;}
+  .proj.unlocked{
+    border-color:rgba(71,196,230,.42); background:rgba(0,0,239,.10);
+    animation:reveal .75s cubic-bezier(.2,.7,.3,1) both;
+  }
+  .proj.unlocked:hover{transform:translateY(-3px); border-color:var(--alpha-cyan);}
+  @keyframes reveal{
+    0%{opacity:0; transform:translateY(22px); box-shadow:0 0 0 rgba(71,196,230,0);}
+    55%{box-shadow:0 0 60px -10px rgba(71,196,230,.85);}
+    100%{opacity:1; transform:translateY(0); box-shadow:0 0 34px -20px rgba(71,196,230,.55);}
+  }
+  .proj-n{font-size:11px; letter-spacing:.2em; color:var(--alpha-cyan); font-weight:600; margin-bottom:14px;}
+  .proj h3{font-size:20px; line-height:1.25; font-weight:600; margin:0 0 10px;}
+  .proj p{font-size:14.5px; color:var(--dim); font-weight:300; margin:0 0 18px;}
+  .proj .go{
+    margin-top:auto; font-size:13px; font-weight:600; color:var(--alpha-cyan);
+    text-decoration:none; display:inline-flex; align-items:center; gap:7px;
+  }
+  .proj .go:hover{color:#fff;}
+  .lockbadge{
+    position:absolute; inset:0; display:flex; flex-direction:column; align-items:center;
+    justify-content:center; gap:9px; text-align:center; padding:20px;
+  }
+  .proj.unlocked .lockbadge{display:none;}
+  .lockbadge .at{font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:var(--faint);}
+  .lockbadge .t{font-size:26px; font-weight:600; color:rgba(255,255,255,.82);
+    font-variant-numeric:tabular-nums;}
+  .lockbadge .mini{width:74px; height:2px; background:rgba(255,255,255,.14); border-radius:99px; overflow:hidden;}
+  .lockbadge .mini i{display:block; height:100%; width:0; background:var(--alpha-cyan); transition:width .3s linear;}
+
+  /* ── references ─────────────────────────────────────────────────── */
+  .refs{display:grid; gap:14px;}
+  @media (min-width:700px){ .refs{grid-template-columns:1fr 1fr;} }
+  @media (min-width:1000px){ .refs{grid-template-columns:repeat(3,1fr);} }
+  .ref{
+    border-left:2px solid rgba(71,196,230,.42); padding:2px 0 2px 16px;
+    break-inside:avoid;
+  }
+  .ref q{display:block; quotes:'“' '”'; font-size:15px; line-height:1.55; font-weight:300; margin-bottom:9px;}
+  .ref .who{font-size:12.5px; font-weight:600;}
+  .ref .role{font-size:11.5px; color:rgba(255,255,255,.52); font-weight:300;}
+  .refnote{margin-top:24px; font-size:12.5px; color:var(--faint);}
+  .refnote a{color:var(--alpha-cyan); text-decoration:none;}
+  .refnote a:hover{text-decoration:underline;}
+
+  footer{padding:48px 0 72px; text-align:center; font-size:12.5px; color:var(--faint);}
+  footer a{color:var(--alpha-cyan); text-decoration:none;}
+</style>
+</head>
+<body>
+
+<div class="glow glow-l"></div><div class="glow glow-r"></div>
+<div class="edge edge-l"></div><div class="edge edge-r"></div>
+
+<div class="wrap">
+
+  <header>
+    <div class="stage">
+      <div class="frame">
+        <div class="slot">
+          <div id="player"></div>
+          <div class="fallback" id="fb">
+            <div>The player didn't load.</div>
+            <a id="fbLink" href="#" target="_blank" rel="noopener">Watch it on YouTube &rarr;</a>
+          </div>
+        </div>
+      </div>
+      <div class="rail" id="rail"><div class="rail-fill" id="railFill"></div></div>
+      <p class="railnote" id="railNote">Three unlocks ahead. Skipping forward won't open them — <b>only watching does</b>.</p>
+    </div>
+  </header>
+
+  <section id="projects">
+    <div class="secthead"><h2>What I built</h2><div class="line"></div></div>
+    <div class="cards" id="cards"></div>
+  </section>
+
+  <section id="references">
+    <div class="secthead"><h2>What people say</h2><div class="line"></div></div>
+    <div class="refs" id="refs"></div>
+    <p class="refnote">Thirty-one more, unedited and with sources, at <a href="/references/">jamesfloyds.world/references</a>.</p>
+  </section>
+
+  <footer>
+    James Floyd · <a href="https://jamesfloyds.world">jamesfloyds.world</a>
+  </footer>
+
+</div>
+
+<script>
+/* ══════════════════════════════════════════════════════════════════════
+   EDIT HERE. `at` is seconds of video ACTUALLY WATCHED, not the position
+   of the playhead — dragging the scrubber forward does not open a card.
+   ══════════════════════════════════════════════════════════════════════ */
+const YT_ID = 'QsPpFkAnfyE';   // youtu.be/QsPpFkAnfyE
+
+const PROJECTS = [
+  { at: 120,
+    title: 'The Climbing Machine',
+    blurb: 'A picture book about a kid who takes on a mountain in a life skills workshop, and the guide who believes he can. Written, illustrated and made print-ready — 40 pages, at the printer.',
+    cta: 'Read it',
+    href: '/builds/climbing-machine/' },
+
+  { at: 127,
+    title: 'CCAT Trainer',
+    blurb: 'You screen with the CCAT. So I built the trainer for it — 606 questions, adaptive practice, spaced repetition, and a teaching line on every single answer explaining how to get there.',
+    cta: 'Try it',
+    href: '/builds/ccat-trainer/' },
+
+  { at: 130,
+    title: 'Cut and Donate 13\" of My Hair',
+    blurb: 'A life skills workshop, written for you. Two years of hair, cut by your kids and mailed to a kid who lost theirs — because being trusted with something that matters is the lesson.',
+    cta: 'Read the proposal',
+    href: '/alpha/workshop/' },
+];
+
+const REFS = [
+  { q:"I was like — this kid is different. This kid is special.",
+    who:"Dom Rufran", role:"President, BetterWealth · Ex-NFL" },
+  { q:"The growth that you've had over the last year has been insane.",
+    who:"Caleb Guilliams", role:"Founder, BetterWealth" },
+  { q:"The best by a wide margin at driving the intersection between function, execution, and relationship.",
+    who:"Jarom Christensen", role:"Investor Relations, Jets & Capital" },
+  { q:"James killed it!! If anyone wants to learn how to stand out in a volunteer crowd, reach out to James Floyd.",
+    who:"Vitoria Okuyama", role:"Ex pro tennis player · Ex IB, Citi" },
+  { q:"Your hard work and willingness to go above and beyond will take you a LONG WAY.",
+    who:"Danielle Raskin", role:"SXSW Secret Garden Party" },
+  { q:"You just genuinely have that grit, and you're going to be special — and you're very coachable.",
+    who:"Dom Rufran", role:"President, BetterWealth · Ex-NFL" },
+  { q:"Every single line is just so poignant and well written — I am loving your content.",
+    who:"Kaia Tham", role:"Builder, on the Sonder Series" },
+  { q:"You are like the master of third door. Like no one I've ever seen.",
+    who:"Kate Kim", role:"Gates Foundation consultant · Sonder Ep. 49" },
+  { q:"james — you were the mvp",
+    who:"Andrew Yeung", role:"x-Google, Meta · angel investor" },
+];
+
+/* ══════════════════════════════════════════════════════════════════════
+   Below here is machinery.
+   ══════════════════════════════════════════════════════════════════════ */
+const STORE = 'alpha-vsl-watched-v1';
+const fmt = s => Math.floor(s/60) + ':' + String(Math.floor(s%60)).padStart(2,'0');
+const goal = Math.max(...PROJECTS.map(p => p.at));
+
+let watched = Math.max(0, +localStorage.getItem(STORE) || 0);
+let lastT = 0;
+
+// ── render cards ──────────────────────────────────────────────────────
+const cards = document.getElementById('cards');
+cards.innerHTML = PROJECTS.map((p,i) => `
+  <article class="proj locked" data-i="${i}">
+    <div class="proj-body">
+      <div class="proj-n">0${i+1}</div>
+      <h3>${p.title}</h3>
+      <p>${p.blurb}</p>
+      <a class="go" href="${p.href}">${p.cta} <span>&rarr;</span></a>
+    </div>
+    <div class="lockbadge">
+      <div class="at">Unlocks at</div>
+      <div class="t">${fmt(p.at)}</div>
+      <div class="mini"><i></i></div>
+    </div>
+  </article>`).join('');
+
+document.getElementById('refs').innerHTML = REFS.map(r => `
+  <div class="ref">
+    <q>${r.q}</q>
+    <div class="who">${r.who}</div>
+    <div class="role">${r.role}</div>
+  </div>`).join('');
+
+// ── ticks on the rail ─────────────────────────────────────────────────
+const rail = document.getElementById('rail');
+PROJECTS.forEach((p,i) => {
+  const t = document.createElement('div');
+  t.className = 'tick'; t.dataset.i = i;
+  t.style.left = (p.at / goal * 100) + '%';
+  rail.appendChild(t);
+});
+
+// ── unlock state ──────────────────────────────────────────────────────
+const railFill = document.getElementById('railFill');
+const railNote = document.getElementById('railNote');
+
+function paint(){
+  PROJECTS.forEach((p,i) => {
+    const card = cards.querySelector(`[data-i="${i}"]`);
+    const open = watched >= p.at;
+    if (open && card.classList.contains('locked')){
+      card.classList.remove('locked');
+      card.classList.add('unlocked');
+    }
+    if (!open){
+      const bar = card.querySelector('.mini i');
+      if (bar) bar.style.width = Math.min(100, watched / p.at * 100) + '%';
+    }
+    const tick = rail.querySelector(`.tick[data-i="${i}"]`);
+    if (tick) tick.classList.toggle('hit', open);
+  });
+  railFill.style.width = Math.min(100, watched / goal * 100) + '%';
+
+  const left = PROJECTS.filter(p => watched < p.at);
+  if (!left.length){
+    railNote.innerHTML = '<b>All three unlocked.</b> Thanks for watching the whole thing.';
+  } else {
+    const next = left[0];
+    railNote.innerHTML = `Next unlock at <b>${fmt(next.at)}</b> · ${left.length} of ${PROJECTS.length} still locked. Skipping forward won't open them — <b>only watching does</b>.`;
+  }
+}
+
+// ── the video ─────────────────────────────────────────────────────────
+// YouTube, through the IFrame API so the page can read the playhead. The
+// nocookie host keeps the tracking cookie off until someone presses play.
+document.getElementById('fbLink').href = 'https://youtu.be/' + YT_ID;
+
+let player = null, poll = null, ready = false;
+
+// Sample the playhead rather than trusting it. A step of more than ~1s
+// between samples is a seek, not viewing, so it does not count — which is
+// what makes dragging the scrubber useless as a shortcut.
+function sample(){
+  if (!player || typeof player.getCurrentTime !== 'function') return;
+  const t = player.getCurrentTime();
+  const d = t - lastT;
+  if (d > 0 && d < 1) {
+    watched += d;
+    localStorage.setItem(STORE, String(watched));
+    paint();
+  }
+  lastT = t;
+}
+
+window.onYouTubeIframeAPIReady = function(){
+  player = new YT.Player('player', {
+    videoId: YT_ID,
+    host: 'https://www.youtube-nocookie.com',
+    // origin is only meaningful over http(s); passing "null" from a file://
+    // preview makes YouTube refuse the embed with a configuration error.
+    playerVars: Object.assign({ rel:0, modestbranding:1, playsinline:1 },
+      location.protocol.startsWith('http') ? { origin: location.origin } : {}),
+    events: {
+      // The player object exists before its API methods do. onReady is the
+      // only honest signal that it came up, so that — not the constructor
+      // returning — is what clears the fallback.
+      onReady: () => { ready = true; document.getElementById('fb').classList.remove('on'); },
+      onStateChange: e => {
+        if (e.data === YT.PlayerState.PLAYING){
+          lastT = player.getCurrentTime();
+          clearInterval(poll);
+          poll = setInterval(sample, 250);
+        } else {
+          clearInterval(poll);
+          if (e.data === YT.PlayerState.ENDED){
+            // Reaching the end opens everything, whatever the arithmetic says.
+            watched = Math.max(watched, goal);
+            localStorage.setItem(STORE, String(watched));
+            paint();
+          }
+        }
+      },
+      onError: showFallback
+    }
+  });
+};
+
+function showFallback(){ document.getElementById('fb').classList.add('on'); }
+
+const api = document.createElement('script');
+api.src = 'https://www.youtube.com/iframe_api';
+api.onerror = showFallback;
+document.head.appendChild(api);
+// If the API never calls back — blocked, offline — offer the direct link.
+setTimeout(() => { if (!ready) showFallback(); }, 12000);
+
+paint();
+</script>
+</body>
+</html>
