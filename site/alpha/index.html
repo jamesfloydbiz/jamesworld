@@ -538,7 +538,7 @@ document.head.appendChild(api);
    If the content genuinely must not be readable before the 19th, it has
    to live somewhere that can refuse to serve it — this cannot.
    ══════════════════════════════════════════════════════════════════════ */
-const OPEN_AT = new Date('2026-08-19T00:00:00-04:00');   // midnight, New York
+const OPEN_AT = new Date('2026-08-19T12:00:00-04:00');   // noon, New York
 
 function gated(){ return Date.now() < OPEN_AT.getTime(); }
 
