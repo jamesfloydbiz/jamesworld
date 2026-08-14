@@ -205,6 +205,32 @@
   footer{padding:48px 0 72px; text-align:center; font-size:12.5px; color:var(--faint);}
   footer a{color:var(--alpha-cyan); text-decoration:none;}
 
+  /* ── the gate ─────────────────────────────────────────────────────── */
+  body.gated .wrap{display:none;}
+  .gate{
+    position:fixed; inset:0; z-index:70;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; padding:24px;
+  }
+  .gate-lead{
+    margin:0 0 14px; font-size:11px; letter-spacing:.28em; text-transform:uppercase;
+    color:var(--alpha-cyan); font-weight:600;
+  }
+  .gate-date{
+    margin:0 0 clamp(28px,5vh,48px); font-size:clamp(30px,5.6vw,58px);
+    font-weight:700; letter-spacing:-.02em; line-height:1;
+  }
+  .gate-clock{display:flex; gap:clamp(18px,4vw,52px);}
+  .gate-clock div{display:flex; flex-direction:column; align-items:center; gap:8px;}
+  .gate-clock b{
+    font-size:clamp(28px,5vw,50px); font-weight:600; line-height:1;
+    font-variant-numeric:tabular-nums; color:#fff;
+    text-shadow:0 0 34px rgba(71,196,230,.55);
+  }
+  .gate-clock span{
+    font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:var(--faint);
+  }
+
   /* ── site mark, top left, same place on every page ────────────────── */
   .mark{
     position:fixed; top:18px; left:20px; z-index:80;
@@ -227,6 +253,17 @@
 
 <div class="mark">
   <a class="logo" href="/" aria-label="Return to home"><img src="/logo.svg" alt="JF"></a>
+</div>
+
+<div class="gate" id="gate">
+  <p class="gate-lead">Opens</p>
+  <p class="gate-date">August 19</p>
+  <div class="gate-clock">
+    <div><b id="gd">0</b><span>days</span></div>
+    <div><b id="gh">00</b><span>hours</span></div>
+    <div><b id="gm">00</b><span>minutes</span></div>
+    <div><b id="gs">00</b><span>seconds</span></div>
+  </div>
 </div>
 
 <div class="glow glow-l"></div><div class="glow glow-r"></div>
@@ -430,7 +467,15 @@ document.getElementById('unmute').addEventListener('click', () => {
   syncMute();
 });
 
-window.onYouTubeIframeAPIReady = function(){
+let apiReady = false, built = false;
+
+window.onYouTubeIframeAPIReady = function(){ apiReady = true; buildPlayer(); };
+
+// Held back until the gate lifts, so the video is not autoplaying — and
+// banking watch time — behind a countdown nobody is looking through.
+function buildPlayer(){
+  if (built || !apiReady || gated()) return;
+  built = true;
   player = new YT.Player('player', {
     videoId: YT_ID,
     // Standard host, not youtube-nocookie: the privacy domain is a separate,
@@ -473,7 +518,9 @@ window.onYouTubeIframeAPIReady = function(){
       onError: showFallback
     }
   });
-};
+  // If the API never calls back — blocked, offline — offer the direct link.
+  setTimeout(() => { if (!ready) showFallback(); }, 12000);
+}
 
 function showFallback(){ document.getElementById('fb').classList.add('on'); }
 
@@ -481,8 +528,47 @@ const api = document.createElement('script');
 api.src = 'https://www.youtube.com/iframe_api';
 api.onerror = showFallback;
 document.head.appendChild(api);
-// If the API never calls back — blocked, offline — offer the direct link.
-setTimeout(() => { if (!ready) showFallback(); }, 12000);
+
+/* ══════════════════════════════════════════════════════════════════════
+   THE GATE. Nothing on this page exists until OPEN_AT passes.
+
+   Worth being straight about what this is: a countdown in the browser,
+   on a static host. It sets the moment; it does not keep a secret. Anyone
+   who moves their clock back, or opens the page source, gets in early.
+   If the content genuinely must not be readable before the 19th, it has
+   to live somewhere that can refuse to serve it — this cannot.
+   ══════════════════════════════════════════════════════════════════════ */
+const OPEN_AT = new Date('2026-08-19T00:00:00-04:00');   // midnight, New York
+
+function gated(){ return Date.now() < OPEN_AT.getTime(); }
+
+const gate = document.getElementById('gate');
+const two = n => String(n).padStart(2,'0');
+
+function tickGate(){
+  const left = OPEN_AT.getTime() - Date.now();
+  if (left <= 0){
+    document.body.classList.remove('gated');
+    gate.remove();
+    clearInterval(gateTimer);
+    buildPlayer();                       // now, and not a moment sooner
+    return;
+  }
+  const s = Math.floor(left / 1000);
+  document.getElementById('gd').textContent = Math.floor(s / 86400);
+  document.getElementById('gh').textContent = two(Math.floor(s / 3600) % 24);
+  document.getElementById('gm').textContent = two(Math.floor(s / 60) % 60);
+  document.getElementById('gs').textContent = two(s % 60);
+}
+
+let gateTimer = null;
+if (gated()){
+  document.body.classList.add('gated');
+  tickGate();
+  gateTimer = setInterval(tickGate, 1000);
+} else {
+  gate.remove();
+}
 
 paint();
 </script>
