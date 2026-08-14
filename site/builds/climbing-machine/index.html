@@ -41,34 +41,46 @@
   }
 
   .stage{
-    position:relative; z-index:1;
+    position:relative; z-index:1; cursor:grab; touch-action:pan-y;
     perspective:2600px; perspective-origin:50% 46%;
     width:min(92vw, 1180px);
   }
 
-  /* The book is two page-widths wide. Aspect 8:10 per page → 16:10 open. */
+  /* The book is two page-widths wide. Aspect 8:10 per page → 16:10 open.
+     Leaves live on the right half, so a shut book has to slide left to sit
+     centred — and once every leaf has turned they are all on the LEFT, so it
+     slides the other way. Getting that second case wrong is what pushed the
+     back cover off the edge of the screen. */
   .book{
     position:relative; margin:0 auto;
     width:100%; aspect-ratio:16 / 10;
     transform-style:preserve-3d;
     transition:transform .6s cubic-bezier(.2,.7,.3,1);
-    transform:translateX(-25%);          /* closed: the shut book sits centred */
   }
-  .book.open{transform:translateX(0);}
+  .book.shut  {transform:translateX(-25%);}
+  .book.open  {transform:translateX(0);}
+  .book.closed{transform:translateX(25%);}
 
   /* the slab under the leaves — gives the closed book some thickness */
   .block{
     position:absolute; top:0; left:50%; width:50%; height:100%;
     background:#1a1712; border-radius:2px 5px 5px 2px;
     box-shadow:0 30px 70px -25px rgba(0,0,0,.9), 0 2px 10px rgba(0,0,0,.6);
+    transition:opacity .3s;
   }
+  /* nothing is left to turn, so nothing should sit on the right */
+  .book.closed .block{opacity:0;}
 
   .leaf{
     position:absolute; top:0; left:50%; width:50%; height:100%;
     transform-origin:left center; transform-style:preserve-3d;
     transition:transform var(--flip) cubic-bezier(.42,0,.35,1);
+    will-change:transform;
   }
   .leaf.flipped{transform:rotateY(-180deg);}
+  /* while a finger or cursor is on it, the leaf follows the pointer directly */
+  .leaf.dragging{transition:none;}
+  .book.grabbing{cursor:grabbing;}
 
   .face{
     position:absolute; inset:0;
@@ -76,7 +88,8 @@
     background:var(--paper) center/cover no-repeat;
     overflow:hidden;
   }
-  .face img{display:block; width:100%; height:100%; object-fit:cover;}
+  .face img{display:block; width:100%; height:100%; object-fit:cover;
+    -webkit-user-drag:none; user-select:none; pointer-events:none;}
   .face.back{transform:rotateY(180deg);}
   /* gutter shading — the page darkens as it curves into the spine */
   .face::after{
@@ -85,8 +98,9 @@
   .face.front::after{left:0;  background:linear-gradient(90deg, rgba(0,0,0,.22), transparent);}
   .face.back::after {right:0; background:linear-gradient(270deg, rgba(0,0,0,.22), transparent);}
 
-  /* click targets */
-  .zone{position:absolute; top:0; height:100%; width:50%; z-index:60; cursor:pointer; background:transparent;
+  /* Click targets. They sit UNDER the leaves so a drag lands on paper, and
+     a plain click still falls through to them. */
+  .zone{position:absolute; top:0; height:100%; width:50%; z-index:2; cursor:pointer; background:transparent;
         border:0; padding:0;}
   .zone.prev{left:0;}  .zone.next{right:0;}
   .zone:disabled{cursor:default;}
@@ -181,6 +195,7 @@ const els = leaves.map((L, i) => {
 
 let at = 0;                       // how many leaves have been turned
 const last = leaves.length;
+let dragEl = null;                // the leaf currently under the pointer
 
 function paint(){
   els.forEach((el, i) => {
@@ -189,8 +204,10 @@ function paint(){
     // Turned leaves stack upward on the left; untouched ones stack downward
     // on the right, so the one you are about to turn is always on top.
     el.style.zIndex = turned ? i + 1 : last - i;
+    if (el !== dragEl) el.style.transform = '';
   });
-  book.classList.toggle('open', at > 0 && at < last);
+  book.classList.remove('shut','open','closed');
+  book.classList.add(at === 0 ? 'shut' : at >= last ? 'closed' : 'open');
 
   const spread = at === 0 ? 'Cover'
     : at >= last ? 'Back cover'
@@ -228,15 +245,65 @@ document.addEventListener('keydown', e => {
   if (e.key === 'End') go(last);
 });
 
-// swipe
-let x0 = null;
-document.addEventListener('touchstart', e => { x0 = e.changedTouches[0].clientX; }, {passive:true});
-document.addEventListener('touchend', e => {
-  if (x0 === null) return;
-  const dx = e.changedTouches[0].clientX - x0;
-  if (Math.abs(dx) > 45) go(dx < 0 ? 1 : -1);
-  x0 = null;
-}, {passive:true});
+/* ── drag a page ────────────────────────────────────────────────────────
+   Grab either half and the sheet follows the pointer, the way paper does.
+   Horizontal travel across one page-width maps to the full 180° turn, so
+   the corner stays roughly under the cursor. Let go past the halfway mark,
+   or throw it, and it completes; short of that it falls back.            */
+const stage = document.querySelector('.stage');
+let drag = null;
+
+function pageWidth(){ return book.getBoundingClientRect().width / 2; }
+
+stage.addEventListener('pointerdown', e => {
+  if (e.button !== 0) return;
+  const r = book.getBoundingClientRect();
+  const forward = e.clientX >= r.left + r.width / 2;      // right half turns forward
+  const idx = forward ? at : at - 1;                      // the leaf that would move
+  if (idx < 0 || idx >= last) return;
+
+  dragEl = els[idx];
+  drag = { x0: e.clientX, forward, idx, moved: false, t0: Date.now() };
+  dragEl.classList.add('dragging');
+  dragEl.style.zIndex = last + 1;                         // ride above the stack
+  stage.setPointerCapture(e.pointerId);
+});
+
+stage.addEventListener('pointermove', e => {
+  if (!drag) return;
+  const dx = e.clientX - drag.x0;
+  if (!drag.moved && Math.abs(dx) > 3) { drag.moved = true; book.classList.add('grabbing'); }
+  if (!drag.moved) return;
+  // forward: dragging left turns the page; backward: dragging right
+  const prog = Math.min(1, Math.max(0, (drag.forward ? -dx : dx) / pageWidth()));
+  const deg = drag.forward ? -180 * prog : -180 * (1 - prog);
+  dragEl.style.transform = `rotateY(${deg}deg)`;
+  drag.prog = prog;
+});
+
+function endDrag(e){
+  if (!drag) return;
+  const d = drag; drag = null;
+  book.classList.remove('grabbing');
+  if (dragEl) dragEl.classList.remove('dragging');
+
+  if (!d.moved) { dragEl = null; return; }                // a click, not a drag
+
+  // Past halfway it turns. Short of that it only turns if it was thrown —
+  // and a throw has to be both fast AND have gone somewhere, otherwise a
+  // twitch of a few pixels flips the page out from under you. The 16ms floor
+  // keeps a zero-duration event burst from reading as infinite speed.
+  const prog = d.prog || 0;
+  const speed = prog / Math.max(16, Date.now() - d.t0) * 1000;
+  const commit = prog > 0.5 || (prog > 0.18 && speed > 2.2);
+  dragEl = null;
+  if (commit) go(d.forward ? 1 : -1); else paint();
+  if (e && e.pointerId != null && stage.hasPointerCapture?.(e.pointerId)) {
+    stage.releasePointerCapture(e.pointerId);
+  }
+}
+stage.addEventListener('pointerup', endDrag);
+stage.addEventListener('pointercancel', endDrag);
 
 paint();
 
