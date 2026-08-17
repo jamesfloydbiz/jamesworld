@@ -12,19 +12,21 @@
 <style>
   /* ═══════════════════════════════════════════════════════════════════
      The book, and nothing else. Pages are the real 40-page print build
-     rendered at 216 dpi and trimmed of their bleed, so what you flip
-     through here is exactly what comes off the press — plus the wrap's
-     front and back panels as the covers.
+     rendered at 216 dpi and trimmed of their bleed, plus the wrap's two
+     cover panels.
 
-     The flip is a stack of leaves rotating about their spine edge. Each
-     leaf carries two faces, back-face hidden, so one rotation turns one
-     sheet and reveals the two pages beneath it.
+     The turn is drawn on a canvas rather than built from CSS planes,
+     because a plane cannot bend. A sheet of paper being turned is flat
+     near the spine, wraps a half-cylinder, and comes back flat above
+     itself — so the page is walked in slices and each slice is placed
+     where that arc puts it. That is what gives the curl, the squeeze as
+     the paper turns edge-on, and the back of the sheet appearing as it
+     passes vertical.
      ═══════════════════════════════════════════════════════════════════ */
   :root{
     --paper:#faf7ef;
     --ink:#e8e4db;
     --dim:rgba(232,228,219,.5);
-    --flip:.78s;
   }
   *{box-sizing:border-box;}
   html,body{height:100%;}
@@ -41,69 +43,12 @@
   }
 
   .stage{
-    position:relative; z-index:1; cursor:grab; touch-action:pan-y;
-    perspective:2600px; perspective-origin:50% 46%;
-    width:min(92vw, 1180px);
+    position:relative; z-index:1;
+    width:min(92vw,1180px); aspect-ratio:16 / 10;
+    cursor:grab; touch-action:pan-y;
   }
-
-  /* The book is two page-widths wide. Aspect 8:10 per page → 16:10 open.
-     Leaves live on the right half, so a shut book has to slide left to sit
-     centred — and once every leaf has turned they are all on the LEFT, so it
-     slides the other way. Getting that second case wrong is what pushed the
-     back cover off the edge of the screen. */
-  .book{
-    position:relative; margin:0 auto;
-    width:100%; aspect-ratio:16 / 10;
-    transform-style:preserve-3d;
-    transition:transform .6s cubic-bezier(.2,.7,.3,1);
-  }
-  .book.shut  {transform:translateX(-25%);}
-  .book.open  {transform:translateX(0);}
-  .book.closed{transform:translateX(25%);}
-
-  /* the slab under the leaves — gives the closed book some thickness */
-  .block{
-    position:absolute; top:0; left:50%; width:50%; height:100%;
-    background:#1a1712; border-radius:2px 5px 5px 2px;
-    box-shadow:0 30px 70px -25px rgba(0,0,0,.9), 0 2px 10px rgba(0,0,0,.6);
-    transition:opacity .3s;
-  }
-  /* nothing is left to turn, so nothing should sit on the right */
-  .book.closed .block{opacity:0;}
-
-  .leaf{
-    position:absolute; top:0; left:50%; width:50%; height:100%;
-    transform-origin:left center; transform-style:preserve-3d;
-    transition:transform var(--flip) cubic-bezier(.42,0,.35,1);
-    will-change:transform;
-  }
-  .leaf.flipped{transform:rotateY(-180deg);}
-  /* while a finger or cursor is on it, the leaf follows the pointer directly */
-  .leaf.dragging{transition:none;}
-  .book.grabbing{cursor:grabbing;}
-
-  .face{
-    position:absolute; inset:0;
-    backface-visibility:hidden; -webkit-backface-visibility:hidden;
-    background:var(--paper) center/cover no-repeat;
-    overflow:hidden;
-  }
-  .face img{display:block; width:100%; height:100%; object-fit:cover;
-    -webkit-user-drag:none; user-select:none; pointer-events:none;}
-  .face.back{transform:rotateY(180deg);}
-  /* gutter shading — the page darkens as it curves into the spine */
-  .face::after{
-    content:''; position:absolute; top:0; bottom:0; width:7%; pointer-events:none;
-  }
-  .face.front::after{left:0;  background:linear-gradient(90deg, rgba(0,0,0,.22), transparent);}
-  .face.back::after {right:0; background:linear-gradient(270deg, rgba(0,0,0,.22), transparent);}
-
-  /* Click targets. They sit UNDER the leaves so a drag lands on paper, and
-     a plain click still falls through to them. */
-  .zone{position:absolute; top:0; height:100%; width:50%; z-index:2; cursor:pointer; background:transparent;
-        border:0; padding:0;}
-  .zone.prev{left:0;}  .zone.next{right:0;}
-  .zone:disabled{cursor:default;}
+  .stage.grabbing{cursor:grabbing;}
+  canvas{display:block; width:100%; height:100%;}
 
   .bar{
     position:relative; z-index:1; margin-top:22px;
@@ -119,13 +64,7 @@
   .bar button:disabled{opacity:.25; cursor:default;}
   .count{min-width:104px; text-align:center; font-variant-numeric:tabular-nums;}
 
-  @media (max-width:760px){
-    .stage{width:96vw;}
-    .bar{font-size:11px; gap:12px;}
-  }
-  @media (prefers-reduced-motion:reduce){
-    .leaf,.book{transition-duration:.01ms;}
-  }
+  @media (max-width:760px){ .stage{width:96vw;} .bar{font-size:11px; gap:12px;} }
 
   /* ── site mark, top left, same place on every page ────────────────── */
   .mark{
@@ -152,13 +91,7 @@
   <a class="back" href="/builds/" id="back">Back</a>
 </div>
 
-<div class="stage">
-  <div class="book" id="book">
-    <div class="block"></div>
-  </div>
-  <button class="zone prev" id="prev" aria-label="Previous page"></button>
-  <button class="zone next" id="next" aria-label="Next page"></button>
-</div>
+<div class="stage" id="stage"><canvas id="cv"></canvas></div>
 
 <div class="bar">
   <button id="bprev" aria-label="Previous page">&#8249;</button>
@@ -167,149 +100,325 @@
 </div>
 
 <script>
-/* Leaf 0 is the cover, leaves 1–20 are the 40 interior pages in order, and
-   the last leaf is the back cover. Pairing works out to the printed book:
-   after the cover turns, page 2 faces page 3, page 4 faces page 5, and so on. */
+/* Leaf 0 is the cover, leaves 1–20 carry the 40 interior pages in order,
+   and the last is the back cover. That pairing reproduces the printed
+   book: after the cover turns, page 2 faces 3, page 4 faces 5, and so on. */
 const DIR = '/books/climbing-machine/read/';
 const PAGES = 40;
+const pad = n => 'p' + String(n).padStart(2,'0') + '.jpg';
 
-const leaves = [];
-leaves.push({ front: DIR + 'cover-front.jpg', back: null, label: 'Cover' });
-for (let i = 1; i <= PAGES; i += 2) {
-  leaves.push({ front: DIR + pad(i), back: DIR + pad(i + 1), label: null, n: i });
-}
-leaves.push({ front: null, back: DIR + 'cover-back.jpg', label: 'Back cover' });
-
-function pad(n){ return 'p' + String(n).padStart(2,'0') + '.jpg'; }
-
-const book = document.getElementById('book');
-const els = leaves.map((L, i) => {
-  const el = document.createElement('div');
-  el.className = 'leaf';
-  el.innerHTML =
-    `<div class="face front">${L.front ? `<img src="${L.front}" alt="" ${i>1?'loading="lazy"':''}>` : ''}</div>` +
-    `<div class="face back">${L.back ? `<img src="${L.back}" alt="" loading="lazy">` : ''}</div>`;
-  book.appendChild(el);
-  return el;
-});
-
-let at = 0;                       // how many leaves have been turned
+const leaves = [{front: DIR+'cover-front.jpg', back: null}];
+for (let i = 1; i <= PAGES; i += 2) leaves.push({front: DIR+pad(i), back: DIR+pad(i+1)});
+leaves.push({front: null, back: DIR+'cover-back.jpg'});
 const last = leaves.length;
-let dragEl = null;                // the leaf currently under the pointer
 
+// ── images ────────────────────────────────────────────────────────────
+const cache = new Map();
+function img(src){
+  if (!src) return null;
+  let im = cache.get(src);
+  if (!im){
+    im = new Image();
+    // The redraw has to be hooked here, at creation. Attaching listeners to
+    // whatever happened to be in the cache at start-up covers only the first
+    // few pages, and every page loaded later would sit there as blank paper
+    // until some unrelated event forced a repaint.
+    im.addEventListener('load', () => { if (painted) draw(); });
+    im.src = src;
+    cache.set(src, im);
+  }
+  return im;
+}
+const ok = im => im && im.complete && im.naturalWidth > 0;
+// the first spreads eagerly, the rest as they come into reach
+[0,1,2].forEach(i => { img(leaves[i]?.front); img(leaves[i]?.back); });
+
+// ── state ─────────────────────────────────────────────────────────────
+let painted = false;
+let at = 0;              // leaves already turned
+let turning = null;      // {k, t, from, to, t0, dur} or {k, t, drag:true}
+const cv = document.getElementById('cv');
+const ctx = cv.getContext('2d');
+const stage = document.getElementById('stage');
+
+let W = 0, H = 0, PW = 0;      // canvas css size, and one page width
+function resize(){
+  const r = stage.getBoundingClientRect();
+  const dpr = Math.min(2, window.devicePixelRatio || 1);
+  W = r.width; H = r.height; PW = W / 2;
+  cv.width = Math.round(W * dpr);
+  cv.height = Math.round(H * dpr);
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  draw();
+}
+new ResizeObserver(resize).observe(stage);
+
+/* ── the fold ──────────────────────────────────────────────────────────
+   A sheet of arc-length PW leaves the spine flat, wraps a half-cylinder
+   of radius r, then lies flat again above itself. For a point s along
+   the paper this returns where it lands and which face you can see.
+
+       s <= f            flat on the table, front up
+       f < s <= f+πr     on the cylinder; the face flips at θ = π/2
+       s > f+πr          flat again, back up, heading home
+
+   t drives it: 0 is untouched on the right, 1 is fully turned onto the
+   left. r peaks mid-turn and vanishes at both ends, so the sheet starts
+   and finishes properly flat.                                          */
+function fold(t){
+  const r = 0.17 * PW * Math.sin(Math.PI * t) + 0.0001;
+  const xe = PW * (1 - 2 * t);              // where the free edge sits
+  const f  = (xe + PW - Math.PI * r) / 2;   // length still flat on the table
+  return {r, f, arc: Math.PI * r};
+}
+function place(s, F){
+  if (s <= F.f)               return {x: s, back: false, sh: 1};
+  if (s <= F.f + F.arc){
+    const th = (s - F.f) / F.r;
+    return {x: F.f + F.r * Math.sin(th), back: th > Math.PI/2, sh: Math.abs(Math.cos(th))};
+  }
+  return {x: F.f - (s - F.f - F.arc), back: true, sh: 1};
+}
+
+// ── drawing ───────────────────────────────────────────────────────────
+function pageRect(side){         // side -1 = left page, +1 = right page
+  return {x: side < 0 ? 0 : PW, y: 0, w: PW, h: H};
+}
+function drawPage(im, x){
+  if (!ok(im)) { ctx.fillStyle = '#faf7ef'; ctx.fillRect(x, 0, PW, H); return; }
+  ctx.drawImage(im, x, 0, PW, H);
+}
+function gutter(x, fromLeft){
+  const g = ctx.createLinearGradient(x, 0, x + (fromLeft ? PW*0.09 : -PW*0.09), 0);
+  g.addColorStop(0, 'rgba(0,0,0,.24)'); g.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = g;
+  ctx.fillRect(fromLeft ? x : x - PW*0.09, 0, PW*0.09, H);
+}
+
+function draw(){
+  ctx.clearRect(0, 0, W, H);
+
+  // With nothing turning, the book is however many leaves have gone by:
+  // a single panel at either end, a spread anywhere in between.
+  const k    = turning ? turning.k : -1;
+  const t    = turning ? turning.t : 0;
+  const leftLeaf  = turning ? k - 1 : at - 1;
+  const rightLeaf = turning ? k + 1 : at;
+
+  // A shut book is one panel, and it has to slide to the middle. The cover
+  // is drawn on the right half so it moves LEFT; the back cover is drawn on
+  // the left half so it moves right. Getting these the wrong way round
+  // pushes the panel clean off the canvas.
+  const single = !turning && (at === 0 || at === last);
+  const originX = single ? (at === 0 ? -PW/2 : PW/2) : 0;
+  ctx.save();
+  ctx.translate(originX, 0);
+
+  // the drop shadow the whole block sits in
+  ctx.save();
+  ctx.shadowColor = 'rgba(0,0,0,.75)'; ctx.shadowBlur = 60; ctx.shadowOffsetY = 26;
+  ctx.fillStyle = '#100d0a';
+  ctx.fillRect(leftLeaf >= 0 ? 0 : PW, 0, leftLeaf >= 0 && rightLeaf < last ? W : PW, H);
+  ctx.restore();
+
+  if (leftLeaf >= 0)    { drawPage(img(leaves[leftLeaf].back),  0);  gutter(PW, false); }
+  if (rightLeaf < last) { drawPage(img(leaves[rightLeaf].front), PW); gutter(PW, true); }
+
+  if (turning) drawSheet(leaves[k], t);
+  ctx.restore();
+}
+
+/* Walk the sheet from spine to free edge, dropping each slice where the
+   fold puts it. Slices are drawn in arc order so the parts of the sheet
+   nearer the reader land on top of the parts behind them. */
+function drawSheet(leaf, t){
+  const F = fold(t);
+  const front = img(leaf.front), back = img(leaf.back);
+  const STEP = 1.25;
+  const spine = PW;
+
+  // The shadow the lifted sheet throws is a band that hugs the fold and
+  // falls away either side of it — not a wash over everything to one
+  // side, which flattens the page underneath into grey.
+  const lift = Math.sin(Math.PI * t);
+  if (lift > 0.02){
+    const fx = spine + F.f, reach = PW * 0.30;
+    const g = ctx.createLinearGradient(fx - reach*0.45, 0, fx + reach, 0);
+    g.addColorStop(0,    'rgba(0,0,0,0)');
+    g.addColorStop(0.30, `rgba(0,0,0,${0.30*lift})`);
+    g.addColorStop(1,    'rgba(0,0,0,0)');
+    ctx.fillStyle = g;
+    ctx.fillRect(fx - reach*0.45, 0, reach*1.45, H);
+  }
+
+  /* Shading has to be a second pass over a per-column buffer, not a fill
+     per slice. Slices overlap on purpose — that is what makes the near
+     side of the fold cover the far side — and painting translucent black
+     into each one stacks the overlaps into vertical stripes. Writing the
+     value per column instead, in the same order, leaves exactly the
+     topmost slice's shade standing. */
+  const shade = new Float32Array(Math.ceil(W) + 2).fill(-1);
+
+  for (let s = 0; s < PW; s += STEP){
+    const a = place(s, F), b = place(Math.min(s + STEP, PW), F);
+    const x0 = spine + a.x, x1 = spine + b.x;
+    const dst = Math.abs(x1 - x0);
+    if (dst < 0.05) continue;                     // edge-on, nothing to show
+
+    const im  = a.back ? back : front;
+    if (!ok(im)) continue;
+    // The back of a sheet reads spine-outward too, so its source column is
+    // measured from the other end of the image.
+    const u   = a.back ? (PW - s) : s;
+    const sx  = (u / PW) * im.naturalWidth;
+    const sw  = Math.max(1, (STEP / PW) * im.naturalWidth);
+    const left = Math.min(x0, x1);
+
+    ctx.drawImage(im, sx, 0, sw, im.naturalHeight, left, 0, dst + 0.6, H);
+
+    // Light sits in front of the book, so a column's brightness is how
+    // squarely it faces the reader. The back of the sheet takes a little
+    // extra, the way the reverse of a page always looks slightly duller.
+    const v = (1 - a.sh) * 0.46 + (a.back ? 0.10 : 0);
+    for (let x = Math.round(left); x < Math.round(left + dst); x++){
+      if (x >= 0 && x < shade.length) shade[x] = v;
+    }
+  }
+
+  // paint the buffer back as contiguous runs of equal value
+  let run = 0;
+  while (run < shade.length){
+    const v = shade[run];
+    let end = run;
+    while (end < shade.length && Math.abs(shade[end] - v) < 0.012) end++;
+    if (v > 0.012){
+      ctx.fillStyle = `rgba(0,0,0,${Math.min(0.62, v)})`;
+      ctx.fillRect(run, 0, end - run, H);
+    }
+    run = end;
+  }
+}
+
+// ── labels + controls ─────────────────────────────────────────────────
+function label(){
+  if (at === 0) return 'Cover';
+  if (at >= last) return 'Back cover';
+  // Sheet number is not folio number: two blanks and the dedication come
+  // first, so the number printed on the paper is the sheet minus two.
+  const folio = n => (n >= 4 && n <= 39) ? n - 2 : null;
+  const l = 2*at - 2, r = 2*at - 1;
+  if (l >= PAGES) return 'End';
+  const fl = folio(l), fr = folio(r);
+  if (fl && fr) return `Pages ${fl}–${fr}`;
+  if (fr) return `Page ${fr}`;
+  if (fl) return `Page ${fl}`;
+  return at === 2 ? 'Dedication' : 'Opening';
+}
 function paint(){
-  els.forEach((el, i) => {
-    const turned = i < at;
-    el.classList.toggle('flipped', turned);
-    // Turned leaves stack upward on the left; untouched ones stack downward
-    // on the right, so the one you are about to turn is always on top.
-    el.style.zIndex = turned ? i + 1 : last - i;
-    if (el !== dragEl) el.style.transform = '';
-  });
-  book.classList.remove('shut','open','closed');
-  book.classList.add(at === 0 ? 'shut' : at >= last ? 'closed' : 'open');
+  document.getElementById('count').textContent = label();
+  document.getElementById('bprev').disabled = at === 0 && !turning;
+  document.getElementById('bnext').disabled = at >= last && !turning;
+  // keep the neighbours warm
+  [at-1, at, at+1, at+2].forEach(i => { if (leaves[i]) { img(leaves[i].front); img(leaves[i].back); } });
+  draw();
+}
 
-  const spread = at === 0 ? 'Cover'
-    : at >= last ? 'Back cover'
-    : (() => {
-        // Sheet number ≠ printed folio: two blanks and the dedication come
-        // first, so the number on the paper is the sheet minus two. Label by
-        // what the reader can actually see printed at the foot of the page.
-        const folio = n => (n >= 4 && n <= 39) ? n - 2 : null;
-        const l = 2 * at - 2, r = 2 * at - 1;      // sheets now showing
-        if (l >= PAGES) return 'End';
-        const fl = folio(l), fr = folio(r);
-        if (fl && fr) return `Pages ${fl}–${fr}`;
-        if (fr) return `Page ${fr}`;
-        if (fl) return `Page ${fl}`;
-        return at === 2 ? 'Dedication' : 'Opening';
-      })();
-  document.getElementById('count').textContent = spread;
-  for (const id of ['prev','bprev']) document.getElementById(id).disabled = at === 0;
-  for (const id of ['next','bnext']) document.getElementById(id).disabled = at >= last;
+function animate(k, from, to, after){
+  const dur = 620 * Math.max(0.35, Math.abs(to - from));
+  const t0 = performance.now();
+  turning = {k, t: from};
+  let done = false;
+  const finish = () => {
+    if (done) return;
+    done = true; clearTimeout(guard);
+    turning = null; after(); paint();
+  };
+  // requestAnimationFrame stops in a background tab. Without a fallback a
+  // turn begun there would never end, `turning` would stay set, and every
+  // later click and key would be refused with no way back.
+  const guard = setTimeout(finish, dur + 260);
+  (function step(now){
+    if (done) return;
+    const p = Math.min(1, (now - t0) / dur);
+    const e = p < 0.5 ? 4*p*p*p : 1 - Math.pow(-2*p + 2, 3)/2;   // easeInOutCubic
+    turning.t = from + (to - from) * e;
+    draw();
+    if (p < 1) requestAnimationFrame(step);
+    else finish();
+  })(t0);
 }
 
 function go(d){
-  const next = Math.min(last, Math.max(0, at + d));
-  if (next === at) return;
-  at = next;
-  paint();
+  if (turning) return;
+  if (d > 0 && at < last)  animate(at,   0, 1, () => at++);
+  if (d < 0 && at > 0)     animate(at-1, 1, 0, () => at--);
 }
 
-['next','bnext'].forEach(id => document.getElementById(id).addEventListener('click', () => go(1)));
-['prev','bprev'].forEach(id => document.getElementById(id).addEventListener('click', () => go(-1)));
+document.getElementById('bnext').addEventListener('click', () => go(1));
+document.getElementById('bprev').addEventListener('click', () => go(-1));
 document.addEventListener('keydown', e => {
   if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); go(1); }
   if (e.key === 'ArrowLeft') { e.preventDefault(); go(-1); }
-  if (e.key === 'Home') go(-last);
-  if (e.key === 'End') go(last);
 });
 
-/* ── drag a page ────────────────────────────────────────────────────────
-   Grab either half and the sheet follows the pointer, the way paper does.
-   Horizontal travel across one page-width maps to the full 180° turn, so
-   the corner stays roughly under the cursor. Let go past the halfway mark,
-   or throw it, and it completes; short of that it falls back.            */
-const stage = document.querySelector('.stage');
+/* ── dragging ──────────────────────────────────────────────────────────
+   Grab either half and the sheet follows. Travel across one page width
+   is the whole turn, so the corner stays roughly under the cursor. Let
+   go past halfway and it finishes; short of that it only finishes if it
+   was thrown, and a throw has to be both quick and have covered ground,
+   or a twitch would flip the page out from under you.                  */
 let drag = null;
-
-function pageWidth(){ return book.getBoundingClientRect().width / 2; }
-
 stage.addEventListener('pointerdown', e => {
-  if (e.button !== 0) return;
-  const r = book.getBoundingClientRect();
-  const forward = e.clientX >= r.left + r.width / 2;      // right half turns forward
-  const idx = forward ? at : at - 1;                      // the leaf that would move
-  if (idx < 0 || idx >= last) return;
-
-  dragEl = els[idx];
-  drag = { x0: e.clientX, forward, idx, moved: false, t0: Date.now() };
-  dragEl.classList.add('dragging');
-  dragEl.style.zIndex = last + 1;                         // ride above the stack
-  stage.setPointerCapture(e.pointerId);
+  if (e.button !== 0 || turning) return;
+  const r = stage.getBoundingClientRect();
+  const forward = e.clientX >= r.left + r.width/2;
+  const k = forward ? at : at - 1;
+  if (k < 0 || k >= last) return;
+  drag = {k, forward, x0: e.clientX, moved: false, t0: performance.now(), prog: 0};
+  turning = {k, t: forward ? 0 : 1};
+  stage.setPointerCapture?.(e.pointerId);
 });
-
 stage.addEventListener('pointermove', e => {
   if (!drag) return;
   const dx = e.clientX - drag.x0;
-  if (!drag.moved && Math.abs(dx) > 3) { drag.moved = true; book.classList.add('grabbing'); }
-  if (!drag.moved) return;
-  // forward: dragging left turns the page; backward: dragging right
-  const prog = Math.min(1, Math.max(0, (drag.forward ? -dx : dx) / pageWidth()));
-  const deg = drag.forward ? -180 * prog : -180 * (1 - prog);
-  dragEl.style.transform = `rotateY(${deg}deg)`;
-  drag.prog = prog;
+  if (!drag.moved){
+    if (Math.abs(dx) < 3) return;
+    drag.moved = true; stage.classList.add('grabbing');
+  }
+  drag.prog = Math.min(1, Math.max(0, (drag.forward ? -dx : dx) / (stage.getBoundingClientRect().width/2)));
+  turning.t = drag.forward ? drag.prog : 1 - drag.prog;
+  draw();
 });
-
-function endDrag(e){
+function release(e){
   if (!drag) return;
   const d = drag; drag = null;
-  book.classList.remove('grabbing');
-  if (dragEl) dragEl.classList.remove('dragging');
-
-  if (!d.moved) { dragEl = null; return; }                // a click, not a drag
-
-  // Past halfway it turns. Short of that it only turns if it was thrown —
-  // and a throw has to be both fast AND have gone somewhere, otherwise a
-  // twitch of a few pixels flips the page out from under you. The 16ms floor
-  // keeps a zero-duration event burst from reading as infinite speed.
-  const prog = d.prog || 0;
-  const speed = prog / Math.max(16, Date.now() - d.t0) * 1000;
-  const commit = prog > 0.5 || (prog > 0.18 && speed > 2.2);
-  dragEl = null;
-  if (commit) go(d.forward ? 1 : -1); else paint();
-  if (e && e.pointerId != null && stage.hasPointerCapture?.(e.pointerId)) {
-    stage.releasePointerCapture(e.pointerId);
-  }
+  stage.classList.remove('grabbing');
+  stage.releasePointerCapture?.(e.pointerId);
+  if (!d.moved){ turning = null; draw(); return; }         // a click, not a drag
+  const speed = d.prog / Math.max(16, performance.now() - d.t0) * 1000;
+  const commit = d.prog > 0.5 || (d.prog > 0.18 && speed > 2.2);
+  const t = turning.t;
+  if (commit) animate(d.k, t, d.forward ? 1 : 0, () => { at = d.forward ? d.k + 1 : d.k; });
+  else        animate(d.k, t, d.forward ? 0 : 1, () => {});
 }
-stage.addEventListener('pointerup', endDrag);
-stage.addEventListener('pointercancel', endDrag);
+stage.addEventListener('pointerup', release);
+stage.addEventListener('pointercancel', release);
 
-paint();
+// a plain click on either half turns that way
+stage.addEventListener('click', e => {
+  const r = stage.getBoundingClientRect();
+  go(e.clientX >= r.left + r.width/2 ? 1 : -1);
+});
 
-// "Back" returns you the way you came when that was somewhere on this site,
-// and otherwise falls through to the builds index rather than dumping you
-// out of the tab.
+// first paint once the opening images are in
+function firstPaint(){ if (!painted){ painted = true; resize(); paint(); } }
+const cover = img(leaves[0].front);
+if (ok(cover)) firstPaint(); else cover.addEventListener('load', firstPaint);
+setTimeout(firstPaint, 1500);
+window.addEventListener('load', () => { resize(); paint(); });
+
+/* "Back" returns you the way you came when that was somewhere on this
+   site, and otherwise falls through to the builds index. */
 (() => {
   const b = document.getElementById('back');
   let from = null;

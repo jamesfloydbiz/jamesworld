@@ -74,6 +74,50 @@
     font-size:16px; color:var(--dim);}
   .sign b{display:block; color:#fff; font-weight:600; margin-top:4px;}
 
+
+  /* ── page two: the run of show ────────────────────────────────────── */
+  .sheet{
+    margin-top:64px; padding-top:52px;
+    border-top:1px solid var(--hair);
+  }
+  .sheet-h{
+    font-size:clamp(24px,3.6vw,34px); font-weight:700; letter-spacing:-.015em;
+    color:#fff; text-transform:none; margin:0 0 34px;
+    padding-top:0; border-top:0;
+  }
+  .run{list-style:none; margin:0; padding:0; counter-reset:run;}
+  .run li{
+    counter-increment:run; position:relative;
+    padding:0 0 26px 58px; margin:0;
+  }
+  /* the rail linking one step to the next */
+  .run li::after{
+    content:''; position:absolute; left:17px; top:34px; bottom:-4px; width:1px;
+    background:linear-gradient(180deg, rgba(71,196,230,.42), rgba(71,196,230,.08));
+  }
+  .run li:last-child{padding-bottom:0;}
+  .run li:last-child::after{display:none;}
+  .run li::before{
+    content:counter(run);
+    position:absolute; left:0; top:0;
+    width:35px; height:35px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-size:13px; font-weight:600; color:var(--alpha-cyan);
+    border:1px solid rgba(71,196,230,.45); background:#000;
+  }
+  .run .do{
+    margin:0; font-size:17px; line-height:1.5; color:#fff; font-weight:400;
+    padding-top:5px;
+  }
+  .run .then{
+    margin:9px 0 0; font-size:15px; line-height:1.6;
+    color:var(--dim); font-weight:300;
+  }
+  .run .then::before{
+    content:''; display:inline-block; width:14px; height:1px; vertical-align:middle;
+    background:rgba(71,196,230,.55); margin-right:9px;
+  }
+
   /* ── site mark, top left, same place on every page ────────────────── */
   .mark{
     position:fixed; top:18px; left:20px; z-index:80;
@@ -126,16 +170,6 @@
     <li><strong>Generosity, &ldquo;spend and donate&rdquo;:</strong> the same muscle as Alpha Savers and the Water for Life Project, except this time they give something that came off a person who trusted them.</li>
   </ul>
 
-  <h2>What it looks like</h2>
-  <ol>
-    <li>Kids work on a BrainLift (or a lesson) about how many kids their age lose their hair to chemo, alopecia, and other causes, and what that's like.</li>
-    <li>Talk with a stylist about their business: the lessons from years of people in the chair, and how they build real relationships.</li>
-    <li>Learn the basic parts of a hair donation.</li>
-    <li>Make the measurements, the cuts, then package and mail the hair.</li>
-    <li>Learn the donating side: how nonprofits work and where the hair goes.</li>
-    <li>Wigs for Kids: meet the org the donation goes to.</li>
-  </ol>
-
   <h2>Logistics</h2>
   <ul>
     <li><strong>Donation org:</strong> Wigs for Kids (12&quot; minimum). My 13&quot; clears it.</li>
@@ -144,6 +178,39 @@
   </ul>
 
   <p class="sign">From the heart,<b>James Floyd</b></p>
+
+  <!-- ── page two ───────────────────────────────────────────────────────
+       The run of show. Every step the kids guess first and check second:
+       they build the list, then the evidence or the professional tells
+       them what is actually true. -->
+  <section class="sheet">
+    <p class="eyebrow">Page two</p>
+    <h2 class="sheet-h">How it could go</h2>
+
+    <ol class="run">
+      <li>
+        <p class="do">Make a list of all the possible effects of someone not having hair.</p>
+        <p class="then">Then talk about what the evidence shows — and hear a story or two from real survivors.</p>
+      </li>
+      <li>
+        <p class="do">Make a list of all the reasons why someone may lose their hair.</p>
+        <p class="then">Then talk through the actual possible reasons.</p>
+      </li>
+      <li>
+        <p class="do">Make a list of all the steps, in order, that it would take to donate hair.</p>
+        <p class="then">Then walk the real steps with a licensed stylist or a non-profit representative.</p>
+      </li>
+      <li>
+        <p class="do">Divide up responsibilities as a group.</p>
+      </li>
+      <li>
+        <p class="do">Cut James' hair, with big smiles.</p>
+      </li>
+      <li>
+        <p class="do">Donate the hair.</p>
+      </li>
+    </ol>
+  </section>
 </div>
 </body>
 </html>

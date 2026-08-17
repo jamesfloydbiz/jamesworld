@@ -540,7 +540,13 @@ document.head.appendChild(api);
    ══════════════════════════════════════════════════════════════════════ */
 const OPEN_AT = new Date('2026-08-19T12:00:00-04:00');   // noon, New York
 
-function gated(){ return Date.now() < OPEN_AT.getTime(); }
+// Served from a dev machine, the gate is off — you cannot build a page you
+// are not allowed to look at. This checks the host, not a query string, so
+// there is nothing to discover or pass around in production.
+const LOCAL = ['localhost','127.0.0.1','0.0.0.0','::1'].includes(location.hostname)
+           || location.protocol === 'file:';
+
+function gated(){ return !LOCAL && Date.now() < OPEN_AT.getTime(); }
 
 const gate = document.getElementById('gate');
 const two = n => String(n).padStart(2,'0');
@@ -562,7 +568,8 @@ function tickGate(){
 }
 
 let gateTimer = null;
-if (gated()){
+if (LOCAL) gate.remove();
+else if (gated()){
   document.body.classList.add('gated');
   tickGate();
   gateTimer = setInterval(tickGate, 1000);
