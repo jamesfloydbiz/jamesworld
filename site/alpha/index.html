@@ -198,6 +198,9 @@
   .ref q{display:block; quotes:'“' '”'; font-size:15px; line-height:1.55; font-weight:300; margin-bottom:9px;}
   .ref .who{font-size:12.5px; font-weight:600;}
   .ref .role{font-size:11.5px; color:rgba(255,255,255,.52); font-weight:300;}
+  .ref .src{display:inline-block; margin-top:7px; font-size:11px; font-weight:600;
+    letter-spacing:.04em; color:var(--alpha-cyan); text-decoration:none;}
+  .ref .src:hover{color:#fff;}
   .refnote{margin-top:24px; font-size:12.5px; color:var(--faint);}
   .refnote a{color:var(--alpha-cyan); text-decoration:none;}
   .refnote a:hover{text-decoration:underline;}
@@ -320,7 +323,7 @@
   <section id="references">
     <div class="secthead"><h2>What people say</h2><div class="line"></div></div>
     <div class="refs" id="refs"></div>
-    <p class="refnote">Thirty-one more, unedited and with sources, at <a href="/references/">jamesfloyds.world/references</a>.</p>
+    <p class="refnote">Twenty-three more, unedited and with sources, at <a href="/references/">jamesfloyds.world/references</a>.</p>
   </section>
 
   <section id="contact">
@@ -378,6 +381,14 @@ const PROJECTS = [
 ];
 
 const REFS = [
+  // The two that landed on the Alpha School post itself lead, because they
+  // are the only ones about this. One name per person — Dom said several
+  // good things and the strongest one stands for him.
+  { q:"Love it! I've been following them for a while now. They would be lucky to have a killer like you.",
+    who:"Shire Thompson", role:"Founder, Discomfort Club · on my Alpha School post",
+    href:"https://www.linkedin.com/feed/update/urn:li:activity:7493838598278914048/?dashCommentUrn=urn%3Ali%3Afsd_comment%3A%287493861674068697088%2Curn%3Ali%3AugcPost%3A7493838496030294017%29" },
+  { q:"Dude this is awesome man! Can't wait for you to help them take this to the next level. They need some James brain juices.",
+    who:"Indio Skinner", role:"Entrepreneur & speaker · on my Alpha School post" },
   { q:"I was like — this kid is different. This kid is special.",
     who:"Dom Rufran", role:"President, BetterWealth · Ex-NFL" },
   { q:"The growth that you've had over the last year has been insane.",
@@ -388,8 +399,6 @@ const REFS = [
     who:"Vitoria Okuyama", role:"Ex pro tennis player · Ex IB, Citi" },
   { q:"Your hard work and willingness to go above and beyond will take you a LONG WAY.",
     who:"Danielle Raskin", role:"SXSW Secret Garden Party" },
-  { q:"You just genuinely have that grit, and you're going to be special — and you're very coachable.",
-    who:"Dom Rufran", role:"President, BetterWealth · Ex-NFL" },
   { q:"Every single line is just so poignant and well written — I am loving your content.",
     who:"Kaia Tham", role:"Builder, on the Sonder Series" },
   { q:"You are like the master of third door. Like no one I've ever seen.",
@@ -430,6 +439,7 @@ document.getElementById('refs').innerHTML = REFS.map(r => `
     <q>${r.q}</q>
     <div class="who">${r.who}</div>
     <div class="role">${r.role}</div>
+    ${r.href ? `<a class="src" href="${r.href}" target="_blank" rel="noopener">source &rarr;</a>` : ''}
   </div>`).join('');
 
 // ── ticks on the rail ─────────────────────────────────────────────────
