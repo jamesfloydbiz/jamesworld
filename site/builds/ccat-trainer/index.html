@@ -734,7 +734,6 @@ function renderIntro(){
         <li><strong class="text-white">50 questions, 15 minutes.</strong> That is 18 seconds each, and the clock never stops.</li>
         <li><strong class="text-white">Your score is the number right. Nothing is deducted for a wrong answer.</strong> So a blank and a wrong answer cost you exactly the same &mdash; which means <em>never leave one blank</em>. With four options, a pure guess is worth a quarter of a mark, and a guess after ruling one out is worth a third.</li>
         <li><strong class="text-white">You cannot go back.</strong> Answer and it is gone. Do not save anything for a second pass, because there isn't one.</li>
-        <li><strong class="text-white">Almost nobody finishes.</strong> Around 1% reach question 50; the average score is about 24. Not finishing is normal and is not failure.</li>
       </ul>
 
       <h4 class="font-bold mt-5 mb-2">What "on pace" actually looks like</h4>
@@ -744,20 +743,19 @@ function renderIntro(){
           <thead><tr>
             <th class="text-left text-xs text-gray-500 pb-2" style="font-weight:600;">Questions done</th>
             <th class="text-left text-xs text-gray-500 pb-2" style="font-weight:600;">Time left if on pace</th>
-            <th class="text-left text-xs text-gray-500 pb-2" style="font-weight:600;">Behind if under</th>
           </tr></thead>
           <tbody class="mono text-gray-300">
-            <tr><td class="py-1">10</td><td class="text-white">12:00</td><td class="text-gray-500">11:00</td></tr>
-            <tr><td class="py-1">20</td><td class="text-white">9:00</td><td class="text-gray-500">8:00</td></tr>
-            <tr><td class="py-1">25</td><td class="text-white" style="color:var(--acc);">7:30</td><td class="text-gray-500">6:30</td></tr>
-            <tr><td class="py-1">30</td><td class="text-white">6:00</td><td class="text-gray-500">5:00</td></tr>
-            <tr><td class="py-1">35</td><td class="text-white">4:30</td><td class="text-gray-500">3:30</td></tr>
-            <tr><td class="py-1">40</td><td class="text-white">3:00</td><td class="text-gray-500">2:00</td></tr>
-            <tr><td class="py-1">50</td><td class="text-white">0:00</td><td class="text-gray-500">&mdash;</td></tr>
+            <tr><td class="py-1">10</td><td class="text-white">12:00</td></tr>
+            <tr><td class="py-1">20</td><td class="text-white">9:00</td></tr>
+            <tr><td class="py-1">25</td><td class="text-white" style="color:var(--acc);">7:30</td></tr>
+            <tr><td class="py-1">30</td><td class="text-white">6:00</td></tr>
+            <tr><td class="py-1">35</td><td class="text-white">4:30</td></tr>
+            <tr><td class="py-1">40</td><td class="text-white">3:00</td></tr>
+            <tr><td class="py-1">50</td><td class="text-white">0:00</td></tr>
           </tbody>
         </table>
       </div>
-      <p class="text-sm text-gray-400 mb-4">Halfway is the one to memorise: <strong class="text-white">25 done with 7:30 on the clock</strong>. Ahead of that and you have room to think; behind it and you need to start cutting losses.</p>
+      <p class="text-sm text-gray-400 mb-4">Halfway is the one to memorise: <strong class="text-white">25 done with 7:30 on the clock</strong>. <em>More</em> time than that means you are running ahead of 18 seconds a question and can afford to slow down and think. Less means start moving.</p>
 
       <h4 class="font-bold mt-5 mb-2">How to spend the 15 minutes</h4>
       <ul class="text-sm text-gray-400 space-y-2 mb-4" style="list-style:disc;padding-left:20px;">
