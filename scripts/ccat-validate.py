@@ -16,7 +16,10 @@ def check(path):
         o = q.get("o", [])
         keyed = o if q.get("sub") == "attention" else [str(x).strip().lower() for x in o]
         if len(o) != 4:                       problems.append((q["id"], f"{len(o)} options"))
-        if len(set(keyed)) != len(o):         problems.append((q["id"], "two options identical"))
+        # "which one is DIFFERENT" shows three matching figures on purpose —
+        # that repetition is the question, not a defect.
+        if q.get("sub") != "oddfigure" and len(set(keyed)) != len(o):
+            problems.append((q["id"], "two options identical"))
         if not isinstance(q.get("a"), int) or not (0 <= q["a"] < len(o)):
                                               problems.append((q["id"], "answer index out of range"))
         if not str(q.get("e","")).strip():     problems.append((q["id"], "no explanation"))
