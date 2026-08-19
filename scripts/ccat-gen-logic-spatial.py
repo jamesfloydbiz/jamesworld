@@ -115,13 +115,33 @@ def syllogism(d):
     o,a=_opts(ans, wrongs)
     return dict(sub="syllogism", q=q, o=o, a=a, vis=None, e=e)
 
+def art(word):
+    """a/an by sound. 'a amber box' is the kind of thing that makes a whole
+    question look unconsidered."""
+    return ("an " if word[0] in "aeiou" else "a ") + word
+
 def relations(d):
-    a,b,c = random.sample(["red","blue","green","amber","violet"],3)
+    """Containment chain a -> b -> c, asked so that exactly ONE option is true.
+
+    The first version asked which box the marble is 'certainly also inside'
+    and offered b as a distractor. But b is certainly true as well — the
+    chain puts the marble inside b AND inside c — so the item had two right
+    answers and marked one of them wrong. Its own explanation said as much.
+    Asking for the OUTERMOST box is the phrasing that has a single answer,
+    and b is no longer offered.
+    """
+    COLOURS = ["red", "blue", "green", "amber", "violet", "orange", "indigo"]
+    a, b, c = random.sample(COLOURS, 3)
+    spare = [x for x in COLOURS if x not in (a, b, c)]
     ans = c
-    q = f"Every {a} box is inside a {b} box. Every {b} box is inside a {c} box. A marble is in a {a} box. Which colour box is it certainly also inside?"
-    o,a_i = _opts(ans, [a, b, "none of these"])
+    q = (f"Every {a} box is inside {art(b)} box. Every {b} box is inside {art(c)} box. "
+         f"A marble is in {art(a)} box. Which is the OUTERMOST box it is inside?")
+    # distractors: the two inner boxes are true-but-not-outermost, so they cannot
+    # be used; take colours from outside the chain instead.
+    o, a_i = _opts(ans, spare[:2] + ["none of these"])
     return dict(sub="relations", q=q, o=o, a=a_i, vis=None,
-                e=f"Containment chains: {a} → {b} → {c}. So the marble is inside a {b} box and therefore inside a {c} box too.")
+                e=(f"The chain runs {a} → {b} → {c}. The marble is inside all three, "
+                   f"but the question asks for the outermost, which is {c}."))
 
 SPATIAL = [arrow_rotate, corner_walk, dots_series, shape_sides, odd_arrow]
 LOGIC2  = [ordering, syllogism, relations]
