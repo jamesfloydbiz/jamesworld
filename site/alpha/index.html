@@ -148,6 +148,8 @@
   .secthead .line{flex:1; height:1px; background:var(--hair);}
 
   .cards{display:grid; gap:16px;}
+  @media (min-width:720px){ .extras{grid-template-columns:1fr 1fr;} }
+  .proj.extra{min-height:0; animation:none;}
   @media (min-width:860px){ .cards{grid-template-columns:repeat(3,1fr);} }
 
   .proj{
@@ -320,6 +322,11 @@
     <div class="cards" id="cards"></div>
   </section>
 
+  <section id="extra">
+    <div class="secthead"><h2>Extra credit</h2><div class="line"></div></div>
+    <div class="cards extras" id="extras"></div>
+  </section>
+
   <section id="references">
     <div class="secthead"><h2>What people say</h2><div class="line"></div></div>
     <div class="refs" id="refs"></div>
@@ -379,6 +386,28 @@ const PROJECTS = [
     cta: 'Read the proposal',
     href: '/alpha/workshop/' },
 ];
+
+
+/* Not gated. These are reading, not reveals — anyone who lands here before
+   the video finishes can still pick them up. */
+const EXTRAS = [
+  { title: 'Can You Really Learn 2x Faster?',
+    blurb: 'Alpha claims students learn twice as much twice as fast, so I went and checked. Ten learning-science techniques with the effect sizes behind them, and what each one actually looked like in my own life.',
+    cta: 'Read it', href: '/writing/rabbit-holes/learning-science/' },
+  { title: 'A History of Education',
+    blurb: 'From play and imitation to Prussian classrooms — how schooling came to be the shape it is. Worth knowing before you argue that shape is not a law of nature.',
+    cta: 'Read it', href: '/writing/rabbit-holes/history-of-education/' },
+];
+
+document.getElementById('extras').innerHTML = EXTRAS.map(x => `
+  <article class="proj unlocked extra">
+    <div class="proj-body">
+      <div class="proj-n">Extra</div>
+      <h3>${x.title}</h3>
+      <p>${x.blurb}</p>
+      <a class="go" href="${x.href}" target="_blank" rel="noopener">${x.cta} <span>&rarr;</span></a>
+    </div>
+  </article>`).join('');
 
 const REFS = [
   // The two that landed on the Alpha School post itself lead, because they

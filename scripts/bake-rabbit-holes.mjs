@@ -42,6 +42,25 @@ const META = {
       { name: 'Myths',                                        date: '' },
     ],
   },
+  'learning-science': {
+    title: 'Can You Really Learn 2x Faster?',
+    subtitle: 'Ten techniques with the evidence behind them, and what each one looked like in my own life.',
+    reading: '~11 min',
+    sections: [
+      { name: 'How learning works',        date: 'the four steps' },
+      { name: '1. Worked examples with faded support', date: '~0.5–0.6 SD' },
+      { name: '2. The testing effect',      date: '~0.50 SD' },
+      { name: '3. Mastery learning',        date: '~0.5 SD' },
+      { name: '4. Spacing',                 date: '~0.4–0.6 SD' },
+      { name: '5. Interleaving',            date: '~0.42 SD' },
+      { name: '6. Feedback',                date: '~0.4 SD' },
+      { name: '7. Tutoring',                date: '~0.37 SD' },
+      { name: '8. Self-explanation',        date: 'g ~0.55' },
+      { name: '9. Direct instruction',      date: '~0.5–0.6 SD' },
+      { name: '10. Cognitive load theory',  date: 'a framework' },
+      { name: 'So, is 2x possible?',        date: '' },
+    ],
+  },
   'social-classes-and-mobility': {
     title: 'Social Classes and Mobility',
     subtitle: 'How class emerged, hardened, and softened across ten thousand years.',
@@ -71,6 +90,15 @@ function esc(s) {
     .replace(/"/g, '&quot;');
 }
 function escAttr(s) { return esc(s); }
+
+// Inline emphasis, applied AFTER escaping so the markdown can never smuggle
+// in markup: **bold** and *italic*. Bold runs first, or its pair of stars
+// would be eaten by the italic rule.
+function emph(s) {
+  return String(s)
+    .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+    .replace(/(^|[^*])\*([^*\n]+)\*(?!\*)/g, '$1<em>$2</em>');
+}
 function slugify(s) {
   return String(s).toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
@@ -117,13 +145,13 @@ function renderBlock(block) {
   // Pure bullet list
   if (bulletLines.length === lines.length && lines.length > 1) {
     return '<ul class="rh-list">' +
-      lines.map((l) => `<li>${esc(l.replace(/^-\s+/, ''))}</li>`).join('') +
+      lines.map((l) => `<li>${emph(esc(l.replace(/^-\s+/, '')))}</li>`).join('') +
       '</ul>';
   }
   // Pure numbered list
   if (numberedLines.length === lines.length && lines.length > 1) {
     return '<ol class="rh-list">' +
-      lines.map((l) => `<li>${esc(l.replace(/^\d+\.\s+/, ''))}</li>`).join('') +
+      lines.map((l) => `<li>${emph(esc(l.replace(/^\d+\.\s+/, '')))}</li>`).join('') +
       '</ol>';
   }
   // Mixed: first line intro, remainder bullets/numbers → intro <p> then list
@@ -140,12 +168,12 @@ function renderBlock(block) {
     }
     const allNumbered = rest.every((l) => /^\d+\.\s+/.test(l));
     const tag = allNumbered ? 'ol' : 'ul';
-    const items = rest.map((l) => `<li>${esc(l.replace(/^(-\s+|\d+\.\s+)/, ''))}</li>`).join('');
-    return (intro.length ? `<p>${esc(intro.join(' '))}</p>` : '') +
+    const items = rest.map((l) => `<li>${emph(esc(l.replace(/^(-\s+|\d+\.\s+)/, '')))}</li>`).join('');
+    return (intro.length ? `<p>${emph(esc(intro.join(' ')))}</p>` : '') +
       `<${tag} class="rh-list">${items}</${tag}>`;
   }
   // Plain paragraph — collapse internal line breaks into spaces (soft wrap)
-  const paragraph = esc(lines.join(' ').replace(/\s+/g, ' ').trim());
+  const paragraph = emph(esc(lines.join(' ').replace(/\s+/g, ' ').trim()));
   return `<p>${paragraph}</p>`;
 }
 
