@@ -106,7 +106,7 @@ Rome
 
 In Rome they standardized these schools even more, but school stayed accessible only to the elite through money. School went in 3 sections:
 - ages seven to eleven went to litterator, which was basic letters and arithmetic
-- ages 12-15 did grammaticus, which was literature, greek, and grammar
+- ages 12-15 did grammaticus, which was literature, Greek, and grammar
 - ages 15+ did rhetor, which was rhetoric and public speaking
 
 
