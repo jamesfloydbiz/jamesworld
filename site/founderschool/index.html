@@ -95,9 +95,12 @@
     letter-spacing:-.025em; margin:0 0 18px;}
   .tpc p{font-size:16.5px; color:var(--grey); margin:0 0 17px; max-width:66ch;}
   .tpc strong{color:var(--ink); font-weight:600;}
-  .tpc .status{display:inline-block; margin-top:8px; font-size:12.5px;
-    color:var(--grey); border:1px dashed var(--rule); border-radius:99px;
-    padding:7px 15px;}
+  .tpc .tpc-open{display:inline-block; margin-top:8px; font-size:14px;
+    font-weight:600; text-decoration:none; color:#fff; background:var(--blue);
+    border-radius:99px; padding:12px 22px;
+    box-shadow:0 10px 26px -12px rgba(0,0,239,.8);
+    transition:background .15s, transform .15s;}
+  .tpc .tpc-open:hover{background:#0000C4; transform:translateY(-1px);}
 
   .lead{font-size:16.5px; color:var(--grey); max-width:72ch; margin:0 0 26px;}
   .lead a{color:var(--blue); font-weight:600; text-decoration:none;}
@@ -186,8 +189,11 @@
          Sonder Series. Not theory about persuasion. The specific moves, the specific
          ways they fail, and the order to learn them in.</p>
       <p>Built the way the CCAT trainer below is built: you practise, it tells you what
-         went wrong and how to fix it, and it gets harder as you get better.</p>
-      <span class="status">In build — this page came first</span>
+         went wrong and how to fix it, and it gets harder as you get better. The five
+         steps are there to read, and the tracker counts how far you get in each
+         attempt — so a student finds out which step is actually costing them people,
+         rather than which one they think is.</p>
+      <a class="tpc-open" href="/builds/tpc/" target="_blank" rel="noopener">Open TPC →</a>
     </div>
   </section>
 
@@ -195,7 +201,7 @@
     <div class="secthead"><h2>Already built, for Alpha</h2><div class="line"></div></div>
     <p class="lead">Founders School is powered by Alpha School, so this is not a different
       pitch — it is the same one, one floor up. I made all of this before anyone asked me
-      to. It lives at <a href="/alpha" target="_blank" rel="noopener">jamesfloyds.world/alpha</a>,
+      to. It lives at <a href="/alpha/" target="_blank" rel="noopener">jamesfloyds.world/alpha</a>,
       with the video that goes with it.</p>
     <div class="cards" id="proofCards"></div>
   </section>
@@ -205,7 +211,7 @@
     <div class="refs" id="refs"></div>
     <p class="refnote">Public comments on that Alpha pitch —
       <a href="https://www.linkedin.com/feed/update/urn:li:activity:7495872285791301632/" target="_blank" rel="noopener">read the thread</a>.
-      Forty-three more at <a href="/references">jamesfloyds.world/references</a>.</p>
+      Forty-three more at <a href="/references/">jamesfloyds.world/references</a>.</p>
   </section>
 
   <section id="contact">
@@ -256,7 +262,7 @@ const PROOF = [
     href:'/writing/rabbit-holes/history-of-education/' },
   { k:'The pitch', t:'jamesfloyds.world/alpha',
     d:'All of it in one page, with the video, exactly as Alpha received it.',
-    href:'/alpha' },
+    href:'/alpha/' },
 ];
 
 /* Comments on the public pitch post. The ones that argue, not the ones that

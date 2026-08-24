@@ -1,0 +1,853 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>TPC — talks, presentations, closes</title>
+<meta name="description" content="The five steps of a sale, and the counter that shows you which one you are losing people at. Built from about 20,000 conversations with strangers.">
+<link rel="canonical" href="https://jamesfloyds.world/builds/tpc/">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#FBFBFD">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* Same palette as /founderschool/ — this is the project that page is built
+     around. Light on purpose twice over: it matches the pitch, and it gets used
+     outdoors on a pier in daylight, where a dark screen is unreadable. */
+  :root{
+    --blue:#0000EF;
+    --ink:#111827;
+    --grey:#6B7280;
+    --faint:#9CA3AF;
+    --rule:#E5E7EB;
+    --paper:#FBFBFD;
+    --good:#047857;
+    --warn:#B45309;
+    --sans:'Montserrat',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html{-webkit-text-size-adjust:100%;}
+  body{
+    margin:0; background:var(--paper); color:var(--ink);
+    font-family:var(--sans); font-weight:400; line-height:1.62;
+    -webkit-font-smoothing:antialiased; overflow-x:hidden;
+    padding-bottom:env(safe-area-inset-bottom);
+  }
+  .wrap{max-width:720px; margin:0 auto; padding:0 18px 72px;}
+  [hidden]{display:none !important;}
+
+  /* site mark, top left, same place on every page */
+  .mark{position:fixed; top:14px; left:16px; z-index:80;}
+  .mark a{display:inline-flex; align-items:center; text-decoration:none;}
+  .mark .logo{width:27px; height:27px;}
+  /* logo.svg is drawn white for the dark pages; invert it for this one */
+  .mark .logo img{width:100%; height:100%; display:block; filter:invert(1); opacity:.85;}
+
+  header{padding:58px 0 0;}
+  .eyebrow{font-size:10.5px; letter-spacing:.24em; text-transform:uppercase;
+    color:var(--blue); font-weight:700; margin:0 0 9px;}
+  h1{font-size:clamp(30px,8vw,42px); line-height:1.06; font-weight:700;
+    letter-spacing:-.03em; margin:0 0 10px;}
+  .tagline{margin:0; font-size:14.5px; color:var(--grey);}
+  .tagline b{color:var(--ink); font-weight:600;}
+
+  /* ── tabs ─────────────────────────────────────────────────────────── */
+  nav.tabs{display:flex; gap:4px; margin:26px 0 22px;
+    border-bottom:1px solid var(--rule);}
+  .tab{appearance:none; border:0; background:transparent; cursor:pointer;
+    font-family:inherit; font-size:14px; font-weight:600; color:var(--grey);
+    padding:13px 15px; min-height:46px; border-bottom:2px solid transparent;
+    margin-bottom:-1px; transition:color .15s, border-color .15s;}
+  .tab:hover{color:var(--ink);}
+  .tab.on{color:var(--blue); border-bottom-color:var(--blue);}
+
+  /* ── shared bits ──────────────────────────────────────────────────── */
+  .card{background:#fff; border:1px solid var(--rule); border-radius:12px;
+    padding:20px; margin-bottom:14px;}
+  .muted{color:var(--grey); font-size:14px;}
+  .tiny{font-size:12px; color:var(--faint);}
+  .btn{appearance:none; font-family:inherit; font-size:14.5px; font-weight:600;
+    color:var(--ink); background:#fff; border:1px solid var(--rule);
+    border-radius:9px; padding:12px 18px; min-height:46px; cursor:pointer;
+    transition:border-color .15s, background .15s;}
+  .btn:hover{border-color:var(--ink);}
+  .btn-p{background:var(--blue); border-color:var(--blue); color:#fff;}
+  .btn-p:hover{background:#0000C4; border-color:#0000C4;}
+  .btn:disabled{opacity:.4; cursor:not-allowed;}
+  input[type=text]{font-family:inherit; font-size:16px; color:var(--ink);
+    background:#fff; border:1px solid var(--rule); border-radius:9px;
+    padding:12px 14px; min-height:46px; width:100%;}
+  input[type=text]:focus{outline:2px solid var(--blue); outline-offset:-1px; border-color:var(--blue);}
+
+  /* ══ LEARN ════════════════════════════════════════════════════════ */
+  .rule-box{border:1px solid var(--blue); border-radius:12px; background:#fff;
+    padding:20px; margin-bottom:26px;}
+  .rule-box .lbl{font-size:10.5px; letter-spacing:.2em; text-transform:uppercase;
+    color:var(--blue); font-weight:700; margin:0 0 8px;}
+  .rule-box h2{font-size:clamp(21px,5.4vw,27px); line-height:1.2; font-weight:700;
+    letter-spacing:-.02em; margin:0 0 10px;}
+  .rule-box p{margin:0; font-size:14.5px; color:var(--grey);}
+
+  .step{border:1px solid var(--rule); border-radius:12px; background:#fff;
+    padding:20px; margin-bottom:14px; scroll-margin-top:16px;}
+  .step.flash{border-color:var(--blue); box-shadow:0 0 0 3px rgba(0,0,239,.12);}
+  .step .n{display:inline-flex; align-items:center; justify-content:center;
+    width:26px; height:26px; border-radius:50%; background:var(--blue); color:#fff;
+    font-size:12.5px; font-weight:700; margin-right:10px; flex:none;}
+  .step h3{display:flex; align-items:center; font-size:19px; font-weight:700;
+    letter-spacing:-.015em; margin:0 0 14px;}
+
+  /* the ask — you commit to an answer before the real one shows */
+  details{border-top:1px solid var(--rule); padding-top:14px; margin-top:14px;}
+  details:first-of-type{border-top:0; padding-top:0; margin-top:0;}
+  summary{list-style:none; cursor:pointer; display:flex; align-items:flex-start;
+    gap:10px; font-size:16px; font-weight:600; color:var(--ink);
+    padding:6px 0; min-height:44px;}
+  summary::-webkit-details-marker{display:none;}
+  summary::after{content:'answer'; margin-left:auto; flex:none; align-self:center;
+    font-size:10.5px; letter-spacing:.14em; text-transform:uppercase;
+    font-weight:700; color:var(--blue); border:1px solid var(--rule);
+    border-radius:99px; padding:5px 11px; white-space:nowrap;}
+  details[open] summary::after{content:'hide'; color:var(--faint);}
+  summary .q{color:var(--blue);}
+  .reveal{padding-top:6px;}
+  /* the words you actually say */
+  .say{border-left:3px solid var(--blue); padding:2px 0 2px 14px; margin:0 0 12px;
+    font-size:17px; font-weight:600; line-height:1.5;}
+  .say + .say{margin-top:-4px;}
+  .step p{margin:0 0 12px; font-size:14.5px; color:var(--grey);}
+  .step p:last-child{margin-bottom:0;}
+  .step strong{color:var(--ink); font-weight:600;}
+  .see{display:grid; gap:8px; margin:0 0 12px;}
+  .see div{display:flex; align-items:baseline; gap:10px; font-size:15px;}
+  .see b{color:var(--blue); font-weight:700; font-size:19px; width:16px; flex:none;}
+  .fork{display:grid; gap:8px; margin:0 0 12px;}
+  .fork div{border:1px solid var(--rule); border-radius:9px; padding:11px 14px;
+    font-size:14px; color:var(--grey);}
+  .fork b{color:var(--ink);}
+  .wrong{background:#FAFAFB; border:1px solid var(--rule); border-radius:9px;
+    padding:12px 14px; font-size:13.5px; color:var(--grey); margin:0;}
+  .wrong b{color:var(--ink); font-weight:600;}
+
+  /* ══ FUNNEL ═══════════════════════════════════════════════════════ */
+  .funnel{margin:0;}
+  .fr{display:flex; align-items:baseline; gap:12px;}
+  .fr .k{font-size:10.5px; letter-spacing:.16em; text-transform:uppercase;
+    font-weight:700; color:var(--grey); width:112px; flex:none;}
+  .fr .v{font-size:30px; font-weight:700; letter-spacing:-.03em;
+    font-variant-numeric:tabular-nums; min-width:44px;}
+  .fr .bar{flex:1; height:9px; border-radius:99px; background:var(--rule); overflow:hidden;}
+  .fr .bar i{display:block; height:100%; background:var(--blue); border-radius:99px;
+    transition:width .3s;}
+  .drop{display:flex; align-items:center; gap:12px; padding:5px 0 5px 124px;
+    font-size:12px; color:var(--grey); font-variant-numeric:tabular-nums;}
+  .drop b{color:var(--ink); font-weight:600;}
+  /* "PRESENTATIONS" is the longest label and it runs into its own number on a
+     narrow phone, so the label column tightens rather than the number shrinking. */
+  @media (max-width:430px){
+    .fr .k{width:96px; font-size:9px; letter-spacing:.05em;}
+    .fr .v{font-size:26px; min-width:38px;}
+    .drop{padding-left:108px;}
+  }
+  @media (max-width:340px){
+    .fr .bar{display:none;}
+  }
+
+  /* ══ TRACK ════════════════════════════════════════════════════════ */
+  .counts{display:grid; gap:10px; margin:18px 0 12px;}
+  .count{appearance:none; font-family:inherit; cursor:pointer; text-align:left;
+    display:flex; align-items:center; gap:14px;
+    min-height:76px; padding:14px 18px; border-radius:12px;
+    border:1px solid var(--rule); background:#fff; color:var(--ink);
+    transition:transform .1s, border-color .15s, background .15s;}
+  .count:hover{border-color:var(--blue);}
+  .count:active{transform:scale(.985); background:#F4F4FF;}
+  .count .plus{font-size:26px; font-weight:700; color:var(--blue);
+    width:26px; flex:none; text-align:center; line-height:1;}
+  .count .lab{font-size:19px; font-weight:700; letter-spacing:-.015em;}
+  .count .hint{display:block; font-size:12.5px; font-weight:400; color:var(--grey);
+    letter-spacing:0; margin-top:1px;}
+  .count .tally{margin-left:auto; font-size:22px; font-weight:700; color:var(--faint);
+    font-variant-numeric:tabular-nums;}
+  .count:disabled{opacity:.45; cursor:not-allowed;}
+  .count:disabled:hover{border-color:var(--rule);}
+
+  .chips{display:flex; flex-wrap:wrap; gap:8px; margin:0 0 14px;}
+  .chip{appearance:none; font-family:inherit; font-size:13px; font-weight:500;
+    cursor:pointer; color:var(--grey); background:#fff; border:1px solid var(--rule);
+    border-radius:99px; padding:11px 15px; min-height:44px;
+    transition:border-color .15s, color .15s, background .15s;}
+  .chip:hover{border-color:var(--blue); color:var(--blue);}
+  .chip:active{background:#F4F4FF;}
+  .noteline{display:flex; gap:8px;}
+  .noteline .btn{flex:none;}
+  .notes{list-style:none; margin:14px 0 0; padding:0;}
+  .notes li{display:flex; align-items:flex-start; gap:10px; padding:9px 0;
+    border-top:1px solid var(--rule); font-size:14px;}
+  .notes li:first-child{border-top:0;}
+  .notes .when{font-size:11.5px; color:var(--faint); flex:none; width:52px;
+    padding-top:3px; font-variant-numeric:tabular-nums;}
+  .notes .x{appearance:none; border:0; background:transparent; cursor:pointer;
+    color:var(--faint); font-size:17px; line-height:1; margin-left:auto;
+    padding:4px 8px; min-height:32px; font-family:inherit;}
+  .notes .x:hover{color:var(--ink);}
+
+  .row{display:flex; align-items:center; gap:10px; flex-wrap:wrap;}
+  .row .grow{flex:1; min-width:150px;}
+  .sechead{display:flex; align-items:center; gap:12px; margin:26px 0 12px;}
+  .sechead h2{font-size:11px; letter-spacing:.2em; text-transform:uppercase;
+    font-weight:700; color:var(--grey); margin:0; white-space:nowrap;}
+  .sechead .line{flex:1; height:1px; background:var(--rule);}
+
+  /* ══ PROGRESS ═════════════════════════════════════════════════════ */
+  .verdict{border-left:3px solid var(--blue); padding:2px 0 2px 15px; margin:0 0 14px;}
+  .verdict p{margin:0 0 8px; font-size:15px; line-height:1.55;}
+  .verdict p:last-child{margin-bottom:0;}
+  .verdict b{font-weight:700;}
+  .jump{appearance:none; border:0; background:transparent; cursor:pointer;
+    font-family:inherit; font-size:13.5px; font-weight:600; color:var(--blue);
+    padding:8px 0; min-height:40px; text-decoration:underline; text-underline-offset:3px;}
+  table{width:100%; border-collapse:collapse; font-size:13.5px;}
+  th{text-align:left; font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--faint); font-weight:700; padding:0 8px 8px 0; white-space:nowrap;}
+  td{padding:10px 8px 10px 0; border-top:1px solid var(--rule);
+    font-variant-numeric:tabular-nums; vertical-align:top;}
+  th:last-child,td:last-child{padding-right:0; text-align:right;}
+  .place{color:var(--grey); font-size:12px;}
+  .taglist{list-style:none; margin:0; padding:0;}
+  .taglist li{display:flex; align-items:baseline; gap:10px; padding:8px 0;
+    border-top:1px solid var(--rule); font-size:14px;}
+  .taglist li:first-child{border-top:0;}
+  .taglist .ct{margin-left:auto; font-weight:700; font-variant-numeric:tabular-nums;}
+  .danger{color:#B91C1C; border-color:#FCA5A5;}
+  .danger:hover{border-color:#B91C1C;}
+
+  .empty{text-align:center; padding:34px 20px; color:var(--grey); font-size:14.5px;}
+
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{transition:none !important; animation:none !important;}
+    .count:active{transform:none;}
+  }
+</style>
+</head>
+<body>
+
+<div class="mark">
+  <a class="logo" href="/" aria-label="Return to home"><img src="/logo.svg" alt="JF"></a>
+</div>
+
+<div class="wrap">
+
+  <header>
+    <p class="eyebrow">Sales training</p>
+    <h1>TPC</h1>
+    <p class="tagline"><b>T</b>alks · <b>P</b>resentations · <b>C</b>loses. Five steps, and a count of how far you got.</p>
+  </header>
+
+  <nav class="tabs" aria-label="Sections">
+    <button class="tab on" data-tab="learn" type="button">Learn</button>
+    <button class="tab" data-tab="track" type="button">Track</button>
+    <button class="tab" data-tab="progress" type="button">Progress</button>
+  </nav>
+
+  <!-- ══ LEARN — static, so an opened answer stays open ══════════════ -->
+  <section id="v-learn">
+
+    <div class="rule-box">
+      <p class="lbl">One rule, over all five</p>
+      <h2>End with a question mark.</h2>
+      <p>Every step below finishes with a question. A statement hands them nothing
+         to answer, so they nod and keep walking. A question makes them respond,
+         and a response is a sale still alive.</p>
+    </div>
+
+    <p class="muted" style="margin:0 0 22px;">You are on the pier with a box of candy
+       and a cooler. Here is the proper process.</p>
+
+    <div class="step" id="step-1">
+      <h3><span class="n">1</span>The Greeting</h3>
+      <details>
+        <summary><span class="q">What is a greeting?</span></summary>
+        <div class="reveal">
+          <p class="say">&ldquo;Hi, how are you?&rdquo;</p>
+          <p>That is the whole thing. It is not clever and it is not a pitch. You are
+             finding out whether this person will talk to you at all.</p>
+        </div>
+      </details>
+      <details>
+        <summary><span class="q">Three things matter more than the words. What are they?</span></summary>
+        <div class="reveal">
+          <p style="font-weight:700;color:var(--ink);margin:0 0 10px;">SEE</p>
+          <div class="see">
+            <div><b>S</b><span><strong>Smile.</strong> Before you speak, not after.</span></div>
+            <div><b>E</b><span><strong>Eye contact.</strong> If you are looking at the box, they will walk past the box.</span></div>
+            <div><b>E</b><span><strong>Enthusiasm.</strong> Nobody buys from someone who sounds like they would rather be elsewhere.</span></div>
+          </div>
+          <p>You will say &ldquo;Hi, how are you?&rdquo; a hundred times today. SEE is the
+             only part that changes between the ones that work and the ones that don't.</p>
+        </div>
+      </details>
+      <details>
+        <summary><span class="q">They said &ldquo;good, you?&rdquo; — now how do you get to the sale?</span></summary>
+        <div class="reveal">
+          <p>You bridge. Two or three words, and they buy you a few more seconds:</p>
+          <p class="say">&ldquo;Quick question&mdash;&rdquo;</p>
+          <p class="say">&ldquo;Real quick&mdash;&rdquo;</p>
+          <p>The transition isn't a step of its own. It is how you get out of the
+             greeting without an awkward gap, and it goes straight into step 2.</p>
+        </div>
+      </details>
+      <p class="wrong"><b>What goes wrong:</b> you open with what you're selling.
+         &ldquo;Hi, want to buy some candy?&rdquo; They say no before they have looked at you.</p>
+    </div>
+
+    <div class="step" id="step-2">
+      <h3><span class="n">2</span>The Qualifying Question</h3>
+      <details>
+        <summary><span class="q">What makes someone qualified to buy candy? Or water?</span></summary>
+        <div class="reveal">
+          <p>They want it. That is the entire test. Qualified doesn't mean rich and it
+             doesn't mean friendly — it means hungry, or thirsty, right now.</p>
+          <p class="say">&ldquo;You guys hungry?&rdquo;</p>
+          <p class="say">&ldquo;You guys thirsty?&rdquo;</p>
+          <p class="say">&ldquo;Do you like juice?&rdquo;</p>
+          <p>Then you <strong>wait</strong>. Do not fill the silence. The silence is
+             doing your work.</p>
+        </div>
+      </details>
+      <details>
+        <summary><span class="q">They answer. What are your options?</span></summary>
+        <div class="reveal">
+          <div class="fork">
+            <div><b>Yes</b> — qualified. Go to step 3, and use the word they just gave you.</div>
+            <div><b>No</b> — not qualified. Thank them and move on. There are three thousand people on this pier.</div>
+          </div>
+          <p>Two paths, and no third one. You will learn to handle &ldquo;no, but…&rdquo;
+             later — objection handling only makes sense once the frame is automatic.
+             For now a no is a no, and moving on fast is the skill.</p>
+        </div>
+      </details>
+      <p class="wrong"><b>What goes wrong:</b> you skip this and present to everyone.
+         Then you're pitching juice to people who aren't thirsty, and you're slow as
+         well as ignored.</p>
+    </div>
+
+    <div class="step" id="step-3">
+      <h3><span class="n">3</span>The Presentation</h3>
+      <details>
+        <summary><span class="q">They said they're thirsty. What do you say?</span></summary>
+        <div class="reveal">
+          <p class="say">&ldquo;Great &mdash; I've got juice, water and soda. Three dollars. What sounds good?&rdquo;</p>
+          <p>Notice what is <em>not</em> in that sentence: candy. They said thirsty, so
+             you sold drinks. The presentation is <strong>built out of the answer they
+             just gave you</strong> &mdash; that is the whole job of this step.</p>
+          <p>Name the price yourself, plainly, in the same breath. Making them ask is
+             making them work.</p>
+        </div>
+      </details>
+      <details>
+        <summary><span class="q">Why does step 2 come before this one?</span></summary>
+        <div class="reveal">
+          <p>Because you cannot tailor a presentation to someone who hasn't told you
+             anything yet. The qualifying question isn't a filter you run to get rid of
+             people &mdash; it is you <strong>collecting the material</strong> you are
+             about to present with.</p>
+          <div class="fork">
+            <div>They said <b>thirsty</b> &rarr; &ldquo;I've got juice, water and soda&hellip;&rdquo;</div>
+            <div>They said <b>hungry</b> &rarr; &ldquo;I've got chocolate, gummies and chips&hellip;&rdquo;</div>
+            <div>They said <b>they like juice</b> &rarr; &ldquo;I've got orange and apple, ice cold&hellip;&rdquo;</div>
+          </div>
+          <p>Same box, same prices, three different sentences. Use <strong>their word</strong>,
+             not yours. If they said thirsty, say thirsty back to them.</p>
+        </div>
+      </details>
+      <p class="wrong"><b>What goes wrong:</b> the untailored pitch &mdash; you run the
+         same list every time, in the same order, no matter what they said. They can hear
+         that it isn't about them, because it isn't. A tailored presentation is the
+         difference between answering a person and reciting inventory at them.</p>
+    </div>
+
+    <div class="step" id="step-4">
+      <h3><span class="n">4</span>The Close</h3>
+      <details>
+        <summary><span class="q">They picked the juice. What is the next sentence?</span></summary>
+        <div class="reveal">
+          <p class="say">&ldquo;What's your Venmo?&rdquo;</p>
+          <p>You <strong>assume the close</strong>. Not &ldquo;do you want one?&rdquo; —
+             they already answered that in step 2, and asking again invites them to
+             change their mind.</p>
+          <p>Note that this one is still a question. It just isn't a question about
+             whether. It's a question about how.</p>
+        </div>
+      </details>
+      <p class="wrong"><b>What goes wrong:</b> &ldquo;So… did you want one?&rdquo; You
+         handed back a decision they had already made.</p>
+    </div>
+
+    <div class="step" id="step-5">
+      <h3><span class="n">5</span>The Rehash</h3>
+      <details>
+        <summary><span class="q">Any guesses what rehash means?</span></summary>
+        <div class="reveal">
+          <p>Going back for the sale you didn't ask for. They just bought — which makes
+             them the easiest person on the pier to sell to, and most people walk away
+             from them.</p>
+          <p class="say">&ldquo;Got any friends who are thirsty? Want to grab something for them?&rdquo;</p>
+          <p><strong>Everyone has a sale hidden.</strong> One question finds it.</p>
+        </div>
+      </details>
+      <p class="wrong"><b>What goes wrong:</b> you take the money and say thanks. It
+         costs one sentence to find out if there was a second sale, and you skipped it.</p>
+    </div>
+
+    <div class="card" style="margin-top:26px;">
+      <p style="margin:0 0 12px;font-size:15px;font-weight:600;">Now go count.</p>
+      <p class="muted" style="margin:0 0 16px;">Knowing the five steps and running them
+         are different things. The tracker counts how far you get in each attempt, so
+         you find out which step is actually costing you people — not which one you
+         think is.</p>
+      <button class="btn btn-p" type="button" data-goto="track">Open the tracker</button>
+    </div>
+
+  </section>
+
+  <!-- ══ TRACK ══════════════════════════════════════════════════════ -->
+  <section id="v-track" hidden><div id="trackBody"></div></section>
+
+  <!-- ══ PROGRESS ═══════════════════════════════════════════════════ -->
+  <section id="v-progress" hidden><div id="progBody"></div></section>
+
+</div>
+
+<script>
+/* ══════════════════════════════════════════════════════════════════════
+   STORE
+
+   Same shape as the CCAT trainer's persistence layer — an app.domain.vN key
+   registry plus a try/catch reader — with three changes, each fixing something
+   that build gets wrong:
+
+     · the reset wipe iterates the registry, so a key added later can't be
+       silently left behind
+     · records are sanitised on load, so one bad row can't NaN the funnel
+     · every tap writes immediately. The trainer only persists an exam when it
+       finishes, so an abandoned one loses everything. A phone that dies on the
+       pier must not cost you the count.
+   ══════════════════════════════════════════════════════════════════════ */
+const LS = {
+  sessions: 'tpc.sessions.v1',  // [session]  finished, oldest first
+  live:     'tpc.live.v1',      // session | null  — the one in progress
+};
+function ls(k, d){
+  try{
+    const v = localStorage.getItem(k);
+    if (v === null) return d;
+    const parsed = JSON.parse(v);
+    // Valid JSON of the wrong shape is corruption, not data — and it is the
+    // dangerous case, because it parses fine and then explodes on .map() at
+    // boot, taking the whole page down with no way back but clearing storage.
+    if (Array.isArray(d) !== Array.isArray(parsed)) return d;
+    return parsed;
+  }catch(e){ return d; }
+}
+function save(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+
+/* A session stores the tap ORDER, not three counters. Undo is then just a pop,
+   and the totals can never drift out of step with the log. */
+const STEPS = ['t','p','c'];
+function clean(s){
+  if (!s || typeof s !== 'object') return null;
+  const n = v => (typeof v === 'number' && Number.isFinite(v) && v >= 0) ? v : 0;
+  return {
+    id:    n(s.id) || n(s.start),
+    start: n(s.start),
+    end:   (typeof s.end === 'number' && Number.isFinite(s.end)) ? s.end : null,
+    place: typeof s.place === 'string' ? s.place.slice(0, 60) : '',
+    log:   Array.isArray(s.log) ? s.log.filter(x => STEPS.includes(x)) : [],
+    notes: Array.isArray(s.notes)
+      ? s.notes.filter(x => x && typeof x === 'object' && typeof x.text === 'string')
+               .map(x => ({ ts: n(x.ts), text: x.text.slice(0, 300), tag: !!x.tag }))
+      : [],
+  };
+}
+let SESSIONS = ls(LS.sessions, []).map(clean).filter(Boolean);
+let LIVE     = clean(ls(LS.live, null));
+
+const count = (s, k) => s.log.reduce((a, x) => a + (x === k ? 1 : 0), 0);
+function tally(list){
+  const z = {t:0, p:0, c:0};
+  list.forEach(s => STEPS.forEach(k => { z[k] += count(s, k); }));
+  return z;
+}
+const persistLive = () => save(LS.live, LIVE);
+const persistAll  = () => save(LS.sessions, SESSIONS);
+
+/* ══════════════════════════════════════════════════════════════════════
+   VIEWS
+   ══════════════════════════════════════════════════════════════════════ */
+const PANES = { learn:'v-learn', track:'v-track', progress:'v-progress' };
+let currentTab = 'learn';
+
+function switchTab(name){
+  if (!PANES[name]) return;
+  currentTab = name;
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('on', t.dataset.tab === name));
+  Object.keys(PANES).forEach(k => { document.getElementById(PANES[k]).hidden = (k !== name); });
+  if (name === 'track') renderTrack();
+  if (name === 'progress') renderProgress();
+  window.scrollTo(0, 0);
+}
+document.querySelectorAll('.tab').forEach(t =>
+  t.addEventListener('click', () => switchTab(t.dataset.tab)));
+
+const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;')
+                          .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const pct = (a, b) => b ? Math.round(a / b * 100) : 0;
+const clock = ts => new Date(ts).toLocaleTimeString([], {hour:'numeric', minute:'2-digit'});
+const day   = ts => new Date(ts).toLocaleDateString([], {month:'short', day:'numeric'});
+
+/* One funnel renderer, used live in Track and lifetime in Progress. Bars are
+   scaled against talks, so the shape of the drop-off is the thing you see. */
+function funnel(z){
+  const rows = [
+    ['Talks', z.t],
+    ['Presentations', z.p],
+    ['Closes', z.c],
+  ];
+  const w = v => z.t ? Math.max(v ? 2 : 0, Math.round(v / z.t * 100)) : 0;
+  const gap = (from, to, label) => `
+    <div class="drop">${from ? `&darr; <b>${pct(to, from)}%</b> &middot; ${from - to} lost ${label}` : '&darr;'}</div>`;
+  return `
+    <div class="funnel">
+      <div class="fr"><span class="k">${rows[0][0]}</span><span class="v">${z.t}</span><span class="bar"><i style="width:${w(z.t)}%"></i></span></div>
+      ${gap(z.t, z.p, 'here')}
+      <div class="fr"><span class="k">${rows[1][0]}</span><span class="v">${z.p}</span><span class="bar"><i style="width:${w(z.p)}%"></i></span></div>
+      ${gap(z.p, z.c, 'here')}
+      <div class="fr"><span class="k">${rows[2][0]}</span><span class="v">${z.c}</span><span class="bar"><i style="width:${w(z.c)}%"></i></span></div>
+    </div>`;
+}
+
+/* Minimal inline sparkline for a 0..1 series — lifted from the CCAT trainer.
+   preserveAspectRatio="none" + non-scaling-stroke gives a fluid width without
+   distorting the line; the 2px inset keeps the stroke off the edges. */
+function sparkline(vals, w=260, h=40){
+  if (vals.length < 2) return '';
+  const max = Math.max(...vals, 0.01), min = Math.min(...vals, 0);
+  const rng = (max - min) || 1;
+  const pts = vals.map((v, i) => {
+    const x = (i / (vals.length - 1)) * (w - 4) + 2;
+    const y = h - 2 - ((v - min) / rng) * (h - 4);
+    return x.toFixed(1) + ',' + y.toFixed(1);
+  }).join(' ');
+  return `<svg viewBox="0 0 ${w} ${h}" width="100%" height="${h}" preserveAspectRatio="none" role="img" aria-hidden="true">
+    <polyline points="${pts}" fill="none" stroke="var(--blue)" stroke-width="2" vector-effect="non-scaling-stroke"/>
+  </svg>`;
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   TRACK
+   ══════════════════════════════════════════════════════════════════════ */
+
+/* The chips are the failure modes from the lesson, one or two per step. They
+   exist because free text does not aggregate and tags do — nine taps of the
+   same chip is a finding, nine differently-worded sentences are not. */
+const TAGS = [
+  {t:'Forgot to smile',        s:1},
+  {t:'No eye contact',         s:1},
+  {t:'Rushed the transition',  s:1},
+  {t:'They walked away',       s:1},
+  {t:'Skipped the qualifier',  s:2},
+  {t:"Didn't end on a question", s:0},
+  {t:"Didn't tailor it",       s:3},
+  {t:'Asked instead of assumed', s:4},
+  {t:'Forgot the rehash',      s:5},
+];
+
+const LABEL = {
+  t: ['Talk',         'I greeted someone'],
+  p: ['Presentation', 'They qualified, I pitched what they asked for'],
+  c: ['Close',        'They bought'],
+};
+
+function renderTrack(){
+  const B = document.getElementById('trackBody');
+
+  if (!LIVE){
+    const last = SESSIONS[SESSIONS.length - 1];
+    B.innerHTML = `
+      <div class="card">
+        <p style="margin:0 0 4px;font-size:17px;font-weight:700;">Start a session</p>
+        <p class="muted" style="margin:0 0 16px;">One session is one shift. Tap a button
+           after every attempt and the funnel builds itself.</p>
+        <div class="row">
+          <input type="text" id="place" class="grow" maxlength="60" placeholder="Where are you? (optional)"
+                 value="${last ? esc(last.place) : ''}">
+          <button class="btn btn-p" id="start" type="button">Start</button>
+        </div>
+      </div>
+      ${SESSIONS.length ? `<p class="tiny" style="text-align:center;">${SESSIONS.length}
+         session${SESSIONS.length === 1 ? '' : 's'} so far &middot;
+         <button class="jump" data-goto="progress" type="button">see your progress</button></p>` : ''}`;
+    document.getElementById('start').addEventListener('click', startSession);
+    document.getElementById('place').addEventListener('keydown', e => { if (e.key === 'Enter') startSession(); });
+    wireGoto(B);
+    return;
+  }
+
+  const z = {t:count(LIVE,'t'), p:count(LIVE,'p'), c:count(LIVE,'c')};
+  const notes = LIVE.notes.slice().reverse();
+
+  B.innerHTML = `
+    <div class="card">
+      <div class="row" style="margin-bottom:16px;">
+        <div class="grow">
+          <div class="tiny">Session in progress${LIVE.place ? ' &middot; ' + esc(LIVE.place) : ''}</div>
+          <div class="muted" style="font-size:13px;">Started ${clock(LIVE.start)}</div>
+        </div>
+        <button class="btn" id="end" type="button">End session</button>
+      </div>
+      <div aria-live="polite" aria-atomic="true">${funnel(z)}</div>
+    </div>
+
+    <div class="counts">
+      ${STEPS.map(k => `
+        <button class="count" data-add="${k}" type="button">
+          <span class="plus" aria-hidden="true">+</span>
+          <span><span class="lab">${LABEL[k][0]}</span><span class="hint">${LABEL[k][1]}</span></span>
+          <span class="tally" aria-hidden="true">${z[k]}</span>
+        </button>`).join('')}
+    </div>
+
+    <div class="row" style="justify-content:space-between;margin-bottom:8px;">
+      <button class="btn" id="undo" type="button" ${LIVE.log.length ? '' : 'disabled'}>
+        Undo${LIVE.log.length ? ' &ldquo;' + LABEL[LIVE.log[LIVE.log.length - 1]][0] + '&rdquo;' : ''}</button>
+      <span class="tiny">${LIVE.log.length} tap${LIVE.log.length === 1 ? '' : 's'}</span>
+    </div>
+
+    <div class="sechead"><h2>Notes</h2><div class="line"></div></div>
+    <div class="chips">
+      ${TAGS.map(g => `<button class="chip" data-tag="${esc(g.t)}" type="button">${esc(g.t)}</button>`).join('')}
+    </div>
+    <div class="noteline">
+      <input type="text" id="ntext" maxlength="300" placeholder="Something else worth remembering">
+      <button class="btn" id="nadd" type="button">Add</button>
+    </div>
+    ${notes.length ? `<ul class="notes">${notes.map(n => `
+      <li><span class="when">${clock(n.ts)}</span><span>${esc(n.text)}</span>
+          <button class="x" data-del="${n.ts}" type="button" aria-label="Delete note">&times;</button></li>`).join('')}
+      </ul>` : '<p class="tiny" style="margin-top:12px;">No notes yet. Tap a chip the moment it happens — you will not remember at the end of the shift.</p>'}`;
+
+  B.querySelectorAll('[data-add]').forEach(b => b.addEventListener('click', () => add(b.dataset.add)));
+  B.querySelectorAll('[data-tag]').forEach(b => b.addEventListener('click', () => addNote(b.dataset.tag, true)));
+  B.querySelectorAll('[data-del]').forEach(b => b.addEventListener('click', () => delNote(+b.dataset.del)));
+  document.getElementById('undo').addEventListener('click', undo);
+  document.getElementById('end').addEventListener('click', endSession);
+  document.getElementById('nadd').addEventListener('click', addFreeNote);
+  document.getElementById('ntext').addEventListener('keydown', e => { if (e.key === 'Enter') addFreeNote(); });
+}
+
+function startSession(){
+  const el = document.getElementById('place');
+  LIVE = { id: Date.now(), start: Date.now(), end: null,
+           place: el ? el.value.trim().slice(0, 60) : '', log: [], notes: [] };
+  persistLive();
+  renderTrack();
+}
+function add(k){
+  if (!LIVE || !STEPS.includes(k)) return;
+  LIVE.log.push(k);
+  persistLive();          // every tap, straight to disk
+  renderTrack();
+}
+function undo(){
+  if (!LIVE || !LIVE.log.length) return;
+  LIVE.log.pop();
+  persistLive();
+  renderTrack();
+}
+function addNote(text, isTag){
+  if (!LIVE) return;
+  text = String(text).trim().slice(0, 300);
+  if (!text) return;
+  let ts = Date.now();
+  while (LIVE.notes.some(n => n.ts === ts)) ts++;   // ts is the delete key, keep it unique
+  LIVE.notes.push({ ts, text, tag: !!isTag });
+  persistLive();
+  renderTrack();
+}
+function addFreeNote(){
+  const el = document.getElementById('ntext');
+  if (el && el.value.trim()) { addNote(el.value, false); }
+}
+function delNote(ts){
+  if (!LIVE) return;
+  LIVE.notes = LIVE.notes.filter(n => n.ts !== ts);
+  persistLive();
+  renderTrack();
+}
+function endSession(){
+  if (!LIVE) return;
+  if (!LIVE.log.length && !LIVE.notes.length){
+    // nothing in it — bin it rather than leave an empty row in the history
+    LIVE = null; persistLive(); renderTrack(); return;
+  }
+  LIVE.end = Date.now();
+  SESSIONS.push(LIVE);
+  persistAll();
+  LIVE = null;
+  persistLive();
+  switchTab('progress');
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   PROGRESS
+   ══════════════════════════════════════════════════════════════════════ */
+
+/* Name the leak, not the number. Which stretch of the funnel lost more actual
+   people decides which steps you get sent back to. */
+function verdict(z){
+  if (z.t < 5) return `<div class="verdict"><p>Not enough yet. Run about
+    ${5 - z.t} more talk${5 - z.t === 1 ? '' : 's'} and this will tell you which
+    step is costing you people.</p></div>`;
+
+  const front = z.t - z.p, back = z.p - z.c;
+  const frontRate = pct(z.p, z.t), backRate = pct(z.c, z.p);
+
+  if (front === 0 && back === 0) return `<div class="verdict"><p>Every talk became
+    a presentation and every presentation closed. Either you are extraordinary or
+    you are only counting the ones that worked &mdash; count the walk-aways too.</p></div>`;
+
+  const leakFront = front >= back;
+  return `<div class="verdict">
+    <p>You lost <b>${front}</b> ${front === 1 ? 'person' : 'people'} between the talk and
+       the presentation, and <b>${back}</b> between the presentation and the close.</p>
+    <p>${leakFront
+      ? `The leak is at the <b>front</b>. ${frontRate}% of the people you talk to hear a
+         pitch at all &mdash; so the fix is the greeting and the qualifying question, not
+         your pitch.`
+      : `The leak is at the <b>back</b>. You get people to listen, then ${100 - backRate}% of
+         them don't buy &mdash; so the fix is how you present and how you close.`}</p>
+    <p>${leakFront
+      ? `<button class="jump" data-step="1" type="button">Step 1 &mdash; The Greeting</button> &middot;
+         <button class="jump" data-step="2" type="button">Step 2 &mdash; The Qualifying Question</button>`
+      : `<button class="jump" data-step="3" type="button">Step 3 &mdash; The Presentation</button> &middot;
+         <button class="jump" data-step="4" type="button">Step 4 &mdash; The Close</button>`}</p>
+  </div>`;
+}
+
+function renderProgress(){
+  const P = document.getElementById('progBody');
+  const all = LIVE ? SESSIONS.concat([LIVE]) : SESSIONS;
+
+  if (!all.length){
+    P.innerHTML = `<div class="card"><div class="empty">
+      Nothing counted yet.<br>
+      <button class="jump" data-goto="track" type="button">Start a session</button>
+    </div></div>`;
+    wireGoto(P);
+    return;
+  }
+
+  const z = tally(all);
+
+  // tag counts across every session, live one included
+  const tagCount = {};
+  all.forEach(s => s.notes.forEach(n => {
+    if (n.tag) tagCount[n.text] = (tagCount[n.text] || 0) + 1;
+  }));
+  const tags = Object.keys(tagCount).sort((a, b) => tagCount[b] - tagCount[a]);
+
+  // close rate per finished session, for the trend
+  const rates = SESSIONS.filter(s => count(s,'t') > 0).map(s => count(s,'c') / count(s,'t'));
+
+  P.innerHTML = `
+    <div class="card">
+      <div class="sechead" style="margin-top:0;"><h2>Lifetime</h2><div class="line"></div></div>
+      ${funnel(z)}
+      <p class="tiny" style="margin:14px 0 0;">${z.t} talk${z.t === 1 ? '' : 's'} &rarr;
+         ${pct(z.c, z.t)}% of them bought${LIVE ? ' &middot; includes the session running now' : ''}</p>
+    </div>
+
+    <div class="card">
+      <div class="sechead" style="margin-top:0;"><h2>Where you are losing people</h2><div class="line"></div></div>
+      ${verdict(z)}
+    </div>
+
+    ${rates.length > 1 ? `<div class="card">
+      <div class="sechead" style="margin-top:0;"><h2>Close rate, session by session</h2><div class="line"></div></div>
+      ${sparkline(rates)}
+      <p class="tiny" style="margin:8px 0 0;">${Math.round(rates[0]*100)}% then &rarr;
+         ${Math.round(rates[rates.length-1]*100)}% now</p>
+    </div>` : ''}
+
+    ${tags.length ? `<div class="card">
+      <div class="sechead" style="margin-top:0;"><h2>What keeps happening</h2><div class="line"></div></div>
+      <ul class="taglist">${tags.map(t =>
+        `<li><span>${esc(t)}</span><span class="ct">${tagCount[t]}</span></li>`).join('')}</ul>
+      <p class="tiny" style="margin:12px 0 0;">The one at the top is your next thing to fix.</p>
+    </div>` : ''}
+
+    ${SESSIONS.length ? `<div class="card">
+      <div class="sechead" style="margin-top:0;"><h2>Sessions</h2><div class="line"></div></div>
+      <table>
+        <thead><tr><th>When</th><th>T</th><th>P</th><th>C</th><th>Closed</th></tr></thead>
+        <tbody>${SESSIONS.slice().reverse().map(s => {
+          const t = count(s,'t'), p = count(s,'p'), c = count(s,'c');
+          return `<tr>
+            <td>${day(s.start)}${s.place ? `<div class="place">${esc(s.place)}</div>` : ''}</td>
+            <td>${t}</td><td>${p}</td><td>${c}</td><td>${pct(c, t)}%</td></tr>`;
+        }).join('')}</tbody>
+      </table>
+    </div>` : ''}
+
+    <p style="text-align:center;margin-top:22px;">
+      <button class="btn danger" id="wipe" type="button">Erase everything</button></p>`;
+
+  P.querySelectorAll('[data-step]').forEach(b =>
+    b.addEventListener('click', () => goStep(+b.dataset.step)));
+  wireGoto(P);
+  const wipe = document.getElementById('wipe');
+  if (wipe) wipe.addEventListener('click', () => {
+    if (!confirm('Erase every session, count and note? This cannot be undone.')) return;
+    Object.values(LS).forEach(k => localStorage.removeItem(k));   // whole registry, not a hand-list
+    SESSIONS = []; LIVE = null;
+    renderProgress();
+  });
+}
+
+function wireGoto(root){
+  root.querySelectorAll('[data-goto]').forEach(b =>
+    b.addEventListener('click', () => switchTab(b.dataset.goto)));
+}
+document.querySelectorAll('#v-learn [data-goto]').forEach(b =>
+  b.addEventListener('click', () => switchTab(b.dataset.goto)));
+
+/* Send them to the step that fixes the leak, opened and highlighted. */
+function goStep(n){
+  switchTab('learn');
+  const el = document.getElementById('step-' + n);
+  if (!el) return;
+  el.querySelectorAll('details').forEach(d => { d.open = true; });
+  el.scrollIntoView({behavior:'smooth', block:'start'});
+  el.classList.add('flash');
+  setTimeout(() => el.classList.remove('flash'), 2200);
+}
+
+/* Desktop shortcuts. Ignored while typing, and only while a session is live. */
+document.addEventListener('keydown', e => {
+  const tag = e.target.tagName;
+  if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+  if (e.metaKey || e.ctrlKey || e.altKey) return;
+  if (currentTab !== 'track' || !LIVE) return;
+  const k = e.key.toLowerCase();
+  if (k === 't' || k === 'p' || k === 'c'){ e.preventDefault(); add(k); }
+  else if (k === 'u'){ e.preventDefault(); undo(); }
+});
+
+/* A session left running is normal — you lock the phone between conversations.
+   Land on it rather than on the lesson. */
+if (LIVE) switchTab('track');
+</script>
+</body>
+</html>
