@@ -330,7 +330,7 @@
   <section id="references">
     <div class="secthead"><h2>What people say</h2><div class="line"></div></div>
     <div class="refs" id="refs"></div>
-    <p class="refnote">Twenty-three more, unedited and with sources, at <a href="/references/">jamesfloyds.world/references</a>.</p>
+    <p class="refnote">Thirty-seven more, unedited and with sources, at <a href="/references/">jamesfloyds.world/references</a>.</p>
   </section>
 
   <section id="contact">
@@ -410,31 +410,41 @@ document.getElementById('extras').innerHTML = EXTRAS.map(x => `
   </article>`).join('');
 
 const REFS = [
-  // The two that landed on the Alpha School post itself lead, because they
-  // are the only ones about this. One name per person — Dom said several
-  // good things and the strongest one stands for him.
+  // The public pitch post drew sixteen comments. These are the ones that
+  // argue a case rather than cheer, one per person, newest first.
+  { q:"Because you understand how the current education model fails — you, a college dropout — and because of your innate and earned talent and intelligence, I can think of nobody better to work on something as transformative as Alpha School.",
+    who:"Carlie Ostrom", role:"Founder of Possibilities · on my Alpha School pitch",
+    href:"https://www.linkedin.com/feed/update/urn:li:activity:7495872285791301632/" },
+  { q:"James surprised me from the first time I met him. He was volunteering at one of Andrew's events at SXSW and he truly stood out from the crowd with his hard work. A couple weeks ago we took a walk in Central Park and we spent most of it talking about education. James told me how much he loves being with kids and how educating them can change the world. I was again mindblown. You can't fake that kind of passion.",
+    who:"Vitoria Okuyama", role:"Ex pro tennis player · Ex IB, Citi · on my Alpha School pitch",
+    href:"https://www.linkedin.com/feed/update/urn:li:activity:7495872285791301632/" },
+  { q:"This is so so sick. Public pitch FTW!! And side note: can vouch. James is as high agency and intelligent as it gets.",
+    who:"Jay Yang", role:"Amazon bestselling author · Entrepreneur · Investor · on my Alpha School pitch",
+    href:"https://www.linkedin.com/feed/update/urn:li:activity:7495872285791301632/" },
+  { q:"Couldn't imagine a better fit. James you have the vision!",
+    who:"Jarom Christensen", role:"Founder & CEO, Carbon AI · on my Alpha School pitch",
+    href:"https://www.linkedin.com/feed/update/urn:li:activity:7495872285791301632/" },
+  { q:"Holy moly dude this is incredible. This is a work of art regardless of outcome. Amazing pitch, and what a perfect merging of worlds this would be.",
+    who:"Mason Johnston", role:"What does business look like with real human connection? · on my Alpha School pitch",
+    href:"https://www.linkedin.com/feed/update/urn:li:activity:7495872285791301632/" },
+  { q:"This is a great pitch, I did something similar to try and work with Alpha!",
+    who:"Dylan Bryan", role:"Building State @ Founders Inc. · prev. Head of Growth @ Casey · on my Alpha School pitch",
+    href:"https://www.linkedin.com/feed/update/urn:li:activity:7495872285791301632/" },
+  { q:"Nat Eliason worth meeting James!",
+    who:"Andrew Yeung", role:"Hosting the Outliers Summit · x-Google, Meta · on my Alpha School pitch",
+    href:"https://www.linkedin.com/feed/update/urn:li:activity:7495872285791301632/" },
+  { q:"So pumped for you man and it's so clear how much you put into this. Can't wait to see what happens.",
+    who:"Indio Skinner", role:"Entrepreneur & Speaker · on my Alpha School pitch",
+    href:"https://www.linkedin.com/feed/update/urn:li:activity:7495872285791301632/" },
   { q:"Love it! I've been following them for a while now. They would be lucky to have a killer like you.",
     who:"Shire Thompson", role:"Founder, Discomfort Club · on my Alpha School post",
-    href:"https://www.linkedin.com/feed/update/urn:li:activity:7493838598278914048/?dashCommentUrn=urn%3Ali%3Afsd_comment%3A%287493861674068697088%2Curn%3Ali%3AugcPost%3A7493838496030294017%29" },
-  { q:"Dude this is awesome man! Can't wait for you to help them take this to the next level. They need some James brain juices.",
-    who:"Indio Skinner", role:"Entrepreneur & speaker · on my Alpha School post",
-    href:"https://www.linkedin.com/feed/update/urn:li:activity:7493838598278914048/?dashCommentUrn=urn%3Ali%3Afsd_comment%3A%287493861674068697088%2Curn%3Ali%3AugcPost%3A7493838496030294017%29" },
+    href:"https://www.linkedin.com/feed/update/urn:li:activity:7493838598278914048/" },
   { q:"I was like — this kid is different. This kid is special.",
     who:"Dom Rufran", role:"President, BetterWealth · Ex-NFL" },
   { q:"The growth that you've had over the last year has been insane.",
     who:"Caleb Guilliams", role:"Founder, BetterWealth" },
-  { q:"The best by a wide margin at driving the intersection between function, execution, and relationship.",
-    who:"Jarom Christensen", role:"Investor Relations, Jets & Capital" },
-  { q:"James killed it!! If anyone wants to learn how to stand out in a volunteer crowd, reach out to James Floyd.",
-    who:"Vitoria Okuyama", role:"Ex pro tennis player · Ex IB, Citi" },
-  { q:"Your hard work and willingness to go above and beyond will take you a LONG WAY.",
-    who:"Danielle Raskin", role:"SXSW Secret Garden Party" },
-  { q:"Every single line is just so poignant and well written — I am loving your content.",
-    who:"Kaia Tham", role:"Builder, on the Sonder Series" },
   { q:"You are like the master of third door. Like no one I've ever seen.",
     who:"Kate Kim", role:"Gates Foundation consultant · Sonder Ep. 49" },
-  { q:"james — you were the mvp",
-    who:"Andrew Yeung", role:"x-Google, Meta · angel investor" },
 ];
 
 /* ══════════════════════════════════════════════════════════════════════
