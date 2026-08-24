@@ -140,7 +140,9 @@
   .fr .bar{flex:1; height:9px; border-radius:99px; background:var(--rule); overflow:hidden;}
   .fr .bar i{display:block; height:100%; background:var(--blue); border-radius:99px;
     transition:width .3s;}
-  .drop{display:flex; align-items:center; gap:12px; padding:5px 0 5px 124px;
+  /* baseline, not center — "3 lost at the presentation" wraps to two lines on a
+     narrow phone and a centred arrow floats away from the number it belongs to */
+  .drop{display:flex; align-items:baseline; gap:12px; padding:5px 0 5px 124px;
     font-size:12px; color:var(--grey); font-variant-numeric:tabular-nums;}
   .drop b{color:var(--ink); font-weight:600;}
   /* "PRESENTATIONS" is the longest label and it runs into its own number on a
@@ -155,6 +157,13 @@
   }
 
   /* ══ TRACK ════════════════════════════════════════════════════════ */
+  .hero{text-align:center; padding:4px 0 20px;}
+  .hn{font-size:clamp(52px,15vw,68px); line-height:1; font-weight:700;
+    letter-spacing:-.045em; font-variant-numeric:tabular-nums;}
+  .hl{font-size:10.5px; letter-spacing:.22em; text-transform:uppercase;
+    font-weight:700; color:var(--grey); margin-top:7px;}
+  .hs{font-size:13.5px; color:var(--grey); margin-top:9px;}
+  .hs b{color:var(--blue); font-weight:700;}
   .counts{display:grid; gap:10px; margin:18px 0 12px;}
   .count{appearance:none; font-family:inherit; cursor:pointer; text-align:left;
     display:flex; align-items:center; gap:14px;
@@ -404,9 +413,10 @@
     <div class="card" style="margin-top:26px;">
       <p style="margin:0 0 12px;font-size:15px;font-weight:600;">Now go count.</p>
       <p class="muted" style="margin:0 0 16px;">Knowing the five steps and running them
-         are different things. The tracker counts how far you get in each attempt, so
-         you find out which step is actually costing you people — not which one you
-         think is.</p>
+         are different things. After every conversation you tap <strong>one</strong>
+         button — the furthest you got. Talk only, presentation, or close. That gives
+         you a total for everyone you spoke to, and it shows which step is actually
+         costing you people rather than which one you think is.</p>
       <button class="btn btn-p" type="button" data-goto="track">Open the tracker</button>
     </div>
 
@@ -436,9 +446,13 @@
        pier must not cost you the count.
    ══════════════════════════════════════════════════════════════════════ */
 const LS = {
-  sessions: 'tpc.sessions.v1',  // [session]  finished, oldest first
-  live:     'tpc.live.v1',      // session | null  — the one in progress
+  sessions: 'tpc.sessions.v2',  // [session]  finished, oldest first
+  live:     'tpc.live.v2',      // session | null  — the one in progress
 };
+// v1 logged one tap per STEP (a close was three taps). v2 logs one tap per
+// CONVERSATION, at the furthest stage it reached. The arrays look identical and
+// mean opposite things, so v1 is dropped rather than misread.
+['tpc.sessions.v1','tpc.live.v1'].forEach(k => { try{ localStorage.removeItem(k); }catch(e){} });
 function ls(k, d){
   try{
     const v = localStorage.getItem(k);
@@ -453,8 +467,18 @@ function ls(k, d){
 }
 function save(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
 
-/* A session stores the tap ORDER, not three counters. Undo is then just a pop,
-   and the totals can never drift out of step with the log. */
+/* ONE TAP PER CONVERSATION, recorded at the furthest stage it got to. A person
+   who bought is a 'c' and nothing else — they are not also a 't' and a 'p'.
+
+   So the raw tallies are how many conversations DIED at each stage, and the
+   funnel is derived from them:
+
+     conversations = t + p + c      every person you opened your mouth at
+     presentations = p + c          the ones who heard a pitch
+     closes        = c
+
+   Storing the order rather than three counters makes undo a pop, and means the
+   totals can never drift out of step with the log. */
 const STEPS = ['t','p','c'];
 function clean(s){
   if (!s || typeof s !== 'object') return null;
@@ -475,6 +499,12 @@ let SESSIONS = ls(LS.sessions, []).map(clean).filter(Boolean);
 let LIVE     = clean(ls(LS.live, null));
 
 const count = (s, k) => s.log.reduce((a, x) => a + (x === k ? 1 : 0), 0);
+/* raw tallies (where conversations ended) -> the cumulative funnel */
+function shape(z){
+  const convos = z.t + z.p + z.c;
+  return { convos, reached: z.p + z.c, closed: z.c,
+           lostTalk: z.t, lostPres: z.p };
+}
 function tally(list){
   const z = {t:0, p:0, c:0};
   list.forEach(s => STEPS.forEach(k => { z[k] += count(s, k); }));
@@ -507,25 +537,35 @@ const pct = (a, b) => b ? Math.round(a / b * 100) : 0;
 const clock = ts => new Date(ts).toLocaleTimeString([], {hour:'numeric', minute:'2-digit'});
 const day   = ts => new Date(ts).toLocaleDateString([], {month:'short', day:'numeric'});
 
-/* One funnel renderer, used live in Track and lifetime in Progress. Bars are
-   scaled against talks, so the shape of the drop-off is the thing you see. */
+/* One funnel renderer, used live in Track and lifetime in Progress. Bars scale
+   against total conversations, so the shape of the drop-off is the thing you
+   see. The rows are the derived funnel; the losses beside each arrow are the
+   raw tallies, which is what you actually tapped. */
 function funnel(z){
-  const rows = [
-    ['Talks', z.t],
-    ['Presentations', z.p],
-    ['Closes', z.c],
-  ];
-  const w = v => z.t ? Math.max(v ? 2 : 0, Math.round(v / z.t * 100)) : 0;
-  const gap = (from, to, label) => `
-    <div class="drop">${from ? `&darr; <b>${pct(to, from)}%</b> &middot; ${from - to} lost ${label}` : '&darr;'}</div>`;
+  const f = shape(z);
+  const w = v => f.convos ? Math.max(v ? 2 : 0, Math.round(v / f.convos * 100)) : 0;
+  const row = (k, v) => `<div class="fr"><span class="k">${k}</span><span class="v">${v}</span><span class="bar"><i style="width:${w(v)}%"></i></span></div>`;
+  const gap = (from, to, lost, where) => `<div class="drop">${
+    from ? `&darr; <b>${pct(to, from)}%</b> &middot; ${lost} lost at the ${where}` : '&darr;'}</div>`;
   return `
     <div class="funnel">
-      <div class="fr"><span class="k">${rows[0][0]}</span><span class="v">${z.t}</span><span class="bar"><i style="width:${w(z.t)}%"></i></span></div>
-      ${gap(z.t, z.p, 'here')}
-      <div class="fr"><span class="k">${rows[1][0]}</span><span class="v">${z.p}</span><span class="bar"><i style="width:${w(z.p)}%"></i></span></div>
-      ${gap(z.p, z.c, 'here')}
-      <div class="fr"><span class="k">${rows[2][0]}</span><span class="v">${z.c}</span><span class="bar"><i style="width:${w(z.c)}%"></i></span></div>
+      ${row('Conversations', f.convos)}
+      ${gap(f.convos, f.reached, f.lostTalk, 'talk')}
+      ${row('Presentations', f.reached)}
+      ${gap(f.reached, f.closed, f.lostPres, 'presentation')}
+      ${row('Closes', f.closed)}
     </div>`;
+}
+
+/* The headline number: how many people you actually spoke to, and how many of
+   them went the whole way. */
+function hero(z){
+  const f = shape(z);
+  return `<div class="hero">
+    <div class="hn">${f.convos}</div>
+    <div class="hl">conversation${f.convos === 1 ? '' : 's'}</div>
+    <div class="hs">${f.closed} closed${f.convos ? ` &middot; <b>${f.closed}/${f.convos}</b> &middot; ${pct(f.closed, f.convos)}%` : ''}</div>
+  </div>`;
 }
 
 /* Minimal inline sparkline for a 0..1 series — lifted from the CCAT trainer.
@@ -564,9 +604,10 @@ const TAGS = [
   {t:'Forgot the rehash',      s:5},
 ];
 
+/* One of these per conversation — whichever is the furthest you got. Never two. */
 const LABEL = {
-  t: ['Talk',         'I greeted someone'],
-  p: ['Presentation', 'They qualified, I pitched what they asked for'],
+  t: ['Talk only',    'Greeted them, and that was as far as it went'],
+  p: ['Presentation', 'They qualified, I pitched — but no sale'],
   c: ['Close',        'They bought'],
 };
 
@@ -607,8 +648,10 @@ function renderTrack(){
         </div>
         <button class="btn" id="end" type="button">End session</button>
       </div>
-      <div aria-live="polite" aria-atomic="true">${funnel(z)}</div>
+      <div aria-live="polite" aria-atomic="true">${hero(z)}${funnel(z)}</div>
     </div>
+
+    <p class="tiny" style="margin:0 0 10px;text-align:center;">One tap per conversation &mdash; whichever is the furthest you got.</p>
 
     <div class="counts">
       ${STEPS.map(k => `
@@ -704,30 +747,33 @@ function endSession(){
    PROGRESS
    ══════════════════════════════════════════════════════════════════════ */
 
-/* Name the leak, not the number. Which stretch of the funnel lost more actual
-   people decides which steps you get sent back to. */
+/* Name the leak, not the number. The raw tallies ARE the losses — t is how many
+   conversations died at the talk, p is how many died at the presentation — so
+   whichever is bigger decides which steps you get sent back to. */
 function verdict(z){
-  if (z.t < 5) return `<div class="verdict"><p>Not enough yet. Run about
-    ${5 - z.t} more talk${5 - z.t === 1 ? '' : 's'} and this will tell you which
-    step is costing you people.</p></div>`;
+  const f = shape(z);
+  if (f.convos < 5) return `<div class="verdict"><p>Not enough yet. Run about
+    ${5 - f.convos} more conversation${5 - f.convos === 1 ? '' : 's'} and this will
+    tell you which step is costing you people.</p></div>`;
 
-  const front = z.t - z.p, back = z.p - z.c;
-  const frontRate = pct(z.p, z.t), backRate = pct(z.c, z.p);
+  if (!f.lostTalk && !f.lostPres) return `<div class="verdict"><p>All
+    ${f.convos} conversations closed. Either you are extraordinary or you are only
+    logging the ones that worked &mdash; tap <b>Talk only</b> for the walk-aways too,
+    or none of this can tell you anything.</p></div>`;
 
-  if (front === 0 && back === 0) return `<div class="verdict"><p>Every talk became
-    a presentation and every presentation closed. Either you are extraordinary or
-    you are only counting the ones that worked &mdash; count the walk-aways too.</p></div>`;
-
-  const leakFront = front >= back;
+  const leakFront = f.lostTalk >= f.lostPres;
   return `<div class="verdict">
-    <p>You lost <b>${front}</b> ${front === 1 ? 'person' : 'people'} between the talk and
-       the presentation, and <b>${back}</b> between the presentation and the close.</p>
+    <p><b>${f.closed} of ${f.convos}</b> conversations went all the way through
+       &mdash; ${pct(f.closed, f.convos)}%.</p>
+    <p>You lost <b>${f.lostTalk}</b> at the talk and <b>${f.lostPres}</b> at the
+       presentation.</p>
     <p>${leakFront
-      ? `The leak is at the <b>front</b>. ${frontRate}% of the people you talk to hear a
-         pitch at all &mdash; so the fix is the greeting and the qualifying question, not
-         your pitch.`
-      : `The leak is at the <b>back</b>. You get people to listen, then ${100 - backRate}% of
-         them don't buy &mdash; so the fix is how you present and how you close.`}</p>
+      ? `The leak is at the <b>front</b>. Only ${pct(f.reached, f.convos)}% of the people
+         you speak to hear a pitch at all &mdash; so the fix is the greeting and the
+         qualifying question, not your pitch.`
+      : `The leak is at the <b>back</b>. You get people listening, then
+         ${100 - pct(f.closed, f.reached)}% of them don't buy &mdash; so the fix is how you
+         present and how you close.`}</p>
     <p>${leakFront
       ? `<button class="jump" data-step="1" type="button">Step 1 &mdash; The Greeting</button> &middot;
          <button class="jump" data-step="2" type="button">Step 2 &mdash; The Qualifying Question</button>`
@@ -758,15 +804,18 @@ function renderProgress(){
   }));
   const tags = Object.keys(tagCount).sort((a, b) => tagCount[b] - tagCount[a]);
 
-  // close rate per finished session, for the trend
-  const rates = SESSIONS.filter(s => count(s,'t') > 0).map(s => count(s,'c') / count(s,'t'));
+  // close rate per finished session — closes over CONVERSATIONS, for the trend
+  const rates = SESSIONS
+    .map(s => shape({t:count(s,'t'), p:count(s,'p'), c:count(s,'c')}))
+    .filter(f => f.convos > 0)
+    .map(f => f.closed / f.convos);
 
   P.innerHTML = `
     <div class="card">
       <div class="sechead" style="margin-top:0;"><h2>Lifetime</h2><div class="line"></div></div>
-      ${funnel(z)}
-      <p class="tiny" style="margin:14px 0 0;">${z.t} talk${z.t === 1 ? '' : 's'} &rarr;
-         ${pct(z.c, z.t)}% of them bought${LIVE ? ' &middot; includes the session running now' : ''}</p>
+      ${hero(z)}${funnel(z)}
+      <p class="tiny" style="margin:14px 0 0;">Every person you have opened your mouth
+         at${LIVE ? ', including the session running now' : ''}.</p>
     </div>
 
     <div class="card">
@@ -791,12 +840,13 @@ function renderProgress(){
     ${SESSIONS.length ? `<div class="card">
       <div class="sechead" style="margin-top:0;"><h2>Sessions</h2><div class="line"></div></div>
       <table>
-        <thead><tr><th>When</th><th>T</th><th>P</th><th>C</th><th>Closed</th></tr></thead>
+        <thead><tr><th>When</th><th>Convos</th><th>Pitched</th><th>Closed</th><th>Rate</th></tr></thead>
         <tbody>${SESSIONS.slice().reverse().map(s => {
-          const t = count(s,'t'), p = count(s,'p'), c = count(s,'c');
+          const f = shape({t:count(s,'t'), p:count(s,'p'), c:count(s,'c')});
           return `<tr>
             <td>${day(s.start)}${s.place ? `<div class="place">${esc(s.place)}</div>` : ''}</td>
-            <td>${t}</td><td>${p}</td><td>${c}</td><td>${pct(c, t)}%</td></tr>`;
+            <td>${f.convos}</td><td>${f.reached}</td><td>${f.closed}</td>
+            <td>${pct(f.closed, f.convos)}%</td></tr>`;
         }).join('')}</tbody>
       </table>
     </div>` : ''}
