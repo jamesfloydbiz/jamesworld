@@ -18,8 +18,8 @@
   :root{
     --blue:#0000EF;
     --ink:#111827;
-    --grey:#6B7280;
-    --faint:#9CA3AF;
+    --grey:#586170;
+    --faint:#6C737E;
     --rule:#E5E7EB;
     --paper:#FBFBFD;
     --good:#047857;
@@ -164,23 +164,51 @@
     font-weight:700; color:var(--grey); margin-top:7px;}
   .hs{font-size:13.5px; color:var(--grey); margin-top:9px;}
   .hs b{color:var(--blue); font-weight:700;}
-  .counts{display:grid; gap:10px; margin:18px 0 12px;}
-  .count{appearance:none; font-family:inherit; cursor:pointer; text-align:left;
-    display:flex; align-items:center; gap:14px;
-    min-height:76px; padding:14px 18px; border-radius:12px;
+  /* The mark is what you aim at; the words sit small underneath as the crutch
+     you stop needing. Two up on a phone, three once there is room. */
+  .counts{display:grid; grid-template-columns:1fr 1fr; gap:9px; margin:4px 0 12px;}
+  @media (min-width:560px){ .counts{grid-template-columns:repeat(3,1fr);} }
+  .count{appearance:none; font-family:inherit; cursor:pointer; position:relative;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:5px; min-height:92px; padding:14px 8px 12px; border-radius:12px;
     border:1px solid var(--rule); background:#fff; color:var(--ink);
     transition:transform .1s, border-color .15s, background .15s;}
   .count:hover{border-color:var(--blue);}
-  .count:active{transform:scale(.985); background:#F4F4FF;}
-  .count .plus{font-size:26px; font-weight:700; color:var(--blue);
-    width:26px; flex:none; text-align:center; line-height:1;}
-  .count .lab{font-size:19px; font-weight:700; letter-spacing:-.015em;}
-  .count .hint{display:block; font-size:12.5px; font-weight:400; color:var(--grey);
-    letter-spacing:0; margin-top:1px;}
-  .count .tally{margin-left:auto; font-size:22px; font-weight:700; color:var(--faint);
-    font-variant-numeric:tabular-nums;}
+  .count:active{transform:scale(.97); background:#F4F4FF;}
+  .count .glyph{font-size:29px; line-height:1; font-weight:700; color:var(--blue);}
+  .count .lab{font-size:11.5px; font-weight:600; line-height:1.3; text-align:center;
+    color:var(--grey); letter-spacing:.01em;}
+  .count .tally{position:absolute; top:7px; right:10px; font-size:13px; font-weight:700;
+    color:var(--grey); font-variant-numeric:tabular-nums;}
+  /* the two that got somewhere read as the two that got somewhere */
+  .count.m-c{border-color:rgba(0,0,239,.35); background:#F6F6FF;}
+  .count.m-c .lab{color:var(--ink);}
+  .count.m-p .lab{color:var(--ink);}
   .count:disabled{opacity:.45; cursor:not-allowed;}
-  .count:disabled:hover{border-color:var(--rule);}
+
+  /* the legend, in Growth */
+  /* objection / reply pairs */
+  table.obj{width:100%; border-collapse:collapse;}
+  table.obj td{padding:10px 0; border-top:1px solid var(--rule); font-size:14px;
+    vertical-align:top; line-height:1.5;}
+  table.obj tr:first-child td{border-top:0;}
+  table.obj .o{color:var(--grey); padding-right:14px; width:42%;}
+  table.obj .r{color:var(--ink); font-weight:600;}
+  @media (max-width:520px){
+    table.obj td{display:block; border-top:0; padding:3px 0;}
+    table.obj tr{display:block; border-top:1px solid var(--rule); padding:11px 0;}
+    table.obj tr:first-child{border-top:0;}
+    table.obj .o{width:auto; padding-right:0;}
+  }
+
+  table.legend{margin-top:4px;}
+  table.legend td{padding:11px 10px 11px 0; vertical-align:top;}
+  table.legend tr:first-child td{border-top:0;}
+  table.legend .g{width:34px; font-size:20px; font-weight:700; color:var(--blue);
+    text-align:center; padding-right:14px;}
+  table.legend .st{text-align:right; font-size:10.5px; letter-spacing:.12em;
+    text-transform:uppercase; color:var(--faint); font-weight:700; white-space:nowrap;}
+  table.legend b{font-size:14.5px;}
 
   .chips{display:flex; flex-wrap:wrap; gap:8px; margin:0 0 14px;}
   .chip{appearance:none; font-family:inherit; font-size:13px; font-weight:500;
@@ -199,7 +227,7 @@
     padding-top:3px; font-variant-numeric:tabular-nums;}
   .notes .x{appearance:none; border:0; background:transparent; cursor:pointer;
     color:var(--faint); font-size:17px; line-height:1; margin-left:auto;
-    padding:4px 8px; min-height:32px; font-family:inherit;}
+    padding:4px 12px; min-width:44px; min-height:44px; font-family:inherit;}
   .notes .x:hover{color:var(--ink);}
 
   .row{display:flex; align-items:center; gap:10px; flex-wrap:wrap;}
@@ -216,7 +244,7 @@
   .verdict b{font-weight:700;}
   .jump{appearance:none; border:0; background:transparent; cursor:pointer;
     font-family:inherit; font-size:13.5px; font-weight:600; color:var(--blue);
-    padding:8px 0; min-height:40px; text-decoration:underline; text-underline-offset:3px;}
+    padding:11px 2px; min-height:44px; text-decoration:underline; text-underline-offset:3px;}
   table{width:100%; border-collapse:collapse; font-size:13.5px;}
   th{text-align:left; font-size:10px; letter-spacing:.14em; text-transform:uppercase;
     color:var(--faint); font-weight:700; padding:0 8px 8px 0; white-space:nowrap;}
@@ -229,10 +257,13 @@
     border-top:1px solid var(--rule); font-size:14px;}
   .taglist li:first-child{border-top:0;}
   .taglist .ct{margin-left:auto; font-weight:700; font-variant-numeric:tabular-nums;}
+  .taglist.marks .mk{width:22px; flex:none; font-weight:700; color:var(--blue); font-size:16px;}
   .danger{color:#B91C1C; border-color:#FCA5A5;}
   .danger:hover{border-color:#B91C1C;}
 
   .empty{text-align:center; padding:34px 20px; color:var(--grey); font-size:14.5px;}
+  .sr-only{position:absolute; width:1px; height:1px; margin:-1px; padding:0;
+    overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;}
 
   @media (prefers-reduced-motion:reduce){
     *,*::before,*::after{transition:none !important; animation:none !important;}
@@ -254,14 +285,15 @@
     <p class="tagline"><b>T</b>alks · <b>P</b>resentations · <b>C</b>loses. Five steps, and a count of how far you got.</p>
   </header>
 
-  <nav class="tabs" aria-label="Sections">
-    <button class="tab on" data-tab="learn" type="button">Learn</button>
-    <button class="tab" data-tab="track" type="button">Track</button>
-    <button class="tab" data-tab="progress" type="button">Progress</button>
+  <nav class="tabs" role="tablist" aria-label="Sections">
+    <button class="tab on" data-tab="learn" type="button" role="tab" aria-selected="true"  aria-controls="v-learn">Learn</button>
+    <button class="tab"    data-tab="growth" type="button" role="tab" aria-selected="false" aria-controls="v-growth">Growth</button>
+    <button class="tab"    data-tab="track" type="button" role="tab" aria-selected="false" aria-controls="v-track">Track</button>
+    <button class="tab"    data-tab="progress" type="button" role="tab" aria-selected="false" aria-controls="v-progress">Progress</button>
   </nav>
 
   <!-- ══ LEARN — static, so an opened answer stays open ══════════════ -->
-  <section id="v-learn">
+  <section id="v-learn" role="tabpanel">
 
     <div class="rule-box">
       <p class="lbl">One rule, over all five</p>
@@ -332,9 +364,10 @@
             <div><b>Yes</b> — qualified. Go to step 3, and use the word they just gave you.</div>
             <div><b>No</b> — not qualified. Thank them and move on. There are three thousand people on this pier.</div>
           </div>
-          <p>Two paths, and no third one. You will learn to handle &ldquo;no, but…&rdquo;
-             later — objection handling only makes sense once the frame is automatic.
-             For now a no is a no, and moving on fast is the skill.</p>
+          <p>Two paths, and no third one. For now a no is a no, and moving on fast is
+             the skill — objection handling only makes sense once the frame is automatic.
+             When it is, it is in
+             <button class="jump" data-goto="growth" data-card="g-objections" type="button">Growth</button>.</p>
         </div>
       </details>
       <p class="wrong"><b>What goes wrong:</b> you skip this and present to everyone.
@@ -422,11 +455,270 @@
 
   </section>
 
+
+  <!-- ══ GROWTH — the packets that sit around the five steps ═══════════ -->
+  <section id="v-growth" hidden role="tabpanel">
+
+    <p class="muted" style="margin:0 0 22px;">The five steps are the frame. This is
+       everything that makes them land &mdash; read one, go run it, come back.</p>
+
+    <div class="step" id="g-fugi">
+      <h3><span class="n">F</span>FUGI</h3>
+      <p style="margin:0 0 14px;font-size:14.5px;color:var(--grey);">Four levers. You do
+         not pull all four &mdash; you read the person in front of you and pick the one
+         they are already leaning towards.</p>
+      <details>
+        <summary><span class="q">What are the four?</span></summary>
+        <div class="reveal">
+          <div class="see">
+            <div><b>F</b><span><strong>Fear of loss.</strong> The thing goes away. &ldquo;This is the last cold one.&rdquo;</span></div>
+            <div><b>U</b><span><strong>Urgency.</strong> The window is now. &ldquo;I'm heading off the pier in ten minutes.&rdquo;</span></div>
+            <div><b>G</b><span><strong>Greed.</strong> They come out ahead. &ldquo;Two for five, instead of three each.&rdquo;</span></div>
+            <div><b>I</b><span><strong>Indifference.</strong> You don't need the sale.</span></div>
+          </div>
+        </div>
+      </details>
+      <details>
+        <summary><span class="q">Why would acting like you don't care ever help?</span></summary>
+        <div class="reveal">
+          <p>Because wanting it too much is the thing people can smell, and it is the
+             thing that makes them back away. Indifference is the takeaway:</p>
+          <p class="say">&ldquo;Honestly, this might not be for you &mdash; do you even like juice?&rdquo;</p>
+          <p>You just gave them permission to say no, which is the only reason their yes
+             means anything. It is the hardest of the four to run without sounding rude,
+             and the strongest when it works.</p>
+        </div>
+      </details>
+      <p class="wrong"><b>Pulling all four at once</b> reads as desperate. One lever,
+         chosen because you watched them, is the tailoring from step 3 applied to
+         emotion instead of product.</p>
+    </div>
+
+    <div class="step" id="g-objections">
+      <h3><span class="n">2</span>Objection handling</h3>
+      <p style="margin:0 0 14px;font-size:14.5px;color:var(--grey);">Step 2 said a no is a
+         no and to move on. That is true while you are learning the frame. Once the frame
+         is automatic, most nos are not nos &mdash; they are one specific thing in the way.</p>
+      <details>
+        <summary><span class="q">&ldquo;I'm in a rush.&rdquo; &middot; &ldquo;How long is this going to take?&rdquo;</span></summary>
+        <div class="reveal">
+          <p class="say">&ldquo;No worries &mdash; takes thirty seconds!&rdquo;</p>
+          <p>You did not argue with them. You agreed, then made the cost of hearing you
+             out smaller than the cost of getting away from you.</p>
+        </div>
+      </details>
+      <details>
+        <summary><span class="q">&ldquo;I don't have any cash.&rdquo;</span></summary>
+        <div class="reveal">
+          <p class="say">&ldquo;Great, nobody does &mdash; we've got a QR code. Do you have your phone?&rdquo;</p>
+          <p><strong>&ldquo;Great&rdquo;</strong> is doing the work. The objection they thought
+             would end it turns out to be the most normal thing you have heard all day,
+             so it stops being an exit.</p>
+        </div>
+      </details>
+      <details>
+        <summary><span class="q">&ldquo;It's too expensive.&rdquo;</span></summary>
+        <div class="reveal">
+          <p class="say">&ldquo;Yeah, it's not free &mdash; that's why it's two for five instead of
+             three each. Which two do you want?&rdquo;</p>
+          <p>Never defend the price and never drop it. Agree that it costs money, then give
+             them a version of the deal that is better than the one they were refusing.</p>
+        </div>
+      </details>
+      <details>
+        <summary><span class="q">&ldquo;I'm too busy.&rdquo;</span></summary>
+        <div class="reveal">
+          <p class="say">&ldquo;Same &mdash; I'll be quick. You hungry?&rdquo;</p>
+          <p>Match their speed instead of asking them to slow down, and go straight back to
+             the qualifying question. Busy people will answer one question. They will not
+             stand through a pitch.</p>
+        </div>
+      </details>
+      <details>
+        <summary><span class="q">The rest of the ones you'll hear all day</span></summary>
+        <div class="reveal">
+          <p style="margin-bottom:14px;">Same three moves every time. Read the reply, not
+             just the objection &mdash; each one agrees, shrinks it, and ends on a question.</p>
+          <table class="obj"><tbody>
+            <tr><td class="o">&ldquo;I'm not interested.&rdquo;</td>
+                <td class="r">&ldquo;All good &mdash; you're not thirsty at all?&rdquo;</td></tr>
+            <tr><td class="o">&ldquo;Maybe later.&rdquo;</td>
+                <td class="r">&ldquo;For sure, I'm here till four. Want me to hold you a cold one?&rdquo;</td></tr>
+            <tr><td class="o">&ldquo;I have to ask my friend.&rdquo;</td>
+                <td class="r">&ldquo;Of course &mdash; is she thirsty too?&rdquo;</td></tr>
+            <tr><td class="o">&ldquo;I already have one.&rdquo;</td>
+                <td class="r">&ldquo;Nice. Is it still cold?&rdquo;</td></tr>
+            <tr><td class="o">&ldquo;I'm just walking through.&rdquo;</td>
+                <td class="r">&ldquo;So is everyone &mdash; takes ten seconds. You hungry?&rdquo;</td></tr>
+            <tr><td class="o">&ldquo;Is this a scam?&rdquo;</td>
+                <td class="r">&ldquo;Fair. It's candy, it's three dollars. Want one?&rdquo;</td></tr>
+          </tbody></table>
+          <p style="margin-top:14px;">Notice none of them argue, and none of them are longer
+             than the objection was. If your reply is longer than their complaint, you have
+             started defending yourself.</p>
+        </div>
+      </details>
+      <details>
+        <summary><span class="q">What do all of those have in common?</span></summary>
+        <div class="reveal">
+          <p>Three moves, every time:</p>
+          <div class="fork">
+            <div><b>Agree.</b> Never argue. &ldquo;No worries.&rdquo; &ldquo;Great.&rdquo;</div>
+            <div><b>Shrink it.</b> Make the obstacle smaller than they think it is.</div>
+            <div><b>Ask.</b> Hand the next move back to them.</div>
+          </div>
+          <p>That third one is the rule from Learn, still running. Every reply ends in a
+             question mark, or you have handed them a statement and a silence.</p>
+        </div>
+      </details>
+      <p class="wrong"><b>Worth knowing:</b> &ldquo;no cash&rdquo; is exactly what an
+         <b>N</b> is in the tracker. Every N you log is a conversation this card would
+         have turned into a <b>$</b>.</p>
+    </div>
+
+    <div class="step" id="g-impulse">
+      <h3><span class="n">3</span>The Impulse Curve</h3>
+      <p style="margin:0 0 6px;font-size:14.5px;color:var(--grey);">Their willingness to buy
+         is not flat. It climbs while you talk, peaks, and then falls.</p>
+      <div id="curve"></div>
+      <details>
+        <summary><span class="q">Where do you close?</span></summary>
+        <div class="reveal">
+          <p><strong>At the peak.</strong> The intro raises it a little, the short story
+             raises it more, the presentation takes it to the top &mdash; and that is the
+             moment you ask for the money.</p>
+          <p>Below the <strong>buying line</strong> nobody buys, however good the product
+             is. Above it, they will. Everything before the close is you getting them over
+             that line, and the close is you spending it before it drains.</p>
+        </div>
+      </details>
+      <details>
+        <summary><span class="q">They said yes. What do you do with the fall on the other side?</span></summary>
+        <div class="reveal">
+          <p>That fall is <strong>buyer's remorse</strong>, and it starts the second the
+             money moves. The answer is not to leave.</p>
+          <p><strong>You stay and chat.</strong> Keep talking to them, keep building the
+             relationship, be a person rather than someone who came for their three
+             dollars and left with it. The sale holds because they like you afterwards,
+             not only because they wanted it beforehand.</p>
+          <p>It is also where the rehash lives &mdash; you are already standing there
+             talking, which is the natural moment to ask who else is thirsty.</p>
+        </div>
+      </details>
+      <details>
+        <summary><span class="q">The curve is flat and they're going. What lifts it?</span></summary>
+        <div class="reveal">
+          <p><strong>Voice inflection.</strong> The curve tracks your energy more than your
+             words. Flat delivery flattens them; lift at the end of a sentence and they
+             come with you. It is the fastest lever you have and it costs nothing.</p>
+          <p>Along the bottom of the curve is the rest of it: <strong>SEE</strong> at the
+             intro, your <strong>qualifying questions</strong> through the middle, and
+             <strong>hotspots</strong> &mdash; whatever they lit up about, which is what you
+             come back to when you need the curve to climb again.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="step" id="g-impacts">
+      <h3><span class="n">4</span>Pitch &middot; Pace &middot; Attitude</h3>
+      <p style="margin:0 0 14px;font-size:14.5px;color:var(--grey);">Three inputs. Your
+         numbers at the end of a shift tell you which one was off.</p>
+      <details>
+        <summary><span class="q">Lots of conversations, almost no sales. What broke?</span></summary>
+        <div class="reveal">
+          <p>Your <strong>pitch</strong>. The pace is there &mdash; you are talking to
+             everyone &mdash; and it is not converting, which means the words are wrong, or
+             they are not tailored to what people told you.</p>
+        </div>
+      </details>
+      <details>
+        <summary><span class="q">Barely any conversations at all. What broke?</span></summary>
+        <div class="reveal">
+          <p>Your <strong>pace</strong>. You are standing still between people, picking who
+             looks friendly, and spending too long on the ones who already said no.</p>
+        </div>
+      </details>
+      <details>
+        <summary><span class="q">You know the pitch, you're moving, and it's still dead.</span></summary>
+        <div class="reveal">
+          <p>Your <strong>attitude</strong>. It is the one you cannot see from inside, and
+             the one that shows up first &mdash; in the two E's of SEE, and in the shape of
+             the impulse curve. Fix it and the same words start working.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="step" id="g-koolaid">
+      <h3><span class="n">5</span>The Kool-Aid Mix</h3>
+      <details>
+        <summary><span class="q">Mix, water, sugar. What happens when the ratio is off?</span></summary>
+        <div class="reveal">
+          <div class="fork">
+            <div><b>Not enough sugar</b> &mdash; bitter water. All process, no warmth. Technically a sale, nobody wants it.</div>
+            <div><b>Too much mix</b> &mdash; powder. All personality, no process. Fun to talk to, sells nothing.</div>
+            <div><b>The ratio</b> &mdash; sweet water. Both, in proportion.</div>
+          </div>
+          <p>Nobody's problem is that they don't know the five steps. It is that they run
+             them like a script, or they run their personality and skip them. The mix is
+             the whole job.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="step" id="g-gumball">
+      <h3><span class="n">6</span>The Gumball Theory</h3>
+      <details>
+        <summary><span class="q">Ten machines, ten quarters. How do you spend them?</span></summary>
+        <div class="reveal">
+          <p class="say">&ldquo;Best chance statistically is to put all of your quarters in
+             one machine.&rdquo;</p>
+          <p>The machine is <strong>your pitch</strong>. Run the same one, over and over,
+             and every conversation is another quarter into the same machine &mdash; so the
+             numbers coming out of it actually mean something.</p>
+          <p>Change your words every time and you have not run one experiment forty times.
+             You have run forty experiments once each, and <strong>you have changed the
+             statistics of it working</strong>. You cannot tell whether the pitch is bad or
+             whether that one guy was in a hurry, because nothing was held still long
+             enough to measure.</p>
+        </div>
+      </details>
+      <details>
+        <summary><span class="q">So when are you allowed to change it?</span></summary>
+        <div class="reveal">
+          <p>After enough quarters to know. Change one thing, run it the same number of
+             times, compare. That is a different machine, tested properly &mdash; not
+             fidgeting mid-shift because the last two said no.</p>
+          <p>Two nos in a row feels like evidence. It is not. It is two quarters.</p>
+        </div>
+      </details>
+      <p class="wrong"><b>This is why the tracker exists.</b> A close rate only means
+         something if the pitch stayed still underneath it. Hold the pitch, log the marks,
+         then change one thing on purpose.</p>
+    </div>
+
+    <div class="step" id="g-marks">
+      <h3><span class="n">7</span>The Marks</h3>
+      <p style="margin:0 0 14px;font-size:14.5px;color:var(--grey);">How a shift gets logged
+         on paper: one mark beside each conversation, written the second it ends. The
+         tracker is this legend with the arithmetic done for you.</p>
+      <div id="legend"></div>
+      <p class="wrong" style="margin-top:14px;"><b>Why it matters:</b> a tally of sales
+         tells you how you did. A tally of <em>how each one ended</em> tells you what to
+         change. Five X's is a different shift from five Q's, and they need opposite
+         fixes.</p>
+      <p style="margin-top:16px;"><button class="btn btn-p" type="button" data-goto="track">Open the tracker</button></p>
+    </div>
+
+  </section>
+
   <!-- ══ TRACK ══════════════════════════════════════════════════════ -->
-  <section id="v-track" hidden><div id="trackBody"></div></section>
+  <section id="v-track" hidden role="tabpanel">
+    <p class="sr-only" id="liveCount" aria-live="polite" aria-atomic="true"></p>
+    <div id="trackBody"></div>
+  </section>
 
   <!-- ══ PROGRESS ═══════════════════════════════════════════════════ -->
-  <section id="v-progress" hidden><div id="progBody"></div></section>
+  <section id="v-progress" hidden role="tabpanel"><div id="progBody"></div></section>
 
 </div>
 
@@ -446,13 +738,15 @@
        pier must not cost you the count.
    ══════════════════════════════════════════════════════════════════════ */
 const LS = {
-  sessions: 'tpc.sessions.v2',  // [session]  finished, oldest first
-  live:     'tpc.live.v2',      // session | null  — the one in progress
+  sessions: 'tpc.sessions.v3',  // [session]  finished, oldest first
+  live:     'tpc.live.v3',      // session | null  — the one in progress
 };
-// v1 logged one tap per STEP (a close was three taps). v2 logs one tap per
-// CONVERSATION, at the furthest stage it reached. The arrays look identical and
-// mean opposite things, so v1 is dropped rather than misread.
-['tpc.sessions.v1','tpc.live.v1'].forEach(k => { try{ localStorage.removeItem(k); }catch(e){} });
+// v1 logged one tap per STEP (a close was three taps). v2 logged one tap per
+// CONVERSATION as a stage. v3 logs the MARK, and derives the stage from it.
+// All three are arrays of short strings that look alike and mean different
+// things, so the old ones are dropped rather than misread.
+['tpc.sessions.v1','tpc.live.v1','tpc.sessions.v2','tpc.live.v2']
+  .forEach(k => { try{ localStorage.removeItem(k); }catch(e){} });
 function ls(k, d){
   try{
     const v = localStorage.getItem(k);
@@ -467,18 +761,34 @@ function ls(k, d){
 }
 function save(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
 
-/* ONE TAP PER CONVERSATION, recorded at the furthest stage it got to. A person
-   who bought is a 'c' and nothing else — they are not also a 't' and a 'p'.
+/* ONE MARK PER CONVERSATION — the shorthand off James's notebook page, one
+   scribbled next to every door. That is already how a shift gets logged on
+   paper, so it is how it gets logged here: you tap the mark, and the T/P/C
+   stage falls out of it. Two taps for one conversation on a pier was never
+   going to happen.
 
-   So the raw tallies are how many conversations DIED at each stage, and the
-   funnel is derived from them:
-
-     conversations = t + p + c      every person you opened your mouth at
-     presentations = p + c          the ones who heard a pitch
-     closes        = c
-
-   Storing the order rather than three counters makes undo a pop, and means the
-   totals can never drift out of step with the log. */
+   The id is stable ASCII and the glyph is presentation, so the notation can
+   change without orphaning anyone's data. */
+const MARKS = [
+  { id:'sold',    glyph:'$', stage:'c', label:'Sold',
+    hint:'They bought', fix:{go:'step-4',  as:'Step 4 — The Close'} },
+  { id:'noclose', glyph:'Q', stage:'p', label:'Qualified, no sale',
+    hint:'They wanted it and heard the pitch — you did not get it',
+    fix:{go:'g-impulse', as:'The Impulse Curve'} },
+  { id:'noqual',  glyph:'/', stage:'t', label:"Didn't qualify",
+    hint:'They did not want it',
+    fix:{go:'g-gumball', as:'The Gumball Theory'} },
+  { id:'nomeans', glyph:'N', stage:'t', label:'Not qualified',
+    hint:'No cash, no phone, no whatever else',
+    fix:{go:'g-objections', as:'Objection handling'} },
+  { id:'ignored', glyph:'X', stage:'t', label:'Ignored you',
+    hint:"Didn't answer the question",
+    fix:{go:'step-1', as:'Step 1 — SEE'} },
+  { id:'rude',    glyph:'\u00A8', stage:'t', label:'Very rude',
+    hint:'', fix:{go:'g-impacts', as:'Pitch · Pace · Attitude'} },
+];
+const MARK = {};  MARKS.forEach(m => { MARK[m.id] = m; });
+const MARK_IDS = MARKS.map(m => m.id);
 const STEPS = ['t','p','c'];
 function clean(s){
   if (!s || typeof s !== 'object') return null;
@@ -488,7 +798,7 @@ function clean(s){
     start: n(s.start),
     end:   (typeof s.end === 'number' && Number.isFinite(s.end)) ? s.end : null,
     place: typeof s.place === 'string' ? s.place.slice(0, 60) : '',
-    log:   Array.isArray(s.log) ? s.log.filter(x => STEPS.includes(x)) : [],
+    log:   Array.isArray(s.log) ? s.log.filter(x => MARK_IDS.includes(x)) : [],
     notes: Array.isArray(s.notes)
       ? s.notes.filter(x => x && typeof x === 'object' && typeof x.text === 'string')
                .map(x => ({ ts: n(x.ts), text: x.text.slice(0, 300), tag: !!x.tag }))
@@ -498,7 +808,10 @@ function clean(s){
 let SESSIONS = ls(LS.sessions, []).map(clean).filter(Boolean);
 let LIVE     = clean(ls(LS.live, null));
 
-const count = (s, k) => s.log.reduce((a, x) => a + (x === k ? 1 : 0), 0);
+/* how many conversations in this session ended at stage k */
+const count = (s, k) => s.log.reduce((a, x) => a + (MARK[x] && MARK[x].stage === k ? 1 : 0), 0);
+/* how many carried a given mark */
+const countMark = (s, id) => s.log.reduce((a, x) => a + (x === id ? 1 : 0), 0);
 /* raw tallies (where conversations ended) -> the cumulative funnel */
 function shape(z){
   const convos = z.t + z.p + z.c;
@@ -516,13 +829,17 @@ const persistAll  = () => save(LS.sessions, SESSIONS);
 /* ══════════════════════════════════════════════════════════════════════
    VIEWS
    ══════════════════════════════════════════════════════════════════════ */
-const PANES = { learn:'v-learn', track:'v-track', progress:'v-progress' };
+const PANES = { learn:'v-learn', growth:'v-growth', track:'v-track', progress:'v-progress' };
 let currentTab = 'learn';
 
 function switchTab(name){
   if (!PANES[name]) return;
   currentTab = name;
-  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('on', t.dataset.tab === name));
+  document.querySelectorAll('.tab').forEach(t => {
+    const on = t.dataset.tab === name;
+    t.classList.toggle('on', on);
+    t.setAttribute('aria-selected', on ? 'true' : 'false');
+  });
   Object.keys(PANES).forEach(k => { document.getElementById(PANES[k]).hidden = (k !== name); });
   if (name === 'track') renderTrack();
   if (name === 'progress') renderProgress();
@@ -586,6 +903,67 @@ function sparkline(vals, w=260, h=40){
 }
 
 /* ══════════════════════════════════════════════════════════════════════
+   GROWTH — two pieces are drawn rather than written, so they live here.
+   Both render once at boot; the rest of the tab is static markup.
+   ══════════════════════════════════════════════════════════════════════ */
+
+/* The impulse curve off the notebook page: climbing through intro, short story
+   and presentation to a peak at the close, then falling away into buyer's
+   remorse. Inline SVG, no library, same approach as sparkline(). */
+function impulseCurve(){
+  const W = 340, H = 190, L = 40, R = 12, T = 16, B = 34;
+  const x0 = L, x1 = W - R, y0 = H - B, y1 = T;
+  const peakX = x0 + (x1 - x0) * 0.62;
+  const buy   = y0 - (y0 - y1) * 0.42;          // the buying line
+  const px = f => x0 + (x1 - x0) * f;
+  const py = f => y0 - (y0 - y1) * f;
+  return `
+  <svg viewBox="0 0 ${W} ${H}" width="100%" preserveAspectRatio="xMidYMid meet"
+       role="img" aria-label="Impulse rises through intro, short story and presentation to a peak at the close, then falls into buyer's remorse. A horizontal buying line sits below the peak."
+       style="max-width:420px;display:block;margin:6px auto 10px;overflow:visible;">
+    <!-- axes -->
+    <path d="M${x0} ${y1} L${x0} ${y0} L${x1} ${y0}" fill="none" stroke="var(--rule)" stroke-width="1.5"/>
+    <!-- the buying line: below it nobody buys -->
+    <line x1="${x0}" y1="${buy}" x2="${x1}" y2="${buy}" stroke="var(--grey)"
+          stroke-width="1" stroke-dasharray="4 4"/>
+    <text x="${x1}" y="${buy - 6}" text-anchor="end" font-size="8.5" fill="var(--grey)"
+          font-weight="600" letter-spacing=".08em">BUYING LINE</text>
+    <!-- impulse -->
+    <path d="M${px(0)} ${py(0.06)} C${px(.18)} ${py(.16)} ${px(.3)} ${py(.5)} ${px(.44)} ${py(.62)}
+             C${px(.54)} ${py(.72)} ${px(.58)} ${py(.94)} ${peakX} ${py(1)}
+             C${px(.74)} ${py(.86)} ${px(.84)} ${py(.42)} ${px(1)} ${py(.2)}"
+          fill="none" stroke="var(--blue)" stroke-width="2.5" stroke-linecap="round"/>
+    <!-- the close sits on the peak -->
+    <circle cx="${peakX}" cy="${py(1)}" r="4.5" fill="var(--blue)"/>
+    <text x="${peakX}" y="${py(1) - 10}" text-anchor="middle" font-size="10"
+          font-weight="700" fill="var(--ink)">CLOSE</text>
+    <text x="${px(.93)}" y="${py(.12)}" text-anchor="end" font-size="9"
+          fill="var(--grey)" font-style="italic">remorse &#8212; stay &amp; chat</text>
+    <!-- what raises it, left edge -->
+    ${[['presentation',.62],['short story',.36],['intro',.12]].map(([t,f]) =>
+      `<text x="${x0 - 5}" y="${py(f) + 3}" text-anchor="end" font-size="8.5" fill="var(--grey)">${t}</text>`).join('')}
+    <!-- and along the bottom -->
+    <text x="${px(.5)}" y="${y0 + 15}" text-anchor="middle" font-size="8.5"
+          fill="var(--grey)" font-weight="600" letter-spacing=".1em">SEE &#183; Q &#183; Q &#183; HOTSPOTS</text>
+    <text x="${px(.5)}" y="${y0 + 28}" text-anchor="middle" font-size="8.5"
+          fill="var(--blue)" font-weight="700" letter-spacing=".06em">VOICE INFLECTION LIFTS IT</text>
+  </svg>`;
+}
+
+/* The legend, generated from MARKS so it can never drift from the buttons. */
+function markLegend(){
+  return `<table class="legend"><tbody>${MARKS.map(m => `
+    <tr>
+      <td class="g">${m.glyph}</td>
+      <td><b>${m.label}</b>${m.hint ? `<div class="place">${m.hint}</div>` : ''}</td>
+      <td class="st">${{c:'close', p:'presentation', t:'talk'}[m.stage]}</td>
+    </tr>`).join('')}</tbody></table>`;
+}
+
+document.getElementById('curve').innerHTML  = impulseCurve();
+document.getElementById('legend').innerHTML = markLegend();
+
+/* ══════════════════════════════════════════════════════════════════════
    TRACK
    ══════════════════════════════════════════════════════════════════════ */
 
@@ -605,14 +983,15 @@ const TAGS = [
 ];
 
 /* One of these per conversation — whichever is the furthest you got. Never two. */
-const LABEL = {
-  t: ['Talk only',    'Greeted them, and that was as far as it went'],
-  p: ['Presentation', 'They qualified, I pitched — but no sale'],
-  c: ['Close',        'They bought'],
-};
+
 
 function renderTrack(){
   const B = document.getElementById('trackBody');
+  // innerHTML rebuilds the note box, so a note being typed when the next mark
+  // is tapped would vanish. Carry it, and the caret, across the render.
+  const prev = document.getElementById('ntext');
+  const draft = prev ? prev.value : '';
+  const hadFocus = !!prev && document.activeElement === prev;
 
   if (!LIVE){
     const last = SESSIONS[SESSIONS.length - 1];
@@ -648,24 +1027,26 @@ function renderTrack(){
         </div>
         <button class="btn" id="end" type="button">End session</button>
       </div>
-      <div aria-live="polite" aria-atomic="true">${hero(z)}${funnel(z)}</div>
+      <div>${hero(z)}${funnel(z)}</div>
     </div>
 
-    <p class="tiny" style="margin:0 0 10px;text-align:center;">One tap per conversation &mdash; whichever is the furthest you got.</p>
+    <p class="tiny" style="margin:0 0 12px;text-align:center;">One mark per conversation &mdash; how that one ended.
+       <button class="jump" data-goto="growth" data-card="g-marks" type="button" style="font-size:12px;">The legend</button></p>
 
     <div class="counts">
-      ${STEPS.map(k => `
-        <button class="count" data-add="${k}" type="button">
-          <span class="plus" aria-hidden="true">+</span>
-          <span><span class="lab">${LABEL[k][0]}</span><span class="hint">${LABEL[k][1]}</span></span>
-          <span class="tally" aria-hidden="true">${z[k]}</span>
+      ${MARKS.map(m => `
+        <button class="count m-${m.stage}" data-add="${m.id}" type="button"
+                title="${m.hint ? m.label + ' — ' + m.hint : m.label}">
+          <span class="glyph" aria-hidden="true">${m.glyph}</span>
+          <span class="lab">${m.label}</span>
+          <span class="tally">${countMark(LIVE, m.id)}</span>
         </button>`).join('')}
     </div>
 
-    <div class="row" style="justify-content:space-between;margin-bottom:8px;">
+    <div class="row" style="justify-content:space-between;margin:6px 0 8px;">
       <button class="btn" id="undo" type="button" ${LIVE.log.length ? '' : 'disabled'}>
-        Undo${LIVE.log.length ? ' &ldquo;' + LABEL[LIVE.log[LIVE.log.length - 1]][0] + '&rdquo;' : ''}</button>
-      <span class="tiny">${LIVE.log.length} tap${LIVE.log.length === 1 ? '' : 's'}</span>
+        Undo${LIVE.log.length ? ' &ldquo;' + MARK[LIVE.log[LIVE.log.length - 1]].label + '&rdquo;' : ''}</button>
+      <span class="tiny">${LIVE.log.length} logged</span>
     </div>
 
     <div class="sechead"><h2>Notes</h2><div class="line"></div></div>
@@ -687,7 +1068,25 @@ function renderTrack(){
   document.getElementById('undo').addEventListener('click', undo);
   document.getElementById('end').addEventListener('click', endSession);
   document.getElementById('nadd').addEventListener('click', addFreeNote);
-  document.getElementById('ntext').addEventListener('keydown', e => { if (e.key === 'Enter') addFreeNote(); });
+  const box = document.getElementById('ntext');
+  box.addEventListener('keydown', e => { if (e.key === 'Enter') addFreeNote(); });
+  if (draft){
+    box.value = draft;
+    if (hadFocus){ box.focus(); box.setSelectionRange(draft.length, draft.length); }
+  }
+  wireGoto(B);                    // 'The legend' link lives in this branch too
+  announce();
+}
+
+/* Spoken separately from the visual funnel, because the visual one is replaced
+   wholesale on every tap and a live region has to outlive its own contents. */
+function announce(){
+  const el = document.getElementById('liveCount');
+  if (!el || !LIVE) return;
+  const f = shape({t:count(LIVE,'t'), p:count(LIVE,'p'), c:count(LIVE,'c')});
+  el.textContent = `${f.convos} conversation${f.convos === 1 ? '' : 's'}, `
+                 + `${f.reached} presentation${f.reached === 1 ? '' : 's'}, `
+                 + `${f.closed} close${f.closed === 1 ? '' : 's'}.`;
 }
 
 function startSession(){
@@ -698,7 +1097,7 @@ function startSession(){
   renderTrack();
 }
 function add(k){
-  if (!LIVE || !STEPS.includes(k)) return;
+  if (!LIVE || !MARK[k]) return;
   LIVE.log.push(k);
   persistLive();          // every tap, straight to disk
   renderTrack();
@@ -721,7 +1120,11 @@ function addNote(text, isTag){
 }
 function addFreeNote(){
   const el = document.getElementById('ntext');
-  if (el && el.value.trim()) { addNote(el.value, false); }
+  if (!el) return;
+  const v = el.value.trim();
+  if (!v) return;
+  el.value = '';                  // before the render, so the carry-over is empty
+  addNote(v, false);
 }
 function delNote(ts){
   if (!LIVE) return;
@@ -772,7 +1175,7 @@ function verdict(z){
          you speak to hear a pitch at all &mdash; so the fix is the greeting and the
          qualifying question, not your pitch.`
       : `The leak is at the <b>back</b>. You get people listening, then
-         ${100 - pct(f.closed, f.reached)}% of them don't buy &mdash; so the fix is how you
+         ${pct(f.reached - f.closed, f.reached)}% of them don't buy &mdash; so the fix is how you
          present and how you close.`}</p>
     <p>${leakFront
       ? `<button class="jump" data-step="1" type="button">Step 1 &mdash; The Greeting</button> &middot;
@@ -780,6 +1183,30 @@ function verdict(z){
       : `<button class="jump" data-step="3" type="button">Step 3 &mdash; The Presentation</button> &middot;
          <button class="jump" data-step="4" type="button">Step 4 &mdash; The Close</button>`}</p>
   </div>`;
+}
+
+/* The funnel says WHERE you lost people. The marks say WHY, which is the only
+   one of the two you can act on — five X's and five Q's are the same "lost at
+   the talk" number and need opposite fixes. Name the biggest, send them to it. */
+function whyLost(all){
+  const tot = {};
+  MARKS.forEach(m => { tot[m.id] = all.reduce((a, s2) => a + countMark(s2, m.id), 0); });
+  const lost = MARKS.filter(m => m.stage !== 'c' && tot[m.id] > 0)
+                    .sort((a, b) => tot[b.id] - tot[a.id]);
+  if (!lost.length) return '';
+  const top = lost[0], n = tot[top.id];
+  const rows = lost.map(m => `
+    <li><span class="mk">${m.glyph}</span><span>${m.label}</span><span class="ct">${tot[m.id]}</span></li>`).join('');
+  return `
+    <div class="card">
+      <div class="sechead" style="margin-top:0;"><h2>Why you lost them</h2><div class="line"></div></div>
+      <ul class="taglist marks">${rows}</ul>
+      <div class="verdict" style="margin-top:18px;">
+        <p><b>${n}</b> of them ended in <b>${top.glyph}</b> &mdash; ${top.label.toLowerCase()}.
+           That is the most common way your conversations die.</p>
+        <p><button class="jump" data-card="${top.fix.go}" type="button">${top.fix.as}</button></p>
+      </div>
+    </div>`;
 }
 
 function renderProgress(){
@@ -830,6 +1257,8 @@ function renderProgress(){
          ${Math.round(rates[rates.length-1]*100)}% now</p>
     </div>` : ''}
 
+    ${whyLost(all)}
+
     ${tags.length ? `<div class="card">
       <div class="sechead" style="margin-top:0;"><h2>What keeps happening</h2><div class="line"></div></div>
       <ul class="taglist">${tags.map(t =>
@@ -856,6 +1285,8 @@ function renderProgress(){
 
   P.querySelectorAll('[data-step]').forEach(b =>
     b.addEventListener('click', () => goStep(+b.dataset.step)));
+  P.querySelectorAll('[data-card]').forEach(b =>
+    b.addEventListener('click', () => goCard(b.dataset.card)));
   wireGoto(P);
   const wipe = document.getElementById('wipe');
   if (wipe) wipe.addEventListener('click', () => {
@@ -867,22 +1298,27 @@ function renderProgress(){
 }
 
 function wireGoto(root){
-  root.querySelectorAll('[data-goto]').forEach(b =>
-    b.addEventListener('click', () => switchTab(b.dataset.goto)));
+  root.querySelectorAll('[data-goto]').forEach(b => b.addEventListener('click', () =>
+    b.dataset.card ? goCard(b.dataset.card) : switchTab(b.dataset.goto)));
 }
-document.querySelectorAll('#v-learn [data-goto]').forEach(b =>
-  b.addEventListener('click', () => switchTab(b.dataset.goto)));
+wireGoto(document.getElementById('v-learn'));
+wireGoto(document.getElementById('v-growth'));
 
-/* Send them to the step that fixes the leak, opened and highlighted. */
-function goStep(n){
-  switchTab('learn');
-  const el = document.getElementById('step-' + n);
+/* Send them to the card that fixes it, opened and highlighted. Takes any card
+   id — "step-2" in Learn, "g-objections" in Growth — and finds its own tab, so
+   callers never have to know which tab a card lives in. */
+function goCard(id){
+  const el = document.getElementById(id);
   if (!el) return;
+  const pane = el.closest('section[id^="v-"]');
+  const tab  = pane && Object.keys(PANES).find(k => PANES[k] === pane.id);
+  if (tab) switchTab(tab);
   el.querySelectorAll('details').forEach(d => { d.open = true; });
   el.scrollIntoView({behavior:'smooth', block:'start'});
   el.classList.add('flash');
   setTimeout(() => el.classList.remove('flash'), 2200);
 }
+const goStep = n => goCard('step-' + n);
 
 /* Desktop shortcuts. Ignored while typing, and only while a session is live. */
 document.addEventListener('keydown', e => {
@@ -890,9 +1326,9 @@ document.addEventListener('keydown', e => {
   if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
   if (e.metaKey || e.ctrlKey || e.altKey) return;
   if (currentTab !== 'track' || !LIVE) return;
-  const k = e.key.toLowerCase();
-  if (k === 't' || k === 'p' || k === 'c'){ e.preventDefault(); add(k); }
-  else if (k === 'u'){ e.preventDefault(); undo(); }
+  if (e.key.toLowerCase() === 'u'){ e.preventDefault(); undo(); return; }
+  const hit = MARKS.find(m => m.glyph.toLowerCase() === e.key.toLowerCase());
+  if (hit){ e.preventDefault(); add(hit.id); }
 });
 
 /* A session left running is normal — you lock the phone between conversations.
