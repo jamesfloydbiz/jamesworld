@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>James Floyd — for Founders School</title>
-<meta name="description" content="A sales curriculum for the Business pillar, and the work already built for Alpha.">
+<meta name="description" content="A pitch to Founders School: TPC, a sales curriculum for week one, and the work already built for Alpha.">
 <link rel="canonical" href="https://jamesfloyds.world/foundersschool/">
 <!-- Unlisted, same as /alpha/. Not in routes.config.mjs, so not in the sitemap. -->
 <meta name="robots" content="noindex, nofollow">
 <meta property="og:title" content="James Floyd — for Founders School">
-<meta property="og:description" content="A sales curriculum for the Business pillar, and the work already built for Alpha.">
+<meta property="og:description" content="A pitch to Founders School: TPC, a sales curriculum for week one, and the work already built for Alpha.">
 <meta property="og:type" content="website">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -68,6 +68,7 @@
     align-items:center; justify-content:center; gap:11px; text-align:center;
     padding:30px; color:var(--faint); background:#0B0B0F;}
   .waiting b{color:#F3F4F6; font-weight:600; font-size:15px; letter-spacing:.01em;}
+  .waiting a{color:#8E93FF; font-weight:600;}
   .waiting span{font-size:13.5px; max-width:340px; line-height:1.55;}
   .unmute{position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
     z-index:5; display:inline-flex; align-items:center; gap:9px;
@@ -165,8 +166,8 @@
             Tap for sound
           </button>
           <div class="waiting" id="waiting">
-            <b>The video is coming</b>
-            <span>Everything in it is already on this page. Keep scrolling.</span>
+            <b>Can't play the video here</b>
+            <span>Watch it on <a href="https://youtu.be/rgOWHgvizns" target="_blank" rel="noopener">YouTube</a> &mdash; or just keep scrolling, it is all on this page.</span>
           </div>
         </div>
       </div>
@@ -231,7 +232,7 @@
    placeholder by itself. Left empty, the page still reads as finished —
    which is the point, since the page was built before the video.
    ══════════════════════════════════════════════════════════════════════ */
-const YT_ID = '';
+const YT_ID = 'rgOWHgvizns';
 
 const PROOF = [
   { k:'Picture book', t:'The Climbing Machine',
