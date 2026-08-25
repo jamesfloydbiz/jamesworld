@@ -224,6 +224,8 @@
     background:#F4F4FF; font-size:13.5px; color:var(--ink); line-height:1.6;}
   .basket .blab{display:block; font-size:9.5px; letter-spacing:.16em;
     text-transform:uppercase; font-weight:700; color:var(--blue); margin-bottom:3px;}
+  .diacap{text-align:center; font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+    font-weight:700; color:var(--faint); margin:2px 0 4px;}
 
   .astkey{margin-top:34px; padding-top:22px; border-top:1px solid var(--rule);}
   .astkey p{margin:0 0 10px; font-size:14px; color:var(--grey); line-height:1.6;}
@@ -682,6 +684,8 @@
     <div class="step" id="g-koolaid">
       <h3><span class="n">6</span>The Kool-Aid Mix</h3>
       <div id="koolaid"></div>
+      <p class="diacap">the same drawing, with what it is actually about</p>
+      <div id="impactsdia"></div>
       <p style="margin:0 0 14px;font-size:14.5px;color:var(--grey);">The last card told you
          which of the three is short. This one is why you cannot fix it by doing more of
          whichever one you are already good at.</p>
@@ -737,13 +741,15 @@
         <div class="reveal">
           <p class="say">&ldquo;Best chance statistically is to put all of your quarters in
              one machine.&rdquo;</p>
-          <p>Every machine holds a different mix, and you cannot see the mix from outside.
-             The green one is a sale. You are not trying to visit machines, you are trying
-             to <strong>pull as many greens as possible</strong>.</p>
-          <p>Spread ten quarters over ten machines and you learn nothing about any of them
-             &mdash; you get ten single pulls and ten unrelated results. Put ten into one
-             and you find out what that machine actually gives you, and you are still
-             pulling while everyone else is walking between machines.</p>
+          <p>The green one is a sale. You are not trying to visit machines, you are
+             trying to <strong>pull as many greens as you can</strong>.</p>
+          <p>And here is the part people get wrong: <strong>every machine holds the same
+             four out of twelve.</strong> They only look different &mdash; one drops the
+             gumball down a spiral, one a zigzag, one straight. Different path, identical
+             odds.</p>
+          <p>So walking to another machine buys you nothing and costs you the walk. Ten
+             quarters in one machine is ten pulls. Ten quarters across ten machines is ten
+             pulls and nine walks.</p>
         </div>
       </details>
       <details>
@@ -965,76 +971,90 @@ function sparkline(vals, w=260, h=40){
    ══════════════════════════════════════════════════════════════════════ */
 
 
-/* The Kool-Aid diagram off the notebook page, drawn as he drew it: three
-   ingredients on the left, braced in overlapping pairs into the two things
-   that go wrong, and those braced again into the third. */
-function koolaidDiagram(){
-  const W = 360, H = 176;
-  const brace = (x, y1, y2, out) => {
+/* The notebook's brace diagram, used twice — once for the jug and once for the
+   three things it is a metaphor for. Same shape both times, which is the point:
+   they are the same drawing on his page, one under the other. */
+function braceDiagram(ings, outs, label){
+  // The columns are sized from the copy, not fixed — the pitch/pace/attitude
+  // labels are twice the length of "Bitter Water" and a fixed layout ran them
+  // off the right edge and through the second brace.
+  const w = (t, px) => t.length * px * 0.56;
+  const ingW  = Math.max(...ings.map(t => w(t, 12.5)));
+  const midX  = 22 + ingW + 22;
+  const midW  = Math.max(...outs.slice(0, 2).map(o => Math.max(w(o[0], 12), w(o[1], 8.5))));
+  const br2X  = midX + midW + 14;
+  const rightX = br2X + 20;
+  const W = Math.ceil(rightX + Math.max(w(outs[2][0], 12), w(outs[2][1], 8.5)) + 8);
+  const H = 176;
+  const brace = (x, y1, y2) => {
     const mid = (y1 + y2) / 2;
     return `<path d="M${x} ${y1} Q${x + 11} ${y1} ${x + 13} ${mid} Q${x + 11} ${y2} ${x} ${y2}"
       fill="none" stroke="var(--blue)" stroke-width="1.6" stroke-linecap="round"/>`;
   };
-  const ing = (y, t) => `<text x="8" y="${y + 4}" font-size="12.5" font-weight="600" fill="var(--ink)">${t}</text>`;
+  const ing = (y, t) => `<text x="6" y="${y + 4}" font-size="12.5" font-weight="600" fill="var(--ink)">${t}</text>`;
   const out = (x, y, t, sub) => `
-    <text x="${x}" y="${y + 3}" font-size="12.5" font-weight="700" fill="var(--blue)">${t}</text>
-    <text x="${x}" y="${y + 16}" font-size="9" fill="var(--grey)">${sub}</text>`;
+    <text x="${x}" y="${y + 3}" font-size="12" font-weight="700" fill="var(--blue)">${t}</text>
+    <text x="${x}" y="${y + 15}" font-size="8.5" fill="var(--grey)">${sub}</text>`;
   return `
   <svg viewBox="0 0 ${W} ${H}" width="100%" preserveAspectRatio="xMidYMid meet"
-       role="img" aria-label="Kool-Aid mix, water and sugar braced in pairs into bitter water and sweet water, and those braced again into powder."
-       style="max-width:430px;display:block;margin:8px auto 14px;">
-    ${ing(32,'Kool-Aid Mix')}${ing(74,'Water')}${ing(116,'Sugar')}
-    ${brace(104, 24, 66)}${brace(104, 66, 108)}
-    ${out(124, 40, 'Bitter Water', 'no sugar in it')}
-    ${out(124, 92, 'Sweet water', 'no mix in it')}
-    ${brace(246, 34, 96)}
-    ${out(266, 62, 'Powder', 'no water in it')}
+       role="img" aria-label="${label}"
+       style="max-width:${Math.min(460, W * 1.22)}px;display:block;margin:8px auto 14px;">
+    ${ing(32, ings[0])}${ing(74, ings[1])}${ing(116, ings[2])}
+    ${brace(midX - 20, 24, 66)}${brace(midX - 20, 66, 108)}
+    ${out(midX, 40, outs[0][0], outs[0][1])}
+    ${out(midX, 92, outs[1][0], outs[1][1])}
+    ${brace(br2X, 34, 96)}
+    ${out(rightX, 62, outs[2][0], outs[2][1])}
   </svg>`;
 }
 
-/* Three machines, same as the page. The blue gumballs are the ones you want;
-   every machine has a different share of them and you cannot see which from
-   outside. All your quarters go in one. */
+/* Three machines, and the correction that matters: they all hold the SAME
+   number of the gumball you want. Only the path down differs — spiral, zigzag,
+   straight. Switching machines buys you nothing and costs you the walk. */
 function gumballDiagram(){
-  const W = 360, H = 190;
-  // fixed layouts so the picture is the same every visit
-  const fills = [
-    [0,1,0,0,2,0,1,0,0,0,0,1],
-    [1,0,1,0,1,0,0,1,2,1,0,1],
-    [0,0,0,1,0,0,0,0,1,0,2,0],
+  const W = 372, H = 200, GREEN = '#16A34A';
+  // identical mix in all three, only shuffled — 4 greens of 12, every machine
+  const mixes = [
+    [1,0,0,1,0,0,1,0,0,1,0,0],
+    [0,1,0,0,1,0,0,0,1,0,1,0],
+    [0,0,1,0,0,1,0,1,0,0,0,1],
   ];
+  const chute = (cx, y, kind) => {
+    if (kind === 0)  // spiral
+      return `<path d="M${cx} ${y} c-13 6 13 14 0 20 c-13 6 13 14 0 20 c-13 6 13 14 0 18"
+               fill="none" stroke="var(--grey)" stroke-width="1.5" stroke-linecap="round"/>`;
+    if (kind === 1)  // zigzag
+      return `<path d="M${cx - 11} ${y} L${cx + 11} ${y + 15} L${cx - 11} ${y + 30} L${cx + 11} ${y + 45} L${cx} ${y + 56}"
+               fill="none" stroke="var(--grey)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>`;
+    return `<path d="M${cx} ${y} L${cx} ${y + 24} L${cx + 10} ${y + 34} L${cx - 10} ${y + 46} L${cx} ${y + 57}"
+             fill="none" stroke="var(--grey)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>`;
+  };
   const machine = (cx, i, chosen) => {
-    const top = 20, r = 30, gy = top + r;
-    const balls = fills[i].map((v, k) => {
-      const a = (k / 12) * Math.PI * 2, rr = k % 3 === 0 ? 12 : 20;
-      const x = cx + Math.cos(a) * rr, y = gy + Math.sin(a) * rr;
-      // two states only: the one you want, and everything else
-      const col = v === 1 ? 'var(--blue)' : '#D5D8E0';
-      return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="4.1" fill="${col}"/>`;
+    const top = 16, r = 29, gy = top + r;
+    const balls = mixes[i].map((v, k) => {
+      const ang = (k / 12) * Math.PI * 2, rr = k % 3 === 0 ? 11 : 19;
+      return `<circle cx="${(cx + Math.cos(ang) * rr).toFixed(1)}" cy="${(gy + Math.sin(ang) * rr).toFixed(1)}"
+               r="4" fill="${v ? GREEN : '#D5D8E0'}"/>`;
     }).join('');
-    const op = chosen ? 1 : .38;
-    return `<g opacity="${op}">
+    return `<g opacity="${chosen ? 1 : .4}">
       <circle cx="${cx}" cy="${gy}" r="${r}" fill="#fff" stroke="var(--ink)" stroke-width="1.6"/>
       ${balls}
-      <path d="M${cx - 20} ${gy + r - 3} L${cx - 26} ${gy + r + 46} L${cx + 26} ${gy + r + 46} L${cx + 20} ${gy + r - 3} Z"
+      <path d="M${cx - 19} ${gy + r - 3} L${cx - 25} ${gy + r + 58} L${cx + 25} ${gy + r + 58} L${cx + 19} ${gy + r - 3} Z"
             fill="#fff" stroke="var(--ink)" stroke-width="1.6" stroke-linejoin="round"/>
-      <rect x="${cx - 7}" y="${gy + r + 24}" width="14" height="12" rx="2" fill="#fff" stroke="var(--ink)" stroke-width="1.4"/>
+      ${chute(cx, gy + r + 2, i)}
+      <text x="${cx}" y="${gy + r + 74}" text-anchor="middle" font-size="8.5"
+            font-weight="700" letter-spacing=".05em" fill="var(--grey)">4 OF 12</text>
     </g>${chosen ? `
-      <g>
-        <circle cx="${cx}" cy="${gy + r + 62}" r="6.5" fill="none" stroke="var(--blue)" stroke-width="1.6"/>
-        <circle cx="${cx - 15}" cy="${gy + r + 62}" r="6.5" fill="none" stroke="var(--blue)" stroke-width="1.6"/>
-        <circle cx="${cx + 15}" cy="${gy + r + 62}" r="6.5" fill="none" stroke="var(--blue)" stroke-width="1.6"/>
-        <text x="${cx}" y="${gy + r + 84}" text-anchor="middle" font-size="9" font-weight="700"
-              letter-spacing=".08em" fill="var(--blue)">ALL YOUR QUARTERS</text>
-      </g>` : ''}`;
+      <text x="${cx}" y="${gy + r + 91}" text-anchor="middle" font-size="9" font-weight="700"
+            letter-spacing=".08em" fill="var(--blue)">ALL YOUR QUARTERS</text>` : ''}`;
   };
   return `
   <svg viewBox="0 0 ${W} ${H}" width="100%" preserveAspectRatio="xMidYMid meet"
-       role="img" aria-label="Three gumball machines holding a mix of gumballs. Only the middle one is being used, and all the quarters go into it."
-       style="max-width:430px;display:block;margin:8px auto 12px;">
-    ${machine(64, 0, false)}${machine(180, 1, true)}${machine(296, 2, false)}
-    <circle cx="14" cy="182" r="4.1" fill="var(--blue)"/>
-    <text x="24" y="185.5" font-size="9" fill="var(--grey)">= a sale. Every machine holds a different share of them, and you cannot see it from outside.</text>
+       role="img" aria-label="Three gumball machines. Each holds four green gumballs out of twelve — the same odds. Only the path down differs: spiral, zigzag, straight. All the quarters go into one of them."
+       style="max-width:440px;display:block;margin:8px auto 12px;">
+    ${machine(62, 0, false)}${machine(186, 1, true)}${machine(310, 2, false)}
+    <circle cx="10" cy="192" r="4" fill="${GREEN}"/>
+    <text x="20" y="195.5" font-size="8.5" fill="var(--grey)">= a sale. Same four in every machine — only the way down looks different.</text>
   </svg>`;
 }
 
@@ -1096,7 +1116,14 @@ function markLegend(){
 }
 
 document.getElementById('curve').innerHTML   = impulseCurve();
-document.getElementById('koolaid').innerHTML = koolaidDiagram();
+document.getElementById('koolaid').innerHTML =
+  braceDiagram(['Kool-Aid Mix','Water','Sugar'],
+    [['Bitter Water','no sugar in it'], ['Sweet water','no mix in it'], ['Powder','no water in it']],
+    'Kool-Aid mix, water and sugar braced in pairs into bitter water and sweet water, and those into powder.');
+document.getElementById('impactsdia').innerHTML =
+  braceDiagram(['Pitch','Pace','Attitude'],
+    [['Lots of talks, 1\u20132 apps','no attitude in it'], ['They like you, no sale','no pitch in it'], ['0\u20132 apps, no LOA','no pace in it']],
+    'Pitch, pace and attitude braced the same way, into the three ways a shift goes wrong.');
 document.getElementById('gumball').innerHTML = gumballDiagram();
 document.getElementById('legend').innerHTML = markLegend();
 
