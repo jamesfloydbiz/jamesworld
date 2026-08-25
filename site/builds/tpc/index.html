@@ -53,12 +53,21 @@
   .tagline b{color:var(--ink); font-weight:600;}
 
   /* ── tabs ─────────────────────────────────────────────────────────── */
+  /* Four tabs do not fit a 320px phone at full padding. Tighten there, and
+     let the bar itself scroll as a backstop so it can never widen the page. */
   nav.tabs{display:flex; gap:4px; margin:26px 0 22px;
-    border-bottom:1px solid var(--rule);}
+    border-bottom:1px solid var(--rule);
+    overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none;}
+  nav.tabs::-webkit-scrollbar{display:none;}
   .tab{appearance:none; border:0; background:transparent; cursor:pointer;
+    flex:none; white-space:nowrap;
     font-family:inherit; font-size:14px; font-weight:600; color:var(--grey);
     padding:13px 15px; min-height:46px; border-bottom:2px solid transparent;
     margin-bottom:-1px; transition:color .15s, border-color .15s;}
+  @media (max-width:400px){
+    nav.tabs{gap:0;}
+    .tab{padding:13px 9px; font-size:13px;}
+  }
   .tab:hover{color:var(--ink);}
   .tab.on{color:var(--blue); border-bottom-color:var(--blue);}
 
@@ -121,7 +130,8 @@
   .step strong{color:var(--ink); font-weight:600;}
   .see{display:grid; gap:8px; margin:0 0 12px;}
   .see div{display:flex; align-items:baseline; gap:10px; font-size:15px;}
-  .see b{color:var(--blue); font-weight:700; font-size:19px; width:16px; flex:none;}
+  .see b{color:var(--blue); font-weight:700; font-size:19px; width:23px; flex:none;
+    text-align:center; line-height:1.25;}
   .fork{display:grid; gap:8px; margin:0 0 12px;}
   .fork div{border:1px solid var(--rule); border-radius:9px; padding:11px 14px;
     font-size:14px; color:var(--grey);}
@@ -166,7 +176,13 @@
   .hs b{color:var(--blue); font-weight:700;}
   /* The mark is what you aim at; the words sit small underneath as the crutch
      you stop needing. Two up on a phone, three once there is room. */
-  .counts{display:grid; grid-template-columns:1fr 1fr; gap:9px; margin:4px 0 12px;}
+  /* the marks come first — they are what you are here to press */
+  .sessionbar{display:flex; align-items:center; gap:12px; margin:2px 0 12px;}
+  .sessionbar .grow{flex:1; min-width:0;}
+  .btn-sm{padding:11px 16px; min-height:44px; font-size:13.5px;}
+  .marknote{text-align:center; margin:0 0 12px;}
+  .marknote .jump{font-size:12px; min-height:44px; padding:11px 4px;}
+  .counts{display:grid; grid-template-columns:1fr 1fr; gap:9px; margin:0 0 12px;}
   @media (min-width:560px){ .counts{grid-template-columns:repeat(3,1fr);} }
   .count{appearance:none; font-family:inherit; cursor:pointer; position:relative;
     display:flex; flex-direction:column; align-items:center; justify-content:center;
@@ -1059,19 +1075,12 @@ function renderTrack(){
   const notes = LIVE.notes.slice().reverse();
 
   B.innerHTML = `
-    <div class="card">
-      <div class="row" style="margin-bottom:16px;">
-        <div class="grow">
-          <div class="tiny">Session in progress${LIVE.place ? ' &middot; ' + esc(LIVE.place) : ''}</div>
-          <div class="muted" style="font-size:13px;">Started ${clock(LIVE.start)}</div>
-        </div>
-        <button class="btn" id="end" type="button">End session</button>
+    <div class="sessionbar">
+      <div class="grow">
+        <div class="tiny">${LIVE.place ? esc(LIVE.place) + ' &middot; ' : ''}from ${clock(LIVE.start)}</div>
       </div>
-      <div>${hero(z)}${funnel(z)}</div>
+      <button class="btn btn-sm" id="end" type="button">End</button>
     </div>
-
-    <p class="tiny" style="margin:0 0 12px;text-align:center;">One mark per conversation &mdash; how that one ended.
-       <button class="jump" data-goto="growth" data-card="g-marks" type="button" style="font-size:12px;">The legend</button></p>
 
     <div class="counts">
       ${MARKS.map(m => `
@@ -1083,11 +1092,16 @@ function renderTrack(){
         </button>`).join('')}
     </div>
 
-    <div class="row" style="justify-content:space-between;margin:6px 0 8px;">
+    <p class="tiny marknote">One mark per conversation &mdash; how that one ended.
+       <button class="jump" data-goto="growth" data-card="g-marks" type="button">The legend</button></p>
+
+    <div class="row" style="justify-content:space-between;margin:0 0 20px;">
       <button class="btn" id="undo" type="button" ${LIVE.log.length ? '' : 'disabled'}>
         Undo${LIVE.log.length ? ' &ldquo;' + MARK[LIVE.log[LIVE.log.length - 1]].label + '&rdquo;' : ''}</button>
       <span class="tiny">${LIVE.log.length} logged</span>
     </div>
+
+    <div class="card">${hero(z)}${funnel(z)}</div>
 
     <div class="sechead"><h2>Notes</h2><div class="line"></div></div>
     <div class="chips">
