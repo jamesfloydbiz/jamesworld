@@ -149,6 +149,55 @@
     padding:12px 14px; font-size:13.5px; color:var(--grey); margin:0;}
   .wrong b{color:var(--ink); font-weight:600;}
 
+
+  /* ══ LEARN — the script ═══════════════════════════════════════════ */
+  .rulebar{margin:0 0 6px; padding:14px 16px; border-radius:10px; background:#fff;
+    border:1px solid var(--blue); font-size:15px; color:var(--grey);}
+  .rulebar b{color:var(--ink); font-weight:700;}
+  .setup{margin:0 0 30px; font-size:14px; color:var(--grey);}
+
+  ol.script{list-style:none; margin:0; padding:0; counter-reset:sec;}
+  /* space AND a rule between each section */
+  li.sec{padding:0 0 30px; margin:0 0 30px; border-bottom:1px solid var(--rule);
+    scroll-margin-top:14px;}
+  li.sec:last-child{border-bottom:0;}
+  li.sec.flash{background:#F6F6FF; border-radius:12px;
+    box-shadow:0 0 0 10px #F6F6FF, 0 0 0 11px rgba(0,0,239,.25);}
+  .sec .num{font-size:30px; line-height:1; font-weight:700; color:var(--blue);
+    letter-spacing:-.04em; font-variant-numeric:tabular-nums;}
+  .sec h3{font-size:11.5px; letter-spacing:.2em; text-transform:uppercase;
+    font-weight:700; color:var(--grey); margin:7px 0 16px;}
+
+  .line{position:relative; margin:0 0 12px; padding-right:32px;}
+  .line:last-child{margin-bottom:0;}
+  .say{font-size:19px; line-height:1.5; font-weight:600; color:var(--ink);}
+  .beat{font-size:14.5px; line-height:1.6; color:var(--grey);}
+  .hi{background:linear-gradient(transparent 62%, rgba(0,0,239,.16) 62%);
+    padding:0 1px; color:var(--ink); font-weight:600;}
+  .beat .hi{font-weight:600;}
+
+  /* the only thing to interact with */
+  .ast{appearance:none; border:0; background:transparent; cursor:pointer;
+    position:absolute; top:-11px; right:-13px; width:44px; height:44px;
+    display:flex; align-items:flex-start; justify-content:center;
+    font-family:inherit; color:var(--blue); padding:0;}
+  .ast::before{content:'*'; font-size:22px; line-height:1; font-weight:700;
+    position:relative; top:13px;}
+  .ast:hover::before,.ast.on::before{opacity:.6;}
+  .ast .tip{display:none;}
+  .tipbox{position:absolute; left:0; right:0; top:100%; z-index:20;
+    margin-top:7px; padding:12px 14px; border-radius:10px;
+    background:var(--ink); color:#fff; font-size:13.5px; line-height:1.5;
+    font-weight:500; box-shadow:0 12px 30px -12px rgba(17,24,39,.6);}
+  .tipbox::before{content:'I ask, I don\2019t tell'; display:block; font-size:9.5px;
+    letter-spacing:.16em; text-transform:uppercase; font-weight:700;
+    color:#9DA3FF; margin-bottom:5px;}
+
+  .astkey{margin-top:34px; padding-top:22px; border-top:1px solid var(--rule);}
+  .astkey p{margin:0 0 10px; font-size:14px; color:var(--grey); line-height:1.6;}
+  .astkey b{color:var(--blue); font-weight:700;}
+  .astkey .more{margin-top:14px;}
+
   /* ══ FUNNEL ═══════════════════════════════════════════════════════ */
   .funnel{margin:0;}
   .fr{display:flex; align-items:baseline; gap:12px;}
@@ -259,7 +308,12 @@
   .row .grow{flex:1; min-width:150px;}
   .sechead{display:flex; align-items:center; gap:12px; margin:26px 0 12px;}
   .sechead h2{font-size:11px; letter-spacing:.2em; text-transform:uppercase;
-    font-weight:700; color:var(--grey); margin:0; white-space:nowrap;}
+    font-weight:700; color:var(--grey); margin:0; white-space:nowrap; min-width:0;}
+  @media (max-width:460px){
+    /* "Where you are losing people" is wider than a small phone; let it wrap
+       rather than shove the rule beside it off the edge */
+    .sechead h2{white-space:normal; letter-spacing:.14em;}
+  }
   .sechead .line{flex:1; height:1px; background:var(--rule);}
 
   /* ══ PROGRESS ═════════════════════════════════════════════════════ */
@@ -270,6 +324,10 @@
   .jump{appearance:none; border:0; background:transparent; cursor:pointer;
     font-family:inherit; font-size:13.5px; font-weight:600; color:var(--blue);
     padding:11px 2px; min-height:44px; text-decoration:underline; text-underline-offset:3px;}
+  /* only the sessions table needs a floor width; the objection and legend
+     tables reflow on their own and a global min-width overflowed them */
+  .tablewrap{overflow-x:auto; -webkit-overflow-scrolling:touch; max-width:100%;}
+  .tablewrap table{min-width:280px;}
   table{width:100%; border-collapse:collapse; font-size:13.5px;}
   th{text-align:left; font-size:10px; letter-spacing:.14em; text-transform:uppercase;
     color:var(--faint); font-weight:700; padding:0 8px 8px 0; white-space:nowrap;}
@@ -311,175 +369,77 @@
   </header>
 
   <nav class="tabs" role="tablist" aria-label="Sections">
-    <button class="tab on" data-tab="learn" type="button" role="tab" aria-selected="true"  aria-controls="v-learn">Learn</button>
+    <button class="tab on" data-tab="learn" type="button" role="tab" aria-selected="true"  aria-controls="v-learn">The Script</button>
     <button class="tab"    data-tab="growth" type="button" role="tab" aria-selected="false" aria-controls="v-growth">Growth</button>
     <button class="tab"    data-tab="track" type="button" role="tab" aria-selected="false" aria-controls="v-track">Track</button>
     <button class="tab"    data-tab="progress" type="button" role="tab" aria-selected="false" aria-controls="v-progress">Progress</button>
   </nav>
 
-  <!-- ══ LEARN — static, so an opened answer stays open ══════════════ -->
+  <!-- ══ LEARN — the script itself. The only thing to interact with is an
+       asterisk, which shows how the line gets taught. ═══════════════════ -->
   <section id="v-learn" role="tabpanel">
 
-    <div class="rule-box">
-      <p class="lbl">One rule, over all five</p>
-      <h2>End with a question mark.</h2>
-      <p>Every step below finishes with a question. A statement hands them nothing
-         to answer, so they nod and keep walking. A question makes them respond,
-         and a response is a sale still alive.</p>
-    </div>
+    <p class="rulebar">One rule over all five &mdash; <b>end with a question mark.</b></p>
+    <p class="setup">You are on the pier with a box of candy and a cooler. Here is the
+       whole script.</p>
 
-    <p class="muted" style="margin:0 0 22px;">You are on the pier with a box of candy
-       and a cooler. Here is the proper process.</p>
+    <ol class="script">
 
-    <div class="step" id="step-1">
-      <h3><span class="n">1</span>The Greeting</h3>
-      <details>
-        <summary><span class="q">What is a greeting?</span></summary>
-        <div class="reveal">
-          <p class="say">&ldquo;Hi, how are you?&rdquo;</p>
-          <p>That is the whole thing. It is not clever and it is not a pitch. You are
-             finding out whether this person will talk to you at all.</p>
-        </div>
-      </details>
-      <details>
-        <summary><span class="q">Three things matter more than the words. What are they?</span></summary>
-        <div class="reveal">
-          <p style="font-weight:700;color:var(--ink);margin:0 0 10px;">SEE</p>
-          <div class="see">
-            <div><b>S</b><span><strong>Smile.</strong> Before you speak, not after.</span></div>
-            <div><b>E</b><span><strong>Eye contact.</strong> If you are looking at the box, they will walk past the box.</span></div>
-            <div><b>E</b><span><strong>Enthusiasm.</strong> Nobody buys from someone who sounds like they would rather be elsewhere.</span></div>
-          </div>
-          <p>You will say &ldquo;Hi, how are you?&rdquo; a hundred times today. SEE is the
-             only part that changes between the ones that work and the ones that don't.</p>
-        </div>
-      </details>
-      <details>
-        <summary><span class="q">They said &ldquo;good, you?&rdquo; — now how do you get to the sale?</span></summary>
-        <div class="reveal">
-          <p>You bridge. Two or three words, and they buy you a few more seconds:</p>
-          <p class="say">&ldquo;Quick question&mdash;&rdquo;</p>
-          <p class="say">&ldquo;Real quick&mdash;&rdquo;</p>
-          <p>The transition isn't a step of its own. It is how you get out of the
-             greeting without an awkward gap, and it goes straight into step 2.</p>
-        </div>
-      </details>
-      <p class="wrong"><b>What goes wrong:</b> you open with what you're selling.
-         &ldquo;Hi, want to buy some candy?&rdquo; They say no before they have looked at you.</p>
-    </div>
+      <li class="sec" id="step-1">
+        <div class="num">1</div>
+        <h3>The Greeting</h3>
+        <p class="line"><span class="say">&ldquo;Hi, <span class="hi">how are you</span>?&rdquo;</span><button class="ast" type="button" aria-label="How this gets taught" data-tip="What is a greeting?"></button></p>
+        <p class="line beat">Not the words &mdash; <span class="hi">smile</span>, <span class="hi">eye contact</span>, <span class="hi">enthusiasm</span>.<button class="ast" type="button" aria-label="How this gets taught" data-tip="If three things matter more than the words here, what might they be?"></button></p>
+        <p class="line"><span class="say">&ldquo;<span class="hi">Quick question</span>&mdash;&rdquo;</span><button class="ast" type="button" aria-label="How this gets taught" data-tip="They said &ldquo;good, you?&rdquo; &mdash; now how do you get to the sale?"></button></p>
+      </li>
 
-    <div class="step" id="step-2">
-      <h3><span class="n">2</span>The Qualifying Question</h3>
-      <details>
-        <summary><span class="q">What makes someone qualified to buy candy? Or water?</span></summary>
-        <div class="reveal">
-          <p>They want it. That is the entire test. Qualified doesn't mean rich and it
-             doesn't mean friendly — it means hungry, or thirsty, right now.</p>
-          <p class="say">&ldquo;You guys hungry?&rdquo;</p>
-          <p class="say">&ldquo;You guys thirsty?&rdquo;</p>
-          <p class="say">&ldquo;Do you like juice?&rdquo;</p>
-          <p>Then you <strong>wait</strong>. Do not fill the silence. The silence is
-             doing your work.</p>
-        </div>
-      </details>
-      <details>
-        <summary><span class="q">They answer. What are your options?</span></summary>
-        <div class="reveal">
-          <div class="fork">
-            <div><b>Yes</b> — qualified. Go to step 3, and use the word they just gave you.</div>
-            <div><b>No</b> — not qualified. Thank them and move on. There are three thousand people on this pier.</div>
-          </div>
-          <p>Two paths, and no third one. For now a no is a no, and moving on fast is
-             the skill — objection handling only makes sense once the frame is automatic.
-             When it is, it is in
-             <button class="jump" data-goto="growth" data-card="g-objections" type="button">Growth</button>.</p>
-        </div>
-      </details>
-      <p class="wrong"><b>What goes wrong:</b> you skip this and present to everyone.
-         Then you're pitching juice to people who aren't thirsty, and you're slow as
-         well as ignored.</p>
-    </div>
+      <li class="sec" id="step-2">
+        <div class="num">2</div>
+        <h3>The Qualifying Question</h3>
+        <p class="line"><span class="say">&ldquo;You guys <span class="hi">thirsty</span>?&rdquo;</span><button class="ast" type="button" aria-label="How this gets taught" data-tip="What makes someone qualified to buy candy? Or water?"></button></p>
+        <p class="line beat">Then <span class="hi">wait</span>. Yes &rarr; present. No &rarr; move on.<button class="ast" type="button" aria-label="How this gets taught" data-tip="They answer. What are your two options?"></button></p>
+      </li>
 
-    <div class="step" id="step-3">
-      <h3><span class="n">3</span>The Presentation</h3>
-      <details>
-        <summary><span class="q">They said they're thirsty. What do you say?</span></summary>
-        <div class="reveal">
-          <p class="say">&ldquo;Great &mdash; I've got juice, water and soda. Three dollars. What sounds good?&rdquo;</p>
-          <p>Notice what is <em>not</em> in that sentence: candy. They said thirsty, so
-             you sold drinks. The presentation is <strong>built out of the answer they
-             just gave you</strong> &mdash; that is the whole job of this step.</p>
-          <p>Name the price yourself, plainly, in the same breath. Making them ask is
-             making them work.</p>
-        </div>
-      </details>
-      <details>
-        <summary><span class="q">Why does step 2 come before this one?</span></summary>
-        <div class="reveal">
-          <p>Because you cannot tailor a presentation to someone who hasn't told you
-             anything yet. The qualifying question isn't a filter you run to get rid of
-             people &mdash; it is you <strong>collecting the material</strong> you are
-             about to present with.</p>
-          <div class="fork">
-            <div>They said <b>thirsty</b> &rarr; &ldquo;I've got juice, water and soda&hellip;&rdquo;</div>
-            <div>They said <b>hungry</b> &rarr; &ldquo;I've got chocolate, gummies and chips&hellip;&rdquo;</div>
-            <div>They said <b>they like juice</b> &rarr; &ldquo;I've got orange and apple, ice cold&hellip;&rdquo;</div>
-          </div>
-          <p>Same box, same prices, three different sentences. Use <strong>their word</strong>,
-             not yours. If they said thirsty, say thirsty back to them.</p>
-        </div>
-      </details>
-      <p class="wrong"><b>What goes wrong:</b> the untailored pitch &mdash; you run the
-         same list every time, in the same order, no matter what they said. They can hear
-         that it isn't about them, because it isn't. A tailored presentation is the
-         difference between answering a person and reciting inventory at them.</p>
-    </div>
+      <li class="sec" id="step-3">
+        <div class="num">3</div>
+        <h3>The Presentation</h3>
+        <p class="line"><span class="say">&ldquo;Great &mdash; I've got <span class="hi">juice, water and soda</span>. Three dollars. What sounds good?&rdquo;</span><button class="ast" type="button" aria-label="How this gets taught" data-tip="They said they're thirsty. What do you say?"></button></p>
+        <p class="line beat">Built out of <span class="hi">the word they just used</span>. Hungry gets candy, thirsty gets drinks.<button class="ast" type="button" aria-label="How this gets taught" data-tip="Why does step 2 come before this one?"></button></p>
+      </li>
 
-    <div class="step" id="step-4">
-      <h3><span class="n">4</span>The Close</h3>
-      <details>
-        <summary><span class="q">They picked the juice. What is the next sentence?</span></summary>
-        <div class="reveal">
-          <p class="say">&ldquo;What's your Venmo?&rdquo;</p>
-          <p>You <strong>assume the close</strong>. Not &ldquo;do you want one?&rdquo; —
-             they already answered that in step 2, and asking again invites them to
-             change their mind.</p>
-          <p>Note that this one is still a question. It just isn't a question about
-             whether. It's a question about how.</p>
-        </div>
-      </details>
-      <p class="wrong"><b>What goes wrong:</b> &ldquo;So… did you want one?&rdquo; You
-         handed back a decision they had already made.</p>
-    </div>
+      <li class="sec" id="step-4">
+        <div class="num">4</div>
+        <h3>The Close</h3>
+        <p class="line"><span class="say">&ldquo;What's your <span class="hi">Venmo</span>?&rdquo;</span><button class="ast" type="button" aria-label="How this gets taught" data-tip="They picked the juice. What is the next sentence?"></button></p>
+        <p class="line beat">You <span class="hi">assume</span> it. Not &ldquo;do you want one?&rdquo; &mdash; they answered that in step 2.</p>
+      </li>
 
-    <div class="step" id="step-5">
-      <h3><span class="n">5</span>The Rehash</h3>
-      <details>
-        <summary><span class="q">Any guesses what rehash means?</span></summary>
-        <div class="reveal">
-          <p>Going back for the sale you didn't ask for. They just bought — which makes
-             them the easiest person on the pier to sell to, and most people walk away
-             from them.</p>
-          <p class="say">&ldquo;Got any friends who are thirsty? Want to grab something for them?&rdquo;</p>
-          <p><strong>Everyone has a sale hidden.</strong> One question finds it.</p>
-        </div>
-      </details>
-      <p class="wrong"><b>What goes wrong:</b> you take the money and say thanks. It
-         costs one sentence to find out if there was a second sale, and you skipped it.</p>
-    </div>
+      <li class="sec" id="step-5">
+        <div class="num">5</div>
+        <h3>The Rehash</h3>
+        <p class="line"><span class="say">&ldquo;Got any <span class="hi">friends</span> who are thirsty? Want to grab something for them?&rdquo;</span><button class="ast" type="button" aria-label="How this gets taught" data-tip="Any guesses what rehash means?"></button></p>
+        <p class="line beat"><span class="hi">Everyone has a sale hidden.</span> One question finds it.</p>
+      </li>
 
-    <div class="card" style="margin-top:26px;">
-      <p style="margin:0 0 12px;font-size:15px;font-weight:600;">Now go count.</p>
-      <p class="muted" style="margin:0 0 16px;">Knowing the five steps and running them
-         are different things. After every conversation you tap <strong>one</strong>
-         button — the furthest you got. Talk only, presentation, or close. That gives
-         you a total for everyone you spoke to, and it shows which step is actually
-         costing you people rather than which one you think is.</p>
-      <button class="btn btn-p" type="button" data-goto="track">Open the tracker</button>
+    </ol>
+
+    <div class="astkey">
+      <p><b>*</b> &nbsp;Hover one &mdash; or tap, on a phone.</p>
+      <p>Every asterisk is a line I would not hand over. I <b>ask</b> it instead, and let
+         the answer come back before the script does. A rule you worked out is a rule you
+         keep; a rule you were told is a rule you forget by the second conversation.</p>
+      <p>Done right it should feel like they are <b>building this with me</b>, not taking
+         it from me. It is closer to motivational interviewing than teaching &mdash; I am
+         drawing the answer out of them and letting them arrive at it, so by the end they
+         are running a script they think they wrote. The lines above are where we land,
+         not where we start.</p>
+      <p class="more">More behind the script &mdash;
+        <button class="jump" data-goto="growth" type="button">Growth</button> has FUGI, the
+        objections, the impulse curve and the rest.</p>
+      <p style="margin-top:18px;"><button class="btn btn-p" type="button" data-goto="track">Open the tracker</button></p>
     </div>
 
   </section>
-
 
   <!-- ══ GROWTH — the packets that sit around the five steps ═══════════ -->
   <section id="v-growth" hidden role="tabpanel">
@@ -719,8 +679,8 @@
              the process. The ratio is the whole job.</p>
         </div>
       </details>
-      <p class="wrong"><b>Reading your marks:</b> a pile of <b>X</b> is usually sugar &mdash;
-         they did not ignore your words, they ignored your face. A pile of <b>Q</b> is
+      <p class="wrong"><b>Reading your marks:</b> a pile of <b>/</b> is usually sugar &mdash;
+         they did not turn down your words, they never heard them. A pile of <b>Q</b> is
          usually mix. Barely any marks at all is water.</p>
     </div>
 
@@ -830,21 +790,18 @@ function save(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){
    change without orphaning anyone's data. */
 const MARKS = [
   { id:'sold',    glyph:'$', stage:'c', label:'Sold',
-    hint:'They bought', fix:{go:'step-4',  as:'Step 4 — The Close'} },
+    hint:'They bought', fix:{go:'step-4', as:'4 \u2014 The Close'} },
   { id:'noclose', glyph:'Q', stage:'p', label:'Qualified, no sale',
-    hint:'They wanted it and heard the pitch — you did not get it',
+    hint:'They wanted it and heard the pitch \u2014 you did not get it',
     fix:{go:'g-impulse', as:'The Impulse Curve'} },
-  { id:'noqual',  glyph:'/', stage:'t', label:"Didn't qualify",
-    hint:'They did not want it',
-    fix:{go:'g-gumball', as:'The Gumball Theory'} },
+  { id:'noqual',  glyph:'/', stage:'t', label:"Didn't get into conversation",
+    hint:'Never got past hello',
+    fix:{go:'step-1', as:'1 \u2014 The Greeting'} },
   { id:'nomeans', glyph:'N', stage:'t', label:'Not qualified',
     hint:'No cash, no phone, no whatever else',
     fix:{go:'g-objections', as:'Objection handling'} },
-  { id:'ignored', glyph:'X', stage:'t', label:'Ignored you',
-    hint:"Didn't answer the question",
-    fix:{go:'step-1', as:'Step 1 — SEE'} },
   { id:'rude',    glyph:'\u00A8', stage:'t', label:'Very rude',
-    hint:'', fix:{go:'g-impacts', as:'Pitch · Pace · Attitude'} },
+    hint:'', fix:{go:'g-impacts', as:'Pitch \u00b7 Pace \u00b7 Attitude'} },
 ];
 const MARK = {};  MARKS.forEach(m => { MARK[m.id] = m; });
 const MARK_IDS = MARKS.map(m => m.id);
@@ -857,7 +814,11 @@ function clean(s){
     start: n(s.start),
     end:   (typeof s.end === 'number' && Number.isFinite(s.end)) ? s.end : null,
     place: typeof s.place === 'string' ? s.place.slice(0, 60) : '',
-    log:   Array.isArray(s.log) ? s.log.filter(x => MARK_IDS.includes(x)) : [],
+    // 'ignored' (X) was retired into '/', so fold old entries in rather than
+    // silently dropping conversations somebody already logged
+    log:   Array.isArray(s.log)
+             ? s.log.map(x => x === 'ignored' ? 'noqual' : x).filter(x => MARK_IDS.includes(x))
+             : [],
     notes: Array.isArray(s.notes)
       ? s.notes.filter(x => x && typeof x === 'object' && typeof x.text === 'string')
                .map(x => ({ ts: n(x.ts), text: x.text.slice(0, 300), tag: !!x.tag }))
@@ -1331,7 +1292,7 @@ function renderProgress(){
 
     ${SESSIONS.length ? `<div class="card">
       <div class="sechead" style="margin-top:0;"><h2>Sessions</h2><div class="line"></div></div>
-      <table>
+      <div class="tablewrap"><table>
         <thead><tr><th>When</th><th>Convos</th><th>Pitched</th><th>Closed</th><th>Rate</th></tr></thead>
         <tbody>${SESSIONS.slice().reverse().map(s => {
           const f = shape({t:count(s,'t'), p:count(s,'p'), c:count(s,'c')});
@@ -1340,7 +1301,7 @@ function renderProgress(){
             <td>${f.convos}</td><td>${f.reached}</td><td>${f.closed}</td>
             <td>${pct(f.closed, f.convos)}%</td></tr>`;
         }).join('')}</tbody>
-      </table>
+      </table></div>
     </div>` : ''}
 
     <p style="text-align:center;margin-top:22px;">
@@ -1377,11 +1338,46 @@ function goCard(id){
   const tab  = pane && Object.keys(PANES).find(k => PANES[k] === pane.id);
   if (tab) switchTab(tab);
   el.querySelectorAll('details').forEach(d => { d.open = true; });
+  const firstAst = el.querySelector('.ast');
+  // the click that got us here is still bubbling toward the close-on-outside
+  // handler, so opening now would be undone a moment later
+  if (firstAst && !el.querySelector('details')) setTimeout(() => firstAst.click(), 0);
   el.scrollIntoView({behavior:'smooth', block:'start'});
   el.classList.add('flash');
   setTimeout(() => el.classList.remove('flash'), 2200);
 }
 const goStep = n => goCard('step-' + n);
+
+
+/* The asterisks. Hover shows the teaching question on anything with a real
+   pointer; tap toggles it everywhere, because a phone has no hover and this is
+   read on a pier. The tip is positioned against the LINE, not the asterisk, so
+   it can never push the page sideways at 320px. */
+(() => {
+  let openTip = null;
+  const close = () => { if (openTip){ openTip.el.classList.remove('on'); openTip.box.remove(); openTip = null; } };
+  const show = (btn) => {
+    if (openTip && openTip.el === btn) return close();
+    close();
+    const box = document.createElement('div');
+    box.className = 'tipbox';
+    box.textContent = btn.dataset.tip;
+    btn.parentElement.appendChild(box);
+    btn.classList.add('on');
+    openTip = { el: btn, box };
+  };
+  document.querySelectorAll('.ast').forEach(btn => {
+    btn.addEventListener('click', e => { e.stopPropagation(); show(btn); });
+    if (window.matchMedia('(hover:hover) and (pointer:fine)').matches){
+      btn.addEventListener('mouseenter', () => show(btn));
+      btn.addEventListener('mouseleave', close);
+    }
+  });
+  document.addEventListener('click', close);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+  // jumping in from Progress should reveal the section's teaching notes
+  window.__openAsterisks = el => el.querySelectorAll('.ast').forEach(b => b.click());
+})();
 
 /* Desktop shortcuts. Ignored while typing, and only while a session is live. */
 document.addEventListener('keydown', e => {
