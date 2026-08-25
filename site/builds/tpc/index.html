@@ -911,41 +911,47 @@ function sparkline(vals, w=260, h=40){
    and presentation to a peak at the close, then falling away into buyer's
    remorse. Inline SVG, no library, same approach as sparkline(). */
 function impulseCurve(){
-  const W = 340, H = 190, L = 40, R = 12, T = 16, B = 34;
+  const W = 384, H = 200, L = 80, R = 16, T = 26, B = 40;
   const x0 = L, x1 = W - R, y0 = H - B, y1 = T;
-  const peakX = x0 + (x1 - x0) * 0.62;
-  const buy   = y0 - (y0 - y1) * 0.42;          // the buying line
   const px = f => x0 + (x1 - x0) * f;
   const py = f => y0 - (y0 - y1) * f;
+  // The buying line sits level with the presentation, and the close clears it
+  // only just — you are not miles above it, you are barely over and draining.
+  const BUY = 0.70, PEAK = 0.84, PX = 0.50, DIP = 0.42, END = 0.78;
   return `
   <svg viewBox="0 0 ${W} ${H}" width="100%" preserveAspectRatio="xMidYMid meet"
-       role="img" aria-label="Impulse rises through intro, short story and presentation to a peak at the close, then falls into buyer's remorse. A horizontal buying line sits below the peak."
-       style="max-width:420px;display:block;margin:6px auto 10px;overflow:visible;">
-    <!-- axes -->
+       role="img" aria-label="Impulse climbs through intro, short story and presentation, crosses the buying line, and peaks just above it at the close. It then drops below the line — buyer's remorse — and climbs back over the line again as you stay and chat."
+       style="max-width:440px;display:block;margin:6px auto 12px;">
     <path d="M${x0} ${y1} L${x0} ${y0} L${x1} ${y0}" fill="none" stroke="var(--rule)" stroke-width="1.5"/>
-    <!-- the buying line: below it nobody buys -->
-    <line x1="${x0}" y1="${buy}" x2="${x1}" y2="${buy}" stroke="var(--grey)"
-          stroke-width="1" stroke-dasharray="4 4"/>
-    <text x="${x1}" y="${buy - 6}" text-anchor="end" font-size="8.5" fill="var(--grey)"
-          font-weight="600" letter-spacing=".08em">BUYING LINE</text>
-    <!-- impulse -->
-    <path d="M${px(0)} ${py(0.06)} C${px(.18)} ${py(.16)} ${px(.3)} ${py(.5)} ${px(.44)} ${py(.62)}
-             C${px(.54)} ${py(.72)} ${px(.58)} ${py(.94)} ${peakX} ${py(1)}
-             C${px(.74)} ${py(.86)} ${px(.84)} ${py(.42)} ${px(1)} ${py(.2)}"
+
+    <line x1="${x0}" y1="${py(BUY)}" x2="${x1}" y2="${py(BUY)}"
+          stroke="var(--grey)" stroke-width="1" stroke-dasharray="4 4"/>
+    <text x="${x0 + 5}" y="${py(BUY) - 6}" text-anchor="start" font-size="8.5"
+          fill="var(--grey)" font-weight="700" letter-spacing=".08em">BUYING LINE</text>
+
+    <path d="M${px(0)} ${py(.05)}
+             C${px(.12)} ${py(.14)} ${px(.24)} ${py(.38)} ${px(.36)} ${py(.56)}
+             C${px(.43)} ${py(.70)} ${px(.47)} ${py(.81)} ${px(PX)} ${py(PEAK)}
+             C${px(.57)} ${py(.75)} ${px(.66)} ${py(.50)} ${px(.74)} ${py(DIP)}
+             C${px(.83)} ${py(.40)} ${px(.92)} ${py(.66)} ${px(1)} ${py(END)}"
           fill="none" stroke="var(--blue)" stroke-width="2.5" stroke-linecap="round"/>
-    <!-- the close sits on the peak -->
-    <circle cx="${peakX}" cy="${py(1)}" r="4.5" fill="var(--blue)"/>
-    <text x="${peakX}" y="${py(1) - 10}" text-anchor="middle" font-size="10"
+
+    <circle cx="${px(PX)}" cy="${py(PEAK)}" r="4.5" fill="var(--blue)"/>
+    <text x="${px(PX)}" y="${py(PEAK) - 11}" text-anchor="middle" font-size="10"
           font-weight="700" fill="var(--ink)">CLOSE</text>
-    <text x="${px(.93)}" y="${py(.12)}" text-anchor="end" font-size="9"
-          fill="var(--grey)" font-style="italic">remorse &#8212; stay &amp; chat</text>
-    <!-- what raises it, left edge -->
-    ${[['presentation',.62],['short story',.36],['intro',.12]].map(([t,f]) =>
-      `<text x="${x0 - 5}" y="${py(f) + 3}" text-anchor="end" font-size="8.5" fill="var(--grey)">${t}</text>`).join('')}
-    <!-- and along the bottom -->
-    <text x="${px(.5)}" y="${y0 + 15}" text-anchor="middle" font-size="8.5"
-          fill="var(--grey)" font-weight="600" letter-spacing=".1em">SEE &#183; Q &#183; Q &#183; HOTSPOTS</text>
-    <text x="${px(.5)}" y="${y0 + 28}" text-anchor="middle" font-size="8.5"
+
+    <!-- the fall after the close, and the recovery that follows it -->
+    <text x="${px(.60)}" y="${py(.20)}" text-anchor="middle" font-size="8.5"
+          fill="var(--grey)" font-style="italic">buyer&#8217;s remorse</text>
+    <text x="${px(1)}" y="${py(.30)}" text-anchor="end" font-size="8.5"
+          fill="var(--blue)" font-style="italic" font-weight="600">you stay &amp; chat</text>
+
+    ${[['presentation',.66],['short story',.38],['intro',.10]].map(([t,f]) =>
+      `<text x="${x0 - 6}" y="${py(f) + 3}" text-anchor="end" font-size="8.5" fill="var(--grey)">${t}</text>`).join('')}
+
+    <text x="${px(.5)}" y="${y0 + 16}" text-anchor="middle" font-size="8.5"
+          fill="var(--grey)" font-weight="700" letter-spacing=".1em">SEE &#183; Q &#183; Q &#183; HOTSPOTS</text>
+    <text x="${px(.5)}" y="${y0 + 29}" text-anchor="middle" font-size="8.5"
           fill="var(--blue)" font-weight="700" letter-spacing=".06em">VOICE INFLECTION LIFTS IT</text>
   </svg>`;
 }
