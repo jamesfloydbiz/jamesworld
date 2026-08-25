@@ -15,7 +15,7 @@ section. Delete a line when it ships.
   3. `site/projects/index.html` — hand-add an `<article class="card">` to the grid;
      cards on that page are written by hand, there is no array
   Then request indexing in Search Console, same as `/references` and `/blueprints`.
-  Leave `/founderschool` and `/builds/tpc/` unlisted — those are live pitch material.
+  Leave `/foundersschool` and `/builds/tpc/` unlisted — those are live pitch material.
 
 ## Site
 
@@ -26,7 +26,7 @@ section. Delete a line when it ships.
   repo into iCloud proper. `print.html` / `print-cover.html` are also untracked
   and only work with those files present.
 - **iCloud `* 2` duplicate directories in `dist/`** (`alpha 2`, `builds 2`,
-  `founderschool 2`, …). `dist/` is gitignored build output and a fresh build
+  `foundersschool 2`, …). `dist/` is gitignored build output and a fresh build
   wipes them, but they are a sign iCloud is racing the build.
 - **Simplification, from the earlier pass**: `brand/` is dead, `images/` holds
   duplicate logos, `models/` is 51 MB and referenced by nothing.
