@@ -61,7 +61,9 @@
   .stage{margin:42px auto 0; max-width:880px;}
   .frame{position:relative; border-radius:14px; overflow:hidden; background:#0B0B0F;
     border:1px solid var(--rule);
-    box-shadow:0 26px 64px -36px rgba(17,24,39,.6);}
+    box-shadow:0 1px 2px rgba(17,24,39,.10),
+               0 8px 22px -8px rgba(17,24,39,.20),
+               0 30px 70px -30px rgba(17,24,39,.55);}
   .slot{position:relative; aspect-ratio:16/9;}
   .slot iframe{position:absolute; inset:0; width:100%; height:100%; border:0;}
   .waiting{position:absolute; inset:0; display:flex; flex-direction:column;
@@ -70,14 +72,25 @@
   .waiting b{color:#F3F4F6; font-weight:600; font-size:15px; letter-spacing:.01em;}
   .waiting a{color:#8E93FF; font-weight:600;}
   .waiting span{font-size:13.5px; max-width:340px; line-height:1.55;}
-  .unmute{position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
-    z-index:5; display:inline-flex; align-items:center; gap:9px;
-    padding:11px 20px 11px 16px; border-radius:99px; cursor:pointer;
-    font-family:inherit; font-size:13.5px; font-weight:600;
+  .unmute{position:absolute; left:14px; bottom:112px; z-index:5;
+    display:inline-flex; align-items:center; gap:8px;
+    padding:10px 16px 10px 13px; border-radius:99px; cursor:pointer;
+    font-family:inherit; font-size:12.5px; font-weight:600;
     color:#fff; background:var(--blue); border:0;
-    box-shadow:0 10px 30px -10px rgba(0,0,239,.8);}
+    opacity:.72; transition:opacity .18s, transform .18s;
+    box-shadow:0 6px 18px -8px rgba(0,0,0,.55);}
+  .unmute:hover,.unmute:focus-visible{opacity:1; transform:translateY(-1px);}
+  /* keep the pill small so it does not sit on his face, but give it a real
+     44px touch target underneath */
+  .unmute::after{content:''; position:absolute; inset:-6px -4px;}
+  @media (max-width:560px){
+    .unmute{left:10px; bottom:110px; width:40px; height:40px; padding:0;
+      border-radius:50%; justify-content:center;}
+    .ulab{display:none;}
+    .unmute svg{width:17px; height:17px;}
+  }
   .unmute[hidden]{display:none;}
-  .unmute svg{width:17px; height:17px; fill:none; stroke:currentColor; stroke-width:2;
+  .unmute svg{width:15px; height:15px; fill:none; stroke:currentColor; stroke-width:2;
     stroke-linecap:round; stroke-linejoin:round;}
   .unmute svg path:first-child{fill:currentColor; stroke:none;}
 
@@ -163,11 +176,11 @@
           <div id="player"></div>
           <button class="unmute" id="unmute" hidden>
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg>
-            Tap for sound
+            <span class="ulab">Tap for sound</span>
           </button>
           <div class="waiting" id="waiting">
             <b>Can't play the video here</b>
-            <span>Watch it on <a href="https://youtu.be/rgOWHgvizns" target="_blank" rel="noopener">YouTube</a> &mdash; or just keep scrolling, it is all on this page.</span>
+            <span>Watch it on <a href="https://youtu.be/w1wBzhHOLHo" target="_blank" rel="noopener">YouTube</a> &mdash; or just keep scrolling, it is all on this page.</span>
           </div>
         </div>
       </div>
@@ -232,7 +245,7 @@
    placeholder by itself. Left empty, the page still reads as finished —
    which is the point, since the page was built before the video.
    ══════════════════════════════════════════════════════════════════════ */
-const YT_ID = 'rgOWHgvizns';
+const YT_ID = 'w1wBzhHOLHo';
 
 const PROOF = [
   { k:'Picture book', t:'The Climbing Machine',
