@@ -49,8 +49,17 @@
     color:var(--blue); font-weight:700; margin:0 0 9px;}
   h1{font-size:clamp(30px,8vw,42px); line-height:1.06; font-weight:700;
     letter-spacing:-.03em; margin:0 0 10px;}
-  .tagline{margin:0; font-size:14.5px; color:var(--grey);}
+  .tagline{margin:0; font-size:14.5px; line-height:1.45; color:var(--grey);}
   .tagline b{color:var(--ink); font-weight:600;}
+  /* Separator gets its own breathing room. No leading space in the markup, so
+     the bar can never wrap onto a line by itself -- it stays with "closes". */
+  .tagline .sep{margin:0 .5em; color:var(--grey); opacity:.5;}
+  /* Longer tagline: ease it down a touch on small phones so it wraps to two
+     tidy lines instead of three. No fixed widths, no nowrap -- it just wraps. */
+  @media (max-width:400px){
+    .tagline{font-size:13.5px;}
+    .tagline .sep{margin:0 .38em;}
+  }
 
   /* ── tabs ─────────────────────────────────────────────────────────── */
   /* Four tabs do not fit a 320px phone at full padding. Tighten there, and
@@ -298,7 +307,7 @@
   <header>
     <p class="eyebrow">Sales training</p>
     <h1>TPC</h1>
-    <p class="tagline"><b>T</b>alks · <b>P</b>resentations · <b>C</b>loses. Five steps, and a count of how far you got.</p>
+    <p class="tagline"><b>t</b>alks <b>p</b>resentations <b>c</b>loses<span class="sep">|</span>Frameworks and Tracking to improve your sales skills</p>
   </header>
 
   <nav class="tabs" role="tablist" aria-label="Sections">
