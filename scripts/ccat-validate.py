@@ -15,7 +15,8 @@ def check(path):
     for q in qs:
         o = q.get("o", [])
         keyed = o if q.get("sub") == "attention" else [str(x).strip().lower() for x in o]
-        if len(o) != 4:                       problems.append((q["id"], f"{len(o)} options"))
+        # five, like the real CCAT — this bank ran on four until Aug 2026
+        if len(o) != 5:                       problems.append((q["id"], f"{len(o)} options"))
         # "which one is DIFFERENT" shows three matching figures on purpose —
         # that repetition is the question, not a defect.
         if q.get("sub") != "oddfigure" and len(set(keyed)) != len(o):
