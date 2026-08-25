@@ -271,6 +271,7 @@
   .sessionbar .grow{flex:1; min-width:0;}
   .btn-sm{padding:11px 16px; min-height:44px; font-size:13.5px;}
   .marknote{text-align:center; margin:0 0 12px;}
+  .legend-link{flex:none; font-size:12.5px; padding:11px 4px;}
   .marknote .jump{font-size:12px; min-height:44px; padding:11px 4px;}
   .counts{display:grid; grid-template-columns:1fr 1fr; gap:9px; margin:0 0 12px;}
   @media (min-width:560px){ .counts{grid-template-columns:repeat(3,1fr);} }
@@ -480,8 +481,21 @@
     <p class="muted" style="margin:0 0 22px;">The five steps are the frame. This is
        everything that makes them land &mdash; read one, go run it, come back.</p>
 
+    <div class="step" id="g-marks">
+      <h3><span class="n">1</span>The Marks</h3>
+      <p style="margin:0 0 14px;font-size:14.5px;color:var(--grey);">How a shift gets logged
+         on paper: one mark beside each conversation, written the second it ends. The
+         tracker is this legend with the arithmetic done for you.</p>
+      <div id="legend"></div>
+      <p class="wrong" style="margin-top:14px;"><b>Why it matters:</b> a tally of sales
+         tells you how you did. A tally of <em>how each one ended</em> tells you what to
+         change. Five X's is a different shift from five Q's, and they need opposite
+         fixes.</p>
+      <p style="margin-top:16px;"><button class="btn btn-p" type="button" data-goto="track">Open the tracker</button></p>
+    </div>
+
     <div class="step" id="g-fugi">
-      <h3><span class="n">F</span>FUGI</h3>
+      <h3><span class="n">2</span>FUGI</h3>
       <p style="margin:0 0 14px;font-size:14.5px;color:var(--grey);">Four levers. You do
          not pull all four &mdash; you read the person in front of you and pick the one
          they are already leaning towards.</p>
@@ -513,7 +527,7 @@
     </div>
 
     <div class="step" id="g-objections">
-      <h3><span class="n">2</span>Objection handling</h3>
+      <h3><span class="n">3</span>Objection handling</h3>
       <p style="margin:0 0 14px;font-size:14.5px;color:var(--grey);">Step 2 said a no is a
          no and to move on. That is true while you are learning the frame. Once the frame
          is automatic, most nos are not nos &mdash; they are one specific thing in the way.</p>
@@ -595,7 +609,7 @@
     </div>
 
     <div class="step" id="g-impulse">
-      <h3><span class="n">3</span>The Impulse Curve</h3>
+      <h3><span class="n">4</span>The Impulse Curve</h3>
       <p style="margin:0 0 6px;font-size:14.5px;color:var(--grey);">Their willingness to buy
          is not flat. It climbs while you talk, peaks, and then falls.</p>
       <div id="curve"></div>
@@ -635,7 +649,7 @@
     </div>
 
     <div class="step" id="g-impacts">
-      <h3><span class="n">4</span>Pitch &middot; Pace &middot; Attitude</h3>
+      <h3><span class="n">5</span>Pitch &middot; Pace &middot; Attitude</h3>
       <p style="margin:0 0 14px;font-size:14.5px;color:var(--grey);">Three inputs. Your
          numbers at the end of a shift tell you which one was off.</p>
       <details>
@@ -666,7 +680,8 @@
     </div>
 
     <div class="step" id="g-koolaid">
-      <h3><span class="n">5</span>The Kool-Aid Mix</h3>
+      <h3><span class="n">6</span>The Kool-Aid Mix</h3>
+      <div id="koolaid"></div>
       <p style="margin:0 0 14px;font-size:14.5px;color:var(--grey);">The last card told you
          which of the three is short. This one is why you cannot fix it by doing more of
          whichever one you are already good at.</p>
@@ -715,29 +730,33 @@
     </div>
 
     <div class="step" id="g-gumball">
-      <h3><span class="n">6</span>The Gumball Theory</h3>
+      <h3><span class="n">7</span>The Gumball Theory</h3>
+      <div id="gumball"></div>
       <details>
-        <summary><span class="q">Ten machines, ten quarters. How do you spend them?</span></summary>
+        <summary><span class="q">You want the green gumball. Ten machines, ten quarters. How do you spend them?</span></summary>
         <div class="reveal">
           <p class="say">&ldquo;Best chance statistically is to put all of your quarters in
              one machine.&rdquo;</p>
-          <p>The machine is <strong>your pitch</strong>. Run the same one, over and over,
-             and every conversation is another quarter into the same machine &mdash; so the
-             numbers coming out of it actually mean something.</p>
-          <p>Change your words every time and you have not run one experiment forty times.
-             You have run forty experiments once each, and <strong>you have changed the
-             statistics of it working</strong>. You cannot tell whether the pitch is bad or
-             whether that one guy was in a hurry, because nothing was held still long
-             enough to measure.</p>
+          <p>Every machine holds a different mix, and you cannot see the mix from outside.
+             The green one is a sale. You are not trying to visit machines, you are trying
+             to <strong>pull as many greens as possible</strong>.</p>
+          <p>Spread ten quarters over ten machines and you learn nothing about any of them
+             &mdash; you get ten single pulls and ten unrelated results. Put ten into one
+             and you find out what that machine actually gives you, and you are still
+             pulling while everyone else is walking between machines.</p>
         </div>
       </details>
       <details>
-        <summary><span class="q">So when are you allowed to change it?</span></summary>
+        <summary><span class="q">What is the machine, on a pier?</span></summary>
         <div class="reveal">
-          <p>After enough quarters to know. Change one thing, run it the same number of
-             times, compare. That is a different machine, tested properly &mdash; not
-             fidgeting mid-shift because the last two said no.</p>
-          <p>Two nos in a row feels like evidence. It is not. It is two quarters.</p>
+          <p><strong>Your pitch.</strong> Same words, same order, every time &mdash; each
+             conversation is another quarter into the same machine.</p>
+          <p>Change your words every conversation and you have not run one experiment forty
+             times, you have run forty experiments once each. Then you cannot tell whether
+             the pitch is bad or whether that one guy was just in a hurry.</p>
+          <p>Change it eventually, yes &mdash; but on purpose, one thing at a time, after
+             enough quarters to know. <strong>Two nos in a row feels like evidence. It is
+             two quarters.</strong></p>
         </div>
       </details>
       <p class="wrong"><b>This is why the tracker exists.</b> A close rate only means
@@ -745,18 +764,6 @@
          then change one thing on purpose.</p>
     </div>
 
-    <div class="step" id="g-marks">
-      <h3><span class="n">7</span>The Marks</h3>
-      <p style="margin:0 0 14px;font-size:14.5px;color:var(--grey);">How a shift gets logged
-         on paper: one mark beside each conversation, written the second it ends. The
-         tracker is this legend with the arithmetic done for you.</p>
-      <div id="legend"></div>
-      <p class="wrong" style="margin-top:14px;"><b>Why it matters:</b> a tally of sales
-         tells you how you did. A tally of <em>how each one ended</em> tells you what to
-         change. Five X's is a different shift from five Q's, and they need opposite
-         fixes.</p>
-      <p style="margin-top:16px;"><button class="btn btn-p" type="button" data-goto="track">Open the tracker</button></p>
-    </div>
 
   </section>
 
@@ -957,6 +964,80 @@ function sparkline(vals, w=260, h=40){
    Both render once at boot; the rest of the tab is static markup.
    ══════════════════════════════════════════════════════════════════════ */
 
+
+/* The Kool-Aid diagram off the notebook page, drawn as he drew it: three
+   ingredients on the left, braced in overlapping pairs into the two things
+   that go wrong, and those braced again into the third. */
+function koolaidDiagram(){
+  const W = 360, H = 176;
+  const brace = (x, y1, y2, out) => {
+    const mid = (y1 + y2) / 2;
+    return `<path d="M${x} ${y1} Q${x + 11} ${y1} ${x + 13} ${mid} Q${x + 11} ${y2} ${x} ${y2}"
+      fill="none" stroke="var(--blue)" stroke-width="1.6" stroke-linecap="round"/>`;
+  };
+  const ing = (y, t) => `<text x="8" y="${y + 4}" font-size="12.5" font-weight="600" fill="var(--ink)">${t}</text>`;
+  const out = (x, y, t, sub) => `
+    <text x="${x}" y="${y + 3}" font-size="12.5" font-weight="700" fill="var(--blue)">${t}</text>
+    <text x="${x}" y="${y + 16}" font-size="9" fill="var(--grey)">${sub}</text>`;
+  return `
+  <svg viewBox="0 0 ${W} ${H}" width="100%" preserveAspectRatio="xMidYMid meet"
+       role="img" aria-label="Kool-Aid mix, water and sugar braced in pairs into bitter water and sweet water, and those braced again into powder."
+       style="max-width:430px;display:block;margin:8px auto 14px;">
+    ${ing(32,'Kool-Aid Mix')}${ing(74,'Water')}${ing(116,'Sugar')}
+    ${brace(104, 24, 66)}${brace(104, 66, 108)}
+    ${out(124, 40, 'Bitter Water', 'no sugar in it')}
+    ${out(124, 92, 'Sweet water', 'no mix in it')}
+    ${brace(246, 34, 96)}
+    ${out(266, 62, 'Powder', 'no water in it')}
+  </svg>`;
+}
+
+/* Three machines, same as the page. The blue gumballs are the ones you want;
+   every machine has a different share of them and you cannot see which from
+   outside. All your quarters go in one. */
+function gumballDiagram(){
+  const W = 360, H = 190;
+  // fixed layouts so the picture is the same every visit
+  const fills = [
+    [0,1,0,0,2,0,1,0,0,0,0,1],
+    [1,0,1,0,1,0,0,1,2,1,0,1],
+    [0,0,0,1,0,0,0,0,1,0,2,0],
+  ];
+  const machine = (cx, i, chosen) => {
+    const top = 20, r = 30, gy = top + r;
+    const balls = fills[i].map((v, k) => {
+      const a = (k / 12) * Math.PI * 2, rr = k % 3 === 0 ? 12 : 20;
+      const x = cx + Math.cos(a) * rr, y = gy + Math.sin(a) * rr;
+      // two states only: the one you want, and everything else
+      const col = v === 1 ? 'var(--blue)' : '#D5D8E0';
+      return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="4.1" fill="${col}"/>`;
+    }).join('');
+    const op = chosen ? 1 : .38;
+    return `<g opacity="${op}">
+      <circle cx="${cx}" cy="${gy}" r="${r}" fill="#fff" stroke="var(--ink)" stroke-width="1.6"/>
+      ${balls}
+      <path d="M${cx - 20} ${gy + r - 3} L${cx - 26} ${gy + r + 46} L${cx + 26} ${gy + r + 46} L${cx + 20} ${gy + r - 3} Z"
+            fill="#fff" stroke="var(--ink)" stroke-width="1.6" stroke-linejoin="round"/>
+      <rect x="${cx - 7}" y="${gy + r + 24}" width="14" height="12" rx="2" fill="#fff" stroke="var(--ink)" stroke-width="1.4"/>
+    </g>${chosen ? `
+      <g>
+        <circle cx="${cx}" cy="${gy + r + 62}" r="6.5" fill="none" stroke="var(--blue)" stroke-width="1.6"/>
+        <circle cx="${cx - 15}" cy="${gy + r + 62}" r="6.5" fill="none" stroke="var(--blue)" stroke-width="1.6"/>
+        <circle cx="${cx + 15}" cy="${gy + r + 62}" r="6.5" fill="none" stroke="var(--blue)" stroke-width="1.6"/>
+        <text x="${cx}" y="${gy + r + 84}" text-anchor="middle" font-size="9" font-weight="700"
+              letter-spacing=".08em" fill="var(--blue)">ALL YOUR QUARTERS</text>
+      </g>` : ''}`;
+  };
+  return `
+  <svg viewBox="0 0 ${W} ${H}" width="100%" preserveAspectRatio="xMidYMid meet"
+       role="img" aria-label="Three gumball machines holding a mix of gumballs. Only the middle one is being used, and all the quarters go into it."
+       style="max-width:430px;display:block;margin:8px auto 12px;">
+    ${machine(64, 0, false)}${machine(180, 1, true)}${machine(296, 2, false)}
+    <circle cx="14" cy="182" r="4.1" fill="var(--blue)"/>
+    <text x="24" y="185.5" font-size="9" fill="var(--grey)">= a sale. Every machine holds a different share of them, and you cannot see it from outside.</text>
+  </svg>`;
+}
+
 /* The impulse curve off the notebook page: climbing through intro, short story
    and presentation to a peak at the close, then falling away into buyer's
    remorse. Inline SVG, no library, same approach as sparkline(). */
@@ -1014,7 +1095,9 @@ function markLegend(){
     </tr>`).join('')}</tbody></table>`;
 }
 
-document.getElementById('curve').innerHTML  = impulseCurve();
+document.getElementById('curve').innerHTML   = impulseCurve();
+document.getElementById('koolaid').innerHTML = koolaidDiagram();
+document.getElementById('gumball').innerHTML = gumballDiagram();
 document.getElementById('legend').innerHTML = markLegend();
 
 /* ══════════════════════════════════════════════════════════════════════
@@ -1077,6 +1160,7 @@ function renderTrack(){
       <div class="grow">
         <div class="tiny">${LIVE.place ? esc(LIVE.place) + ' &middot; ' : ''}from ${clock(LIVE.start)}</div>
       </div>
+      <button class="jump legend-link" data-goto="growth" data-card="g-marks" type="button">The marks</button>
       <button class="btn btn-sm" id="end" type="button">End</button>
     </div>
 
@@ -1090,8 +1174,7 @@ function renderTrack(){
         </button>`).join('')}
     </div>
 
-    <p class="tiny marknote">One mark per conversation &mdash; how that one ended.
-       <button class="jump" data-goto="growth" data-card="g-marks" type="button">The legend</button></p>
+    <p class="tiny marknote">One mark per conversation &mdash; how that one ended.</p>
 
     <div class="row" style="justify-content:space-between;margin:0 0 20px;">
       <button class="btn" id="undo" type="button" ${LIVE.log.length ? '' : 'disabled'}>
