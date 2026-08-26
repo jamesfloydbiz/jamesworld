@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Derby — times tables at a gallop</title>
-<meta name="description" content="A horse race that measures how fast you can recall your times tables. The horse moves because you answered — its speed is your recall rate, and what you race is your own fluency from last time.">
+<title>Derby — fact fluency at a gallop</title>
+<meta name="description" content="A horse race that measures how fast you can recall a fact — times tables, squares, cubes or primes. The horse moves because you answered: its speed is your recall rate, and what you race is your own fluency from last time.">
 <link rel="canonical" href="https://jamesfloyds.world/builds/derby/">
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#0a0a0a">
@@ -118,6 +118,10 @@
   /* ══ KEYPAD ══════════════════════════════════════════════════════════ */
   .pad{display:grid; grid-template-columns:repeat(3,1fr); gap:8px;
     max-width:330px; margin:16px auto 0;}
+  /* a yes/no set has one keystroke, not four, so it gets two big targets */
+  .pad2{grid-template-columns:repeat(2,1fr);}
+  .pad2 .key{min-height:72px; font-size:19px;}
+  .key.no{background:#1a1414; border-color:#7f1d1d; color:#fca5a5; font-weight:700;}
   .key{appearance:none; border:1px solid var(--border); background:#111;
     color:var(--fg); border-radius:10px; min-height:56px; font-size:22px;
     font-weight:600; cursor:pointer; font-variant-numeric:tabular-nums;
@@ -147,7 +151,48 @@
     .entry{font-size:24px; margin-top:6px;}
   }
 
+  /* A phone held sideways has about 375px of height, and a track stacked on
+     top of a keypad has never fitted in that — the ✓ key sat 80px under the
+     fold. Shrinking the keys would only trade one problem for a worse one, so
+     landscape puts the keypad BESIDE the race instead, which is roomier than
+     portrait rather than tighter. */
+  @media (max-height:470px) and (min-aspect-ratio:1/1){
+    body.racing header{padding:34px 0 0;}
+    body.racing #raceBody{
+      display:grid; grid-template-columns:minmax(0,1fr) minmax(210px,290px);
+      grid-template-rows:auto auto 1fr; column-gap:14px; align-items:start;
+    }
+    body.racing #raceBody > .track{grid-column:1; grid-row:1; margin-bottom:6px;}
+    body.racing #raceBody > .miss {grid-column:1; grid-row:2; margin-bottom:0;}
+    body.racing #raceBody > .pad  {grid-column:2; grid-row:1 / span 3;
+      margin:0; max-width:none; gap:7px;}
+    body.racing #raceBody > .pad .key{min-height:52px;}
+    body.racing #raceBody > .pad2 .key{min-height:112px;}
+    body.racing #raceBody > p{grid-column:1; grid-row:3; margin-top:6px;}
+  }
+
   /* ══ MASTERY ═════════════════════════════════════════════════════════ */
+  /* The board used to be a bare field of squares with no axes and no key,
+     which is fair enough to not understand. It has both now. */
+  .board{display:grid; gap:2px; margin:10px 0 2px; max-width:460px;}
+  .board .hd{font-size:8.5px; line-height:1; color:var(--dim); text-align:center;
+    align-self:center; font-variant-numeric:tabular-nums;}
+  .board .cn{display:flex; align-items:center; justify-content:center;
+    font-size:8.5px; color:rgba(255,255,255,.55); font-variant-numeric:tabular-nums;}
+  .board .cell.mastered .cn{color:rgba(0,0,0,.72);}
+  .board .cn.yes{font-weight:700; color:rgba(255,255,255,.95);}
+  .board .cell.mastered .cn.yes{color:#000;}
+  .board .cn.no{color:rgba(255,255,255,.34);}
+  .board .cell.mastered .cn.no{color:rgba(0,0,0,.5);}
+  .legend{display:flex; flex-wrap:wrap; gap:6px 14px; font-size:11px;
+    color:var(--dim); margin:10px 0 0;}
+  .legend span{display:inline-flex; align-items:center; gap:6px;}
+  .legend i{width:11px; height:11px; border-radius:2px; display:inline-block; flex:none;}
+  .chartwrap{overflow-x:auto; margin:6px 0 0;}
+  .chartwrap svg{display:block; width:100%; min-width:240px; height:auto;}
+  .setrow{display:flex; flex-wrap:wrap; gap:8px; margin:2px 0 0;}
+  .setrow > div{flex:1 1 120px; border:1px solid var(--border); border-radius:8px; padding:9px 11px;}
+  .setrow .n{font-size:19px; font-weight:700; font-variant-numeric:tabular-nums;}
   .gridfacts{display:grid; grid-template-columns:repeat(13,1fr); gap:3px;
     max-width:460px; margin:10px 0 4px;}
   .cell{aspect-ratio:1; border-radius:2px; background:#1b1b1b;
@@ -210,7 +255,7 @@
 
   <nav class="tabs" role="tablist" aria-label="Sections">
     <button class="tab on" data-tab="race" type="button" role="tab" aria-selected="true" aria-controls="v-race">Race</button>
-    <button class="tab" data-tab="form" type="button" role="tab" aria-selected="false" aria-controls="v-form">Form</button>
+    <button class="tab" data-tab="form" type="button" role="tab" aria-selected="false" aria-controls="v-form">Stats</button>
     <button class="tab" data-tab="method" type="button" role="tab" aria-selected="false" aria-controls="v-method">Method</button>
   </nav>
 
@@ -234,7 +279,12 @@
    recalled it, so it does not count toward mastery.
    ══════════════════════════════════════════════════════════════════════ */
 
-const TRACK      = 40;      // facts per race
+/* Track length per set. Forty draws over twelve cubes is three and a bit
+   passes at each one inside a single sitting, which is massing — the thing
+   the day-spacing exists to avoid. It stays fixed WITHIN a set, which is all
+   a ghost needs to mean anything. */
+const TRACK_BY = { mult:40, primes:40, squares:30, cubes:24 };
+const trackLen = () => TRACK_BY[PREFS.set] || 40;
 const FLUENT_MS  = 3000;    // above this you computed it; it does not count
 const MASTER_HITS= 3;       // qualifying hits needed
 const MASTER_DAYS= 3;       // ...spread over this many distinct days
@@ -350,10 +400,56 @@ const GENERIC = {
   12:"×12 is (×10) + (×2).",
   13:"×13 is (×10) + (×3). Split it every time — nobody memorises the 13s whole.",
 };
-function hintFor(a, b){
+function multHint(a, b){
   return HINT[a+'x'+b] || HINT[b+'x'+a]
       || GENERIC[b] || GENERIC[a]
       || `Rebuild from a neighbour: ${a}×${b-1} = ${a*(b-1)}, plus one more ${a} → ${a*b}.`;
+}
+/* Squares, cubes and primes were added on James's ask. Multiplication keeps its
+   bare ids ("7x8") so every record already on disk goes on working untouched;
+   every later set is prefixed, so nothing can ever collide with it. */
+const SQ_HINT = {
+  11:"121. The ×11 pattern holds: 1, 2, 1.",
+  12:"144. Twelve dozen — a gross.",
+  13:"169.",
+  14:"196. Or 200 − 4, which is (15² − 15 − 14).",
+  15:"225. Anything ending in 5: take the tens digit, times the next one up — 1×2 = 2 — then stick 25 on. 225.",
+  16:"256. Also 2⁸, the one every programmer knows.",
+  17:"289.",
+  18:"324. (20 − 2)² = 400 − 80 + 4.",
+  19:"361. (20 − 1)² = 400 − 40 + 1.",
+  20:"400.",
+  25:"625. Ends in 5, so: 2×3 = 6, then 25 → 625.",
+};
+const CU_HINT = {
+  6:"216. Also 6³ = 6×6×6, and 216 is the number of outcomes on three dice.",
+  7:"343. 7² = 49, ×7 → 343. It reads as 3-4-3.",
+  8:"512. 2⁹, so it's 256 doubled.",
+  9:"729. 3⁶ — 9² = 81, ×9 → 729.",
+  11:"1331. The ×11 pattern again: 1, 3, 3, 1.",
+  12:"1728. The cubic inches in a cubic foot.",
+};
+const isPrime = n => { if (n < 2) return false; if (n % 2 === 0) return n === 2;
+  for (let d = 3; d*d <= n; d += 2) if (n % d === 0) return false; return true; };
+function primeHint(n){
+  if (!isPrime(n)){
+    for (let d = 2; d*d <= n; d++) if (n % d === 0)
+      return `No. ${n} = ${d} × ${n/d}, so it has a factor other than 1 and itself.`;
+    return `No.`;
+  }
+  const root = Math.floor(Math.sqrt(n));
+  const tests = [2,3,5,7,11,13,17,19].filter(d => d <= root);
+  return tests.length
+    ? `Yes. You only have to test up to √${n} ≈ ${root} — ${tests.join(', ')} — and none of them divide it.`
+    : `Yes. Below 4 there is nothing to test: 2 and 3 are prime by inspection.`;
+}
+function hintFor(f){
+  if (f.set === 'squares') return SQ_HINT[f.n]
+    || `${f.n}² = ${f.ans}. Build it off the one below: ${f.n-1}² = ${(f.n-1)*(f.n-1)}, plus ${f.n-1}, plus ${f.n}.`;
+  if (f.set === 'cubes') return CU_HINT[f.n]
+    || `${f.n}³ = ${f.n}² × ${f.n} = ${f.n*f.n} × ${f.n} = ${f.ans}.`;
+  if (f.set === 'primes') return primeHint(f.n);
+  return multHint(f.a, f.b);
 }
 
 /* The 13s are in because James asked for them. They are the first row past
@@ -361,23 +457,56 @@ function hintFor(a, b){
    count that used to read /144 now reads off MAXT. */
 const MAXT  = 13;
 const GRIDN = MAXT * MAXT;
-const FACTS = [];
+const SQ_MAX = 25, CU_MAX = 12, PR_MAX = 100;
+
+const ALL = { mult:[], squares:[], cubes:[], primes:[] };
 for (let a = 1; a <= MAXT; a++) for (let b = 1; b <= MAXT; b++)
-  FACTS.push({ id: a+'x'+b, a, b, ans: a*b, q: a+' × '+b });
-const FACT = {}; FACTS.forEach(f => { FACT[f.id] = f; });
+  ALL.mult.push({ id:a+'x'+b, set:'mult', kind:'num', a, b, ans:a*b, q:a+' × '+b });
+for (let n = 1; n <= SQ_MAX; n++)
+  ALL.squares.push({ id:'sq'+n, set:'squares', kind:'num', n, ans:n*n, q:n+'²' });
+for (let n = 1; n <= CU_MAX; n++)
+  ALL.cubes.push({ id:'cu'+n, set:'cubes', kind:'num', n, ans:n*n*n, q:n+'³' });
+for (let n = 2; n <= PR_MAX; n++)
+  ALL.primes.push({ id:'pr'+n, set:'primes', kind:'bool', n, ans:isPrime(n)?1:0, q:'Is '+n+' prime?' });
+
+const SETS = [
+  { key:'mult',    name:'Times tables', sub:'1×1 to 13×13',      n:ALL.mult.length },
+  { key:'squares', name:'Squares',      sub:'1² to '+SQ_MAX+'²', n:ALL.squares.length },
+  { key:'cubes',   name:'Cubes',        sub:'1³ to '+CU_MAX+'³', n:ALL.cubes.length },
+  { key:'primes',  name:'Primes',       sub:'is it prime? 2–'+PR_MAX, n:ALL.primes.length },
+];
+const setDef = k => SETS.find(x => x.key === k) || SETS[0];
+const FACT = {};
+[].concat(ALL.mult, ALL.squares, ALL.cubes, ALL.primes).forEach(f => { FACT[f.id] = f; });
+/* the facts of whatever set you are racing — everything downstream reads this
+   rather than a single global list, which is what made one set possible */
+const setFacts = () => ALL[PREFS.set] || ALL.mult;
+
+/* Primes is a yes/no question, so a guess pays 50%. Three lucky taps is a one
+   in eight chance of retiring a fact you cannot actually do; four makes it one
+   in sixteen, and it still has to clear the 3s bar on three separate days. */
+const masterHits = f => (typeof f === 'string' ? FACT[f] : f) &&
+  ((typeof f === 'string' ? FACT[f] : f).set === 'primes') ? MASTER_HITS + 1 : MASTER_HITS;
 
 /* The same fact asked four ways. Retrieval is cue-specific, so pulling 7×8 from
    "7 × ? = 56" exercises a different route to the same fact than "7 × 8 = ?" —
    a more flexible memory than drilling one identical prompt, and it hands us
    division for nothing. The stored record is keyed by the fact, not the cue, so
    none of this disturbs data already on disk. */
-const CUES = ['ab','a_','_b','div'];
+const CUES = ['ab','a_','_b','div','sq','sqrt','cu','cbrt','is'];
+/* `eq` means the render tacks a faded "= ?" on the end; `bool` swaps the keypad
+   for two buttons. Everything else about a draw is identical across sets. */
 function askAs(f, cue){
   switch (cue){
-    case 'a_':  return { text: f.a + ' × ? = ' + f.ans, ans: f.b };
-    case '_b':  return { text: '? × ' + f.b + ' = ' + f.ans, ans: f.a };
-    case 'div': return { text: f.ans + ' ÷ ' + f.a + ' = ?', ans: f.b };
-    default:    return { text: f.a + ' × ' + f.b, ans: f.ans };
+    case 'a_':   return { text: f.a + ' × ? = ' + f.ans, ans: f.b };
+    case '_b':   return { text: '? × ' + f.b + ' = ' + f.ans, ans: f.a };
+    case 'div':  return { text: f.ans + ' ÷ ' + f.a + ' = ?', ans: f.b };
+    case 'sq':   return { text: f.n + '²', ans: f.ans, eq:true };
+    case 'sqrt': return { text: '√' + f.ans, ans: f.n, eq:true };
+    case 'cu':   return { text: f.n + '³', ans: f.ans, eq:true };
+    case 'cbrt': return { text: '∛' + f.ans, ans: f.n, eq:true };
+    case 'is':   return { text: 'Is ' + f.n + ' prime?', ans: f.ans, bool:true };
+    default:     return { text: f.a + ' × ' + f.b, ans: f.ans, eq:true };
   }
 }
 /* prefer a cue this fact has not been asked in lately.
@@ -393,13 +522,13 @@ function pickCue(f, rolling){
   let allowed = activeCues();
   if (rolling && rolling.length >= 4){
     const acc = rolling.reduce((a,b) => a+b, 0) / rolling.length;
-    if (acc < BAND) allowed = ['ab'];             // struggling: plainest form only
+    if (acc < BAND) allowed = [allowed[0]];       // struggling: plainest form only
   }
   const fresh2 = fresh.filter(c => allowed.includes(c));
   const pool = fresh2.length ? fresh2 : allowed;
-  // a fact still being learned is asked plainly first — the ×-form is the
+  // a fact still being learned is asked plainly first — the plain form is the
   // one being committed; the variants come once there is something to vary
-  if (stateOf(f.id) === 'new' || stateOf(f.id) === 'learning') return 'ab';
+  if (stateOf(f.id) === 'new' || stateOf(f.id) === 'learning') return allowed[0];
   return pool[Math.floor(Math.random() * pool.length)];
 }
 
@@ -429,7 +558,11 @@ const rec = id => RECS[id] || (RECS[id] = { hits:[], seen:0, miss:0, cues:[] });
    multiplication only when offered division as its own set — putting 56 ÷ 7 in
    under the heading of "varied cues" was smuggling it back. The missing-factor
    forms stay on, because 7 × ? = 56 is still multiplication. */
-const DEFAULT_PREFS = { tables:[1,2,3,4,5,6,7,8,9,10,11,12,13], missing:true, division:false };
+const DEFAULT_PREFS = { set:'mult', tables:[1,2,3,4,5,6,7,8,9,10,11,12,13],
+  missing:true, division:false,
+  // the inverse cues start OFF on every set, the same call as division: √144
+  // is a different skill from 12², and picking a set should not smuggle it in
+  sq:{ max:SQ_MAX, root:false }, cu:{ max:CU_MAX, root:false }, pr:{ max:PR_MAX } };
 let PREFS = (() => {
   const r = ls(LS.prefs, {});
   const t = Array.isArray(r.tables) ? r.tables.filter(x => Number.isInteger(x) && x>=1 && x<=MAXT) : null;
@@ -437,16 +570,28 @@ let PREFS = (() => {
   // who had the whole board keeps the whole board rather than quietly losing the
   // new row; anyone who had narrowed it keeps exactly what they chose.
   if (t && t.length === 12 && !t.includes(13)) t.push(13);
-  return { tables: (t && t.length) ? t : DEFAULT_PREFS.tables.slice(),
+  const num = (v, d, lo, hi) => Number.isInteger(v) && v >= lo && v <= hi ? v : d;
+  return { set: SETS.some(x => x.key === r.set) ? r.set : 'mult',
+           tables: (t && t.length) ? t : DEFAULT_PREFS.tables.slice(),
            missing: r.missing !== false,
-           division: r.division === true };
+           division: r.division === true,
+           sq: { max: num(r.sq && r.sq.max, SQ_MAX, 5, SQ_MAX), root: !!(r.sq && r.sq.root) },
+           cu: { max: num(r.cu && r.cu.max, CU_MAX, 4, CU_MAX), root: !!(r.cu && r.cu.root) },
+           pr: { max: num(r.pr && r.pr.max, PR_MAX, 20, PR_MAX) } };
 })();
 function savePrefs(){ save(LS.prefs, PREFS); }
 function activeFacts(){
-  const t = new Set(PREFS.tables);
-  return FACTS.filter(f => t.has(f.a) || t.has(f.b));
+  const F = setFacts();
+  if (PREFS.set === 'mult'){ const t = new Set(PREFS.tables);
+    return F.filter(f => t.has(f.a) || t.has(f.b)); }
+  if (PREFS.set === 'squares') return F.filter(f => f.n <= PREFS.sq.max);
+  if (PREFS.set === 'cubes')   return F.filter(f => f.n <= PREFS.cu.max);
+  return F.filter(f => f.n <= PREFS.pr.max);
 }
 function activeCues(){
+  if (PREFS.set === 'squares') return PREFS.sq.root ? ['sq','sqrt'] : ['sq'];
+  if (PREFS.set === 'cubes')   return PREFS.cu.root ? ['cu','cbrt'] : ['cu'];
+  if (PREFS.set === 'primes')  return ['is'];
   const c = ['ab'];
   if (PREFS.missing)  c.push('a_', '_b');
   if (PREFS.division) c.push('div');
@@ -460,11 +605,11 @@ function stateOf(id){
   const r = RECS[id];
   if (!r || !r.seen) return 'new';
   const q = qualifying(r), days = daysOf(r);
-  if (q.length >= MASTER_HITS && days.size >= MASTER_DAYS) return 'mastered';
+  if (q.length >= masterHits(id) && days.size >= MASTER_DAYS) return 'mastered';
   if (q.length >= 1) return 'review';
   return 'learning';
 }
-const countState = s => FACTS.filter(f => stateOf(f.id) === s).length;
+const countState = s => activeFacts().filter(f => stateOf(f.id) === s).length;
 
 /* ── how likely are you to get this one, right now? ───────────────────
    Crude on purpose: forty answers a race is not enough data to fit anything
@@ -586,7 +731,7 @@ function pickFact(recent, rolling){
    ══════════════════════════════════════════════════════════════════════ */
 let RUNS = (() => ls(LS.runs, []).filter(r =>
   r && typeof r === 'object' && Array.isArray(r.splits) &&
-  typeof r.ms === 'number' && Number.isFinite(r.ms)).slice(-60))();
+  typeof r.ms === 'number' && Number.isFinite(r.ms)).slice(-200))();
 
 const PACERS = [
   { key:'pace3', name:'Bar',   per:3000, silks:'🐎' },   // the fluency threshold
@@ -594,19 +739,18 @@ const PACERS = [
 ];
 /* The class you run in is set by how many facts you have retired, so the
    progression IS the learning state rather than a rosette sitting on top. */
-const CLASSES = [
-  { at:0,   name:'Rookie'   },
-  { at:14,  name:'Bronze'   },
-  { at:42,  name:'Silver'   },
-  { at:84,  name:'Gold'     },
-  { at:127, name:'Platinum' },
-  { at:169, name:'Diamond'  },
-];
+/* Thresholds are shares of the set you are racing, not fixed counts — a set of
+   12 cubes and a set of 169 tables cannot use the same ladder. On the tables
+   these come out at 0/14/42/85/127/169, which is where they already were. */
+const CLASS_NAMES = ['Rookie','Bronze','Silver','Gold','Platinum','Diamond'];
+const CLASS_SHARE = [0, 0.08, 0.25, 0.50, 0.75, 1];
+const classesNow = () => { const n = activeFacts().length;
+  return CLASS_NAMES.map((name,i) => ({ name, at: Math.round(CLASS_SHARE[i] * n) })); };
 function classNow(){
-  const m = countState('mastered');
-  let cur = CLASSES[0];
-  for (const c of CLASSES) if (m >= c.at) cur = c;
-  const next = CLASSES.find(c => c.at > m);
+  const m = countState('mastered'), CL = classesNow();
+  let cur = CL[0];
+  for (const c of CL) if (m >= c.at) cur = c;
+  const next = CL.find(c => c.at > m);
   return { ...cur, mastered:m, next, toGo: next ? next.at - m : 0 };
 }
 
@@ -618,11 +762,14 @@ const fmtClock = ms => { const t=Math.round(ms/100)/10; return t.toFixed(1)+'s';
 let R = null;          // live race, or null
 let padLocked = false;
 
-function bestRun(){ return RUNS.length ? RUNS.reduce((b,r)=> r.ms < b.ms ? r : b) : null; }
-function lastRun(){ return RUNS.length ? RUNS[RUNS.length-1] : null; }
+/* Runs recorded before the sets existed have no `set` and are multiplication,
+   which is the only thing there was — so James's history stays his history. */
+const setRuns = () => RUNS.filter(r => (r.set || 'mult') === PREFS.set);
+function bestRun(){ const R2 = setRuns(); return R2.length ? R2.reduce((b,r)=> r.ms < b.ms ? r : b) : null; }
+function lastRun(){ const R2 = setRuns(); return R2.length ? R2[R2.length-1] : null; }
 
 function startRace(){
-  R = { i:0, entry:'', started:0, qStart:0, recent:[], rolling:[], splits:[], clean:[],
+  R = { len: trackLen(), i:0, entry:'', started:0, qStart:0, recent:[], rolling:[], splits:[], clean:[],
         smooth:0, animFrom:0, animAt:0,
         correct:0, missed:0, fact:null, phase:'run', missFact:null,
         requeue:[], t0:performance.now() };
@@ -633,7 +780,7 @@ function startRace(){
 }
 
 function advance(){                      // one furlong gained
-  R.animFrom = R.smooth == null ? (R.i / TRACK) * WORLD : R.smooth;
+  R.animFrom = R.smooth == null ? (R.i / R.len) * WORLD : R.smooth;
   R.i++;
   R.animAt = performance.now();
 }
@@ -678,7 +825,7 @@ function submit(){
     R.kick = performance.now();          // a shove of camera and speed lines
     snd.surge();
     save(LS.facts, RECS);
-    if (R.i >= TRACK) return finishRace();
+    if (R.i >= R.len) return finishRace();
     nextFact();
     renderRace();
   } else {
@@ -712,40 +859,43 @@ function submitRetype(){
   // track and the ghost, which rides on splits, can never reach the finish.
   R.splits.push(Math.round(performance.now() - R.missStart));
   advance();
-  if (R.i >= TRACK) return finishRace();
+  if (R.i >= R.len) return finishRace();
   nextFact();
   renderRace();
 }
 
 function key(k){
   if (!R) return;
+  // one tap IS the answer on a yes/no set — an explicit submit after a single
+  // keystroke would only add a constant, and it adds it to both outcomes
+  if (k === 'yes' || k === 'no'){ R.entry = k === 'yes' ? '1' : '0'; return submit(); }
   if (k === 'go') return submit();
   if (k === 'del'){ R.entry = R.entry.slice(0,-1); return renderRace(); }
-  if (R.entry.length >= 3) return;
+  if (R.entry.length >= 4) return;
   R.entry += k;
   renderRace();
 }
 
 function finishRace(){
   const total = performance.now() - R.t0;
-  const run = { ts: Date.now(), ms: Math.round(total), correct: R.correct,
+  const run = { ts: Date.now(), set: PREFS.set, ms: Math.round(total), correct: R.correct,
                 missed: R.missed, medianMs: median(R.clean), splits: R.splits };
   const prevBest = bestRun();
-  RUNS.push(run); if (RUNS.length > 60) RUNS.shift();
+  RUNS.push(run); if (RUNS.length > 200) RUNS.shift();
   save(LS.runs, RUNS);
   const pb = !prevBest || run.ms < prevBest.ms;
   clearInterval(hoofTimer);
   snd.crowd(pb ? 2400 : 1400);
   R = null;
   renderRace(run, pb);
-  if (pb && RUNS.length > 1) confetti();
+  if (pb && setRuns().length > 1) confetti();
 }
 
 /* progress along the track, 0..1, for each runner at time t */
 function progressAt(splits, tMs){
   let acc = 0, n = 0;
   for (const s of splits){ if (acc + s > tMs) break; acc += s; n++; }
-  return Math.min(1, n / TRACK);
+  return Math.min(1, n / (R ? R.len : trackLen()));
 }
 function tick(){
   if (!R) return;
@@ -770,6 +920,11 @@ function switchTab(name){
   });
   Object.keys(PANES).forEach(k => { document.getElementById(PANES[k]).hidden = (k !== name); });
   if (name === 'race') renderRace();
+  /* Coming back to Race with no race running must redraw the start screen.
+     Without this you land on the results of the last race — and now that the
+     Stats tab can change the set, those results are for a set you are no
+     longer on, chooser and all. */
+  if (name === 'race' && !R) renderRace();
   if (name === 'form') renderForm();
   if (name === 'method') renderMethod();
   window.scrollTo(0,0);
@@ -893,12 +1048,27 @@ function initTrack(){
 }
 function sizeTrack(){
   if (!cvs) return;
-  const w = cvs.parentElement.clientWidth;
+  const wrap = cvs.parentElement;
+  /* On a really short viewport — a phone held sideways, mostly — the miss card
+     plus a track plus the keypad do not fit, and the keypad is the one you
+     cannot do without. So during a miss the race gets out of the way entirely.
+     It comes straight back the moment you have retyped the fact. */
+  const tiny = (typeof R !== 'undefined' && R && R.phase === 'miss') && window.innerHeight < 520;
+  wrap.style.display = tiny ? 'none' : '';
+  if (tiny) return;
+  const w = wrap.clientWidth;
   // the miss card is the tallest thing on the page, so the track gives way to
   // it rather than pushing the keypad off a small screen
   const miss = (typeof R !== 'undefined' && R && R.phase === 'miss');
-  const share = miss ? 0.16 : 0.40;          // the race carries the question now
-  const h = Math.max(miss ? 100 : 190, Math.min(miss ? 200 : 380,
+  // landscape sits the keypad alongside, so the track may use more of the height
+  const wide = window.innerWidth > window.innerHeight && window.innerHeight < 470;
+  const share = miss ? 0.16 : (wide ? 0.62 : 0.40);
+  /* The floor drops on a short screen. A squares or cubes hint runs a line
+     longer than a times-table one, and on a 568px phone that one line was
+     enough to push the ✓ key under the fold — so the race gives way, as it
+     already does for the miss card generally. */
+  const floor = miss ? (window.innerHeight < 620 ? 84 : 100) : 190;
+  const h = Math.max(wide ? 130 : floor, Math.min(miss ? 200 : 380,
               Math.round(window.innerHeight * share)));
   DPR = Math.min(2, window.devicePixelRatio || 1);
   cvs.width = Math.round(w * DPR); cvs.height = Math.round(h * DPR);
@@ -1027,7 +1197,7 @@ function paintTrack(){
   const runners = [];
   // yours eases toward the furlong you have actually reached, so it runs
   // rather than teleporting one notch per answer
-  const target = (R.i / TRACK) * WORLD;
+  const target = (R.i / R.len) * WORLD;
   const ap = Math.min(1, (now - (R.animAt || 0)) / 420);
   const ae = ap < 0.5 ? 4*ap*ap*ap : 1 - Math.pow(-2*ap + 2, 3)/2;   // easeInOutCubic
   R.smooth = (R.animFrom || 0) + (target - (R.animFrom || 0)) * ae;
@@ -1038,7 +1208,7 @@ function paintTrack(){
   if (g) runners.push({ k:'ghost', name:'last', x:progressAt(g.splits,t)*WORLD, c:SILKS.ghost });
   if (b && b !== g) runners.push({ k:'best', name:'best', x:progressAt(b.splits,t)*WORLD, c:SILKS.best });
   PACERS.forEach(p => runners.push({ k:p.key, name:p.name,
-    x: Math.min(1, t/(p.per*TRACK))*WORLD, c:SILKS.pace }));
+    x: Math.min(1, t/(p.per*R.len))*WORLD, c:SILKS.pace }));
   runners.forEach((r,i) => { r.lane = i; });
   runners.push({ k:'me', name:'you', x:R.smooth, c:SILKS.me, lane:runners.length });
 
@@ -1225,8 +1395,12 @@ function paintTrack(){
 
   /* the field */
   // lanes spread over whatever height we got, and the horses scale with them
-  const top = H * (R.phase === 'miss' ? 0.52 : 0.44);
-  const bot = H * (R.phase === 'miss' ? 0.86 : 0.68);
+  /* A short wide canvas — landscape — puts the question higher up the frame in
+     proportion, so the field has to climb out of it or the horses gallop
+     straight through the digits. */
+  const wideFrame = W > H * 1.5;
+  const top = H * (R.phase === 'miss' ? 0.52 : (wideFrame ? 0.32 : 0.44));
+  const bot = H * (R.phase === 'miss' ? 0.86 : (wideFrame ? 0.54 : 0.68));
   const gap = runners.length > 1 ? (bot - top) / (runners.length - 1) : 0;
   const laneY = l => top + l * gap;
   // Sized off the frame, not off the lane spacing — a five-horse field packed
@@ -1253,14 +1427,14 @@ function paintTrack(){
       const off = x < 0;
       ctx.fillStyle = 'rgba(234,234,234,.30)';
       ctx.font = '9px ui-monospace,monospace';
-      const lab = r.name + ' ' + (Math.abs(r.x - R.smooth)/WORLD*TRACK).toFixed(0) + 'f';
+      const lab = r.name + ' ' + (Math.abs(r.x - R.smooth)/WORLD*R.len).toFixed(0) + 'f';
       ctx.fillText(off ? '◀ ' + lab : lab + ' ▶', off ? 4 : W - 62, y - 4);
     }
   });
 
   // readouts ride the top rail — the foot of the track is the question's now
   if (g){
-    const d = (R.smooth - progressAt(g.splits,t)*WORLD) / WORLD * TRACK;
+    const d = (R.smooth - progressAt(g.splits,t)*WORLD) / WORLD * R.len;
     ctx.fillStyle = d >= 0 ? '#4ade80' : '#f87171';
     ctx.font = 'bold 10px ui-monospace,monospace';
     ctx.fillText(Math.abs(d) < 0.4 ? 'level with last time'
@@ -1268,10 +1442,10 @@ function paintTrack(){
   }
   ctx.fillStyle = 'rgba(234,234,234,.55)';
   ctx.font = '10px ui-monospace,monospace';
-  ctx.fillText(R.i + '/' + TRACK, W - 40, 15);
+  ctx.fillText(R.i + '/' + R.len, W - 40, 15);
 
   const l = document.getElementById('liveSay');
-  if (l && l.dataset.i !== String(R.i)){ l.dataset.i = String(R.i); l.textContent = `${R.i} of ${TRACK}`; }
+  if (l && l.dataset.i !== String(R.i)){ l.dataset.i = String(R.i); l.textContent = `${R.i} of ${R.len}`; }
 }
 
 /* The band, read back to you. Deliberately not a score: it says where the race
@@ -1285,6 +1459,7 @@ function bandCard(run){
   const pct = Math.round(acc * 100);
   const lo = BAND - 0.08, hi = BAND + 0.08;
   const inBand = acc >= lo && acc <= hi;
+  const coin = PREFS.set === 'primes';
   const verdict = inBand
     ? ['In the band', 'About right. Hard enough to be worth the effort, not hard enough to bury you — this is where it moves fastest.']
     : acc > hi
@@ -1309,7 +1484,48 @@ function bandCard(run){
       </div>
       <p class="tiny" style="margin:0 0 10px;">0% &nbsp;—&nbsp; the green band is ${Math.round(lo*100)}–${Math.round(hi*100)}% &nbsp;—&nbsp; 100%</p>
       <p style="font-size:13.5px;color:var(--dim);line-height:1.6;margin:0;">${verdict[1]}</p>
+      ${coin ? `<p class="tiny" style="margin:8px 0 0;">On primes the floor is 50%, not 0 &mdash; it's a yes/no
+        call, so a coin gets half of them. Read the number against that.</p>` : ''}
     </div>`;
+}
+
+/* Each set gets the chooser that suits it: the tables get chips per row, the
+   squares and cubes get a ceiling, primes gets how far up to go. */
+function setOptions(){
+  const count = `<span class="tiny" style="align-self:center;">${activeFacts().length} facts in training</span>`;
+  const cap = (vals, cur) => vals.map(v =>
+    `<button class="chip${cur===v?' on':''}" data-max="${v}" type="button" aria-pressed="${cur===v}">to ${v}</button>`).join('');
+  if (PREFS.set === 'mult') return `
+    <div class="chips" id="tabChips">
+      ${Array.from({length:MAXT}, (_,i) => i+1).map(t =>
+        `<button class="chip${PREFS.tables.includes(t)?' on':''}" data-t="${t}" type="button"
+          aria-pressed="${PREFS.tables.includes(t)}">×${t}</button>`).join('')}
+    </div>
+    <div class="row" style="margin:0 0 12px;">
+      <button class="chip" id="allT" type="button" style="flex:none;">All</button>
+      <button class="chip" id="noneT" type="button" style="flex:none;">×7 only</button>
+      ${count}
+    </div>
+    <div class="chips" style="margin-bottom:14px;">
+      <button class="chip${PREFS.missing?' on':''}" id="cMiss" type="button" aria-pressed="${PREFS.missing}">7 × ? = 56</button>
+      <button class="chip${PREFS.division?' on':''}" id="cDiv" type="button" aria-pressed="${PREFS.division}">56 ÷ 7 = ?</button>
+    </div>`;
+  if (PREFS.set === 'squares') return `
+    <div class="chips">${cap([10,15,20,25], PREFS.sq.max)}</div>
+    <div class="chips" style="margin-bottom:14px;">
+      <button class="chip${PREFS.sq.root?' on':''}" id="sqRoot" type="button" aria-pressed="${PREFS.sq.root}">√144 = ?</button>
+      ${count}
+    </div>`;
+  if (PREFS.set === 'cubes') return `
+    <div class="chips">${cap([5,8,10,12], PREFS.cu.max)}</div>
+    <div class="chips" style="margin-bottom:14px;">
+      <button class="chip${PREFS.cu.root?' on':''}" id="cuRoot" type="button" aria-pressed="${PREFS.cu.root}">∛343 = ?</button>
+      ${count}
+    </div>`;
+  return `
+    <div class="chips" style="margin-bottom:14px;">${cap([20,50,100], PREFS.pr.max)} ${count}</div>
+    <p class="tiny" style="margin:-6px 0 14px;">Two buttons, not a keypad. It's a yes/no call, so a guess pays
+       half the time &mdash; a prime needs ${MASTER_HITS+1} clean answers to retire, not ${MASTER_HITS}.</p>`;
 }
 
 function renderRace(finished, pb){
@@ -1317,7 +1533,7 @@ function renderRace(finished, pb){
   document.body.classList.toggle('racing', !!R);
 
   if (finished){
-    const g = RUNS.length > 1 ? RUNS[RUNS.length-2] : null;
+    const sr = setRuns(); const g = sr.length > 1 ? sr[sr.length-2] : null;
     const delta = g ? g.ms - finished.ms : 0;
     B.innerHTML = `
       <div class="card" style="text-align:center;">
@@ -1343,31 +1559,23 @@ function renderRace(finished, pb){
     const g = lastRun(), b = bestRun();
     B.innerHTML = `
       <div class="card">
-        <p style="margin:0 0 4px;font-size:16px;font-weight:700;">${TRACK} facts. One furlong each.</p>
+        <p style="margin:0 0 4px;font-size:16px;font-weight:700;">${trackLen()} facts. One furlong each.</p>
         <p class="muted" style="margin:0 0 14px;">Type the answer and hit go. Nothing is awarded for being
            right &mdash; the horse moves because you answered, and how fast it moves is how fast you recalled.</p>
         <div class="row" style="margin-bottom:14px;">
           <div><div class="tiny">CLASS</div><div class="big" style="font-size:24px;">${classNow().name}</div>
             <div class="tiny">${classNow().next ? classNow().toGo + ' to ' + classNow().next.name : 'the whole book'}</div></div>
-          <div><div class="tiny">RETIRED</div><div class="big">${countState('mastered')}<span class="muted" style="font-size:15px;">/${GRIDN}</span></div></div>
+          <div><div class="tiny">RETIRED</div><div class="big">${countState('mastered')}<span class="muted" style="font-size:15px;">/${activeFacts().length}</span></div></div>
           ${g ? `<div><div class="tiny">LAST RUN</div><div class="big">${fmtClock(g.ms)}</div></div>` : ''}
           ${b ? `<div><div class="tiny">BEST</div><div class="big" style="color:var(--best)">${fmtClock(b.ms)}</div></div>` : ''}
         </div>
         <div class="sechead"><h2>What are you training?</h2><div class="line"></div></div>
-        <div class="chips" id="tabChips">
-          ${Array.from({length:MAXT}, (_,i) => i+1).map(t =>
-            `<button class="chip${PREFS.tables.includes(t)?' on':''}" data-t="${t}" type="button"
-              aria-pressed="${PREFS.tables.includes(t)}">×${t}</button>`).join('')}
+        <div class="chips" style="margin-bottom:12px;">
+          ${SETS.map(x => `<button class="chip${PREFS.set===x.key?' on':''}" data-set="${x.key}" type="button"
+              aria-pressed="${PREFS.set===x.key}">${x.name}</button>`).join('')}
         </div>
-        <div class="row" style="margin:0 0 12px;">
-          <button class="chip" id="allT" type="button" style="flex:none;">All</button>
-          <button class="chip" id="noneT" type="button" style="flex:none;">×7 only</button>
-          <span class="tiny" style="align-self:center;">${activeFacts().length} facts in training</span>
-        </div>
-        <div class="chips" style="margin-bottom:14px;">
-          <button class="chip${PREFS.missing?' on':''}" id="cMiss" type="button" aria-pressed="${PREFS.missing}">7 × ? = 56</button>
-          <button class="chip${PREFS.division?' on':''}" id="cDiv" type="button" aria-pressed="${PREFS.division}">56 ÷ 7 = ?</button>
-        </div>
+        <p class="tiny" style="margin:-4px 0 12px;">${setDef(PREFS.set).sub}</p>
+        ${setOptions()}
         <div class="row" style="align-items:center;">
           <button class="btn btn-p" id="start" type="button" style="flex:none;">Go to post</button>
           <button class="btn" id="snd" type="button" style="flex:none;" aria-pressed="${soundOn}">${soundOn ? '🔊 Sound on' : '🔇 Sound off'}</button>
@@ -1376,6 +1584,9 @@ function renderRace(finished, pb){
       ${g ? `<p class="tiny" style="text-align:center;">Your last run rides as a ghost. The two grey horses hold
         a steady 3.0s and 2.0s a fact &mdash; pace-setters, not prizes.</p>` : ''}`;
     const redraw = () => { savePrefs(); renderRace(); };
+    B.querySelectorAll('[data-set]').forEach(b => b.addEventListener('click', () => {
+      PREFS.set = b.dataset.set; redraw();
+    }));
     B.querySelectorAll('[data-t]').forEach(b => b.addEventListener('click', () => {
       const t = +b.dataset.t;
       const i = PREFS.tables.indexOf(t);
@@ -1383,10 +1594,20 @@ function renderRace(finished, pb){
       if (!PREFS.tables.length) PREFS.tables = [t];      // never train nothing
       redraw();
     }));
-    document.getElementById('allT').addEventListener('click', () => { PREFS.tables = Array.from({length:MAXT}, (_,i) => i+1); redraw(); });
-    document.getElementById('noneT').addEventListener('click', () => { PREFS.tables = [7]; redraw(); });
-    document.getElementById('cMiss').addEventListener('click', () => { PREFS.missing = !PREFS.missing; redraw(); });
-    document.getElementById('cDiv').addEventListener('click', () => { PREFS.division = !PREFS.division; redraw(); });
+    const on = (id, fn) => { const e = document.getElementById(id); if (e) e.addEventListener('click', fn); };
+    on('allT',  () => { PREFS.tables = Array.from({length:MAXT}, (_,i) => i+1); redraw(); });
+    on('noneT', () => { PREFS.tables = [7]; redraw(); });
+    on('cMiss', () => { PREFS.missing  = !PREFS.missing;  redraw(); });
+    on('cDiv',  () => { PREFS.division = !PREFS.division; redraw(); });
+    on('sqRoot',() => { PREFS.sq.root  = !PREFS.sq.root;  redraw(); });
+    on('cuRoot',() => { PREFS.cu.root  = !PREFS.cu.root;  redraw(); });
+    B.querySelectorAll('[data-max]').forEach(b => b.addEventListener('click', () => {
+      const v = +b.dataset.max;
+      if (PREFS.set === 'squares') PREFS.sq.max = v;
+      else if (PREFS.set === 'cubes') PREFS.cu.max = v;
+      else PREFS.pr.max = v;
+      redraw();
+    }));
     document.getElementById('start').addEventListener('click', startRace);
     document.getElementById('snd').addEventListener('click', e => {
       setSound(!soundOn); e.currentTarget.textContent = soundOn ? '🔊 Sound on' : '🔇 Sound off';
@@ -1400,26 +1621,33 @@ function renderRace(finished, pb){
     <div class="track" id="trackWrap"><canvas id="trackCvs" data-h="196" data-auto="1"
         role="img" aria-label="A horse race. Your horse advances one furlong for each fact you answer."></canvas>
       ${missing ? '' : `<div class="over">
-        <div class="fact">${esc(R.ask.text)}${R.cue === 'ab' ? ' <span style="opacity:.5">=</span> ?' : ''}</div>
+        <div class="fact">${esc(R.ask.text)}${R.ask.eq ? ' <span style="opacity:.5">=</span> ?' : ''}</div>
         <div><span class="entry" id="entryEl">${esc(R.entry) || '&nbsp;'}</span></div>
       </div>`}</div>
     <p class="sr-only" id="liveSay" aria-live="polite"></p>
     ${missing ? `
       <div class="miss">
         <div class="head">✗ ${esc(R.missAsk.text)}</div>
-        <div class="truth">${R.missFact.q} = ${R.missFact.ans}</div>
-        <div class="why">${esc(hintFor(R.missFact.a, R.missFact.b))}</div>
+        <div class="truth">${R.missFact.kind === 'bool'
+          ? R.missFact.n + ' is ' + (R.missFact.ans ? 'prime' : 'not prime')
+          : R.missFact.q + ' = ' + R.missFact.ans}</div>
+        <div class="why">${esc(hintFor(R.missFact))}</div>
         <div class="again">now type it</div>
         <div style="text-align:center;"><span class="entry" id="entryEl">${esc(R.entry) || '&nbsp;'}</span></div>
       </div>`
     : ``}
+    ${(missing ? R.missAsk : R.ask).bool ? `
+    <div class="pad pad2">
+      <button class="key go" data-k="yes" type="button">Prime</button>
+      <button class="key no" data-k="no" type="button">Not prime</button>
+    </div>` : `
     <div class="pad">
       ${[1,2,3,4,5,6,7,8,9].map(n => `<button class="key" data-k="${n}" type="button">${n}</button>`).join('')}
       <button class="key del" data-k="del" type="button" aria-label="Delete">⌫</button>
       <button class="key" data-k="0" type="button">0</button>
       <button class="key go" data-k="go" type="button" aria-label="Submit">✓</button>
-    </div>
-    <p class="tiny" style="text-align:center;margin-top:10px;">${R.i} of ${TRACK} · ${R.missed} missed</p>`;
+    </div>`}
+    <p class="tiny" style="text-align:center;margin-top:10px;">${R.i} of ${R.len} · ${R.missed} missed</p>`;
   B.querySelectorAll('[data-k]').forEach(b => b.addEventListener('click', () => key(b.dataset.k)));
   initTrack(); paintTrack();
   if (R && !prefersStill()){
@@ -1435,59 +1663,199 @@ function renderRace(finished, pb){
 
 /* ── mastery, made visible: this is where the motivation is supposed to come
       from, so it is not a stats page tucked away ─────────────────────── */
-function masteryBlock(){
-  const cells = [];
-  for (let a = 1; a <= MAXT; a++) for (let b = 1; b <= MAXT; b++){
-    const s = stateOf(a+'x'+b);
-    cells.push(`<div class="cell ${s}" title="${a}×${b} — ${s}"></div>`);
+const LEGEND = `<div class="legend">
+    <span><i style="background:var(--acc)"></i>retired</span>
+    <span><i style="background:#2f4a36"></i>on its way</span>
+    <span><i style="background:#3a3320"></i>being learned</span>
+    <span><i style="background:#1b1b1b;border:1px solid #2a2a2a"></i>not met yet</span>
+  </div>`;
+
+/* The board for whichever set you are on. The tables get their axes back — a
+   13×13 field of squares with nothing down the side or across the top is not
+   readable, which is the whole complaint. Squares and cubes are short enough to
+   label every cell; primes is the 2–100 number square. */
+function boardFor(){
+  const cell = (id, label, title, extra) =>
+    `<div class="cell ${stateOf(id)}${extra||''}" title="${title}">${label ? `<span class="cn">${label}</span>` : ''}</div>`;
+  if (PREFS.set === 'mult'){
+    const on = new Set(PREFS.tables);
+    const out = ['<div class="hd"></div>'];
+    for (let b = 1; b <= MAXT; b++) out.push(`<div class="hd">${b}</div>`);
+    for (let a = 1; a <= MAXT; a++){
+      out.push(`<div class="hd">${a}</div>`);
+      for (let b = 1; b <= MAXT; b++){
+        const live = on.has(a) || on.has(b);
+        out.push(`<div class="cell ${live ? stateOf(a+'x'+b) : ''}" title="${a}×${b} — ${live ? stateOf(a+'x'+b) : 'not selected'}"
+          style="${live ? '' : 'opacity:.28'}"></div>`);
+      }
+    }
+    return `<div class="board" style="grid-template-columns:repeat(${MAXT+1},1fr);">${out.join('')}</div>
+      <p class="tiny" style="margin:6px 0 0;">Rows and columns are the two numbers &mdash; the square where row 7
+         meets column 8 is 7&thinsp;&times;&thinsp;8. Both 7&thinsp;&times;&thinsp;8 and 8&thinsp;&times;&thinsp;7 are
+         there, because they're different cues. Faded means you've switched that table off.</p>`;
   }
+  if (PREFS.set === 'squares' || PREFS.set === 'cubes'){
+    const sup = PREFS.set === 'squares' ? '²' : '³';
+    const max = PREFS.set === 'squares' ? PREFS.sq.max : PREFS.cu.max;
+    const F = setFacts();
+    return `<div class="board" style="grid-template-columns:repeat(auto-fill,minmax(46px,1fr));">
+      ${F.map(f => `<div class="cell ${f.n <= max ? stateOf(f.id) : ''}" title="${f.q} = ${f.ans}"
+          style="aspect-ratio:1.5;${f.n <= max ? '' : 'opacity:.28'}"><span class="cn"
+          style="font-size:12px;">${f.n}${sup}</span></div>`).join('')}
+    </div>
+    <p class="tiny" style="margin:6px 0 0;">One square per fact, ${F[0].n}${sup} to ${F[F.length-1].n}${sup}.
+       Faded means it's above the ceiling you set.</p>`;
+  }
+  // primes: the number square, 2 to 100
+  const max = PREFS.pr.max, out = [];
+  for (let n = 1; n <= PR_MAX; n++){
+    if (n === 1){ out.push(`<div class="cell" style="opacity:.18" title="1 is neither"><span class="cn">1</span></div>`); continue; }
+    const f = FACT['pr'+n], live = n <= max;
+    /* The answer key is the WEIGHT of the number, not an outline. A green
+       outline round a green "retired" cell is invisible, which is exactly the
+       cells you most want to read. Bold works on all four fills. */
+    out.push(`<div class="cell ${live ? stateOf(f.id) : ''}" title="${n} — ${f.ans ? 'prime' : 'not prime'}, ${live ? stateOf(f.id) : 'above your ceiling'}"
+      style="${live ? '' : 'opacity:.28'}"><span class="cn ${f.ans ? 'yes' : 'no'}">${n}</span></div>`);
+  }
+  return `<div class="board" style="grid-template-columns:repeat(10,1fr);">${out.join('')}</div>
+    <p class="tiny" style="margin:6px 0 0;"><b>The numbers 1 to 100, ten to a row.</b> A number in
+       <b style="color:#fff">bold</b> <i>is</i> prime &mdash; that's the answer key. The fill behind it is your
+       progress, and it's the same four colours everywhere else on this page.</p>`;
+}
+
+function masteryBlock(){
   const m = countState('mastered'), r = countState('review'), l = countState('learning');
-  return `<div class="gridfacts">${cells.join('')}</div>
-    <p class="tiny">${m} mastered · ${r} on their way · ${l} being learned · ${GRIDN-m-r-l} not met yet</p>`;
+  const n = activeFacts().length;
+  return `${boardFor()}${LEGEND}
+    <p class="tiny" style="margin-top:8px;">${m} retired · ${r} on their way · ${l} being learned · ${n-m-r-l} not met yet</p>`;
+}
+
+/* ── charts: small, labelled, and dependency-free ─────────────────────── */
+function chart(runs, pick, opts){
+  const W = 320, H = 96, L = 26, Rr = 6, T = 6, B = 16;
+  const vals = runs.map(pick);
+  if (vals.length < 2) return `<p class="tiny">Two races and this draws.</p>`;
+  const lo = opts.lo != null ? opts.lo : Math.min(...vals) * 0.9;
+  const hi = opts.hi != null ? opts.hi : Math.max(...vals) * 1.1;
+  const x = i => L + i / (vals.length - 1) * (W - L - Rr);
+  const y = v => T + (1 - (Math.max(lo, Math.min(hi, v)) - lo) / (hi - lo)) * (H - T - B);
+  const band = opts.band
+    ? `<rect x="${L}" y="${y(opts.band[1]).toFixed(1)}" width="${W-L-Rr}"
+         height="${(y(opts.band[0]) - y(opts.band[1])).toFixed(1)}" fill="rgba(74,222,128,.14)"/>`
+    : '';
+  const d = vals.map((v,i) => `${i?'L':'M'}${x(i).toFixed(1)},${y(v).toFixed(1)}`).join('');
+  const dots = vals.map((v,i) => `<circle cx="${x(i).toFixed(1)}" cy="${y(v).toFixed(1)}" r="2"
+      fill="${opts.dot ? opts.dot(v) : opts.stroke}"/>`).join('');
+  return `<div class="chartwrap"><svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none"
+      role="img" aria-label="${opts.alt}">
+    ${band}
+    <line x1="${L}" y1="${H-B}" x2="${W-Rr}" y2="${H-B}" stroke="#2a2a2a" stroke-width="1"/>
+    <path d="${d}" fill="none" stroke="${opts.stroke}" stroke-width="1.6"
+      vector-effect="non-scaling-stroke" stroke-linejoin="round"/>
+    ${dots}
+    <text x="0" y="${T+6}" fill="#8b8b8b" font-size="8" font-family="ui-monospace,monospace">${opts.top}</text>
+    <text x="0" y="${H-B}" fill="#8b8b8b" font-size="8" font-family="ui-monospace,monospace">${opts.bottom}</text>
+    <text x="${L}" y="${H-4}" fill="#8b8b8b" font-size="8" font-family="ui-monospace,monospace">oldest</text>
+    <text x="${W-Rr}" y="${H-4}" fill="#8b8b8b" font-size="8" text-anchor="end" font-family="ui-monospace,monospace">latest</text>
+  </svg></div>`;
 }
 
 function renderForm(){
   const F = document.getElementById('formBody');
-  const inPlay = FACTS.filter(f => { const s = stateOf(f.id); return s === 'learning' || s === 'review'; })
+  const A = activeFacts();
+  const inPlay = A.filter(f => { const s = stateOf(f.id); return s === 'learning' || s === 'review'; })
     .map(f => ({ f, r: rec(f.id) }))
     .sort((x,y) => y.r.miss - x.r.miss || qualifying(x.r).length - qualifying(y.r).length)
     .slice(0, 14);
-  const dotStrip = r => {
-    const q = qualifying(r), days = [...daysOf(r)].sort();
+  const dotStrip = (r, f) => {
+    const need = masterHits(f), q = qualifying(r), days = [...daysOf(r)].sort();
     let out = '';
-    for (let i = 0; i < MASTER_HITS; i++)
+    for (let i = 0; i < need; i++)
       out += `<span class="${i < Math.min(q.length, days.length) ? 'dot-on' : 'dot-off'}">●</span>`;
     return `<span class="dots">${out}</span>`;
   };
-  const runs = RUNS.slice().reverse().slice(0, 10);
+  const mine = setRuns();
+  const runs = mine.slice(-20);
+  const recent = mine.slice().reverse().slice(0, 10);
+  const cls = classNow();
+
   F.innerHTML = `
     <div class="card">
-      <div class="sechead" style="margin-top:0;"><h2>The book</h2><div class="line"></div></div>
+      <div class="sechead" style="margin-top:0;"><h2>Across every set</h2><div class="line"></div></div>
+      <div class="setrow">
+        ${SETS.map(x => {
+          const facts = ALL[x.key];
+          const done = facts.filter(f => stateOf(f.id) === 'mastered').length;
+          const here = x.key === PREFS.set;
+          return `<div style="${here ? 'border-color:var(--acc)' : ''}">
+            <div class="tiny">${x.name}${here ? ' · racing' : ''}</div>
+            <div class="n" style="${here ? 'color:var(--acc)' : ''}">${done}<span class="muted"
+              style="font-size:13px;font-weight:400;">/${facts.length}</span></div>
+            <div class="tiny">retired</div></div>`;
+        }).join('')}
+      </div>
+      <div class="chips" style="margin:12px 0 0;">
+        ${SETS.map(x => `<button class="chip${PREFS.set===x.key?' on':''}" data-fset="${x.key}"
+          type="button" aria-pressed="${PREFS.set===x.key}">${x.name}</button>`).join('')}
+      </div>
+      <p class="tiny" style="margin:8px 0 0;">Everything below is the set you've picked. You're in
+         <b style="color:var(--acc)">${cls.name}</b>${cls.next ? ` — ${cls.toGo} more to ${cls.next.name}` : ' — the whole set'}.</p>
+    </div>
+
+    <div class="card">
+      <div class="sechead" style="margin-top:0;"><h2>Every fact in ${setDef(PREFS.set).name.toLowerCase()}</h2><div class="line"></div></div>
       ${masteryBlock()}
     </div>
+
+    ${runs.length > 1 ? `<div class="card">
+      <div class="sechead" style="margin-top:0;"><h2>How hard it's been</h2><div class="line"></div></div>
+      ${chart(runs, r => (r.correct+r.missed) ? r.correct/(r.correct+r.missed) : 0,
+        { lo:0.4, hi:1, band:[0.77,0.93], stroke:'#9aa1ac', top:'100%', bottom:'40%',
+          alt:'Your accuracy in each race, against the shaded 77 to 93 per cent band',
+          dot: v => (v>=0.77&&v<=0.93) ? '#4ade80' : v>0.93 ? '#a78bfa' : '#fbbf24' })}
+      <p class="tiny" style="margin:8px 0 0;">One point per race. The green stripe is the band it steers you
+         toward — <span style="color:#fbbf24">below</span> it, it eases off; <span style="color:#a78bfa">above</span>
+         it, it reaches for harder facts.</p>
+    </div>` : ''}
+
+    ${runs.length > 1 ? `<div class="card">
+      <div class="sechead" style="margin-top:0;"><h2>How fast you're recalling</h2><div class="line"></div></div>
+      ${chart(runs, r => r.medianMs || 0, { lo:0, stroke:'var(--acc)',
+        top:'slower', bottom:'0s', alt:'Your median answer time in each race, oldest to latest' })}
+      <p class="tiny" style="margin:8px 0 0;">Median time to answer, race by race. Down is the whole point:
+         a fact you compute is not a fact you know, and the bar is ${FLUENT_MS/1000}s.</p>
+    </div>` : ''}
+
     ${inPlay.length ? `<div class="card">
       <div class="sechead" style="margin-top:0;"><h2>What you're working on</h2><div class="line"></div></div>
       <table><thead><tr><th>Fact</th><th>Days</th><th>Best</th><th>Missed</th></tr></thead><tbody>
       ${inPlay.map(({f,r}) => {
         const q = qualifying(r);
-        return `<tr><td>${f.q}</td><td>${dotStrip(r)}</td>
+        return `<tr><td>${f.q}</td><td>${dotStrip(r,f)}</td>
           <td>${q.length ? fmt(Math.min(...q.map(h=>h.ms))) : '—'}</td><td>${r.miss||''}</td></tr>`;
       }).join('')}
       </tbody></table>
       <p class="tiny" style="margin-top:10px;">A dot is one unaided answer under ${FLUENT_MS/1000}s, on a different day.
-         Three dots and the fact is done — day-spacing is the part that makes it hold.</p>
-    </div>` : `<div class="card"><p class="muted" style="margin:0;">Run a race and this fills in.</p></div>`}
-    ${runs.length ? `<div class="card">
+         Fill the dots and the fact is retired — day-spacing is the part that makes it hold.</p>
+    </div>` : `<div class="card"><p class="muted" style="margin:0;">Run a race in this set and it fills in.</p></div>`}
+
+    ${recent.length ? `<div class="card">
       <div class="sechead" style="margin-top:0;"><h2>Past runs</h2><div class="line"></div></div>
-      <table><thead><tr><th>When</th><th>Time</th><th>Median</th><th>Missed</th></tr></thead><tbody>
-      ${runs.map(r => `<tr><td>${new Date(r.ts).toLocaleDateString([], {month:'short', day:'numeric'})}</td>
-        <td>${fmtClock(r.ms)}</td><td>${fmt(r.medianMs)}</td><td>${r.missed||''}</td></tr>`).join('')}
+      <table><thead><tr><th>When</th><th>Time</th><th>Median</th><th>Right</th></tr></thead><tbody>
+      ${recent.map(r => { const t = r.correct + r.missed;
+        return `<tr><td>${new Date(r.ts).toLocaleDateString([], {month:'short', day:'numeric'})}</td>
+        <td>${fmtClock(r.ms)}</td><td>${fmt(r.medianMs)}</td>
+        <td>${t ? Math.round(r.correct/t*100) + '%' : '—'}</td></tr>`; }).join('')}
       </tbody></table>
     </div>` : ''}
     <p style="text-align:center;"><button class="btn" id="wipe" type="button" style="color:#f87171;border-color:#7f1d1d;">Erase everything</button></p>`;
+
+  F.querySelectorAll('[data-fset]').forEach(b => b.addEventListener('click', () => {
+    PREFS.set = b.dataset.fset; savePrefs(); renderForm();
+  }));
   const w = document.getElementById('wipe');
   if (w) w.addEventListener('click', () => {
-    if (!confirm('Erase every fact record and every run? This cannot be undone.')) return;
+    if (!confirm('Erase every fact record and every run, in every set? This cannot be undone.')) return;
     Object.values(LS).forEach(k => localStorage.removeItem(k));
     RECS = {}; RUNS = []; renderForm();
   });
@@ -1524,6 +1892,13 @@ function renderMethod(){
          Leonesio called it labour in vain &mdash; and so does time on what you already have. The value is at the
          edge, which is what it aims at. A fact that's genuinely gone doesn't get drilled harder; it gets the
          stumble, the strategy line, and a retype.</p>
+      <p style="font-size:14px;"><b style="color:var(--acc)">Four sets, one method.</b>
+         Times tables, squares, cubes and primes. They share the gate, the spacing and the band; what changes is
+         the question. Primes is the odd one &mdash; it's a yes/no call rather than a number, so it gets two
+         buttons instead of a keypad, needs ${MASTER_HITS+1} clean answers rather than ${MASTER_HITS} because a
+         guess pays half the time, and its floor is 50% not 0. Cubes runs a shorter track: forty draws over
+         twelve facts is three passes at each inside one sitting, which is the massing the day-spacing exists to
+         avoid.</p>
       <p class="tiny" style="margin-top:14px;">On the 85%: that's Wilson, Shenhav, Straccia &amp; Cohen (2019),
          who derived an optimal training <i>error</i> rate of 15.87% &mdash; for binary classification under
          gradient descent, not as a law about people. It's often filed under Vygotsky's zone of proximal
