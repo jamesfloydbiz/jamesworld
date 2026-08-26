@@ -74,10 +74,25 @@
   .btn:disabled{opacity:.4; cursor:not-allowed;}
 
   /* ══ THE TRACK ═══════════════════════════════════════════════════════ */
-  .track{background:#101c14; border:1px solid var(--rail); border-radius:10px;
-    overflow:hidden; margin-bottom:12px; line-height:0;}
+  .track{position:relative; background:#101c14; border:1px solid var(--rail);
+    border-radius:10px; overflow:hidden; margin-bottom:10px; line-height:0;}
   .track canvas{display:block; width:100%;}
-  @media (max-height:740px){ .track{margin-bottom:8px;} }
+  /* the question rides on the bottom of the race rather than under it, so the
+     horses never leave your eye while you are answering */
+  .over{position:absolute; left:0; right:0; bottom:0; padding:8px 10px 10px;
+    line-height:1.15; text-align:center; pointer-events:none;
+    background:linear-gradient(180deg, rgba(10,14,11,0) 0%, rgba(10,14,11,.55) 18%,
+      rgba(10,14,11,.90) 42%, rgba(10,14,11,.97) 100%);}
+  .over .fact{font-size:clamp(30px,9.5vw,50px); font-weight:700; letter-spacing:-.02em;
+    font-variant-numeric:tabular-nums; text-shadow:0 2px 14px rgba(0,0,0,.85);}
+  .over .entry{display:inline-block; min-width:2.4ch; margin-top:4px;
+    font-size:clamp(26px,8vw,40px); font-weight:700; color:var(--acc);
+    border-bottom:3px solid rgba(255,255,255,.16); padding:0 8px 1px;
+    font-variant-numeric:tabular-nums; text-shadow:0 2px 12px rgba(0,0,0,.8);}
+  .surge{animation:surge .34s ease;}
+  @keyframes surge{0%{transform:scale(1)}40%{transform:scale(1.08)}100%{transform:scale(1)}}
+  .shake{animation:shake .32s ease;}
+  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
 
   /* ══ THE PROMPT ══════════════════════════════════════════════════════ */
   .prompt{text-align:center; padding:14px 0 6px;}
@@ -301,6 +316,32 @@ for (let a = 1; a <= 12; a++) for (let b = 1; b <= 12; b++)
   FACTS.push({ id: a+'x'+b, a, b, ans: a*b, q: a+' × '+b });
 const FACT = {}; FACTS.forEach(f => { FACT[f.id] = f; });
 
+/* The same fact asked four ways. Retrieval is cue-specific, so pulling 7×8 from
+   "7 × ? = 56" exercises a different route to the same fact than "7 × 8 = ?" —
+   a more flexible memory than drilling one identical prompt, and it hands us
+   division for nothing. The stored record is keyed by the fact, not the cue, so
+   none of this disturbs data already on disk. */
+const CUES = ['ab','a_','_b','div'];
+function askAs(f, cue){
+  switch (cue){
+    case 'a_':  return { text: f.a + ' × ? = ' + f.ans, ans: f.b };
+    case '_b':  return { text: '? × ' + f.b + ' = ' + f.ans, ans: f.a };
+    case 'div': return { text: f.ans + ' ÷ ' + f.a + ' = ?', ans: f.b };
+    default:    return { text: f.a + ' × ' + f.b, ans: f.ans };
+  }
+}
+/* prefer a cue this fact has not been asked in lately */
+function pickCue(f){
+  const r = RECS[f.id];
+  const used = (r && Array.isArray(r.cues)) ? r.cues : [];
+  const fresh = CUES.filter(c => !used.includes(c));
+  const pool = fresh.length ? fresh : CUES;
+  // a fact still being learned is asked plainly first — the ×-form is the
+  // one being committed; the variants come once there is something to vary
+  if (stateOf(f.id) === 'new' || stateOf(f.id) === 'learning') return 'ab';
+  return pool[Math.floor(Math.random() * pool.length)];
+}
+
 /* ── the gate ─────────────────────────────────────────────────────────
    Mastered = MASTER_HITS unaided answers, each under FLUENT_MS, on
    MASTER_DAYS distinct dates. The day-spacing is the part that makes it
@@ -310,7 +351,8 @@ function cleanRec(r){
   const hits = Array.isArray(r.hits) ? r.hits.filter(h =>
         h && typeof h === 'object' && typeof h.d === 'string'
         && typeof h.ms === 'number' && Number.isFinite(h.ms) && h.ms >= 0) : [];
-  return { hits: hits.slice(-12),
+  const cues = Array.isArray(r.cues) ? r.cues.filter(c => typeof c === 'string').slice(-4) : [];
+  return { hits: hits.slice(-12), cues,
            seen: (typeof r.seen === 'number' && Number.isFinite(r.seen) && r.seen >= 0) ? r.seen : 0,
            miss: (typeof r.miss === 'number' && Number.isFinite(r.miss) && r.miss >= 0) ? r.miss : 0 };
 }
@@ -320,7 +362,7 @@ let RECS = (() => {
   Object.keys(raw).forEach(k => { if (FACT[k]){ const c = cleanRec(raw[k]); if (c) out[k] = c; } });
   return out;
 })();
-const rec = id => RECS[id] || (RECS[id] = { hits:[], seen:0, miss:0 });
+const rec = id => RECS[id] || (RECS[id] = { hits:[], seen:0, miss:0, cues:[] });
 
 /* a hit only counts if it was unaided and under the fluency bar */
 const qualifying = r => r.hits.filter(h => h.ms <= FLUENT_MS);
@@ -401,6 +443,24 @@ const PACERS = [
   { key:'pace3', name:'Bar',   per:3000, silks:'🐎' },   // the fluency threshold
   { key:'pace2', name:'Clock', per:2000, silks:'🐎' },   // comfortably fluent
 ];
+/* The class you run in is set by how many facts you have retired, so the
+   progression IS the learning state rather than a rosette sitting on top. */
+const CLASSES = [
+  { at:0,   name:'Maiden',    note:'every runner starts here' },
+  { at:12,  name:'Novice',    note:'12 facts retired' },
+  { at:36,  name:'Handicap',  note:'36 retired' },
+  { at:72,  name:'Listed',    note:'72 retired — half the book' },
+  { at:108, name:'Group',     note:'108 retired' },
+  { at:144, name:'Champion',  note:'the whole book' },
+];
+function classNow(){
+  const m = countState('mastered');
+  let cur = CLASSES[0];
+  for (const c of CLASSES) if (m >= c.at) cur = c;
+  const next = CLASSES.find(c => c.at > m);
+  return { ...cur, mastered:m, next, toGo: next ? next.at - m : 0 };
+}
+
 const median = a => { if (!a.length) return 0; const s=[...a].sort((x,y)=>x-y); const m=s.length>>1;
   return s.length%2 ? s[m] : Math.round((s[m-1]+s[m])/2); };
 const fmt = ms => (ms/1000).toFixed(1) + 's';
@@ -419,6 +479,7 @@ function startRace(){
         requeue:[], t0:performance.now() };
   nextFact();
   renderRace();
+  audioReady(); snd.bell(); hoofLoop();
   tick();
 }
 
@@ -438,6 +499,8 @@ function nextFact(){
   } else {
     R.fact = pickFact(R.recent, R.rolling);
   }
+  R.cue = pickCue(R.fact);
+  R.ask = askAs(R.fact, R.cue);
   R.entry = '';
   R.phase = 'run';
   R.qStart = performance.now();
@@ -449,7 +512,7 @@ function submit(){
   if (R.entry === '') return;
   const ms = performance.now() - R.qStart;
   const f = R.fact;
-  const right = +R.entry === f.ans;
+  const right = +R.entry === R.ask.ans;
   const r = rec(f.id);
   r.seen++;
   R.recent.push(f.id);
@@ -457,11 +520,14 @@ function submit(){
   if (right){
     r.hits.push({ d: todayKey(), ms: Math.round(ms) });
     if (r.hits.length > 12) r.hits.shift();
+    r.cues = [...new Set([...(r.cues||[]), R.cue])].slice(-4);
     R.rolling.push(1); if (R.rolling.length > BAND_WIN) R.rolling.shift();
     R.splits.push(Math.round(ms));
     R.clean.push(Math.round(ms));
     R.correct++;
     advance();
+    R.kick = performance.now();          // a shove of camera and speed lines
+    snd.surge();
     save(LS.facts, RECS);
     if (R.i >= TRACK) return finishRace();
     nextFact();
@@ -473,8 +539,11 @@ function submit(){
     // demote and bring it back later this race
     r.hits = r.hits.filter(h => h.ms > FLUENT_MS);   // strip qualifying hits
     save(LS.facts, RECS);
+    snd.stumble();
+    R.stumbleAt = performance.now();
     R.phase = 'miss';
     R.missFact = f;
+    R.missAsk = R.ask;
     R.missStart = R.qStart;          // the clock keeps running through the miss
     R.entry = '';
     R.requeue.push({ fact: f, at: R.i + 5 });
@@ -486,7 +555,7 @@ function submit(){
    recognition is not mastery, so the miss is not over until it is produced. */
 function submitRetype(){
   if (R.entry === '') return;
-  if (+R.entry !== R.missFact.ans){ R.entry = ''; renderRace(); return; }
+  if (+R.entry !== R.missAsk.ans){ R.entry = ''; renderRace(); return; }
   R.phase = 'run';
   R.entry = '';
   // The whole cost of the miss — the wrong answer, reading the fact and the
@@ -516,6 +585,8 @@ function finishRace(){
   RUNS.push(run); if (RUNS.length > 60) RUNS.shift();
   save(LS.runs, RUNS);
   const pb = !prevBest || run.ms < prevBest.ms;
+  clearInterval(hoofTimer);
+  snd.crowd(pb ? 2400 : 1400);
   R = null;
   renderRace(run, pb);
   if (pb && RUNS.length > 1) confetti();
@@ -536,6 +607,7 @@ window.addEventListener('resize', () => { sizeTrack(); if (R) paintTrack(); });
 /* ══════════════════════════════════════════════════════════════════════
    VIEWS
    ══════════════════════════════════════════════════════════════════════ */
+const prefersStill = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 const PANES = { race:'v-race', form:'v-form', method:'v-method' };
 let currentTab = 'race';
@@ -554,6 +626,92 @@ function switchTab(name){
   window.scrollTo(0,0);
 }
 document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => switchTab(t.dataset.tab)));
+
+
+/* ══════════════════════════════════════════════════════════════════════
+   SOUND — synthesised, no files, so the page stays one document and works
+   with no network. It is the RACE you hear, not a scoring chime: hooves,
+   a surge, a stumble, the bell, the crowd at the post. Feedback about the
+   work, not a reward noise for being right.
+   ══════════════════════════════════════════════════════════════════════ */
+let AC = null, master = null, hoofTimer = null;
+let soundOn = (() => { try { return localStorage.getItem('derby.sound') !== 'off'; } catch(e){ return true; } })();
+
+function audioReady(){                       // browsers need a gesture first
+  if (AC || !soundOn) return AC;
+  try {
+    AC = new (window.AudioContext || window.webkitAudioContext)();
+    master = AC.createGain(); master.gain.value = 0.5; master.connect(AC.destination);
+  } catch(e){ AC = null; }
+  return AC;
+}
+function noiseBuf(dur){
+  const n = Math.floor(AC.sampleRate * dur), b = AC.createBuffer(1, n, AC.sampleRate);
+  const d = b.getChannelData(0);
+  for (let i = 0; i < n; i++) d[i] = (Math.random()*2 - 1) * (1 - i/n);
+  return b;
+}
+function thud(t, freq, dur, gain, type){
+  if (!AC) return;
+  const o = AC.createOscillator(), g = AC.createGain();
+  o.type = type || 'sine'; o.frequency.setValueAtTime(freq, t);
+  o.frequency.exponentialRampToValueAtTime(Math.max(30, freq*0.4), t + dur);
+  g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(gain, t + 0.008);
+  g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  o.connect(g); g.connect(master); o.start(t); o.stop(t + dur + 0.02);
+}
+function hiss(t, dur, gain, freq){
+  if (!AC) return;
+  const src = AC.createBufferSource(); src.buffer = noiseBuf(dur);
+  const f = AC.createBiquadFilter(); f.type = 'bandpass'; f.frequency.value = freq || 1400;
+  const g = AC.createGain(); g.gain.setValueAtTime(gain, t);
+  g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  src.connect(f); f.connect(g); g.connect(master); src.start(t); src.stop(t + dur);
+}
+/* a four-beat gallop, its tempo set by how fast the field is actually going */
+function hoofLoop(){
+  clearInterval(hoofTimer);
+  if (!AC || !soundOn) return;
+  hoofTimer = setInterval(() => {
+    if (!R || !AC || AC.state !== 'running') return;
+    const t = AC.currentTime;
+    [0, 0.055, 0.13, 0.175].forEach((o, i) => {
+      thud(t + o, 68 + i*7, 0.075, 0.11, 'sine');
+      hiss(t + o, 0.045, 0.020, 900 + i*120);
+    });
+  }, 470);
+}
+const snd = {
+  bell(){ const t = audioReady() && AC.currentTime; if (!AC) return;
+    [880, 1320].forEach((f,i) => { const o=AC.createOscillator(), g=AC.createGain();
+      o.type='triangle'; o.frequency.value=f;
+      g.gain.setValueAtTime(0.16, t+i*0.11); g.gain.exponentialRampToValueAtTime(0.0001, t+i*0.11+0.5);
+      o.connect(g); g.connect(master); o.start(t+i*0.11); o.stop(t+i*0.11+0.55); }); },
+  surge(){ if (!audioReady()) return; const t = AC.currentTime;
+    const o = AC.createOscillator(), g = AC.createGain();
+    o.type = 'triangle'; o.frequency.setValueAtTime(300, t);
+    o.frequency.exponentialRampToValueAtTime(760, t + 0.16);
+    g.gain.setValueAtTime(0.10, t); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.22);
+    o.connect(g); g.connect(master); o.start(t); o.stop(t + 0.24);
+    hiss(t, 0.20, 0.028, 2200); },
+  stumble(){ if (!audioReady()) return; const t = AC.currentTime;
+    thud(t, 150, 0.30, 0.20, 'sawtooth'); thud(t + 0.07, 96, 0.34, 0.15, 'sine');
+    hiss(t, 0.26, 0.045, 420); },
+  crowd(ms){ if (!audioReady()) return; const t = AC.currentTime;
+    const src = AC.createBufferSource(); src.buffer = noiseBuf(ms/1000);
+    const f = AC.createBiquadFilter(); f.type='bandpass'; f.frequency.value=700; f.Q.value=0.6;
+    const g = AC.createGain();
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(0.09, t + ms/2500);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + ms/1000);
+    src.connect(f); f.connect(g); g.connect(master); src.start(t); src.stop(t + ms/1000); },
+};
+function setSound(on){
+  soundOn = on;
+  try { localStorage.setItem('derby.sound', on ? 'on' : 'off'); } catch(e){}
+  if (!on){ clearInterval(hoofTimer); if (master) master.gain.value = 0; }
+  else { audioReady(); if (master) master.gain.value = 0.5; if (R) hoofLoop(); }
+}
 
 /* ══════════════════════════════════════════════════════════════════════
    THE TRACK — canvas, with a camera that travels with you.
@@ -589,8 +747,10 @@ function sizeTrack(){
   const w = cvs.parentElement.clientWidth;
   // the miss card is the tallest thing on the page, so the track gives way to
   // it rather than pushing the keypad off a small screen
-  const share = (typeof R !== 'undefined' && R && R.phase === 'miss') ? 0.15 : 0.235;
-  const h = Math.max(96, Math.min(196, Math.round(window.innerHeight * share)));
+  const miss = (typeof R !== 'undefined' && R && R.phase === 'miss');
+  const share = miss ? 0.16 : 0.40;          // the race carries the question now
+  const h = Math.max(miss ? 100 : 190, Math.min(miss ? 200 : 380,
+              Math.round(window.innerHeight * share)));
   DPR = Math.min(2, window.devicePixelRatio || 1);
   cvs.width = Math.round(w * DPR); cvs.height = Math.round(h * DPR);
   cvs.style.width = w + 'px'; cvs.style.height = h + 'px';
@@ -701,7 +861,8 @@ function paintTrack(){
   ctx.fillStyle = turf; ctx.fillRect(0,0,W,H);
 
   // scrolling ground marks — this is what actually reads as speed
-  const rush = Math.min(1, camVel / 7);
+  const kick = R.kick ? Math.max(0, 1 - (now - R.kick) / 420) : 0;
+  const rush = Math.min(1, camVel / 7 + kick * 0.55);
   ctx.strokeStyle = 'rgba(255,255,255,' + (0.04 + rush*0.05).toFixed(3) + ')';
   ctx.lineWidth = 1;
   const step = 46, first = Math.floor(camX/step)*step;
@@ -723,8 +884,8 @@ function paintTrack(){
     const x = sx(WORLD*f/8);
     if (x < -20 || x > W+20) continue;
     ctx.fillStyle = 'rgba(255,255,255,.16)'; ctx.fillRect(x, 4, 2, H-8);
-    ctx.fillStyle = 'rgba(255,255,255,.34)'; ctx.font = '9px ui-monospace,monospace';
-    ctx.fillText((8-f) + 'f', x + 5, 13);
+    ctx.fillStyle = 'rgba(255,255,255,.30)'; ctx.font = '9px ui-monospace,monospace';
+    ctx.fillText((8-f) + 'f', x + 5, 29);
   }
   // the post
   const fx = sx(WORLD);
@@ -739,7 +900,7 @@ function paintTrack(){
 
   /* the field */
   // lanes spread over whatever height we got, and the horses scale with them
-  const top = H * 0.20, bot = H * 0.86;
+  const top = H * 0.17, bot = H * (R.phase === 'miss' ? 0.82 : 0.56);
   const gap = runners.length > 1 ? (bot - top) / (runners.length - 1) : 0;
   const laneY = l => top + l * gap;
   const hs = Math.max(0.62, Math.min(1.05, gap / 30));
@@ -768,18 +929,17 @@ function paintTrack(){
     }
   });
 
-  // where you stand against the ghost, in lengths
+  // readouts ride the top rail — the foot of the track is the question's now
   if (g){
     const d = (R.smooth - progressAt(g.splits,t)*WORLD) / WORLD * TRACK;
     ctx.fillStyle = d >= 0 ? '#4ade80' : '#f87171';
     ctx.font = 'bold 10px ui-monospace,monospace';
-    const msg = Math.abs(d) < 0.4 ? 'level with last time'
-      : (d > 0 ? '+' : '−') + Math.abs(d).toFixed(1) + ' on last time';
-    ctx.fillText(msg, 6, H - 6);
+    ctx.fillText(Math.abs(d) < 0.4 ? 'level with last time'
+      : (d > 0 ? '+' : '−') + Math.abs(d).toFixed(1) + ' on last time', 7, 15);
   }
-  ctx.fillStyle = 'rgba(234,234,234,.5)';
+  ctx.fillStyle = 'rgba(234,234,234,.55)';
   ctx.font = '10px ui-monospace,monospace';
-  ctx.fillText(R.i + '/' + TRACK, W - 42, H - 6);
+  ctx.fillText(R.i + '/' + TRACK, W - 40, 15);
 
   const l = document.getElementById('liveSay');
   if (l && l.dataset.i !== String(R.i)){ l.dataset.i = String(R.i); l.textContent = `${R.i} of ${TRACK}`; }
@@ -794,7 +954,7 @@ function renderRace(finished, pb){
     const delta = g ? g.ms - finished.ms : 0;
     B.innerHTML = `
       <div class="card" style="text-align:center;">
-        <div class="tiny">${pb ? 'Personal best' : 'Race complete'}</div>
+        <div class="tiny">${pb ? 'Personal best' : 'Race complete'} · ${classNow().name}</div>
         <div class="big" style="color:${pb?'var(--acc)':'var(--fg)'}">${fmtClock(finished.ms)}</div>
         <div class="muted">${finished.correct} clean · ${finished.missed} missed · ${fmt(finished.medianMs)} median</div>
         ${g ? `<div class="muted" style="margin-top:8px;">
@@ -819,36 +979,45 @@ function renderRace(finished, pb){
         <p class="muted" style="margin:0 0 14px;">Type the answer and hit go. Nothing is awarded for being
            right &mdash; the horse moves because you answered, and how fast it moves is how fast you recalled.</p>
         <div class="row" style="margin-bottom:14px;">
-          <div><div class="tiny">MASTERED</div><div class="big">${countState('mastered')}<span class="muted" style="font-size:15px;">/144</span></div></div>
+          <div><div class="tiny">CLASS</div><div class="big" style="font-size:24px;">${classNow().name}</div>
+            <div class="tiny">${classNow().next ? classNow().toGo + ' to ' + classNow().next.name : 'the whole book'}</div></div>
+          <div><div class="tiny">RETIRED</div><div class="big">${countState('mastered')}<span class="muted" style="font-size:15px;">/144</span></div></div>
           ${g ? `<div><div class="tiny">LAST RUN</div><div class="big">${fmtClock(g.ms)}</div></div>` : ''}
           ${b ? `<div><div class="tiny">BEST</div><div class="big" style="color:var(--best)">${fmtClock(b.ms)}</div></div>` : ''}
         </div>
-        <button class="btn btn-p" id="start" type="button">Go to post</button>
+        <div class="row" style="align-items:center;">
+          <button class="btn btn-p" id="start" type="button" style="flex:none;">Go to post</button>
+          <button class="btn" id="snd" type="button" style="flex:none;" aria-pressed="${soundOn}">${soundOn ? '🔊 Sound on' : '🔇 Sound off'}</button>
+        </div>
       </div>
       ${g ? `<p class="tiny" style="text-align:center;">Your last run rides as a ghost. The two grey horses hold
         a steady 3.0s and 2.0s a fact &mdash; pace-setters, not prizes.</p>` : ''}`;
     document.getElementById('start').addEventListener('click', startRace);
+    document.getElementById('snd').addEventListener('click', e => {
+      setSound(!soundOn); e.currentTarget.textContent = soundOn ? '🔊 Sound on' : '🔇 Sound off';
+      e.currentTarget.setAttribute('aria-pressed', String(soundOn));
+    });
     return;
   }
 
   const missing = R.phase === 'miss';
   B.innerHTML = `
-    <div class="track"><canvas id="trackCvs" data-h="196" data-auto="1"
-      role="img" aria-label="A horse race. Your horse advances one furlong for each fact you answer."></canvas></div>
+    <div class="track" id="trackWrap"><canvas id="trackCvs" data-h="196" data-auto="1"
+        role="img" aria-label="A horse race. Your horse advances one furlong for each fact you answer."></canvas>
+      ${missing ? '' : `<div class="over">
+        <div class="fact">${esc(R.ask.text)}${R.cue === 'ab' ? ' <span style="opacity:.5">=</span> ?' : ''}</div>
+        <div><span class="entry" id="entryEl">${esc(R.entry) || '&nbsp;'}</span></div>
+      </div>`}</div>
     <p class="sr-only" id="liveSay" aria-live="polite"></p>
     ${missing ? `
       <div class="miss">
-        <div class="head">✗ ${esc(R.missFact.q)}</div>
+        <div class="head">✗ ${esc(R.missAsk.text)}</div>
         <div class="truth">${R.missFact.q} = ${R.missFact.ans}</div>
         <div class="why">${esc(hintFor(R.missFact.a, R.missFact.b))}</div>
         <div class="again">now type it</div>
         <div style="text-align:center;"><span class="entry" id="entryEl">${esc(R.entry) || '&nbsp;'}</span></div>
       </div>`
-    : `
-      <div class="prompt">
-        <div class="fact">${esc(R.fact.q)}</div>
-        <div><span class="entry" id="entryEl">${esc(R.entry) || '&nbsp;'}</span></div>
-      </div>`}
+    : ``}
     <div class="pad">
       ${[1,2,3,4,5,6,7,8,9].map(n => `<button class="key" data-k="${n}" type="button">${n}</button>`).join('')}
       <button class="key del" data-k="del" type="button" aria-label="Delete">⌫</button>
@@ -858,6 +1027,15 @@ function renderRace(finished, pb){
     <p class="tiny" style="text-align:center;margin-top:10px;">${R.i} of ${TRACK} · ${R.missed} missed</p>`;
   B.querySelectorAll('[data-k]').forEach(b => b.addEventListener('click', () => key(b.dataset.k)));
   initTrack(); paintTrack();
+  if (R && !prefersStill()){
+    const wrap = document.getElementById('trackWrap');
+    if (wrap && R.kick && performance.now() - R.kick < 200){
+      wrap.classList.remove('surge'); void wrap.offsetWidth; wrap.classList.add('surge');
+    }
+    if (wrap && R.stumbleAt && performance.now() - R.stumbleAt < 200){
+      wrap.classList.remove('shake'); void wrap.offsetWidth; wrap.classList.add('shake');
+    }
+  }
 }
 
 /* ── mastery, made visible: this is where the motivation is supposed to come
