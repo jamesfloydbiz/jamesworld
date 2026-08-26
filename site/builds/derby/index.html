@@ -1,0 +1,784 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Derby — times tables at a gallop</title>
+<meta name="description" content="A horse race that measures how fast you can recall your times tables. The horse moves because you answered — its speed is your recall rate, and what you race is your own fluency from last time.">
+<link rel="canonical" href="https://jamesfloyds.world/builds/derby/">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0a0a0a">
+<style>
+  /* Sibling of the CCAT trainer — same dark, monospace shell. Self-contained
+     though: the trainer pulls Tailwind off a CDN, which is a bad dependency for
+     something meant to be opened every day, sometimes on bad signal. */
+  :root{
+    --bg:#0a0a0a; --fg:#eaeaea; --dim:#8b9099; --card:#151515; --border:#252525;
+    --acc:#4ade80; --bad:#f87171; --warn:#facc15; --turf:#1a2b1f; --rail:#2f3a33;
+    --ghost:#6b7280; --best:#a78bfa; --pace:#3f4653;
+    --mono:ui-monospace,Menlo,Consolas,"DejaVu Sans Mono",monospace;
+  }
+  *{box-sizing:border-box;}
+  html{-webkit-text-size-adjust:100%;}
+  body{
+    margin:0; background:var(--bg); color:var(--fg); font-family:var(--mono);
+    line-height:1.6; -webkit-font-smoothing:antialiased; overflow-x:hidden;
+    min-height:100vh; min-height:100dvh;
+    padding-bottom:env(safe-area-inset-bottom);
+  }
+  .wrap{max-width:760px; margin:0 auto; padding:0 16px 40px;}
+  [hidden]{display:none !important;}
+  button{font-family:inherit;}
+
+  .mark{position:fixed; top:12px; left:12px; z-index:80; display:flex;
+    align-items:center; gap:10px; padding:4px 12px 4px 6px; border-radius:99px;
+    background:rgba(10,10,10,.86); backdrop-filter:blur(8px);
+    -webkit-backdrop-filter:blur(8px);}
+  .mark a{display:inline-flex; align-items:center; text-decoration:none;
+    color:var(--dim); font-size:12px; font-weight:600; letter-spacing:.04em;
+    min-height:44px; padding:0 4px;}
+  .mark a:hover{color:var(--fg);}
+  .mark .logo{width:26px; height:26px; min-height:0;}
+  .mark .logo img{width:100%; height:100%; display:block;}
+  .mark .back::before{content:'\2190'; margin-right:7px;}
+
+  header{padding:64px 0 0;}
+  .eyebrow{font-size:10.5px; letter-spacing:.24em; text-transform:uppercase;
+    color:var(--acc); font-weight:700; margin:0 0 8px;}
+  h1{font-size:clamp(30px,8vw,44px); line-height:1; font-weight:700;
+    letter-spacing:-.03em; margin:0 0 10px;}
+  .tagline{margin:0; font-size:13.5px; color:var(--dim);}
+
+  nav.tabs{display:flex; gap:2px; margin:22px 0 20px;
+    border-bottom:1px solid var(--border); overflow-x:auto;
+    scrollbar-width:none; -webkit-overflow-scrolling:touch;}
+  nav.tabs::-webkit-scrollbar{display:none;}
+  .tab{flex:none; white-space:nowrap; appearance:none; border:0;
+    background:transparent; cursor:pointer; font-size:13.5px; font-weight:600;
+    color:var(--dim); padding:13px 13px; min-height:46px;
+    border-bottom:2px solid transparent; margin-bottom:-1px;}
+  .tab.on{color:var(--acc); border-bottom-color:var(--acc);}
+  .tab:hover{color:var(--fg);}
+  @media (max-width:400px){ .tab{padding:13px 9px; font-size:12.5px;} }
+
+  .card{background:var(--card); border:1px solid var(--border);
+    border-radius:10px; padding:16px; margin-bottom:12px;}
+  .muted{color:var(--dim); font-size:13px;}
+  .tiny{font-size:11.5px; color:var(--dim);}
+  .btn{appearance:none; border:1px solid var(--border); background:#111;
+    color:var(--fg); border-radius:8px; padding:12px 18px; min-height:46px;
+    cursor:pointer; font-size:14px; transition:background .15s,border-color .15s;}
+  .btn:hover{background:#1c1c1c; border-color:#3a3a3a;}
+  .btn-p{background:var(--acc); color:#062; border-color:var(--acc); font-weight:700;}
+  .btn-p:hover{background:#6ee79b; border-color:#6ee79b;}
+  .btn:disabled{opacity:.4; cursor:not-allowed;}
+
+  /* ══ THE TRACK ═══════════════════════════════════════════════════════ */
+  .track{background:var(--turf); border:1px solid var(--rail);
+    border-radius:10px; padding:12px 12px 8px; margin-bottom:12px;
+    position:relative; overflow:hidden;}
+  .lane{position:relative; height:34px; display:flex; align-items:center;
+    border-bottom:1px dashed rgba(255,255,255,.06);}
+  .lane:last-child{border-bottom:0;}
+  .lane .who{position:absolute; left:0; font-size:10px; letter-spacing:.1em;
+    text-transform:uppercase; color:var(--dim); width:52px; z-index:2;}
+  .lane .runner{position:absolute; left:56px; font-size:20px; line-height:1;
+    will-change:transform; transition:transform .18s linear;}
+  .lane.me .runner{font-size:24px;}
+  .lane.ghost .runner{opacity:.5; filter:grayscale(1);}
+  .lane.best  .runner{opacity:.65;}
+  .lane.pace  .runner{opacity:.35; filter:grayscale(1);}
+  .finish{position:absolute; top:0; bottom:0; width:3px; right:10px;
+    background:repeating-linear-gradient(180deg,#fff 0 6px,#111 6px 12px);
+    opacity:.7;}
+  .lane .runner.gallop{animation:gallop .34s steps(2) infinite;}
+  @keyframes gallop{0%{transform:translateY(0)}50%{transform:translateY(-2px)}}
+  .lane .runner.stumble{animation:stumble .5s ease;}
+  @keyframes stumble{0%,100%{transform:rotate(0)}30%{transform:rotate(-18deg)}60%{transform:rotate(6deg)}}
+
+  /* ══ THE PROMPT ══════════════════════════════════════════════════════ */
+  .prompt{text-align:center; padding:14px 0 6px;}
+  .fact{font-size:clamp(38px,12vw,58px); font-weight:700; letter-spacing:-.02em;
+    line-height:1; font-variant-numeric:tabular-nums;}
+  .entry{display:inline-block; min-width:2.6ch; margin-top:14px;
+    font-size:clamp(30px,9vw,44px); font-weight:700; color:var(--acc);
+    border-bottom:3px solid var(--border); padding:0 8px 2px;
+    font-variant-numeric:tabular-nums; min-height:1.2em;}
+  .entry.wrong{color:var(--bad); border-bottom-color:var(--bad);}
+  .entry.right{color:var(--acc); border-bottom-color:var(--acc);}
+
+  /* the miss screen — direct instruction, then immediate re-production */
+  .miss{border:1px solid var(--bad); border-radius:10px; padding:16px;
+    background:rgba(248,113,113,.06); margin-bottom:12px;}
+  .miss .head{color:var(--bad); font-weight:700; font-size:14px; margin-bottom:8px;}
+  .miss .truth{font-size:26px; font-weight:700; margin-bottom:10px;
+    font-variant-numeric:tabular-nums;}
+  .miss .why{font-size:13.5px; color:var(--dim); line-height:1.65; margin-bottom:12px;}
+  .miss .again{font-size:12px; color:var(--warn); font-weight:700;
+    letter-spacing:.08em; text-transform:uppercase;}
+
+  /* ══ KEYPAD ══════════════════════════════════════════════════════════ */
+  .pad{display:grid; grid-template-columns:repeat(3,1fr); gap:8px;
+    max-width:330px; margin:16px auto 0;}
+  .key{appearance:none; border:1px solid var(--border); background:#111;
+    color:var(--fg); border-radius:10px; min-height:56px; font-size:22px;
+    font-weight:600; cursor:pointer; font-variant-numeric:tabular-nums;
+    transition:background .1s, transform .06s;}
+  .key:active{background:#252525; transform:scale(.96);}
+  .key.go{background:var(--acc); color:#062; border-color:var(--acc); font-weight:700;}
+  .key.del{color:var(--dim);}
+  @media (max-height:740px){
+    .pad{gap:6px; margin-top:10px;}
+    .key{min-height:46px; font-size:19px;}
+    .lane{height:28px;}
+    .track{padding:8px 10px 6px;}
+    .prompt{padding:8px 0 2px;}
+    .fact{font-size:clamp(32px,10vw,44px);}
+    .entry{margin-top:8px; font-size:clamp(26px,8vw,36px);}
+    .miss{padding:12px;}
+    .miss .truth{font-size:22px; margin-bottom:6px;}
+    .miss .why{margin-bottom:8px; font-size:13px;}
+    body.racing header{padding:50px 0 0;}
+  }
+  @media (max-height:600px){
+    .key{min-height:42px; font-size:17px;}
+    .lane{height:24px;}
+  }
+
+  /* ══ MASTERY ═════════════════════════════════════════════════════════ */
+  .grid144{display:grid; grid-template-columns:repeat(12,1fr); gap:3px;
+    max-width:440px; margin:10px 0 4px;}
+  .cell{aspect-ratio:1; border-radius:2px; background:#1b1b1b;
+    border:1px solid transparent;}
+  .cell.learning{background:#3a3320;}
+  .cell.review{background:#2f4a36;}
+  .cell.mastered{background:var(--acc);}
+  .dots{letter-spacing:2px; font-size:13px;}
+  .dot-on{color:var(--acc);} .dot-off{color:#3a3a3a;}
+  table{width:100%; border-collapse:collapse; font-size:12.5px;}
+  th{text-align:left; font-size:10px; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--dim); font-weight:700; padding:0 8px 7px 0; white-space:nowrap;}
+  td{padding:8px 8px 8px 0; border-top:1px solid var(--border);
+    font-variant-numeric:tabular-nums;}
+  th:last-child,td:last-child{text-align:right; padding-right:0;}
+  .sechead{display:flex; align-items:center; gap:12px; margin:20px 0 10px;}
+  .sechead h2{font-size:10.5px; letter-spacing:.18em; text-transform:uppercase;
+    font-weight:700; color:var(--dim); margin:0; min-width:0;}
+  .sechead .line{flex:1; height:1px; background:var(--border);}
+  @media (max-width:460px){ .sechead h2{white-space:normal;} }
+  .big{font-size:34px; font-weight:700; letter-spacing:-.02em;
+    font-variant-numeric:tabular-nums;}
+  .row{display:flex; gap:14px; flex-wrap:wrap;}
+  .row > div{flex:1; min-width:110px;}
+  body.racing header{padding:56px 0 0;}
+  body.racing header h1,
+  body.racing header .eyebrow,
+  body.racing header .tagline{display:none;}
+  body.racing nav.tabs{display:none;}
+  body.racing .wrap{padding-bottom:16px;}
+  .sr-only{position:absolute; width:1px; height:1px; margin:-1px; padding:0;
+    overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;}
+
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{transition:none !important; animation:none !important;}
+    .lane .runner{transition:none !important;}
+  }
+</style>
+</head>
+<body>
+
+<div class="mark">
+  <a class="logo" href="/" aria-label="Return to home"><img src="/logo.svg" alt="JF"></a>
+  <a class="back" href="/builds/">Back</a>
+</div>
+
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Fact fluency</p>
+    <h1>Derby</h1>
+    <p class="tagline">Your horse moves because you answered. Its speed is your recall rate &mdash; and what you're racing is your own fluency from last time.</p>
+  </header>
+
+  <nav class="tabs" role="tablist" aria-label="Sections">
+    <button class="tab on" data-tab="race" type="button" role="tab" aria-selected="true" aria-controls="v-race">Race</button>
+    <button class="tab" data-tab="form" type="button" role="tab" aria-selected="false" aria-controls="v-form">Form</button>
+    <button class="tab" data-tab="method" type="button" role="tab" aria-selected="false" aria-controls="v-method">Method</button>
+  </nav>
+
+  <section id="v-race" role="tabpanel"><div id="raceBody"></div></section>
+  <section id="v-form" role="tabpanel" hidden><div id="formBody"></div></section>
+  <section id="v-method" role="tabpanel" hidden><div id="methodBody"></div></section>
+</div>
+<script>
+/* ══════════════════════════════════════════════════════════════════════
+   DERBY
+
+   Built on the learnbyscience method, and one of its rules shapes the whole
+   thing: "points and prizes for right answers don't build durable motivation
+   and can crowd out the real kind." A race that awards distance for being
+   correct IS that bribe. So the race is not a reward on top of practice — it
+   is the measurement. The horse advances because you answered, its speed is
+   your live recall rate, and the thing you race is your own recorded fluency.
+
+   The other rule doing work here: fact fluency means fast RETRIEVAL, not
+   correctness. A correct-but-slow answer means you computed it rather than
+   recalled it, so it does not count toward mastery.
+   ══════════════════════════════════════════════════════════════════════ */
+
+const TRACK      = 40;      // facts per race
+const FLUENT_MS  = 3000;    // above this you computed it; it does not count
+const MASTER_HITS= 3;       // qualifying hits needed
+const MASTER_DAYS= 3;       // ...spread over this many distinct days
+const BAND       = 0.85;    // introduce new facts only at or above this
+const BAND_WIN   = 12;      // rolling window the band is measured over
+const LEARN_CAP  = 5;       // facts allowed mid-learning at once
+const NO_REPEAT  = 4;       // a fact cannot return within this many draws
+const MAINT_RATE = 0.10;    // share of draws given to mastered facts
+
+/* ── storage ──────────────────────────────────────────────────────────
+   Own namespace with content-derived ids ("7x8"). The CCAT trainer keys its
+   schedule by ${deckIndex}-${cardIndex}, so reordering its DECKS array
+   silently re-points every saved card. Not inheriting that. */
+const LS = { facts:'derby.facts.v1', runs:'derby.runs.v1' };
+
+function ls(k, d){
+  try{
+    const v = localStorage.getItem(k);
+    if (v === null) return d;
+    const parsed = JSON.parse(v);
+    // valid JSON of the wrong shape is the dangerous corruption: it parses,
+    // then explodes on .map() or Object.keys() at boot
+    if (Array.isArray(d) !== Array.isArray(parsed)) return d;
+    if (!Array.isArray(d) && (parsed === null || typeof parsed !== 'object')) return d;
+    return parsed;
+  }catch(e){ return d; }
+}
+function save(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+
+const todayKey = () => {
+  const d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+};
+
+/* ── the facts: all 144 ordered pairs ────────────────────────────────
+   Ordered, not commutative-deduped. Retrieval is cue-specific — 7×8 and 8×7
+   are different cues even though the product is the same. The trivial rows
+   need no special case: the gate graduates them in three days and they stop
+   being drawn. */
+const HINT = {
+  "6x7":"The one most people stall on. 6×7 = 42. Rebuild it: 6×6 = 36, plus one more 6 → 42.",
+  "7x8":"Say it as a run of digits: 5, 6, 7, 8 → 56 = 7×8.",
+  "6x8":"Double 6×4. 6×4 = 24, doubled → 48. Six times an even number always ends in that same digit.",
+  "7x9":"The ×9 trick: 7 − 1 = 6 tens, and 6 + 3 = 9 → 63.",
+  "8x9":"×9 trick: 8 − 1 = 7 tens, and 7 + 2 = 9 → 72.",
+  "6x9":"×9 trick: 6 − 1 = 5 tens, and 5 + 4 = 9 → 54.",
+  "7x7":"49 — one less than 50.",
+  "8x8":"64. Also 2⁶.",
+  "9x9":"81. ×9 trick: 9 − 1 = 8 tens, 8 + 1 = 9.",
+  "12x12":"144. (×10) + (×2) → 120 + 24.",
+  "11x12":"132. (×10) + (×2) → 110 + 22.",
+  "7x12":"84. (×10) + (×2) → 70 + 14.",
+  "8x12":"96. (×10) + (×2) → 80 + 16.",
+  "9x12":"108. (×10) + (×2) → 90 + 18.",
+  "6x12":"72. (×10) + (×2) → 60 + 12.",
+  "7x11":"77 — for 2 through 9, ×11 just doubles the digit.",
+  "8x11":"88 — the digit doubled.",
+  "9x11":"99 — the digit doubled.",
+  "4x7":"28. Double 2×7 = 14 → 28.",
+  "4x8":"32. Double-double 8: 16 → 32.",
+  "3x7":"21. The ×3 row finishes 21, 24, 27.",
+  "3x8":"24. Also the hours in a day.",
+  "4x9":"36. ×9 trick: 4 − 1 = 3 tens, 3 + 6 = 9.",
+  "6x6":"36 — same answer as 4×9.",
+  "12x8":"96. (×10) + (×2) → 80 + 16.",
+};
+const GENERIC = {
+  1:"×1 is the number itself.",
+  2:"×2 is a double.",
+  4:"×4 is double, then double again.",
+  5:"×5 is half of ×10.",
+  8:"×8 is double, double, double.",
+  9:"×9 is (×10) minus one lot. The digits of every answer add to 9.",
+  10:"×10 adds a zero.",
+  11:"×11 on a single digit just doubles it.",
+  12:"×12 is (×10) + (×2).",
+};
+function hintFor(a, b){
+  return HINT[a+'x'+b] || HINT[b+'x'+a]
+      || GENERIC[b] || GENERIC[a]
+      || `Rebuild from a neighbour: ${a}×${b-1} = ${a*(b-1)}, plus one more ${a} → ${a*b}.`;
+}
+
+const FACTS = [];
+for (let a = 1; a <= 12; a++) for (let b = 1; b <= 12; b++)
+  FACTS.push({ id: a+'x'+b, a, b, ans: a*b, q: a+' × '+b });
+const FACT = {}; FACTS.forEach(f => { FACT[f.id] = f; });
+
+/* ── the gate ─────────────────────────────────────────────────────────
+   Mastered = MASTER_HITS unaided answers, each under FLUENT_MS, on
+   MASTER_DAYS distinct dates. The day-spacing is the part that makes it
+   stick — three hits in one sitting is cramming, and it decays. */
+function cleanRec(r){
+  if (!r || typeof r !== 'object' || Array.isArray(r)) return null;
+  const hits = Array.isArray(r.hits) ? r.hits.filter(h =>
+        h && typeof h === 'object' && typeof h.d === 'string'
+        && typeof h.ms === 'number' && Number.isFinite(h.ms) && h.ms >= 0) : [];
+  return { hits: hits.slice(-12),
+           seen: (typeof r.seen === 'number' && Number.isFinite(r.seen) && r.seen >= 0) ? r.seen : 0,
+           miss: (typeof r.miss === 'number' && Number.isFinite(r.miss) && r.miss >= 0) ? r.miss : 0 };
+}
+let RECS = (() => {
+  const raw = ls(LS.facts, {});
+  const out = {};
+  Object.keys(raw).forEach(k => { if (FACT[k]){ const c = cleanRec(raw[k]); if (c) out[k] = c; } });
+  return out;
+})();
+const rec = id => RECS[id] || (RECS[id] = { hits:[], seen:0, miss:0 });
+
+/* a hit only counts if it was unaided and under the fluency bar */
+const qualifying = r => r.hits.filter(h => h.ms <= FLUENT_MS);
+function daysOf(r){ return new Set(qualifying(r).map(h => h.d)); }
+function stateOf(id){
+  const r = RECS[id];
+  if (!r || !r.seen) return 'new';
+  const q = qualifying(r), days = daysOf(r);
+  if (q.length >= MASTER_HITS && days.size >= MASTER_DAYS) return 'mastered';
+  if (q.length >= 1) return 'review';
+  return 'learning';
+}
+const countState = s => FACTS.filter(f => stateOf(f.id) === s).length;
+
+/* ── selection ────────────────────────────────────────────────────────
+   Spacing and interleaving inside a single race, and the ~85% band deciding
+   when a new fact may be introduced. */
+function pickFact(recent, rolling){
+  const inPlay = FACTS.filter(f => { const s = stateOf(f.id); return s === 'learning' || s === 'review'; });
+  const fresh  = FACTS.filter(f => stateOf(f.id) === 'new');
+  const done   = FACTS.filter(f => stateOf(f.id) === 'mastered');
+  const lastId  = recent[recent.length - 1];
+  const last    = lastId ? FACT[lastId] : null;
+
+  /* Spacing applies to facts you already KNOW. A fact still being acquired may
+     come back sooner — early massed repetition is how a brand-new fact gets in,
+     and with only LEARN_CAP facts in play a strict 4-back gap is arithmetically
+     impossible anyway. Once it earns a qualifying hit, the full gap applies. */
+  const gapFor = f => stateOf(f.id) === 'learning' ? 2 : NO_REPEAT;
+  const tooSoon = f => recent.slice(-gapFor(f)).includes(f.id);
+  const clash = f => last && (f.a === last.a || f.b === last.b || f.a === last.b || f.b === last.a);
+  const ok = f => !tooSoon(f) && !clash(f);
+
+  // maintenance: a mastered fact now and then, so it does not rot
+  if (done.length && Math.random() < MAINT_RATE){
+    const c = done.filter(ok);
+    if (c.length) return c[Math.floor(Math.random()*c.length)];
+  }
+  // the band: only introduce something new while you are hitting ~85% and are
+  // not already juggling too many half-learned facts
+  const accOK = (rolling.length < 4 || rolling.reduce((a,b)=>a+b,0)/rolling.length >= BAND)
+             && countState('learning') < LEARN_CAP;
+  if (fresh.length && accOK){
+    const c = fresh.filter(ok);
+    if (c.length) return c[Math.floor(Math.random()*c.length)];
+  }
+  // otherwise: what is in play, least-recently-seen and weakest first
+  /* Fallbacks in order of what is least bad to give up. Introducing a new fact
+     or reaching for a mastered one both beat breaking the spacing rule. */
+  let c = inPlay.filter(ok);
+  if (!c.length && accOK) c = fresh.filter(ok);   // a new fact ONLY if the band allows
+  if (!c.length) c = done.filter(ok);             // otherwise maintenance
+  if (!c.length) c = inPlay.filter(f => !tooSoon(f));      // then drop the operand rule
+  if (!c.length && accOK) c = fresh.filter(f => !tooSoon(f));
+  // Below the band, repeating something already in play beats reaching for a
+  // new fact. Struggling is the moment to drill what you have, not to add to it.
+  // a softer gap before giving up on spacing entirely
+  if (!c.length) c = inPlay.filter(f => !recent.slice(-2).includes(f.id));
+  if (!c.length) c = inPlay.filter(f => f.id !== lastId);
+  if (!c.length) c = inPlay;
+  if (!c.length) c = done;
+  if (!c.length) c = FACTS;
+  const score = f => {
+    const r = RECS[f.id] || {hits:[],seen:0,miss:0};
+    const pos = recent.lastIndexOf(f.id);
+    const since = pos === -1 ? 999 : recent.length - pos;
+    return (r.miss * 3) - qualifying(r).length + Math.min(since, 20) * 0.35 + Math.random()*0.9;
+  };
+  return c.reduce((best, f) => score(f) > score(best) ? f : best, c[0]);
+}/* ══════════════════════════════════════════════════════════════════════
+   THE RACE
+   ══════════════════════════════════════════════════════════════════════ */
+let RUNS = (() => ls(LS.runs, []).filter(r =>
+  r && typeof r === 'object' && Array.isArray(r.splits) &&
+  typeof r.ms === 'number' && Number.isFinite(r.ms)).slice(-60))();
+
+const PACERS = [
+  { key:'pace3', name:'Bar',   per:3000, silks:'🐎' },   // the fluency threshold
+  { key:'pace2', name:'Clock', per:2000, silks:'🐎' },   // comfortably fluent
+];
+const median = a => { if (!a.length) return 0; const s=[...a].sort((x,y)=>x-y); const m=s.length>>1;
+  return s.length%2 ? s[m] : Math.round((s[m-1]+s[m])/2); };
+const fmt = ms => (ms/1000).toFixed(1) + 's';
+const fmtClock = ms => { const t=Math.round(ms/100)/10; return t.toFixed(1)+'s'; };
+
+let R = null;          // live race, or null
+let padLocked = false;
+
+function bestRun(){ return RUNS.length ? RUNS.reduce((b,r)=> r.ms < b.ms ? r : b) : null; }
+function lastRun(){ return RUNS.length ? RUNS[RUNS.length-1] : null; }
+
+function startRace(){
+  R = { i:0, entry:'', started:0, qStart:0, recent:[], rolling:[], splits:[], clean:[],
+        correct:0, missed:0, fact:null, phase:'run', missFact:null,
+        requeue:[], t0:performance.now() };
+  nextFact();
+  renderRace();
+  tick();
+}
+
+function nextFact(){
+  // a fact missed earlier comes back later in the SAME race, once enough other
+  // facts have gone by — the CCAT trainer discards a lapsed card for the
+  // session, which is the one thing its flashcards get plainly wrong
+  const due = R.requeue.find(x => R.i >= x.at);
+  if (due){
+    R.requeue.splice(R.requeue.indexOf(due), 1);
+    R.fact = due.fact;
+  } else {
+    R.fact = pickFact(R.recent, R.rolling);
+  }
+  R.entry = '';
+  R.phase = 'run';
+  R.qStart = performance.now();
+}
+
+function submit(){
+  if (!R || padLocked) return;
+  if (R.phase === 'miss') return submitRetype();
+  if (R.entry === '') return;
+  const ms = performance.now() - R.qStart;
+  const f = R.fact;
+  const right = +R.entry === f.ans;
+  const r = rec(f.id);
+  r.seen++;
+  R.recent.push(f.id);
+
+  if (right){
+    r.hits.push({ d: todayKey(), ms: Math.round(ms) });
+    if (r.hits.length > 12) r.hits.shift();
+    R.rolling.push(1); if (R.rolling.length > BAND_WIN) R.rolling.shift();
+    R.splits.push(Math.round(ms));
+    R.clean.push(Math.round(ms));
+    R.correct++;
+    R.i++;
+    save(LS.facts, RECS);
+    if (R.i >= TRACK) return finishRace();
+    nextFact();
+    renderRace();
+  } else {
+    r.miss++;
+    R.rolling.push(0); if (R.rolling.length > BAND_WIN) R.rolling.shift();
+    R.missed++;
+    // demote and bring it back later this race
+    r.hits = r.hits.filter(h => h.ms > FLUENT_MS);   // strip qualifying hits
+    save(LS.facts, RECS);
+    R.phase = 'miss';
+    R.missFact = f;
+    R.missStart = R.qStart;          // the clock keeps running through the miss
+    R.entry = '';
+    R.requeue.push({ fact: f, at: R.i + 5 });
+    renderRace();
+  }
+}
+
+/* The retype. Reading an answer is recognition; the skill is explicit that
+   recognition is not mastery, so the miss is not over until it is produced. */
+function submitRetype(){
+  if (R.entry === '') return;
+  if (+R.entry !== R.missFact.ans){ R.entry = ''; renderRace(); return; }
+  R.phase = 'run';
+  R.entry = '';
+  // The whole cost of the miss — the wrong answer, reading the fact and the
+  // retype — is this furlong's split. Without it `splits` is shorter than the
+  // track and the ghost, which rides on splits, can never reach the finish.
+  R.splits.push(Math.round(performance.now() - R.missStart));
+  R.i++;
+  if (R.i >= TRACK) return finishRace();
+  nextFact();
+  renderRace();
+}
+
+function key(k){
+  if (!R) return;
+  if (k === 'go') return submit();
+  if (k === 'del'){ R.entry = R.entry.slice(0,-1); return renderRace(); }
+  if (R.entry.length >= 3) return;
+  R.entry += k;
+  renderRace();
+}
+
+function finishRace(){
+  const total = performance.now() - R.t0;
+  const run = { ts: Date.now(), ms: Math.round(total), correct: R.correct,
+                missed: R.missed, medianMs: median(R.clean), splits: R.splits };
+  const prevBest = bestRun();
+  RUNS.push(run); if (RUNS.length > 60) RUNS.shift();
+  save(LS.runs, RUNS);
+  const pb = !prevBest || run.ms < prevBest.ms;
+  R = null;
+  renderRace(run, pb);
+  if (pb && RUNS.length > 1) confetti();
+}
+
+/* progress along the track, 0..1, for each runner at time t */
+function progressAt(splits, tMs){
+  let acc = 0, n = 0;
+  for (const s of splits){ if (acc + s > tMs) break; acc += s; n++; }
+  return Math.min(1, n / TRACK);
+}
+function tick(){
+  if (!R) return;
+  paintTrack();
+  requestAnimationFrame(tick);
+}
+/* ══════════════════════════════════════════════════════════════════════
+   VIEWS
+   ══════════════════════════════════════════════════════════════════════ */
+const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const PANES = { race:'v-race', form:'v-form', method:'v-method' };
+let currentTab = 'race';
+function switchTab(name){
+  if (!PANES[name]) return;
+  currentTab = name;
+  document.querySelectorAll('.tab').forEach(t => {
+    const on = t.dataset.tab === name;
+    t.classList.toggle('on', on);
+    t.setAttribute('aria-selected', on ? 'true' : 'false');
+  });
+  Object.keys(PANES).forEach(k => { document.getElementById(PANES[k]).hidden = (k !== name); });
+  if (name === 'race') renderRace();
+  if (name === 'form') renderForm();
+  if (name === 'method') renderMethod();
+  window.scrollTo(0,0);
+}
+document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => switchTab(t.dataset.tab)));
+
+function laneHTML(cls, who, silks, pct, gallop){
+  return `<div class="lane ${cls}"><span class="who">${who}</span>
+    <span class="runner${gallop ? ' gallop' : ''}" style="transform:translateX(${(pct*100).toFixed(2)}%)">${silks}</span></div>`;
+}
+function paintTrack(){
+  const el = document.getElementById('trackEl');
+  if (!el || !R) return;
+  const t = performance.now() - R.t0;
+  const me = R.i / TRACK;
+  const g = lastRun(), b = bestRun();
+  const lanes = [];
+  lanes.push(laneHTML('me','you','🐎', me, R.phase === 'run'));
+  if (g) lanes.push(laneHTML('ghost','last','🐎', progressAt(g.splits, t)));
+  if (b && b !== g) lanes.push(laneHTML('best','best','🐎', progressAt(b.splits, t)));
+  PACERS.forEach(p => lanes.push(laneHTML('pace', p.name, p.silks, Math.min(1, t / (p.per*TRACK)))));
+  el.innerHTML = lanes.join('') + '<div class="finish"></div>';
+  const l = document.getElementById('liveSay');
+  if (l) l.textContent = `${R.i} of ${TRACK}`;
+}
+
+function renderRace(finished, pb){
+  const B = document.getElementById('raceBody');
+  document.body.classList.toggle('racing', !!R);
+
+  if (finished){
+    const g = RUNS.length > 1 ? RUNS[RUNS.length-2] : null;
+    const delta = g ? g.ms - finished.ms : 0;
+    B.innerHTML = `
+      <div class="card" style="text-align:center;">
+        <div class="tiny">${pb ? 'Personal best' : 'Race complete'}</div>
+        <div class="big" style="color:${pb?'var(--acc)':'var(--fg)'}">${fmtClock(finished.ms)}</div>
+        <div class="muted">${finished.correct} clean · ${finished.missed} missed · ${fmt(finished.medianMs)} median</div>
+        ${g ? `<div class="muted" style="margin-top:8px;">
+          ${delta > 0 ? `<span style="color:var(--acc)">${fmtClock(delta)} faster</span> than last time`
+                      : delta < 0 ? `${fmtClock(-delta)} slower than last time`
+                      : 'dead heat with last time'}</div>` : ''}
+      </div>
+      <div class="card">
+        <div class="sechead" style="margin-top:0;"><h2>Where you stand</h2><div class="line"></div></div>
+        ${masteryBlock()}
+      </div>
+      <p style="text-align:center;"><button class="btn btn-p" id="again" type="button">Race again</button></p>`;
+    document.getElementById('again').addEventListener('click', startRace);
+    return;
+  }
+
+  if (!R){
+    const g = lastRun(), b = bestRun();
+    B.innerHTML = `
+      <div class="card">
+        <p style="margin:0 0 4px;font-size:16px;font-weight:700;">${TRACK} facts. One furlong each.</p>
+        <p class="muted" style="margin:0 0 14px;">Type the answer and hit go. Nothing is awarded for being
+           right &mdash; the horse moves because you answered, and how fast it moves is how fast you recalled.</p>
+        <div class="row" style="margin-bottom:14px;">
+          <div><div class="tiny">MASTERED</div><div class="big">${countState('mastered')}<span class="muted" style="font-size:15px;">/144</span></div></div>
+          ${g ? `<div><div class="tiny">LAST RUN</div><div class="big">${fmtClock(g.ms)}</div></div>` : ''}
+          ${b ? `<div><div class="tiny">BEST</div><div class="big" style="color:var(--best)">${fmtClock(b.ms)}</div></div>` : ''}
+        </div>
+        <button class="btn btn-p" id="start" type="button">Go to post</button>
+      </div>
+      ${g ? `<p class="tiny" style="text-align:center;">Your last run rides as a ghost. The two grey horses hold
+        a steady 3.0s and 2.0s a fact &mdash; pace-setters, not prizes.</p>` : ''}`;
+    document.getElementById('start').addEventListener('click', startRace);
+    return;
+  }
+
+  const missing = R.phase === 'miss';
+  B.innerHTML = `
+    <div class="track" id="trackEl"></div>
+    <p class="sr-only" id="liveSay" aria-live="polite"></p>
+    ${missing ? `
+      <div class="miss">
+        <div class="head">✗ ${esc(R.missFact.q)}</div>
+        <div class="truth">${R.missFact.q} = ${R.missFact.ans}</div>
+        <div class="why">${esc(hintFor(R.missFact.a, R.missFact.b))}</div>
+        <div class="again">now type it</div>
+        <div style="text-align:center;"><span class="entry" id="entryEl">${esc(R.entry) || '&nbsp;'}</span></div>
+      </div>`
+    : `
+      <div class="prompt">
+        <div class="fact">${esc(R.fact.q)}</div>
+        <div><span class="entry" id="entryEl">${esc(R.entry) || '&nbsp;'}</span></div>
+      </div>`}
+    <div class="pad">
+      ${[1,2,3,4,5,6,7,8,9].map(n => `<button class="key" data-k="${n}" type="button">${n}</button>`).join('')}
+      <button class="key del" data-k="del" type="button" aria-label="Delete">⌫</button>
+      <button class="key" data-k="0" type="button">0</button>
+      <button class="key go" data-k="go" type="button" aria-label="Submit">✓</button>
+    </div>
+    <p class="tiny" style="text-align:center;margin-top:10px;">${R.i} of ${TRACK} · ${R.missed} missed</p>`;
+  B.querySelectorAll('[data-k]').forEach(b => b.addEventListener('click', () => key(b.dataset.k)));
+  paintTrack();
+}
+
+/* ── mastery, made visible: this is where the motivation is supposed to come
+      from, so it is not a stats page tucked away ─────────────────────── */
+function masteryBlock(){
+  const cells = [];
+  for (let a = 1; a <= 12; a++) for (let b = 1; b <= 12; b++){
+    const s = stateOf(a+'x'+b);
+    cells.push(`<div class="cell ${s}" title="${a}×${b} — ${s}"></div>`);
+  }
+  const m = countState('mastered'), r = countState('review'), l = countState('learning');
+  return `<div class="grid144">${cells.join('')}</div>
+    <p class="tiny">${m} mastered · ${r} on their way · ${l} being learned · ${144-m-r-l} not met yet</p>`;
+}
+
+function renderForm(){
+  const F = document.getElementById('formBody');
+  const inPlay = FACTS.filter(f => { const s = stateOf(f.id); return s === 'learning' || s === 'review'; })
+    .map(f => ({ f, r: rec(f.id) }))
+    .sort((x,y) => y.r.miss - x.r.miss || qualifying(x.r).length - qualifying(y.r).length)
+    .slice(0, 14);
+  const dotStrip = r => {
+    const q = qualifying(r), days = [...daysOf(r)].sort();
+    let out = '';
+    for (let i = 0; i < MASTER_HITS; i++)
+      out += `<span class="${i < Math.min(q.length, days.length) ? 'dot-on' : 'dot-off'}">●</span>`;
+    return `<span class="dots">${out}</span>`;
+  };
+  const runs = RUNS.slice().reverse().slice(0, 10);
+  F.innerHTML = `
+    <div class="card">
+      <div class="sechead" style="margin-top:0;"><h2>The book</h2><div class="line"></div></div>
+      ${masteryBlock()}
+    </div>
+    ${inPlay.length ? `<div class="card">
+      <div class="sechead" style="margin-top:0;"><h2>What you're working on</h2><div class="line"></div></div>
+      <table><thead><tr><th>Fact</th><th>Days</th><th>Best</th><th>Missed</th></tr></thead><tbody>
+      ${inPlay.map(({f,r}) => {
+        const q = qualifying(r);
+        return `<tr><td>${f.q}</td><td>${dotStrip(r)}</td>
+          <td>${q.length ? fmt(Math.min(...q.map(h=>h.ms))) : '—'}</td><td>${r.miss||''}</td></tr>`;
+      }).join('')}
+      </tbody></table>
+      <p class="tiny" style="margin-top:10px;">A dot is one unaided answer under ${FLUENT_MS/1000}s, on a different day.
+         Three dots and the fact is done — day-spacing is the part that makes it hold.</p>
+    </div>` : `<div class="card"><p class="muted" style="margin:0;">Run a race and this fills in.</p></div>`}
+    ${runs.length ? `<div class="card">
+      <div class="sechead" style="margin-top:0;"><h2>Past runs</h2><div class="line"></div></div>
+      <table><thead><tr><th>When</th><th>Time</th><th>Median</th><th>Missed</th></tr></thead><tbody>
+      ${runs.map(r => `<tr><td>${new Date(r.ts).toLocaleDateString([], {month:'short', day:'numeric'})}</td>
+        <td>${fmtClock(r.ms)}</td><td>${fmt(r.medianMs)}</td><td>${r.missed||''}</td></tr>`).join('')}
+      </tbody></table>
+    </div>` : ''}
+    <p style="text-align:center;"><button class="btn" id="wipe" type="button" style="color:#f87171;border-color:#7f1d1d;">Erase everything</button></p>`;
+  const w = document.getElementById('wipe');
+  if (w) w.addEventListener('click', () => {
+    if (!confirm('Erase every fact record and every run? This cannot be undone.')) return;
+    Object.values(LS).forEach(k => localStorage.removeItem(k));
+    RECS = {}; RUNS = []; renderForm();
+  });
+}
+
+function renderMethod(){
+  document.getElementById('methodBody').innerHTML = `
+    <div class="card">
+      <div class="sechead" style="margin-top:0;"><h2>Why it works this way</h2><div class="line"></div></div>
+      <p class="muted">Four decisions, each from something that has actually replicated.</p>
+      <p style="font-size:14px;"><b style="color:var(--acc)">Nothing is awarded for a correct answer.</b>
+         Points and prizes don't build durable motivation and can crowd out the real kind. The horse moves
+         because you answered; its speed is your recall rate. You're racing your own fluency from last time,
+         which is the only scoreboard that means anything.</p>
+      <p style="font-size:14px;"><b style="color:var(--acc)">Speed is the measurement, not correctness.</b>
+         Getting ${'7 × 8'} right after four seconds means you computed it. Fluency is retrieval, so an answer
+         over ${FLUENT_MS/1000}s doesn't count toward mastery however right it is.</p>
+      <p style="font-size:14px;"><b style="color:var(--acc)">Three days, not three tries.</b>
+         A fact needs ${MASTER_HITS} unaided answers under the bar on ${MASTER_DAYS} different days. Three in one
+         sitting is cramming and it decays; the gap between days is what makes it hold.</p>
+      <p style="font-size:14px;"><b style="color:var(--acc)">A miss makes you produce it, not read it.</b>
+         Reading the answer is recognition, and recognition isn't mastery. So the horse stops, you get the fact
+         and a way to rebuild it, and you type it before racing on. It comes back five furlongs later in the
+         same race.</p>
+      <p style="font-size:14px;"><b style="color:var(--acc)">New facts only while you're at ${Math.round(BAND*100)}%.</b>
+         Learning is fastest when you're missing about one in six — not when it's easy, and not when it's
+         crushing. Drop below that and it stops introducing anything new and drills what's already in play.</p>
+      <p class="tiny" style="margin-top:14px;">Built on the same method as the
+         <a href="/builds/ccat-trainer/" style="color:var(--acc)">CCAT trainer</a>'s flashcards, with the two
+         things that one gets wrong fixed: answers here are typed rather than self-graded, and a fact you
+         miss comes back in the same session.</p>
+    </div>`;
+}
+
+/* dependency-free confetti, lifted from the CCAT trainer — fires ONLY on a
+   personal best, never on a correct answer */
+function confetti(){
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const cvs = document.createElement('canvas');
+  cvs.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:9999';
+  cvs.width = innerWidth; cvs.height = innerHeight;
+  document.body.appendChild(cvs);
+  const c = cvs.getContext('2d'), N = 110, P = [];
+  for (let i = 0; i < N; i++) P.push({x:Math.random()*cvs.width, y:-20-Math.random()*cvs.height*0.4,
+    vx:(Math.random()-0.5)*2, vy:1+Math.random()*2.4, s:4+Math.random()*5,
+    r:Math.random()*Math.PI, vr:(Math.random()-0.5)*0.2,
+    col:['#4ade80','#a78bfa','#facc15','#eaeaea'][i%4]});
+  const t0 = performance.now();
+  (function step(now){
+    const el = now - t0;
+    c.clearRect(0,0,cvs.width,cvs.height);
+    c.globalAlpha = Math.max(0, 1 - el/2800);
+    P.forEach(p => { p.vy += 0.05; p.x += p.vx; p.y += p.vy; p.r += p.vr;
+      c.save(); c.translate(p.x,p.y); c.rotate(p.r); c.fillStyle = p.col;
+      c.fillRect(-p.s/2,-p.s/2,p.s,p.s); c.restore(); });
+    if (el < 2800) requestAnimationFrame(step); else cvs.remove();
+  })(t0);
+}
+
+/* physical keyboard, for anyone at a desk */
+document.addEventListener('keydown', e => {
+  if (currentTab !== 'race' || !R) return;
+  if (e.metaKey || e.ctrlKey || e.altKey) return;
+  if (/^[0-9]$/.test(e.key)){ e.preventDefault(); key(e.key); }
+  else if (e.key === 'Enter'){ e.preventDefault(); key('go'); }
+  else if (e.key === 'Backspace'){ e.preventDefault(); key('del'); }
+});
+
+renderRace();
+</script>
+</body>
+</html>
