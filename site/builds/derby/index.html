@@ -148,8 +148,8 @@
   }
 
   /* ══ MASTERY ═════════════════════════════════════════════════════════ */
-  .grid144{display:grid; grid-template-columns:repeat(12,1fr); gap:3px;
-    max-width:440px; margin:10px 0 4px;}
+  .gridfacts{display:grid; grid-template-columns:repeat(13,1fr); gap:3px;
+    max-width:460px; margin:10px 0 4px;}
   .cell{aspect-ratio:1; border-radius:2px; background:#1b1b1b;
     border:1px solid transparent;}
   .cell.learning{background:#3a3320;}
@@ -269,7 +269,7 @@ const todayKey = () => {
   return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
 };
 
-/* ── the facts: all 144 ordered pairs ────────────────────────────────
+/* ── the facts: all 169 ordered pairs, 1×1 to 13×13 ──────────────────
    Ordered, not commutative-deduped. Retrieval is cue-specific — 7×8 and 8×7
    are different cues even though the product is the same. The trivial rows
    need no special case: the gate graduates them in three days and they stop
@@ -300,6 +300,15 @@ const HINT = {
   "4x9":"36. ×9 trick: 4 − 1 = 3 tens, 3 + 6 = 9.",
   "6x6":"36 — same answer as 4×9.",
   "12x8":"96. (×10) + (×2) → 80 + 16.",
+  "13x13":"169. (×10) + (×3) → 130 + 39.",
+  "12x13":"156. (×10) + (×3) → 120 + 36.",
+  "11x13":"143. 110 + 33. Also 11 × 13 = 143, one short of 144.",
+  "9x13":"117. 90 + 27.",
+  "8x13":"104. 80 + 24.",
+  "7x13":"91. 70 + 21. Also 7 × 13 = 91 = 13 × 7 — a week of weeks plus a bit.",
+  "6x13":"78. 60 + 18.",
+  "4x13":"52 — the weeks in a year and the cards in a deck.",
+  "3x13":"39. 30 + 9.",
 };
 const GENERIC = {
   1:"×1 is the number itself.",
@@ -311,6 +320,7 @@ const GENERIC = {
   10:"×10 adds a zero.",
   11:"×11 on a single digit just doubles it.",
   12:"×12 is (×10) + (×2).",
+  13:"×13 is (×10) + (×3). Split it every time — nobody memorises the 13s whole.",
 };
 function hintFor(a, b){
   return HINT[a+'x'+b] || HINT[b+'x'+a]
@@ -318,8 +328,13 @@ function hintFor(a, b){
       || `Rebuild from a neighbour: ${a}×${b-1} = ${a*(b-1)}, plus one more ${a} → ${a*b}.`;
 }
 
+/* The 13s are in because James asked for them. They are the first row past
+   the standard board, so the grid is 13×13 = 169 ordered pairs, and every
+   count that used to read /144 now reads off MAXT. */
+const MAXT  = 13;
+const GRIDN = MAXT * MAXT;
 const FACTS = [];
-for (let a = 1; a <= 12; a++) for (let b = 1; b <= 12; b++)
+for (let a = 1; a <= MAXT; a++) for (let b = 1; b <= MAXT; b++)
   FACTS.push({ id: a+'x'+b, a, b, ans: a*b, q: a+' × '+b });
 const FACT = {}; FACTS.forEach(f => { FACT[f.id] = f; });
 
@@ -377,10 +392,14 @@ const rec = id => RECS[id] || (RECS[id] = { hits:[], seen:0, miss:0, cues:[] });
    multiplication only when offered division as its own set — putting 56 ÷ 7 in
    under the heading of "varied cues" was smuggling it back. The missing-factor
    forms stay on, because 7 × ? = 56 is still multiplication. */
-const DEFAULT_PREFS = { tables:[1,2,3,4,5,6,7,8,9,10,11,12], missing:true, division:false };
+const DEFAULT_PREFS = { tables:[1,2,3,4,5,6,7,8,9,10,11,12,13], missing:true, division:false };
 let PREFS = (() => {
   const r = ls(LS.prefs, {});
-  const t = Array.isArray(r.tables) ? r.tables.filter(x => Number.isInteger(x) && x>=1 && x<=12) : null;
+  const t = Array.isArray(r.tables) ? r.tables.filter(x => Number.isInteger(x) && x>=1 && x<=MAXT) : null;
+  // The 13s arrived after this preference could already have been saved. Anyone
+  // who had the whole board keeps the whole board rather than quietly losing the
+  // new row; anyone who had narrowed it keeps exactly what they chose.
+  if (t && t.length === 12 && !t.includes(13)) t.push(13);
   return { tables: (t && t.length) ? t : DEFAULT_PREFS.tables.slice(),
            missing: r.missing !== false,
            division: r.division === true };
@@ -481,11 +500,11 @@ const PACERS = [
    progression IS the learning state rather than a rosette sitting on top. */
 const CLASSES = [
   { at:0,   name:'Rookie'   },
-  { at:12,  name:'Bronze'   },
-  { at:36,  name:'Silver'   },
-  { at:72,  name:'Gold'     },
-  { at:108, name:'Platinum' },
-  { at:144, name:'Diamond'  },
+  { at:14,  name:'Bronze'   },
+  { at:42,  name:'Silver'   },
+  { at:84,  name:'Gold'     },
+  { at:127, name:'Platinum' },
+  { at:169, name:'Diamond'  },
 ];
 function classNow(){
   const m = countState('mastered');
@@ -791,16 +810,26 @@ function sizeTrack(){
   ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
 }
 
-/* A side-on horse, hooves on y=0 and everything above. Drawn as one silhouette
-   so the neck cannot read as a second tail — which is what the first two
-   attempts looked like, the second because the poll and the muzzle shared an x
-   and the head never projected forward. Roughly 34 wide by 26 tall at scale 1.
-   Legs swing on a gallop cycle driven by how fast the horse is travelling. */
+/* A side-on horse with a rider up, hooves on y=0 and everything above.
+   Drawn as one silhouette so the neck cannot read as a second tail — which is
+   what the first two attempts looked like, the second because the poll and the
+   muzzle shared an x and the head never projected forward.
+
+   The jockey is the piece that makes it a horse RACE rather than a horse: a
+   crouched two-point seat, silks in the runner's colour, so you can tell the
+   field apart at a glance without reading the labels. Roughly 34 wide by 30
+   tall at scale 1. Legs swing on a gallop cycle driven by travel speed. */
 function drawHorse(x, y, s, phase, c, running){
   const g = ctx;
   g.save(); g.translate(x, y); g.scale(s, s);
+
+  // the shadow is what puts the horse ON the turf rather than in front of it
+  g.fillStyle = 'rgba(0,0,0,.34)';
+  g.beginPath(); g.ellipse(-1, 0.6, 15, 2.6, 0, 0, Math.PI*2); g.fill();
+
   const sw  = running ? Math.sin(phase)       : 0.30;
   const sw2 = running ? Math.sin(phase + 2.4) : -0.30;
+  // the whole animal rises and falls on the gallop, rider included
   if (running) g.translate(0, Math.sin(phase * 2) * 0.6);
 
   const leg = (hx, hy, k, col, w) => {
@@ -827,21 +856,57 @@ function drawHorse(x, y, s, phase, c, running){
   g.quadraticCurveTo(9,-10, 5,-10);         // chest
   g.bezierCurveTo(-2,-8, -8,-8, -12,-10);   // belly and flank
   g.closePath(); g.fill();
+  // a little light along the topline, so it is not a flat cut-out
+  g.strokeStyle = 'rgba(255,255,255,.13)'; g.lineWidth = 1;
+  g.beginPath(); g.moveTo(-8,-16.2);
+  g.bezierCurveTo(-2,-17.2, 2,-17.2, 5,-16.2);
+  g.bezierCurveTo(9,-19.2, 11,-21.2, 13,-22.2); g.stroke();
 
   // near-side pair, in the coat colour
   leg(-9, -11, -sw,  c.coat, 2.7);
   leg( 4, -10, -sw2, c.coat, 2.7);
 
   g.strokeStyle = c.mane; g.lineWidth = 2.1; g.lineCap = 'round';
-  g.beginPath(); g.moveTo(-13,-14);                       // tail
+  g.beginPath(); g.moveTo(-13,-14);                       // tail, streaming
   g.quadraticCurveTo(-19 - (running ? sw*2.5 : 0), -12, -18,-5); g.stroke();
   g.beginPath(); g.moveTo(6,-16);                          // mane along the crest
   g.quadraticCurveTo(11,-21, 16,-23); g.stroke();
 
   g.fillStyle = c.silk;                                    // saddlecloth
-  g.beginPath(); g.ellipse(-2,-13, 4.4, 2.8, -0.12, 0, Math.PI*2); g.fill();
-  g.fillStyle = '#0b0b0b';
+  g.beginPath(); g.ellipse(-3,-13.5, 4.6, 2.9, -0.12, 0, Math.PI*2); g.fill();
+  g.fillStyle = '#0b0b0b';                                 // eye
   g.beginPath(); g.arc(18.6,-21.6, 0.85, 0, Math.PI*2); g.fill();
+  g.fillStyle = 'rgba(255,255,255,.5)';                    // blaze
+  g.beginPath(); g.moveTo(20.6,-23.4); g.quadraticCurveTo(22.2,-21, 20.4,-18.4);
+  g.quadraticCurveTo(19.4,-21, 20.6,-23.4); g.closePath(); g.fill();
+
+  /* ── the rider ───────────────────────────────────────────────────────
+     Short stirrups, knee up by the withers, backside off the saddle and
+     weight over the shoulder — the racing seat, not a hacking seat. */
+  const bob = running ? Math.sin(phase*2 + 0.8) * 0.45 : 0;
+  g.save(); g.translate(0, bob);
+  g.strokeStyle = '#141414'; g.lineWidth = 2.0; g.lineCap = 'round';
+  g.beginPath(); g.moveTo(-1.5,-16.5);                     // thigh, knee, boot
+  g.lineTo(3.4,-19.6); g.lineTo(1.6,-14.6); g.stroke();
+  g.fillStyle = c.silk;                                    // silks over the back
+  g.beginPath();
+  g.moveTo(-4.6,-17.4);
+  g.quadraticCurveTo(-3.4,-24.2, 2.6,-26.4);               // spine, arched over
+  g.lineTo(6.0,-25.0);                                     // shoulder
+  g.quadraticCurveTo(3.2,-19.6, -1.6,-17.0);               // front, down to the saddle
+  g.closePath(); g.fill();
+  g.strokeStyle = c.silk; g.lineWidth = 1.9;               // arm reaching to the neck
+  g.beginPath(); g.moveTo(4.6,-24.6); g.lineTo(9.6,-21.4); g.stroke();
+  g.strokeStyle = 'rgba(0,0,0,.5)'; g.lineWidth = 0.9;     // rein
+  g.beginPath(); g.moveTo(9.8,-21.4); g.lineTo(16.4,-20.4); g.stroke();
+  g.fillStyle = '#d8ab7e';                                 // face
+  g.beginPath(); g.arc(6.9,-27.0, 1.95, 0, Math.PI*2); g.fill();
+  g.fillStyle = c.silk;                                    // cap
+  g.beginPath(); g.arc(6.9,-27.4, 2.35, Math.PI*0.92, Math.PI*2.12); g.fill();
+  g.fillStyle = 'rgba(0,0,0,.6)';                          // goggles
+  g.fillRect(7.0,-27.6, 2.5, 1.15);
+  g.restore();
+
   g.restore();
 }
 
@@ -849,7 +914,7 @@ function dust(x, y, t, n){
   for (let i = 0; i < n; i++){
     const a = (t*0.006 + i*1.7) % 1;
     ctx.globalAlpha = (1 - a) * 0.22;
-    ctx.fillStyle = '#8a9a86';
+    ctx.fillStyle = '#6f7f68';
     ctx.beginPath(); ctx.arc(x - 12 - a*26, y + 10 - a*5, 1.6 + a*3.4, 0, Math.PI*2); ctx.fill();
   }
   ctx.globalAlpha = 1;
@@ -870,89 +935,223 @@ function paintTrack(){
   const ap = Math.min(1, (now - (R.animAt || 0)) / 420);
   const ae = ap < 0.5 ? 4*ap*ap*ap : 1 - Math.pow(-2*ap + 2, 3)/2;   // easeInOutCubic
   R.smooth = (R.animFrom || 0) + (target - (R.animFrom || 0)) * ae;
-  runners.push({ k:'me', name:'you', x:R.smooth, c:SILKS.me, lane:0 });
-  if (g) runners.push({ k:'ghost', name:'last', x:progressAt(g.splits,t)*WORLD, c:SILKS.ghost, lane:1 });
-  if (b && b !== g) runners.push({ k:'best', name:'best', x:progressAt(b.splits,t)*WORLD, c:SILKS.best, lane:2 });
-  PACERS.forEach((p,i) => runners.push({ k:p.key, name:p.name,
-    x: Math.min(1, t/(p.per*TRACK))*WORLD, c:SILKS.pace, lane: (b&&b!==g?3:2)+i }));
+  /* Lane order is depth order: lane 0 is the far side of the course and lane
+     N the near side, and the field is painted far-to-near so the near horses
+     overlap the far ones the way a real field does. You get the near lane —
+     biggest, in front of everyone, never hidden behind a pacer. */
+  if (g) runners.push({ k:'ghost', name:'last', x:progressAt(g.splits,t)*WORLD, c:SILKS.ghost });
+  if (b && b !== g) runners.push({ k:'best', name:'best', x:progressAt(b.splits,t)*WORLD, c:SILKS.best });
+  PACERS.forEach(p => runners.push({ k:p.key, name:p.name,
+    x: Math.min(1, t/(p.per*TRACK))*WORLD, c:SILKS.pace }));
+  runners.forEach((r,i) => { r.lane = i; });
+  runners.push({ k:'me', name:'you', x:R.smooth, c:SILKS.me, lane:runners.length });
 
   /* camera: keep your horse a third in, and never run past the post */
   const leadX = Math.max(R.smooth, ...runners.map(r => r.x));
   let want = leadX - W*0.60;                        // the leader rides up front
-  // You may drift a long way back through the frame while you hesitate — that
-  // is the point, it is what being left behind looks like — but never off it.
-  want = Math.min(want, R.smooth + 22);
-  want = Math.max(want, R.smooth - W*0.70);         // nor pinned to the right rail
+  /* You may drift a long way back through the frame while you hesitate — that
+     is the point, it is what being left behind looks like. But the clamps are
+     written as where your horse SITS on screen, not as a world offset, because
+     the old world-offset version pinned you at x=18 and cut your tail off. */
+  const frame = f => R.smooth + 40 - W*f;
+  want = Math.min(want, frame(0.13));               // never shoved off the left
+  want = Math.max(want, frame(0.82));               // nor pinned to the right rail
   const prevCam = camX;
   camX = Math.max(0, Math.min(WORLD + 110 - W, want));
   const camVel = Math.abs(camX - prevCam) / Math.max(1, dt) * 16;   // px per frame
   const sx = x => x - camX + 40;
 
   ctx.clearRect(0,0,W,H);
-  // turf
-  const turf = ctx.createLinearGradient(0,0,0,H);
-  turf.addColorStop(0,'#15251a'); turf.addColorStop(1,'#101c14');
-  ctx.fillStyle = turf; ctx.fillRect(0,0,W,H);
 
-  // scrolling ground marks — this is what actually reads as speed
+  /* Everything below is layered back to front and scrolls at its own rate.
+     Parallax is the whole trick: the stand crawls, the rail slides, the turf
+     tears past, and the difference between those three is what the eye reads
+     as speed. Detail thins out toward the bottom of the frame on purpose —
+     that band is where the question sits, and decoration competing with a
+     retrieval attempt costs you the retrieval. */
+  const STILL = prefersStill();
+  /* Nothing vertical is allowed below this line. The bottom of the canvas is
+     the question's, and a chequered post running down through "13 × 2 = ?" is
+     exactly the decoration-during-retrieval that costs you the retrieval. */
+  const GROUND = H * (R.phase === 'miss' ? 0.90 : 0.76);
+  const HOR = Math.round(H * (R.phase === 'miss' ? 0.34 : 0.30));   // horizon
+  const px  = (wx, k) => wx - camX*k + 40;                          // parallax map
+  /* Repeating layers tile in WORLD space, not screen space. A screen-space
+     modulo goes negative while the camera sits near the start and the whole
+     backdrop jumps a tile; walking the tile indices instead cannot. */
+  const tiles = (seg, k) => {
+    const i0 = Math.floor((camX*k - 40) / seg) - 1;
+    return { i0, i1: i0 + Math.ceil(W/seg) + 2 };
+  };
+  const hsh = i => { const v = Math.sin(i * 127.1) * 43758.5453; return v - Math.floor(v); };
+
+  // sky, dusk over the course
+  const sky = ctx.createLinearGradient(0,0,0,HOR);
+  sky.addColorStop(0,'#0a1017'); sky.addColorStop(.62,'#152029'); sky.addColorStop(1,'#2b2f2a');
+  ctx.fillStyle = sky; ctx.fillRect(0,0,W,HOR);
+
+  // far treeline, barely moving
+  ctx.fillStyle = '#0e1712';
+  {
+    const t = tiles(26, .06);
+    ctx.beginPath(); ctx.moveTo(px(t.i0*26, .06), HOR);
+    for (let i = t.i0; i <= t.i1; i++){
+      const x = px(i*26, .06), h = 6 + hsh(i)*12;
+      ctx.lineTo(x, HOR - h); ctx.lineTo(x + 13, HOR - h*0.55);
+    }
+    ctx.lineTo(px(t.i1*26 + 26, .06), HOR); ctx.closePath(); ctx.fill();
+  }
+
+  // the stand, with a crowd in it — repeats every 470 world px
+  const SEG = 470, sh = Math.max(16, HOR*0.52);
+  const st = tiles(SEG, .17);
+  for (let k = st.i0; k <= st.i1; k++){
+    const bx = px(k*SEG, .17);
+    if (bx > W + 40 || bx < -SEG - 40) continue;
+    ctx.fillStyle = '#101a20';
+    ctx.fillRect(bx, HOR - sh, SEG - 14, sh);
+    ctx.fillStyle = '#0b1218';                                    // the joint between stands
+    ctx.fillRect(bx + SEG - 16, HOR - sh - 4, 4, sh + 4);
+    ctx.fillStyle = '#182630';                                    // roof, running the whole way
+    ctx.beginPath(); ctx.moveTo(bx - 8, HOR - sh);
+    ctx.lineTo(bx + SEG - 6, HOR - sh); ctx.lineTo(bx + SEG - 12, HOR - sh - 5);
+    ctx.lineTo(bx - 2, HOR - sh - 5); ctx.closePath(); ctx.fill();
+    // floodlights over the roof — the cheapest thing on the canvas that says
+    // "racecourse" rather than "field"
+    [0.24, 0.72].forEach(f => {
+      const lx = bx + f*SEG, ly = HOR - sh - 5;
+      ctx.fillStyle = '#0d151b'; ctx.fillRect(lx, ly - 12, 1.6, 12);
+      ctx.fillStyle = 'rgba(255,244,214,.30)'; ctx.fillRect(lx - 5, ly - 16, 11, 4);
+      const glow = ctx.createRadialGradient(lx, ly-14, 0, lx, ly-14, 26);
+      glow.addColorStop(0,'rgba(255,240,200,.13)'); glow.addColorStop(1,'rgba(255,240,200,0)');
+      ctx.fillStyle = glow; ctx.beginPath(); ctx.arc(lx, ly-14, 26, 0, Math.PI*2); ctx.fill();
+    });
+    // heads: a fixed pseudo-random speckle, so the crowd does not shimmer
+    for (let i = 0; i < 120; i++){
+      const hx = bx + 6 + hsh(k*211 + i*2+1) * (SEG - 30),
+            hy = HOR - sh + 5 + hsh(k*211 + i*2+2) * (sh - 8);
+      ctx.fillStyle = (k+i) % 5 === 0 ? 'rgba(226,230,235,.22)' : 'rgba(150,168,182,.16)';
+      ctx.fillRect(hx, hy, 1.7, 1.7);
+    }
+  }
+
+  // the outer rail, white posts on the far side of the course
+  const railY = HOR - 3;
+  ctx.strokeStyle = 'rgba(228,232,226,.34)'; ctx.lineWidth = 1.4;
+  ctx.beginPath(); ctx.moveTo(0, railY); ctx.lineTo(W, railY); ctx.stroke();
+  ctx.fillStyle = 'rgba(228,232,226,.26)';
+  {
+    const t = tiles(34, .42);
+    for (let k = t.i0; k <= t.i1; k++) ctx.fillRect(px(k*34, .42), railY, 1.4, 6);
+  }
+
+  // turf, lit from the stand side
+  const turf = ctx.createLinearGradient(0,HOR,0,H);
+  turf.addColorStop(0,'#1d3324'); turf.addColorStop(.30,'#18291c'); turf.addColorStop(1,'#0e1811');
+  ctx.fillStyle = turf; ctx.fillRect(0,HOR,W,H-HOR);
+
+  /* Mown stripes. Each is a quad whose far edge scrolls slower than its near
+     edge, which is exactly what perspective does, and it is the single cheapest
+     thing on this canvas that makes the ground read as ground. */
+  const STR = 92;
+  for (let k = -2; k <= Math.ceil(W/STR)+2; k++){
+    const wx = (Math.floor(camX/STR) + k) * STR;
+    if (((wx/STR)|0) % 2) continue;
+    const fx0 = px(wx, .74), fx1 = px(wx + STR, .74);
+    const nx0 = px(wx, 1),   nx1 = px(wx + STR, 1);
+    if (Math.max(fx1,nx1) < -20 || Math.min(fx0,nx0) > W+20) continue;
+    ctx.fillStyle = 'rgba(255,255,255,.022)';
+    ctx.beginPath(); ctx.moveTo(fx0,HOR); ctx.lineTo(fx1,HOR);
+    ctx.lineTo(nx1,H); ctx.lineTo(nx0,H); ctx.closePath(); ctx.fill();
+  }
+  // the shadow the rail throws across the top of the turf
+  const shade = ctx.createLinearGradient(0,HOR,0,HOR+14);
+  shade.addColorStop(0,'rgba(0,0,0,.34)'); shade.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.fillStyle = shade; ctx.fillRect(0,HOR,W,14);
+
+  // torn-up ground rushing by — this is what actually reads as speed
   const kick = R.kick ? Math.max(0, 1 - (now - R.kick) / 420) : 0;
   const rush = Math.min(1, camVel / 7 + kick * 0.55);
-  ctx.strokeStyle = 'rgba(255,255,255,' + (0.04 + rush*0.05).toFixed(3) + ')';
+  ctx.strokeStyle = 'rgba(255,255,255,' + (0.035 + rush*0.045).toFixed(3) + ')';
   ctx.lineWidth = 1;
   const step = 46, first = Math.floor(camX/step)*step;
   for (let wx = first; wx < camX + W + step; wx += step){
     const x = sx(wx);
-    ctx.beginPath(); ctx.moveTo(x, 8); ctx.lineTo(x - 7 - rush*10, H-6); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(x, HOR + 6); ctx.lineTo(x - 7 - rush*10, GROUND); ctx.stroke();
   }
   // streaks that only appear once the field is really moving
-  if (rush > 0.12){
-    ctx.strokeStyle = 'rgba(255,255,255,' + (rush*0.10).toFixed(3) + ')';
+  if (rush > 0.12 && !STILL){
+    ctx.strokeStyle = 'rgba(255,255,255,' + (rush*0.09).toFixed(3) + ')';
     for (let i = 0; i < 9; i++){
-      const yy = 14 + ((i*37 + (camX*0.9)) % (H-24));
+      const yy = HOR + 8 + ((i*37 + (camX*0.9)) % Math.max(12, GROUND-HOR-8));
       const xx = W - ((camX*2.1 + i*151) % (W + 120));
       ctx.beginPath(); ctx.moveTo(xx, yy); ctx.lineTo(xx + 16 + rush*30, yy); ctx.stroke();
     }
   }
-  // furlong posts every 1/8
+
+  // furlong poles, standing on the turf rather than ruled across it
   for (let f = 1; f < 8; f++){
     const x = sx(WORLD*f/8);
     if (x < -20 || x > W+20) continue;
-    ctx.fillStyle = 'rgba(255,255,255,.16)'; ctx.fillRect(x, 4, 2, H-8);
-    ctx.fillStyle = 'rgba(255,255,255,.30)'; ctx.font = '9px ui-monospace,monospace';
-    ctx.fillText((8-f) + 'f', x + 5, 29);
+    const top = HOR - 12, foot = HOR + 16;
+    ctx.fillStyle = 'rgba(232,236,230,.30)'; ctx.fillRect(x, top, 1.8, foot-top);
+    ctx.fillStyle = 'rgba(74,222,128,.42)';  ctx.fillRect(x - 5, top, 5, 4.5);
+    ctx.fillStyle = 'rgba(255,255,255,.34)'; ctx.font = '9px ui-monospace,monospace';
+    ctx.fillText((8-f) + 'f', x + 4, top + 9);
   }
-  // the post
-  const fx = sx(WORLD);
-  if (fx < W + 40){
-    for (let i = 0; i < Math.ceil(H/9); i++){
-      ctx.fillStyle = i % 2 ? '#f2f2f2' : '#1a1a1a';
-      ctx.fillRect(fx, i*9, 6, 9);
+
+  // the stalls you broke from
+  const gx = sx(0);
+  if (gx > -50 && gx < W + 10){
+    ctx.strokeStyle = 'rgba(214,220,214,.26)'; ctx.lineWidth = 1.4;
+    for (let i = 0; i < 5; i++){
+      const yy = HOR + 2 + i * Math.max(5,(GROUND-HOR-4)/5);
+      ctx.beginPath(); ctx.moveTo(gx - 26, yy); ctx.lineTo(gx, yy); ctx.stroke();
     }
-    ctx.fillStyle = '#eaeaea'; ctx.font = 'bold 10px ui-monospace,monospace';
-    ctx.fillText('POST', fx + 10, 12);
+    ctx.beginPath(); ctx.moveTo(gx, HOR); ctx.lineTo(gx, GROUND); ctx.stroke();
+  }
+
+  // the post: a gantry over the course, and a chequered line on the ground
+  const fx = sx(WORLD);
+  if (fx < W + 60 && fx > -60){
+    ctx.fillStyle = 'rgba(6,8,6,.85)';
+    ctx.fillRect(fx - 1, HOR - 26, 4, GROUND - HOR + 26);
+    ctx.fillRect(fx + 26, HOR - 26, 4, 22);
+    ctx.fillStyle = '#e8ece6';
+    ctx.fillRect(fx - 4, HOR - 32, 38, 7);
+    ctx.fillStyle = '#0b0f0b'; ctx.font = 'bold 6px ui-monospace,monospace';
+    ctx.fillText('FINISH', fx + 1, HOR - 26.5);
+    for (let i = 0; i * 9 < GROUND - HOR; i++){
+      ctx.fillStyle = i % 2 ? 'rgba(242,242,242,.9)' : 'rgba(26,26,26,.9)';
+      ctx.fillRect(fx + 2, HOR + i*9, 5, 9);
+    }
   }
 
   /* the field */
   // lanes spread over whatever height we got, and the horses scale with them
-  const top = H * 0.17, bot = H * (R.phase === 'miss' ? 0.82 : 0.56);
+  const top = H * (R.phase === 'miss' ? 0.52 : 0.44);
+  const bot = H * (R.phase === 'miss' ? 0.86 : 0.68);
   const gap = runners.length > 1 ? (bot - top) / (runners.length - 1) : 0;
   const laneY = l => top + l * gap;
-  const hs = Math.max(0.62, Math.min(1.05, gap / 30));
+  // Sized off the frame, not off the lane spacing — a five-horse field packed
+  // the horses down to a smudge when the scale followed the gap. They overlap
+  // instead, which is what a field actually looks like.
+  const hs = Math.max(0.70, Math.min(1.18, H / 300));
   runners.sort((a,b2) => a.lane - b2.lane).forEach(r => {
     const y = laneY(r.lane), x = sx(r.x);
-    const moving = r.k === 'me' ? (R.phase === 'run') : r.x < WORLD;
+    const moving = !STILL && (r.k === 'me' ? (R.phase === 'run') : r.x < WORLD);
     const speed = r.k === 'me' ? 0.026 : 0.02;
     r.phase = (now * speed) + r.lane * 1.3;
     if (x > -40 && x < W + 40){
       if (moving) dust(x, y, now + r.lane*400, 3);
       ctx.save();
       ctx.globalAlpha = r.k === 'pace' ? 0.5 : (r.k === 'ghost' ? 0.72 : 1);
-      drawHorse(x, y, hs * (r.k === 'me' ? 1.12 : 1), r.phase, r.c, moving);
+      drawHorse(x, y, hs * (r.k === 'me' ? 1.16 : 0.94), r.phase, r.c, moving);
       ctx.restore();
       ctx.globalAlpha = 1;
       ctx.fillStyle = r.k === 'me' ? '#eaeaea' : 'rgba(234,234,234,.45)';
       ctx.font = (r.k === 'me' ? 'bold ' : '') + '9px ui-monospace,monospace';
-      ctx.fillText(r.name, x - 14, y - 26*hs - 3);
+      ctx.fillText(r.name, x - 14, y - 31*hs - 3);
     } else if (r.k !== 'me') {
       // off camera — show which way and how far
       const off = x < 0;
@@ -1015,13 +1214,13 @@ function renderRace(finished, pb){
         <div class="row" style="margin-bottom:14px;">
           <div><div class="tiny">CLASS</div><div class="big" style="font-size:24px;">${classNow().name}</div>
             <div class="tiny">${classNow().next ? classNow().toGo + ' to ' + classNow().next.name : 'the whole book'}</div></div>
-          <div><div class="tiny">RETIRED</div><div class="big">${countState('mastered')}<span class="muted" style="font-size:15px;">/144</span></div></div>
+          <div><div class="tiny">RETIRED</div><div class="big">${countState('mastered')}<span class="muted" style="font-size:15px;">/${GRIDN}</span></div></div>
           ${g ? `<div><div class="tiny">LAST RUN</div><div class="big">${fmtClock(g.ms)}</div></div>` : ''}
           ${b ? `<div><div class="tiny">BEST</div><div class="big" style="color:var(--best)">${fmtClock(b.ms)}</div></div>` : ''}
         </div>
         <div class="sechead"><h2>What are you training?</h2><div class="line"></div></div>
         <div class="chips" id="tabChips">
-          ${[1,2,3,4,5,6,7,8,9,10,11,12].map(t =>
+          ${Array.from({length:MAXT}, (_,i) => i+1).map(t =>
             `<button class="chip${PREFS.tables.includes(t)?' on':''}" data-t="${t}" type="button"
               aria-pressed="${PREFS.tables.includes(t)}">×${t}</button>`).join('')}
         </div>
@@ -1049,7 +1248,7 @@ function renderRace(finished, pb){
       if (!PREFS.tables.length) PREFS.tables = [t];      // never train nothing
       redraw();
     }));
-    document.getElementById('allT').addEventListener('click', () => { PREFS.tables = [1,2,3,4,5,6,7,8,9,10,11,12]; redraw(); });
+    document.getElementById('allT').addEventListener('click', () => { PREFS.tables = Array.from({length:MAXT}, (_,i) => i+1); redraw(); });
     document.getElementById('noneT').addEventListener('click', () => { PREFS.tables = [7]; redraw(); });
     document.getElementById('cMiss').addEventListener('click', () => { PREFS.missing = !PREFS.missing; redraw(); });
     document.getElementById('cDiv').addEventListener('click', () => { PREFS.division = !PREFS.division; redraw(); });
@@ -1103,13 +1302,13 @@ function renderRace(finished, pb){
       from, so it is not a stats page tucked away ─────────────────────── */
 function masteryBlock(){
   const cells = [];
-  for (let a = 1; a <= 12; a++) for (let b = 1; b <= 12; b++){
+  for (let a = 1; a <= MAXT; a++) for (let b = 1; b <= MAXT; b++){
     const s = stateOf(a+'x'+b);
     cells.push(`<div class="cell ${s}" title="${a}×${b} — ${s}"></div>`);
   }
   const m = countState('mastered'), r = countState('review'), l = countState('learning');
-  return `<div class="grid144">${cells.join('')}</div>
-    <p class="tiny">${m} mastered · ${r} on their way · ${l} being learned · ${144-m-r-l} not met yet</p>`;
+  return `<div class="gridfacts">${cells.join('')}</div>
+    <p class="tiny">${m} mastered · ${r} on their way · ${l} being learned · ${GRIDN-m-r-l} not met yet</p>`;
 }
 
 function renderForm(){
