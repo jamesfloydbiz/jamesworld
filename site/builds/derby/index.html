@@ -243,6 +243,34 @@ const BAND_WIN   = 12;      // rolling window the band is measured over
 const LEARN_CAP  = 5;       // facts allowed mid-learning at once
 const NO_REPEAT  = 4;       // a fact cannot return within this many draws
 const MAINT_RATE = 0.10;    // share of draws given to mastered facts
+/* ── the band, in both directions ─────────────────────────────────────
+   The ~85% figure is Wilson, Shenhav, Straccia & Cohen (2019), and it is worth
+   being straight about what it is: an optimal training ERROR rate of 15.87%,
+   derived for binary classification under gradient descent. It is not a law
+   about people, and it is not Vygotsky — the ZPD is about what you can do with
+   help, not about an error rate. The education-side framework that actually
+   fits picking flashcards is Metcalfe & Kornell's Region of Proximal Learning:
+   study the items at the EDGE of what you know. Not the ones you have, and not
+   the ones out of reach — time on those is Nelson & Leonesio's "labor in vain".
+
+   So every draw aims at a target recall probability, and the target moves with
+   how you are going: running hot, it drops and you get harder facts; below the
+   band, it rises and you get facts you will probably land, which is what
+   rebuilds a run rather than burying it. */
+const P_AIM   = 0.80;   // recall probability each draw aims at, at the band
+const P_SWING = 1.20;   // how hard the aim reacts to your form
+const P_MIN   = 0.58, P_MAX = 0.94;
+/* Aiming at the edge and NOTHING else starved the hard facts completely: a fact
+   with a few misses never came back, so it could never be learned. Metcalfe's
+   claim is that MOST of your time on out-of-reach items is labour in vain — not
+   that you never touch them. And a miss here is not a bare re-test: the race
+   stops, you get the fact and a way to rebuild it, and you type it. That is
+   direct instruction, which is the thing that actually moves an item you do not
+   have. So a fixed slice of every race goes to what is still out of reach, and
+   the slice shrinks when you are below the band and need the wins. */
+const REACH_HI = 0.18;  // share of draws spent out of reach, at or above the band
+const REACH_LO = 0.06;  // ...and below it
+const HALFLIFE_D = 21;  // a fact you have not met in weeks is not the fact you left
 
 /* ── storage ──────────────────────────────────────────────────────────
    Own namespace with content-derived ids ("7x8"). The CCAT trainer keys its
@@ -352,12 +380,21 @@ function askAs(f, cue){
     default:    return { text: f.a + ' × ' + f.b, ans: f.ans };
   }
 }
-/* prefer a cue this fact has not been asked in lately */
-function pickCue(f){
+/* prefer a cue this fact has not been asked in lately.
+
+   The cue is the second difficulty dial and it is a real one: "7 × ? = 56" is
+   harder than "7 × 8" because you have to run the fact backwards. So below the
+   band it is asked plainly, and the variants come back once you are clear of
+   it — the same steering as the fact selection, on a different axis. */
+function pickCue(f, rolling){
   const r = RECS[f.id];
   const used = (r && Array.isArray(r.cues)) ? r.cues : [];
   const fresh = CUES.filter(c => !used.includes(c));
-  const allowed = activeCues();
+  let allowed = activeCues();
+  if (rolling && rolling.length >= 4){
+    const acc = rolling.reduce((a,b) => a+b, 0) / rolling.length;
+    if (acc < BAND) allowed = ['ab'];             // struggling: plainest form only
+  }
   const fresh2 = fresh.filter(c => allowed.includes(c));
   const pool = fresh2.length ? fresh2 : allowed;
   // a fact still being learned is asked plainly first — the ×-form is the
@@ -429,6 +466,41 @@ function stateOf(id){
 }
 const countState = s => FACTS.filter(f => stateOf(f.id) === s).length;
 
+/* ── how likely are you to get this one, right now? ───────────────────
+   Crude on purpose: forty answers a race is not enough data to fit anything
+   clever to, and a wrong-but-simple estimate that moves in the right direction
+   beats a model that needs a month of history before it says anything. */
+const dayNum = k => Math.floor(Date.parse(k + 'T00:00:00') / 864e5);
+function recallP(f, recent){
+  const r = RECS[f.id];
+  if (!r || !r.seen) return 0.22;                       // never met
+  const q    = qualifying(r).length;                    // fast and unaided
+  const slow = Math.max(0, r.hits.length - q);          // right, but computed
+  const miss = r.miss || 0;
+  /* Laplace-smoothed. This estimates whether you will get it RIGHT, which is
+     what the band is measured on — speed belongs to the mastery gate, not
+     here. A computed answer is discounted a little because it is a weaker sign
+     of durable retrieval, but only a little: weighting it at a half made a
+     fact you always get right, slowly, read as a coin flip, which capped every
+     candidate at 0.50 and left the aim with nothing to reach for. */
+  let p = (q + slow*0.85 + 1) / (q + slow + miss + 2);
+  // and it fades with time away from it
+  const last = r.hits.length ? Math.max(...r.hits.map(h => dayNum(h.d))) : null;
+  if (last !== null) p *= Math.pow(0.5, Math.max(0, dayNum(todayKey()) - last) / HALFLIFE_D);
+  // seen already in THIS race? then it is fresh, whatever the history says
+  const pos = recent.lastIndexOf(f.id);
+  if (pos >= 0) p += (1 - p) * 0.55 * Math.max(0, 1 - (recent.length - pos) / 9);
+  return Math.min(0.97, Math.max(0.03, p));
+}
+/* Where to aim the next draw. At the band, aim at P_AIM. Above it, aim lower —
+   harder facts. Below it, aim higher, which is dropping back a rung to where
+   you succeed again before climbing back through. */
+function aimP(rolling){
+  if (rolling.length < 4) return P_AIM;
+  const acc = rolling.reduce((a,b) => a+b, 0) / rolling.length;
+  return Math.min(P_MAX, Math.max(P_MIN, P_AIM + (BAND - acc) * P_SWING));
+}
+
 /* ── selection ────────────────────────────────────────────────────────
    Spacing and interleaving inside a single race, and the ~85% band deciding
    when a new fact may be introduced. */
@@ -449,10 +521,27 @@ function pickFact(recent, rolling){
   const clash = f => last && (f.a === last.a || f.b === last.b || f.a === last.b || f.b === last.a);
   const ok = f => !tooSoon(f) && !clash(f);
 
-  // maintenance: a mastered fact now and then, so it does not rot
-  if (done.length && Math.random() < MAINT_RATE){
+  /* Maintenance: a mastered fact now and then, so it does not rot. Below the
+     band this share goes up, because the facts you have retired are the
+     highest-probability things you own and leaning on them is exactly the
+     drop-back-a-rung move — rebuild on ground you hold, then climb again. */
+  const acc0 = rolling.length >= 4 ? rolling.reduce((a,b)=>a+b,0)/rolling.length : 1;
+  const aim0 = aimP(rolling);
+  const maint = acc0 < BAND ? 0.28 : MAINT_RATE;
+  if (done.length && Math.random() < maint){
     const c = done.filter(ok);
     if (c.length) return c[Math.floor(Math.random()*c.length)];
+  }
+  // the slice for what is still out of reach — see REACH_HI above
+  if (Math.random() < (acc0 >= BAND ? REACH_HI : REACH_LO)){
+    const behind = inPlay.filter(ok).filter(f => recallP(f, recent) < aim0 - 0.12);
+    if (behind.length){
+      /* Uniformly, not weakest-first. Taking the weakest few meant the slice
+         landed on the same three facts every race and the other thirty were
+         starved just as completely as before — the rate looked right and the
+         coverage was not. They are all below the aim; they all need teaching. */
+      return behind[Math.floor(Math.random() * behind.length)];
+    }
   }
   // the band: only introduce something new while you are hitting ~85% and are
   // not already juggling too many half-learned facts
@@ -478,11 +567,18 @@ function pickFact(recent, rolling){
   if (!c.length) c = inPlay;
   if (!c.length) c = done;
   if (!c.length) c = POOL.length ? POOL : FACTS;
+  /* This used to read (r.miss * 3) - hits, highest wins — hardest-first, which
+     meant that the moment you dropped below the band the game reached for the
+     fact you were worst at and pushed you further down. Labor in vain, and a
+     feedback loop pointing the wrong way. It aims at the edge now. */
   const score = f => {
-    const r = RECS[f.id] || {hits:[],seen:0,miss:0};
     const pos = recent.lastIndexOf(f.id);
     const since = pos === -1 ? 999 : recent.length - pos;
-    return (r.miss * 3) - qualifying(r).length + Math.min(since, 20) * 0.35 + Math.random()*0.9;
+    // closeness to the aim is the whole ranking; spacing and a little noise
+    // only break ties, so the order cannot collapse into the same few facts
+    return -Math.abs(recallP(f, recent) - aim0) * 10
+           + Math.min(since, 20) * 0.05
+           + Math.random() * 0.22;
   };
   return c.reduce((best, f) => score(f) > score(best) ? f : best, c[0]);
 }/* ══════════════════════════════════════════════════════════════════════
@@ -552,7 +648,7 @@ function nextFact(){
   } else {
     R.fact = pickFact(R.recent, R.rolling);
   }
-  R.cue = pickCue(R.fact);
+  R.cue = pickCue(R.fact, R.rolling);
   R.ask = askAs(R.fact, R.cue);
   R.entry = '';
   R.phase = 'run';
@@ -1178,6 +1274,44 @@ function paintTrack(){
   if (l && l.dataset.i !== String(R.i)){ l.dataset.i = String(R.i); l.textContent = `${R.i} of ${TRACK}`; }
 }
 
+/* The band, read back to you. Deliberately not a score: it says where the race
+   sat against the target and what the next one will do about it, because the
+   thing that is supposed to motivate here is the task becoming tractable and
+   you being able to SEE that happening — not a number to beat. */
+function bandCard(run){
+  const total = run.correct + run.missed;
+  if (!total) return '';
+  const acc = run.correct / total;
+  const pct = Math.round(acc * 100);
+  const lo = BAND - 0.08, hi = BAND + 0.08;
+  const inBand = acc >= lo && acc <= hi;
+  const verdict = inBand
+    ? ['In the band', 'About right. Hard enough to be worth the effort, not hard enough to bury you — this is where it moves fastest.']
+    : acc > hi
+      ? ['Too easy', 'You are clearing nearly everything, so the next race reaches for harder facts and asks more of them backwards.']
+      : ['Too hard', 'Below the band nothing sticks. The next race stops introducing anything new, asks the plain form, and draws facts you are likely to land until you are back up.'];
+  const col = inBand ? 'var(--acc)' : acc > hi ? 'var(--best)' : 'var(--warn)';
+  // where the bar sits, and where the band sits on it
+  const x = Math.max(0, Math.min(100, pct));
+  return `
+    <div class="card">
+      <div class="sechead" style="margin-top:0;"><h2>Difficulty</h2><div class="line"></div></div>
+      <div style="display:flex;align-items:baseline;gap:10px;">
+        <div class="big" style="color:${col};">${pct}%</div>
+        <div style="font-size:14px;font-weight:700;color:${col};">${verdict[0]}</div>
+      </div>
+      <div style="position:relative;height:8px;border-radius:4px;background:#1b1b1b;margin:12px 0 6px;">
+        <div style="position:absolute;left:${Math.round(lo*100)}%;width:${Math.round((hi-lo)*100)}%;top:0;bottom:0;
+             background:rgba(74,222,128,.22);border-left:1px solid rgba(74,222,128,.5);
+             border-right:1px solid rgba(74,222,128,.5);"></div>
+        <div style="position:absolute;left:calc(${x}% - 2px);top:-3px;width:4px;height:14px;
+             border-radius:2px;background:${col};"></div>
+      </div>
+      <p class="tiny" style="margin:0 0 10px;">0% &nbsp;—&nbsp; the green band is ${Math.round(lo*100)}–${Math.round(hi*100)}% &nbsp;—&nbsp; 100%</p>
+      <p style="font-size:13.5px;color:var(--dim);line-height:1.6;margin:0;">${verdict[1]}</p>
+    </div>`;
+}
+
 function renderRace(finished, pb){
   const B = document.getElementById('raceBody');
   document.body.classList.toggle('racing', !!R);
@@ -1195,6 +1329,7 @@ function renderRace(finished, pb){
                       : delta < 0 ? `${fmtClock(-delta)} slower than last time`
                       : 'dead heat with last time'}</div>` : ''}
       </div>
+      ${bandCard(finished)}
       <div class="card">
         <div class="sechead" style="margin-top:0;"><h2>Where you stand</h2><div class="line"></div></div>
         ${masteryBlock()}
@@ -1377,9 +1512,24 @@ function renderMethod(){
          Reading the answer is recognition, and recognition isn't mastery. So the horse stops, you get the fact
          and a way to rebuild it, and you type it before racing on. It comes back five furlongs later in the
          same race.</p>
-      <p style="font-size:14px;"><b style="color:var(--acc)">New facts only while you're at ${Math.round(BAND*100)}%.</b>
-         Learning is fastest when you're missing about one in six — not when it's easy, and not when it's
-         crushing. Drop below that and it stops introducing anything new and drills what's already in play.</p>
+      <p style="font-size:14px;"><b style="color:var(--acc)">It steers to keep you near ${Math.round(BAND*100)}%.</b>
+         Learning is fastest when you're missing about one in six &mdash; not when it's easy, not when it's crushing.
+         So every draw aims at a fact you've got roughly a ${Math.round(P_AIM*100)}% chance of landing, and that aim
+         moves with you: clear nearly everything and it reaches for harder facts and asks more of them backwards;
+         drop below the band and it stops introducing anything new, asks the plain <span
+         style="font-variant-numeric:tabular-nums;">a &times; b</span> form, and draws facts you're likely to get
+         until you're back up. You can see where you landed after every race.</p>
+      <p style="font-size:14px;"><b style="color:var(--acc)">It won't drill your worst fact.</b>
+         Tempting, and wrong. Time spent on what's still out of reach buys almost nothing &mdash; Nelson and
+         Leonesio called it labour in vain &mdash; and so does time on what you already have. The value is at the
+         edge, which is what it aims at. A fact that's genuinely gone doesn't get drilled harder; it gets the
+         stumble, the strategy line, and a retype.</p>
+      <p class="tiny" style="margin-top:14px;">On the 85%: that's Wilson, Shenhav, Straccia &amp; Cohen (2019),
+         who derived an optimal training <i>error</i> rate of 15.87% &mdash; for binary classification under
+         gradient descent, not as a law about people. It's often filed under Vygotsky's zone of proximal
+         development, which is a different claim (that one is about what you can do <i>with help</i>). The
+         framework that actually fits choosing flashcards is Metcalfe and Kornell's Region of Proximal Learning:
+         study at the edge of what you know.</p>
       <p class="tiny" style="margin-top:14px;">Built on the same method as the
          <a href="/builds/ccat-trainer/" style="color:var(--acc)">CCAT trainer</a>'s flashcards, with the two
          things that one gets wrong fixed: answers here are typed rather than self-graded, and a fact you
