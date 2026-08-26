@@ -74,27 +74,10 @@
   .btn:disabled{opacity:.4; cursor:not-allowed;}
 
   /* ══ THE TRACK ═══════════════════════════════════════════════════════ */
-  .track{background:var(--turf); border:1px solid var(--rail);
-    border-radius:10px; padding:12px 12px 8px; margin-bottom:12px;
-    position:relative; overflow:hidden;}
-  .lane{position:relative; height:34px; display:flex; align-items:center;
-    border-bottom:1px dashed rgba(255,255,255,.06);}
-  .lane:last-child{border-bottom:0;}
-  .lane .who{position:absolute; left:0; font-size:10px; letter-spacing:.1em;
-    text-transform:uppercase; color:var(--dim); width:52px; z-index:2;}
-  .lane .runner{position:absolute; left:56px; font-size:20px; line-height:1;
-    will-change:transform; transition:transform .18s linear;}
-  .lane.me .runner{font-size:24px;}
-  .lane.ghost .runner{opacity:.5; filter:grayscale(1);}
-  .lane.best  .runner{opacity:.65;}
-  .lane.pace  .runner{opacity:.35; filter:grayscale(1);}
-  .finish{position:absolute; top:0; bottom:0; width:3px; right:10px;
-    background:repeating-linear-gradient(180deg,#fff 0 6px,#111 6px 12px);
-    opacity:.7;}
-  .lane .runner.gallop{animation:gallop .34s steps(2) infinite;}
-  @keyframes gallop{0%{transform:translateY(0)}50%{transform:translateY(-2px)}}
-  .lane .runner.stumble{animation:stumble .5s ease;}
-  @keyframes stumble{0%,100%{transform:rotate(0)}30%{transform:rotate(-18deg)}60%{transform:rotate(6deg)}}
+  .track{background:#101c14; border:1px solid var(--rail); border-radius:10px;
+    overflow:hidden; margin-bottom:12px; line-height:0;}
+  .track canvas{display:block; width:100%;}
+  @media (max-height:740px){ .track{margin-bottom:8px;} }
 
   /* ══ THE PROMPT ══════════════════════════════════════════════════════ */
   .prompt{text-align:center; padding:14px 0 6px;}
@@ -142,7 +125,11 @@
   }
   @media (max-height:600px){
     .key{min-height:42px; font-size:17px;}
-    .lane{height:24px;}
+    .miss{padding:10px;}
+    .miss .truth{font-size:19px; margin-bottom:5px;}
+    .miss .why{font-size:12px; line-height:1.5; margin-bottom:6px;}
+    .miss .head{margin-bottom:5px; font-size:13px;}
+    .entry{font-size:24px; margin-top:6px;}
   }
 
   /* ══ MASTERY ═════════════════════════════════════════════════════════ */
@@ -427,6 +414,7 @@ function lastRun(){ return RUNS.length ? RUNS[RUNS.length-1] : null; }
 
 function startRace(){
   R = { i:0, entry:'', started:0, qStart:0, recent:[], rolling:[], splits:[], clean:[],
+        smooth:0, animFrom:0, animAt:0,
         correct:0, missed:0, fact:null, phase:'run', missFact:null,
         requeue:[], t0:performance.now() };
   nextFact();
@@ -434,6 +422,11 @@ function startRace(){
   tick();
 }
 
+function advance(){                      // one furlong gained
+  R.animFrom = R.smooth == null ? (R.i / TRACK) * WORLD : R.smooth;
+  R.i++;
+  R.animAt = performance.now();
+}
 function nextFact(){
   // a fact missed earlier comes back later in the SAME race, once enough other
   // facts have gone by — the CCAT trainer discards a lapsed card for the
@@ -468,7 +461,7 @@ function submit(){
     R.splits.push(Math.round(ms));
     R.clean.push(Math.round(ms));
     R.correct++;
-    R.i++;
+    advance();
     save(LS.facts, RECS);
     if (R.i >= TRACK) return finishRace();
     nextFact();
@@ -500,7 +493,7 @@ function submitRetype(){
   // retype — is this furlong's split. Without it `splits` is shorter than the
   // track and the ghost, which rides on splits, can never reach the finish.
   R.splits.push(Math.round(performance.now() - R.missStart));
-  R.i++;
+  advance();
   if (R.i >= TRACK) return finishRace();
   nextFact();
   renderRace();
@@ -539,6 +532,7 @@ function tick(){
   paintTrack();
   requestAnimationFrame(tick);
 }
+window.addEventListener('resize', () => { sizeTrack(); if (R) paintTrack(); });
 /* ══════════════════════════════════════════════════════════════════════
    VIEWS
    ══════════════════════════════════════════════════════════════════════ */
@@ -561,24 +555,234 @@ function switchTab(name){
 }
 document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => switchTab(t.dataset.tab)));
 
-function laneHTML(cls, who, silks, pct, gallop){
-  return `<div class="lane ${cls}"><span class="who">${who}</span>
-    <span class="runner${gallop ? ' gallop' : ''}" style="transform:translateX(${(pct*100).toFixed(2)}%)">${silks}</span></div>`;
+/* ══════════════════════════════════════════════════════════════════════
+   THE TRACK — canvas, with a camera that travels with you.
+
+   The first version positioned horses with transform:translateX(pct%), which
+   is a percentage of the HORSE's own width, not the track. A 24px emoji at
+   100% moved 24px across a forty-furlong race, which is why nothing appeared
+   to happen. Everything here works in world coordinates instead, and the
+   ground scrolls past the camera — that scroll is what actually reads as speed.
+   ══════════════════════════════════════════════════════════════════════ */
+const WORLD = 3600;                       // virtual px for the whole track
+const LANE_H = 31;
+const SILKS = {
+  me:    { coat:'#c8792e', silk:'#4ade80', mane:'#4a2c12' },
+  ghost: { coat:'#4a4f57', silk:'#9aa1ac', mane:'#33373d' },
+  best:  { coat:'#6d5a8f', silk:'#a78bfa', mane:'#3f3453' },
+  pace:  { coat:'#3a3f46', silk:'#575d66', mane:'#2b2f35' },
+};
+let cvs, ctx, DPR = 1, camX = 0, lastFrame = 0;
+
+function initTrack(){
+  cvs = document.getElementById('trackCvs');
+  if (!cvs) return;
+  ctx = cvs.getContext('2d');
+  sizeTrack();
+  if (!initTrack._ro){
+    initTrack._ro = new ResizeObserver(sizeTrack);
+    initTrack._ro.observe(cvs.parentElement);
+  }
 }
+function sizeTrack(){
+  if (!cvs) return;
+  const w = cvs.parentElement.clientWidth;
+  // the miss card is the tallest thing on the page, so the track gives way to
+  // it rather than pushing the keypad off a small screen
+  const share = (typeof R !== 'undefined' && R && R.phase === 'miss') ? 0.15 : 0.235;
+  const h = Math.max(96, Math.min(196, Math.round(window.innerHeight * share)));
+  DPR = Math.min(2, window.devicePixelRatio || 1);
+  cvs.width = Math.round(w * DPR); cvs.height = Math.round(h * DPR);
+  cvs.style.width = w + 'px'; cvs.style.height = h + 'px';
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+}
+
+/* A side-on horse, hooves on y=0 and everything above. Drawn as one silhouette
+   so the neck cannot read as a second tail — which is what the first two
+   attempts looked like, the second because the poll and the muzzle shared an x
+   and the head never projected forward. Roughly 34 wide by 26 tall at scale 1.
+   Legs swing on a gallop cycle driven by how fast the horse is travelling. */
+function drawHorse(x, y, s, phase, c, running){
+  const g = ctx;
+  g.save(); g.translate(x, y); g.scale(s, s);
+  const sw  = running ? Math.sin(phase)       : 0.30;
+  const sw2 = running ? Math.sin(phase + 2.4) : -0.30;
+  if (running) g.translate(0, Math.sin(phase * 2) * 0.6);
+
+  const leg = (hx, hy, k, col, w) => {
+    g.strokeStyle = col; g.lineWidth = w; g.lineCap = 'round';
+    g.beginPath(); g.moveTo(hx, hy);
+    g.lineTo(hx + k*3.2, hy/2 - 1);        // knee
+    g.lineTo(hx + k*6.5, 0);               // hoof
+    g.stroke();
+  };
+  // off-side pair first, darker, so the near pair reads in front
+  leg(-8, -11, sw,  c.mane, 2.4);
+  leg( 5, -10, sw2, c.mane, 2.4);
+
+  g.fillStyle = c.coat;
+  g.beginPath();
+  g.moveTo(-13,-13);                        // tail base
+  g.quadraticCurveTo(-12,-16, -8,-16);      // croup
+  g.bezierCurveTo(-2,-17, 2,-17, 5,-16);    // back
+  g.bezierCurveTo(9,-19, 11,-21, 13,-22);   // crest of the neck
+  g.quadraticCurveTo(15,-24, 17,-24);       // poll
+  g.bezierCurveTo(21,-24, 23,-22, 22,-20);  // forehead into the muzzle
+  g.quadraticCurveTo(21,-17, 18,-17);       // muzzle, below the poll
+  g.bezierCurveTo(15,-17, 13,-15, 11,-12);  // jaw and throat
+  g.quadraticCurveTo(9,-10, 5,-10);         // chest
+  g.bezierCurveTo(-2,-8, -8,-8, -12,-10);   // belly and flank
+  g.closePath(); g.fill();
+
+  // near-side pair, in the coat colour
+  leg(-9, -11, -sw,  c.coat, 2.7);
+  leg( 4, -10, -sw2, c.coat, 2.7);
+
+  g.strokeStyle = c.mane; g.lineWidth = 2.1; g.lineCap = 'round';
+  g.beginPath(); g.moveTo(-13,-14);                       // tail
+  g.quadraticCurveTo(-19 - (running ? sw*2.5 : 0), -12, -18,-5); g.stroke();
+  g.beginPath(); g.moveTo(6,-16);                          // mane along the crest
+  g.quadraticCurveTo(11,-21, 16,-23); g.stroke();
+
+  g.fillStyle = c.silk;                                    // saddlecloth
+  g.beginPath(); g.ellipse(-2,-13, 4.4, 2.8, -0.12, 0, Math.PI*2); g.fill();
+  g.fillStyle = '#0b0b0b';
+  g.beginPath(); g.arc(18.6,-21.6, 0.85, 0, Math.PI*2); g.fill();
+  g.restore();
+}
+
+function dust(x, y, t, n){
+  for (let i = 0; i < n; i++){
+    const a = (t*0.006 + i*1.7) % 1;
+    ctx.globalAlpha = (1 - a) * 0.22;
+    ctx.fillStyle = '#8a9a86';
+    ctx.beginPath(); ctx.arc(x - 12 - a*26, y + 10 - a*5, 1.6 + a*3.4, 0, Math.PI*2); ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+}
+
 function paintTrack(){
-  const el = document.getElementById('trackEl');
-  if (!el || !R) return;
-  const t = performance.now() - R.t0;
-  const me = R.i / TRACK;
+  if (!ctx || !R) return;
+  const W = cvs.width / DPR, H = cvs.height / DPR;
+  const now = performance.now(), t = now - R.t0;
+  const dt = Math.min(64, now - (lastFrame || now)); lastFrame = now;
+
+  /* runners, in world x */
   const g = lastRun(), b = bestRun();
-  const lanes = [];
-  lanes.push(laneHTML('me','you','🐎', me, R.phase === 'run'));
-  if (g) lanes.push(laneHTML('ghost','last','🐎', progressAt(g.splits, t)));
-  if (b && b !== g) lanes.push(laneHTML('best','best','🐎', progressAt(b.splits, t)));
-  PACERS.forEach(p => lanes.push(laneHTML('pace', p.name, p.silks, Math.min(1, t / (p.per*TRACK)))));
-  el.innerHTML = lanes.join('') + '<div class="finish"></div>';
+  const runners = [];
+  // yours eases toward the furlong you have actually reached, so it runs
+  // rather than teleporting one notch per answer
+  const target = (R.i / TRACK) * WORLD;
+  const ap = Math.min(1, (now - (R.animAt || 0)) / 420);
+  const ae = ap < 0.5 ? 4*ap*ap*ap : 1 - Math.pow(-2*ap + 2, 3)/2;   // easeInOutCubic
+  R.smooth = (R.animFrom || 0) + (target - (R.animFrom || 0)) * ae;
+  runners.push({ k:'me', name:'you', x:R.smooth, c:SILKS.me, lane:0 });
+  if (g) runners.push({ k:'ghost', name:'last', x:progressAt(g.splits,t)*WORLD, c:SILKS.ghost, lane:1 });
+  if (b && b !== g) runners.push({ k:'best', name:'best', x:progressAt(b.splits,t)*WORLD, c:SILKS.best, lane:2 });
+  PACERS.forEach((p,i) => runners.push({ k:p.key, name:p.name,
+    x: Math.min(1, t/(p.per*TRACK))*WORLD, c:SILKS.pace, lane: (b&&b!==g?3:2)+i }));
+
+  /* camera: keep your horse a third in, and never run past the post */
+  const leadX = Math.max(R.smooth, ...runners.map(r => r.x));
+  let want = leadX - W*0.60;                        // the leader rides up front
+  // You may drift a long way back through the frame while you hesitate — that
+  // is the point, it is what being left behind looks like — but never off it.
+  want = Math.min(want, R.smooth + 22);
+  want = Math.max(want, R.smooth - W*0.70);         // nor pinned to the right rail
+  const prevCam = camX;
+  camX = Math.max(0, Math.min(WORLD + 110 - W, want));
+  const camVel = Math.abs(camX - prevCam) / Math.max(1, dt) * 16;   // px per frame
+  const sx = x => x - camX + 40;
+
+  ctx.clearRect(0,0,W,H);
+  // turf
+  const turf = ctx.createLinearGradient(0,0,0,H);
+  turf.addColorStop(0,'#15251a'); turf.addColorStop(1,'#101c14');
+  ctx.fillStyle = turf; ctx.fillRect(0,0,W,H);
+
+  // scrolling ground marks — this is what actually reads as speed
+  const rush = Math.min(1, camVel / 7);
+  ctx.strokeStyle = 'rgba(255,255,255,' + (0.04 + rush*0.05).toFixed(3) + ')';
+  ctx.lineWidth = 1;
+  const step = 46, first = Math.floor(camX/step)*step;
+  for (let wx = first; wx < camX + W + step; wx += step){
+    const x = sx(wx);
+    ctx.beginPath(); ctx.moveTo(x, 8); ctx.lineTo(x - 7 - rush*10, H-6); ctx.stroke();
+  }
+  // streaks that only appear once the field is really moving
+  if (rush > 0.12){
+    ctx.strokeStyle = 'rgba(255,255,255,' + (rush*0.10).toFixed(3) + ')';
+    for (let i = 0; i < 9; i++){
+      const yy = 14 + ((i*37 + (camX*0.9)) % (H-24));
+      const xx = W - ((camX*2.1 + i*151) % (W + 120));
+      ctx.beginPath(); ctx.moveTo(xx, yy); ctx.lineTo(xx + 16 + rush*30, yy); ctx.stroke();
+    }
+  }
+  // furlong posts every 1/8
+  for (let f = 1; f < 8; f++){
+    const x = sx(WORLD*f/8);
+    if (x < -20 || x > W+20) continue;
+    ctx.fillStyle = 'rgba(255,255,255,.16)'; ctx.fillRect(x, 4, 2, H-8);
+    ctx.fillStyle = 'rgba(255,255,255,.34)'; ctx.font = '9px ui-monospace,monospace';
+    ctx.fillText((8-f) + 'f', x + 5, 13);
+  }
+  // the post
+  const fx = sx(WORLD);
+  if (fx < W + 40){
+    for (let i = 0; i < Math.ceil(H/9); i++){
+      ctx.fillStyle = i % 2 ? '#f2f2f2' : '#1a1a1a';
+      ctx.fillRect(fx, i*9, 6, 9);
+    }
+    ctx.fillStyle = '#eaeaea'; ctx.font = 'bold 10px ui-monospace,monospace';
+    ctx.fillText('POST', fx + 10, 12);
+  }
+
+  /* the field */
+  // lanes spread over whatever height we got, and the horses scale with them
+  const top = H * 0.20, bot = H * 0.86;
+  const gap = runners.length > 1 ? (bot - top) / (runners.length - 1) : 0;
+  const laneY = l => top + l * gap;
+  const hs = Math.max(0.62, Math.min(1.05, gap / 30));
+  runners.sort((a,b2) => a.lane - b2.lane).forEach(r => {
+    const y = laneY(r.lane), x = sx(r.x);
+    const moving = r.k === 'me' ? (R.phase === 'run') : r.x < WORLD;
+    const speed = r.k === 'me' ? 0.026 : 0.02;
+    r.phase = (now * speed) + r.lane * 1.3;
+    if (x > -40 && x < W + 40){
+      if (moving) dust(x, y, now + r.lane*400, 3);
+      ctx.save();
+      ctx.globalAlpha = r.k === 'pace' ? 0.5 : (r.k === 'ghost' ? 0.72 : 1);
+      drawHorse(x, y, hs * (r.k === 'me' ? 1.12 : 1), r.phase, r.c, moving);
+      ctx.restore();
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = r.k === 'me' ? '#eaeaea' : 'rgba(234,234,234,.45)';
+      ctx.font = (r.k === 'me' ? 'bold ' : '') + '9px ui-monospace,monospace';
+      ctx.fillText(r.name, x - 14, y - 26*hs - 3);
+    } else if (r.k !== 'me') {
+      // off camera — show which way and how far
+      const off = x < 0;
+      ctx.fillStyle = 'rgba(234,234,234,.30)';
+      ctx.font = '9px ui-monospace,monospace';
+      const lab = r.name + ' ' + (Math.abs(r.x - R.smooth)/WORLD*TRACK).toFixed(0) + 'f';
+      ctx.fillText(off ? '◀ ' + lab : lab + ' ▶', off ? 4 : W - 62, y - 4);
+    }
+  });
+
+  // where you stand against the ghost, in lengths
+  if (g){
+    const d = (R.smooth - progressAt(g.splits,t)*WORLD) / WORLD * TRACK;
+    ctx.fillStyle = d >= 0 ? '#4ade80' : '#f87171';
+    ctx.font = 'bold 10px ui-monospace,monospace';
+    const msg = Math.abs(d) < 0.4 ? 'level with last time'
+      : (d > 0 ? '+' : '−') + Math.abs(d).toFixed(1) + ' on last time';
+    ctx.fillText(msg, 6, H - 6);
+  }
+  ctx.fillStyle = 'rgba(234,234,234,.5)';
+  ctx.font = '10px ui-monospace,monospace';
+  ctx.fillText(R.i + '/' + TRACK, W - 42, H - 6);
+
   const l = document.getElementById('liveSay');
-  if (l) l.textContent = `${R.i} of ${TRACK}`;
+  if (l && l.dataset.i !== String(R.i)){ l.dataset.i = String(R.i); l.textContent = `${R.i} of ${TRACK}`; }
 }
 
 function renderRace(finished, pb){
@@ -629,7 +833,8 @@ function renderRace(finished, pb){
 
   const missing = R.phase === 'miss';
   B.innerHTML = `
-    <div class="track" id="trackEl"></div>
+    <div class="track"><canvas id="trackCvs" data-h="196" data-auto="1"
+      role="img" aria-label="A horse race. Your horse advances one furlong for each fact you answer."></canvas></div>
     <p class="sr-only" id="liveSay" aria-live="polite"></p>
     ${missing ? `
       <div class="miss">
@@ -652,7 +857,7 @@ function renderRace(finished, pb){
     </div>
     <p class="tiny" style="text-align:center;margin-top:10px;">${R.i} of ${TRACK} · ${R.missed} missed</p>`;
   B.querySelectorAll('[data-k]').forEach(b => b.addEventListener('click', () => key(b.dataset.k)));
-  paintTrack();
+  initTrack(); paintTrack();
 }
 
 /* ── mastery, made visible: this is where the motivation is supposed to come
