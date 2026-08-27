@@ -465,10 +465,7 @@
          the answer come back before the script does. A rule you worked out is a rule you
          keep; a rule you were told is a rule you forget by the second conversation.</p>
       <p>Done right it should feel like they are <b>building this with me</b>, not taking
-         it from me. It is closer to motivational interviewing than teaching &mdash; I am
-         drawing the answer out of them and letting them arrive at it, so by the end they
-         are running a script they think they wrote. The lines above are where we land,
-         not where we start.</p>
+         it from me. It is closer to motivational interviewing than teaching.</p>
       <p class="more">More behind the script &mdash;
         <button class="jump" data-goto="growth" type="button">Growth</button> has FUGI, the
         objections, the impulse curve and the rest.</p>
@@ -633,9 +630,13 @@
              Between the yes and the cash actually leaving their hand is the most fragile
              stretch of the whole conversation, and that fall is
              <strong>buyer's remorse</strong>.</p>
-          <p>So you keep talking. Not more pitch &mdash; just be a person. That is what
-             carries them from agreeing, to actually paying, to walking off feeling good
-             about it rather than wondering what just happened.</p>
+          <p>So you keep talking. Not more pitch &mdash; <strong>CPR: create personal
+             relationship</strong>. Just be a person and chat. That is what carries them
+             from agreeing, to actually paying, to walking off feeling good about it
+             rather than wondering what just happened.</p>
+          <p>On the curve it is the only thing between the dip and <strong>pay</strong>
+             &mdash; and notice pay sits level with the close. You are not selling them
+             again. You are holding them where they already were.</p>
         </div>
       </details>
       <details>
@@ -1059,20 +1060,24 @@ function gumballDiagram(){
 }
 
 /* The impulse curve off the notebook page: climbing through intro, short story
-   and presentation to a peak at the close, then falling away into buyer's
-   remorse. Inline SVG, no library, same approach as sparkline(). */
+   and presentation to a peak at the CLOSE, dipping just under the buying line
+   while the doubt does its work, and lifted back over it by CPR — create
+   personal relationship — until they actually PAY, level with the close.
+   Inline SVG, no library, same approach as sparkline(). */
 function impulseCurve(){
-  const W = 384, H = 200, L = 80, R = 16, T = 26, B = 40;
+  const W = 400, H = 214, L = 78, R = 14, T = 30, B = 44;
   const x0 = L, x1 = W - R, y0 = H - B, y1 = T;
   const px = f => x0 + (x1 - x0) * f;
   const py = f => y0 - (y0 - y1) * f;
-  // The buying line sits level with the presentation, and the close clears it
-  // only just — you are not miles above it, you are barely over and draining.
-  const BUY = 0.70, PEAK = 0.84, PX = 0.50, DIP = 0.42, END = 0.78;
+  /* The dip is BARELY under the line, not a collapse. That is the whole point:
+     they have already said yes, so you are not rebuilding the sale — you are
+     holding them a few inches above a line they have only just slipped under. */
+  const BUY = 0.70, PEAK = 0.86, DIP = 0.645;
+  const XC = 0.42, XD = 0.63, XP = 0.88;
   return `
   <svg viewBox="0 0 ${W} ${H}" width="100%" preserveAspectRatio="xMidYMid meet"
-       role="img" aria-label="Impulse climbs through intro, short story and presentation, crosses the buying line, and peaks just above it at the close. It then drops below the line — buyer's remorse — and climbs back over the line again as you stay and chat."
-       style="max-width:440px;display:block;margin:6px auto 12px;">
+       role="img" aria-label="Impulse climbs through intro, short story and presentation and peaks at the close, above the buying line. It then dips just below the line — buyer's remorse, which starts the moment they agree — and CPR, creating a personal relationship, lifts it back over the line to pay, level with the close."
+       style="max-width:452px;display:block;margin:6px auto 12px;">
     <path d="M${x0} ${y1} L${x0} ${y0} L${x1} ${y0}" fill="none" stroke="var(--rule)" stroke-width="1.5"/>
 
     <line x1="${x0}" y1="${py(BUY)}" x2="${x1}" y2="${py(BUY)}"
@@ -1081,26 +1086,41 @@ function impulseCurve(){
           fill="var(--grey)" font-weight="700" letter-spacing=".08em">BUYING LINE</text>
 
     <path d="M${px(0)} ${py(.05)}
-             C${px(.12)} ${py(.14)} ${px(.24)} ${py(.38)} ${px(.36)} ${py(.56)}
-             C${px(.43)} ${py(.70)} ${px(.47)} ${py(.81)} ${px(PX)} ${py(PEAK)}
-             C${px(.57)} ${py(.75)} ${px(.66)} ${py(.50)} ${px(.74)} ${py(DIP)}
-             C${px(.83)} ${py(.40)} ${px(.92)} ${py(.66)} ${px(1)} ${py(END)}"
+             C${px(.10)} ${py(.13)} ${px(.20)} ${py(.36)} ${px(.30)} ${py(.56)}
+             C${px(.35)} ${py(.70)} ${px(.39)} ${py(.81)} ${px(XC)} ${py(PEAK)}
+             C${px(.48)} ${py(.82)} ${px(.56)} ${py(.70)} ${px(XD)} ${py(DIP)}
+             C${px(.72)} ${py(.65)} ${px(.82)} ${py(.79)} ${px(XP)} ${py(PEAK)}
+             L${px(1)} ${py(PEAK)}"
           fill="none" stroke="var(--blue)" stroke-width="2.5" stroke-linecap="round"/>
 
-    <circle cx="${px(PX)}" cy="${py(PEAK)}" r="4.5" fill="var(--blue)"/>
-    <text x="${px(PX)}" y="${py(PEAK) - 11}" text-anchor="middle" font-size="10"
+    <!-- the two points that matter, and they sit at the same height: agreeing
+         to buy and actually paying are the same level of willingness -->
+    <circle cx="${px(XC)}" cy="${py(PEAK)}" r="4.5" fill="var(--blue)"/>
+    <text x="${px(XC)}" y="${py(PEAK) - 11}" text-anchor="middle" font-size="10"
           font-weight="700" fill="var(--ink)">CLOSE</text>
+    <circle cx="${px(XP)}" cy="${py(PEAK)}" r="4.5" fill="var(--blue)"/>
+    <text x="${px(XP)}" y="${py(PEAK) - 11}" text-anchor="middle" font-size="10"
+          font-weight="700" fill="var(--ink)">PAY</text>
 
-    <!-- the fall after the close, and the recovery that follows it -->
-    <text x="${px(.60)}" y="${py(.20)}" text-anchor="middle" font-size="8.5"
+    <!-- the dip, and the thing that pulls them back out of it -->
+    <circle cx="${px(XD)}" cy="${py(DIP)}" r="3" fill="var(--grey)"/>
+    <path d="M${px(.55)} ${py(.50)} L${px(.615)} ${py(.60)}" stroke="var(--grey)"
+          stroke-width="1" opacity=".5"/>
+    <text x="${px(.55)}" y="${py(.44)}" text-anchor="middle" font-size="8.5"
           fill="var(--grey)" font-style="italic">buyer&#8217;s remorse</text>
-    <text x="${px(1)}" y="${py(.30)}" text-anchor="end" font-size="8.5"
-          fill="var(--blue)" font-style="italic" font-weight="600">you stay &amp; chat</text>
+    <path d="M${px(.80)} ${py(.42)} L${px(.775)} ${py(.60)}" stroke="var(--blue)"
+          stroke-width="1" opacity=".55"/>
+    <text x="${px(.82)} " y="${py(.34)}" text-anchor="middle" font-size="11"
+          font-weight="700" fill="var(--blue)" letter-spacing=".06em">CPR</text>
+    <text x="${px(.82)}" y="${py(.34) + 11}" text-anchor="middle" font-size="7.6"
+          fill="var(--grey)">create personal</text>
+    <text x="${px(.82)}" y="${py(.34) + 20}" text-anchor="middle" font-size="7.6"
+          fill="var(--grey)">relationship</text>
 
     ${[['presentation',.66],['short story',.38],['intro',.10]].map(([t,f]) =>
       `<text x="${x0 - 6}" y="${py(f) + 3}" text-anchor="end" font-size="8.5" fill="var(--grey)">${t}</text>`).join('')}
 
-    <text x="${px(.5)}" y="${y0 + 16}" text-anchor="middle" font-size="8.5"
+    <text x="${px(.5)}" y="${y0 + 18}" text-anchor="middle" font-size="8.5"
           fill="var(--grey)" font-weight="700" letter-spacing=".1em">SEE &#183; Q &#183; Q &#183; HOTSPOTS</text>
   </svg>`;
 }
