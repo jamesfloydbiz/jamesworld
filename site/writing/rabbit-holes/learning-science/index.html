@@ -168,6 +168,31 @@
       color: var(--fg-80);
       margin: 0 0 1rem 0;
     }
+    .rh-figure {
+      margin: 1.6rem 0;
+    }
+    .rh-figure img {
+      display: block;
+      /* natural size, never upscaled — these are 1914 halftones and the
+         portrait is only 312px wide, so width:100% blew it up to 680 and
+         turned it to mush. max-width still shrinks them on a phone. */
+      max-width: 100%;
+      height: auto;
+      margin: 0 auto;
+      border-radius: 3px;
+      border: 1px solid var(--fg-15);
+      /* these are 1914 halftones — a warm, slightly lifted rendering suits
+         them better than pinning them to a pure-black page */
+      filter: sepia(0.12) contrast(1.02);
+    }
+    .rh-figure figcaption {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      line-height: 1.6;
+      letter-spacing: 0.02em;
+      color: var(--fg-55);
+      margin-top: 10px;
+    }
     .rh-section .rh-list {
       font-family: 'Lora', Georgia, serif;
       font-size: 1rem;

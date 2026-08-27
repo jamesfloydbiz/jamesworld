@@ -42,6 +42,23 @@ const META = {
       { name: 'Myths',                                        date: '' },
     ],
   },
+  'maria-montessori': {
+    title: 'The Story of Maria Montessori',
+    subtitle: 'One of the first Italian women to be a doctor, education pioneer, defied Mussolini.',
+    reading: '~9 min',
+    sections: [
+      { name: 'Chiaravalle, 1870',                date: 'the beginning' },
+      { name: 'Getting into medical school',      date: '1890 – 1896' },
+      { name: 'The asylum, and the crumbs',       date: 'what nobody else saw' },
+      { name: 'The school for the insane',        date: 'Itard & Séguin' },
+      { name: 'San Lorenzo',                      date: '6 January 1907' },
+      { name: 'The learning explosions',          date: 'writing, then reading' },
+      { name: 'Going viral, and then Mussolini',  date: '1909 – 1936' },
+      { name: 'India, the Netherlands, and peace', date: '1939 – 1952' },
+      { name: 'The method now',                   date: '~0.25 SD' },
+      { name: 'Notes on the record',              date: 'sources' },
+    ],
+  },
   'coaching-and-motivation': {
     title: 'How to be the Pied Piper',
     subtitle: 'A summary of ways to motivate kids.',
@@ -156,6 +173,21 @@ function parse(md, sectionSpec) {
 
 function renderBlock(block) {
   const lines = block.split('\n').map((l) => l.replace(/\s+$/, ''));
+
+  /* A standalone figure: `![alt](/path.jpg)` on its own line, with everything
+     after it in the same block becoming the caption. Parsed off the RAW line
+     before escaping, then both src and alt go through escAttr — same order as
+     emph(), so the markdown can never smuggle markup into the page. */
+  const fig = /^!\[([^\]]*)\]\(([^)\s]+)\)$/.exec(lines[0] || '');
+  if (fig) {
+    const alt = fig[1], src = fig[2];
+    const caption = lines.slice(1).join(' ').replace(/\s+/g, ' ').trim();
+    return '<figure class="rh-figure">' +
+      `<img src="${escAttr(src)}" alt="${escAttr(alt)}" loading="lazy" decoding="async">` +
+      (caption ? `<figcaption>${emph(esc(caption))}</figcaption>` : '') +
+      '</figure>';
+  }
+
   const bulletLines = lines.filter((l) => /^-\s+/.test(l));
   const numberedLines = lines.filter((l) => /^\d+\.\s+/.test(l));
 
@@ -394,6 +426,31 @@ function pageTemplate(slug, meta, timelineItems, articleHtml) {
       line-height: 1.8;
       color: var(--fg-80);
       margin: 0 0 1rem 0;
+    }
+    .rh-figure {
+      margin: 1.6rem 0;
+    }
+    .rh-figure img {
+      display: block;
+      /* natural size, never upscaled — these are 1914 halftones and the
+         portrait is only 312px wide, so width:100% blew it up to 680 and
+         turned it to mush. max-width still shrinks them on a phone. */
+      max-width: 100%;
+      height: auto;
+      margin: 0 auto;
+      border-radius: 3px;
+      border: 1px solid var(--fg-15);
+      /* these are 1914 halftones — a warm, slightly lifted rendering suits
+         them better than pinning them to a pure-black page */
+      filter: sepia(0.12) contrast(1.02);
+    }
+    .rh-figure figcaption {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      line-height: 1.6;
+      letter-spacing: 0.02em;
+      color: var(--fg-55);
+      margin-top: 10px;
     }
     .rh-section .rh-list {
       font-family: 'Lora', Georgia, serif;

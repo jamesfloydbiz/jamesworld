@@ -31,6 +31,7 @@ export const ROUTES = [
   { path: '/writing/rabbit-holes/social-classes-and-mobility', priority: 0.6, changefreq: 'monthly' },
   { path: '/writing/rabbit-holes/learning-science', priority: 0.6, changefreq: 'monthly' },
   { path: '/writing/rabbit-holes/coaching-and-motivation', priority: 0.6, changefreq: 'monthly' },
+  { path: '/writing/rabbit-holes/maria-montessori', priority: 0.6, changefreq: 'monthly' },
   { path: '/events', priority: 0.7, changefreq: 'monthly' },
   { path: '/events/sonder-potluck', priority: 0.6, changefreq: 'monthly' },
   { path: '/events/pithy-party', priority: 0.6, changefreq: 'monthly' },

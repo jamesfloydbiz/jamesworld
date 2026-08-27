@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Story of Maria Montessori — Rabbit Hole — James Floyd</title>
+  <meta name="description" content="One of the first Italian women to be a doctor, education pioneer, defied Mussolini.">
+  <link rel="canonical" href="https://jamesfloyds.world/writing/rabbit-holes/maria-montessori/">
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="The Story of Maria Montessori">
+  <meta property="og:description" content="One of the first Italian women to be a doctor, education pioneer, defied Mussolini.">
+  <meta property="og:url" content="https://jamesfloyds.world/writing/rabbit-holes/maria-montessori/">
+
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=DM+Mono:wght@300;400&family=Lora:ital,wght@0,400;0,500;1,400&family=Space+Mono:wght@400;700&display=swap">
+  <link rel="stylesheet" href="/css/site.css">
+
+  <style>
+    .rh-shell {
+      display: grid;
+      grid-template-columns: 220px minmax(0, 720px);
+      gap: 56px;
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 0 clamp(16px, 4vw, 24px);
+    }
+
+    /* Timeline (left column, sticky) */
+    .rh-timeline {
+      position: sticky;
+      top: 96px;
+      align-self: start;
+      max-height: calc(100vh - 120px);
+      max-height: calc(100dvh - 120px);
+      overflow-y: auto;
+      padding-right: 8px;
+      scrollbar-width: thin;
+    }
+    .rh-timeline__list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      position: relative;
+    }
+    .rh-timeline__list::before {
+      content: '';
+      position: absolute;
+      left: 4px;
+      top: 6px;
+      bottom: 6px;
+      width: 1px;
+      background: var(--fg-15);
+    }
+    .rh-timeline__item {
+      position: relative;
+      padding: 0 0 12px 22px;
+    }
+    .rh-timeline__item::before {
+      content: '';
+      position: absolute;
+      left: 1px;
+      top: 6px;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--bg, #000);
+      border: 1px solid var(--fg-35);
+      box-sizing: border-box;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .rh-timeline__item.is-active::before {
+      background: var(--fg);
+      border-color: var(--fg);
+    }
+    .rh-timeline__link {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--fg-45);
+      text-decoration: none;
+      line-height: 1.5;
+      transition: color 0.2s;
+    }
+    .rh-timeline__link:hover { color: var(--fg-80); }
+    .rh-timeline__item.is-active .rh-timeline__link { color: var(--fg); }
+    .rh-timeline__name { display: block; }
+    .rh-timeline__date {
+      display: block;
+      font-size: 0.62rem;
+      letter-spacing: 0.05em;
+      color: var(--fg-30);
+      text-transform: none;
+      margin-top: 2px;
+    }
+    .rh-timeline__item.is-active .rh-timeline__date { color: var(--fg-55); }
+
+    /* Article (right column) */
+    .rh-article { max-width: 680px; }
+    .rh-article__masthead {
+      margin-bottom: 48px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--fg-15);
+    }
+    .rh-article__eyebrow {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--fg-55);
+      margin-bottom: 12px;
+    }
+    .rh-article__title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 700;
+      font-size: clamp(2rem, 5vw, 3rem);
+      line-height: 1.15;
+      margin: 0 0 12px 0;
+      color: var(--fg);
+    }
+    .rh-article__subtitle {
+      font-family: 'Lora', Georgia, serif;
+      font-style: italic;
+      font-size: 1.05rem;
+      line-height: 1.5;
+      color: var(--fg-70);
+      margin: 0 0 8px 0;
+    }
+    .rh-article__meta {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--fg-45);
+    }
+
+    .rh-section { margin-bottom: 40px; scroll-margin-top: 96px; }
+    .rh-section h2 {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--fg-80);
+      margin: 0 0 20px 0;
+      padding-top: 16px;
+      border-top: 1px solid var(--fg-15);
+    }
+    .rh-section__date {
+      display: inline-block;
+      margin-left: 10px;
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      color: var(--fg-45);
+      text-transform: none;
+      font-weight: normal;
+    }
+    .rh-section p {
+      font-family: 'Lora', Georgia, serif;
+      font-size: 1.02rem;
+      line-height: 1.8;
+      color: var(--fg-80);
+      margin: 0 0 1rem 0;
+    }
+    .rh-figure {
+      margin: 1.6rem 0;
+    }
+    .rh-figure img {
+      display: block;
+      /* natural size, never upscaled — these are 1914 halftones and the
+         portrait is only 312px wide, so width:100% blew it up to 680 and
+         turned it to mush. max-width still shrinks them on a phone. */
+      max-width: 100%;
+      height: auto;
+      margin: 0 auto;
+      border-radius: 3px;
+      border: 1px solid var(--fg-15);
+      /* these are 1914 halftones — a warm, slightly lifted rendering suits
+         them better than pinning them to a pure-black page */
+      filter: sepia(0.12) contrast(1.02);
+    }
+    .rh-figure figcaption {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      line-height: 1.6;
+      letter-spacing: 0.02em;
+      color: var(--fg-55);
+      margin-top: 10px;
+    }
+    .rh-section .rh-list {
+      font-family: 'Lora', Georgia, serif;
+      font-size: 1rem;
+      line-height: 1.75;
+      color: var(--fg-80);
+      padding-left: 20px;
+      margin: 0 0 1rem 0;
+    }
+    .rh-section .rh-list li { margin-bottom: 6px; }
+
+    .rh-back {
+      display: inline-block;
+      margin: 48px 0 24px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--fg-55);
+      text-decoration: none;
+    }
+    .rh-back:hover { color: var(--fg); }
+    .rh-back--top {
+      margin: 0 0 24px 0;
+      grid-column: 1 / -1;
+    }
+
+    /* Mobile: timeline collapses to a horizontal chip row above the article */
+    @media (max-width: 900px) {
+      .rh-shell {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+      .rh-timeline {
+        position: static;
+        max-height: none;
+        overflow-x: auto;
+        overflow-y: visible;
+        padding-right: 0;
+        padding-bottom: 8px;
+        border-bottom: 1px solid var(--fg-15);
+        white-space: nowrap;
+      }
+      .rh-timeline__list { display: inline-flex; gap: 4px; }
+      .rh-timeline__list::before { display: none; }
+      .rh-timeline__item {
+        display: inline-block;
+        padding: 6px 10px;
+        border: 1px solid var(--fg-15);
+        border-radius: 999px;
+        flex-shrink: 0;
+      }
+      .rh-timeline__item::before { display: none; }
+      .rh-timeline__item.is-active {
+        background: var(--fg-10, rgba(255,255,255,0.08));
+        border-color: var(--fg-35);
+      }
+      .rh-timeline__link { font-size: 0.68rem; }
+      .rh-timeline__date { display: none; }
+      .rh-article__title { font-size: 1.75rem; }
+      .rh-section__date { display: block; margin-left: 0; margin-top: 4px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="site-header anim-slide-dn">
+    <a href="/" class="site-header__logo" aria-label="Return to home"><img src="/logo.svg" alt="JF"></a>
+    <button class="site-header__menu-btn" id="menu-btn" aria-expanded="false" aria-controls="site-nav">Menu</button>
+  </header>
+
+  <nav class="site-nav" id="site-nav" aria-label="Main navigation">
+    <ul class="site-nav__list">
+      <li class="site-nav__item"><a href="/sonder/" class="site-nav__link">Sonder Series</a></li>
+      <li class="site-nav__item"><a href="/portfolio/" class="site-nav__link">Portfolio</a></li>
+      <li class="site-nav__item" data-has-sub>
+        <a href="/projects/" class="site-nav__link">Projects</a>
+        <div class="site-nav__sub">
+          <a href="/portfolio/" class="site-nav__sub-link">Portfolio</a>
+          <a href="/resume/" class="site-nav__sub-link">Resume</a>
+          <a href="/references/" class="site-nav__sub-link">References</a>
+        </div>
+      </li>
+      <li class="site-nav__item" data-has-sub>
+        <a href="/content/" class="site-nav__link">Content</a>
+        <div class="site-nav__sub">
+          <a href="/writing/" class="site-nav__sub-link">Writing</a>
+          <a href="/poems/" class="site-nav__sub-link">Poems</a>
+          <a href="/pictures/" class="site-nav__sub-link">Memories</a>
+        </div>
+      </li>
+      <li class="site-nav__item"><a href="/network/" class="site-nav__link">Network</a></li>
+      <li class="site-nav__item"><a href="/blueprints/" class="site-nav__link">Blueprints</a></li>
+      <li class="site-nav__item" style="margin-top:24px;"><a href="/" class="site-nav__back">Back to Gallery</a></li>
+    </ul>
+    <button class="site-nav__close" id="nav-close">Close</button>
+  </nav>
+
+  <main class="page">
+    <div class="rh-shell anim-fade-up" style="animation-delay:0.3s">
+
+      <a href="/writing/#rabbit-holes" class="rh-back rh-back--top">← Back to Writing</a>
+
+      <aside class="rh-timeline" aria-label="Essay timeline">
+        <ol class="rh-timeline__list">
+        <li class="rh-timeline__item is-active" data-section="chiaravalle-1870">
+          <a class="rh-timeline__link" href="#chiaravalle-1870">
+            <span class="rh-timeline__name">Chiaravalle, 1870</span>
+            <span class="rh-timeline__date">the beginning</span>
+          </a>
+        </li>
+        <li class="rh-timeline__item" data-section="getting-into-medical-school">
+          <a class="rh-timeline__link" href="#getting-into-medical-school">
+            <span class="rh-timeline__name">Getting into medical school</span>
+            <span class="rh-timeline__date">1890 – 1896</span>
+          </a>
+        </li>
+        <li class="rh-timeline__item" data-section="the-asylum-and-the-crumbs">
+          <a class="rh-timeline__link" href="#the-asylum-and-the-crumbs">
+            <span class="rh-timeline__name">The asylum, and the crumbs</span>
+            <span class="rh-timeline__date">what nobody else saw</span>
+          </a>
+        </li>
+        <li class="rh-timeline__item" data-section="the-school-for-the-insane">
+          <a class="rh-timeline__link" href="#the-school-for-the-insane">
+            <span class="rh-timeline__name">The school for the insane</span>
+            <span class="rh-timeline__date">Itard &amp; Séguin</span>
+          </a>
+        </li>
+        <li class="rh-timeline__item" data-section="san-lorenzo">
+          <a class="rh-timeline__link" href="#san-lorenzo">
+            <span class="rh-timeline__name">San Lorenzo</span>
+            <span class="rh-timeline__date">6 January 1907</span>
+          </a>
+        </li>
+        <li class="rh-timeline__item" data-section="the-learning-explosions">
+          <a class="rh-timeline__link" href="#the-learning-explosions">
+            <span class="rh-timeline__name">The learning explosions</span>
+            <span class="rh-timeline__date">writing, then reading</span>
+          </a>
+        </li>
+        <li class="rh-timeline__item" data-section="going-viral-and-then-mussolini">
+          <a class="rh-timeline__link" href="#going-viral-and-then-mussolini">
+            <span class="rh-timeline__name">Going viral, and then Mussolini</span>
+            <span class="rh-timeline__date">1909 – 1936</span>
+          </a>
+        </li>
+        <li class="rh-timeline__item" data-section="india-the-netherlands-and-peace">
+          <a class="rh-timeline__link" href="#india-the-netherlands-and-peace">
+            <span class="rh-timeline__name">India, the Netherlands, and peace</span>
+            <span class="rh-timeline__date">1939 – 1952</span>
+          </a>
+        </li>
+        <li class="rh-timeline__item" data-section="the-method-now">
+          <a class="rh-timeline__link" href="#the-method-now">
+            <span class="rh-timeline__name">The method now</span>
+            <span class="rh-timeline__date">~0.25 SD</span>
+          </a>
+        </li>
+        <li class="rh-timeline__item" data-section="notes-on-the-record">
+          <a class="rh-timeline__link" href="#notes-on-the-record">
+            <span class="rh-timeline__name">Notes on the record</span>
+            <span class="rh-timeline__date">sources</span>
+          </a>
+        </li>
+        </ol>
+      </aside>
+
+      <article class="rh-article">
+        <header class="rh-article__masthead">
+          <span class="rh-article__eyebrow">Rabbit Hole · ~9 min</span>
+          <h1 class="rh-article__title">The Story of Maria Montessori</h1>
+          <p class="rh-article__subtitle">One of the first Italian women to be a doctor, education pioneer, defied Mussolini.</p>
+          <p class="rh-article__meta">by James Floyd</p>
+        </header>
+
+        <div id="rh-readable">
+        <section id="chiaravalle-1870" class="rh-section">
+          <h2>Chiaravalle, 1870 <span class="rh-section__date">the beginning</span></h2>
+          <p>Maria Montessori was, as the kids would say today, based. This is not an insight, but a fact, and in the next few pages I'm going to summarize her wild story both in an effort to learn it better myself, and amplify it to the world.</p>
+          <p>One day, in August of 1870, a girl was born in Chiaravalle, Italy. Little did her family know she would change the world. Her dad worked at the Ministry of Finance and was described as &quot;An Old-Fashioned Gentleman&quot; by one biographer. Her childhood wasn't that extraordinary — her family moved with her father where he worked, she went to different schools, even got a needlework certificate at one of them, foreshadowing a later interest perhaps.</p>
+          <p>The only thing remarkable was that she continued pursuing her schooling, her education, like her mother, who was remarkably well educated.</p>
+          <figure class="rh-figure"><img src="/pictures/montessori/montessori-portrait-1914.jpg" alt="Dr. Maria Montessori, from the frontispiece of her own 1914 handbook" loading="lazy" decoding="async"><figcaption>Maria Montessori, signed, from the frontispiece of <em>Dr. Montessori's Own Handbook</em>, 1914. Published in New York by Frederick A. Stokes Company — public domain.</figcaption></figure>
+        </section>
+        <section id="getting-into-medical-school" class="rh-section">
+          <h2>Getting into medical school <span class="rh-section__date">1890 – 1896</span></h2>
+          <p>First she went to the University of Rome for Natural Sciences before then wanting to pursue medical school there. Only, women didn't go to medical school, but Maria was, as we know, stubborn, so she tried anyway. She went to the professors and asked to be let in — her scores and aptitude were good enough, she told them — but they bid her <em>buongiorno</em>, saying women do not go to medical school, Maria. Realizing that they would not open their minds that way, she tried a different tack: religion.</p>
+          <p>She approached the pope and asked him to give her an exception so she might have a chance to study what she wished at school. Surprisingly, he was down to ride, and she came back to the school with a custom letter giving her permission. With that she began, and despite ridicule from the men around her, balled tf out. But there was another problem. It was considered improper for her to poke dead bodies around men, so she found a way to do her labs alone with candlelight at night, stitching and dissecting alone.</p>
+          <p>Grudgingly many men came around to realizing how qualified she was, but there was a big final test: a presentation. Men in the town prepared to go laugh at her. They told her friends, and her father, who she was not speaking to. She was nervous, but prepared thoroughly.</p>
+          <p>When she gave the speech, she was so impassioned, so clear, so eloquent that the men who came to laugh gave her a standing ovation, her father rekindled their relationship, and she was praised as qualified.</p>
+        </section>
+        <section id="the-asylum-and-the-crumbs" class="rh-section">
+          <h2>The asylum, and the crumbs <span class="rh-section__date">what nobody else saw</span></h2>
+          <p>From there she began working at an insane asylum. Kids, adults, women and men — she watched and studied them. Often at meal times she would notice the kids diving off their seats to scratch around at, seemingly, the ground. Her colleagues laughed and put down the kids, demeaning them for what they thought was gross behavior. What they didn't realize was what Maria found when looking closer.</p>
+          <p>When she looked into the details of the kids' actions she realized they weren't scratching at the ground at all, but playing with crumbs of food on the ground as if they were toys. The kids didn't have any other materials, so they used what fell to the ground at meal time.</p>
+          <p>This insight only further interested her in the kids at the asylum, and she began working with them even more closely.</p>
+        </section>
+        <section id="the-school-for-the-insane" class="rh-section">
+          <h2>The school for the insane <span class="rh-section__date">Itard &amp; Séguin</span></h2>
+          <p>As time passed, so came an opportunity to work at an orthophrenic, a &quot;school for the insane&quot;. Again, she showed out. As the greats do, she searched for experts in this field, and found two knowledgeable men. One named Jean-Marc-Gaspard Itard and another named Édouard Séguin. Itard was notable because he had worked with a boy considered &quot;the wild boy&quot;, who had lived in the forest alone until he was found as a child. Having done so, he hadn't gone through normal socialization and had a hard time communicating, let alone learning and fitting in. In Itard's process working with him to communicate and learn, Itard created different learning tools, techniques and materials that Maria found very compelling.</p>
+          <p>Maria then applied Itard's strategies to the kids at her school for the insane, producing notable results. Maria went on to say that her time at the school was her &quot;only real and true degree in pedagogy&quot;. This learning of learning models served her and the kids well, with some of them getting results on state standardized tests and her getting some renown.</p>
+        </section>
+        <section id="san-lorenzo" class="rh-section">
+          <h2>San Lorenzo <span class="rh-section__date">6 January 1907</span></h2>
+          <p>In another part of Rome was a district named San Lorenzo, and it was considered an embarrassment to Italy. There were apartment complexes with 3-4 families per apartment, privacy was poor, hygiene was poor, social unrest was high — it was a bad place to live.</p>
+          <p>In an attempt to remediate it they even renovated the apartments, with the agreement that the families would take good care of them, but the problem became that the kids left alone at home while the parents were working caused damage over and over again.</p>
+          <p>So they proposed a fix: a school or childcare center where these very young kids would go while the adults left during the day, and Maria was recruited. However, Maria had never designed a school before, let alone one with more normal kids. She had work to do.</p>
+          <p>So she did her science thing and went and observed the kids and their lives. They were around violence and drugs, prostitution and temptation. As she said, &quot;They had no <em>casa</em>.&quot; No home. So she created one. She got first-of-its-kind custom furniture for kids, she brought special learning materials based on Itard's learnings, and designed a place where the kids could come be safely. It opened on 6 January 1907.</p>
+          <p>She took copious observation notes and constantly looked to improve and understand education through the kids' natural tendencies. She got rid of toys they didn't use and even, after leaving a cupboard unlocked one night and finding the kids playing independently the next morning, gave the kids more and more opportunities and freedom of choice.</p>
+          <figure class="rh-figure"><img src="/pictures/montessori/child-with-the-tower-1914.jpg" alt="A small child balancing the last block of the Tower" loading="lazy" decoding="async"><figcaption>A child using the Tower — one of the materials she kept because the children kept going back to it. From <em>Dr. Montessori's Own Handbook</em>, 1914. A Montessori classroom photographed for that book, not San Lorenzo itself. Public domain.</figcaption></figure>
+          <p>There were some special lessons she learned. Things like kids are competent enough to have freedom of choice, and that they are capable of intense long concentration, that they like to work and take it seriously, and that they like to practice and repeat things they are shown how to do, and surprisingly, they have learning explosions where they make realizations of ability and practice repeatedly.</p>
+        </section>
+        <section id="the-learning-explosions" class="rh-section">
+          <h2>The learning explosions <span class="rh-section__date">writing, then reading</span></h2>
+          <p>These learning explosions went like this: <em>Miss Montessori, teacher! Let us learn how to write!</em> Despite the societal belief that kids couldn't learn before 6, she let them, by giving them blocks with letters on them and independent lessons to do. Soon they were writing, but then she had an idea that changed everything. She decided to see if they knew how to read, so she wrote on a blackboard &quot;If you can read this come give me a kiss&quot;.</p>
+          <p>A day passed, then two days, but on the third day a girl came up and said &quot;Miss Maria, I am here to give you a kiss&quot;. Spontaneously she had decided she could read, by sounding out the letters.</p>
+          <figure class="rh-figure"><img src="/pictures/montessori/child-touching-insets-1914.jpg" alt="A blindfolded child identifying a geometric inset by touch alone" loading="lazy" decoding="async"><figcaption>Isolating one sense on purpose — a child names a shape by touch, with her eyes covered. From <em>Dr. Montessori's Own Handbook</em>, 1914. Public domain.</figcaption></figure>
+        </section>
+        <section id="going-viral-and-then-mussolini" class="rh-section">
+          <h2>Going viral, and then Mussolini <span class="rh-section__date">1909 – 1936</span></h2>
+          <p>This went viral. Newspapers picked it up across the world, she began speaking more and more. Soon people were encouraging her to write — <em>please Maria, before you die, share this knowledge with us!</em></p>
+          <p>So she did. ~15 books in her lifetime and many more papers. In the beginning Maria and Mussolini were amicable, he let her schools run and she was safe to do her work. However, the relationship began to decay as Maria spoke out more against fascism and the youth fascist movement. She and her son were put under surveillance in 1932, she left Italy in 1934, and in 1936 the Italian government shut her schools down in his territory. The Second World War was still three years off.</p>
+          <p>Maria, stubborn as ever, began traveling and sharing her teachings. In 1939 she went to India on invitation and lived there growing schools — through the war, during which her son was interned and she was confined to the Theosophical Society compound — until she was able to return to Europe in 1946.</p>
+        </section>
+        <section id="india-the-netherlands-and-peace" class="rh-section">
+          <h2>India, the Netherlands, and peace <span class="rh-section__date">1939 – 1952</span></h2>
+          <p>She found a home in the Netherlands and continued working on her organization AMI, founded in 1929, to guard and carry-on her vision into the future. She also spent time rebuilding schools across Europe and speaking to spread the knowledge and excitement about her Montessori Method. Her big mission during these years was guiding the future towards peace after having lived through two world wars. This was based on her belief that education was the best way to prevent war in the future.</p>
+          <p>She was also nominated for the Nobel Peace Prize in three separate years — 1949, 1950 and 1951 — six nominations in all. She died at Noordwijk aan Zee in the Netherlands on 6 May 1952, aged 81.</p>
+        </section>
+        <section id="the-method-now" class="rh-section">
+          <h2>The method now <span class="rh-section__date">~0.25 SD</span></h2>
+          <p>Now, her Montessori method, characterized by mixed age classrooms, &quot;auto-learning&quot; (kids directing their own learning) and teachers as guides rather than specific subject matter experts, is used around the world and shows to help kids do about a quarter of a standard deviation above average.</p>
+        </section>
+        <section id="notes-on-the-record" class="rh-section">
+          <h2>Notes on the record <span class="rh-section__date">sources</span></h2>
+          <p>This is a story summary, told the way the story is usually told. Everything below is either a source or a place where I changed a fact in the draft rather than publish it wrong — every one of them is a line you can put back.</p>
+          <p><strong>&quot;One of the first.&quot;</strong> That is the accurate version and it is worth defending, because she is very often called <em>the</em> first woman doctor in Italy and she was not. Ernestina Paper took a medical degree at Florence in 1877, when Montessori was seven. Montessori graduated in 1896.</p>
+          <p><strong>The pope.</strong> Told here exactly as it is usually told. Worth knowing that Montessori organisations repeat the Leo XIII intervention and the documented account of her university admission does not mention it. Her recorded route was: enrolled 1890 in natural sciences, diploma 1892, entered the medical programme 1893, graduated 1896.</p>
+          <p><strong>Dissecting alone at night</strong> is real and documented — she is also recorded as smoking tobacco to cover the smell of the formaldehyde.</p>
+          <p><strong>Her father</strong> worked <em>at</em> the Ministry of Finance, managing a state tobacco factory. The draft made him the Minister of Finance, which is a cabinet post he did not hold.</p>
+          <p><strong>The wild boy</strong> is Victor of Aveyron, found around 1800 and estimated at about twelve, so &quot;until the age of 8&quot; became &quot;until he was found as a child&quot; — a number I could not stand behind.</p>
+          <p><strong>San Lorenzo</strong> is a district of Rome, not a town in another part of Italy. The Casa dei Bambini opened there on 6 January 1907.</p>
+          <p><strong>Mussolini.</strong> The draft had the war starting first and the schools closing in 1934. It ran the other way: official support from 1924, surveillance in 1932, she left Italy in 1934, the movement was shut down in 1936, and the war began in 1939 — after all of it. &quot;This went 1920's viral&quot; became &quot;this went viral&quot;, because the newspapers picked her up from 1909.</p>
+          <p><strong>The Nobel.</strong> Three nominations for three different prizes became what actually happened: the Peace Prize, nominated across three years, six nominations in total.</p>
+          <p><strong>The photographs.</strong> All three come from <em>Dr. Montessori's Own Handbook</em>, published in New York by Frederick A. Stokes Company in 1914, and are public domain in the United States. The two classroom photographs are Montessori classrooms photographed for that book rather than San Lorenzo itself, which is why the captions say so. I could not find a verifiably free photograph of the original Casa dei Bambini, or of her lecturing, and showing what I can prove beats captioning what I cannot.</p>
+        </section>
+        </div>
+
+        <a href="/writing/#rabbit-holes" class="rh-back">← Back to Writing</a>
+      </article>
+
+    </div>
+  </main>
+
+  <script>
+    // ── Nav (menu open/close), copy of the pattern used across the site
+    (function() {
+      var btn = document.getElementById('menu-btn');
+      var nav = document.getElementById('site-nav');
+      var close = document.getElementById('nav-close');
+      if (btn && nav) {
+        btn.addEventListener('click', function() {
+          var open = nav.classList.toggle('is-open');
+          btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+      }
+      if (close && nav) {
+        close.addEventListener('click', function() {
+          nav.classList.remove('is-open');
+          btn && btn.setAttribute('aria-expanded', 'false');
+        });
+      }
+    })();
+
+    // ── Timeline highlight: mark the section whose heading has most recently
+    //    crossed a "read line" 30% down from the top of the viewport. Simple
+    //    scroll listener beats IntersectionObserver here because a long
+    //    section keeps intersecting even after the reader has moved past.
+    (function() {
+      var sections = Array.from(document.querySelectorAll('.rh-section'));
+      var itemMap = new Map();
+      document.querySelectorAll('.rh-timeline__item').forEach(function(it) {
+        itemMap.set(it.dataset.section, it);
+      });
+      if (!sections.length || !itemMap.size) return;
+
+      var lastActive = null;
+      function update() {
+        var readLine = window.innerHeight * 0.3;
+        var active = sections[0];
+        for (var i = 0; i < sections.length; i++) {
+          if (sections[i].getBoundingClientRect().top <= readLine) active = sections[i];
+          else break;
+        }
+        if (active === lastActive) return;
+        lastActive = active;
+        itemMap.forEach(function(it) { it.classList.remove('is-active'); });
+        var el = itemMap.get(active.id);
+        if (el) {
+          el.classList.add('is-active');
+          // On mobile the timeline is a horizontal chip strip at the top of the
+          // page. Keep the active chip centered by scrolling ONLY the strip
+          // horizontally — never el.scrollIntoView(), which also scrolls the
+          // window vertically and yanks the reader back up to the top.
+          if (window.innerWidth <= 900) {
+            var strip = el.closest('.rh-timeline');
+            if (strip && strip.scrollWidth > strip.clientWidth) {
+              strip.scrollTo({
+                left: el.offsetLeft - strip.clientWidth / 2 + el.offsetWidth / 2,
+                behavior: 'smooth'
+              });
+            }
+          }
+        }
+      }
+      var ticking = false;
+      window.addEventListener('scroll', function() {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(function() { update(); ticking = false; });
+      }, { passive: true });
+      update();
+    })();
+  </script>
+</body>
+</html>
