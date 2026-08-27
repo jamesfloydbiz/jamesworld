@@ -122,6 +122,18 @@
   .pad2{grid-template-columns:repeat(2,1fr);}
   .pad2 .key{min-height:72px; font-size:19px;}
   .key.no{background:#1a1414; border-color:#7f1d1d; color:#fca5a5; font-weight:700;}
+  /* Double-tapping a number used to zoom the page, which on a phone means
+     you spend the race pinching back out. `manipulation` switches off
+     double-tap zoom on the controls while leaving pinch-zoom alone, so the
+     page is still zoomable for anyone who needs it. It also kills the old
+     300ms tap delay, which makes the keypad feel immediate. */
+  .key, .chip, .btn, .tab, .track{
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .key, .chip, .btn, .tab{
+    -webkit-user-select: none; user-select: none;
+  }
   .key{appearance:none; border:1px solid var(--border); background:#111;
     color:var(--fg); border-radius:10px; min-height:56px; font-size:22px;
     font-weight:600; cursor:pointer; font-variant-numeric:tabular-nums;
@@ -293,7 +305,7 @@ const BAND       = 0.85;    // introduce new facts only at or above this
 const BAND_WIN   = 12;      // rolling window the band is measured over
 const LEARN_CAP  = 5;       // facts allowed mid-learning at once
 const NO_REPEAT  = 4;       // a fact cannot return within this many draws
-const MAINT_RATE = 0.10;    // share of draws given to mastered facts
+const MAINT_RATE = 0.18;    // share of draws given to mastered facts
 /* ── the band, in both directions ─────────────────────────────────────
    The ~85% figure is Wilson, Shenhav, Straccia & Cohen (2019), and it is worth
    being straight about what it is: an optimal training ERROR rate of 15.87%,
@@ -667,8 +679,9 @@ function pickFact(recent, rolling){
   const clash = f => last && (f.a === last.a || f.b === last.b || f.a === last.b || f.b === last.a);
   const ok = f => !tooSoon(f) && !clash(f);
 
-  /* Maintenance: a mastered fact now and then, so it does not rot. Below the
-     band this share goes up, because the facts you have retired are the
+  /* Maintenance. NOTHING EVER RETIRES — a mastered fact keeps coming back for
+     the rest of its life, just rarely, because that is what keeps it. Below
+     the band this share goes up, because the facts you have mastered are the
      highest-probability things you own and leaning on them is exactly the
      drop-back-a-rung move — rebuild on ground you hold, then climb again. */
   const acc0 = rolling.length >= 4 ? rolling.reduce((a,b)=>a+b,0)/rolling.length : 1;
@@ -676,7 +689,21 @@ function pickFact(recent, rolling){
   const maint = acc0 < BAND ? 0.28 : MAINT_RATE;
   if (done.length && Math.random() < maint){
     const c = done.filter(ok);
-    if (c.length) return c[Math.floor(Math.random()*c.length)];
+    if (c.length){
+      /* The one that has gone coldest, not a random one. Picking uniformly
+         meant that with a hundred mastered facts each individual one came
+         back about once in a thousand draws — twenty-five races — which is
+         retirement with extra steps. recallP decays with days since you last
+         saw it, so the lowest score is the fact most in need of a look.
+         Sampled from the coldest few rather than strictly the coldest, so the
+         order does not lock into the same cycle every race. */
+      /* Jittered, because a hundred facts mastered on the same three days all
+         score IDENTICALLY — and a stable sort on ties hands back the same four
+         facts every single race while the other ninety-six never come up. The
+         jitter is small enough that a genuinely colder fact still wins. */
+      const score = f => recallP(f, recent) + Math.random() * 0.05;
+      return c.reduce((best, f) => score(f) < score(best) ? f : best, c[0]);
+    }
   }
   // the slice for what is still out of reach — see REACH_HI above
   if (Math.random() < (acc0 >= BAND ? REACH_HI : REACH_LO)){
@@ -738,7 +765,7 @@ const PACERS = [
   { key:'pace3', name:'Bar',   per:3000, silks:'🐎' },   // the fluency threshold
   { key:'pace2', name:'Clock', per:2000, silks:'🐎' },   // comfortably fluent
 ];
-/* The class you run in is set by how many facts you have retired, so the
+/* The class you run in is set by how many facts you have mastered, so the
    progression IS the learning state rather than a rosette sitting on top. */
 /* Thresholds are shares of the set you are racing, not fixed counts — a set of
    12 cubes and a set of 169 tables cannot use the same ladder. On the tables
@@ -1526,7 +1553,7 @@ function setOptions(){
   return `
     <div class="chips" style="margin-bottom:14px;">${cap([20,50,100], PREFS.pr.max)} ${count}</div>
     <p class="tiny" style="margin:-6px 0 14px;">Two buttons, not a keypad. It's a yes/no call, so a guess pays
-       half the time &mdash; a prime needs ${MASTER_HITS+1} clean answers to retire, not ${MASTER_HITS}.</p>`;
+       half the time &mdash; a prime needs ${MASTER_HITS+1} clean answers to count as mastered, not ${MASTER_HITS}.</p>`;
 }
 
 function renderRace(finished, pb){
@@ -1566,7 +1593,7 @@ function renderRace(finished, pb){
         <div class="row" style="margin-bottom:14px;">
           <div><div class="tiny">CLASS</div><div class="big" style="font-size:24px;">${classNow().name}</div>
             <div class="tiny">${classNow().next ? classNow().toGo + ' to ' + classNow().next.name : 'the whole book'}</div></div>
-          <div><div class="tiny">RETIRED</div><div class="big">${countState('mastered')}<span class="muted" style="font-size:15px;">/${activeFacts().length}</span></div></div>
+          <div><div class="tiny">MASTERED</div><div class="big">${countState('mastered')}<span class="muted" style="font-size:15px;">/${activeFacts().length}</span></div></div>
           ${g ? `<div><div class="tiny">LAST RUN</div><div class="big">${fmtClock(g.ms)}</div></div>` : ''}
           ${b ? `<div><div class="tiny">BEST</div><div class="big" style="color:var(--best)">${fmtClock(b.ms)}</div></div>` : ''}
         </div>
@@ -1665,7 +1692,7 @@ function renderRace(finished, pb){
 /* ── mastery, made visible: this is where the motivation is supposed to come
       from, so it is not a stats page tucked away ─────────────────────── */
 const LEGEND = `<div class="legend">
-    <span><i style="background:var(--acc)"></i>retired</span>
+    <span><i style="background:var(--acc)"></i>mastered</span>
     <span><i style="background:#2f4a36"></i>on its way</span>
     <span><i style="background:#3a3320"></i>being learned</span>
     <span><i style="background:#1b1b1b;border:1px solid #2a2a2a"></i>not met yet</span>
@@ -1713,7 +1740,7 @@ function boardFor(){
     if (n === 1){ out.push(`<div class="cell" style="opacity:.18" title="1 is neither"><span class="cn">1</span></div>`); continue; }
     const f = FACT['pr'+n], live = n <= max;
     /* The answer key is the WEIGHT of the number, not an outline. A green
-       outline round a green "retired" cell is invisible, which is exactly the
+       outline round a green "mastered" cell is invisible, which is exactly the
        cells you most want to read. Bold works on all four fills. */
     out.push(`<div class="cell ${live ? stateOf(f.id) : ''}" title="${n} — ${f.ans ? 'prime' : 'not prime'}, ${live ? stateOf(f.id) : 'above your ceiling'}"
       style="${live ? '' : 'opacity:.28'}"><span class="cn ${f.ans ? 'yes' : 'no'}">${n}</span></div>`);
@@ -1728,7 +1755,8 @@ function masteryBlock(){
   const m = countState('mastered'), r = countState('review'), l = countState('learning');
   const n = activeFacts().length;
   return `${boardFor()}${LEGEND}
-    <p class="tiny" style="margin-top:8px;">${m} retired · ${r} on their way · ${l} being learned · ${n-m-r-l} not met yet</p>`;
+    <p class="tiny" style="margin-top:8px;">${m} mastered · ${r} on their way · ${l} being learned · ${n-m-r-l} not met yet</p>
+    <p class="tiny" style="margin-top:4px;">Mastered facts never leave the deck. They come back rarely, oldest first, because that is what keeps them.</p>`;
 }
 
 /* ── charts: small, labelled, and dependency-free ─────────────────────── */
@@ -1792,7 +1820,7 @@ function renderForm(){
             <div class="tiny">${x.name}${here ? ' · racing' : ''}</div>
             <div class="n" style="${here ? 'color:var(--acc)' : ''}">${done}<span class="muted"
               style="font-size:13px;font-weight:400;">/${facts.length}</span></div>
-            <div class="tiny">retired</div></div>`;
+            <div class="tiny">mastered</div></div>`;
         }).join('')}
       </div>
       <div class="chips" style="margin:12px 0 0;">
@@ -1837,7 +1865,8 @@ function renderForm(){
       }).join('')}
       </tbody></table>
       <p class="tiny" style="margin-top:10px;">A dot is one unaided answer under ${FLUENT_MS/1000}s, on a different day.
-         Fill the dots and the fact is retired — day-spacing is the part that makes it hold.</p>
+         Fill the dots and the fact counts as mastered — day-spacing is the part that makes it hold.
+         It still comes back after that, just rarely.</p>
     </div>` : `<div class="card"><p class="muted" style="margin:0;">Run a race in this set and it fills in.</p></div>`}
 
     ${recent.length ? `<div class="card">
@@ -1874,6 +1903,11 @@ function renderMethod(){
       <p style="font-size:14px;"><b style="color:var(--acc)">Speed is the measurement, not correctness.</b>
          Getting ${'7 × 8'} right after four seconds means you computed it. Fluency is retrieval, so an answer
          over ${FLUENT_MS/1000}s doesn't count toward mastery however right it is.</p>
+      <p style="font-size:14px;"><b style="color:var(--acc)">Nothing ever retires.</b>
+         A mastered fact stays in the deck for good &mdash; it just comes back rarely, and the one you get
+         is whichever has gone longest without a look. Retiring a fact the moment you know it is how you
+         forget it six months later; the whole point of spacing is that it keeps working after you stop
+         needing it.</p>
       <p style="font-size:14px;"><b style="color:var(--acc)">Three days, not three tries.</b>
          A fact needs ${MASTER_HITS} unaided answers under the bar on ${MASTER_DAYS} different days. Three in one
          sitting is cramming and it decays; the gap between days is what makes it hold.</p>
