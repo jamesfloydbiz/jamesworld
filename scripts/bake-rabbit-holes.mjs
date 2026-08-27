@@ -43,8 +43,8 @@ const META = {
     ],
   },
   'coaching-and-motivation': {
-    title: 'What Actually Motivates a Kid?',
-    subtitle: 'Eight coaching and motivation techniques, the three theories underneath them, and the effect size behind each — with what every one looked like in my own life.',
+    title: 'How to be the Pied Piper',
+    subtitle: 'A summary of ways to motivate kids.',
     reading: '~11 min',
     sections: [
       { name: 'In the spirit of learning',                        date: 'eight techniques' },

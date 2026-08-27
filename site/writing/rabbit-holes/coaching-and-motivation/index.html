@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How to be the Pied Piper — Rabbit Hole — James Floyd</title>
+  <meta name="description" content="A summary of ways to motivate kids.">
+  <link rel="canonical" href="https://jamesfloyds.world/writing/rabbit-holes/coaching-and-motivation/">
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="How to be the Pied Piper">
+  <meta property="og:description" content="A summary of ways to motivate kids.">
+  <meta property="og:url" content="https://jamesfloyds.world/writing/rabbit-holes/coaching-and-motivation/">
+
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=DM+Mono:wght@300;400&family=Lora:ital,wght@0,400;0,500;1,400&family=Space+Mono:wght@400;700&display=swap">
+  <link rel="stylesheet" href="/css/site.css">
+
+  <style>
+    .rh-shell {
+      display: grid;
+      grid-template-columns: 220px minmax(0, 720px);
+      gap: 56px;
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 0 clamp(16px, 4vw, 24px);
+    }
+
+    /* Timeline (left column, sticky) */
+    .rh-timeline {
+      position: sticky;
+      top: 96px;
+      align-self: start;
+      max-height: calc(100vh - 120px);
+      max-height: calc(100dvh - 120px);
+      overflow-y: auto;
+      padding-right: 8px;
+      scrollbar-width: thin;
+    }
+    .rh-timeline__list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      position: relative;
+    }
+    .rh-timeline__list::before {
+      content: '';
+      position: absolute;
+      left: 4px;
+      top: 6px;
+      bottom: 6px;
+      width: 1px;
+      background: var(--fg-15);
+    }
+    .rh-timeline__item {
+      position: relative;
+      padding: 0 0 12px 22px;
+    }
+    .rh-timeline__item::before {
+      content: '';
+      position: absolute;
+      left: 1px;
+      top: 6px;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--bg, #000);
+      border: 1px solid var(--fg-35);
+      box-sizing: border-box;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .rh-timeline__item.is-active::before {
+      background: var(--fg);
+      border-color: var(--fg);
+    }
+    .rh-timeline__link {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--fg-45);
+      text-decoration: none;
+      line-height: 1.5;
+      transition: color 0.2s;
+    }
+    .rh-timeline__link:hover { color: var(--fg-80); }
+    .rh-timeline__item.is-active .rh-timeline__link { color: var(--fg); }
+    .rh-timeline__name { display: block; }
+    .rh-timeline__date {
+      display: block;
+      font-size: 0.62rem;
+      letter-spacing: 0.05em;
+      color: var(--fg-30);
+      text-transform: none;
+      margin-top: 2px;
+    }
+    .rh-timeline__item.is-active .rh-timeline__date { color: var(--fg-55); }
+
+    /* Article (right column) */
+    .rh-article { max-width: 680px; }
+    .rh-article__masthead {
+      margin-bottom: 48px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--fg-15);
+    }
+    .rh-article__eyebrow {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--fg-55);
+      margin-bottom: 12px;
+    }
+    .rh-article__title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 700;
+      font-size: clamp(2rem, 5vw, 3rem);
+      line-height: 1.15;
+      margin: 0 0 12px 0;
+      color: var(--fg);
+    }
+    .rh-article__subtitle {
+      font-family: 'Lora', Georgia, serif;
+      font-style: italic;
+      font-size: 1.05rem;
+      line-height: 1.5;
+      color: var(--fg-70);
+      margin: 0 0 8px 0;
+    }
+    .rh-article__meta {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--fg-45);
+    }
+
+    .rh-section { margin-bottom: 40px; scroll-margin-top: 96px; }
+    .rh-section h2 {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--fg-80);
+      margin: 0 0 20px 0;
+      padding-top: 16px;
+      border-top: 1px solid var(--fg-15);
+    }
+    .rh-section__date {
+      display: inline-block;
+      margin-left: 10px;
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      color: var(--fg-45);
+      text-transform: none;
+      font-weight: normal;
+    }
+    .rh-section p {
+      font-family: 'Lora', Georgia, serif;
+      font-size: 1.02rem;
+      line-height: 1.8;
+      color: var(--fg-80);
+      margin: 0 0 1rem 0;
+    }
+    .rh-section .rh-list {
+      font-family: 'Lora', Georgia, serif;
+      font-size: 1rem;
+      line-height: 1.75;
+      color: var(--fg-80);
+      padding-left: 20px;
+      margin: 0 0 1rem 0;
+    }
+    .rh-section .rh-list li { margin-bottom: 6px; }
+
+    .rh-back {
+      display: inline-block;
+      margin: 48px 0 24px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--fg-55);
+      text-decoration: none;
+    }
+    .rh-back:hover { color: var(--fg); }
+    .rh-back--top {
+      margin: 0 0 24px 0;
+      grid-column: 1 / -1;
+    }
+
+    /* Mobile: timeline collapses to a horizontal chip row above the article */
+    @media (max-width: 900px) {
+      .rh-shell {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+      .rh-timeline {
+        position: static;
+        max-height: none;
+        overflow-x: auto;
+        overflow-y: visible;
+        padding-right: 0;
+        padding-bottom: 8px;
+        border-bottom: 1px solid var(--fg-15);
+        white-space: nowrap;
+      }
+      .rh-timeline__list { display: inline-flex; gap: 4px; }
+      .rh-timeline__list::before { display: none; }
+      .rh-timeline__item {
+        display: inline-block;
+        padding: 6px 10px;
+        border: 1px solid var(--fg-15);
+        border-radius: 999px;
+        flex-shrink: 0;
+      }
+      .rh-timeline__item::before { display: none; }
+      .rh-timeline__item.is-active {
+        background: var(--fg-10, rgba(255,255,255,0.08));
+        border-color: var(--fg-35);
+      }
+      .rh-timeline__link { font-size: 0.68rem; }
+      .rh-timeline__date { display: none; }
+      .rh-article__title { font-size: 1.75rem; }
+      .rh-section__date { display: block; margin-left: 0; margin-top: 4px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="site-header anim-slide-dn">
+    <a href="/" class="site-header__logo" aria-label="Return to home"><img src="/logo.svg" alt="JF"></a>
+    <button class="site-header__menu-btn" id="menu-btn" aria-expanded="false" aria-controls="site-nav">Menu</button>
+  </header>
+
+  <nav class="site-nav" id="site-nav" aria-label="Main navigation">
+    <ul class="site-nav__list">
+      <li class="site-nav__item"><a href="/sonder/" class="site-nav__link">Sonder Series</a></li>
+      <li class="site-nav__item"><a href="/portfolio/" class="site-nav__link">Portfolio</a></li>
+      <li class="site-nav__item" data-has-sub>
+        <a href="/projects/" class="site-nav__link">Projects</a>
+        <div class="site-nav__sub">
+          <a href="/portfolio/" class="site-nav__sub-link">Portfolio</a>
+          <a href="/resume/" class="site-nav__sub-link">Resume</a>
+          <a href="/references/" class="site-nav__sub-link">References</a>
+        </div>
+      </li>
+      <li class="site-nav__item" data-has-sub>
+        <a href="/content/" class="site-nav__link">Content</a>
+        <div class="site-nav__sub">
+          <a href="/writing/" class="site-nav__sub-link">Writing</a>
+          <a href="/poems/" class="site-nav__sub-link">Poems</a>
+          <a href="/pictures/" class="site-nav__sub-link">Memories</a>
+        </div>
+      </li>
+      <li class="site-nav__item"><a href="/network/" class="site-nav__link">Network</a></li>
+      <li class="site-nav__item"><a href="/blueprints/" class="site-nav__link">Blueprints</a></li>
+      <li class="site-nav__item" style="margin-top:24px;"><a href="/" class="site-nav__back">Back to Gallery</a></li>
+    </ul>
+    <button class="site-nav__close" id="nav-close">Close</button>
+  </nav>
+
+  <main class="page">
+    <div class="rh-shell anim-fade-up" style="animation-delay:0.3s">
+
+      <a href="/writing/#rabbit-holes" class="rh-back rh-back--top">← Back to Writing</a>
+
+      <aside class="rh-timeline" aria-label="Essay timeline">
+        <ol class="rh-timeline__list">
+        <li class="rh-timeline__item is-active" data-section="in-the-spirit-of-learning">
+          <a class="rh-timeline__link" href="#in-the-spirit-of-learning">
+            <span class="rh-timeline__name">In the spirit of learning</span>
+            <span class="rh-timeline__date">eight techniques</span>
+          </a>
+        </li>
+        <li class="rh-timeline__item" data-section="1-wise-feedback">
+          <a class="rh-timeline__link" href="#1-wise-feedback">
+            <span class="rh-timeline__name">1. Wise Feedback</span>
+            <span class="rh-timeline__date">17% → 71%</span>
+          </a>
+        </li>
+        <li class="rh-timeline__item" data-section="2-saying-is-believing-interventions">
+          <a class="rh-timeline__link" href="#2-saying-is-believing-interventions">
+            <span class="rh-timeline__name">2. Saying is Believing interventions</span>
+            <span class="rh-timeline__date">three interventions</span>
+          </a>
+        </li>
+        <li class="rh-timeline__item" data-section="3-stress-arousal-reappraisal">
+          <a class="rh-timeline__link" href="#3-stress-arousal-reappraisal">
+            <span class="rh-timeline__name">3. Stress Arousal Reappraisal</span>
+            <span class="rh-timeline__date">~0.23 SD</span>
+          </a>
+        </li>
+        <li class="rh-timeline__item" data-section="4-implementation-intentions">
+          <a class="rh-timeline__link" href="#4-implementation-intentions">
+            <span class="rh-timeline__name">4. Implementation Intentions</span>
+            <span class="rh-timeline__date">~0.65 SD</span>
+          </a>
+        </li>
+        <li class="rh-timeline__item" data-section="5-re-attribution-training">
+          <a class="rh-timeline__link" href="#5-re-attribution-training">
+            <span class="rh-timeline__name">5. Re-Attribution Training</span>
+            <span class="rh-timeline__date">a treatment literature</span>
+          </a>
+        </li>
+        <li class="rh-timeline__item" data-section="6-guided-mastery">
+          <a class="rh-timeline__link" href="#6-guided-mastery">
+            <span class="rh-timeline__name">6. Guided Mastery</span>
+            <span class="rh-timeline__date">Bandura 1969</span>
+          </a>
+        </li>
+        <li class="rh-timeline__item" data-section="7-positive-welcoming">
+          <a class="rh-timeline__link" href="#7-positive-welcoming">
+            <span class="rh-timeline__name">7. Positive Welcoming</span>
+            <span class="rh-timeline__date">d ~0.93 / ~0.87</span>
+          </a>
+        </li>
+        <li class="rh-timeline__item" data-section="8-coaching-training-regulation-and-interventions">
+          <a class="rh-timeline__link" href="#8-coaching-training-regulation-and-interventions">
+            <span class="rh-timeline__name">8. Coaching Training, Regulation and Interventions</span>
+            <span class="rh-timeline__date">26% → 5% dropout</span>
+          </a>
+        </li>
+        <li class="rh-timeline__item" data-section="the-theories-underneath">
+          <a class="rh-timeline__link" href="#the-theories-underneath">
+            <span class="rh-timeline__name">The theories underneath</span>
+            <span class="rh-timeline__date">three frameworks</span>
+          </a>
+        </li>
+        </ol>
+      </aside>
+
+      <article class="rh-article">
+        <header class="rh-article__masthead">
+          <span class="rh-article__eyebrow">Rabbit Hole · ~11 min</span>
+          <h1 class="rh-article__title">How to be the Pied Piper</h1>
+          <p class="rh-article__subtitle">A summary of ways to motivate kids.</p>
+          <p class="rh-article__meta">by James Floyd</p>
+        </header>
+
+        <div id="rh-readable">
+        <section id="in-the-spirit-of-learning" class="rh-section">
+          <h2>In the spirit of learning <span class="rh-section__date">eight techniques</span></h2>
+          <p>This is a summary, in the spirit of learning, about eight techniques in coaching and motivation, and the three theories underneath them. With each technique I'll use an example from my own life to illustrate it.</p>
+        </section>
+        <section id="1-wise-feedback" class="rh-section">
+          <h2>1. Wise Feedback <span class="rh-section__date">17% → 71%</span></h2>
+          <p>Wise Feedback is giving feedback in a way that communicates there are high standards, you believe they can live at or above them, and you'll be there with them in a respectful manner.</p>
+          <p>One of the reasons we know this is that there once was an experiment on the way a teacher gave essay corrections to her kids.</p>
+          <p>To one group she gave them their papers back with only her red pen notes. This was the control group, and one that represents the majority of classes around the world. That group, when turning in their essays again, had done 17% of the corrections she asked them to do, but the second group did more.</p>
+          <p>The second group also received their essays back with the teacher's red marks all over them, and with it they received a short, concise note that said something like &quot;This doesn't meet the standard yet, but I believe you can get there.&quot; That group went on to make 71% of the changes that were requested. Double the control group.</p>
+          <p>While that is significant, there's one more piece of data from that study which is… bonkers. When applying wise feedback to more marginalized students, with lower trust in authority, the difference was with wise feedback 82% did the corrections while 0% were made if the feedback was not wise.</p>
+          <p>For example, I run a pickup soccer league in Brooklyn, NY every Sunday. Sometimes there's thirty people and sometimes there's five. The second time I hosted it some of the neighborhood kids came around to play again, and one of them was getting pushed around a little bit. He was pretty frustrated and thinking about leaving, so I approached him and said, &quot;Hey, you need to pass the ball quicker buddy. I know I'm pushing you a little bit to play hard, but I think you can keep up, and I'm on your team all the way.&quot; From that wise feedback I gave, he continued playing and helped us score the winning goal.</p>
+          <p>(17% → 71% revision rates, and 82% → 0% among the students lowest in trust, from this study: Yeager, Purdie-Vaughns, Garcia, Apfel, Brzustoski, Master, Hessert, Williams &amp; Cohen 2014, <em>Journal of Experimental Psychology: General</em>. Worth saying precisely: those rates are for the Black seventh-graders in the sample, and the 82%/0% split is for the Black students who reported the least trust in school. The effect ran in the same direction for White students but smaller.)</p>
+        </section>
+        <section id="2-saying-is-believing-interventions" class="rh-section">
+          <h2>2. Saying is Believing interventions <span class="rh-section__date">three interventions</span></h2>
+          <p>Have you ever gotten corrected by someone older than you? How did it go? I hear many people talk about getting yelled at or just not really understanding what it means, but the few that have had a great teacher come out stronger. The ones that hold their chin a little higher, they are quiet in chaos, but calm and comfortable, those are the ones that have been coached well. The ones that get up with a smile after being knocked down, have had great interventions.</p>
+          <p>I was able to find studies on belonging interventions, utility value interventions, and values affirmation interventions that show real performance improvement in students.</p>
+          <p><strong>Belonging interventions</strong> find their place in transition. When new students arrive to a school, when there are new teachers, and all other times when there is worry from a student about belonging. Walton and Cohen showed in a study that when students in the midst of those worries read studies and narratives of older students exploring the same feelings, and then record advice to younger students themselves, this increased the kids' GPAs significantly. This especially allowed Black students they were studying to reduce the GPA gap between them and White students 52%.</p>
+          <p><strong>Utility Value interventions</strong> are most useful when students are wondering when, if ever, they'll use the material they're learning. When students ask 'why are we learning this?' or 'how is this useful?' This comes from Hulleman and Harackiewicz's study in 2009, when they had students write ~2 paragraphs a semester speculating how it might be useful to them. Rather than arguing, or telling them to do it anyway, they expected them to be able to figure it out, instead of giving them the answer. This increased low-performing students' scores on the letter grade system ⅔ of a letter grade.</p>
+          <p><strong>Values Affirmations</strong> came in handy when students were worried about being a part of some stereotype. They would be using some part of their brain worrying, instead of having everything focused on working. Pulling them aside for just 10–15 minutes and having them write about values they had in their life allowed more of them to get back to work fully focused and showed positive effects on their GPA.</p>
+          <p>For this example I'll create a story of something I'm working towards. Let's say I join Founders School for the first Fall semester, and there are 20 kids. This school's premise is that the kids will get top 1% scores and, by graduation, have made a million dollars in gross profit from a business they built.</p>
+          <p>Chances are, switching into this school, one of the most expensive in the country, there may be some imposter syndrome. So, I would reach out to some of the past high schoolers at Alpha School like Rhett, who raised over $500k to start the largest mountain bike park in Texas, and get feedback from him to pass along to the kids. Then I would have them record their own videos or opinions in writing for how the next class could succeed.</p>
+          <p>It's likely based on the data that they would feel better from that, but then perhaps another problem would come up, like complaints about how they have to do their academics in the morning. 'Why can't we just build all day?' the kids may say. I would respond by having them write a piece speculating how these academics may be helpful to them in that business and beyond.</p>
+          <p>As they began their businesses they would build expertise in certain areas of curiosity to them. They would crush this, of course, but as they begin to reach out to experts and get to know them, maybe they would fall into the trap of the impostor stereotype. From there I would have them write about values in their life outside of school and success, helping them to affirm their worth from pursuits other than money and school.</p>
+          <p>(Belonging: Walton &amp; Cohen 2011, <em>Science</em> — halved the Black–White GPA gap over three years, on a sample of 92 students at one selective university. Utility value: Hulleman &amp; Harackiewicz 2009, <em>Science</em>, 262 students across 30 high school science classrooms — the gains landed on students with low expectations of success and not on the rest. Values affirmation: Cohen, Garcia, Apfel &amp; Master 2006 and Cohen et al. 2009, both <em>Science</em>. The honest number for that last one is the meta-analysis — Wu, Spreckelsen &amp; Cohen 2021, <em>Journal of Social Issues</em>, 58 studies: Hedges' g = 0.15 for students under identity threat, and g = 0.01 for everyone else. Hanselman, Rozek, Grigg &amp; Borman 2017 ran a large-scale replication in the same setting and found null effects. So: small, real, and only for the people it is aimed at.)</p>
+        </section>
+        <section id="3-stress-arousal-reappraisal" class="rh-section">
+          <h2>3. Stress Arousal Reappraisal <span class="rh-section__date">~0.23 SD</span></h2>
+          <p>Stress arousal reappraisal is a technique used to reframe nervousness, fear, and arousal before endeavors, where the student receives a note or advice that their up-regulation is setting them up for success because it mobilizes resources to their brain and body to be successful.</p>
+          <p>This showed a 0.23 SD increase in performance and less perceived anxiety about the endeavor, in a study by Jamieson on community college math students who received either a note to ignore test stress or a note re-appraising it.</p>
+          <p>I shared this approach with a friend named Grace recently. She was a professional soccer player in Europe before moving to NY to change some things personally and go into a PhD program. She is very competitive. I noticed she did not play board games, and would often be nervous even before pickup soccer despite her prowess, so I asked about it. &quot;Are you nervous?&quot; &quot;Yes! I get so nervous and antsy before anything, even if I know it doesn't really matter.&quot; So I, based on this approach, asked, &quot;What if that's just your body getting ready? More oxygen to the brain, energy to your muscles — you just prepare really well because you care?&quot; She seemed to feel better, and her anxiety loosened.</p>
+          <p>(d = 0.23 from this meta-analysis: <em>Scientific Reports</em> 2024, a pooled analysis of randomized controlled trials on stress arousal reappraisal and stress-is-enhancing mindsets. The community college study itself is Jamieson, Peters, Greenwood &amp; Altose 2016, <em>Social Psychological and Personality Science</em>, 93 students across five semesters — the 0.23 is the pooled figure across the literature, not that one study's result.)</p>
+        </section>
+        <section id="4-implementation-intentions" class="rh-section">
+          <h2>4. Implementation Intentions <span class="rh-section__date">~0.65 SD</span></h2>
+          <p>Implementation intentions are setting up if-then statements through writing to cover ambiguous moments. For example, if you finish brushing your teeth in the evening, then you go to begin reading your book. If you finish reading a chapter in your book, then you turn off the light and go to sleep. Through many different studies, mostly outside of the classroom, this showed a 0.65 SD increase in adherence to one's intentions.</p>
+          <p>Every time I close my computer I am greeted with the question &quot;What is your intention?&quot; This allows me to set up exactly the if-thens I need to stay focused and on task, and embed the question into my life outside. As an example: IF I go to the library, THEN I work for 2 hours straight with only 5 minute breaks to reset as needed.</p>
+          <p>(d = 0.65 from this meta-analysis: Gollwitzer &amp; Sheeran 2006, <em>Advances in Experimental Social Psychology</em>, pooling 94 independent tests. It is the largest effect size in this whole write-up, and the one with the least to do with a classroom.)</p>
+        </section>
+        <section id="5-re-attribution-training" class="rh-section">
+          <h2>5. Re-Attribution Training <span class="rh-section__date">a treatment literature</span></h2>
+          <p>After hard losses, or pain, people attribute those occurrences to something, whether it's practice, or traits, or external factors. This training came from literature that showed how to help people who attributed painful occurrences to an absolute about themselves, like &quot;I am bad at soccer&quot; or &quot;I'm unathletic.&quot; In this study they were coached to re-attribute the pain to something within their control, like &quot;I haven't practiced enough&quot; or &quot;I haven't worked out enough,&quot; therefore giving them a path forward to prevent the pain in the future. Sometimes the issue is effort, but more often the issue is strategy — i.e. a soccer player practicing over and over with bad form needs technique training rather than more training.</p>
+          <p>I take this re-attribution training to the maximum. I find a way to understand my possible effects on everything, including but not limited to: my energy over that week wasn't good enough, I should have smiled a little longer, I could have asked that question with a different tone, or any other manner of stretching it requires to find a way to improve. Simply put, fault is a tool used to improve by those that will not lose.</p>
+          <p>As an example, I wrote a book and made 3 other projects to apply to Alpha School. But when I cold emailed the founder to get a shot at applying, she told me I still needed to go through their hiring site, which denies me without giving me a chance due to not having a degree. While I certainly did a lot of work to take a shot at working there, I found fault in that I could have put out a little better energy into the world while I was waiting, and I could have asked a better question in my email, like &quot;What would have to happen?&quot; I attribute it to <em>I didn't do enough</em>, or <em>I didn't take the right approach</em>, rather than <em>I am not enough</em>, or <em>because I don't have a degree I will always lose</em>.</p>
+          <p>(No single pooled effect size for this one — attributional retraining is a treatment literature rather than one procedure, and the reviews report it by outcome rather than as one number. The foundations are Wilson &amp; Linville 1982, <em>Journal of Personality and Social Psychology</em>, and the review is Haynes, Perry, Stupnisky &amp; Daniels 2009, <em>Higher Education: Handbook of Theory and Research</em>, Vol. 24. Same situation as Cognitive Load Theory in my learning science write-up: a framework with real evidence under it and no one headline number.)</p>
+        </section>
+        <section id="6-guided-mastery" class="rh-section">
+          <h2>6. Guided Mastery <span class="rh-section__date">Bandura 1969</span></h2>
+          <p>A week ago Steve swore he was deathly afraid of snakes and would never ever touch one. He avoided that whole section of the zoo and jumped at sticks on the sidewalk that looked like a snake. Then his therapist went through a guided mastery approach in just 3 hours with him. First the therapist showed himself holding the snake, then invited Steve to watch it through the glass. After that, Steve touched it with gloves on, before finally letting it slither across his lap.</p>
+          <p>In studies using this process, it showed significant improvement in performance, as well as people like Steve reporting they were feeling more confident in other parts of their lives. As the follow up continued, the positive effects grew.</p>
+          <p>I used to be afraid of medical needles. I had seen my mom in the hospital with needles in her arm and, since feeling overwhelmed by that, had developed a fear of them. Through careful practice of being around them, not rushing vaccinations, and breathing, I found my way to even getting my own blood drawn alone.</p>
+          <p>(Steve is my own illustration, not a case from the paper. The real study is Bandura, Blanchard &amp; Ritter 1969, <em>Journal of Personality and Social Psychology</em> — guided participant modeling beat both symbolic modeling and desensitization on snake phobia, and the gains generalized to situations that had nothing to do with snakes. That generalization is the interesting part, and it is where Bandura's self-efficacy theory came from.)</p>
+        </section>
+        <section id="7-positive-welcoming" class="rh-section">
+          <h2>7. Positive Welcoming <span class="rh-section__date">d ~0.93 / ~0.87</span></h2>
+          <p>You ever see those videos of teachers greeting kids at the door with dance moves or hugs, high fives or pushups? Well, it's proven that greeting students by name with just a positive statement, let alone dance moves, improves students' behavior and outcomes significantly. In a study in the <em>Journal of Positive Behavior Interventions</em>, it showed that with positive greetings at the door, engaged time rose 20 percentage points and disruptive behavior dropped 71%.</p>
+          <p>Said concisely, welcoming kids welcomes in more engagement and better behavior.</p>
+          <p>Personally I do this constantly, because of the book <em>How to Win Friends and Influence People</em>, on top of common sense. Names are the most magical words to people, and so are positive compliments. Whether it's someone on the street or my housemates (I have 24), I greet them with their name and something awesome about them often.</p>
+          <p>(d = 0.93 on engagement and d = 0.87 on disruption, from this study: Cook, Fiat, Larson, Daikos, Slemrod, Holland, Thayer &amp; Renshaw 2018, <em>Journal of Positive Behavior Interventions</em>, 203 students across 10 classrooms. The raw numbers: academic engaged time went 58.75% → 79.70%, and disruptive behavior went 13.68% → 4.13%. That drop is 9.55 percentage points in absolute terms, which is a 70% cut in relative terms — both are the same fact, and the relative one is the one people quote.)</p>
+        </section>
+        <section id="8-coaching-training-regulation-and-interventions" class="rh-section">
+          <h2>8. Coaching Training, Regulation and Interventions <span class="rh-section__date">26% → 5% dropout</span></h2>
+          <p>The caveat to this is that it is a bundle of techniques, much like Direct Instruction in my learning sciences summary. However, it shows a significant change to youth behavior and illustrates well the potential of combining motivational techniques.</p>
+          <p>This study was performed with kids on Little League baseball teams. Kids with the same win-loss record were either given a coach who had a 2 hour training on emotional regulation, giving technical feedback instead of frustration, and reinforcing effort; the other group was given no training. The difference was stark: 26% of the kids who got the coaches without training quit, and only 5% quit if their coach was trained.</p>
+          <p>I spent a year working at the Boys and Girls Club of Bellevue in Washington State. There I was in charge of a class of 30 kids, and often multiple classes. Within a few weeks of beginning, kids were complaining to their teachers that they weren't in my class. When we would go out to play on the playground I would run sports games or playground games, but there was an interesting finding I had. The levels of participation in my games vs the games of my colleagues were often different. In some part it was because I forbade technology, but in another part I believe it was because, rather than reinforcing results or being frustrated, I worked with the kids to find the fun for them, based on training I had prior to my time at the Boys and Girls Club.</p>
+          <p>(26% → 5% dropout, from this study: Barnett, Smoll &amp; Smith 1992, <em>The Sport Psychologist</em>. One detail worth keeping straight: they did not match the teams on record. They checked afterwards and found that won-lost percentage did not differ between the kids who quit and the kids who came back, which is what rules out &quot;they quit because they lost.&quot;)</p>
+        </section>
+        <section id="the-theories-underneath" class="rh-section">
+          <h2>The theories underneath <span class="rh-section__date">three frameworks</span></h2>
+          <p>While these techniques are effective and make significant improvements to students' performance, I also find it important to understand some of the theories behind how these techniques are developed.</p>
+          <p>First, a popular one called Self-Determination Theory, which outlines what a person needs to feel internally motivated. It is structured into three requirements: <strong>Autonomy</strong>, meaning power over making their own decisions; <strong>Competence</strong>, a real feeling that they are improving and accomplishing hard things; and <strong>Relatedness</strong>, defined as a connectedness to one's peers.</p>
+          <p>Self-Determination Theory, while not having a specific effect size, has thousands of correlational studies showing its bolstering of performance.</p>
+          <p>The next is school connectedness, which means the student feels they have at least one adult at school who cares about them and would notice if they don't show up. While this doesn't have an effect size, it is shown across many studies that the students with higher attendance, performance, happiness, etc., have high connectedness within the school.</p>
+          <p>What about other students? What in the culture do we want to optimize for there? This comes from a David Yeager study that found peer norms — what is normal to your peers — as predictors of acceptance of growth mindset. Basically, make it socially good to do the desired behavior for your kids and they'll do it and improve on it.</p>
+          <p>Why does any of this matter to me? Summarization is depth of knowledge level 2 and a proven way to learn. More importantly, I find raising the generation to be what heals me and helps the world most. It is my life's work, and so I am committed to learning about it.</p>
+          <p>(Self-Determination Theory: Deci &amp; Ryan, developed from 1985 onward — a theory with a very large correlational literature and no single effect size, which is why I have not given one. School connectedness: Resnick et al. 1997, <em>JAMA</em>, from the Add Health study of over 12,000 adolescents — again correlational, so read it as &quot;these travel together,&quot; not &quot;this causes that.&quot; Peer norms: Yeager et al. 2019, <em>Nature</em>, the National Study of Learning Mindsets — 12,490 students across 65 schools, where the mindset intervention worked in schools whose peer norms supported it and did not in schools where they didn't.)</p>
+        </section>
+        </div>
+
+        <a href="/writing/#rabbit-holes" class="rh-back">← Back to Writing</a>
+      </article>
+
+    </div>
+  </main>
+
+  <script>
+    // ── Nav (menu open/close), copy of the pattern used across the site
+    (function() {
+      var btn = document.getElementById('menu-btn');
+      var nav = document.getElementById('site-nav');
+      var close = document.getElementById('nav-close');
+      if (btn && nav) {
+        btn.addEventListener('click', function() {
+          var open = nav.classList.toggle('is-open');
+          btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+      }
+      if (close && nav) {
+        close.addEventListener('click', function() {
+          nav.classList.remove('is-open');
+          btn && btn.setAttribute('aria-expanded', 'false');
+        });
+      }
+    })();
+
+    // ── Timeline highlight: mark the section whose heading has most recently
+    //    crossed a "read line" 30% down from the top of the viewport. Simple
+    //    scroll listener beats IntersectionObserver here because a long
+    //    section keeps intersecting even after the reader has moved past.
+    (function() {
+      var sections = Array.from(document.querySelectorAll('.rh-section'));
+      var itemMap = new Map();
+      document.querySelectorAll('.rh-timeline__item').forEach(function(it) {
+        itemMap.set(it.dataset.section, it);
+      });
+      if (!sections.length || !itemMap.size) return;
+
+      var lastActive = null;
+      function update() {
+        var readLine = window.innerHeight * 0.3;
+        var active = sections[0];
+        for (var i = 0; i < sections.length; i++) {
+          if (sections[i].getBoundingClientRect().top <= readLine) active = sections[i];
+          else break;
+        }
+        if (active === lastActive) return;
+        lastActive = active;
+        itemMap.forEach(function(it) { it.classList.remove('is-active'); });
+        var el = itemMap.get(active.id);
+        if (el) {
+          el.classList.add('is-active');
+          // On mobile the timeline is a horizontal chip strip at the top of the
+          // page. Keep the active chip centered by scrolling ONLY the strip
+          // horizontally — never el.scrollIntoView(), which also scrolls the
+          // window vertically and yanks the reader back up to the top.
+          if (window.innerWidth <= 900) {
+            var strip = el.closest('.rh-timeline');
+            if (strip && strip.scrollWidth > strip.clientWidth) {
+              strip.scrollTo({
+                left: el.offsetLeft - strip.clientWidth / 2 + el.offsetWidth / 2,
+                behavior: 'smooth'
+              });
+            }
+          }
+        }
+      }
+      var ticking = false;
+      window.addEventListener('scroll', function() {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(function() { update(); ticking = false; });
+      }, { passive: true });
+      update();
+    })();
+  </script>
+</body>
+</html>
