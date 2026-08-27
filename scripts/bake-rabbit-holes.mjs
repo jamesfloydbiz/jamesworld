@@ -42,6 +42,23 @@ const META = {
       { name: 'Myths',                                        date: '' },
     ],
   },
+  'coaching-and-motivation': {
+    title: 'What Actually Motivates a Kid?',
+    subtitle: 'Eight coaching and motivation techniques, the three theories underneath them, and the effect size behind each — with what every one looked like in my own life.',
+    reading: '~11 min',
+    sections: [
+      { name: 'In the spirit of learning',                        date: 'eight techniques' },
+      { name: '1. Wise Feedback',                                 date: '17% → 71%' },
+      { name: '2. Saying is Believing interventions',             date: 'three interventions' },
+      { name: '3. Stress Arousal Reappraisal',                    date: '~0.23 SD' },
+      { name: '4. Implementation Intentions',                     date: '~0.65 SD' },
+      { name: '5. Re-Attribution Training',                       date: 'a treatment literature' },
+      { name: '6. Guided Mastery',                                date: 'Bandura 1969' },
+      { name: '7. Positive Welcoming',                            date: 'd ~0.93 / ~0.87' },
+      { name: '8. Coaching Training, Regulation and Interventions', date: '26% → 5% dropout' },
+      { name: 'The theories underneath',                          date: 'three frameworks' },
+    ],
+  },
   'learning-science': {
     title: 'Is Learning 2x in 2 Hours Possible?',
     subtitle: 'Eight science-backed techniques, one bundle, and one theory — with the evidence, and what each looked like in my own life.',
