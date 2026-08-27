@@ -148,8 +148,17 @@
   .secthead .line{flex:1; height:1px; background:var(--hair);}
 
   .cards{display:grid; gap:16px;}
-  @media (min-width:720px){ .extras{grid-template-columns:1fr 1fr;} }
+  @media (min-width:620px){ .extras{grid-template-columns:1fr 1fr;} }
   .proj.extra{min-height:0; animation:none;}
+  /* Writing cards. Deliberately lighter than a project card — these are
+     reading, not the work, and they should not compete with it. */
+  .wcard{display:block; text-decoration:none; color:inherit;
+    border:1px solid var(--hair); border-radius:9px; padding:15px 16px;
+    transition:border-color .2s, transform .2s, background .2s;}
+  .wcard:hover{border-color:var(--alpha-cyan); transform:translateY(-2px);
+    background:rgba(255,255,255,.025);}
+  .wcard h3{font-size:15.5px; line-height:1.3; font-weight:600; margin:0 0 6px; color:#fff;}
+  .wcard p{font-size:13px; line-height:1.55; color:var(--dim); font-weight:300; margin:0;}
   @media (min-width:860px){ .cards{grid-template-columns:repeat(3,1fr);} }
 
   .proj{
@@ -323,7 +332,7 @@
   </section>
 
   <section id="extra">
-    <div class="secthead"><h2>Extra credit</h2><div class="line"></div></div>
+    <div class="secthead"><h2>Writing</h2><div class="line"></div></div>
     <div class="cards extras" id="extras"></div>
   </section>
 
@@ -388,32 +397,30 @@ const PROJECTS = [
 ];
 
 
-/* Not gated. These are reading, not reveals — anyone who lands here before
-   the video finishes can still pick them up. */
+/* Not gated. These are reading, not reveals — anyone who lands here before the
+   video finishes can still pick them up. Title and subtitle only, and the
+   subtitles are the essays' own, copied from scripts/bake-rabbit-holes.mjs so
+   the card and the piece it opens cannot describe themselves differently. */
 const EXTRAS = [
   { title: 'Is Learning 2x in 2 Hours Possible?',
-    blurb: 'Alpha claims students learn twice as much in two hours a day. Marketing, or possible? Eight learning-science techniques with the effect sizes behind them, a bundle that combines them, and what each looked like in my own life.',
-    cta: 'Read it', href: '/writing/rabbit-holes/learning-science/' },
+    sub: 'Eight science-backed techniques, one bundle, and one theory — with the evidence, and what each looked like in my own life.',
+    href: '/writing/rabbit-holes/learning-science/' },
   { title: 'The Story of Maria Montessori',
-    blurb: 'She got into medical school by going over the professors\u2019 heads, found her first insight watching children play with crumbs off an asylum floor, and had her schools shut down by Mussolini. The woman who worked out that children will teach themselves if you build them somewhere to do it.',
-    cta: 'Read it', href: '/writing/rabbit-holes/maria-montessori/' },
+    sub: 'One of the first Italian women to be a doctor, education pioneer, defied Mussolini.',
+    href: '/writing/rabbit-holes/maria-montessori/' },
   { title: 'How to be the Pied Piper',
-    blurb: 'The other half of the learning problem. Techniques get learning into a kid; these get the kid to show up, keep going, and not quit. Eight of them, the effect size behind each, and what every one looked like in my own life.',
-    cta: 'Read it', href: '/writing/rabbit-holes/coaching-and-motivation/' },
+    sub: 'A summary of ways to motivate kids.',
+    href: '/writing/rabbit-holes/coaching-and-motivation/' },
   { title: 'A History of Education',
-    blurb: 'From play and imitation to Prussian classrooms — how schooling came to be the shape it is. Worth knowing before you argue that shape is not a law of nature.',
-    cta: 'Read it', href: '/writing/rabbit-holes/history-of-education/' },
+    sub: 'From play and imitation to Prussian classrooms — how schooling came to be.',
+    href: '/writing/rabbit-holes/history-of-education/' },
 ];
 
 document.getElementById('extras').innerHTML = EXTRAS.map(x => `
-  <article class="proj unlocked extra">
-    <div class="proj-body">
-      <div class="proj-n">Extra</div>
-      <h3>${x.title}</h3>
-      <p>${x.blurb}</p>
-      <a class="go" href="${x.href}" target="_blank" rel="noopener">${x.cta} <span>&rarr;</span></a>
-    </div>
-  </article>`).join('');
+  <a class="wcard" href="${x.href}" target="_blank" rel="noopener">
+    <h3>${x.title}</h3>
+    <p>${x.sub}</p>
+  </a>`).join('');
 
 const REFS = [
   // The public pitch post drew sixteen comments. These are the ones that
