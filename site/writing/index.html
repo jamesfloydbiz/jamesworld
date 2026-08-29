@@ -554,7 +554,7 @@
             LinkedIn Posts<span class="count" id="posts-count"></span>
           </button>
           <button class="writing-tab" type="button" role="tab" data-tab="rabbit-holes" aria-selected="false" id="rabbit-holes-tab">
-            Rabbit Holes<span class="count">· 3</span>
+            Rabbit Holes<span class="count" id="rh-count"></span>
           </button>
         </div>
 
@@ -5041,6 +5041,11 @@ At the least I will write my story in my own font, and have a life not gaunt.</d
     document.getElementById('letters-count').textContent = '· ' + catCounts.letter;
     document.getElementById('poems-count').textContent = '· ' + poemCount;
     document.getElementById('posts-count').textContent = '· ' + postsTotal;
+    // Counted from the shelf, not typed in. This one was hardcoded to 3 and
+    // was wrong the moment a fourth essay shipped; every other tab already
+    // derived its number, which is why only this one drifted.
+    var rhCountEl = document.getElementById('rh-count');
+    if (rhCountEl && rhShelf) rhCountEl.textContent = '· ' + rhShelf.querySelectorAll('.rh-shelf__card').length;
     var liTotalLbl = document.getElementById('li-total');
     if (liTotalLbl) liTotalLbl.textContent = '(' + postsTotal + ')';
 
