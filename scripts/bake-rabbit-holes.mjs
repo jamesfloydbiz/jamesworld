@@ -42,6 +42,24 @@ const META = {
       { name: 'Myths',                                        date: '' },
     ],
   },
+  'montessori-findings': {
+    title: 'The Findings of Maria Montessori',
+    subtitle: 'Fifty years of watching children, and what she concluded from it.',
+    reading: '~10 min',
+    sections: [
+      { name: 'What did she find?',      date: 'the question' },
+      { name: 'The four planes',         date: '0–6, 6–12, 12–18, 18–24' },
+      { name: 'Auto-education',          date: 'the girl who did it 42 times' },
+      { name: 'The absorbent mind',      date: 'the sensitive periods' },
+      { name: 'Normalization',           date: 'her most contested claim' },
+      { name: 'The prepared environment', date: 'real tools, child-sized' },
+      { name: 'How a lesson works',      date: 'three hours, three steps' },
+      { name: 'What each plane needs',   date: 'the prescriptions' },
+      { name: 'The five great stories',  date: 'the second plane' },
+      { name: 'Erdkinder',               date: 'the third plane' },
+      { name: 'Notes on the record',     date: 'sources' },
+    ],
+  },
   'maria-montessori': {
     title: 'The Story of Maria Montessori',
     subtitle: 'One of the first Italian women to be a doctor, education pioneer, defied Mussolini.',
@@ -186,6 +204,28 @@ function renderBlock(block) {
       `<img src="${escAttr(src)}" alt="${escAttr(alt)}" loading="lazy" decoding="async">` +
       (caption ? `<figcaption>${emph(esc(caption))}</figcaption>` : '') +
       '</figure>';
+  }
+
+  /* A pull quote: every line of the block starting with "> ". */
+  if (lines.length && lines.every((l) => /^>\s?/.test(l))) {
+    const body = lines.map((l) => l.replace(/^>\s?/, '')).join(' ').replace(/\s+/g, ' ').trim();
+    return `<blockquote class="rh-quote">${emph(esc(body))}</blockquote>`;
+  }
+
+  /* A markdown table: every line pipe-delimited, with the second line the
+     header rule. Wrapped in an overflow-x container so a wide table scrolls
+     inside itself on a phone rather than pushing the whole article sideways. */
+  if (lines.length > 2 &&
+      lines.every((l) => /^\s*\|.*\|\s*$/.test(l)) &&
+      /^[\s|:-]+$/.test(lines[1])) {
+    const cells = (l) => l.trim().replace(/^\||\|$/g, '').split('|').map((c) => c.trim());
+    const head = cells(lines[0]);
+    const body = lines.slice(2).map(cells);
+    return '<div class="rh-tablewrap"><table class="rh-table"><thead><tr>' +
+      head.map((h) => `<th>${emph(esc(h))}</th>`).join('') +
+      '</tr></thead><tbody>' +
+      body.map((r) => '<tr>' + r.map((c) => `<td>${emph(esc(c))}</td>`).join('') + '</tr>').join('') +
+      '</tbody></table></div>';
   }
 
   const bulletLines = lines.filter((l) => /^-\s+/.test(l));
@@ -361,7 +401,7 @@ function pageTemplate(slug, meta, timelineItems, articleHtml) {
     .rh-timeline__item.is-active .rh-timeline__date { color: var(--fg-55); }
 
     /* Article (right column) */
-    .rh-article { max-width: 680px; }
+    .rh-article { max-width: 680px; min-width: 0; }
     .rh-article__masthead {
       margin-bottom: 48px;
       padding-bottom: 24px;
@@ -427,6 +467,45 @@ function pageTemplate(slug, meta, timelineItems, articleHtml) {
       color: var(--fg-80);
       margin: 0 0 1rem 0;
     }
+    .rh-quote {
+      margin: 1.8rem 0;
+      padding: 0 0 0 20px;
+      border-left: 2px solid var(--fg-45);
+      font-family: 'Lora', Georgia, serif;
+      font-size: 1.18rem;
+      line-height: 1.65;
+      font-style: italic;
+      color: var(--fg);
+    }
+    .rh-tablewrap { overflow-x: auto; margin: 1.4rem 0; -webkit-overflow-scrolling: touch; }
+    .rh-table {
+      border-collapse: collapse;
+      width: 100%;
+      min-width: 420px;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      line-height: 1.55;
+    }
+    .rh-table th {
+      text-align: left;
+      font-weight: 600;
+      color: var(--fg-55);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 0.66rem;
+      padding: 0 14px 8px 0;
+      border-bottom: 1px solid var(--fg-15);
+      white-space: nowrap;
+    }
+    .rh-table td {
+      padding: 10px 14px 10px 0;
+      border-bottom: 1px solid var(--fg-15);
+      color: var(--fg-80);
+      vertical-align: top;
+    }
+    .rh-table tr:last-child td { border-bottom: 0; }
+    .rh-table td:first-child { color: var(--fg); font-weight: 600; white-space: nowrap; }
+
     .rh-figure {
       margin: 1.6rem 0;
     }
@@ -481,7 +560,11 @@ function pageTemplate(slug, meta, timelineItems, articleHtml) {
     /* Mobile: timeline collapses to a horizontal chip row above the article */
     @media (max-width: 900px) {
       .rh-shell {
-        grid-template-columns: 1fr;
+        /* minmax(0, 1fr), not 1fr. A bare 1fr is minmax(AUTO, 1fr), and an
+           auto minimum refuses to shrink below its content — so the table's
+           420px min-width grew this column to 420 inside a 320px phone and
+           an ancestor quietly clipped the right-hand column off. */
+        grid-template-columns: minmax(0, 1fr);
         gap: 24px;
       }
       .rh-timeline {

@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Findings of Maria Montessori — Rabbit Hole — James Floyd</title>
+  <meta name="description" content="Fifty years of watching children, and what she concluded from it.">
+  <link rel="canonical" href="https://jamesfloyds.world/writing/rabbit-holes/montessori-findings/">
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="The Findings of Maria Montessori">
+  <meta property="og:description" content="Fifty years of watching children, and what she concluded from it.">
+  <meta property="og:url" content="https://jamesfloyds.world/writing/rabbit-holes/montessori-findings/">
+
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=DM+Mono:wght@300;400&family=Lora:ital,wght@0,400;0,500;1,400&family=Space+Mono:wght@400;700&display=swap">
+  <link rel="stylesheet" href="/css/site.css">
+
+  <style>
+    .rh-shell {
+      display: grid;
+      grid-template-columns: 220px minmax(0, 720px);
+      gap: 56px;
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 0 clamp(16px, 4vw, 24px);
+    }
+
+    /* Timeline (left column, sticky) */
+    .rh-timeline {
+      position: sticky;
+      top: 96px;
+      align-self: start;
+      max-height: calc(100vh - 120px);
+      max-height: calc(100dvh - 120px);
+      overflow-y: auto;
+      padding-right: 8px;
+      scrollbar-width: thin;
+    }
+    .rh-timeline__list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      position: relative;
+    }
+    .rh-timeline__list::before {
+      content: '';
+      position: absolute;
+      left: 4px;
+      top: 6px;
+      bottom: 6px;
+      width: 1px;
+      background: var(--fg-15);
+    }
+    .rh-timeline__item {
+      position: relative;
+      padding: 0 0 12px 22px;
+    }
+    .rh-timeline__item::before {
+      content: '';
+      position: absolute;
+      left: 1px;
+      top: 6px;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--bg, #000);
+      border: 1px solid var(--fg-35);
+      box-sizing: border-box;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .rh-timeline__item.is-active::before {
+      background: var(--fg);
+      border-color: var(--fg);
+    }
+    .rh-timeline__link {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--fg-45);
+      text-decoration: none;
+      line-height: 1.5;
+      transition: color 0.2s;
+    }
+    .rh-timeline__link:hover { color: var(--fg-80); }
+    .rh-timeline__item.is-active .rh-timeline__link { color: var(--fg); }
+    .rh-timeline__name { display: block; }
+    .rh-timeline__date {
+      display: block;
+      font-size: 0.62rem;
+      letter-spacing: 0.05em;
+      color: var(--fg-30);
+      text-transform: none;
+      margin-top: 2px;
+    }
+    .rh-timeline__item.is-active .rh-timeline__date { color: var(--fg-55); }
+
+    /* Article (right column) */
+    .rh-article { max-width: 680px; min-width: 0; }
+    .rh-article__masthead {
+      margin-bottom: 48px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--fg-15);
+    }
+    .rh-article__eyebrow {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--fg-55);
+      margin-bottom: 12px;
+    }
+    .rh-article__title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 700;
+      font-size: clamp(2rem, 5vw, 3rem);
+      line-height: 1.15;
+      margin: 0 0 12px 0;
+      color: var(--fg);
+    }
+    .rh-article__subtitle {
+      font-family: 'Lora', Georgia, serif;
+      font-style: italic;
+      font-size: 1.05rem;
+      line-height: 1.5;
+      color: var(--fg-70);
+      margin: 0 0 8px 0;
+    }
+    .rh-article__meta {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--fg-45);
+    }
+
+    .rh-section { margin-bottom: 40px; scroll-margin-top: 96px; }
+    .rh-section h2 {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--fg-80);
+      margin: 0 0 20px 0;
+      padding-top: 16px;
+      border-top: 1px solid var(--fg-15);
+    }
+    .rh-section__date {
+      display: inline-block;
+      margin-left: 10px;
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      color: var(--fg-45);
+      text-transform: none;
+      font-weight: normal;
+    }
+    .rh-section p {
+      font-family: 'Lora', Georgia, serif;
+      font-size: 1.02rem;
+      line-height: 1.8;
+      color: var(--fg-80);
+      margin: 0 0 1rem 0;
+    }
+    .rh-quote {
+      margin: 1.8rem 0;
+      padding: 0 0 0 20px;
+      border-left: 2px solid var(--fg-45);
+      font-family: 'Lora', Georgia, serif;
+      font-size: 1.18rem;
+      line-height: 1.65;
+      font-style: italic;
+      color: var(--fg);
+    }
+    .rh-tablewrap { overflow-x: auto; margin: 1.4rem 0; -webkit-overflow-scrolling: touch; }
+    .rh-table {
+      border-collapse: collapse;
+      width: 100%;
+      min-width: 420px;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      line-height: 1.55;
+    }
+    .rh-table th {
+      text-align: left;
+      font-weight: 600;
+      color: var(--fg-55);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 0.66rem;
+      padding: 0 14px 8px 0;
+      border-bottom: 1px solid var(--fg-15);
+      white-space: nowrap;
+    }
+    .rh-table td {
+      padding: 10px 14px 10px 0;
+      border-bottom: 1px solid var(--fg-15);
+      color: var(--fg-80);
+      vertical-align: top;
+    }
+    .rh-table tr:last-child td { border-bottom: 0; }
+    .rh-table td:first-child { color: var(--fg); font-weight: 600; white-space: nowrap; }
+
+    .rh-figure {
+      margin: 1.6rem 0;
+    }
+    .rh-figure img {
+      display: block;
+      /* natural size, never upscaled — these are 1914 halftones and the
+         portrait is only 312px wide, so width:100% blew it up to 680 and
+         turned it to mush. max-width still shrinks them on a phone. */
+      max-width: 100%;
+      height: auto;
+      margin: 0 auto;
+      border-radius: 3px;
+      border: 1px solid var(--fg-15);
+      /* these are 1914 halftones — a warm, slightly lifted rendering suits
+         them better than pinning them to a pure-black page */
+      filter: sepia(0.12) contrast(1.02);
+    }
+    .rh-figure figcaption {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      line-height: 1.6;
+      letter-spacing: 0.02em;
+      color: var(--fg-55);
+      margin-top: 10px;
+    }
+    .rh-section .rh-list {
+      font-family: 'Lora', Georgia, serif;
+      font-size: 1rem;
+      line-height: 1.75;
+      color: var(--fg-80);
+      padding-left: 20px;
+      margin: 0 0 1rem 0;
+    }
+    .rh-section .rh-list li { margin-bottom: 6px; }
+
+    .rh-back {
+      display: inline-block;
+      margin: 48px 0 24px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--fg-55);
+      text-decoration: none;
+    }
+    .rh-back:hover { color: var(--fg); }
+    .rh-back--top {
+      margin: 0 0 24px 0;
+      grid-column: 1 / -1;
+    }
+
+    /* Mobile: timeline collapses to a horizontal chip row above the article */
+    @media (max-width: 900px) {
+      .rh-shell {
+        /* minmax(0, 1fr), not 1fr. A bare 1fr is minmax(AUTO, 1fr), and an
+           auto minimum refuses to shrink below its content — so the table's
+           420px min-width grew this column to 420 inside a 320px phone and
+           an ancestor quietly clipped the right-hand column off. */
+        grid-template-columns: minmax(0, 1fr);
+        gap: 24px;
+      }
+      .rh-timeline {
+        position: static;
+        max-height: none;
+        overflow-x: auto;
+        overflow-y: visible;
+        padding-right: 0;
+        padding-bottom: 8px;
+        border-bottom: 1px solid var(--fg-15);
+        white-space: nowrap;
+      }
+      .rh-timeline__list { display: inline-flex; gap: 4px; }
+      .rh-timeline__list::before { display: none; }
+      .rh-timeline__item {
+        display: inline-block;
+        padding: 6px 10px;
+        border: 1px solid var(--fg-15);
+        border-radius: 999px;
+        flex-shrink: 0;
+      }
+      .rh-timeline__item::before { display: none; }
+      .rh-timeline__item.is-active {
+        background: var(--fg-10, rgba(255,255,255,0.08));
+        border-color: var(--fg-35);
+      }
+      .rh-timeline__link { font-size: 0.68rem; }
+      .rh-timeline__date { display: none; }
+      .rh-article__title { font-size: 1.75rem; }
+      .rh-section__date { display: block; margin-left: 0; margin-top: 4px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="site-header anim-slide-dn">
+    <a href="/" class="site-header__logo" aria-label="Return to home"><img src="/logo.svg" alt="JF"></a>
+    <button class="site-header__menu-btn" id="menu-btn" aria-expanded="false" aria-controls="site-nav">Menu</button>
+  </header>
+
+  <nav class="site-nav" id="site-nav" aria-label="Main navigation">
+    <ul class="site-nav__list">
+      <li class="site-nav__item"><a href="/sonder/" class="site-nav__link">Sonder Series</a></li>
+      <li class="site-nav__item"><a href="/portfolio/" class="site-nav__link">Portfolio</a></li>
+      <li class="site-nav__item" data-has-sub>
+        <a href="/projects/" class="site-nav__link">Projects</a>
+        <div class="site-nav__sub">
+          <a href="/portfolio/" class="site-nav__sub-link">Portfolio</a>
+          <a href="/resume/" class="site-nav__sub-link">Resume</a>
+          <a href="/references/" class="site-nav__sub-link">References</a>
+        </div>
+      </li>
+      <li class="site-nav__item" data-has-sub>
+        <a href="/content/" class="site-nav__link">Content</a>
+        <div class="site-nav__sub">
+          <a href="/writing/" class="site-nav__sub-link">Writing</a>
+          <a href="/poems/" class="site-nav__sub-link">Poems</a>
+          <a href="/pictures/" class="site-nav__sub-link">Memories</a>
+        </div>
+      </li>
+      <li class="site-nav__item"><a href="/network/" class="site-nav__link">Network</a></li>
+      <li class="site-nav__item"><a href="/blueprints/" class="site-nav__link">Blueprints</a></li>
+      <li class="site-nav__item" style="margin-top:24px;"><a href="/" class="site-nav__back">Back to Gallery</a></li>
+    </ul>
+    <button class="site-nav__close" id="nav-close">Close</button>
+  </nav>
+
+  <main class="page">
+    <div class="rh-shell anim-fade-up" style="animation-delay:0.3s">
+
+      <a href="/writing/#rabbit-holes" class="rh-back rh-back--top">← Back to Writing</a>
+
+      <aside class="rh-timeline" aria-label="Essay timeline">
+        <ol class="rh-timeline__list">
+        <li class="rh-timeline__item is-active" data-section="what-did-she-find">
+          <a class="rh-timeline__link" href="#what-did-she-find">
+            <span class="rh-timeline__name">What did she find?</span>
+            <span class="rh-timeline__date">the question</span>
+          </a>
+        </li>
+        <li class="rh-timeline__item" data-section="the-four-planes">
+          <a class="rh-timeline__link" href="#the-four-planes">
+            <span class="rh-timeline__name">The four planes</span>
+            <span class="rh-timeline__date">0–6, 6–12, 12–18, 18–24</span>
+          </a>
+        </li>
+        <li class="rh-timeline__item" data-section="auto-education">
+          <a class="rh-timeline__link" href="#auto-education">
+            <span class="rh-timeline__name">Auto-education</span>
+            <span class="rh-timeline__date">the girl who did it 42 times</span>
+          </a>
+        </li>
+        <li class="rh-timeline__item" data-section="the-absorbent-mind">
+          <a class="rh-timeline__link" href="#the-absorbent-mind">
+            <span class="rh-timeline__name">The absorbent mind</span>
+            <span class="rh-timeline__date">the sensitive periods</span>
+          </a>
+        </li>
+        <li class="rh-timeline__item" data-section="normalization">
+          <a class="rh-timeline__link" href="#normalization">
+            <span class="rh-timeline__name">Normalization</span>
+            <span class="rh-timeline__date">her most contested claim</span>
+          </a>
+        </li>
+        <li class="rh-timeline__item" data-section="the-prepared-environment">
+          <a class="rh-timeline__link" href="#the-prepared-environment">
+            <span class="rh-timeline__name">The prepared environment</span>
+            <span class="rh-timeline__date">real tools, child-sized</span>
+          </a>
+        </li>
+        <li class="rh-timeline__item" data-section="how-a-lesson-works">
+          <a class="rh-timeline__link" href="#how-a-lesson-works">
+            <span class="rh-timeline__name">How a lesson works</span>
+            <span class="rh-timeline__date">three hours, three steps</span>
+          </a>
+        </li>
+        <li class="rh-timeline__item" data-section="what-each-plane-needs">
+          <a class="rh-timeline__link" href="#what-each-plane-needs">
+            <span class="rh-timeline__name">What each plane needs</span>
+            <span class="rh-timeline__date">the prescriptions</span>
+          </a>
+        </li>
+        <li class="rh-timeline__item" data-section="the-five-great-stories">
+          <a class="rh-timeline__link" href="#the-five-great-stories">
+            <span class="rh-timeline__name">The five great stories</span>
+            <span class="rh-timeline__date">the second plane</span>
+          </a>
+        </li>
+        <li class="rh-timeline__item" data-section="erdkinder">
+          <a class="rh-timeline__link" href="#erdkinder">
+            <span class="rh-timeline__name">Erdkinder</span>
+            <span class="rh-timeline__date">the third plane</span>
+          </a>
+        </li>
+        <li class="rh-timeline__item" data-section="notes-on-the-record">
+          <a class="rh-timeline__link" href="#notes-on-the-record">
+            <span class="rh-timeline__name">Notes on the record</span>
+            <span class="rh-timeline__date">sources</span>
+          </a>
+        </li>
+        </ol>
+      </aside>
+
+      <article class="rh-article">
+        <header class="rh-article__masthead">
+          <span class="rh-article__eyebrow">Rabbit Hole · ~10 min</span>
+          <h1 class="rh-article__title">The Findings of Maria Montessori</h1>
+          <p class="rh-article__subtitle">Fifty years of watching children, and what she concluded from it.</p>
+          <p class="rh-article__meta">by James Floyd</p>
+        </header>
+
+        <div id="rh-readable">
+        <section id="what-did-she-find" class="rh-section">
+          <h2>What did she find? <span class="rh-section__date">the question</span></h2>
+          <p>I wrote over 8 pages about Maria Montessori's story. How she got a special permission slip from the pope to study medicine after being told no, and then went on to use her medical knowledge to grow one of the most used education models while defying Mussolini. However, in that pursuit of understanding the person that was Maria Montessori I was left with the question: what did Maria Montessori <em>find</em>?</p>
+          <p>She spent over 50 years studying and observing children. There must be some insights she gained. So, in the next pages I'll outline Montessori's beliefs and how she came to them, starting first with the periods of development.</p>
+        </section>
+        <section id="the-four-planes" class="rh-section">
+          <h2>The four planes <span class="rh-section__date">0–6, 6–12, 12–18, 18–24</span></h2>
+          <p>Maria believed there were four periods of development: ages 0–6, 6–12, 12–18, and 18–24. She believed that the time between 0–3 and 12–15 were most impactful, as they were the times when the kid was most malleable and creative. More on this later.</p>
+        </section>
+        <section id="auto-education" class="rh-section">
+          <h2>Auto-education <span class="rh-section__date">the girl who did it 42 times</span></h2>
+          <p><strong>Auto-education</strong> — kids can self-direct their own learning and have an internal sense of what, how long, and how to approach different learnings.</p>
+          <p>Maria Montessori was in San Lorenzo at her casa school she had made for kids there. One day she was observing a little girl playing with a set of circular holes and cylinders. The girl was completing the set, resetting it, and going at it again, and seemed intensely concentrated.</p>
+          <p>Maria knew there was a belief that children's attention was fundamentally flitting, that they did not concentrate long on anything let alone enjoy them for that long, and decided to test the girl's concentration and understand it deeper. So she started counting the amount of times the girl completed the set. 3, then 4 times, then 10 times.</p>
+          <p>Maria then asked the kids around her to start singing and dancing loudly, wondering if the girl would give up her task to join them. She didn't even look up. 20 times, 21 times. On and on the girl went, repeating the practice.</p>
+          <p>At one point Maria grabbed the kid and her exercise and lifted them up on top of the table, but the kid kept going unbothered. 33, 34 times.</p>
+          <p>After the 42nd time the girl sat back with a sigh and, as Maria noted, a satisfied and peaceful look on her face. This is what she began to call <strong>polarization of attention</strong>, and from this Maria concluded that the kid's motivation was internal, that kids could concentrate, and that kids had a specific direction or decision towards what they wanted to be learning. This theory, auto-education, she shared around the world along with this story.</p>
+        </section>
+        <section id="the-absorbent-mind" class="rh-section">
+          <h2>The absorbent mind <span class="rh-section__date">the sensitive periods</span></h2>
+          <p><strong>The Absorbent Mind</strong> — Montessori believed that kids not only learn things from their environment, but absorb them, become them. She believed they do this unconsciously ages 0–3 and consciously 3–6. They do this with joy and pleasure rather than effort, and the evidence she cites is language and grammar, as well as her own observations.</p>
+          <p>She concluded that there are <strong>sensitive periods</strong> where the kids are more open and interested in absorbing certain practices and knowledge, and that these close eventually. These periods are: order, movement, small objects, the senses, language, and social behavior.</p>
+          <p>These sensitive periods overlapped, but were roughly observed to follow this:</p>
+          <div class="rh-tablewrap"><table class="rh-table"><thead><tr><th>Sensitive period</th><th>Ages</th><th>What it looks like</th></tr></thead><tbody><tr><td>Order</td><td>0–5, peak at 2</td><td>Everything having its place, routines having their sequence. Maria was particularly outspoken about children needing this.</td></tr><tr><td>Movement</td><td>0–4</td><td>Gross motor movement, and then refinement towards specific actions with purpose.</td></tr><tr><td>Small objects</td><td>1–4</td><td>Intense interest in crumbs, buttons, little bouncy balls.</td></tr><tr><td>Language</td><td>0–6</td><td>Sounds, then words at around a year, then grammar explosions between 2 and 3.</td></tr><tr><td>Refinement of the senses</td><td>2–6</td><td>Sorting, matching, ordering, colour, textures, scents.</td></tr><tr><td>Social behavior</td><td>2.5–6</td><td>Interest in other children, social belonging. The last one to open up.</td></tr></tbody></table></div>
+        </section>
+        <section id="normalization" class="rh-section">
+          <h2>Normalization <span class="rh-section__date">her most contested claim</span></h2>
+          <p>Lastly, one of her most controversial beliefs, and one foreshadowed in her outspokenness about the importance of order to children: <strong>normalization</strong>. To Maria this meant many of the issues adults find with kids are created through adults interrupting and disrupting the kids. That they would normalize through concentration on the tasks they choose, and by observing and learning from their environment. Montessori argued that a satisfied, peaceful, calm state is most normal to kids, and that they misbehave — tantrums, disorder, destruction — simply because of adults' interruptions.</p>
+          <p>Montessori said that there were four factors of normalization:</p>
+          <ul class="rh-list"><li><strong>Love of work</strong> — a spontaneous, joyous approach to tasks.</li><li><strong>Concentration</strong> — this comes from a deliberate environment, with progression.</li><li><strong>Self-discipline</strong> — Maria speaks about this as perseverance. Follow-through on the tasks the kids begin.</li><li><strong>Sociability</strong> — this is why there is only one of each material in the classroom.</li></ul>
+          <p>Later in her work she was nominated for the Nobel Peace Prize in three separate years, which makes sense because it was about peace. Essentially she argued that although politics could prevent wars, it could never create or construct peace, because only education was constructive and creative.</p>
+        </section>
+        <section id="the-prepared-environment" class="rh-section">
+          <h2>The prepared environment <span class="rh-section__date">real tools, child-sized</span></h2>
+          <p>So Maria had ideas, but how do those work in practice? Well, she was also one of the first people to make child-sized furniture and cupboards, and to take Jean-Marc-Gaspard Itard and Édouard Séguin's learning materials — built for children with intellectual disabilities — and bring them out of that setting so that any child could practice and learn what they wanted to.</p>
+          <p>The goal was child accessibility and real tools. There were no fake knives or plastic substitutes. Everything in the room was ordered and had its place on a shelf or in a cupboard the children could reach. Freedom of movement was assumed, where the children could go where they pleased. Lastly, beauty was important, because the children were absorbing the environment, so Maria believed it should be beautiful.</p>
+          <p>The learning materials were specifically designed too. There was only one difference with any of them. As an example, the cylinder blocks that they would put in the circle holes were all the same colour and material and only varied by size. For materials where learning colours was the goal, they were all the same size and material, and varied only by colour.</p>
+          <p>They also included what is called <strong>control of error</strong>, meaning for example with the cylinders, they would not fit in the circle holes if they were too big. This allowed the kids to self-correct and learn without needing adult intervention.</p>
+        </section>
+        <section id="how-a-lesson-works" class="rh-section">
+          <h2>How a lesson works <span class="rh-section__date">three hours, three steps</span></h2>
+          <p>The schedule was not one of bells, but instead one of three-hour blocks, allowing for what Maria observed to be the process of concentration. First was a false start, followed by some restlessness or confusion about what to do, next was settling into intense concentration. If the sections were shorter, then the kids wouldn't be able to get into focus on their tasks.</p>
+          <p>For the lessons when the adult did get involved, she devised a three-step framework. First came <strong>naming</strong>, like &quot;this is smooth.&quot; Second came <strong>recognition</strong>, where the adult provides the word and the child provides the object. Third and last came <strong>recall</strong>, which is the adult providing the object and the child providing the word.</p>
+          <p>While these lessons depended on the period of development that the kids were in, they were almost always tied to real practical things applied to life. Tasks like polishing, pouring, organizing — things that had visible results. These tasks were only demonstrated by the adults; the directresses never told the kids when to do them.</p>
+          <p>Another key piece of Maria's methodology was <strong>mixed age classrooms</strong>. This, aside from the obvious benefits of interacting with kids different from themselves, allows the youth to learn through modeling the older kids' behavior. This mixing was done in 3-year spans.</p>
+          <p>Maria even had a name for the teacher, which she called <strong>directress</strong>. The directress's role was simply to prepare the environment, provide the materials when the child was ready for their next learning, and in the higher grades, tell stories. Even praise would distract from the kid by taking the reward from internal to external.</p>
+        </section>
+        <section id="what-each-plane-needs" class="rh-section">
+          <h2>What each plane needs <span class="rh-section__date">the prescriptions</span></h2>
+          <div class="rh-tablewrap"><table class="rh-table"><thead><tr><th>Ages</th><th>Plane</th><th>What she prescribed</th><th>Why</th></tr></thead><tbody><tr><td>0–6</td><td>The Absorbent Mind</td><td>The prepared environment and the sensory materials.</td><td>Building the person from nothing.</td></tr><tr><td>6–12</td><td>The Reasoning Mind</td><td>Cosmic Education — from the creation of the universe onward, so that youth understand what they're learning in context.</td><td>The child turns outward, wants justice and morality, wants to understand how things work, and can handle abstraction.</td></tr><tr><td>12–18</td><td>Adolescence</td><td>Erdkinder — a working farm where youth live, work, manage, sell, and gain income for doing their work. Academics are still a focus, but they build into adulthood.</td><td>Rebirth. They are physically transformed, socially interested, unstable, and in her belief not suited well for academic pressure.</td></tr><tr><td>18–24</td><td>Maturity</td><td>University as a place where people who are fully formed take their position in society independently.</td><td>Montessori did not talk as much about this period.</td></tr></tbody></table></div>
+        </section>
+        <section id="the-five-great-stories" class="rh-section">
+          <h2>The five great stories <span class="rh-section__date">the second plane</span></h2>
+          <p>Now that we've talked about Maria's findings and what they look like in practice physically, let's move to how the curriculum is taught.</p>
+          <p>After the very physical, concrete 0–6ish period where the kids are learning senses and order, the kids move into growth that she illustrates as the heat of imagination on the kids as plants in the ground. The curriculum begins with the teacher telling five 'great stories':</p>
+          <ul class="rh-list"><li>The story of the universe</li><li>The story of life</li><li>The story of humans</li><li>The story of writing</li><li>The story of numbers</li></ul>
+          <p>From these great stories stem the specifics of quality writing and math. While the guides tell these stories, the kids are using their imagination to understand what is the big bang, and how might one cell become multi-celled.</p>
+          <p>This second 'plane', as she calls it, allows some unique practices — like the kids having freedom to go out of the classroom and speak with experts, conduct experiments, and otherwise learn <em>in</em> the world. Maria talks about 'Timelines', long scrolls that demonstrate the enormity of the stories, and about how negotiations about what's fair and moral are treated as normal, because this plane is when kids are learning about rules and equity naturally.</p>
+        </section>
+        <section id="erdkinder" class="rh-section">
+          <h2>Erdkinder <span class="rh-section__date">the third plane</span></h2>
+          <p>The third plane is also unique, and known as what she calls <strong>erdkinder</strong>. This plane is from 12–18. A word that translates to 'children of the earth'. In this plane she proposed a working farm where the children's developmental task was real contribution to the production of the farm, therefore establishing their value in the contribution to the group. This she labeled <strong>valorization of personality</strong>.</p>
+          <p>This school, because it was a business, would become an immersive way for the kids to learn the rest of their subjects. Math as yield per square foot, finance from P&amp;Ls, and science from botany and soil composition.</p>
+          <p>To sum up her view on this stage, she believed that adolescents were still 'social newborns' and should be treated as such. However, she believed the only noble thing to do was work and contribute.</p>
+          <p>To end this, I give you Maria Montessori:</p>
+          <blockquote class="rh-quote">&quot;If salvation and help are to come, it is through the child; for the child is the constructor of man.&quot;</blockquote>
+        </section>
+        <section id="notes-on-the-record" class="rh-section">
+          <h2>Notes on the record <span class="rh-section__date">sources</span></h2>
+          <p>A few places worth having straight, and where I corrected something rather than publish it wrong.</p>
+          <p><strong>The count of 42.</strong> Montessori's own accounts of the girl with the cylinders are retold with 42, 43 and 44 repetitions depending on the source, and she told the story many times over the years. 42 is the figure used here; treat the number as approximate and the observation as the point.</p>
+          <p><strong>The Nobel.</strong> &quot;Nominated three times&quot; is right about the years — 1949, 1950 and 1951 — but she received six nominations in total across them, and all were for the Peace Prize rather than three different prizes.</p>
+          <p><strong>Erdkinder</strong> is German rather than a translation of an English word — <em>Erde</em> earth, <em>Kinder</em> children. The draft said &quot;a world that translates to&quot;; it is a word, and it is hers.</p>
+          <p><strong>Itard and Séguin.</strong> Their materials were developed for children with intellectual disabilities, and Montessori's move was to take them out of that setting and into a school for children who had no such diagnosis. That is the sentence the draft was reaching for.</p>
+          <p><strong>The planes table</strong> now names something for 0–6, which the draft left blank. She did prescribe for it — the prepared environment and the sensory materials described above — so the row is filled from the rest of the piece rather than left empty.</p>
+          <p>This is a summary of what Montessori herself claimed, not an assessment of whether the claims hold up. The evidence on the method as practiced is a separate question, and a genuinely contested one — worth its own piece rather than a paragraph here.</p>
+        </section>
+        </div>
+
+        <a href="/writing/#rabbit-holes" class="rh-back">← Back to Writing</a>
+      </article>
+
+    </div>
+  </main>
+
+  <script>
+    // ── Nav (menu open/close), copy of the pattern used across the site
+    (function() {
+      var btn = document.getElementById('menu-btn');
+      var nav = document.getElementById('site-nav');
+      var close = document.getElementById('nav-close');
+      if (btn && nav) {
+        btn.addEventListener('click', function() {
+          var open = nav.classList.toggle('is-open');
+          btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+      }
+      if (close && nav) {
+        close.addEventListener('click', function() {
+          nav.classList.remove('is-open');
+          btn && btn.setAttribute('aria-expanded', 'false');
+        });
+      }
+    })();
+
+    // ── Timeline highlight: mark the section whose heading has most recently
+    //    crossed a "read line" 30% down from the top of the viewport. Simple
+    //    scroll listener beats IntersectionObserver here because a long
+    //    section keeps intersecting even after the reader has moved past.
+    (function() {
+      var sections = Array.from(document.querySelectorAll('.rh-section'));
+      var itemMap = new Map();
+      document.querySelectorAll('.rh-timeline__item').forEach(function(it) {
+        itemMap.set(it.dataset.section, it);
+      });
+      if (!sections.length || !itemMap.size) return;
+
+      var lastActive = null;
+      function update() {
+        var readLine = window.innerHeight * 0.3;
+        var active = sections[0];
+        for (var i = 0; i < sections.length; i++) {
+          if (sections[i].getBoundingClientRect().top <= readLine) active = sections[i];
+          else break;
+        }
+        if (active === lastActive) return;
+        lastActive = active;
+        itemMap.forEach(function(it) { it.classList.remove('is-active'); });
+        var el = itemMap.get(active.id);
+        if (el) {
+          el.classList.add('is-active');
+          // On mobile the timeline is a horizontal chip strip at the top of the
+          // page. Keep the active chip centered by scrolling ONLY the strip
+          // horizontally — never el.scrollIntoView(), which also scrolls the
+          // window vertically and yanks the reader back up to the top.
+          if (window.innerWidth <= 900) {
+            var strip = el.closest('.rh-timeline');
+            if (strip && strip.scrollWidth > strip.clientWidth) {
+              strip.scrollTo({
+                left: el.offsetLeft - strip.clientWidth / 2 + el.offsetWidth / 2,
+                behavior: 'smooth'
+              });
+            }
+          }
+        }
+      }
+      var ticking = false;
+      window.addEventListener('scroll', function() {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(function() { update(); ticking = false; });
+      }, { passive: true });
+      update();
+    })();
+  </script>
+</body>
+</html>
