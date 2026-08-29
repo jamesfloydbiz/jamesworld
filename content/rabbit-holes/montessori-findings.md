@@ -119,20 +119,3 @@ To sum up her view on this stage, she believed that adolescents were still 'soci
 To end this, I give you Maria Montessori:
 
 > "If salvation and help are to come, it is through the child; for the child is the constructor of man."
-
-
-Notes on the record
-
-A few places worth having straight, and where I corrected something rather than publish it wrong.
-
-**The count of 42.** Montessori's own accounts of the girl with the cylinders are retold with 42, 43 and 44 repetitions depending on the source, and she told the story many times over the years. 42 is the figure used here; treat the number as approximate and the observation as the point.
-
-**The Nobel.** "Nominated three times" is right about the years — 1949, 1950 and 1951 — but she received six nominations in total across them, and all were for the Peace Prize rather than three different prizes.
-
-**Erdkinder** is German rather than a translation of an English word — *Erde* earth, *Kinder* children. The draft said "a world that translates to"; it is a word, and it is hers.
-
-**Itard and Séguin.** Their materials were developed for children with intellectual disabilities, and Montessori's move was to take them out of that setting and into a school for children who had no such diagnosis. That is the sentence the draft was reaching for.
-
-**The planes table** now names something for 0–6, which the draft left blank. She did prescribe for it — the prepared environment and the sensory materials described above — so the row is filled from the rest of the piece rather than left empty.
-
-This is a summary of what Montessori herself claimed, not an assessment of whether the claims hold up. The evidence on the method as practiced is a separate question, and a genuinely contested one — worth its own piece rather than a paragraph here.

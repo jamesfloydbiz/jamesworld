@@ -57,7 +57,6 @@ const META = {
       { name: 'What each plane needs',   date: 'the prescriptions' },
       { name: 'The five great stories',  date: 'the second plane' },
       { name: 'Erdkinder',               date: 'the third plane' },
-      { name: 'Notes on the record',     date: 'sources' },
     ],
   },
   'maria-montessori': {
