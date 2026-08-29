@@ -201,6 +201,12 @@ function categorize(post) {
   const title = (post.title || '').trim().toLowerCase();
   const sub = (post.subtitle || '').toLowerCase();
   if (/james (floyd )?update|james update/.test(title)) return 'update';
+  // Updates that do not say "update" in the title. "Putting My Heart On My
+  // Sleeve" is the August 2026 update — James confirmed it. Listed here rather
+  // than retitled, because the title on this page has to match the title on
+  // Substack that it links to. Rename it there and this line stops mattering.
+  const updateTitles = ['putting my heart on my sleeve'];
+  if (updateTitles.includes(title)) return 'update';
   // The poem posts — an explicit list (some, like "Madman", have no "poem"
   // keyword in the subtitle) plus a keyword fallback for future poem posts.
   const poemTitles = ['madman', 'on wandering', 'weary woman', 'aimless?'];
