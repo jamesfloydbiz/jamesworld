@@ -106,11 +106,14 @@
       text-transform: uppercase; color: var(--fg-40); margin: 1.7rem 0 0.6rem; }
     .mm-group:first-of-type { margin-top: 0.4rem; }
 
-    .mm-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px;
-      align-items: start; }
+    .mm-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px; }
     @media (max-width: 620px) { .mm-grid { grid-template-columns: minmax(0,1fr); } }
 
+    /* Flex column with the summary flexing: two collapsed cards side by side
+       come out the same height even when one title wraps to two lines, and the
+       move label sits on a shared baseline at the bottom of both. */
     .mm-card { border: 1px solid var(--border); border-radius: 11px; min-width: 0;
+      display: flex; flex-direction: column;
       background: linear-gradient(180deg, hsl(0 0% 5.5%), hsl(0 0% 2.5%));
       transition: border-color .18s; }
     .mm-card:hover { border-color: var(--fg-25); }
@@ -120,13 +123,13 @@
     .mm-card[open] { grid-column: 1 / -1; border-color: var(--mm-mentor); }
     .mm-card > summary { list-style: none; cursor: pointer; padding: 16px 15px;
       touch-action: manipulation; -webkit-tap-highlight-color: transparent;
-      display: block; position: relative; padding-right: 42px; }
+      display: flex; flex-direction: column; flex: 1; position: relative; padding-right: 42px; }
     .mm-card > summary::-webkit-details-marker { display: none; }
     .mm-card > summary:focus-visible { outline: 2px solid var(--mm-mentor); outline-offset: 2px; border-radius: 11px; }
     .mm-card__sit { font-family: var(--font-display); font-size: 1.16rem; line-height: 1.22;
       color: var(--fg); }
     .mm-card__move { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.13em;
-      text-transform: uppercase; color: var(--mm-mentor); margin-top: 9px; }
+      text-transform: uppercase; color: var(--mm-mentor); margin-top: auto; padding-top: 9px; }
     .mm-card__plus { position: absolute; top: 15px; right: 14px; width: 22px; height: 22px;
       color: var(--fg-35); transition: transform .18s, color .18s; }
     .mm-card__plus::before, .mm-card__plus::after { content: ''; position: absolute;
