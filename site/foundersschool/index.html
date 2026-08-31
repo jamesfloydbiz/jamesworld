@@ -100,35 +100,36 @@
     font-weight:600; color:var(--grey); margin:0; white-space:nowrap;}
   .secthead .line{flex:1; height:1px; background:var(--rule);}
 
-  /* ── The two things built for Founders School specifically. Halved from
-       the full-width hero TPC used to be, so the pair fits the space one
-       card used to take. ─────────────────────────────────────────────── */
-  /* stretch, not start: equal-height cards put both buttons on the same
-     baseline, which is what makes them read as a pair rather than two
-     unrelated blocks. `margin-top:auto` on .tpc-open does the pushing. */
-  .builtfor{display:grid; gap:14px;}
-  @media (min-width:780px){ .builtfor{grid-template-columns:minmax(0,1fr) minmax(0,1fr);} }
-  .tpc{display:flex; flex-direction:column; align-items:flex-start;
-    background:#fff; border:1px solid var(--rule); border-left:3px solid var(--blue);
-    border-radius:12px; padding:clamp(16px,2.2vw,24px);
+  /* ── TPC: the reason the page exists, so it gets the whole width ──── */
+  .tpc{background:#fff; border:1px solid var(--rule); border-left:3px solid var(--blue);
+    border-radius:12px; padding:clamp(26px,4vw,46px);
     box-shadow:0 20px 50px -40px rgba(17,24,39,.5);}
-  .tpc .tag{font-size:10px; letter-spacing:.2em; text-transform:uppercase;
-    color:var(--blue); font-weight:700; margin:0 0 8px;}
-  .tpc h3{font-size:clamp(21px,2.6vw,28px); line-height:1.12; font-weight:700;
-    letter-spacing:-.02em; margin:0 0 10px;}
-  .tpc p{font-size:14.5px; line-height:1.55; color:var(--grey); margin:0 0 10px; max-width:60ch;}
+  .tpc .tag{font-size:10.5px; letter-spacing:.2em; text-transform:uppercase;
+    color:var(--blue); font-weight:700; margin:0 0 12px;}
+  .tpc h3{font-size:clamp(28px,4.4vw,44px); line-height:1.1; font-weight:700;
+    letter-spacing:-.025em; margin:0 0 18px;}
+  .tpc p{font-size:16.5px; color:var(--grey); margin:0 0 17px; max-width:66ch;}
   .tpc strong{color:var(--ink); font-weight:600;}
   .tpc p a{color:var(--blue); font-weight:600; text-decoration:none;
     border-bottom:1px solid rgba(0,0,239,.3);}
   .tpc p a:hover{border-bottom-color:var(--blue);}
-  .tpc .payoff{font-size:15.5px; font-weight:500; color:var(--ink); margin-bottom:12px;}
-  .tpc .tpc-open{display:inline-block; margin-top:auto; font-size:13.5px;
+  .tpc .payoff{font-size:19px; font-weight:500; color:var(--ink);}
+  .tpc .tpc-open{display:inline-block; margin-top:8px; font-size:14px;
     font-weight:600; text-decoration:none; color:#fff; background:var(--blue);
-    border-radius:99px; padding:12px 20px; min-height:44px; box-sizing:border-box;
+    border-radius:99px; padding:12px 22px; min-height:44px; box-sizing:border-box;
     box-shadow:0 10px 26px -12px rgba(0,0,239,.8);
     transition:background .15s, transform .15s;}
   .tpc .tpc-open:hover{background:#0000C4; transform:translateY(-1px);}
   @media (prefers-reduced-motion:reduce){ .tpc .tpc-open{transition:none;} }
+
+  /* Extra credit wears the same card at a smaller scale, so it reads as
+     secondary to TPC rather than as a second headline. */
+  .tpc--sm{padding:clamp(18px,2.4vw,28px);}
+  .tpc--sm .tag{margin:0 0 8px;}
+  .tpc--sm h3{font-size:clamp(21px,2.8vw,30px); letter-spacing:-.02em; margin:0 0 11px;}
+  .tpc--sm p{font-size:15.5px; line-height:1.6; margin:0 0 12px;}
+  .tpc--sm .payoff{font-size:16.5px;}
+  .tpc--sm .tpc-open{font-size:13.5px; padding:12px 20px; margin-top:4px;}
 
   .lead{font-size:16.5px; color:var(--grey); max-width:72ch; margin:0 0 26px;}
   .lead a{color:var(--blue); font-weight:600; text-decoration:none;}
@@ -206,25 +207,27 @@
 
   <section id="tpc">
     <div class="secthead"><h2>Built for you</h2><div class="line"></div></div>
-    <div class="builtfor">
-      <div class="tpc">
-        <p class="tag">The project</p>
-        <h3>TPC</h3>
-        <p>Drawn from roughly <strong>20,000 conversations with strangers</strong> — years of
-           sales, plus the 100 interviews with people I had never met for the <a href="/sonder/"
-           target="_blank" rel="noopener">Sonder Series</a>.</p>
-        <p class="payoff">A proven way to get better at sales</p>
-        <a class="tpc-open" href="/builds/tpc/" target="_blank" rel="noopener">Open TPC →</a>
-      </div>
-      <div class="tpc">
-        <p class="tag">The tool</p>
-        <h3>The Mentor Mindset</h3>
-        <p>A reference sheet for guides of the <strong>19 techniques</strong> of motivating young
-           people applied to each situation where there is an opportunity to use them. Times like
-           giving feedback, a kid who says they can't, or a belonging worry.</p>
-        <p class="payoff">High standards and high support, at the same time</p>
-        <a class="tpc-open" href="/mentor-mindset/" target="_blank" rel="noopener">Open the cheat sheet →</a>
-      </div>
+    <div class="tpc">
+      <p class="tag">The project</p>
+      <h3>TPC</h3>
+      <p>Drawn from roughly <strong>20,000 conversations with strangers</strong> — years of
+         sales, plus the 100 interviews with people I had never met for the <a href="/sonder/"
+         target="_blank" rel="noopener">Sonder Series</a>.</p>
+      <p class="payoff">A proven way to get better at sales</p>
+      <a class="tpc-open" href="/builds/tpc/" target="_blank" rel="noopener">Open TPC →</a>
+    </div>
+  </section>
+
+  <section id="extra">
+    <div class="secthead"><h2>Extra credit</h2><div class="line"></div></div>
+    <div class="tpc tpc--sm">
+      <p class="tag">The reference sheet</p>
+      <h3>The Mentor Mindset</h3>
+      <p>A reference sheet for guides of the <strong>19 techniques</strong> of motivating young
+         people applied to each situation where there is an opportunity to use them. Times like
+         giving feedback, a kid who says they can't, or a belonging worry.</p>
+      <p class="payoff">High standards and high support, at the same time</p>
+      <a class="tpc-open" href="/mentor-mindset/" target="_blank" rel="noopener">Open the reference sheet →</a>
     </div>
   </section>
 
