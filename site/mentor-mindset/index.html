@@ -35,40 +35,16 @@
     .mm-sub { font-family: var(--font-serif); font-size: 0.95rem; line-height: 1.65;
       color: var(--fg-55); margin: 0 0 1.2rem; }
 
-    /* The colour set repeats everywhere on the page: enforcer red, protector
-       amber, mentor green, silent grey. Every card that shows a wrong version
-       uses the same two colours, so the 2x2 gets re-taught twenty times
-       without a single extra sentence of explanation. */
+    /* Enforcer red, protector amber, mentor green. Every card shows the wrong
+       versions of its own moment in these two colours, so the three styles
+       Yeager names in the quote above get re-taught nineteen times without a
+       single extra sentence of explanation. */
     :root {
       --mm-mentor:  #6ee7a8;
       --mm-enf:     #f0836b;
       --mm-pro:     #e8bd63;
       --mm-sil:     #9aa4b2;
     }
-
-    /* ── the 2x2, as the hero ─────────────────────────────────────────── */
-    .mm-2x2 { margin: 0 0 1.25rem; }
-    .mm-2x2__axis-x { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.18em;
-      text-transform: uppercase; color: var(--fg-40); text-align: center; margin: 0 0 8px 64px; }
-    .mm-2x2__row { display: grid; grid-template-columns: 64px minmax(0,1fr) minmax(0,1fr); gap: 10px; }
-    .mm-2x2__row + .mm-2x2__row { margin-top: 10px; }
-    .mm-2x2__ylab { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.12em;
-      text-transform: uppercase; color: var(--fg-40); display: flex; align-items: center;
-      line-height: 1.3; }
-    .mm-q { border: 1px solid var(--border); border-radius: 10px; padding: 16px 15px;
-      min-height: 124px; display: flex; flex-direction: column; justify-content: flex-start;
-      background: linear-gradient(180deg, hsl(0 0% 6%), hsl(0 0% 3%)); }
-    .mm-q__name { font-family: var(--font-display); font-size: 1.32rem; line-height: 1.1;
-      margin-bottom: 7px; }
-    .mm-q__desc { font-family: var(--font-serif); font-size: 0.86rem; line-height: 1.5; color: var(--fg-55); }
-    .mm-q--enf .mm-q__name { color: var(--mm-enf); }
-    .mm-q--pro .mm-q__name { color: var(--mm-pro); }
-    .mm-q--neg .mm-q__name { color: var(--fg-40); }
-    .mm-q--mentor { border-color: var(--mm-mentor); background: linear-gradient(180deg, hsl(150 40% 9%), hsl(150 30% 4%)); }
-    .mm-q--mentor .mm-q__name { color: var(--mm-mentor); }
-    .mm-q--mentor .mm-q__desc { color: var(--fg-70); }
-    .mm-q__tag { font-family: var(--font-mono); font-size: 0.56rem; letter-spacing: 0.16em;
-      text-transform: uppercase; color: var(--mm-mentor); margin-top: auto; padding-top: 10px; }
 
     /* ── pull quote ───────────────────────────────────────────────────── */
     .mm-pull { font-family: var(--font-serif); font-style: italic; font-size: 1.1rem;
@@ -209,11 +185,6 @@
     .mm-priv { font-family: var(--font-mono); font-size: 0.66rem; color: var(--fg-40); margin-top: 16px; }
 
     @media (max-width: 560px) {
-      .mm-2x2__row { grid-template-columns: 44px minmax(0,1fr) minmax(0,1fr); gap: 7px; }
-      .mm-2x2__axis-x { margin-left: 44px; }
-      .mm-q { padding: 12px 11px; min-height: 108px; }
-      .mm-q__name { font-size: 1.06rem; }
-      .mm-q__desc { font-size: 0.79rem; }
       .mm-card__sit { font-size: 1.08rem; }
     }
     @media (prefers-reduced-motion: reduce) {
@@ -260,40 +231,17 @@
       <div class="mm-wrap">
 
         <h1 class="page-title">The Mentor Mindset</h1>
-        <p class="mm-lede">High standards and high support, at the same time, from the same person. Find what is happening in front of you and get the sentence.</p>
+        <p class="mm-lede">At the most basic level the mentor's mindset is holding high standards while providing high support.</p>
+
+        <section class="mm-prose">
+          <p>In practice it comes from beliefs and manifests as behaviors, interventions, and actions that give respect, hold the standard high, and provide the support and resources needed to meet or exceed those high standards.</p>
+          <p>As David Yeager says:</p>
+        </section>
 
         <blockquote class="mm-pull">
           Your beliefs about young people shape your style. If you think they're unruly, you become an enforcer. If you think they're fragile, you become a protector. But if you believe they have great potential under the right conditions, you become a mentor.
           <cite>David Yeager, 10 to 25</cite>
         </blockquote>
-
-        <div class="mm-2x2" role="img" aria-label="A two by two. High standards with low support is the enforcer. High standards with high support is the mentor, the target. Low standards with low support is neglect. Low standards with high support is the protector.">
-          <p class="mm-2x2__axis-x">Support &rarr;</p>
-          <div class="mm-2x2__row">
-            <div class="mm-2x2__ylab">High<br>standards</div>
-            <div class="mm-q mm-q--enf"><div class="mm-q__name">Enforcer</div><div class="mm-q__desc">Rank and yank. The standard with nothing behind it.</div></div>
-            <div class="mm-q mm-q--mentor"><div class="mm-q__name">Mentor</div><div class="mm-q__desc">The bar stays up and so does the scaffolding.</div><div class="mm-q__tag">everything below aims here</div></div>
-          </div>
-          <div class="mm-2x2__row">
-            <div class="mm-2x2__ylab">Low<br>standards</div>
-            <div class="mm-q mm-q--neg"><div class="mm-q__name">Neglect</div><div class="mm-q__desc">No bar, no help.</div></div>
-            <div class="mm-q mm-q--pro"><div class="mm-q__name">Protector</div><div class="mm-q__desc">The bar comes down to spare them failure. The harder trap, because it feels like kindness.</div></div>
-          </div>
-        </div>
-
-        <section class="mm-prose">
-          <p><strong>The mentor's dilemma</strong>, in Yeager's words: “The mentor's dilemma is very simply the idea that when you have authority, influence, power over anyone, you have a choice about how you interact with them, especially when you need to correct their behavior or their performance.” Chip Engelland, the San Antonio Spurs shooting coach who rebuilt Shane Battier's shot, calls it “fundamentally about the balance between challenge and safety.”</p>
-          <p>Here is all three, on a piece of work that isn't good enough:</p>
-        </section>
-
-        <div style="margin:0 0 1.2rem;">
-          <div class="mm-wrong mm-wrong--enf"><div class="mm-wrong__k">Enforcer</div><div class="mm-wrong__q">“This doesn't meet the standard yet. The argument falls apart in the third section — that's the part to fix.”</div></div>
-          <div class="mm-wrong mm-wrong--pro"><div class="mm-wrong__k">Protector</div><div class="mm-wrong__q">“Sit with me for twenty minutes and we'll work out what it's missing.”</div></div>
-          <p class="mm-k" style="margin-top:16px;">Mentor</p>
-          <div class="mm-say"><p>“This doesn't meet the standard yet. The argument falls apart in the third section — that's the part to fix. Sit with me for twenty minutes and we'll work out what it's missing.”</p></div>
-        </div>
-
-        <p class="mm-prose">The standard is named, the specific gap is named, and the support is offered in the same breath. Take away the last sentence and it's an enforcer. Take away the first two and it's a protector.</p>
 
         <!-- ── required beliefs ──────────────────────────────────────── -->
         <h2 class="mm-label">Required beliefs</h2>
@@ -329,7 +277,7 @@
 
         <!-- ── the dashboard ─────────────────────────────────────────── -->
         <h2 class="mm-label">What's happening right now</h2>
-        <p class="mm-sub">Twenty situations. Tap the one in front of you. Several techniques usually apply to any real moment, so each card names the others that are live too — there is no single right answer here, only better and worse ones.</p>
+        <p class="mm-sub">Nineteen situations. Tap the one in front of you. Several techniques usually apply to any real moment, so each card names the others that are live too — there is no single right answer here, only better and worse ones.</p>
 
         <div class="mm-searchwrap">
           <label class="sr-only" for="mm-search">Filter situations</label>
@@ -523,24 +471,7 @@
               <div class="mm-wrong mm-wrong--enf"><div class="mm-wrong__k">Enforcer</div><div class="mm-wrong__q">“Don't vape. It's bad for you.”</div></div>
               <div class="mm-wrong mm-wrong--pro"><div class="mm-wrong__k">Protector</div><div class="mm-wrong__q">Says nothing, to avoid the conflict.</div></div>
               <p class="mm-k">Also live here</p>
-              <div class="mm-also"><a href="#s-phone">14 Values alignment</a><a href="#s-samefight">10 Treaties</a><a href="#s-request">07 Presume agency</a></div>
-            </div>
-          </details>
-
-          <details class="mm-card" id="s-phone" data-search="phone screen time social media values alignment bryan yeager pnas food industry graffiti manipulator ally autonomy">
-            <summary><span class="mm-card__plus" aria-hidden="true"></span><div class="mm-card__sit">I want them off the phone</div><div class="mm-card__move">14 · Values alignment</div></summary>
-            <div class="mm-card__body">
-              <p class="mm-k">What it looks like</p>
-              <p class="mm-heard">Any habit you want changed, where the obvious argument is “it's bad for you.”</p>
-              <p class="mm-k">Say this</p>
-              <div class="mm-say"><p>“The people who built that feed hired behavioral scientists to make it hard to put down. They're extremely good at it, and you're the product. How much of your attention do you actually want them to have?”</p></div>
-              <p class="mm-k">Why</p>
-              <p class="mm-why">Align the behaviour with what they <em>already</em> value — autonomy from adult control, status, and fairness — rather than with a benefit twenty years out. <strong>The move is to make yourself the ally against a manipulator, instead of being the manipulator.</strong> The study version had eighth-graders graffiti fast-food posters to make them <em>true</em>: high status plus rebellion against control. Bryan, Yeager, Hinojosa et al. 2016, <em>PNAS</em> 113(39) — double-blind, randomized, placebo-controlled, 536 students, the entire eighth grade of a Texas middle school.</p>
-              <p class="mm-k">Not this</p>
-              <div class="mm-wrong mm-wrong--enf"><div class="mm-wrong__k">Enforcer</div><div class="mm-wrong__q">“You shouldn't be on your phone that much. It's bad for you.”</div></div>
-              <div class="mm-wrong mm-wrong--pro"><div class="mm-wrong__k">Protector</div><div class="mm-wrong__q">Decides it isn't worth the argument.</div></div>
-              <p class="mm-k">Also live here</p>
-              <div class="mm-also"><a href="#s-stop">06 Prohibition backfires</a><a href="#s-whylearn">13 Purpose now</a></div>
+              <div class="mm-also"><a href="#s-samefight">10 Treaties</a><a href="#s-request">07 Presume agency</a></div>
             </div>
           </details>
 
@@ -716,7 +647,7 @@
               <div class="mm-wrong mm-wrong--enf"><div class="mm-wrong__k">Enforcer</div><div class="mm-wrong__q">“Because it's on the test.”</div></div>
               <div class="mm-wrong mm-wrong--pro"><div class="mm-wrong__k">Protector</div><div class="mm-wrong__q">“I know, it's kind of pointless — just get through it.”</div></div>
               <p class="mm-k">Also live here</p>
-              <div class="mm-also"><a href="#s-noreason">15 Purpose intervention</a><a href="#s-motives">16 Mix of motives</a><a href="#s-phone">14 Values alignment</a></div>
+              <div class="mm-also"><a href="#s-noreason">15 Purpose intervention</a><a href="#s-motives">16 Mix of motives</a></div>
             </div>
           </details>
 
@@ -824,7 +755,7 @@
           <div class="mm-tech__body">
             <p class="mm-why">Alex Bogusky's “Truth” campaign was the most successful campaign ever run at getting youth not to smoke, and it worked by painting them as potential high-status heroes rather than as children being instructed.</p>
             <p class="mm-k">Use it at</p>
-            <div class="mm-also"><a href="#s-stop">I want to tell them to stop</a><a href="#s-phone">I want them off the phone</a></div>
+            <div class="mm-also"><a href="#s-stop">I want to tell them to stop</a></div>
           </div>
         </details>
 
@@ -886,7 +817,7 @@
           <div class="mm-tech__body">
             <p class="mm-why">Make the adult the ally against a manipulator rather than the manipulator. The study version had students graffiti fast-food posters to make them actually true statements: high status plus rebellion against control. Bryan, Yeager, Hinojosa et al. 2016, <em>PNAS</em> 113(39) — double-blind, randomized, placebo-controlled, 536 eighth-graders, the entire eighth grade of a Texas middle school.</p>
             <p class="mm-k">Use it at</p>
-            <div class="mm-also"><a href="#s-phone">I want them off the phone</a></div>
+            <div class="mm-also"><a href="#s-stop">I want to tell them to stop</a></div>
           </div>
         </details>
 
