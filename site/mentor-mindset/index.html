@@ -83,6 +83,10 @@
     .mm-group:first-of-type { margin-top: 0.4rem; }
 
     .mm-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px; }
+    /* A class that sets `display` outranks the user-agent's `[hidden]{display:none}`,
+       so the filter set the attribute and nothing moved. Anything the filter hides
+       has to say so at class specificity or higher. */
+    .mm-card[hidden], .mm-grid[hidden], [data-group][hidden] { display: none !important; }
     @media (max-width: 620px) { .mm-grid { grid-template-columns: minmax(0,1fr); } }
 
     /* Flex column with the summary flexing: two collapsed cards side by side
@@ -270,7 +274,7 @@
           </div>
           <div class="mm-belief">
             <div class="mm-belief__n">Belief 05</div>
-            <div class="mm-belief__t">Beliefs gate behaviour</div>
+            <div class="mm-belief__t">Beliefs guide behavior</div>
             <div class="mm-belief__d">Someone who believes prejudice can be reduced by education has more cross-group conversations. Someone who doesn't, avoids them. Change what a person believes is possible and the actions follow on their own — which is why four of the nineteen techniques target a belief rather than a behaviour.</div>
           </div>
         </div>
@@ -393,7 +397,7 @@
               <div class="mm-wrong mm-wrong--enf"><div class="mm-wrong__k">Enforcer</div><div class="mm-wrong__q">“You need to take the placement test this week.”</div></div>
               <div class="mm-wrong mm-wrong--pro"><div class="mm-wrong__k">Protector</div><div class="mm-wrong__q">“Only if you want to — no pressure either way.”</div></div>
               <p class="mm-k">Also live here</p>
-              <div class="mm-also"><a href="#s-approach">08 Transparency</a><a href="#s-cant">05 Don't dismiss the fear</a><a href="#s-notowning">04 Give responsibility</a></div>
+              <div class="mm-also"><a href="#s-approach">08 Transparency</a><a href="#s-cant">05 Don't dismiss the fear</a><a href="#s-whatsnext">04 Give responsibility</a></div>
             </div>
           </details>
 
@@ -418,20 +422,27 @@
             </div>
           </details>
 
-          <details class="mm-card" id="s-notowning" data-search="doing the work but not owning it give responsibility camp champions lead the camp autonomy transfer more time">
-            <summary><span class="mm-card__plus" aria-hidden="true"></span><div class="mm-card__sit">They're doing the work but not owning it</div><div class="mm-card__move">04 · Give responsibility</div></summary>
+          <details class="mm-card" id="s-whatsnext" data-search="doing the work well consistently reliable what is the next step give responsibility independence camp champions edge method explain demonstrate guide enable hand over">
+            <summary><span class="mm-card__plus" aria-hidden="true"></span><div class="mm-card__sit">They're doing the work well, consistently &mdash; what's next?</div><div class="mm-card__move">04 &middot; Give responsibility</div></summary>
             <div class="mm-card__body">
               <p class="mm-k">What it looks like</p>
-              <p class="mm-heard">“Just tell me what you want me to do.”</p>
-              <p class="mm-k">Say this</p>
-              <div class="mm-say"><p>Hand over the thing itself, not a bigger share of it. At Camp Champions the players <em>lead</em> the basketball camp — they don't attend it and help out.</p></div>
+              <p class="mm-heard">Nothing is wrong. They have been reliable for weeks &mdash; which is exactly why it is easy to leave them exactly where they are.</p>
+              <p class="mm-k">Do this</p>
+              <div class="mm-say">
+                <p>Not a sentence &mdash; a hand-over. Give them a piece of <em>your</em> support work, the part you have been doing on their behalf, and keep giving away more as each piece holds.</p>
+                <p><span class="beat">Explain</span><br>Say what the piece is and why it matters, so they know what they're taking on.</p>
+                <p><span class="beat">Demonstrate</span><br>Do it once in front of them, talking through what you're doing and why.</p>
+                <p><span class="beat">Guide</span><br>They do it, you're beside them. Help when asked. Let them repeat it until it's theirs.</p>
+                <p><span class="beat">Enable</span><br>Step back and watch. This is the rung most adults never get to, and it is the only one that changes who owns the outcome.</p>
+                <p>Then start again one level up. At <strong>Camp Champions</strong>, the players don't attend the basketball camp and help out &mdash; they <em>lead</em> it.</p>
+              </div>
               <p class="mm-k">Why</p>
-              <p class="mm-why">There are three rungs — respect their autonomy, presume their agency, then give them responsibility — and only the third one changes who owns the outcome. The common objection is that mentoring costs time. Yeager's publisher puts it the other way round: through back-and-forth conversations young people feel empowered and managers <em>transfer</em> responsibility, so the people using the mentor mindset end up with more time, not less.</p>
+              <p class="mm-why">There are three rungs &mdash; respect their autonomy, presume their agency, then give them responsibility &mdash; and a student doing consistently good work has outgrown the first two. The common objection is that this costs you time. Yeager's publisher puts it the other way round: through back-and-forth conversations young people feel empowered and managers <em>transfer</em> responsibility, so the people using the mentor mindset end up with more time, not less. The four steps above are the Boy Scouts' <strong>EDGE method</strong> &mdash; Explain, Demonstrate, Guide, Enable &mdash; which is the same hand-over written as a procedure.</p>
               <p class="mm-k">Not this</p>
-              <div class="mm-wrong mm-wrong--enf"><div class="mm-wrong__k">Enforcer</div><div class="mm-wrong__q">Assigns the task, then checks it.</div></div>
-              <div class="mm-wrong mm-wrong--pro"><div class="mm-wrong__k">Protector</div><div class="mm-wrong__q">Quietly does the hard part for them so it turns out well.</div></div>
+              <div class="mm-wrong mm-wrong--enf"><div class="mm-wrong__k">Enforcer</div><div class="mm-wrong__q">Gives them more work at the same level of supervision. Harder, not freer.</div></div>
+              <div class="mm-wrong mm-wrong--pro"><div class="mm-wrong__k">Protector</div><div class="mm-wrong__q">Leaves them where they are succeeding, because it is going well and why risk it.</div></div>
               <p class="mm-k">Also live here</p>
-              <div class="mm-also"><a href="#s-request">07 Presume agency</a><a href="#s-motives">16 Mix of motives</a><a href="#s-stuck">07 Ask, don't tell</a></div>
+              <div class="mm-also"><a href="#s-request">07 Presume agency</a><a href="#s-motives">16 Mix of motives</a><a href="#s-behind">19 Inclusive excellence</a></div>
             </div>
           </details>
 
@@ -454,7 +465,7 @@
               <div class="mm-wrong mm-wrong--enf"><div class="mm-wrong__k">Enforcer</div><div class="mm-wrong__q">“That plan isn't going to work. Do this instead.”</div></div>
               <div class="mm-wrong mm-wrong--pro"><div class="mm-wrong__k">Protector</div><div class="mm-wrong__q">Rewrites the plan for them and calls it collaboration.</div></div>
               <p class="mm-k">Also live here</p>
-              <div class="mm-also"><a href="#s-correcting">02 No negative</a><a href="#s-notowning">04 Give responsibility</a><a href="#s-motives">16 Mix of motives</a></div>
+              <div class="mm-also"><a href="#s-correcting">02 No negative</a><a href="#s-whatsnext">04 Give responsibility</a><a href="#s-motives">16 Mix of motives</a></div>
             </div>
           </details>
 
@@ -735,9 +746,10 @@
         <details class="mm-tech">
           <summary><span class="mm-tech__n">04</span><span class="mm-tech__b"><span class="mm-tech__name">Give responsibility</span><span class="mm-tech__short">Three rungs — respect autonomy, presume agency, give responsibility. Only the third changes who owns it.</span></span></summary>
           <div class="mm-tech__body">
-            <p class="mm-why">The players <em>lead</em> the basketball camp, they don't attend it. And the objection that mentoring costs time runs backwards: through back-and-forth conversations young people feel empowered and responsibility transfers, so mentors end up with more time, not less.</p>
+            <p class="mm-why">The players <em>lead</em> the basketball camp, they don't attend it (Camp Champions). And the objection that mentoring costs time runs backwards: through back-and-forth conversations young people feel empowered and responsibility transfers, so mentors end up with more time, not less.</p>
+            <p class="mm-why" style="margin-top:1rem;">The hand-over has a procedure, and it isn't Yeager's — the Boy Scouts formalised it in the 1970s as <strong>EDGE</strong>: <em>Explain</em> what it is and why it matters, <em>Demonstrate</em> it once while narrating, <em>Guide</em> them through it as they practise, then <em>Enable</em> — step back and watch. Each step gives away more of the support work until none of it is yours.</p>
             <p class="mm-k">Use it at</p>
-            <div class="mm-also"><a href="#s-notowning">They're doing the work but not owning it</a></div>
+            <div class="mm-also"><a href="#s-whatsnext">They're doing the work well &mdash; what's next?</a></div>
           </div>
         </details>
 
@@ -905,6 +917,7 @@
             <li><strong>People can change</strong> — p. 248. <strong>Inclusive excellence</strong> — p. 258.</li>
             <li><strong>The do-over and the six questions</strong> — Lorena Seidel.</li>
             <li><strong>The alternative to the incompetence model</strong> — Ron Dahl; <em>The Promise of Adolescence</em>, National Academies, 2019.</li>
+            <li><strong>EDGE is the one thing here that is not Yeager's</strong> — Explain, Demonstrate, Guide, Enable was formalised by the Boy Scouts of America in the 1970s. It appears on this page because it is the clearest existing procedure for the hand-over that “give responsibility” asks for.</li>
           </ul>
         </section>
 
@@ -933,18 +946,24 @@
 
   /* Match against the situation text, the technique name and the hand-written
      keyword list, all lowercased once up front. */
+  /* Word lists rather than one string, and each term has to PREFIX a word.
+     Plain substring matching meant "edge" found "acknowledge"; prefix matching
+     still gets "belong" -> "belonging", which is the behaviour people expect
+     from a filter box. */
   var haystacks = cards.map(function (c) {
     return ((c.getAttribute('data-search') || '') + ' ' + (c.textContent || ''))
-      .toLowerCase().replace(/\s+/g, ' ');
+      .toLowerCase().split(/[^a-z0-9]+/).filter(Boolean);
   });
 
   function apply() {
     var q = box.value.toLowerCase().trim();
-    var terms = q ? q.split(/\s+/) : [];
+    var terms = q ? q.split(/[^a-z0-9]+/).filter(Boolean) : [];
     var shown = 0;
 
     cards.forEach(function (c, i) {
-      var hit = terms.every(function (t) { return haystacks[i].indexOf(t) !== -1; });
+      var hit = terms.every(function (t) {
+        return haystacks[i].some(function (w) { return w.indexOf(t) === 0; });
+      });
       c.hidden = !hit;
       if (hit) shown++;
     });
