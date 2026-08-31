@@ -22,106 +22,177 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=DM+Mono:wght@300;400&family=Lora:ital,wght@0,400;0,500;1,400&display=swap">
   <link rel="stylesheet" href="/css/site.css">
   <style>
-    .mm-wrap { max-width: 700px; margin: 0 auto; }
+    .mm-wrap { max-width: 760px; margin: 0 auto; }
     .mm-prose { font-family: var(--font-serif); font-size: 1.02rem; line-height: 1.8; color: var(--fg-80); }
     .mm-prose p { margin: 0 0 1.1rem; }
     .mm-prose strong { color: var(--fg); font-weight: 600; }
     .mm-prose em { color: var(--fg-90); }
+    .mm-lede { font-family: var(--font-serif); font-size: 1.16rem; line-height: 1.65;
+      color: var(--fg-85); margin: 0 0 2rem; }
 
     .mm-label { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.2em;
-      text-transform: uppercase; color: var(--fg-50); margin: 3rem 0 1rem; }
+      text-transform: uppercase; color: var(--fg-50); margin: 3.5rem 0 1rem; }
 
-    /* the 2x2 */
-    .mm-grid { display: grid; grid-template-columns: auto 1fr 1fr; gap: 1px; background: var(--border);
-      border: 1px solid var(--border); margin: 1.5rem 0; font-family: var(--font-mono); font-size: 0.76rem; }
-    .mm-grid > div { background: var(--bg); padding: 12px 10px; }
-    .mm-grid .hd { color: var(--fg-50); text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.64rem; }
-    .mm-grid .cell b { display: block; color: var(--fg); font-size: 0.86rem; margin-bottom: 4px; font-weight: 600; }
-    .mm-grid .cell span { color: var(--fg-55); line-height: 1.5; display: block; }
-    .mm-grid .cell.is-goal b { color: #6ee7a8; }
+    /* ── the 2x2, as the hero ─────────────────────────────────────────
+       This is the whole idea in one picture, so it gets to be a picture
+       rather than a small grey table. The colour set defined here repeats
+       everywhere else on the page: enforcer red, protector amber, mentor
+       green, silent grey. */
+    :root {
+      --mm-mentor:  #6ee7a8;
+      --mm-enf:     #f0836b;
+      --mm-pro:     #e8bd63;
+      --mm-sil:     #9aa4b2;
+    }
+    .mm-2x2 { margin: 0 0 1.25rem; }
+    .mm-2x2__axis-x { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.18em;
+      text-transform: uppercase; color: var(--fg-40); text-align: center; margin: 0 0 8px 64px; }
+    .mm-2x2__row { display: grid; grid-template-columns: 64px 1fr 1fr; gap: 10px; }
+    .mm-2x2__row + .mm-2x2__row { margin-top: 10px; }
+    .mm-2x2__ylab { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--fg-40); display: flex; align-items: center;
+      line-height: 1.3; }
+    .mm-q { border: 1px solid var(--border); border-radius: 10px; padding: 16px 15px;
+      min-height: 124px; display: flex; flex-direction: column; justify-content: flex-start;
+      background: linear-gradient(180deg, hsl(0 0% 6%), hsl(0 0% 3%)); }
+    .mm-q__name { font-family: var(--font-display); font-size: 1.32rem; line-height: 1.1;
+      margin-bottom: 7px; }
+    .mm-q__desc { font-family: var(--font-serif); font-size: 0.86rem; line-height: 1.5; color: var(--fg-55); }
+    .mm-q--enf .mm-q__name { color: var(--mm-enf); }
+    .mm-q--pro .mm-q__name { color: var(--mm-pro); }
+    .mm-q--neg .mm-q__name { color: var(--fg-40); }
+    .mm-q--mentor { border-color: var(--mm-mentor); background: linear-gradient(180deg, hsl(150 40% 9%), hsl(150 30% 4%)); }
+    .mm-q--mentor .mm-q__name { color: var(--mm-mentor); }
+    .mm-q--mentor .mm-q__desc { color: var(--fg-70); }
+    .mm-q__tag { font-family: var(--font-mono); font-size: 0.56rem; letter-spacing: 0.16em;
+      text-transform: uppercase; color: var(--mm-mentor); margin-top: auto; padding-top: 10px; }
 
-    /* technique list */
-    .mm-techlist { margin: 1rem 0 0; padding: 0; list-style: none; }
-    .mm-techgroup { font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.16em;
-      text-transform: uppercase; color: var(--fg-40); margin: 1.4rem 0 0.5rem; }
-    .mm-tech { display: flex; gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--fg-12); }
-    .mm-tech:last-child { border-bottom: 0; }
-    .mm-tech__n { font-family: var(--font-mono); font-size: 0.72rem; color: var(--fg-40);
-      flex: none; width: 1.5rem; padding-top: 2px; }
-    .mm-tech__b { min-width: 0; }
-    .mm-tech__name { font-family: var(--font-serif); font-size: 0.98rem; color: var(--fg); }
-    .mm-tech__short { font-family: var(--font-serif); font-size: 0.86rem; color: var(--fg-55);
-      line-height: 1.6; margin-top: 3px; }
+    /* stat row */
+    .mm-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 1.5rem 0 0; }
+    .mm-stat { border: 1px solid var(--border); border-radius: 10px; padding: 14px 13px; }
+    .mm-stat__n { font-family: var(--font-display); font-size: 1.6rem; line-height: 1;
+      color: var(--fg); letter-spacing: -0.01em; }
+    .mm-stat__n em { font-style: normal; color: var(--mm-mentor); }
+    .mm-stat__k { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.13em;
+      text-transform: uppercase; color: var(--fg-45); margin-top: 8px; line-height: 1.5; }
+    @media (max-width: 640px) {
+      /* On a phone the stacked stats pushed the tool a whole screen further
+         down. The 2x2 is the hook; the evidence can sit under the thing it is
+         evidence for. Order only — the markup keeps the stats above, which is
+         the right reading order for a crawler and for desktop. */
+      .mm-wrap { display: flex; flex-direction: column; }
+      .mm-wrap > .mm-stats { order: 3; margin-top: 2.5rem; }
+      .mm-wrap > .mm-2x2 { order: 1; }
+      .mm-wrap > h1, .mm-wrap > .mm-lede { order: 0; }
+      .mm-wrap > * { order: 2; }
+    }
+    @media (max-width: 560px) {
+      .mm-stats { grid-template-columns: 1fr; }
+      .mm-stat { display: flex; align-items: baseline; gap: 12px; }
+      .mm-stat__k { margin-top: 0; }
+      .mm-2x2__row { grid-template-columns: 44px 1fr 1fr; gap: 7px; }
+      .mm-2x2__axis-x { margin-left: 44px; }
+      .mm-q { padding: 12px 11px; min-height: 108px; }
+      .mm-q__name { font-size: 1.06rem; }
+      .mm-q__desc { font-size: 0.79rem; }
+    }
 
-    /* the tool */
-    .mm-tool { border: 1px solid var(--border); border-radius: 10px; padding: 20px;
-      margin: 1.5rem 0; background: var(--card-bg); }
-    @media (min-width: 640px) { .mm-tool { padding: 26px; } }
+    /* ── the tool ──────────────────────────────────────────────────── */
+    .mm-tool { border: 1px solid var(--fg-20); border-radius: 12px; padding: 22px;
+      margin: 1rem 0 0; background: linear-gradient(180deg, hsl(0 0% 5%), hsl(0 0% 2%)); }
+    @media (min-width: 640px) { .mm-tool { padding: 30px; } }
     .mm-meta { display: flex; justify-content: space-between; align-items: center; gap: 12px;
-      font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.1em;
-      text-transform: uppercase; color: var(--fg-40); margin-bottom: 16px; }
-    .mm-scenario { font-family: var(--font-serif); font-size: 1.06rem; line-height: 1.72;
-      color: var(--fg-90); margin: 0 0 18px; }
-    .mm-ask { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.12em;
-      text-transform: uppercase; color: var(--fg-50); margin: 0 0 8px; }
-    .mm-input { width: 100%; box-sizing: border-box; min-height: 116px; resize: vertical;
-      background: #0a0a0a; color: var(--fg); border: 1px solid var(--border); border-radius: 8px;
-      padding: 12px 13px; font-family: var(--font-serif); font-size: 1rem; line-height: 1.6; }
-    .mm-input:focus { outline: none; border-color: var(--fg-40); }
+      font-family: var(--font-mono); font-size: 0.64rem; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--fg-40); margin-bottom: 18px;
+      padding-bottom: 12px; border-bottom: 1px solid var(--fg-12); }
+    .mm-scenario { font-family: var(--font-serif); font-size: 1.18rem; line-height: 1.68;
+      color: var(--fg); margin: 0 0 22px; }
+    @media (min-width: 640px) { .mm-scenario { font-size: 1.28rem; } }
+    .mm-ask { font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.16em;
+      text-transform: uppercase; color: var(--mm-mentor); margin: 0 0 9px; }
+    .mm-input { width: 100%; box-sizing: border-box; min-height: 124px; resize: vertical;
+      background: #070707; color: var(--fg); border: 1px solid var(--border); border-radius: 9px;
+      padding: 14px; font-family: var(--font-serif); font-size: 1.02rem; line-height: 1.6; }
+    .mm-input:focus { outline: none; border-color: var(--mm-mentor); }
     .mm-btn { appearance: none; border: 1px solid var(--fg-30); background: var(--fg);
-      color: #000; border-radius: 8px; padding: 12px 20px; min-height: 46px;
-      font-family: var(--font-mono); font-size: 0.82rem; font-weight: 400; cursor: pointer;
+      color: #000; border-radius: 9px; padding: 12px 22px; min-height: 48px;
+      font-family: var(--font-mono); font-size: 0.8rem; cursor: pointer;
       touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
     .mm-btn:disabled { background: transparent; color: var(--fg-30); border-color: var(--border); cursor: not-allowed; }
     .mm-btn--ghost { background: transparent; color: var(--fg-70); border-color: var(--border); }
     .mm-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 14px; }
-    .mm-hint { font-family: var(--font-mono); font-size: 0.68rem; color: var(--fg-40); }
+    .mm-hint { font-family: var(--font-mono); font-size: 0.66rem; color: var(--fg-40); }
 
-    .mm-reveal { margin-top: 22px; padding-top: 20px; border-top: 1px solid var(--border); }
+    .mm-reveal { margin-top: 24px; padding-top: 22px; border-top: 1px solid var(--fg-12); }
     .mm-yours { font-family: var(--font-serif); font-size: 0.95rem; line-height: 1.65;
-      color: var(--fg-55); border-left: 2px solid var(--border); padding-left: 14px; margin: 0 0 20px;
+      color: var(--fg-55); border-left: 2px solid var(--border); padding-left: 14px; margin: 0 0 22px;
       white-space: pre-wrap; word-break: break-word; }
-    .mm-h { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.14em;
-      text-transform: uppercase; color: var(--fg-45); margin: 0 0 7px; }
-    .mm-model { font-family: var(--font-serif); font-size: 1.02rem; line-height: 1.7;
-      color: var(--fg); border-left: 2px solid #6ee7a8; padding-left: 14px; margin: 0 0 20px; }
-    .mm-technique { margin: 0 0 20px; }
-    .mm-technique__name { font-family: var(--font-serif); font-size: 1rem; color: var(--fg); }
-    .mm-technique__why { font-family: var(--font-serif); font-size: 0.92rem; line-height: 1.65;
-      color: var(--fg-70); margin-top: 6px; }
+    .mm-h { font-family: var(--font-mono); font-size: 0.64rem; letter-spacing: 0.16em;
+      text-transform: uppercase; color: var(--fg-45); margin: 0 0 8px; }
+    .mm-model { font-family: var(--font-serif); font-size: 1.08rem; line-height: 1.7;
+      color: var(--fg); border-left: 3px solid var(--mm-mentor); padding-left: 16px; margin: 0 0 22px; }
+    .mm-technique { margin: 0 0 22px; padding: 14px 16px; border-radius: 9px;
+      background: hsl(150 22% 7%); border: 1px solid hsl(150 20% 15%); }
+    .mm-technique__name { font-family: var(--font-display); font-size: 1.14rem; color: var(--mm-mentor); }
+    .mm-technique__why { font-family: var(--font-serif); font-size: 0.94rem; line-height: 1.65;
+      color: var(--fg-75); margin-top: 7px; }
 
     .mm-rubric { list-style: none; margin: 0 0 4px; padding: 0; }
-    .mm-rubric li { margin-bottom: 8px; }
-    /* 44px minimum: these checkboxes are the thing you tap on a phone, and a
-       single-line rubric point was coming out at 38. */
-    .mm-rubric label { display: flex; gap: 11px; align-items: flex-start; cursor: pointer;
-      font-family: var(--font-serif); font-size: 0.95rem; line-height: 1.55; color: var(--fg-80);
-      padding: 11px 0; min-height: 44px; box-sizing: border-box; touch-action: manipulation; }
-    .mm-rubric input { flex: none; width: 20px; height: 20px; margin-top: 1px; accent-color: #6ee7a8; }
+    .mm-rubric li { margin-bottom: 4px; }
+    .mm-rubric label { display: flex; gap: 12px; align-items: flex-start; cursor: pointer;
+      font-family: var(--font-serif); font-size: 0.96rem; line-height: 1.55; color: var(--fg-80);
+      padding: 11px 12px; min-height: 44px; box-sizing: border-box; border-radius: 8px;
+      border: 1px solid transparent; touch-action: manipulation; }
+    .mm-rubric label:hover { border-color: var(--border); background: hsl(0 0% 5%); }
+    .mm-rubric input { flex: none; width: 21px; height: 21px; margin-top: 1px; accent-color: var(--mm-mentor); }
 
-    .mm-fail { margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--fg-12); }
-    .mm-fail__item { margin-bottom: 12px; }
-    .mm-fail__k { font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.12em;
-      text-transform: uppercase; color: var(--fg-40); }
-    .mm-fail__q { font-family: var(--font-serif); font-size: 0.94rem; line-height: 1.6;
-      color: var(--fg-60); font-style: italic; margin-top: 2px; }
-    .mm-note { font-family: var(--font-serif); font-size: 0.95rem; line-height: 1.65;
-      color: var(--fg-80); border-left: 2px solid var(--fg-30); padding-left: 14px; margin: 18px 0 0; }
+    .mm-fail { margin-top: 22px; padding-top: 20px; border-top: 1px solid var(--fg-12); }
+    .mm-fail__item { border-left: 3px solid var(--fg-20); padding: 2px 0 2px 14px; margin-bottom: 14px; }
+    .mm-fail__item--enf { border-left-color: var(--mm-enf); }
+    .mm-fail__item--pro { border-left-color: var(--mm-pro); }
+    .mm-fail__item--sil { border-left-color: var(--mm-sil); }
+    .mm-fail__k { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.13em;
+      text-transform: uppercase; color: var(--fg-45); }
+    .mm-fail__item--enf .mm-fail__k { color: var(--mm-enf); }
+    .mm-fail__item--pro .mm-fail__k { color: var(--mm-pro); }
+    .mm-fail__item--sil .mm-fail__k { color: var(--mm-sil); }
+    .mm-fail__q { font-family: var(--font-serif); font-size: 0.96rem; line-height: 1.6;
+      color: var(--fg-65); font-style: italic; margin-top: 3px; }
+    .mm-note { font-family: var(--font-serif); font-size: 0.98rem; line-height: 1.65;
+      color: var(--fg-85); border-left: 3px solid var(--fg-30); padding-left: 16px; margin: 20px 0 0; }
 
-    /* progress */
-    .mm-prog { display: flex; flex-wrap: wrap; gap: 5px; margin: 10px 0 0; }
-    .mm-pill { font-family: var(--font-mono); font-size: 0.66rem; padding: 4px 8px;
+    /* how it works — three cards instead of four paragraphs */
+    .mm-how { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 1rem 0 0; }
+    @media (max-width: 640px) { .mm-how { grid-template-columns: 1fr; } }
+    .mm-how__c { border: 1px solid var(--border); border-radius: 10px; padding: 16px 15px; }
+    .mm-how__n { font-family: var(--font-mono); font-size: 0.58rem; letter-spacing: 0.16em;
+      text-transform: uppercase; color: var(--mm-mentor); }
+    .mm-how__t { font-family: var(--font-display); font-size: 1.08rem; color: var(--fg); margin: 7px 0 6px; }
+    .mm-how__d { font-family: var(--font-serif); font-size: 0.88rem; line-height: 1.6; color: var(--fg-60); }
+
+    /* technique grid */
+    .mm-techlist { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 1rem 0 0; }
+    @media (max-width: 620px) { .mm-techlist { grid-template-columns: 1fr; } }
+    .mm-techgroup { grid-column: 1 / -1; font-family: var(--font-mono); font-size: 0.62rem;
+      letter-spacing: 0.18em; text-transform: uppercase; color: var(--fg-40); margin: 1.3rem 0 0.1rem; }
+    .mm-tech { display: flex; gap: 12px; padding: 13px 14px; border: 1px solid var(--border);
+      border-radius: 9px; background: hsl(0 0% 3%); }
+    .mm-tech__n { font-family: var(--font-mono); font-size: 0.7rem; color: var(--mm-mentor);
+      flex: none; width: 1.4rem; padding-top: 3px; }
+    .mm-tech__b { min-width: 0; }
+    .mm-tech__name { font-family: var(--font-display); font-size: 1rem; color: var(--fg); line-height: 1.25; }
+    .mm-tech__short { font-family: var(--font-serif); font-size: 0.84rem; color: var(--fg-55);
+      line-height: 1.55; margin-top: 5px; }
+
+    .mm-prog { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 0; }
+    .mm-pill { font-family: var(--font-mono); font-size: 0.66rem; padding: 6px 10px;
       border-radius: 99px; border: 1px solid var(--border); color: var(--fg-45); }
-    .mm-pill.solid { border-color: #2f5c44; color: #6ee7a8; }
-    .mm-pill.work  { border-color: #5c4a2f; color: #d9b26a; }
+    .mm-pill.solid { border-color: hsl(150 30% 28%); color: var(--mm-mentor); }
+    .mm-pill.work  { border-color: hsl(40 40% 28%); color: var(--mm-pro); }
 
     .mm-src { font-family: var(--font-serif); font-size: 0.9rem; line-height: 1.7; color: var(--fg-60); }
     .mm-src li { margin-bottom: 9px; }
-    .mm-priv { font-family: var(--font-mono); font-size: 0.68rem; color: var(--fg-40); margin-top: 14px; }
-    @media (max-width: 520px) {
-      .mm-grid { grid-template-columns: 1fr; font-size: 0.74rem; }
-      .mm-grid .hd:first-child { display: none; }
-    }
+    .mm-priv { font-family: var(--font-mono); font-size: 0.66rem; color: var(--fg-40); margin-top: 16px; }
   </style>
 </head>
 <body>
@@ -163,37 +234,27 @@
       <div class="mm-wrap">
 
         <h1 class="page-title">Mentor Mindset Practice</h1>
-        <p class="page-subtitle">Nineteen techniques from David Yeager's <em>10 to 25</em>. You write your answer before you see his.</p>
+        <p class="mm-lede">Nineteen techniques from David Yeager's <em>10 to 25</em>. You write your answer before you see his.</p>
 
-        <section class="mm-prose">
-          <p><strong>The mentor mindset is high standards and high support at the same time.</strong> Chip Engelland's version of it is the balance between challenge and safety: challenge grows people in their areas of weakness, safety lets them trust they will not be harmed by stretching. Drop either one and you land in a failure mode with a name.</p>
-
-          <div class="mm-grid" role="img" aria-label="Two by two. High standards with low support is the enforcer. High standards with high support is the mentor. Low standards with low support is neglect. Low standards with high support is the protector.">
-            <div class="hd"></div>
-            <div class="hd">Low support</div>
-            <div class="hd">High support</div>
-            <div class="hd">High standards</div>
-            <div class="cell"><b>Enforcer</b><span>Rank and yank. The standard with nothing behind it.</span></div>
-            <div class="cell is-goal"><b>Mentor</b><span>The bar stays up and so does the scaffolding.</span></div>
-            <div class="hd">Low standards</div>
-            <div class="cell"><b>Neglect</b><span>No bar, no help.</span></div>
-            <div class="cell"><b>Protector</b><span>The bar comes down to spare them failure.</span></div>
+        <div class="mm-2x2" role="img" aria-label="A two by two. High standards with low support is the enforcer. High standards with high support is the mentor, the target. Low standards with low support is neglect. Low standards with high support is the protector.">
+          <p class="mm-2x2__axis-x">Support &rarr;</p>
+          <div class="mm-2x2__row">
+            <div class="mm-2x2__ylab">High<br>standards</div>
+            <div class="mm-q mm-q--enf"><div class="mm-q__name">Enforcer</div><div class="mm-q__desc">Rank and yank. The standard with nothing behind it.</div></div>
+            <div class="mm-q mm-q--mentor"><div class="mm-q__name">Mentor</div><div class="mm-q__desc">The bar stays up and so does the scaffolding.</div><div class="mm-q__tag">the one you are practising</div></div>
           </div>
+          <div class="mm-2x2__row">
+            <div class="mm-2x2__ylab">Low<br>standards</div>
+            <div class="mm-q mm-q--neg"><div class="mm-q__name">Neglect</div><div class="mm-q__desc">No bar, no help.</div></div>
+            <div class="mm-q mm-q--pro"><div class="mm-q__name">Protector</div><div class="mm-q__desc">The bar comes down to spare them failure. The harder trap, because it feels like kindness.</div></div>
+          </div>
+        </div>
 
-          <p><strong>The protector is the harder trap, because it feels like kindness.</strong> Lowering a standard tells someone you do not think they can meet it. That is why every scenario here shows you the protector version alongside the enforcer version — the wrong answer that feels warm is the one worth being able to spot in your own mouth.</p>
-
-          <h2 class="mm-label">Why the tool works this way</h2>
-
-          <p><strong>You type before you see the answer.</strong> That is deliberate and it is the whole design. Reading a model answer and nodding is recognition, and recognition feels like learning while mostly not being it. Producing an answer from memory first is retrieval, and retrieval is what builds the thing you can use later, in a corridor, with a real fifteen-year-old in front of you.</p>
-
-          <p><strong>Then you grade yourself against a rubric.</strong> Comparing your own words to a standard is self-explanation, which is about the strongest single technique in the learning science literature — Bisra, Liu, Nesbit, Salimi and Winne's 2018 meta-analysis of 69 effect sizes puts it at g ≈ 0.55.</p>
-
-          <p><strong>The scenarios are interleaved, never blocked.</strong> You will not get two situations from the same technique in a row. Working out <em>which</em> technique a situation calls for is the hard part and the part that transfers; grouping them by technique would hand you that for free and quietly delete the skill.</p>
-
-          <p><strong>Anything you score badly comes back soon; anything you nail comes back much later.</strong> Roughly three items later versus roughly thirty. Spacing is what makes it stick, and the schedule aims to keep you succeeding about 85% of the time — hard enough to be worth the effort, not so hard it buries you.</p>
-
-          <p>There is no multiple choice, no timer, no score, no streak and no badge. The book's own argument is that external rewards move the reward from inside to outside, and a tool that taught the mentor mindset while bribing you to return would be arguing with itself.</p>
-        </section>
+        <div class="mm-stats">
+          <div class="mm-stat"><div class="mm-stat__n">17% <em>&rarr; 71%</em></div><div class="mm-stat__k">Revision rates, one sentence of wise feedback</div></div>
+          <div class="mm-stat"><div class="mm-stat__n">0% <em>&rarr; 82%</em></div><div class="mm-stat__k">Same, among students lowest in trust</div></div>
+          <div class="mm-stat"><div class="mm-stat__n">70%</div><div class="mm-stat__k">Felt threatened when the officer said nothing first</div></div>
+        </div>
 
         <!-- ── the tool ────────────────────────────────────────────────── -->
         <h2 class="mm-label">The practice</h2>
@@ -242,9 +303,9 @@
                 <div class="mm-note" id="mm-verdict"></div>
                 <div class="mm-fail">
                   <p class="mm-h">The same moment, got wrong</p>
-                  <div class="mm-fail__item"><div class="mm-fail__k">Enforcer — the standard with nothing behind it</div><div class="mm-fail__q" id="mm-f-enf"></div></div>
-                  <div class="mm-fail__item"><div class="mm-fail__k">Protector — warmth with the bar lowered</div><div class="mm-fail__q" id="mm-f-pro"></div></div>
-                  <div class="mm-fail__item"><div class="mm-fail__k">Silent — the right move, reason unsaid</div><div class="mm-fail__q" id="mm-f-sil"></div></div>
+                  <div class="mm-fail__item mm-fail__item--enf"><div class="mm-fail__k">Enforcer — the standard with nothing behind it</div><div class="mm-fail__q" id="mm-f-enf"></div></div>
+                  <div class="mm-fail__item mm-fail__item--pro"><div class="mm-fail__k">Protector — warmth with the bar lowered</div><div class="mm-fail__q" id="mm-f-pro"></div></div>
+                  <div class="mm-fail__item mm-fail__item--sil"><div class="mm-fail__k">Silent — the right move, reason unsaid</div><div class="mm-fail__q" id="mm-f-sil"></div></div>
                 </div>
                 <div class="mm-row">
                   <button class="mm-btn" id="mm-next">Next scenario</button>
@@ -254,6 +315,19 @@
             </div>
           </div>
         </div>
+
+        <h2 class="mm-label">Why it works this way</h2>
+        <div class="mm-how">
+          <div class="mm-how__c"><div class="mm-how__n">01 — Recall</div><div class="mm-how__t">You type first</div><div class="mm-how__d">Reading a model answer and nodding is recognition, and recognition feels like learning while mostly not being it. Producing one from memory is what you can still do in a corridor six weeks later.</div></div>
+          <div class="mm-how__c"><div class="mm-how__n">02 — Interleaved</div><div class="mm-how__t">Never two in a row</div><div class="mm-how__d">You never get two situations from the same technique consecutively. Working out <em>which</em> technique a moment calls for is the hard part, and blocking them hands it to you for free.</div></div>
+          <div class="mm-how__c"><div class="mm-how__n">03 — Spaced</div><div class="mm-how__t">Bad ones come back</div><div class="mm-how__d">Score badly and it returns in about three scenarios. Nail it and it returns in about thirty. The queue aims to keep you succeeding around 85% of the time.</div></div>
+        </div>
+
+        <section class="mm-prose" style="margin-top:1.4rem;">
+          <p><strong>You then grade yourself against a rubric</strong>, which is self-explanation — about the strongest single technique in the learning science literature, at g ≈ 0.55 across Bisra, Liu, Nesbit, Salimi and Winne's 2018 meta-analysis of 69 effect sizes.</p>
+          <p>There is no multiple choice, no timer, no score, no streak and no badge. The book's own argument is that external rewards move the reward from inside to outside, and a tool that taught the mentor mindset while bribing you to return would be arguing with itself.</p>
+          <p><strong>Every scenario shows you the protector version alongside the enforcer version</strong> once you have answered. The wrong answer that feels warm is the one worth being able to spot in your own mouth.</p>
+        </section>
 
         <div id="mm-progress-wrap" hidden>
           <h2 class="mm-label">Where you are</h2>
