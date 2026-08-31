@@ -100,6 +100,14 @@
       padding: 18px 2px; }
     .mm-undernote { font-family: var(--font-serif); font-size: 0.88rem; line-height: 1.6;
       color: var(--fg-50); margin: 0 0 1.1rem; }
+    /* The dashboard's own title, sized as a heading rather than the small mono
+       label the other sections use — this is the part of the page people came
+       for, so it gets to announce itself. */
+    .mm-dashtitle { font-family: var(--font-display); font-size: clamp(1.32rem, 3.4vw, 1.72rem);
+      line-height: 1.15; color: var(--fg); font-weight: 400; margin: 2.4rem 0 0.4rem; }
+    .mm-dashsrc { font-family: var(--font-mono); font-size: 0.63rem; letter-spacing: 0.13em;
+      text-transform: uppercase; color: var(--fg-45); margin: 0 0 0.85rem; }
+    .mm-dashsrc em { font-style: normal; color: var(--fg-60); }
 
     .mm-group { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.18em;
       text-transform: uppercase; color: var(--fg-40); margin: 1.7rem 0 0.6rem; }
@@ -220,6 +228,7 @@
       .mm-prose { line-height: 1.7; }
       .mm-fold { margin-top: 1.7rem; }
       .mm-label { margin-top: 1.7rem; }
+      .mm-dashtitle { margin-top: 1.7rem; }
     }
     @media (prefers-reduced-motion: reduce) {
       .mm-card, .mm-card__plus, .mm-also a { transition: none; }
@@ -315,14 +324,14 @@
         </details>
 
         <!-- ── the dashboard ─────────────────────────────────────────── -->
-        <h2 class="mm-label">What's happening right now</h2>
-        <p class="mm-sub mm-sub--tight">Nineteen situations. Tap the one in front of you.</p>
+        <h2 class="mm-dashtitle">19 techniques for motivating young people</h2>
+        <p class="mm-dashsrc">Source: David Yeager's book <em>10 to 25</em></p>
 
         <div class="mm-searchwrap">
           <label class="sr-only" for="mm-search">Filter situations</label>
           <input class="mm-search" id="mm-search" type="search" placeholder="Filter — feedback, belonging, scared, grudge…" autocomplete="off">
         </div>
-        <p class="mm-undernote">Several techniques usually apply to any real moment, so each card names the others that are live too. There is no single right answer here, only better and worse ones.</p>
+        <p class="mm-undernote">There is no single right answer here, only better and worse ones. Use these techniques as guide posts for your relationship building and coaching.</p>
         <p class="mm-noresult" id="mm-noresult" hidden>Nothing matches that. Try a word from the situation, or a technique name.</p>
 
         <div id="mm-dash">
