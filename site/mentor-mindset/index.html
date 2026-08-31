@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mentor Mindset Practice — James Floyd</title>
+  <meta name="description" content="A free practice tool for the nineteen mentor-mindset techniques in David Yeager's 10 to 25. Read a scenario, type what you would actually say, then compare it against a model answer and a rubric. Nothing leaves your browser.">
+  <link rel="canonical" href="https://jamesfloyds.world/mentor-mindset/">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://jamesfloyds.world/mentor-mindset/">
+  <meta property="og:title" content="Mentor Mindset Practice">
+  <meta property="og:description" content="Nineteen techniques from David Yeager's 10 to 25. You type your answer before you see the model one — recall, not recognition.">
+  <meta property="og:image" content="https://jamesfloyds.world/mentor-mindset/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Mentor Mindset Practice">
+  <meta name="twitter:description" content="Nineteen techniques from David Yeager's 10 to 25. Type your answer before you see the model one.">
+  <meta name="twitter:image" content="https://jamesfloyds.world/mentor-mindset/og.png">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=DM+Mono:wght@300;400&family=Lora:ital,wght@0,400;0,500;1,400&display=swap">
+  <link rel="stylesheet" href="/css/site.css">
+  <style>
+    .mm-wrap { max-width: 700px; margin: 0 auto; }
+    .mm-prose { font-family: var(--font-serif); font-size: 1.02rem; line-height: 1.8; color: var(--fg-80); }
+    .mm-prose p { margin: 0 0 1.1rem; }
+    .mm-prose strong { color: var(--fg); font-weight: 600; }
+    .mm-prose em { color: var(--fg-90); }
+
+    .mm-label { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--fg-50); margin: 3rem 0 1rem; }
+
+    /* the 2x2 */
+    .mm-grid { display: grid; grid-template-columns: auto 1fr 1fr; gap: 1px; background: var(--border);
+      border: 1px solid var(--border); margin: 1.5rem 0; font-family: var(--font-mono); font-size: 0.76rem; }
+    .mm-grid > div { background: var(--bg); padding: 12px 10px; }
+    .mm-grid .hd { color: var(--fg-50); text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.64rem; }
+    .mm-grid .cell b { display: block; color: var(--fg); font-size: 0.86rem; margin-bottom: 4px; font-weight: 600; }
+    .mm-grid .cell span { color: var(--fg-55); line-height: 1.5; display: block; }
+    .mm-grid .cell.is-goal b { color: #6ee7a8; }
+
+    /* technique list */
+    .mm-techlist { margin: 1rem 0 0; padding: 0; list-style: none; }
+    .mm-techgroup { font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.16em;
+      text-transform: uppercase; color: var(--fg-40); margin: 1.4rem 0 0.5rem; }
+    .mm-tech { display: flex; gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--fg-12); }
+    .mm-tech:last-child { border-bottom: 0; }
+    .mm-tech__n { font-family: var(--font-mono); font-size: 0.72rem; color: var(--fg-40);
+      flex: none; width: 1.5rem; padding-top: 2px; }
+    .mm-tech__b { min-width: 0; }
+    .mm-tech__name { font-family: var(--font-serif); font-size: 0.98rem; color: var(--fg); }
+    .mm-tech__short { font-family: var(--font-serif); font-size: 0.86rem; color: var(--fg-55);
+      line-height: 1.6; margin-top: 3px; }
+
+    /* the tool */
+    .mm-tool { border: 1px solid var(--border); border-radius: 10px; padding: 20px;
+      margin: 1.5rem 0; background: var(--card-bg); }
+    @media (min-width: 640px) { .mm-tool { padding: 26px; } }
+    .mm-meta { display: flex; justify-content: space-between; align-items: center; gap: 12px;
+      font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--fg-40); margin-bottom: 16px; }
+    .mm-scenario { font-family: var(--font-serif); font-size: 1.06rem; line-height: 1.72;
+      color: var(--fg-90); margin: 0 0 18px; }
+    .mm-ask { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--fg-50); margin: 0 0 8px; }
+    .mm-input { width: 100%; box-sizing: border-box; min-height: 116px; resize: vertical;
+      background: #0a0a0a; color: var(--fg); border: 1px solid var(--border); border-radius: 8px;
+      padding: 12px 13px; font-family: var(--font-serif); font-size: 1rem; line-height: 1.6; }
+    .mm-input:focus { outline: none; border-color: var(--fg-40); }
+    .mm-btn { appearance: none; border: 1px solid var(--fg-30); background: var(--fg);
+      color: #000; border-radius: 8px; padding: 12px 20px; min-height: 46px;
+      font-family: var(--font-mono); font-size: 0.82rem; font-weight: 400; cursor: pointer;
+      touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+    .mm-btn:disabled { background: transparent; color: var(--fg-30); border-color: var(--border); cursor: not-allowed; }
+    .mm-btn--ghost { background: transparent; color: var(--fg-70); border-color: var(--border); }
+    .mm-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 14px; }
+    .mm-hint { font-family: var(--font-mono); font-size: 0.68rem; color: var(--fg-40); }
+
+    .mm-reveal { margin-top: 22px; padding-top: 20px; border-top: 1px solid var(--border); }
+    .mm-yours { font-family: var(--font-serif); font-size: 0.95rem; line-height: 1.65;
+      color: var(--fg-55); border-left: 2px solid var(--border); padding-left: 14px; margin: 0 0 20px;
+      white-space: pre-wrap; word-break: break-word; }
+    .mm-h { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--fg-45); margin: 0 0 7px; }
+    .mm-model { font-family: var(--font-serif); font-size: 1.02rem; line-height: 1.7;
+      color: var(--fg); border-left: 2px solid #6ee7a8; padding-left: 14px; margin: 0 0 20px; }
+    .mm-technique { margin: 0 0 20px; }
+    .mm-technique__name { font-family: var(--font-serif); font-size: 1rem; color: var(--fg); }
+    .mm-technique__why { font-family: var(--font-serif); font-size: 0.92rem; line-height: 1.65;
+      color: var(--fg-70); margin-top: 6px; }
+
+    .mm-rubric { list-style: none; margin: 0 0 4px; padding: 0; }
+    .mm-rubric li { margin-bottom: 8px; }
+    /* 44px minimum: these checkboxes are the thing you tap on a phone, and a
+       single-line rubric point was coming out at 38. */
+    .mm-rubric label { display: flex; gap: 11px; align-items: flex-start; cursor: pointer;
+      font-family: var(--font-serif); font-size: 0.95rem; line-height: 1.55; color: var(--fg-80);
+      padding: 11px 0; min-height: 44px; box-sizing: border-box; touch-action: manipulation; }
+    .mm-rubric input { flex: none; width: 20px; height: 20px; margin-top: 1px; accent-color: #6ee7a8; }
+
+    .mm-fail { margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--fg-12); }
+    .mm-fail__item { margin-bottom: 12px; }
+    .mm-fail__k { font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--fg-40); }
+    .mm-fail__q { font-family: var(--font-serif); font-size: 0.94rem; line-height: 1.6;
+      color: var(--fg-60); font-style: italic; margin-top: 2px; }
+    .mm-note { font-family: var(--font-serif); font-size: 0.95rem; line-height: 1.65;
+      color: var(--fg-80); border-left: 2px solid var(--fg-30); padding-left: 14px; margin: 18px 0 0; }
+
+    /* progress */
+    .mm-prog { display: flex; flex-wrap: wrap; gap: 5px; margin: 10px 0 0; }
+    .mm-pill { font-family: var(--font-mono); font-size: 0.66rem; padding: 4px 8px;
+      border-radius: 99px; border: 1px solid var(--border); color: var(--fg-45); }
+    .mm-pill.solid { border-color: #2f5c44; color: #6ee7a8; }
+    .mm-pill.work  { border-color: #5c4a2f; color: #d9b26a; }
+
+    .mm-src { font-family: var(--font-serif); font-size: 0.9rem; line-height: 1.7; color: var(--fg-60); }
+    .mm-src li { margin-bottom: 9px; }
+    .mm-priv { font-family: var(--font-mono); font-size: 0.68rem; color: var(--fg-40); margin-top: 14px; }
+    @media (max-width: 520px) {
+      .mm-grid { grid-template-columns: 1fr; font-size: 0.74rem; }
+      .mm-grid .hd:first-child { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="site-header anim-slide-dn">
+    <a href="/" class="site-header__logo" aria-label="Return to home"><img src="/logo.svg" alt="JF"></a>
+    <button class="site-header__menu-btn" id="menu-btn" aria-expanded="false" aria-controls="site-nav">Menu</button>
+  </header>
+
+  <nav class="site-nav" id="site-nav" aria-label="Main navigation">
+    <ul class="site-nav__list">
+      <li class="site-nav__item"><a href="/sonder/" class="site-nav__link">Sonder Series</a></li>
+      <li class="site-nav__item"><a href="/portfolio/" class="site-nav__link">Portfolio</a></li>
+      <li class="site-nav__item" data-has-sub>
+        <a href="/projects/" class="site-nav__link">Projects</a>
+        <div class="site-nav__sub">
+          <a href="/portfolio/" class="site-nav__sub-link">Portfolio</a>
+          <a href="/resume/" class="site-nav__sub-link">Resume</a>
+          <a href="/references/" class="site-nav__sub-link">References</a>
+        </div>
+      </li>
+      <li class="site-nav__item" data-has-sub>
+        <a href="/content/" class="site-nav__link">Content</a>
+        <div class="site-nav__sub">
+          <a href="/writing/" class="site-nav__sub-link">Writing</a>
+          <a href="/writing/#poems" class="site-nav__sub-link">Poems</a>
+          <a href="/pictures/" class="site-nav__sub-link">Memories</a>
+        </div>
+      </li>
+      <li class="site-nav__item"><a href="/network/" class="site-nav__link">Network</a></li>
+      <li class="site-nav__item"><a href="/blueprints/" class="site-nav__link">Blueprints</a></li>
+      <li class="site-nav__item" style="margin-top:24px;"><a href="/" class="site-nav__back">Back to Gallery</a></li>
+    </ul>
+    <button class="site-nav__close" id="nav-close">Close</button>
+  </nav>
+
+  <main class="page">
+    <div class="page-content anim-fade-up">
+      <div class="mm-wrap">
+
+        <h1 class="page-title">Mentor Mindset Practice</h1>
+        <p class="page-subtitle">Nineteen techniques from David Yeager's <em>10 to 25</em>. You write your answer before you see his.</p>
+
+        <section class="mm-prose">
+          <p><strong>The mentor mindset is high standards and high support at the same time.</strong> Chip Engelland's version of it is the balance between challenge and safety: challenge grows people in their areas of weakness, safety lets them trust they will not be harmed by stretching. Drop either one and you land in a failure mode with a name.</p>
+
+          <div class="mm-grid" role="img" aria-label="Two by two. High standards with low support is the enforcer. High standards with high support is the mentor. Low standards with low support is neglect. Low standards with high support is the protector.">
+            <div class="hd"></div>
+            <div class="hd">Low support</div>
+            <div class="hd">High support</div>
+            <div class="hd">High standards</div>
+            <div class="cell"><b>Enforcer</b><span>Rank and yank. The standard with nothing behind it.</span></div>
+            <div class="cell is-goal"><b>Mentor</b><span>The bar stays up and so does the scaffolding.</span></div>
+            <div class="hd">Low standards</div>
+            <div class="cell"><b>Neglect</b><span>No bar, no help.</span></div>
+            <div class="cell"><b>Protector</b><span>The bar comes down to spare them failure.</span></div>
+          </div>
+
+          <p><strong>The protector is the harder trap, because it feels like kindness.</strong> Lowering a standard tells someone you do not think they can meet it. That is why every scenario here shows you the protector version alongside the enforcer version — the wrong answer that feels warm is the one worth being able to spot in your own mouth.</p>
+
+          <h2 class="mm-label">Why the tool works this way</h2>
+
+          <p><strong>You type before you see the answer.</strong> That is deliberate and it is the whole design. Reading a model answer and nodding is recognition, and recognition feels like learning while mostly not being it. Producing an answer from memory first is retrieval, and retrieval is what builds the thing you can use later, in a corridor, with a real fifteen-year-old in front of you.</p>
+
+          <p><strong>Then you grade yourself against a rubric.</strong> Comparing your own words to a standard is self-explanation, which is about the strongest single technique in the learning science literature — Bisra, Liu, Nesbit, Salimi and Winne's 2018 meta-analysis of 69 effect sizes puts it at g ≈ 0.55.</p>
+
+          <p><strong>The scenarios are interleaved, never blocked.</strong> You will not get two situations from the same technique in a row. Working out <em>which</em> technique a situation calls for is the hard part and the part that transfers; grouping them by technique would hand you that for free and quietly delete the skill.</p>
+
+          <p><strong>Anything you score badly comes back soon; anything you nail comes back much later.</strong> Roughly three items later versus roughly thirty. Spacing is what makes it stick, and the schedule aims to keep you succeeding about 85% of the time — hard enough to be worth the effort, not so hard it buries you.</p>
+
+          <p>There is no multiple choice, no timer, no score, no streak and no badge. The book's own argument is that external rewards move the reward from inside to outside, and a tool that taught the mentor mindset while bribing you to return would be arguing with itself.</p>
+        </section>
+
+        <!-- ── the tool ────────────────────────────────────────────────── -->
+        <h2 class="mm-label">The practice</h2>
+
+        <div class="mm-tool" id="mm-tool">
+          <noscript>
+            <p class="mm-prose">The practice tool needs JavaScript. Everything else on this page — the frame, the nineteen techniques, the principles and the sources — is here without it.</p>
+          </noscript>
+          <div id="mm-app" hidden>
+            <div class="mm-meta">
+              <span id="mm-count">—</span>
+              <span id="mm-diff"></span>
+            </div>
+            <p class="mm-scenario" id="mm-scenario"></p>
+
+            <div id="mm-answer-stage">
+              <p class="mm-ask" id="mm-ask">What would you actually say?</p>
+              <label class="sr-only" for="mm-input">Your response</label>
+              <textarea class="mm-input" id="mm-input" placeholder="Type it the way you would say it out loud." autocomplete="off"></textarea>
+              <div class="mm-row">
+                <button class="mm-btn" id="mm-submit" disabled>Show the model answer</button>
+                <span class="mm-hint" id="mm-hint">Write something first — that is the point.</span>
+              </div>
+            </div>
+
+            <div class="mm-reveal" id="mm-reveal" hidden>
+              <p class="mm-h">What you wrote</p>
+              <div class="mm-yours" id="mm-yours"></div>
+
+              <p class="mm-h">A model answer</p>
+              <div class="mm-model" id="mm-model"></div>
+
+              <div class="mm-technique">
+                <p class="mm-h">The technique</p>
+                <div class="mm-technique__name" id="mm-tech-name"></div>
+                <div class="mm-technique__why" id="mm-tech-why"></div>
+              </div>
+
+              <p class="mm-h">Grade your own answer</p>
+              <ul class="mm-rubric" id="mm-rubric"></ul>
+              <div class="mm-row">
+                <button class="mm-btn" id="mm-grade">Record it</button>
+              </div>
+
+              <div id="mm-after" hidden>
+                <div class="mm-note" id="mm-verdict"></div>
+                <div class="mm-fail">
+                  <p class="mm-h">The same moment, got wrong</p>
+                  <div class="mm-fail__item"><div class="mm-fail__k">Enforcer — the standard with nothing behind it</div><div class="mm-fail__q" id="mm-f-enf"></div></div>
+                  <div class="mm-fail__item"><div class="mm-fail__k">Protector — warmth with the bar lowered</div><div class="mm-fail__q" id="mm-f-pro"></div></div>
+                  <div class="mm-fail__item"><div class="mm-fail__k">Silent — the right move, reason unsaid</div><div class="mm-fail__q" id="mm-f-sil"></div></div>
+                </div>
+                <div class="mm-row">
+                  <button class="mm-btn" id="mm-next">Next scenario</button>
+                  <button class="mm-btn mm-btn--ghost" id="mm-reset">Erase my progress</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="mm-progress-wrap" hidden>
+          <h2 class="mm-label">Where you are</h2>
+          <p class="mm-hint" id="mm-prog-note"></p>
+          <div class="mm-prog" id="mm-prog"></div>
+        </div>
+
+        <p class="mm-priv">Everything you type stays in this browser. Progress is kept in localStorage — no account, no sign-in, nothing sent anywhere, nothing I can see.</p>
+
+        <!-- ── the nineteen, prerendered so the page is useful without pressing start ── -->
+        <h2 class="mm-label">The nineteen techniques</h2>
+        <div class="mm-techlist">
+          <p class="mm-techgroup">Setting the standard</p>
+          <div class="mm-tech"><div class="mm-tech__n">1</div><div class="mm-tech__b"><div class="mm-tech__name">Calibrate to the zone of proximal development</div><div class="mm-tech__short">Set the task just past what they can do alone. If they finish it easily, raise it a step rather than repeating the level.</div></div></div>
+          <div class="mm-tech"><div class="mm-tech__n">2</div><div class="mm-tech__b"><div class="mm-tech__name">Hold the standard, don't dismiss the fear</div><div class="mm-tech__short">Both at once. "That sounds real, and we're still doing it. What would make it possible?" Never "you'll be fine", which dismisses, or "okay, skip it", which lowers.</div></div></div>
+          <div class="mm-tech"><div class="mm-tech__n">3</div><div class="mm-tech__b"><div class="mm-tech__name">Inclusive excellence</div><div class="mm-tech__short">More opportunity to get good, never a lower bar. Keivan Stassun's Fisk–Vanderbilt bridge became the largest US producer of Black and Latino physics and astronomy PhDs without lowering admissions. Uri Treisman's Berkeley calculus groups were harder than the regular course.</div></div></div>
+
+          <p class="mm-techgroup">Saying why</p>
+          <div class="mm-tech"><div class="mm-tech__n">4</div><div class="mm-tech__b"><div class="mm-tech__name">Transparency statement</div><div class="mm-tech__short">"My intention here is ___." In Kyle Dobson's policing study, officers who approached with no explanation left 70% of civilians feeling threatened. Opening with one sentence of intent doubled the length of the conversation. Same officers.</div></div></div>
+          <div class="mm-tech"><div class="mm-tech__n">5</div><div class="mm-tech__b"><div class="mm-tech__name">Wise feedback</div><div class="mm-tech__short">"I have high standards, and I'm giving you this feedback because I know you can meet them." Revision rates went 17% to 71% among Black seventh-graders; among those with low trust in teachers, 0% to 82%.</div></div></div>
+
+          <p class="mm-techgroup">The form of a correction</p>
+          <div class="mm-tech"><div class="mm-tech__n">6</div><div class="mm-tech__b"><div class="mm-tech__name">Correct without characterizing</div><div class="mm-tech__short">Never say anything negative about the person. Address the work, the situation or the feeling. Not "that shot was bad" but "how did that feel?" The standard stays; the insult goes.</div></div></div>
+          <div class="mm-tech"><div class="mm-tech__n">7</div><div class="mm-tech__b"><div class="mm-tech__name">Ask, don't tell</div><div class="mm-tech__short">Three tests: authentic (you don't already know the answer), uptake (your follow-up uses their words), collaborative ("so we can fix the problem"). Two moments where it matters most — when correcting, and when angry.</div></div></div>
+
+          <p class="mm-techgroup">Handing over control</p>
+          <div class="mm-tech"><div class="mm-tech__n">8</div><div class="mm-tech__b"><div class="mm-tech__name">Presume agency, then hand over the thing</div><div class="mm-tech__short">Three levels: respect autonomy, presume agency, give responsibility. The strongest is that they run it, not attend it.</div></div></div>
+          <div class="mm-tech"><div class="mm-tech__n">9</div><div class="mm-tech__b"><div class="mm-tech__name">Assure long-term commitment</div><div class="mm-tech__short">If they fail: "We're going to keep working on this. I'm not going anywhere."</div></div></div>
+
+          <p class="mm-techgroup">Status</p>
+          <div class="mm-tech"><div class="mm-tech__n">10</div><div class="mm-tech__b"><div class="mm-tech__name">Honor their status, never invoke yours</div><div class="mm-tech__short">If you're tempted to say "because I'm the adult", say what you actually need and why.</div></div></div>
+          <div class="mm-tech"><div class="mm-tech__n">11</div><div class="mm-tech__b"><div class="mm-tech__name">Recruit their values instead of forbidding</div><div class="mm-tech__short">Prohibition raises the status of the thing prohibited. Align the behaviour with autonomy, status and fairness instead. Bryan, Yeager, Hinojosa et al. 2016, <em>PNAS</em> — 536 eighth-graders read an exposé of food-industry marketing and chose healthier snacks a day later, in an unrelated setting.</div></div></div>
+          <div class="mm-tech"><div class="mm-tech__n">12</div><div class="mm-tech__b"><div class="mm-tech__name">Validate and explain, don't diminish</div><div class="mm-tech__short">"That makes sense to be frustrated about. Here's what's behind it."</div></div></div>
+
+          <p class="mm-techgroup">Meaning</p>
+          <div class="mm-tech"><div class="mm-tech__n">13</div><div class="mm-tech__b"><div class="mm-tech__name">Purpose now, and make the argument broad</div><div class="mm-tech__short">Future payoffs don't move adolescents; present meaning does. And narrow relevance excludes most of the room. Not "you'll use this in a finance job" but "this makes your brain stronger so you can improve the world".</div></div></div>
+          <div class="mm-tech"><div class="mm-tech__n">14</div><div class="mm-tech__b"><div class="mm-tech__name">Self-generated writing</div><div class="mm-tech__short">The student writes the argument. If the adult delivers it the mechanism is gone — they can discount you, they can't discount themselves. Four-part story: normalize, change is possible, action steps, snowball.</div></div></div>
+          <div class="mm-tech"><div class="mm-tech__n">15</div><div class="mm-tech__b"><div class="mm-tech__name">People can change</div><div class="mm-tech__short">Target the belief that character is fixed. Yeager's work here is on adolescent aggression and bullying.</div></div></div>
+
+          <p class="mm-techgroup">Stress</p>
+          <div class="mm-tech"><div class="mm-tech__n">16</div><div class="mm-tech__b"><div class="mm-tech__name">Stress reappraisal</div><div class="mm-tech__short">The racing heart is the body delivering oxygen — the system working, not a sign of failure. Demands exceed resources; the mentor raises the resources rather than lowering the demand.</div></div></div>
+          <div class="mm-tech"><div class="mm-tech__n">17</div><div class="mm-tech__b"><div class="mm-tech__name">Synergistic mindsets</div><div class="mm-tech__short">Growth mindset and stress reappraisal delivered together. Teach that ability can grow but not that the strain of growing it is useful, and the difficulty reads as proof they can't.</div></div></div>
+
+          <p class="mm-techgroup">Repair</p>
+          <div class="mm-tech"><div class="mm-tech__n">18</div><div class="mm-tech__b"><div class="mm-tech__name">The do-over</div><div class="mm-tech__short">If you broke the standard, go back, apologise for not upholding it, and ask curious, authentic questions. Yeager calls this the most realistic tool in the book, because implementation failure is guaranteed.</div></div></div>
+          <div class="mm-tech"><div class="mm-tech__n">19</div><div class="mm-tech__b"><div class="mm-tech__name">The six questions</div><div class="mm-tech__short">Their meaning: what does this mean to you, how does that make you feel, is that serving your goals. Then an alternative meaning and the same two questions again. A truce ends fighting; a treaty establishes terms.</div></div></div>
+        </div>
+
+        <h2 class="mm-label">The four principles underneath</h2>
+        <section class="mm-prose">
+          <p><strong>Status and respect drive behaviour from 10 to 25.</strong> Puberty makes the brain crave pride, admiration and respect, and become intensely averse to humiliation and shame. Social status was what mattered most for survival in ancestral group life, so young minds focus hard on fitting in.</p>
+          <p><strong>They're built to change, not to be reckless.</strong> The neurobiological incompetence model — teen brains are simply underdeveloped — was argued by the MacArthur network to spare juveniles the death penalty. A legal strategy became a scientific consensus. The alternative account, from Ron Dahl and the National Academies' <em>The Promise of Adolescence</em> (2019), is that they are extraordinarily responsive to social opportunity, which looks like impulsivity from the outside.</p>
+          <p><strong>Anything left unsaid between an authority and a non-authority gets guessed at.</strong> And the guess runs negative. Silence is not neutral.</p>
+          <p><strong>Beliefs gate behaviour.</strong> If someone doesn't believe prejudice can be reduced, they avoid cross-group conversations. Change the belief and the behaviour follows.</p>
+        </section>
+
+        <h2 class="mm-label">Sources</h2>
+        <section class="mm-prose">
+          <p>Every technique, every name and every piece of evidence on this page is David Yeager's, from <em>10 to 25: The Science of Motivating Young People</em>. The tool is mine; the content is his. If any of this is useful, buy the book — it is considerably better than a practice app.</p>
+          <ul class="mm-src">
+            <li><strong>Wise feedback</strong> — Cohen, Steele &amp; Ross 1999; Yeager et al. 2014, <em>Journal of Experimental Psychology: General</em>. Three double-blind randomized field experiments with seventh-graders.</li>
+            <li><strong>Transparency statement</strong> — Kyle Dobson's policing field study.</li>
+            <li><strong>Recruiting values</strong> — Bryan, Yeager, Hinojosa et al. 2016, <em>PNAS</em> 113(39). Double-blind, randomized, placebo-controlled, 536 eighth-graders. Follow-up in <em>Nature Human Behaviour</em>, 2019.</li>
+            <li><strong>Belonging</strong> — Walton &amp; Cohen 2011, <em>Science</em>. N = 92; the Black–white GPA gap cut 52% over three years, from one hour.</li>
+            <li><strong>Purpose</strong> — Yeager, Henderson, Paunesku, Walton, D'Mello, Spitzer &amp; Duckworth 2014, <em>JPSP</em> 107(4). d = 0.21 for low performers; 0.06 and not significant for high performers.</li>
+            <li><strong>Stress reappraisal</strong> — Jamieson, Peters, Greenwood &amp; Altose 2016, <em>SPPS</em>. 93 community college developmental maths students across five semesters. The 2024 meta-analysis across 44 effect sizes puts reappraisal at d = 0.23.</li>
+            <li><strong>Synergistic mindsets</strong> — Yeager, Bryan, Gross et al. 2022, <em>Nature</em> 607(7919), 512–520.</li>
+            <li><strong>The do-over and the six questions</strong> — Lorena Seidel.</li>
+            <li><strong>Self-explanation</strong>, which is why this tool makes you write first — Bisra, Liu, Nesbit, Salimi &amp; Winne 2018, meta-analysis of 69 effect sizes, g ≈ 0.55.</li>
+          </ul>
+        </section>
+
+      </div>
+    </div>
+  </main>
+
+<script src="/js/site.js" defer></script>
+<script>
+(function () {
+  'use strict';
+  var KEY = 'mentor.progress.v1';
+  var app = document.getElementById('mm-app');
+  var TECH = null, ALL = [], state = null, current = null, checked = [];
+
+  /* ── storage ─────────────────────────────────────────────────────────
+     Same shape-checking loader used elsewhere on the site: valid JSON of
+     the wrong shape is the dangerous corruption, because it parses and
+     then explodes on the first property access. */
+  function load() {
+    try {
+      var raw = localStorage.getItem(KEY);
+      if (!raw) return fresh();
+      var p = JSON.parse(raw);
+      if (!p || typeof p !== 'object' || Array.isArray(p)) return fresh();
+      if (!p.items || typeof p.items !== 'object') return fresh();
+      if (!Array.isArray(p.recent)) p.recent = [];
+      if (typeof p.seen !== 'number') p.seen = 0;
+      return p;
+    } catch (e) { return fresh(); }
+  }
+  function fresh() { return { items: {}, recent: [], seen: 0, lastTechnique: null }; }
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+
+  /* ── scheduling ──────────────────────────────────────────────────────
+     Three rules, in order of how much they matter:
+       1. Interleave. Never the same technique twice running — working out
+          WHICH technique applies is the skill, and blocking hands it over.
+       2. Space. A item scored 0-1 comes back after ~3, a 2 after ~10, a 3
+          after ~30, counted in items seen.
+       3. Aim at ~85%. Below the band, lean on techniques already scored
+          well; above it, bring in unseen ones faster. */
+  var DUE_AFTER = { 0: 3, 1: 3, 2: 10, 3: 30 };
+
+  function rec(id) { return state.items[id] || null; }
+  function isDue(s) {
+    var r = rec(s.id);
+    if (!r) return true;                       // never seen
+    return (state.seen - r.at) >= DUE_AFTER[r.score];
+  }
+  function trailingRate() {
+    var r = state.recent.slice(-10);
+    if (r.length < 4) return null;
+    var hits = r.filter(function (x) { return x >= 2; }).length;
+    return hits / r.length;
+  }
+  function pick() {
+    var band = trailingRate();
+    var pool = ALL.filter(function (s) { return s.technique !== state.lastTechnique; });
+    if (!pool.length) pool = ALL.slice();
+
+    var due = pool.filter(isDue);
+    var unseen = due.filter(function (s) { return !rec(s.id); });
+    var returning = due.filter(function (s) { return rec(s.id); });
+
+    // Below the band, rebuild on ground already held before adding anything new.
+    if (band !== null && band < 0.85 && returning.length) {
+      var strong = returning.filter(function (s) { return rec(s.id).score >= 2; });
+      if (strong.length) return rnd(strong);
+      return rnd(returning);
+    }
+    // At or above the band, introduce new material first.
+    if (unseen.length) return rnd(unseen);
+    if (returning.length) return rnd(returning);
+    // Nothing due: take whatever is furthest past its interval.
+    var sorted = pool.slice().sort(function (a, b) {
+      return overdue(b) - overdue(a);
+    });
+    return sorted[0];
+  }
+  function overdue(s) {
+    var r = rec(s.id);
+    if (!r) return 1e9;
+    return (state.seen - r.at) - DUE_AFTER[r.score];
+  }
+  function rnd(a) { return a[Math.floor(Math.random() * a.length)]; }
+
+  /* ── render ──────────────────────────────────────────────────────── */
+  function esc(t) { var d = document.createElement('div'); d.textContent = t == null ? '' : t; return d.innerHTML; }
+
+  function show(s) {
+    current = s; checked = [];
+    document.getElementById('mm-scenario').textContent = s.scenario;
+    document.getElementById('mm-count').textContent = 'Scenario ' + (state.seen + 1);
+    document.getElementById('mm-diff').textContent =
+      s.difficulty === 1 ? 'Straightforward' : s.difficulty === 2 ? 'Harder' : 'Two could apply';
+    var inp = document.getElementById('mm-input');
+    inp.value = ''; inp.disabled = false;
+    document.getElementById('mm-answer-stage').hidden = false;
+    document.getElementById('mm-reveal').hidden = true;
+    document.getElementById('mm-after').hidden = true;
+    document.getElementById('mm-submit').disabled = true;
+    document.getElementById('mm-hint').textContent = 'Write something first — that is the point.';
+    renderProgress();
+  }
+
+  function reveal() {
+    var s = current;
+    document.getElementById('mm-yours').textContent = document.getElementById('mm-input').value.trim();
+    document.getElementById('mm-model').textContent = s.modelAnswer;
+    var t = TECH[s.technique];
+    document.getElementById('mm-tech-name').textContent = t.n + '. ' + t.name;
+    document.getElementById('mm-tech-why').textContent = s.explanation;
+
+    var ul = document.getElementById('mm-rubric');
+    ul.innerHTML = '';
+    s.rubric.forEach(function (line, i) {
+      var li = document.createElement('li');
+      li.innerHTML = '<label><input type="checkbox" data-i="' + i + '"><span>' + esc(line) + '</span></label>';
+      ul.appendChild(li);
+    });
+    document.getElementById('mm-f-enf').textContent = '"' + s.failureModes.enforcer + '"';
+    document.getElementById('mm-f-pro').textContent = '"' + s.failureModes.protector + '"';
+    document.getElementById('mm-f-sil').textContent = '"' + s.failureModes.silent + '"';
+
+    document.getElementById('mm-answer-stage').hidden = true;
+    document.getElementById('mm-reveal').hidden = false;
+    document.getElementById('mm-reveal').scrollIntoView({ block: 'start', behavior: 'smooth' });
+  }
+
+  /* Wise feedback applied to the user: name the gap, restate that the
+     standard is high, give the specific next move. Never soften it and
+     never characterize the person. No praise on a 3 either — the book's
+     own argument is that praise moves the reward outside. */
+  function verdict(score, s) {
+    var t = TECH[s.technique];
+    if (score === 3) return 'Three for three against the rubric. ' + t.name + ' is holding. It will come back in about thirty scenarios to check that it still is.';
+    if (score === 2) return 'Two of three. The one you missed is the gap — reread it, then say your answer again out loud with that piece in it. This one returns in about ten scenarios.';
+    if (score === 1) return 'One of three. That is a long way from the standard, and the standard is not moving. The technique is ' + t.name + ' — read it again above, and this comes back within a few scenarios.';
+    return 'None of the three. Worth knowing that this is the normal starting point for a technique you have not used before, and it is not where you will stay. Read ' + t.name + ' again above. This one is back shortly.';
+  }
+
+  function grade() {
+    var boxes = document.querySelectorAll('#mm-rubric input');
+    var score = 0;
+    boxes.forEach(function (b) { if (b.checked) score++; });
+    state.items[current.id] = { score: score, at: state.seen };
+    state.recent.push(score);
+    if (state.recent.length > 40) state.recent = state.recent.slice(-40);
+    state.seen++;
+    state.lastTechnique = current.technique;
+    save();
+    document.getElementById('mm-verdict').textContent = verdict(score, current);
+    document.getElementById('mm-after').hidden = false;
+    renderProgress();
+  }
+
+  /* Progress is shown as which techniques are solid and which need work.
+     Deliberately not a running total, a percentage or a streak. */
+  function renderProgress() {
+    var wrap = document.getElementById('mm-progress-wrap');
+    var byTech = {};
+    Object.keys(state.items).forEach(function (id) {
+      var s = ALL.filter(function (x) { return x.id === id; })[0];
+      if (!s) return;
+      (byTech[s.technique] = byTech[s.technique] || []).push(state.items[id].score);
+    });
+    var keys = Object.keys(byTech);
+    if (!keys.length) { wrap.hidden = true; return; }
+    wrap.hidden = false;
+    var solid = 0;
+    var host = document.getElementById('mm-prog');
+    host.innerHTML = '';
+    keys.sort(function (a, b) { return TECH[a].n - TECH[b].n; }).forEach(function (k) {
+      var arr = byTech[k];
+      var avg = arr.reduce(function (a, b) { return a + b; }, 0) / arr.length;
+      var cls = avg >= 2.5 ? 'solid' : 'work';
+      if (cls === 'solid') solid++;
+      var el = document.createElement('span');
+      el.className = 'mm-pill ' + cls;
+      el.textContent = TECH[k].name;
+      host.appendChild(el);
+    });
+    document.getElementById('mm-prog-note').textContent =
+      solid + ' of ' + keys.length + ' techniques you have met are holding. ' +
+      (19 - keys.length) + ' of the nineteen you have not seen yet.';
+  }
+
+  /* ── wiring ─────────────────────────────────────────────────────── */
+  fetch('scenarios.json').then(function (r) { return r.json(); }).then(function (data) {
+    TECH = data.techniques; ALL = data.scenarios;
+    state = load();
+    app.hidden = false;
+    show(pick());
+  }).catch(function () {
+    document.getElementById('mm-tool').innerHTML =
+      '<p class="mm-prose">The scenarios did not load. Everything else on this page still works.</p>';
+  });
+
+  document.addEventListener('input', function (e) {
+    if (e.target.id !== 'mm-input') return;
+    var has = e.target.value.trim().length > 0;
+    document.getElementById('mm-submit').disabled = !has;
+    document.getElementById('mm-hint').textContent = has ? '' : 'Write something first — that is the point.';
+  });
+  document.addEventListener('click', function (e) {
+    var t = e.target.closest ? e.target.closest('button') : null;
+    if (!t) return;
+    if (t.id === 'mm-submit') { if (document.getElementById('mm-input').value.trim()) reveal(); }
+    if (t.id === 'mm-grade') grade();
+    if (t.id === 'mm-next') { show(pick()); document.getElementById('mm-tool').scrollIntoView({ block: 'start', behavior: 'smooth' }); }
+    if (t.id === 'mm-reset') {
+      if (!confirm('Erase your progress on every technique? This cannot be undone.')) return;
+      try { localStorage.removeItem(KEY); } catch (err) {}
+      state = fresh(); show(pick());
+    }
+  });
+})();
+</script>
+</body>
+</html>
