@@ -10,15 +10,25 @@
   --bg:    #000;
   --fg:    #fff;
 
-  /* Text opacity levels */
+  /* Text opacity levels. The scale used to skip 80/75/65/45/35/25, and rules
+     across the site asked for them anyway — an undefined custom property is
+     invalid at computed-value time, so `color` silently fell back to inherit
+     and `border-color` to currentColor. Nothing errored; the text and borders
+     just rendered brighter than they were written to be. Complete scale now. */
   --fg-90: hsl(0 0% 100% / 0.90);
   --fg-85: hsl(0 0% 100% / 0.85);
+  --fg-80: hsl(0 0% 100% / 0.80);
+  --fg-75: hsl(0 0% 100% / 0.75);
   --fg-70: hsl(0 0% 100% / 0.70);
+  --fg-65: hsl(0 0% 100% / 0.65);
   --fg-60: hsl(0 0% 100% / 0.60);
   --fg-55: hsl(0 0% 100% / 0.55);
   --fg-50: hsl(0 0% 100% / 0.50);
+  --fg-45: hsl(0 0% 100% / 0.46);   /* nominal 45%; 0.46 clears WCAG AA (4.58:1 on black), 0.45 lands at 4.41 */
   --fg-40: hsl(0 0% 100% / 0.40);
+  --fg-35: hsl(0 0% 100% / 0.35);
   --fg-30: hsl(0 0% 100% / 0.30);
+  --fg-25: hsl(0 0% 100% / 0.25);   /* 2.02:1 on black — decorative only, never text */
   --fg-20: hsl(0 0% 100% / 0.20);
   --fg-12: hsl(0 0% 100% / 0.12);
 
@@ -764,7 +774,7 @@ dialog::backdrop {
 .mm-opt[disabled] { cursor: default; }
 .mm-opt.is-correct { border-left: 2px solid hsl(0 0% 80%); }
 .mm-opt.is-wrong   { border-left: 2px solid hsl(0 40% 35%); }
-.mm-opt__letter { font-family: var(--font-mono); font-size: 11px; color: var(--fg-25); margin-right: 8px; }
+.mm-opt__letter { font-family: var(--font-mono); font-size: 11px; color: var(--fg-50); margin-right: 8px; }
 
 .mm-reveal {
   border: 1px solid var(--border);
@@ -791,7 +801,7 @@ dialog::backdrop {
   font-size: 10px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--fg-25);
+  color: var(--fg-50);
   margin-bottom: 8px;
 }
 .mm-cue__text { font-size: 11px; line-height: 1.65; color: var(--fg-45); font-style: italic; }
@@ -945,7 +955,7 @@ dialog::backdrop {
 }
 .ref-card__source {
   font-size: 10px;
-  color: var(--fg-25);
+  color: var(--fg-50);
   text-decoration: none;
   display: flex;
   align-items: center;
