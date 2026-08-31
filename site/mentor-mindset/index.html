@@ -31,9 +31,10 @@
       color: var(--fg-85); margin: 0 0 1.6rem; }
 
     .mm-label { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.2em;
-      text-transform: uppercase; color: var(--fg-50); margin: 3.5rem 0 0.5rem; }
+      text-transform: uppercase; color: var(--fg-50); margin: 2.4rem 0 0.5rem; }
     .mm-sub { font-family: var(--font-serif); font-size: 0.95rem; line-height: 1.65;
       color: var(--fg-55); margin: 0 0 1.2rem; }
+    .mm-sub--tight { margin-bottom: 0.7rem; }
 
     /* Enforcer red, protector amber, mentor green. Every card shows the wrong
        versions of its own moment in these two colours, so the three styles
@@ -68,6 +69,26 @@
     .mm-belief__d strong { color: var(--fg-85); font-weight: 600; }
     .mm-belief__d em { color: var(--fg-75); }
 
+    /* ── a collapsible top-level section ──────────────────────────────
+       The beliefs are required reading once, not every time you open the
+       page to look something up, so they fold away and the filter box stays
+       above the fold. */
+    .mm-fold { border: 1px solid var(--border); border-radius: 11px;
+      background: hsl(0 0% 3%); margin: 2.4rem 0 0; }
+    .mm-fold[open] { border-color: var(--fg-25); }
+    .mm-fold > summary { list-style: none; cursor: pointer; position: relative;
+      display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap;
+      padding: 16px 44px 16px 16px; min-height: 44px; box-sizing: border-box;
+      touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+    .mm-fold > summary::-webkit-details-marker { display: none; }
+    .mm-fold > summary:focus-visible { outline: 2px solid var(--mm-mentor); outline-offset: 2px; border-radius: 11px; }
+    .mm-fold__k { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--fg-65); }
+    .mm-fold__n { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--mm-mentor); }
+    .mm-fold__body { padding: 4px 16px 18px; }
+    .mm-fold__body > *:first-child { margin-top: 0; }
+
     /* ── the dashboard ────────────────────────────────────────────────── */
     .mm-searchwrap { position: relative; margin: 0 0 14px; }
     .mm-search { width: 100%; box-sizing: border-box; background: #070707; color: var(--fg);
@@ -77,6 +98,8 @@
     .mm-search::placeholder { color: var(--fg-35); }
     .mm-noresult { font-family: var(--font-mono); font-size: 0.7rem; color: var(--fg-45);
       padding: 18px 2px; }
+    .mm-undernote { font-family: var(--font-serif); font-size: 0.88rem; line-height: 1.6;
+      color: var(--fg-50); margin: 0 0 1.1rem; }
 
     .mm-group { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.18em;
       text-transform: uppercase; color: var(--fg-40); margin: 1.7rem 0 0.6rem; }
@@ -116,7 +139,8 @@
       background: currentColor; }
     .mm-card__plus::before { top: 10px; left: 3px; right: 3px; height: 1.5px; }
     .mm-card__plus::after  { left: 10px; top: 3px; bottom: 3px; width: 1.5px; }
-    .mm-card[open] .mm-card__plus { transform: rotate(45deg); color: var(--mm-mentor); }
+    .mm-card[open] .mm-card__plus,
+    .mm-fold[open] .mm-card__plus { transform: rotate(45deg); color: var(--mm-mentor); }
     .mm-card__body { padding: 2px 15px 18px; }
     .mm-card__body > *:first-child { margin-top: 0; }
 
@@ -190,6 +214,12 @@
 
     @media (max-width: 560px) {
       .mm-card__sit { font-size: 1.08rem; }
+      /* Tightened so the filter box still clears the fold on a 640px-tall
+         phone. Type sizes only — none of the copy above it is cut. */
+      .mm-lede { font-size: 1.06rem; }
+      .mm-prose { line-height: 1.7; }
+      .mm-fold { margin-top: 1.7rem; }
+      .mm-label { margin-top: 1.7rem; }
     }
     @media (prefers-reduced-motion: reduce) {
       .mm-card, .mm-card__plus, .mm-also a { transition: none; }
@@ -239,17 +269,19 @@
 
         <section class="mm-prose">
           <p>In practice it comes from beliefs and manifests as behaviors, interventions, and actions that give respect, hold the standard high, and provide the support and resources needed to meet or exceed those high standards.</p>
-          <p>As David Yeager says:</p>
         </section>
+
+        <!-- ── required beliefs ──────────────────────────────────────── -->
+        <details class="mm-fold" id="mm-beliefs">
+          <summary><span class="mm-card__plus" aria-hidden="true"></span><span class="mm-fold__k">Required beliefs</span><span class="mm-fold__n">Five</span></summary>
+          <div class="mm-fold__body">
+
+        <p class="mm-prose">As David Yeager says:</p>
 
         <blockquote class="mm-pull">
           Your beliefs about young people shape your style. If you think they're unruly, you become an enforcer. If you think they're fragile, you become a protector. But if you believe they have great potential under the right conditions, you become a mentor.
           <cite>David Yeager, 10 to 25</cite>
         </blockquote>
-
-        <!-- ── required beliefs ──────────────────────────────────────── -->
-        <h2 class="mm-label">Required beliefs</h2>
-        <p class="mm-sub">None of the techniques below survive contact with a guide who doesn't hold these. The behaviours come out of the beliefs; run them the other way round and students can tell.</p>
 
         <div class="mm-beliefs">
           <div class="mm-belief">
@@ -279,14 +311,18 @@
           </div>
         </div>
 
+          </div>
+        </details>
+
         <!-- ── the dashboard ─────────────────────────────────────────── -->
         <h2 class="mm-label">What's happening right now</h2>
-        <p class="mm-sub">Nineteen situations. Tap the one in front of you. Several techniques usually apply to any real moment, so each card names the others that are live too — there is no single right answer here, only better and worse ones.</p>
+        <p class="mm-sub mm-sub--tight">Nineteen situations. Tap the one in front of you.</p>
 
         <div class="mm-searchwrap">
           <label class="sr-only" for="mm-search">Filter situations</label>
-          <input class="mm-search" id="mm-search" type="search" placeholder="Filter — feedback, belonging, scared, phone, grudge…" autocomplete="off">
+          <input class="mm-search" id="mm-search" type="search" placeholder="Filter — feedback, belonging, scared, grudge…" autocomplete="off">
         </div>
+        <p class="mm-undernote">Several techniques usually apply to any real moment, so each card names the others that are live too. There is no single right answer here, only better and worse ones.</p>
         <p class="mm-noresult" id="mm-noresult" hidden>Nothing matches that. Try a word from the situation, or a technique name.</p>
 
         <div id="mm-dash">
