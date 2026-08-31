@@ -141,6 +141,18 @@
       color: var(--fg); }
     .mm-card__move { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.13em;
       text-transform: uppercase; color: var(--mm-mentor); margin-top: auto; padding-top: 9px; }
+    /* Every card is an if-then. The IF rides in the title as a quiet marker so
+       the situation itself still reads first; the THEN is the first thing in
+       the body, in mentor green, because it is the answer. */
+    .mm-card__sit .mm-if { font-family: var(--font-mono); font-size: 0.62em;
+      letter-spacing: 0.16em; text-transform: uppercase; color: var(--fg-40);
+      margin-right: 9px; vertical-align: 0.08em; }
+    .mm-then { background: hsl(150 22% 7%); border: 1px solid hsl(150 20% 15%);
+      border-radius: 9px; padding: 13px 15px; margin: 4px 0 2px;
+      font-family: var(--font-serif); font-size: 1.02rem; line-height: 1.6; color: var(--fg-90); }
+    .mm-then strong { color: var(--fg); font-weight: 600; }
+    .mm-then__k { display: block; font-family: var(--font-mono); font-size: 0.6rem;
+      letter-spacing: 0.16em; text-transform: uppercase; color: var(--mm-mentor); margin-bottom: 6px; }
     .mm-card__plus { position: absolute; top: 15px; right: 14px; width: 22px; height: 22px;
       color: var(--fg-35); transition: transform .18s, color .18s; }
     .mm-card__plus::before, .mm-card__plus::after { content: ''; position: absolute;
@@ -340,8 +352,9 @@
         <div class="mm-grid" data-grid>
 
           <details class="mm-card" id="s-feedback" data-search="giving hard feedback wise feedback high standards revision comments critique work not good enough">
-            <summary><span class="mm-card__plus" aria-hidden="true"></span><div class="mm-card__sit">I'm about to give hard feedback</div><div class="mm-card__move">01 · Wise feedback</div></summary>
+            <summary><span class="mm-card__plus" aria-hidden="true"></span><div class="mm-card__sit"><span class="mm-if">If</span>giving hard feedback</div><div class="mm-card__move">01 · Wise feedback</div></summary>
             <div class="mm-card__body">
+              <p class="mm-then"><span class="mm-then__k">Then</span>Give <strong>wise feedback</strong> &mdash; name the high standard, and say you know they can reach it.</p>
               <p class="mm-k">What it looks like</p>
               <p class="mm-heard">The work isn't good enough, they know you've read it, and they are braced.</p>
               <p class="mm-k">Say this</p>
@@ -352,13 +365,14 @@
               <div class="mm-wrong mm-wrong--enf"><div class="mm-wrong__k">Enforcer</div><div class="mm-wrong__q">“This isn't good enough. Do it again.”</div></div>
               <div class="mm-wrong mm-wrong--pro"><div class="mm-wrong__k">Protector</div><div class="mm-wrong__q">“This is great — maybe just tweak the middle a bit.”</div></div>
               <p class="mm-k">Also live here</p>
-              <div class="mm-also"><a href="#s-correcting">02 No negative</a><a href="#s-approach">08 Transparency</a><a href="#s-failed">03 Long-term commitment</a></div>
+              <div class="mm-also"><a href="#s-correcting">If correcting something they just did</a><a href="#s-approach">If approaching a kid, or opening a hard conversation</a><a href="#s-failed">If they just failed at something</a></div>
             </div>
           </details>
 
           <details class="mm-card" id="s-correcting" data-search="correcting their work wrong answer no negative only support how did that feel ask questions socrates engelland estrada">
-            <summary><span class="mm-card__plus" aria-hidden="true"></span><div class="mm-card__sit">I'm correcting something they just did</div><div class="mm-card__move">02 · No negative, only support</div></summary>
+            <summary><span class="mm-card__plus" aria-hidden="true"></span><div class="mm-card__sit"><span class="mm-if">If</span>correcting something they just did</div><div class="mm-card__move">02 · No negative, only support</div></summary>
             <div class="mm-card__body">
+              <p class="mm-then"><span class="mm-then__k">Then</span>Ask how it went. <strong>No negative, only support</strong> &mdash; never characterise the person.</p>
               <p class="mm-k">What it looks like</p>
               <p class="mm-heard">They've done it wrong and they're waiting for you to say so.</p>
               <p class="mm-k">Say this</p>
@@ -373,13 +387,14 @@
               <div class="mm-wrong mm-wrong--enf"><div class="mm-wrong__k">Enforcer</div><div class="mm-wrong__q">“That shot was bad.”</div></div>
               <div class="mm-wrong mm-wrong--pro"><div class="mm-wrong__k">Protector</div><div class="mm-wrong__q">Says nothing and lets it go, so they keep doing it.</div></div>
               <p class="mm-k">Also live here</p>
-              <div class="mm-also"><a href="#s-stuck">07 Ask, don't tell</a><a href="#s-feedback">01 Wise feedback</a></div>
+              <div class="mm-also"><a href="#s-stuck">If they're stuck, or the plan is unrealistic</a><a href="#s-feedback">If giving hard feedback</a></div>
             </div>
           </details>
 
           <details class="mm-card" id="s-failed" data-search="they just failed failure long term commitment i am not going anywhere jen come find me wall">
-            <summary><span class="mm-card__plus" aria-hidden="true"></span><div class="mm-card__sit">They just failed at something</div><div class="mm-card__move">03 · Assure long-term commitment</div></summary>
+            <summary><span class="mm-card__plus" aria-hidden="true"></span><div class="mm-card__sit"><span class="mm-if">If</span>they just failed at something</div><div class="mm-card__move">03 · Assure long-term commitment</div></summary>
             <div class="mm-card__body">
+              <p class="mm-then"><span class="mm-then__k">Then</span><strong>Assure long-term commitment</strong> &mdash; the standard hasn't moved, and neither have you.</p>
               <p class="mm-k">What it looks like</p>
               <p class="mm-heard">Silence, or “I told you I couldn't do it.”</p>
               <p class="mm-k">Say this</p>
@@ -393,13 +408,14 @@
               <div class="mm-wrong mm-wrong--enf"><div class="mm-wrong__k">Enforcer</div><div class="mm-wrong__q">“Well, that's what happens.”</div></div>
               <div class="mm-wrong mm-wrong--pro"><div class="mm-wrong__k">Protector</div><div class="mm-wrong__q">“Don't worry about it — it wasn't that important anyway.”</div></div>
               <p class="mm-k">Also live here</p>
-              <div class="mm-also"><a href="#s-temper">09 The do-over</a><a href="#s-notsmart">12 Synergistic mindsets</a><a href="#s-behind">19 Inclusive excellence</a></div>
+              <div class="mm-also"><a href="#s-temper">If you lost your temper, or broke the standard yourself</a><a href="#s-notsmart">If they say they're not smart enough</a><a href="#s-behind">If they're behind, and you want to lower the bar</a></div>
             </div>
           </details>
 
           <details class="mm-card" id="s-temper" data-search="i lost my temper raised my voice do over apology repair lorena seidel broke the standard">
-            <summary><span class="mm-card__plus" aria-hidden="true"></span><div class="mm-card__sit">I lost my temper, or broke the standard myself</div><div class="mm-card__move">09 · The do-over</div></summary>
+            <summary><span class="mm-card__plus" aria-hidden="true"></span><div class="mm-card__sit"><span class="mm-if">If</span>you lost your temper, or broke the standard yourself</div><div class="mm-card__move">09 · The do-over</div></summary>
             <div class="mm-card__body">
+              <p class="mm-then"><span class="mm-then__k">Then</span>Run a <strong>do-over</strong> &mdash; name what you did, name the standard, then hand them the floor.</p>
               <p class="mm-k">What it looks like</p>
               <p class="mm-heard">You raised your voice, or said the enforcer line, and you knew it as it left your mouth.</p>
               <p class="mm-k">Say this</p>
@@ -413,7 +429,7 @@
               <div class="mm-wrong mm-wrong--enf"><div class="mm-wrong__k">Enforcer</div><div class="mm-wrong__q">Never mentions it again, so the silence becomes the lesson.</div></div>
               <div class="mm-wrong mm-wrong--pro"><div class="mm-wrong__k">Protector</div><div class="mm-wrong__q">Apologises so much that they end up comforting you.</div></div>
               <p class="mm-k">Also live here</p>
-              <div class="mm-also"><a href="#s-approach">08 Transparency</a><a href="#s-correcting">02 No negative</a><a href="#s-samefight">10 Treaties</a></div>
+              <div class="mm-also"><a href="#s-approach">If approaching a kid, or opening a hard conversation</a><a href="#s-correcting">If correcting something they just did</a><a href="#s-samefight">If you keep having the same fight</a></div>
             </div>
           </details>
 
@@ -423,8 +439,9 @@
         <div class="mm-grid" data-grid>
 
           <details class="mm-card" id="s-request" data-search="need them to do something they do not want respectful request four moves vegemite ask do not tell presume agency placement test">
-            <summary><span class="mm-card__plus" aria-hidden="true"></span><div class="mm-card__sit">I need them to do something they don't want to do</div><div class="mm-card__move">07 · The four moves of a respectful request</div></summary>
+            <summary><span class="mm-card__plus" aria-hidden="true"></span><div class="mm-card__sit"><span class="mm-if">If</span>you need them to do something they don't want to do</div><div class="mm-card__move">07 · The four moves of a respectful request</div></summary>
             <div class="mm-card__body">
+              <p class="mm-then"><span class="mm-then__k">Then</span>Make a <strong>respectful request</strong> &mdash; ask, honor their status, validate, presume agency.</p>
               <p class="mm-k">What it looks like</p>
               <p class="mm-heard">You are about to assign it, and you can already hear how that lands.</p>
               <p class="mm-k">Say this</p>
@@ -442,13 +459,14 @@
               <div class="mm-wrong mm-wrong--enf"><div class="mm-wrong__k">Enforcer</div><div class="mm-wrong__q">“You need to take the placement test this week.”</div></div>
               <div class="mm-wrong mm-wrong--pro"><div class="mm-wrong__k">Protector</div><div class="mm-wrong__q">“Only if you want to — no pressure either way.”</div></div>
               <p class="mm-k">Also live here</p>
-              <div class="mm-also"><a href="#s-approach">08 Transparency</a><a href="#s-cant">05 Don't dismiss the fear</a><a href="#s-whatsnext">04 Give responsibility</a></div>
+              <div class="mm-also"><a href="#s-approach">If approaching a kid, or opening a hard conversation</a><a href="#s-cant">If they say they can't, and they're scared</a><a href="#s-whatsnext">If they're doing the work well, consistently</a></div>
             </div>
           </details>
 
           <details class="mm-card" id="s-cant" data-search="they say they can not scared afraid anxious presenting freeze up excuses do not dismiss fears validate hold the standard">
-            <summary><span class="mm-card__plus" aria-hidden="true"></span><div class="mm-card__sit">They say they can't — and they're scared</div><div class="mm-card__move">05 · Don't accept excuses, don't dismiss fears</div></summary>
+            <summary><span class="mm-card__plus" aria-hidden="true"></span><div class="mm-card__sit"><span class="mm-if">If</span>they say they can't, and they're scared</div><div class="mm-card__move">05 · Don't accept excuses, don't dismiss fears</div></summary>
             <div class="mm-card__body">
+              <p class="mm-then"><span class="mm-then__k">Then</span><strong>Believe the fear and keep the demand</strong> &mdash; then ask what would make it possible.</p>
               <p class="mm-k">What it looks like</p>
               <p class="mm-heard">“I can't present on Thursday. I freeze up in front of people.”</p>
               <p class="mm-k">Say this</p>
@@ -463,13 +481,14 @@
               <div class="mm-wrong mm-wrong--enf"><div class="mm-wrong__k">Enforcer</div><div class="mm-wrong__q">“Everyone's nervous. You're presenting.”</div></div>
               <div class="mm-wrong mm-wrong--pro"><div class="mm-wrong__k">Protector</div><div class="mm-wrong__q">“Okay — you can skip it this time.”</div></div>
               <p class="mm-k">Also live here</p>
-              <div class="mm-also"><a href="#s-panic">11 Stress reappraisal</a><a href="#s-notsmart">12 Synergistic mindsets</a><a href="#s-behind">19 Inclusive excellence</a></div>
+              <div class="mm-also"><a href="#s-panic">If a student is stressed, and worried about being stressed</a><a href="#s-notsmart">If they say they're not smart enough</a><a href="#s-behind">If they're behind, and you want to lower the bar</a></div>
             </div>
           </details>
 
           <details class="mm-card" id="s-whatsnext" data-search="doing the work well consistently reliable what is the next step give responsibility independence camp champions edge method explain demonstrate guide enable hand over">
-            <summary><span class="mm-card__plus" aria-hidden="true"></span><div class="mm-card__sit">They're doing the work well, consistently &mdash; what's next?</div><div class="mm-card__move">04 &middot; Give responsibility</div></summary>
+            <summary><span class="mm-card__plus" aria-hidden="true"></span><div class="mm-card__sit"><span class="mm-if">If</span>they're doing the work well, consistently</div><div class="mm-card__move">04 &middot; Give responsibility</div></summary>
             <div class="mm-card__body">
+              <p class="mm-then"><span class="mm-then__k">Then</span><strong>Give responsibility</strong> &mdash; hand over a piece of your own support work, one EDGE step at a time.</p>
               <p class="mm-k">What it looks like</p>
               <p class="mm-heard">Nothing is wrong. They have been reliable for weeks &mdash; which is exactly why it is easy to leave them exactly where they are.</p>
               <p class="mm-k">Do this</p>
@@ -487,13 +506,14 @@
               <div class="mm-wrong mm-wrong--enf"><div class="mm-wrong__k">Enforcer</div><div class="mm-wrong__q">Gives them more work at the same level of supervision. Harder, not freer.</div></div>
               <div class="mm-wrong mm-wrong--pro"><div class="mm-wrong__k">Protector</div><div class="mm-wrong__q">Leaves them where they are succeeding, because it is going well and why risk it.</div></div>
               <p class="mm-k">Also live here</p>
-              <div class="mm-also"><a href="#s-request">07 Presume agency</a><a href="#s-motives">16 Mix of motives</a><a href="#s-behind">19 Inclusive excellence</a></div>
+              <div class="mm-also"><a href="#s-request">If you need them to do something they don't want to do</a><a href="#s-motives">If you don't know what they actually want</a><a href="#s-behind">If they're behind, and you want to lower the bar</a></div>
             </div>
           </details>
 
           <details class="mm-card" id="s-stuck" data-search="stuck spinning unrealistic plan ask do not tell jen four questions authentic questions uptake collaborative troubleshooting curious not angry manager in the head">
-            <summary><span class="mm-card__plus" aria-hidden="true"></span><div class="mm-card__sit">They're stuck, or the plan is unrealistic</div><div class="mm-card__move">07 · Ask, don't tell — Jen's four questions</div></summary>
+            <summary><span class="mm-card__plus" aria-hidden="true"></span><div class="mm-card__sit"><span class="mm-if">If</span>they're stuck, or the plan is unrealistic</div><div class="mm-card__move">07 · Ask, don't tell — Jen's four questions</div></summary>
             <div class="mm-card__body">
+              <p class="mm-then"><span class="mm-then__k">Then</span><strong>Ask, don't tell</strong> &mdash; run the four questions and let them talk themselves into a real plan.</p>
               <p class="mm-k">What it looks like</p>
               <p class="mm-heard">A plan that obviously won't work, and you can see exactly why.</p>
               <p class="mm-k">Say this</p>
@@ -510,13 +530,14 @@
               <div class="mm-wrong mm-wrong--enf"><div class="mm-wrong__k">Enforcer</div><div class="mm-wrong__q">“That plan isn't going to work. Do this instead.”</div></div>
               <div class="mm-wrong mm-wrong--pro"><div class="mm-wrong__k">Protector</div><div class="mm-wrong__q">Rewrites the plan for them and calls it collaboration.</div></div>
               <p class="mm-k">Also live here</p>
-              <div class="mm-also"><a href="#s-correcting">02 No negative</a><a href="#s-whatsnext">04 Give responsibility</a><a href="#s-motives">16 Mix of motives</a></div>
+              <div class="mm-also"><a href="#s-correcting">If correcting something they just did</a><a href="#s-whatsnext">If they're doing the work well, consistently</a><a href="#s-motives">If you don't know what they actually want</a></div>
             </div>
           </details>
 
           <details class="mm-card" id="s-stop" data-search="want to tell them to stop no vaping drugs prohibition backfires truth campaign bogusky high status heroes">
-            <summary><span class="mm-card__plus" aria-hidden="true"></span><div class="mm-card__sit">I want to tell them to stop</div><div class="mm-card__move">06 · Prohibition raises the status of the thing</div></summary>
+            <summary><span class="mm-card__plus" aria-hidden="true"></span><div class="mm-card__sit"><span class="mm-if">If</span>you want to tell them to stop</div><div class="mm-card__move">06 · Prohibition raises the status of the thing</div></summary>
             <div class="mm-card__body">
+              <p class="mm-then"><span class="mm-then__k">Then</span>Don't prohibit it &mdash; <strong>show them who profits</strong> and let them decide.</p>
               <p class="mm-k">What it looks like</p>
               <p class="mm-heard">Vaping, or whatever you were about to forbid.</p>
               <p class="mm-k">Say this</p>
@@ -527,7 +548,7 @@
               <div class="mm-wrong mm-wrong--enf"><div class="mm-wrong__k">Enforcer</div><div class="mm-wrong__q">“Don't vape. It's bad for you.”</div></div>
               <div class="mm-wrong mm-wrong--pro"><div class="mm-wrong__k">Protector</div><div class="mm-wrong__q">Says nothing, to avoid the conflict.</div></div>
               <p class="mm-k">Also live here</p>
-              <div class="mm-also"><a href="#s-samefight">10 Treaties</a><a href="#s-request">07 Presume agency</a></div>
+              <div class="mm-also"><a href="#s-samefight">If you keep having the same fight</a><a href="#s-request">If you need them to do something they don't want to do</a></div>
             </div>
           </details>
 
@@ -537,8 +558,9 @@
         <div class="mm-grid" data-grid>
 
           <details class="mm-card" id="s-approach" data-search="approaching a kid walking over hard conversation transparency statement intention dobson policing study threatened rapport">
-            <summary><span class="mm-card__plus" aria-hidden="true"></span><div class="mm-card__sit">I'm approaching a kid, or opening a hard conversation</div><div class="mm-card__move">08 · Transparency statement</div></summary>
+            <summary><span class="mm-card__plus" aria-hidden="true"></span><div class="mm-card__sit"><span class="mm-if">If</span>approaching a kid, or opening a hard conversation</div><div class="mm-card__move">08 · Transparency statement</div></summary>
             <div class="mm-card__body">
+              <p class="mm-then"><span class="mm-then__k">Then</span>Open with a <strong>transparency statement</strong> &mdash; say your intention before anything else.</p>
               <p class="mm-k">What it looks like</p>
               <p class="mm-heard">They can see you coming and they don't know why, so they're already guessing.</p>
               <p class="mm-k">Say this</p>
@@ -552,13 +574,14 @@
               <div class="mm-wrong mm-wrong--enf"><div class="mm-wrong__k">Enforcer</div><div class="mm-wrong__q">Opens with the correction.</div></div>
               <div class="mm-wrong mm-wrong--pro"><div class="mm-wrong__k">Protector</div><div class="mm-wrong__q">Opens with small talk and never gets to the point.</div></div>
               <p class="mm-k">Also live here</p>
-              <div class="mm-also"><a href="#s-feedback">01 Wise feedback</a><a href="#s-request">07 Respectful request</a><a href="#s-temper">09 The do-over</a></div>
+              <div class="mm-also"><a href="#s-feedback">If giving hard feedback</a><a href="#s-request">If you need them to do something they don't want to do</a><a href="#s-temper">If you lost your temper, or broke the standard yourself</a></div>
             </div>
           </details>
 
           <details class="mm-card" id="s-samefight" data-search="same fight again standoff argument treaties war of meaning six questions lorena seidel truce generational divide">
-            <summary><span class="mm-card__plus" aria-hidden="true"></span><div class="mm-card__sit">We keep having the same fight</div><div class="mm-card__move">10 · Treaties in the war of meaning</div></summary>
+            <summary><span class="mm-card__plus" aria-hidden="true"></span><div class="mm-card__sit"><span class="mm-if">If</span>you keep having the same fight</div><div class="mm-card__move">10 · Treaties in the war of meaning</div></summary>
             <div class="mm-card__body">
+              <p class="mm-then"><span class="mm-then__k">Then</span>Make a <strong>treaty, not a truce</strong> &mdash; run the six questions.</p>
               <p class="mm-k">What it looks like</p>
               <p class="mm-heard">The third time this month, and it always ends the same way.</p>
               <p class="mm-k">Say this</p>
@@ -572,13 +595,14 @@
               <div class="mm-wrong mm-wrong--enf"><div class="mm-wrong__k">Enforcer</div><div class="mm-wrong__q">Wins the argument.</div></div>
               <div class="mm-wrong mm-wrong--pro"><div class="mm-wrong__k">Protector</div><div class="mm-wrong__q">Drops it, which is a truce and lasts about a week.</div></div>
               <p class="mm-k">Also live here</p>
-              <div class="mm-also"><a href="#s-motives">16 Mix of motives</a><a href="#s-grudge">18 People can change</a><a href="#s-temper">09 The do-over</a></div>
+              <div class="mm-also"><a href="#s-motives">If you don't know what they actually want</a><a href="#s-grudge">If they're carrying a grudge from being hurt</a><a href="#s-temper">If you lost your temper, or broke the standard yourself</a></div>
             </div>
           </details>
 
           <details class="mm-card" id="s-motives" data-search="do not know what they want mix of motives adam grant give and take warren buffett what else negotiation">
-            <summary><span class="mm-card__plus" aria-hidden="true"></span><div class="mm-card__sit">I don't know what they actually want</div><div class="mm-card__move">16 · Mix of motives</div></summary>
+            <summary><span class="mm-card__plus" aria-hidden="true"></span><div class="mm-card__sit"><span class="mm-if">If</span>you don't know what they actually want</div><div class="mm-card__move">16 · Mix of motives</div></summary>
             <div class="mm-card__body">
+              <p class="mm-then"><span class="mm-then__k">Then</span>Keep asking <strong>&ldquo;what else?&rdquo;</strong> until you have the whole mix of motives.</p>
               <p class="mm-k">What it looks like</p>
               <p class="mm-heard">They gave you a reason, you took it, and the conversation stalled anyway.</p>
               <p class="mm-k">Say this</p>
@@ -592,7 +616,7 @@
               <div class="mm-wrong mm-wrong--enf"><div class="mm-wrong__k">Enforcer</div><div class="mm-wrong__q">Assumes the motive and argues against it.</div></div>
               <div class="mm-wrong mm-wrong--pro"><div class="mm-wrong__k">Protector</div><div class="mm-wrong__q">Takes the first answer and stops asking.</div></div>
               <p class="mm-k">Also live here</p>
-              <div class="mm-also"><a href="#s-samefight">10 Treaties</a><a href="#s-noreason">15 Purpose</a><a href="#s-stuck">07 Ask, don't tell</a></div>
+              <div class="mm-also"><a href="#s-samefight">If you keep having the same fight</a><a href="#s-noreason">If they see no reason for any of it</a><a href="#s-stuck">If they're stuck, or the plan is unrealistic</a></div>
             </div>
           </details>
 
@@ -602,8 +626,9 @@
         <div class="mm-grid" data-grid>
 
           <details class="mm-card" id="s-panic" data-search="panicking before a test presentation nervous heart pounding stress reappraisal jamieson gre challenge response threat response tsst">
-            <summary><span class="mm-card__plus" aria-hidden="true"></span><div class="mm-card__sit">They're panicking before a test</div><div class="mm-card__move">11 · Stress reappraisal</div></summary>
+            <summary><span class="mm-card__plus" aria-hidden="true"></span><div class="mm-card__sit"><span class="mm-if">If</span>a student is stressed, and worried about being stressed</div><div class="mm-card__move">11 · Stress reappraisal</div></summary>
             <div class="mm-card__body">
+              <p class="mm-then"><span class="mm-then__k">Then</span>Do <strong>stress re-appraisal</strong> &mdash; the pounding heart is the body getting them ready, not a warning.</p>
               <p class="mm-k">What it looks like</p>
               <p class="mm-heard">Racing heart, shallow breath, ten minutes before it starts.</p>
               <p class="mm-k">Say this</p>
@@ -614,13 +639,14 @@
               <div class="mm-wrong mm-wrong--enf"><div class="mm-wrong__k">Enforcer</div><div class="mm-wrong__q">“Everyone deals with this. Go.”</div></div>
               <div class="mm-wrong mm-wrong--pro"><div class="mm-wrong__k">Protector</div><div class="mm-wrong__q">“Just calm down — it's not a big deal anyway.”</div></div>
               <p class="mm-k">Also live here</p>
-              <div class="mm-also"><a href="#s-notsmart">12 Synergistic mindsets</a><a href="#s-cant">05 Don't dismiss the fear</a></div>
+              <div class="mm-also"><a href="#s-notsmart">If they say they're not smart enough</a><a href="#s-cant">If they say they can't, and they're scared</a></div>
             </div>
           </details>
 
           <details class="mm-card" id="s-notsmart" data-search="not smart enough good enough for college growth mindset synergistic mindsets nature 2022 validate reframe">
-            <summary><span class="mm-card__plus" aria-hidden="true"></span><div class="mm-card__sit">They say they're not smart enough for this</div><div class="mm-card__move">12 · Synergistic mindsets</div></summary>
+            <summary><span class="mm-card__plus" aria-hidden="true"></span><div class="mm-card__sit"><span class="mm-if">If</span>they say they're not smart enough</div><div class="mm-card__move">12 · Synergistic mindsets</div></summary>
             <div class="mm-card__body">
+              <p class="mm-then"><span class="mm-then__k">Then</span>Run <strong>synergistic mindsets</strong> &mdash; validate, then a growth reframe, then stress re-appraisal.</p>
               <p class="mm-k">What it looks like</p>
               <p class="mm-heard">“I don't think I'm good enough for the next level.”</p>
               <p class="mm-k">Say this</p>
@@ -635,13 +661,14 @@
               <div class="mm-wrong mm-wrong--enf"><div class="mm-wrong__k">Enforcer</div><div class="mm-wrong__q">“Then work harder.”</div></div>
               <div class="mm-wrong mm-wrong--pro"><div class="mm-wrong__k">Protector</div><div class="mm-wrong__q">“Don't be silly, you're plenty smart.”</div></div>
               <p class="mm-k">Also live here</p>
-              <div class="mm-also"><a href="#s-panic">11 Stress reappraisal</a><a href="#s-belong">17 Belonging</a><a href="#s-behind">19 Inclusive excellence</a></div>
+              <div class="mm-also"><a href="#s-panic">If a student is stressed, and worried about being stressed</a><a href="#s-belong">If they feel like they don't belong</a><a href="#s-behind">If they're behind, and you want to lower the bar</a></div>
             </div>
           </details>
 
           <details class="mm-card" id="s-belong" data-search="do not belong here belonging intervention competence walton cohen story four beats struggle is normal snowball">
-            <summary><span class="mm-card__plus" aria-hidden="true"></span><div class="mm-card__sit">They feel like they don't belong here</div><div class="mm-card__move">17 · The belonging story, in four beats</div></summary>
+            <summary><span class="mm-card__plus" aria-hidden="true"></span><div class="mm-card__sit"><span class="mm-if">If</span>they feel like they don't belong</div><div class="mm-card__move">17 · The belonging story, in four beats</div></summary>
             <div class="mm-card__body">
+              <p class="mm-then"><span class="mm-then__k">Then</span>Hand them a previous student's <strong>belonging story</strong>, in four beats.</p>
               <p class="mm-k">What it looks like</p>
               <p class="mm-heard">“Everyone else already knows how this works.” They go quiet rather than ask.</p>
               <p class="mm-k">Say this</p>
@@ -658,13 +685,14 @@
               <div class="mm-wrong mm-wrong--enf"><div class="mm-wrong__k">Enforcer</div><div class="mm-wrong__q">“Everyone feels that way at first.”</div></div>
               <div class="mm-wrong mm-wrong--pro"><div class="mm-wrong__k">Protector</div><div class="mm-wrong__q">“Of course you belong here!” — which they can discount, because you said it and you would say that.</div></div>
               <p class="mm-k">Also live here</p>
-              <div class="mm-also"><a href="#s-noreason">15 Purpose</a><a href="#s-notsmart">12 Synergistic mindsets</a><a href="#s-grudge">18 People can change</a></div>
+              <div class="mm-also"><a href="#s-noreason">If they see no reason for any of it</a><a href="#s-notsmart">If they say they're not smart enough</a><a href="#s-grudge">If they're carrying a grudge from being hurt</a></div>
             </div>
           </details>
 
           <details class="mm-card" id="s-grudge" data-search="grudge bullied hurt hatred people can change fixed character forgiveness status move shy few friends">
-            <summary><span class="mm-card__plus" aria-hidden="true"></span><div class="mm-card__sit">They're carrying a grudge from being hurt</div><div class="mm-card__move">18 · People can change</div></summary>
+            <summary><span class="mm-card__plus" aria-hidden="true"></span><div class="mm-card__sit"><span class="mm-if">If</span>they're carrying a grudge from being hurt</div><div class="mm-card__move">18 · People can change</div></summary>
             <div class="mm-card__body">
+              <p class="mm-then"><span class="mm-then__k">Then</span>Change the belief that character is fixed &mdash; <strong>people can change</strong>.</p>
               <p class="mm-k">What it looks like</p>
               <p class="mm-heard">Someone bullied or excluded them, and they are still carrying it.</p>
               <p class="mm-k">Say this</p>
@@ -678,7 +706,7 @@
               <div class="mm-wrong mm-wrong--enf"><div class="mm-wrong__k">Enforcer</div><div class="mm-wrong__q">“Get over it, it was years ago.”</div></div>
               <div class="mm-wrong mm-wrong--pro"><div class="mm-wrong__k">Protector</div><div class="mm-wrong__q">“You're right, they're a terrible person.”</div></div>
               <p class="mm-k">Also live here</p>
-              <div class="mm-also"><a href="#s-belong">17 Belonging</a><a href="#s-samefight">10 Treaties</a></div>
+              <div class="mm-also"><a href="#s-belong">If they feel like they don't belong</a><a href="#s-samefight">If you keep having the same fight</a></div>
             </div>
           </details>
 
@@ -688,8 +716,9 @@
         <div class="mm-grid" data-grid>
 
           <details class="mm-card" id="s-whylearn" data-search="why do i have to learn this pointless purpose now broad arguments future job relevance anxiety">
-            <summary><span class="mm-card__plus" aria-hidden="true"></span><div class="mm-card__sit">They ask why they have to learn this</div><div class="mm-card__move">13 · Purpose now, and make the argument broad</div></summary>
+            <summary><span class="mm-card__plus" aria-hidden="true"></span><div class="mm-card__sit"><span class="mm-if">If</span>they ask why they have to learn this</div><div class="mm-card__move">13 · Purpose now, and make the argument broad</div></summary>
             <div class="mm-card__body">
+              <p class="mm-then"><span class="mm-then__k">Then</span>Give <strong>purpose now</strong>, not later &mdash; and make the argument broad.</p>
               <p class="mm-k">What it looks like</p>
               <p class="mm-heard">“When am I ever going to use this?”</p>
               <p class="mm-k">Say this</p>
@@ -703,13 +732,14 @@
               <div class="mm-wrong mm-wrong--enf"><div class="mm-wrong__k">Enforcer</div><div class="mm-wrong__q">“Because it's on the test.”</div></div>
               <div class="mm-wrong mm-wrong--pro"><div class="mm-wrong__k">Protector</div><div class="mm-wrong__q">“I know, it's kind of pointless — just get through it.”</div></div>
               <p class="mm-k">Also live here</p>
-              <div class="mm-also"><a href="#s-noreason">15 Purpose intervention</a><a href="#s-motives">16 Mix of motives</a></div>
+              <div class="mm-also"><a href="#s-noreason">If they see no reason for any of it</a><a href="#s-motives">If you don't know what they actually want</a></div>
             </div>
           </details>
 
           <details class="mm-card" id="s-noreason" data-search="see no reason for any of it purpose intervention self transcendent write it themselves yeager 2014 jpsp future students">
-            <summary><span class="mm-card__plus" aria-hidden="true"></span><div class="mm-card__sit">They see no reason for any of it</div><div class="mm-card__move">15 · Purpose intervention</div></summary>
+            <summary><span class="mm-card__plus" aria-hidden="true"></span><div class="mm-card__sit"><span class="mm-if">If</span>they see no reason for any of it</div><div class="mm-card__move">15 · Purpose intervention</div></summary>
             <div class="mm-card__body">
+              <p class="mm-then"><span class="mm-then__k">Then</span>Run a <strong>purpose intervention</strong> &mdash; and they write it, not you.</p>
               <p class="mm-k">What it looks like</p>
               <p class="mm-heard">They're settled, they're fine socially, and they still won't work.</p>
               <p class="mm-k">Say this</p>
@@ -720,13 +750,14 @@
               <div class="mm-wrong mm-wrong--enf"><div class="mm-wrong__k">Enforcer</div><div class="mm-wrong__q">“You'll care about this when you're older.”</div></div>
               <div class="mm-wrong mm-wrong--pro"><div class="mm-wrong__k">Protector</div><div class="mm-wrong__q">Reduces the workload until they stop complaining.</div></div>
               <p class="mm-k">Also live here</p>
-              <div class="mm-also"><a href="#s-belong">17 Belonging</a><a href="#s-whylearn">13 Purpose now</a><a href="#s-motives">16 Mix of motives</a></div>
+              <div class="mm-also"><a href="#s-belong">If they feel like they don't belong</a><a href="#s-whylearn">If they ask why they have to learn this</a><a href="#s-motives">If you don't know what they actually want</a></div>
             </div>
           </details>
 
           <details class="mm-card" id="s-behind" data-search="they are behind lower the bar inclusive excellence treisman stassun bridge harder group work standards">
-            <summary><span class="mm-card__plus" aria-hidden="true"></span><div class="mm-card__sit">They're behind, and I want to lower the bar</div><div class="mm-card__move">19 · Inclusive excellence</div></summary>
+            <summary><span class="mm-card__plus" aria-hidden="true"></span><div class="mm-card__sit"><span class="mm-if">If</span>they're behind, and you want to lower the bar</div><div class="mm-card__move">19 · Inclusive excellence</div></summary>
             <div class="mm-card__body">
+              <p class="mm-then"><span class="mm-then__k">Then</span><strong>Inclusive excellence</strong> &mdash; hold the bar exactly where it is and raise the support.</p>
               <p class="mm-k">What it looks like</p>
               <p class="mm-heard">They're behind, they know it, and the kind thing looks like an easier version.</p>
               <p class="mm-k">Say this</p>
@@ -737,7 +768,7 @@
               <div class="mm-wrong mm-wrong--enf"><div class="mm-wrong__k">Enforcer</div><div class="mm-wrong__q">“That's the standard. Figure it out.”</div></div>
               <div class="mm-wrong mm-wrong--pro"><div class="mm-wrong__k">Protector</div><div class="mm-wrong__q">Quietly hands them the easier version and never says so.</div></div>
               <p class="mm-k">Also live here</p>
-              <div class="mm-also"><a href="#s-feedback">01 Wise feedback</a><a href="#s-failed">03 Long-term commitment</a><a href="#s-notsmart">12 Synergistic mindsets</a></div>
+              <div class="mm-also"><a href="#s-feedback">If giving hard feedback</a><a href="#s-failed">If they just failed at something</a><a href="#s-notsmart">If they say they're not smart enough</a></div>
             </div>
           </details>
 
@@ -755,7 +786,7 @@
           <div class="mm-tech__body">
             <p class="mm-why">Yeager's exact nineteen-word formulation from the seventh-grade experiment: <em>“I'm giving you these comments because I have very high standards and I know that you can reach them.”</em> Revision rates 17% → 71% among Black students; among Black students with low trust in their teachers, 0% → 82%. Cohen, Steele &amp; Ross 1999; Yeager et al. 2014, <em>JEP: General</em>, three double-blind randomized field experiments.</p>
             <p class="mm-k">Use it at</p>
-            <div class="mm-also"><a href="#s-feedback">I'm about to give hard feedback</a></div>
+            <div class="mm-also"><a href="#s-feedback">If giving hard feedback</a></div>
           </div>
         </details>
 
@@ -764,7 +795,7 @@
           <div class="mm-tech__body">
             <p class="mm-why">Chip Engelland's whole correction is “How did that feel?” Socrates answered an insult with a question rather than addressing the man. The standard is untouched — only the characterisation goes.</p>
             <p class="mm-k">Use it at</p>
-            <div class="mm-also"><a href="#s-correcting">I'm correcting something they just did</a></div>
+            <div class="mm-also"><a href="#s-correcting">If correcting something they just did</a></div>
           </div>
         </details>
 
@@ -773,7 +804,7 @@
           <div class="mm-tech__body">
             <p class="mm-why">Jen did this at the end of every morning meeting — she told Yeager to try the plan and come back if he got stuck, <em>before</em> he had gotten stuck. Afterwards, the move is to name the thing that hasn't changed: the standard is still the standard, and you are still here.</p>
             <p class="mm-k">Use it at</p>
-            <div class="mm-also"><a href="#s-failed">They just failed at something</a></div>
+            <div class="mm-also"><a href="#s-failed">If they just failed at something</a></div>
           </div>
         </details>
 
@@ -782,7 +813,7 @@
           <div class="mm-tech__body">
             <p class="mm-why">From Lorena Seidel. Three parts — name what you did, name the standard you broke, hand them the floor. The apology alone isn't the technique; the question after it is. Implementation failure is guaranteed, which is what makes this the most realistic tool in the book.</p>
             <p class="mm-k">Use it at</p>
-            <div class="mm-also"><a href="#s-temper">I lost my temper</a></div>
+            <div class="mm-also"><a href="#s-temper">If you lost your temper, or broke the standard yourself</a></div>
           </div>
         </details>
 
@@ -794,7 +825,7 @@
             <p class="mm-why">The players <em>lead</em> the basketball camp, they don't attend it (Camp Champions). And the objection that mentoring costs time runs backwards: through back-and-forth conversations young people feel empowered and responsibility transfers, so mentors end up with more time, not less.</p>
             <p class="mm-why" style="margin-top:1rem;">The hand-over has a procedure, and it isn't Yeager's — the Boy Scouts formalised it in the 1970s as <strong>EDGE</strong>: <em>Explain</em> what it is and why it matters, <em>Demonstrate</em> it once while narrating, <em>Guide</em> them through it as they practise, then <em>Enable</em> — step back and watch. Each step gives away more of the support work until none of it is yours.</p>
             <p class="mm-k">Use it at</p>
-            <div class="mm-also"><a href="#s-whatsnext">They're doing the work well &mdash; what's next?</a></div>
+            <div class="mm-also"><a href="#s-whatsnext">If they're doing the work well, consistently</a></div>
           </div>
         </details>
 
@@ -803,7 +834,7 @@
           <div class="mm-tech__body">
             <p class="mm-why">Allow discomfort without removing expectations. Anxiety, frustration, even tears can mean a young person is stretching toward something meaningful rather than failing — what decides which is whether the distress arrives with support or with shame.</p>
             <p class="mm-k">Use it at</p>
-            <div class="mm-also"><a href="#s-cant">They say they can't</a></div>
+            <div class="mm-also"><a href="#s-cant">If they say they can't, and they're scared</a></div>
           </div>
         </details>
 
@@ -812,7 +843,7 @@
           <div class="mm-tech__body">
             <p class="mm-why">Alex Bogusky's “Truth” campaign was the most successful campaign ever run at getting youth not to smoke, and it worked by painting them as potential high-status heroes rather than as children being instructed.</p>
             <p class="mm-k">Use it at</p>
-            <div class="mm-also"><a href="#s-stop">I want to tell them to stop</a></div>
+            <div class="mm-also"><a href="#s-stop">If you want to tell them to stop</a></div>
           </div>
         </details>
 
@@ -824,7 +855,7 @@
             <p class="mm-k">Ask, don't tell, applied elsewhere</p>
             <p class="mm-why">Never open a correction with <em>wrong</em>. Engelland: “How did that feel?” Estrada: “Can you tell me how you got this answer?” Stef: “Can you tell me where you're getting stuck and what you've tried so we can fix the problem?” Jen's four questions ran a twelve-week internship without a single correction. Related terms from the book: <strong>authentic questions</strong>, <strong>questions with uptake</strong>, <strong>collaborative troubleshooting</strong>. Instead of getting angry, get curious.</p>
             <p class="mm-k">Use it at</p>
-            <div class="mm-also"><a href="#s-request">I need them to do something they don't want to</a><a href="#s-stuck">They're stuck</a></div>
+            <div class="mm-also"><a href="#s-request">If you need them to do something they don't want to do</a><a href="#s-stuck">If they're stuck, or the plan is unrealistic</a></div>
           </div>
         </details>
 
@@ -835,7 +866,7 @@
           <div class="mm-tech__body">
             <p class="mm-why">Kyle Dobson's policing study: officers who approached civilians with no explanation left 70% feeling threatened. The same officers opening with “I'm walking around trying to get to know the community” had conversations twice as long, far more positive, and built real rapport. This is what gets you over the barrier of mistrust.</p>
             <p class="mm-k">Use it at</p>
-            <div class="mm-also"><a href="#s-approach">I'm approaching a kid</a></div>
+            <div class="mm-also"><a href="#s-approach">If approaching a kid, or opening a hard conversation</a></div>
           </div>
         </details>
 
@@ -845,7 +876,7 @@
             <p class="mm-why">From Lorena Seidel. <em>What does this mean to you? How is that meaning making you feel? Is that serving your goals?</em> Then: <em>What is something else it could mean? How would it make you feel if you thought that? Would that serve your goals?</em></p>
             <p class="mm-why" style="margin-top:1rem;">A treaty, not a truce: both sides assess needs, both are aware of what the other needs in order to thrive, both mutually agree the terms, and either can renegotiate with the lines of communication kept open. “The generational divide is a war of meaning.”</p>
             <p class="mm-k">Use it at</p>
-            <div class="mm-also"><a href="#s-samefight">We keep having the same fight</a></div>
+            <div class="mm-also"><a href="#s-samefight">If you keep having the same fight</a></div>
           </div>
         </details>
 
@@ -854,7 +885,7 @@
           <div class="mm-tech__body">
             <p class="mm-why">As in Adam Grant's <em>Give and Take</em>, the greatest winners in life hold others' goals and feelings high <em>and</em> do the same with their own, then find answers meeting both requirements. Kids want this too. Warren Buffett's “what else?” is the same instrument in a negotiation.</p>
             <p class="mm-k">Use it at</p>
-            <div class="mm-also"><a href="#s-motives">I don't know what they actually want</a></div>
+            <div class="mm-also"><a href="#s-motives">If you don't know what they actually want</a></div>
           </div>
         </details>
 
@@ -865,7 +896,7 @@
           <div class="mm-tech__body">
             <p class="mm-why">Study hard for a future job, versus study history hard because you're interviewing someone interesting. Instead of “you may use maths in a sales or finance job,” try “maths and writing make your brain stronger, which helps you improve the world.” Purpose is not an all-or-nothing proposition and shouldn't be delivered as one.</p>
             <p class="mm-k">Use it at</p>
-            <div class="mm-also"><a href="#s-whylearn">They ask why they have to learn this</a></div>
+            <div class="mm-also"><a href="#s-whylearn">If they ask why they have to learn this</a></div>
           </div>
         </details>
 
@@ -874,7 +905,7 @@
           <div class="mm-tech__body">
             <p class="mm-why">Make the adult the ally against a manipulator rather than the manipulator. The study version had students graffiti fast-food posters to make them actually true statements: high status plus rebellion against control. Bryan, Yeager, Hinojosa et al. 2016, <em>PNAS</em> 113(39) — double-blind, randomized, placebo-controlled, 536 eighth-graders, the entire eighth grade of a Texas middle school.</p>
             <p class="mm-k">Use it at</p>
-            <div class="mm-also"><a href="#s-stop">I want to tell them to stop</a></div>
+            <div class="mm-also"><a href="#s-stop">If you want to tell them to stop</a></div>
           </div>
         </details>
 
@@ -884,7 +915,7 @@
             <p class="mm-why">Students identify a problem in the world they care about, read short accounts from other students describing how caring about something beyond themselves made them work harder, then write their own version addressed to future students. Running the wrong one — belonging when they needed purpose — wastes the intervention.</p>
             <p class="mm-why" style="margin-top:1rem;">Yeager, Henderson, Paunesku, Walton, D'Mello, Spitzer &amp; Duckworth 2014, <em>JPSP</em> 107(4). Self-transcendent purpose: d = 0.21 for low performers, 0.06 and not significant for high performers.</p>
             <p class="mm-k">Use it at</p>
-            <div class="mm-also"><a href="#s-noreason">They see no reason for any of it</a></div>
+            <div class="mm-also"><a href="#s-noreason">If they see no reason for any of it</a></div>
           </div>
         </details>
 
@@ -896,7 +927,7 @@
             <p class="mm-why">Struggle is normal, so they are not alone or uniquely deficient. An example of how change was possible. What actions the student took once they saw it. How those steps snowballed — a happy ending that doesn't promise the struggle ends.</p>
             <p class="mm-why" style="margin-top:1rem;">Yeager's Figure 9.4 (p. 242) annotates a real UT student's example with the four beats marked in the margin, and the instructive part is the proportion: struggle takes roughly half the story, the pivot is a single sentence, and the action steps are three ordinary requests for help — a lab mate, a friend, office hours. Collect 3–8 such stories from interviews with previous students, then edit them into the right order. Walton &amp; Cohen 2011, <em>Science</em>, N = 92; the Black–white GPA gap cut 52% over three years.</p>
             <p class="mm-k">Use it at</p>
-            <div class="mm-also"><a href="#s-belong">They feel like they don't belong</a></div>
+            <div class="mm-also"><a href="#s-belong">If they feel like they don't belong</a></div>
           </div>
         </details>
 
@@ -911,7 +942,7 @@
             <p class="mm-k">What it's doing</p>
             <p class="mm-why">It isn't asking anyone to forgive anyone. It changes one belief — that character is fixed — and lets the emotion follow. Hatred requires believing the person is permanently that way. Remove the belief and the emotion has nowhere to sit.</p>
             <p class="mm-k">Use it at</p>
-            <div class="mm-also"><a href="#s-grudge">They're carrying a grudge</a></div>
+            <div class="mm-also"><a href="#s-grudge">If they're carrying a grudge from being hurt</a></div>
           </div>
         </details>
 
@@ -923,7 +954,7 @@
             <p class="mm-why">Threat response versus challenge response. The arousal stays exactly where it is; what changes is what the student thinks it means — and the claim is true, which is why it survives a student sceptical of pep talks.</p>
             <p class="mm-why" style="margin-top:1rem;">Jamieson, Mendes, Blackstock &amp; Schmader 2010, “Turning the knots in your stomach into bows,” <em>JESP</em> 46(1), 208–212 — GRE maths 705 → 770. Jamieson, Peters, Greenwood &amp; Altose 2016, <em>SPPS</em> — 93 community-college developmental maths students across five semesters, where the control group was told to <em>ignore</em> their stress. See also the <strong>TSST</strong>, the Trier Social Stress Test.</p>
             <p class="mm-k">Use it at</p>
-            <div class="mm-also"><a href="#s-panic">They're panicking before a test</a></div>
+            <div class="mm-also"><a href="#s-panic">If a student is stressed, and worried about being stressed</a></div>
           </div>
         </details>
 
@@ -932,7 +963,7 @@
           <div class="mm-tech__body">
             <p class="mm-why">Teach that ability can grow without teaching that the strain of growing it is useful, and the difficulty reads as proof they can't. Yeager's Box 7.6 is a full worked script — a student asks whether they're good enough for college and the reply moves through validation, then a growth reframe, then stress reappraisal, with each move labelled inline. Yeager, Bryan, Gross, Murray, Krettek Cobb, Santos, Graveling, Johnson &amp; Jamieson 2022, <em>Nature</em> 607(7919), 512–520.</p>
             <p class="mm-k">Use it at</p>
-            <div class="mm-also"><a href="#s-notsmart">They say they're not smart enough</a></div>
+            <div class="mm-also"><a href="#s-notsmart">If they say they're not smart enough</a></div>
           </div>
         </details>
 
@@ -942,7 +973,7 @@
             <p class="mm-why"><strong>Uri Treisman</strong> — Berkeley calculus. He found Black students weren't failing from lack of ability or motivation but from studying alone, and built structured group work <em>harder</em> than the regular course. More difficulty plus more company, not less difficulty.</p>
             <p class="mm-why" style="margin-top:1rem;"><strong>Keivan Stassun</strong> — the Fisk–Vanderbilt Master's-to-PhD Bridge Program, which became the largest US producer of Black and Latino PhDs in physics and astronomy with no lowered admissions standard. He has been published in <em>Nature</em> thirteen times.</p>
             <p class="mm-k">Use it at</p>
-            <div class="mm-also"><a href="#s-behind">They're behind and I want to lower the bar</a></div>
+            <div class="mm-also"><a href="#s-behind">If they're behind, and you want to lower the bar</a></div>
           </div>
         </details>
 
