@@ -41,6 +41,19 @@
        Yeager names in the quote above get re-taught nineteen times without a
        single extra sentence of explanation. */
     :root {
+      /* site.css defines --fg at 90/85/70/60/55/50/40/30/20/12 and stops. The
+         steps below are missing from it, so every rule here that asked for one
+         was an invalid value at computed-value time and inherited white
+         instead — which is why the labels and the evidence text were louder
+         than the THEN they were meant to sit under. Filled in on the same
+         scale, locally. site.css has the same hole on other pages. */
+      --fg-80: hsl(0 0% 100% / 0.80);
+      --fg-75: hsl(0 0% 100% / 0.75);
+      --fg-65: hsl(0 0% 100% / 0.65);
+      --fg-45: hsl(0 0% 100% / 0.45);
+      --fg-35: hsl(0 0% 100% / 0.35);
+      --fg-25: hsl(0 0% 100% / 0.25);
+
       --mm-mentor:  #6ee7a8;
       --mm-enf:     #f0836b;
       --mm-pro:     #e8bd63;
@@ -137,7 +150,7 @@
       display: flex; flex-direction: column; flex: 1; position: relative; padding-right: 42px; }
     .mm-card > summary::-webkit-details-marker { display: none; }
     .mm-card > summary:focus-visible { outline: 2px solid var(--mm-mentor); outline-offset: 2px; border-radius: 11px; }
-    .mm-card__sit { font-family: var(--font-display); font-size: 1.16rem; line-height: 1.22;
+    .mm-card__sit { font-family: var(--font-display); font-size: 1.2rem; line-height: 1.22;
       color: var(--fg); }
     .mm-card__move { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.13em;
       text-transform: uppercase; color: var(--mm-mentor); margin-top: auto; padding-top: 9px; }
@@ -147,12 +160,16 @@
     .mm-card__sit .mm-if { font-family: var(--font-mono); font-size: 0.62em;
       letter-spacing: 0.16em; text-transform: uppercase; color: var(--fg-40);
       margin-right: 9px; vertical-align: 0.08em; }
-    .mm-then { background: hsl(150 22% 7%); border: 1px solid hsl(150 20% 15%);
-      border-radius: 9px; padding: 13px 15px; margin: 4px 0 2px;
-      font-family: var(--font-serif); font-size: 1.02rem; line-height: 1.6; color: var(--fg-90); }
+    .mm-then { background: linear-gradient(180deg, hsl(150 26% 9%), hsl(150 22% 6%));
+      border: 1px solid hsl(150 24% 18%); border-left: 3px solid var(--mm-mentor);
+      border-radius: 9px; padding: 15px 17px; margin: 6px 0 0;
+      font-family: var(--font-serif); font-size: 1.13rem; line-height: 1.55; color: var(--fg); }
     .mm-then strong { color: var(--fg); font-weight: 600; }
-    .mm-then__k { display: block; font-family: var(--font-mono); font-size: 0.6rem;
-      letter-spacing: 0.16em; text-transform: uppercase; color: var(--mm-mentor); margin-bottom: 6px; }
+    .mm-then__k { display: block; font-family: var(--font-mono); font-size: 0.63rem;
+      letter-spacing: 0.18em; text-transform: uppercase; color: var(--mm-mentor); margin-bottom: 7px; }
+    /* Everything below the THEN is supporting detail, so it sits under a rule
+       and steps down in size: script 1.01rem, prose 0.93rem, labels 0.6rem. */
+    .mm-then + .mm-k { margin-top: 22px; padding-top: 20px; border-top: 1px solid var(--fg-12); }
     .mm-card__plus { position: absolute; top: 15px; right: 14px; width: 22px; height: 22px;
       color: var(--fg-35); transition: transform .18s, color .18s; }
     .mm-card__plus::before, .mm-card__plus::after { content: ''; position: absolute;
@@ -166,16 +183,16 @@
 
     .mm-k { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.16em;
       text-transform: uppercase; color: var(--fg-45); margin: 20px 0 8px; }
-    .mm-heard { font-family: var(--font-serif); font-style: italic; font-size: 0.99rem;
-      line-height: 1.6; color: var(--fg-65); border-left: 2px solid var(--border);
+    .mm-heard { font-family: var(--font-serif); font-style: italic; font-size: 0.93rem;
+      line-height: 1.6; color: var(--fg-60); border-left: 2px solid var(--border);
       padding-left: 14px; margin: 0 0 4px; }
-    .mm-say { font-family: var(--font-serif); font-size: 1.06rem; line-height: 1.7; color: var(--fg);
-      border-left: 3px solid var(--mm-mentor); padding-left: 16px; margin: 0; }
+    .mm-say { font-family: var(--font-serif); font-size: 1.01rem; line-height: 1.7; color: var(--fg-85);
+      border-left: 2px solid hsl(150 26% 26%); padding-left: 15px; margin: 0; }
     .mm-say p { margin: 0 0 0.85rem; }
     .mm-say p:last-child { margin-bottom: 0; }
     .mm-say .beat { font-family: var(--font-mono); font-size: 0.58rem; letter-spacing: 0.12em;
       text-transform: uppercase; color: var(--mm-mentor); }
-    .mm-why { font-family: var(--font-serif); font-size: 0.94rem; line-height: 1.7; color: var(--fg-65);
+    .mm-why { font-family: var(--font-serif); font-size: 0.93rem; line-height: 1.7; color: var(--fg-65);
       margin: 0; }
     .mm-why strong { color: var(--fg-90); font-weight: 600; }
     .mm-why em { color: var(--fg-80); }
@@ -188,8 +205,8 @@
       text-transform: uppercase; }
     .mm-wrong--enf .mm-wrong__k { color: var(--mm-enf); }
     .mm-wrong--pro .mm-wrong__k { color: var(--mm-pro); }
-    .mm-wrong__q { font-family: var(--font-serif); font-size: 0.95rem; line-height: 1.6;
-      color: var(--fg-65); font-style: italic; margin-top: 3px; }
+    .mm-wrong__q { font-family: var(--font-serif); font-size: 0.93rem; line-height: 1.6;
+      color: var(--fg-60); font-style: italic; margin-top: 3px; }
 
     .mm-also { display: flex; flex-wrap: wrap; gap: 7px; }
     .mm-also a { font-family: var(--font-mono); font-size: 0.63rem; color: var(--fg-60);
@@ -233,7 +250,8 @@
     .mm-priv { font-family: var(--font-mono); font-size: 0.66rem; color: var(--fg-40); margin-top: 16px; }
 
     @media (max-width: 560px) {
-      .mm-card__sit { font-size: 1.08rem; }
+      .mm-card__sit { font-size: 1.1rem; }
+      .mm-then { font-size: 1.06rem; padding: 13px 14px; }
       /* Tightened so the filter box still clears the fold on a 640px-tall
          phone. Type sizes only — none of the copy above it is cut. */
       .mm-lede { font-size: 1.06rem; }
