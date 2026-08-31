@@ -371,6 +371,16 @@ document.getElementById('refs').innerHTML = REFS.map(r =>
    placeholder stands and no request goes out to YouTube at all. */
 let player = null;
 
+/* The "can't play" notice ships visible so it survives JS being off, but that
+   meant it flashed on every single load while the iframe API was still being
+   fetched — telling people the video was broken a moment before it played.
+   With JS running and a video to play, hide it immediately and only bring it
+   back if the player actually fails or never arrives. */
+const waiting = document.getElementById('waiting');
+let waitTimer = null;
+function hideWaiting(){ clearTimeout(waitTimer); waitTimer = null; waiting.style.display = 'none'; }
+function showWaiting(){ clearTimeout(waitTimer); waitTimer = null; waiting.style.display = ''; }
+
 function syncMute(){
   const pill = document.getElementById('unmute');
   if (!player || typeof player.isMuted !== 'function') { pill.hidden = true; return; }
@@ -385,6 +395,13 @@ document.getElementById('unmute').addEventListener('click', function(){
 });
 
 if (YT_ID) {
+  /* Blank while it loads. GRACE is generous because a false "it's broken" is
+     worse than a few seconds of empty frame — a slow phone on a bad connection
+     can take several seconds to hand back a ready player. */
+  const GRACE = 6000;
+  hideWaiting();
+  waitTimer = setTimeout(showWaiting, GRACE);
+
   window.onYouTubeIframeAPIReady = function(){
     player = new YT.Player('player', {
       videoId: YT_ID,
@@ -395,21 +412,24 @@ if (YT_ID) {
       ),
       events: {
         onReady: function(){
-          document.getElementById('waiting').style.display = 'none';
+          hideWaiting();
           player.playVideo();
           syncMute();
         },
-        onStateChange: syncMute,
+        onStateChange: function(e){ if (e && e.data === 1) hideWaiting(); syncMute(); },
         onError: function(){
           /* private, deleted, or blocked — fall back to the placeholder rather
              than leaving a dead grey rectangle */
-          document.getElementById('waiting').style.display = '';
+          showWaiting();
         }
       }
     });
   };
   const api = document.createElement('script');
   api.src = 'https://www.youtube.com/iframe_api';
+  /* A blocked or offline network fails the script outright — say so straight
+     away rather than making them sit out the full grace period. */
+  api.onerror = showWaiting;
   document.head.appendChild(api);
 }
 </script>
