@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A Rooftop Function — James Floyd</title>
+  <meta name="description" content="A Rooftop Function — DJ Kaavya, a beautiful sunset, and better people. Saturday, August 29, 2026, on a rooftop in NYC.">
+  <link rel="canonical" href="https://jamesfloyds.world/events/rooftop-function/">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="A Rooftop Function">
+  <meta property="og:description" content="DJ Kaavya, a beautiful sunset, and better people.">
+  <meta property="og:image" content="https://jamesfloyds.world/events/rooftop-function/skyline.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="A Rooftop Function">
+  <meta name="twitter:description" content="DJ Kaavya, a beautiful sunset, and better people.">
+  <meta name="twitter:image" content="https://jamesfloyds.world/events/rooftop-function/skyline.jpg">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lora:ital,wght@0,400;0,500;1,400&family=DM+Mono:wght@300;400&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap">
+
+  <style>
+    /* Palette lifted off the photographs themselves: the blue hour behind the
+       skyline, the warm string lights along the rail, and the near-black roof
+       between them. The inverse of /events/pithy-party/, which takes its
+       colours from a tan paper invite — each event page wears its own night. */
+    :root {
+      --rf-night:  #080b12;
+      --rf-deep:   #0e131d;
+      --rf-ink:    #f3efe8;
+      --rf-amber:  #f0b866;
+      --rf-blue:   #7d9cc9;
+      --rf-soft:   rgba(243, 239, 232, 0.58);
+      --rf-faint:  rgba(243, 239, 232, 0.14);
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      background: var(--rf-night);
+      color: var(--rf-ink);
+      font-family: 'EB Garamond', Georgia, serif;
+      min-height: 100vh;
+      min-height: 100dvh;
+    }
+
+    .rf-logo {
+      position: absolute; top: 24px; right: 24px; z-index: 20;
+      opacity: 0.5; transition: opacity 0.2s;
+    }
+    .rf-logo:hover { opacity: 1; }
+    .rf-logo img { width: 32px; height: 32px; display: block; }
+
+    .rf-back {
+      position: absolute; top: 16px; left: 8px; z-index: 20;
+      display: inline-flex; align-items: center;
+      padding: 16px 24px; min-height: 44px;
+      font-family: 'DM Mono', monospace;
+      font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--rf-soft); text-decoration: none;
+      border-radius: 4px;
+      transition: color 0.2s, background 0.2s;
+    }
+    .rf-back:hover { color: var(--rf-ink); background: rgba(243,239,232,0.07); }
+
+    .rf-wrap { max-width: 760px; margin: 0 auto; padding: 96px clamp(20px,4vw,40px) 96px; }
+
+    /* Hero. There is no invite poster for this one, so the best photograph of
+       the night does the job — full width, with the title under it rather than
+       laid over it, because the sky in that frame is the point. */
+    .rf-hero { margin: 0 0 34px; }
+    .rf-hero__img {
+      margin: 0 0 26px; border-radius: 4px; overflow: hidden;
+      box-shadow: 0 26px 60px -30px rgba(0,0,0,0.9);
+      border: 1px solid var(--rf-faint);
+    }
+    .rf-hero__img img { width: 100%; height: auto; display: block; }
+    .rf-eyebrow {
+      font-family: 'DM Mono', monospace; font-size: 11px;
+      letter-spacing: 0.34em; text-transform: uppercase;
+      color: var(--rf-amber); margin: 0 0 12px;
+    }
+    .rf-title {
+      font-family: 'Playfair Display', Georgia, serif; font-weight: 700;
+      font-size: clamp(2.4rem, 6vw, 3.5rem); line-height: 1.03;
+      letter-spacing: -0.02em; margin: 0 0 14px;
+    }
+    .rf-lede {
+      font-family: 'Lora', Georgia, serif; font-style: italic;
+      font-size: clamp(1.02rem, 1.4vw, 1.18rem); line-height: 1.55;
+      color: var(--rf-ink); margin: 0; max-width: 34rem;
+    }
+
+    .rf-facts {
+      display: flex; flex-wrap: wrap; gap: 22px 40px;
+      padding: 18px 0; margin: 0 0 34px;
+      border-top: 1px solid var(--rf-faint);
+      border-bottom: 1px solid var(--rf-faint);
+    }
+    .rf-facts__k {
+      display: block; font-family: 'DM Mono', monospace; font-size: 10px;
+      letter-spacing: 0.24em; text-transform: uppercase;
+      color: var(--rf-soft); margin-bottom: 5px;
+    }
+    .rf-facts__v { font-family: 'EB Garamond', Georgia, serif; font-size: 1rem; line-height: 1.3; }
+
+    .rf-body {
+      font-family: 'Lora', Georgia, serif; font-size: 1.05rem; line-height: 1.75;
+      color: var(--rf-ink); max-width: 40rem; margin: 0 0 30px;
+    }
+    .rf-body p { margin: 0 0 1rem; }
+    .rf-body p:last-child { margin-bottom: 0; }
+    .rf-body em { color: var(--rf-soft); }
+
+    .rf-invite {
+      border-left: 3px solid var(--rf-amber);
+      padding: 12px 0 12px 18px; margin: 0 0 34px;
+      font-family: 'Lora', Georgia, serif; font-size: 1rem; line-height: 1.65;
+      color: var(--rf-soft);
+    }
+    .rf-invite a {
+      color: var(--rf-amber); text-decoration: none;
+      border-bottom: 1px solid rgba(240,184,102,0.35);
+    }
+    .rf-invite a:hover { border-bottom-color: var(--rf-amber); }
+
+    .rf-photos { display: grid; grid-template-columns: 1fr; gap: 12px; }
+    @media (min-width: 560px) { .rf-photos { grid-template-columns: 1fr 1fr; } }
+    .rf-photo {
+      display: block; width: 100%; padding: 0; border: none;
+      background: transparent; cursor: pointer; overflow: hidden;
+      border-radius: 3px; touch-action: manipulation;
+    }
+    .rf-photo img {
+      width: 100%; height: auto; display: block;
+      aspect-ratio: 4 / 3; object-fit: cover;
+      transition: transform 0.4s;
+    }
+    .rf-photo:hover img { transform: scale(1.03); }
+    @media (prefers-reduced-motion: reduce) {
+      .rf-photo img, .rf-logo, .rf-back { transition: none; }
+      .rf-photo:hover img { transform: none; }
+    }
+
+    .img-lightbox {
+      max-width: 96vw; max-height: 92vh;
+      background: transparent; border: none; padding: 0; margin: auto;
+    }
+    .img-lightbox::backdrop { background: hsl(220 30% 3% / 0.95); }
+    .img-lightbox img {
+      max-width: 100%; max-height: 90vh;
+      object-fit: contain; cursor: pointer; display: block;
+    }
+  </style>
+</head>
+<body>
+
+  <a href="/" class="rf-logo" aria-label="Return to home"><img src="/logo.svg" alt="JF"></a>
+  <a href="/events/" class="rf-back">← Events</a>
+
+  <div class="rf-wrap">
+
+    <section class="rf-hero">
+      <figure class="rf-hero__img">
+        <img src="/events/rooftop-function/skyline.jpg" alt="Three people around a table of bottles on the roof, the Manhattan skyline lit up behind them in the last of the blue hour">
+      </figure>
+      <p class="rf-eyebrow">August 29, 2026 · NYC</p>
+      <h1 class="rf-title">A Rooftop Function</h1>
+      <p class="rf-lede">DJ Kaavya, a beautiful sunset, and better people.</p>
+    </section>
+
+    <div class="rf-facts">
+      <div>
+        <span class="rf-facts__k">When</span>
+        <span class="rf-facts__v">Sat · Aug 29, 2026 · 7 PM</span>
+      </div>
+      <div>
+        <span class="rf-facts__k">Where</span>
+        <span class="rf-facts__v">A rooftop · NYC</span>
+      </div>
+      <div>
+        <span class="rf-facts__k">Sunset</span>
+        <span class="rf-facts__v">7:40 PM</span>
+      </div>
+      <div>
+        <span class="rf-facts__k">Bring</span>
+        <span class="rf-facts__v">BYOB &amp; good energy</span>
+      </div>
+    </div>
+
+    <section class="rf-body">
+      <p>
+        We started while there was still light in the sky and stayed until the
+        skyline was the brightest thing left. Kaavya played. Everybody brought
+        something, and the bottles on the table were the only agenda.
+      </p>
+      <p>
+        There was also, as promised, a <em>throw sharp pointy things at a
+        circle</em> competition.
+      </p>
+    </section>
+
+    <blockquote class="rf-invite">
+      The invite said it best: BYOB, or wine, or whatever — and only bring good energy.
+      <a href="https://partiful.com/e/MsdBrQkXbG9yrBtbfAgF" target="_blank" rel="noopener">See the invite →</a>
+    </blockquote>
+
+    <div class="rf-photos">
+      <button class="rf-photo" data-lightbox="/events/rooftop-function/rooftop.jpg">
+        <img src="/events/rooftop-function/rooftop.jpg" alt="The wider roof after dark — people spread along the rail under string lights, the city glowing on the horizon" loading="lazy">
+      </button>
+      <button class="rf-photo" data-lightbox="/events/rooftop-function/conversation.jpg">
+        <img src="/events/rooftop-function/conversation.jpg" alt="Two guests mid-conversation beside the table, string lights flaring across the frame" loading="lazy">
+      </button>
+    </div>
+
+  </div>
+
+  <dialog class="img-lightbox" id="img-lightbox">
+    <img id="lightbox-img" src="" alt="" onclick="document.getElementById('img-lightbox').close()">
+  </dialog>
+
+  <script>
+    var lightbox = document.getElementById('img-lightbox');
+    var lightboxImg = document.getElementById('lightbox-img');
+    document.querySelectorAll('[data-lightbox]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        lightboxImg.src = btn.getAttribute('data-lightbox');
+        lightboxImg.alt = btn.querySelector('img')?.alt || '';
+        lightbox.showModal();
+      });
+    });
+    lightbox.addEventListener('click', function(e){
+      if (e.target === lightbox) lightbox.close();
+    });
+  </script>
+</body>
+</html>
