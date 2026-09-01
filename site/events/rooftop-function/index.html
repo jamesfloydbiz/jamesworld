@@ -9,11 +9,11 @@
   <meta property="og:type" content="article">
   <meta property="og:title" content="A Rooftop Function">
   <meta property="og:description" content="DJ Kaavya, a beautiful sunset, and better people.">
-  <meta property="og:image" content="https://jamesfloyds.world/events/rooftop-function/skyline.jpg">
+  <meta property="og:image" content="https://jamesfloyds.world/events/rooftop-function/sunset.jpg">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="A Rooftop Function">
   <meta name="twitter:description" content="DJ Kaavya, a beautiful sunset, and better people.">
-  <meta name="twitter:image" content="https://jamesfloyds.world/events/rooftop-function/skyline.jpg">
+  <meta name="twitter:image" content="https://jamesfloyds.world/events/rooftop-function/sunset.jpg">
   <link rel="icon" href="/favicon.ico" sizes="any">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -126,6 +126,7 @@
 
     .rf-photos { display: grid; grid-template-columns: 1fr; gap: 12px; }
     @media (min-width: 560px) { .rf-photos { grid-template-columns: 1fr 1fr; } }
+    @media (min-width: 860px) { .rf-photos { grid-template-columns: repeat(3, 1fr); } }
     .rf-photo {
       display: block; width: 100%; padding: 0; border: none;
       background: transparent; cursor: pointer; overflow: hidden;
@@ -162,7 +163,7 @@
 
     <section class="rf-hero">
       <figure class="rf-hero__img">
-        <img src="/events/rooftop-function/skyline.jpg" alt="Three people around a table of bottles on the roof, the Manhattan skyline lit up behind them in the last of the blue hour">
+        <img src="/events/rooftop-function/sunset.jpg" alt="Sunset over the rooftops from the rail — orange light along the horizon behind the Manhattan skyline, string lights and the table in silhouette">
       </figure>
       <p class="rf-eyebrow">August 29, 2026 · NYC</p>
       <h1 class="rf-title">A Rooftop Function</h1>
@@ -206,6 +207,9 @@
     </blockquote>
 
     <div class="rf-photos">
+      <button class="rf-photo" data-lightbox="/events/rooftop-function/skyline.jpg">
+        <img src="/events/rooftop-function/skyline.jpg" alt="Three people around the table of bottles, the Manhattan skyline lit up behind them in the last of the blue hour" loading="lazy">
+      </button>
       <button class="rf-photo" data-lightbox="/events/rooftop-function/rooftop.jpg">
         <img src="/events/rooftop-function/rooftop.jpg" alt="The wider roof after dark — people spread along the rail under string lights, the city glowing on the horizon" loading="lazy">
       </button>
