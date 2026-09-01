@@ -88,26 +88,3 @@ She was also nominated for the Nobel Peace Prize in three separate years — 194
 The method now
 
 Now, her Montessori method, characterized by mixed age classrooms, "auto-learning" (kids directing their own learning) and teachers as guides rather than specific subject matter experts, is used around the world and shows to help kids do about a quarter of a standard deviation above average.
-
-
-Notes on the record
-
-This is a story summary, told the way the story is usually told. Everything below is either a source or a place where I changed a fact in the draft rather than publish it wrong — every one of them is a line you can put back.
-
-**"One of the first."** That is the accurate version and it is worth defending, because she is very often called *the* first woman doctor in Italy and she was not. Ernestina Paper took a medical degree at Florence in 1877, when Montessori was seven. Montessori graduated in 1896.
-
-**The pope.** Told here exactly as it is usually told. Worth knowing that Montessori organisations repeat the Leo XIII intervention and the documented account of her university admission does not mention it. Her recorded route was: enrolled 1890 in natural sciences, diploma 1892, entered the medical programme 1893, graduated 1896.
-
-**Dissecting alone at night** is real and documented — she is also recorded as smoking tobacco to cover the smell of the formaldehyde.
-
-**Her father** worked *at* the Ministry of Finance, managing a state tobacco factory. The draft made him the Minister of Finance, which is a cabinet post he did not hold.
-
-**The wild boy** is Victor of Aveyron, found around 1800 and estimated at about twelve, so "until the age of 8" became "until he was found as a child" — a number I could not stand behind.
-
-**San Lorenzo** is a district of Rome, not a town in another part of Italy. The Casa dei Bambini opened there on 6 January 1907.
-
-**Mussolini.** The draft had the war starting first and the schools closing in 1934. It ran the other way: official support from 1924, surveillance in 1932, she left Italy in 1934, the movement was shut down in 1936, and the war began in 1939 — after all of it. "This went 1920's viral" became "this went viral", because the newspapers picked her up from 1909.
-
-**The Nobel.** Three nominations for three different prizes became what actually happened: the Peace Prize, nominated across three years, six nominations in total.
-
-**The photographs.** All three come from *Dr. Montessori's Own Handbook*, published in New York by Frederick A. Stokes Company in 1914, and are public domain in the United States. The two classroom photographs are Montessori classrooms photographed for that book rather than San Lorenzo itself, which is why the captions say so. I could not find a verifiably free photograph of the original Casa dei Bambini, or of her lecturing, and showing what I can prove beats captioning what I cannot.
