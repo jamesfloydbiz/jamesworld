@@ -202,6 +202,36 @@
       border-bottom: 1px solid rgba(22,22,26,.2);
     }
     .sc-past a:hover { color: var(--sc-ink); border-bottom-color: var(--sc-ink); }
+
+    /* Photos — same three-up grid and lightbox as the other event pages, so
+       they behave identically wherever you land. */
+    .sc-photos { display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 1.4rem; }
+    @media (min-width: 560px) { .sc-photos { grid-template-columns: 1fr 1fr; } }
+    @media (min-width: 860px) { .sc-photos { grid-template-columns: repeat(3, 1fr); } }
+    .sc-photo {
+      display: block; width: 100%; padding: 0; border: none;
+      background: transparent; cursor: pointer; overflow: hidden;
+      border-radius: 3px; touch-action: manipulation;
+    }
+    .sc-photo img {
+      width: 100%; height: auto; display: block;
+      aspect-ratio: 4 / 3; object-fit: cover;
+      transition: transform 0.4s;
+    }
+    .sc-photo:hover img { transform: scale(1.03); }
+    @media (prefers-reduced-motion: reduce) {
+      .sc-photo img { transition: none; }
+      .sc-photo:hover img { transform: none; }
+    }
+    .img-lightbox {
+      max-width: 96vw; max-height: 92vh;
+      background: transparent; border: none; padding: 0; margin: auto;
+    }
+    .img-lightbox::backdrop { background: hsl(60 6% 8% / 0.94); }
+    .img-lightbox img {
+      max-width: 100%; max-height: 90vh;
+      object-fit: contain; cursor: pointer; display: block;
+    }
   </style>
 </head>
 <body>
@@ -261,9 +291,39 @@
         Every Sunday since August 2 — Aug 2, 9, 16, 23 and 30 — all at 4:15 PM,
         except August 23, which ran at 9:00 AM.
       </p>
+
+      <div class="sc-photos">
+        <button class="sc-photo" data-lightbox="/events/pickup-soccer/game.jpg">
+          <img src="/events/pickup-soccer/game.jpg" alt="A session underway at Sternberg Park — players spread across the turf, spare balls and a cone in the foreground under a clear sky" loading="lazy">
+        </button>
+        <button class="sc-photo" data-lightbox="/events/pickup-soccer/sideline.jpg">
+          <img src="/events/pickup-soccer/sideline.jpg" alt="Players resting along the fence line between games, most of them in black" loading="lazy">
+        </button>
+        <button class="sc-photo" data-lightbox="/events/pickup-soccer/field.jpg">
+          <img src="/events/pickup-soccer/field.jpg" alt="The turf pitch at Sternberg Park before kickoff, cones set out and the floodlights above the treeline" loading="lazy">
+        </button>
+      </div>
     </section>
 
   </div>
 
+  <dialog class="img-lightbox" id="img-lightbox">
+    <img id="lightbox-img" src="" alt="" onclick="document.getElementById('img-lightbox').close()">
+  </dialog>
+
+  <script>
+    var lightbox = document.getElementById('img-lightbox');
+    var lightboxImg = document.getElementById('lightbox-img');
+    document.querySelectorAll('[data-lightbox]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        lightboxImg.src = btn.getAttribute('data-lightbox');
+        lightboxImg.alt = btn.querySelector('img')?.alt || '';
+        lightbox.showModal();
+      });
+    });
+    lightbox.addEventListener('click', function(e){
+      if (e.target === lightbox) lightbox.close();
+    });
+  </script>
 </body>
 </html>
