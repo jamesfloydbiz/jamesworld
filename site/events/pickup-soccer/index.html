@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Pickup Soccer — James Floyd</title>
-  <meta name="description" content="Pickup Soccer on Sundays in NYC. Free — no pay to play. Come ball, and tell your people. Wear black or white; RSVP on Partiful by Friday.">
+  <meta name="description" content="Free, simple soccer on Sunday afternoons at Sternberg Park, Brooklyn. 4:15 PM, wear black or white, RSVP on Partiful.">
   <link rel="canonical" href="https://jamesfloyds.world/events/pickup-soccer/">
   <meta property="og:type" content="article">
   <meta property="og:title" content="Pickup Soccer">
@@ -154,6 +154,16 @@
       color: var(--sc-black);
       margin: 32px 0 12px;
     }
+    .sc-story p { max-width: 40rem; }
+    .sc-dates { list-style: none; margin: 0; padding: 0; max-width: 26rem; }
+    .sc-dates li {
+      display: flex; justify-content: space-between; gap: 20px;
+      padding: 9px 0; border-bottom: 1px solid rgba(22,22,26,0.10);
+      font-size: 1rem;
+    }
+    .sc-dates li:last-child { border-bottom: none; }
+    .sc-dates .sc-dates__t { font-family: 'DM Mono', monospace; font-size: 0.82rem;
+      color: var(--sc-soft); white-space: nowrap; align-self: center; }
 
     /* Times strip */
     .sc-times {
@@ -272,12 +282,7 @@
     </div>
 
     <section class="sc-body">
-      <p>Come ball. And tell your people. 🖤🤍</p>
-      <p>
-        Free, quality, simple soccer on Sundays — no cost, no pressure, just
-        show up and play. Wear black or white so we can split sides fast.
-        Spots are limited, so grab yours.
-      </p>
+      <p>Free, simple soccer on Sunday afternoons. RSVP on Partiful.</p>
 
       <p>
         <a href="https://partiful.com/e/OOXvQABZ1A9B6DuoPHT2" class="sc-cta" target="_blank" rel="noopener noreferrer">
@@ -286,11 +291,44 @@
         </a>
       </p>
 
+      <h2>The story</h2>
+      <div class="sc-story">
+        <p>
+          My name is James. I started playing soccer when I was 2. My first memory
+          is playing pass with my parents who were kicking the ball with their toes.
+          They weren't very good.
+        </p>
+        <p>
+          As I grew up I played in every rec and club league in my city, I loved the
+          competition, but more so I loved the beauty of well played soccer. The ease
+          of meeting new people and getting a good workout in. As I've grown up, even
+          despite times of straying away from the game I've always come back with more
+          love for it.
+        </p>
+        <p>
+          Each fresh look has brought me new friends, happy memories, and a stronger self.
+        </p>
+        <p>
+          This is my most recent return to the game, where people from over 10 countries
+          and ages 10 to 40 have come to play.
+        </p>
+        <p>
+          In New York you could go pay 10-20$ a game, have referees, and all that comes
+          with that, but I didn't want to darken the game with any of that.
+        </p>
+        <p>
+          So this is free, simple, pickup soccer for my new community in New York City.
+        </p>
+      </div>
+
       <h2>Past sessions</h2>
-      <p class="sc-past">
-        Every Sunday since August 2 — Aug 2, 9, 16, 23 and 30 — all at 4:15 PM,
-        except August 23, which ran at 9:00 AM.
-      </p>
+      <ul class="sc-dates">
+        <li><span>Sunday, August 2</span><span class="sc-dates__t">4:15 PM</span></li>
+        <li><span>Sunday, August 9</span><span class="sc-dates__t">4:15 PM</span></li>
+        <li><span>Sunday, August 16</span><span class="sc-dates__t">4:15 PM</span></li>
+        <li><span>Sunday, August 23</span><span class="sc-dates__t">9:00 AM</span></li>
+        <li><span>Sunday, August 30</span><span class="sc-dates__t">4:15 PM</span></li>
+      </ul>
 
       <div class="sc-photos">
         <button class="sc-photo" data-lightbox="/events/pickup-soccer/game.jpg">
