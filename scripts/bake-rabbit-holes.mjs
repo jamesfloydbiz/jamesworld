@@ -23,6 +23,30 @@ const OUT_DIR = resolve(ROOT, 'site', 'writing', 'rabbit-holes');
 // current section. `date` is an optional era range shown under the heading
 // in both the timeline nav and the article.
 const META = {
+  'state-of-american-schooling': {
+    title: 'The State of American Schooling',
+    subtitle: '60 million kids, a trillion dollars a year, and what the numbers actually say.',
+    reading: '~25 min',
+    sections: [
+      { name: 'How many kids',                 date: '~60 million' },
+      { name: 'Where they go to school',       date: 'the four buckets' },
+      { name: 'Where the money comes from',    date: '$1T a year' },
+      { name: 'A century of spending',         date: '26x since 1920' },
+      { name: 'Where the money goes',          date: '79% people' },
+      { name: 'How students score',            date: 'PIRLS, TIMSS, PISA' },
+      { name: 'What sticks into adulthood',    date: 'PIAAC' },
+      { name: 'Who actually lost the score',   date: 'the distribution' },
+      { name: 'Time in school',                date: '20% of a childhood' },
+      { name: 'Chronic absenteeism',           date: '22%' },
+      { name: 'Teachers',                      date: '1 in 8 uncertified' },
+      { name: 'Phonics, and what Mississippi did', date: '2013 onward' },
+      { name: 'Grade inflation',               date: 'GPA up, ACT down' },
+      { name: 'AI and devices',                date: '2,982 apps' },
+      { name: 'The enrollment cliff',          date: '2028 - 2035' },
+      { name: 'What I take from this',         date: 'the insights' },
+      { name: 'Sources',                       date: '69 references' },
+    ],
+  },
   'history-of-education': {
     title: 'A History of Education',
     subtitle: 'From play and imitation to Prussian classrooms — how schooling came to be.',
@@ -150,6 +174,38 @@ function emph(s) {
     .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
     .replace(/(^|[^*])\*([^*\n]+)\*(?!\*)/g, '$1<em>$2</em>');
 }
+// Superscript digit runs in the prose (¹²³⁴⁵...) become links down to the
+// numbered source. Applied AFTER escaping, exactly like emph(), so a document
+// still cannot smuggle markup through this path.
+const SUPS = { '\u2070':'0','\u00b9':'1','\u00b2':'2','\u00b3':'3','\u2074':'4',
+               '\u2075':'5','\u2076':'6','\u2077':'7','\u2078':'8','\u2079':'9' };
+const SUPRUN = '[\u2070\u00b9\u00b2\u00b3\u2074-\u2079]+';
+function sup(s) {
+  // A group of citations is written with a thin space between the runs
+  // (15\u200916), so consecutive references render as one marker reading
+  // "15,16" rather than colliding into the nonexistent source 1516.
+  const re = new RegExp(SUPRUN + '(?:\u2009' + SUPRUN + ')*', 'g');
+  return String(s).replace(re, (group) => {
+    const links = group.split('\u2009').map((run) => {
+      const n = Array.from(run).map((c) => SUPS[c]).join('');
+      return `<a href="#src-${n}">${n}</a>`;
+    }).join(',');
+    return `<sup class="rh-fn">${links}</sup>`;
+  });
+}
+
+// Bare URLs in a source line become links. The string arriving here has
+// already been escaped, so `&` is `&amp;` — which is what an href wants
+// anyway. Trailing sentence punctuation is left outside the link.
+function linkify(escaped) {
+  return String(escaped).replace(/https?:\/\/[^\s<)\]]+/g, (u) => {
+    const clean = u.replace(/[.,;:]+$/, '');
+    const tail = u.slice(clean.length);
+    const label = clean.replace(/^https?:\/\//, '').replace(/\/$/, '');
+    return `<a class="rh-src__link" href="${clean}" target="_blank" rel="noopener">${label}</a>${tail}`;
+  });
+}
+
 function slugify(s) {
   return String(s).toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
@@ -223,7 +279,7 @@ function renderBlock(block) {
     return '<div class="rh-tablewrap"><table class="rh-table"><thead><tr>' +
       head.map((h) => `<th>${emph(esc(h))}</th>`).join('') +
       '</tr></thead><tbody>' +
-      body.map((r) => '<tr>' + r.map((c) => `<td>${emph(esc(c))}</td>`).join('') + '</tr>').join('') +
+      body.map((r) => '<tr>' + r.map((c) => `<td>${sup(emph(esc(c)))}</td>`).join('') + '</tr>').join('') +
       '</tbody></table></div>';
   }
 
@@ -233,13 +289,13 @@ function renderBlock(block) {
   // Pure bullet list
   if (bulletLines.length === lines.length && lines.length > 1) {
     return '<ul class="rh-list">' +
-      lines.map((l) => `<li>${emph(esc(l.replace(/^-\s+/, '')))}</li>`).join('') +
+      lines.map((l) => `<li>${sup(emph(esc(l.replace(/^-\s+/, ''))))}</li>`).join('') +
       '</ul>';
   }
   // Pure numbered list
   if (numberedLines.length === lines.length && lines.length > 1) {
     return '<ol class="rh-list">' +
-      lines.map((l) => `<li>${emph(esc(l.replace(/^\d+\.\s+/, '')))}</li>`).join('') +
+      lines.map((l) => `<li>${sup(emph(esc(l.replace(/^\d+\.\s+/, ''))))}</li>`).join('') +
       '</ol>';
   }
   // Mixed: first line intro, remainder bullets/numbers → intro <p> then list
@@ -261,8 +317,31 @@ function renderBlock(block) {
       `<${tag} class="rh-list">${items}</${tag}>`;
   }
   // Plain paragraph — collapse internal line breaks into spaces (soft wrap)
-  const paragraph = emph(esc(lines.join(' ').replace(/\s+/g, ' ').trim()));
+  const paragraph = sup(emph(esc(lines.join(' ').replace(/\s+/g, ' ').trim())));
   return `<p>${paragraph}</p>`;
+}
+
+// A section named exactly "Sources" is rendered as one collapsed <details>
+// rather than as prose. Each block of the form `N. text` becomes a numbered
+// item the superscript markers can jump to. Kept shut by default because 70-odd
+// citations under an essay is a wall; anyone who wants them is one click away.
+const SOURCES_HEADING = 'Sources';
+function renderSourcesSection(s) {
+  const items = s.blocks.map((block) => {
+    const raw = block.split('\n').map((l) => l.trim()).join(' ').replace(/\s+/g, ' ').trim();
+    const m = /^(\d+)\.\s*(.*)$/.exec(raw);
+    if (!m) return `<li class="rh-src__note">${linkify(emph(esc(raw)))}</li>`;
+    return `<li id="src-${m[1]}" value="${m[1]}">${linkify(emph(esc(m[2])))}</li>`;
+  }).join('\n            ');
+  const n = s.blocks.filter((b) => /^\d+\.\s/.test(b.trim())).length;
+  return `        <section id="${slugify(s.heading)}" class="rh-section">
+          <details class="rh-sources">
+            <summary><span class="rh-sources__k">Sources</span><span class="rh-sources__n">${n} references &mdash; tap to open</span></summary>
+            <ol class="rh-sources__list">
+            ${items}
+            </ol>
+          </details>
+        </section>`;
 }
 
 function renderSections(sections) {
@@ -284,6 +363,7 @@ function renderSections(sections) {
 
   const articleHtml = withIds
     .map((s) => {
+      if (s.heading === SOURCES_HEADING) return renderSourcesSection(s);
       const heading = s.heading
         ? `<h2>${esc(s.heading)}${s.date ? ` <span class="rh-section__date">${esc(s.date)}</span>` : ''}</h2>`
         : '';
@@ -476,6 +556,34 @@ function pageTemplate(slug, meta, timelineItems, articleHtml) {
       font-style: italic;
       color: var(--fg);
     }
+    /* Footnote markers. Small, dim, and out of the way — the prose has to read
+       without them, and a reader who wants the receipt clicks through. */
+    .rh-fn { font-size: 0.62em; line-height: 0; vertical-align: super; margin-left: 1px; }
+    .rh-fn a { color: var(--fg-40); text-decoration: none; }
+    .rh-fn a:hover { color: var(--acc, #6ee7a8); }
+
+    /* Sources, collapsed. Seventy-odd citations under an essay is a wall, so it
+       stays shut until asked for. */
+    .rh-sources { border: 1px solid var(--fg-12); border-radius: 10px; margin: 2.4rem 0 0;
+      background: hsl(0 0% 3%); }
+    .rh-sources > summary { list-style: none; cursor: pointer; display: flex; flex-wrap: wrap;
+      align-items: baseline; gap: 12px; padding: 16px 18px; min-height: 44px;
+      box-sizing: border-box; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+    .rh-sources > summary::-webkit-details-marker { display: none; }
+    .rh-sources > summary:focus-visible { outline: 2px solid var(--fg-40); outline-offset: 2px; border-radius: 10px; }
+    .rh-sources__k { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--fg-70); }
+    .rh-sources__n { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--fg-40); }
+    .rh-sources[open] > summary .rh-sources__n::after { content: ''; }
+    .rh-sources__list { margin: 0; padding: 0 18px 20px 44px; }
+    .rh-sources__list li { font-family: var(--font-serif); font-size: 0.88rem; line-height: 1.65;
+      color: var(--fg-60); margin-bottom: 12px; overflow-wrap: anywhere; }
+    .rh-sources__list li:target { color: var(--fg-85); }
+    .rh-sources__list li strong { color: var(--fg-85); }
+    .rh-src__link { color: var(--fg-50); text-decoration: none; border-bottom: 1px solid var(--fg-20); }
+    .rh-src__link:hover { color: var(--fg-85); border-bottom-color: var(--fg-50); }
+
     .rh-tablewrap { overflow-x: auto; margin: 1.4rem 0; -webkit-overflow-scrolling: touch; }
     .rh-table {
       border-collapse: collapse;

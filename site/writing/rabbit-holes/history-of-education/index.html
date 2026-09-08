@@ -178,6 +178,34 @@
       font-style: italic;
       color: var(--fg);
     }
+    /* Footnote markers. Small, dim, and out of the way — the prose has to read
+       without them, and a reader who wants the receipt clicks through. */
+    .rh-fn { font-size: 0.62em; line-height: 0; vertical-align: super; margin-left: 1px; }
+    .rh-fn a { color: var(--fg-40); text-decoration: none; }
+    .rh-fn a:hover { color: var(--acc, #6ee7a8); }
+
+    /* Sources, collapsed. Seventy-odd citations under an essay is a wall, so it
+       stays shut until asked for. */
+    .rh-sources { border: 1px solid var(--fg-12); border-radius: 10px; margin: 2.4rem 0 0;
+      background: hsl(0 0% 3%); }
+    .rh-sources > summary { list-style: none; cursor: pointer; display: flex; flex-wrap: wrap;
+      align-items: baseline; gap: 12px; padding: 16px 18px; min-height: 44px;
+      box-sizing: border-box; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+    .rh-sources > summary::-webkit-details-marker { display: none; }
+    .rh-sources > summary:focus-visible { outline: 2px solid var(--fg-40); outline-offset: 2px; border-radius: 10px; }
+    .rh-sources__k { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--fg-70); }
+    .rh-sources__n { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--fg-40); }
+    .rh-sources[open] > summary .rh-sources__n::after { content: ''; }
+    .rh-sources__list { margin: 0; padding: 0 18px 20px 44px; }
+    .rh-sources__list li { font-family: var(--font-serif); font-size: 0.88rem; line-height: 1.65;
+      color: var(--fg-60); margin-bottom: 12px; overflow-wrap: anywhere; }
+    .rh-sources__list li:target { color: var(--fg-85); }
+    .rh-sources__list li strong { color: var(--fg-85); }
+    .rh-src__link { color: var(--fg-50); text-decoration: none; border-bottom: 1px solid var(--fg-20); }
+    .rh-src__link:hover { color: var(--fg-85); border-bottom-color: var(--fg-50); }
+
     .rh-tablewrap { overflow-x: auto; margin: 1.4rem 0; -webkit-overflow-scrolling: touch; }
     .rh-table {
       border-collapse: collapse;

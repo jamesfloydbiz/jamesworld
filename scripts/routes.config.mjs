@@ -28,6 +28,7 @@ export const ROUTES = [
   { path: '/36-questions', priority: 0.6, changefreq: 'monthly' },
   { path: '/mentor-mindset', priority: 0.8, changefreq: 'monthly' },
   { path: '/writing', priority: 0.8, changefreq: 'daily' },
+  { path: '/writing/rabbit-holes/state-of-american-schooling', priority: 0.6, changefreq: 'monthly' },
   { path: '/writing/rabbit-holes/history-of-education', priority: 0.6, changefreq: 'monthly' },
   { path: '/writing/rabbit-holes/social-classes-and-mobility', priority: 0.6, changefreq: 'monthly' },
   { path: '/writing/rabbit-holes/learning-science', priority: 0.6, changefreq: 'monthly' },
