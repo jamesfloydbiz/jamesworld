@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<title>Climbing Machine — interior, 8 x 10 in</title>
+<meta name="robots" content="noindex, nofollow">
+<style>
+  /* A static instance of Newsreader (wght 400, opsz 16), generated from the
+     variable font. Chrome emits Type3 fonts for variable faces, which preflight
+     rejects; a static face embeds as a normal TrueType subset. OFL alongside. */
+  /* Montserrat — alpha.school's typeface. OFL, safe to embed. */
+  @font-face {
+    font-family: 'AlphaSans';
+    src: url('/books/climbing-machine/print/Montserrat-Static-Regular.ttf') format('truetype');
+    font-weight: 400; font-style: normal; font-display: block;
+  }
+
+  /* Interior pages. Trim 8 x 10 in, 0.125 in bleed all round.
+     Page box below is trim + bleed; the trim edge sits 0.125 in inside it. */
+  @page { size: 8.250in 10.250in; margin: 0; }
+  :root { --paper:#faf7ef; --ink:#2b2620; --soft:rgba(43,38,32,.55); --bleed:0.125in; }
+  * { box-sizing: border-box; }
+  html, body { margin:0; padding:0; background:#fff; }
+  body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .p {
+    position: relative; width: 8.250in; height: 10.250in;
+    background: var(--paper); overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+    page-break-after: always; break-after: page;
+  }
+  .p:last-child { page-break-after: auto; break-after: auto; }
+  /* Everything that must not be trimmed lives inside .safe. 6.25in leaves a
+     1.0in margin off the sheet edge, i.e. 0.875in off the trim — the printer's
+     "suggested safety area" line, measured off their own proof overlay. The
+     required line is 0.486in; the extra is headroom for perfect-bound gutter
+     creep, which eats into the inner margin. */
+  .safe { width: 6.250in; margin: 0 auto; }
+  .txt {
+    font-family: 'AlphaSans', Helvetica, sans-serif; color: var(--ink);
+    font-size: 17pt; line-height: 1.7; text-align: left;
+  }
+  .txt p { margin: 0 0 .75em; }
+  .txt p:last-child { margin-bottom: 0; }
+  .folio {
+    position: absolute; left: 0; right: 0; bottom: 0.575in; text-align: center;
+    font-family: 'AlphaSans', Helvetica, sans-serif; font-size: 9pt; color: var(--soft);
+  }
+  /* Dedication — page 1, the first right-hand page. Its presence is also what
+     puts every following spread on the correct side: without it the text pages
+     land on rectos and each painting faces the wrong text, and the three
+     double-page summits get split across a page turn. */
+  .ded { display: flex; align-items: center; justify-content: center; }
+  .ded .line {
+    font-family: 'AlphaSans', Helvetica, sans-serif;
+    font-size: 15pt; line-height: 1.7; color: var(--ink);
+    text-align: center; max-width: 4.4in;
+  }
+  .art { margin: 0 auto; }
+  .art img { display: block; width: 100%; height: auto; }
+  .art.trip { display: flex; flex-direction: column; }
+  /* Full double-page paintings. The box is the whole spread — two pages plus
+     bleed — and object-fit:cover fills it edge to edge, trimming the excess
+     width evenly from both sides. Ratio-agnostic, so each painting handles its
+     own overhang. Each page then shows its half of that box.
+
+     THE FOLD. Each page is 8.25in of paper but only 8.00in of it survives —
+     0.125in is bleed on EVERY edge, the spine edge included, and the spine-side
+     bleed is cut away just like the outer one. So the two halves do not meet at
+     page-x 8.25 and 0; they meet at 8.125 on the verso and 0.125 on the recto.
+     A naive 16.5in painting split down the middle therefore throws 0.25in of
+     picture into the two bleeds and prints a visible jump at the fold.
+
+     Let d be the amount of picture deliberately printed on BOTH pages. Then the
+     painting must be sized 16.25in - d, the verso showing it from 0 and the
+     recto from 8.00in - d. d = 0 joins the halves exactly; d > 0 repeats a
+     strip so that perfect binding, which hides a sliver either side of the
+     fold, hides duplicated picture instead of unique picture.
+
+     d = 0.125in here, so: width 16.125in, recto offset -7.875in. */
+  .half { padding: 0; }
+  .half img {
+    position: absolute; top: 0;
+    width: 16.125in; height: 100%;
+    object-fit: cover; object-position: center center;
+    max-width: none;
+  }
+  .half-l img { left: 0; }
+  .half-r img { left: -7.875in; }
+  .band {
+    position: absolute; left: 0; right: 0; bottom: 0;
+    padding: 0 1.0in 0.575in;
+    font-family: 'AlphaSans', Helvetica, sans-serif; font-size: 13.5pt; line-height: 1.55;
+    color: var(--ink); text-align: center;
+    background: linear-gradient(to top, var(--paper) 62%, rgba(250,247,239,0));
+    padding-top: .6in;
+  }
+  .band p { margin: 0 0 .5em; }
+  .band p:last-child { margin-bottom: 0; }
+</style></head>
+<body>
+<div class="p"></div>
+<div class="p"></div>
+<div class="p ded"><div class="line">For all the limits<br>yet to be overcome.</div></div>
+<div class="p tp"><div class="safe"><div class="txt"><p>“I want to climb to the top of the mountain today,” said James.</p><p>“All the way?” he heard his teacher Floyd say.</p></div></div><div class="folio">2</div></div>
+<div class="p ap"><div class="art" style="width:4.680in"><img src="/books/climbing-machine/print/spread-01.jpg" alt=""></div></div>
+<div class="p tp"><div class="safe"><div class="txt"><p>It was a big mountain, but James was trying to be brave.</p><p>From the effort he gave his 2 Hour Learning apps, he had found that he could do hard things.</p><p>Besides, this was an Alpha School life skills workshop, and he knew the challenge each one brings.</p></div></div><div class="folio">4</div></div>
+<div class="p ap"><div class="art" style="width:4.608in"><img src="/books/climbing-machine/print/spread-02.jpg" alt=""></div></div>
+<div class="p tp"><div class="safe"><div class="txt"><p>James responded, “I will be a climbing machine.”</p><p>His little legs were bouncing nervously in his blue jeans.</p></div></div><div class="folio">6</div></div>
+<div class="p ap"><div class="art" style="width:5.328in"><img src="/books/climbing-machine/print/spread-03.jpg" alt=""></div></div>
+<div class="p tp"><div class="safe"><div class="txt"><p>James watched other hikers as they went up and up and up the trail until they looked bite size.</p></div></div><div class="folio">8</div></div>
+<div class="p ap"><div class="art" style="width:4.968in"><img src="/books/climbing-machine/print/spread-04.jpg" alt=""></div></div>
+<div class="p tp"><div class="safe"><div class="txt"><p>Was he even the right size to do this?</p><p>Would he have the might to rise to this?</p></div></div><div class="folio">10</div></div>
+<div class="p ap"><div class="art" style="width:5.328in"><img src="/books/climbing-machine/print/spread-05.jpg" alt=""></div></div>
+<div class="p tp"><div class="safe"><div class="txt"><p>Floyd reminded everyone, “Remember, at Alpha we are limitless!”</p><p>“I really want to finish this,” thought James, his heart beating fast.</p></div></div><div class="folio">12</div></div>
+<div class="p ap"><div class="art" style="width:5.832in"><img src="/books/climbing-machine/print/spread-06.jpg" alt=""></div></div>
+<div class="p tp"><div class="safe"><div class="txt"><p>As the class stood at the start of the path, James looked up to the top.</p><p>He told his classmates, “I’ll go in the back. Let’s swap spots.”</p></div></div><div class="folio">14</div></div>
+<div class="p ap"><div class="art trip" style="width:4.320in;gap:0.416in"><img src="/books/climbing-machine/print/spread-07a.jpg" alt=""><img src="/books/climbing-machine/print/spread-07b.jpg" alt=""><img src="/books/climbing-machine/print/spread-07c.jpg" alt=""></div></div>
+<div class="p tp"><div class="safe"><div class="txt"><p>They started to climb. Up and up. He didn’t want to whine, so he stopped to tie his shoe.</p><p>Then he faked a cough. “Maybe I can pretend I have the flu,” he thought.</p></div></div><div class="folio">16</div></div>
+<div class="p ap"><div class="art" style="width:5.328in"><img src="/books/climbing-machine/print/spread-08.jpg" alt=""></div></div>
+<div class="p tp"><div class="safe"><div class="txt"><p>Floyd knew what James was up to. “How you doing, buddy? You’re looking a little pale.”</p><p>Floyd pulled James to the side of the trail, where they flopped onto a patch of soft grass.</p><p>With a huge breath James let his feelings go.</p><p>“My legs ache and I don’t want to fail. I want to keep up with the class!”</p></div></div><div class="folio">18</div></div>
+<div class="p ap"><div class="art" style="width:5.616in"><img src="/books/climbing-machine/print/spread-09.jpg" alt=""></div></div>
+<div class="p tp"><div class="safe"><div class="txt"><p>James felt like he was in a funk.</p><p>“You’ve won already! We’re done with a little chunk!” Floyd encouraged.</p></div></div><div class="folio">20</div></div>
+<div class="p ap"><div class="art" style="width:5.616in"><img src="/books/climbing-machine/print/spread-09.jpg" alt=""></div></div>
+<div class="p tp"><div class="safe"><div class="txt"><p>But as they sat looking up to the top, James said, “Maybe I can try again another day.”</p><p>Floyd looked at James and said, “We make big goals at Alpha School, and I think you can reach them. I’m right here all the way with you.”</p></div></div><div class="folio">22</div></div>
+<div class="p ap"><div class="art" style="width:6.048in"><img src="/books/climbing-machine/print/spread-11.jpg" alt=""></div></div>
+<div class="p tp"><div class="safe"><div class="txt"><p>Floyd knew James loved games.</p><p>So he pointed to a big rock a little bit up the trail.</p><p>“Sometimes, I like to make hard things into games so they’re fun. I bet you it’s one hundred steps to that rock.”</p><p>This time James didn’t balk. He got up and started walking, counting each step.</p></div></div><div class="folio">24</div></div>
+<div class="p ap"><div class="art" style="width:6.048in"><img src="/books/climbing-machine/print/spread-12.jpg" alt=""></div></div>
+<div class="p tp"><div class="safe"><div class="txt"><p>A little farther up the trail, Floyd pointed at a big tree and asked, “How many steps if you run there?”</p><p>James took a deep breath of air, guessed, and went off. Up and up and up.</p></div></div><div class="folio">26</div></div>
+<div class="p ap"><div class="art" style="width:6.480in"><img src="/books/climbing-machine/print/spread-13.jpg" alt=""></div></div>
+<div class="p tp"><div class="safe"><div class="txt"><p>When they reached the tree James looked at Floyd and said, “I’m a climbing machine.”</p><p>He was keen to keep going.</p></div></div><div class="folio">28</div></div>
+<div class="p ap"><div class="art" style="width:6.480in"><img src="/books/climbing-machine/print/spread-14.jpg" alt=""></div></div>
+<div class="p tp"><div class="safe"><div class="txt"><p>Chunk by chunk, James’ funk subsided.</p><p>His legs ached more, but he felt lighter. They went up and up and up. Higher and higher.</p></div></div><div class="folio">30</div></div>
+<div class="p ap"><div class="art trip" style="width:4.464in;gap:0.128in"><img src="/books/climbing-machine/print/spread-15a.jpg" alt=""><img src="/books/climbing-machine/print/spread-15b.jpg" alt=""><img src="/books/climbing-machine/print/spread-15c.jpg" alt=""></div></div>
+<div class="p half half-l"><img src="/books/climbing-machine/print/spread-16.jpg" alt=""><div class="band"><p>James finally pointed at the top and said, “Bet you can’t stop me! I’m a climbing machine!!”</p></div></div>
+<div class="p half half-r"><img src="/books/climbing-machine/print/spread-16.jpg" alt=""><div class="band"><p>The sun gleamed, and James beamed.</p></div></div>
+<div class="p half half-l"><img src="/books/climbing-machine/print/spread-17.jpg" alt=""><div class="band"><p>On the summit James looked out as far as he could see.</p></div></div>
+<div class="p half half-r"><img src="/books/climbing-machine/print/spread-17.jpg" alt=""><div class="band"><p>Past the big tree, the big rock, past the spot he worried he’d fail, past the start of the trail, and out to another mountaintop. It all looked itty bitty.</p></div></div>
+<div class="p half half-l"><img src="/books/climbing-machine/print/spread-18.jpg" alt=""><div class="band"><p>He pointed and told Floyd, “I am going to the top there.”</p><p>Floyd asked, “All the way?”</p></div></div>
+<div class="p half half-r"><img src="/books/climbing-machine/print/spread-18.jpg" alt=""><div class="band"><p>James looked him in the eye and said, “I’m a climbing machine.”</p></div></div>
+<div class="p"></div>
+</body></html>

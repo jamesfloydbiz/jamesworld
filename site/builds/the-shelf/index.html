@@ -1,0 +1,968 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Shelf — James Floyd</title>
+<meta name="description" content="A room you can click. Everything on the shelf is something I made.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Serif:ital,wght@0,400;1,400&display=swap">
+
+<style>
+  :root {
+    --ink:      #14130f;
+    --paper:    #F7F5EF;
+    --graphite: #6E6E68;
+    --ash:      #A8A8A2;
+    --forest:   #404C3A;
+    --rule:     rgba(20,19,15,0.14);
+
+    --serif:   'IBM Plex Serif', Georgia, serif;
+    --display: 'Instrument Serif', Georgia, serif;
+    --mono:    'IBM Plex Mono', ui-monospace, Menlo, monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  html { background: var(--paper); -webkit-font-smoothing: antialiased; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--serif);
+    overflow-x: hidden;
+  }
+  a { color: inherit; }
+  button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+
+  /* ── one column, top to bottom ─────────────────────────────────────── */
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 clamp(18px, 4vw, 40px); }
+
+  .bar {
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    padding: 16px 0 14px; border-bottom: 1px solid var(--rule);
+  }
+  .mono {
+    font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--graphite); text-decoration: none;
+  }
+  .bar a.mono:hover { color: var(--ink); }
+
+  .lede { padding: clamp(30px, 6vw, 60px) 0 clamp(20px, 3vw, 30px); max-width: 44rem; }
+  .lede h1 {
+    font-family: var(--display); font-weight: 400;
+    font-size: clamp(38px, 7vw, 76px); line-height: 0.98; letter-spacing: -0.01em;
+    margin: 0 0 14px;
+  }
+  .lede p { font-size: 17px; line-height: 1.6; color: var(--graphite); margin: 0; }
+  .lede p em { font-style: italic; color: var(--ink); }
+
+  /* ── the room ──────────────────────────────────────────────────────── */
+  .room {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    overflow: hidden;
+    background: #17161a;
+    cursor: default;
+    touch-action: pan-y;
+  }
+  @media (max-width: 760px) { .room { aspect-ratio: 1 / 1; } }
+  .room canvas { display: block; width: 100%; height: 100%; }
+
+  .room__hint {
+    position: absolute; left: 14px; bottom: 12px;
+    font-family: var(--mono); font-size: 10px; letter-spacing: 0.18em;
+    text-transform: uppercase; color: rgba(255,255,255,0.5);
+    pointer-events: none; transition: opacity 0.4s;
+  }
+  .room.is-touched .room__hint { opacity: 0; }
+
+  /* floating object label */
+  .tag {
+    position: absolute; left: 0; top: 0;
+    transform: translate(-50%, -100%);
+    padding: 7px 11px 8px;
+    background: rgba(12,12,12,0.82);
+    color: #fff;
+    border-radius: 3px;
+    font-family: var(--mono); font-size: 10px; letter-spacing: 0.16em;
+    text-transform: uppercase; white-space: nowrap;
+    pointer-events: none; opacity: 0;
+    transition: opacity 0.16s;
+    backdrop-filter: blur(4px);
+  }
+  .tag.on { opacity: 1; }
+  .tag b { display: block; font-weight: 400; font-size: 9px; letter-spacing: 0.12em; color: rgba(255,255,255,0.55); margin-top: 3px; }
+
+  /* sound toggle, only once the film is running */
+  .sound {
+    position: absolute; right: 12px; bottom: 12px;
+    display: none; align-items: center; gap: 8px;
+    padding: 8px 13px; border: 1px solid rgba(255,255,255,0.28);
+    border-radius: 999px; color: #fff;
+    font-family: var(--mono); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase;
+    background: rgba(12,12,12,0.5); backdrop-filter: blur(4px);
+  }
+  .sound.on { display: inline-flex; }
+  .sound:hover { border-color: #fff; }
+
+  /* ── the same doors, as text ───────────────────────────────────────── */
+  .index { padding: clamp(26px, 4vw, 40px) 0 clamp(50px, 8vw, 90px); }
+  .index__h {
+    font-family: var(--mono); font-size: 10px; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--graphite);
+    border-top: 1px solid var(--rule); padding-top: 12px; margin-bottom: 18px;
+  }
+  .index ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 1px; }
+  @media (min-width: 720px) { .index ul { grid-template-columns: 1fr 1fr; gap: 1px 40px; } }
+  .index li { border-bottom: 1px solid var(--rule); }
+  .index a {
+    display: flex; align-items: baseline; gap: 14px;
+    padding: 13px 2px; text-decoration: none;
+    transition: padding-left 0.18s, color 0.18s;
+  }
+  .index a:hover { padding-left: 8px; }
+  .index a[aria-disabled="true"] { color: var(--ash); pointer-events: none; }
+  .index__obj {
+    font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--graphite);
+    width: 8.5em; flex: none;
+  }
+  .index__name { font-size: 16px; }
+  .index__note { font-size: 13px; color: var(--graphite); margin-left: auto; text-align: right; }
+
+  .foot {
+    border-top: 1px solid var(--rule);
+    padding: 26px 0 40px;
+    font-size: 13px; color: var(--graphite);
+  }
+
+  .noweb {
+    display: none;
+    padding: 40px 24px; text-align: center;
+    font-size: 15px; line-height: 1.6; color: var(--graphite);
+  }
+  .no-webgl .room { display: none; }
+  .no-webgl .noweb { display: block; }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <div class="bar">
+    <a class="mono" href="/builds/">← Builds</a>
+    <span class="mono">A room you can click</span>
+  </div>
+
+  <header class="lede">
+    <h1>Everything here is something I made.</h1>
+    <p>Turn on the television. Then open the books, the tape, the laptop —
+       <em>each object goes somewhere.</em></p>
+  </header>
+
+  <div class="room" id="room">
+    <div class="tag" id="tag"></div>
+    <p class="room__hint">Move to look · click an object</p>
+    <button class="sound" id="soundBtn" aria-live="polite">Sound on</button>
+  </div>
+
+  <div class="noweb">
+    Your browser isn't rendering 3D here — no matter, everything on the shelf is listed below.
+  </div>
+
+  <nav class="index" aria-label="Everything on the shelf">
+    <p class="index__h">On the shelf</p>
+    <ul id="indexList"></ul>
+  </nav>
+
+  <div class="foot">James Floyd · <a href="/">jamesfloyds.world</a></div>
+
+</div>
+
+<video id="reel" playsinline muted loop preload="none" crossorigin="anonymous"
+       poster="/builds/the-shelf/reel-poster.jpg" style="display:none">
+  <source src="/builds/the-shelf/reel.mp4" type="video/mp4">
+</video>
+
+<script type="importmap">
+{ "imports": { "three": "/vendor/three/three.module.min.js" } }
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import { RoomEnvironment }     from '/vendor/three/addons/environments/RoomEnvironment.js';
+import { RoundedBoxGeometry }  from '/vendor/three/addons/geometries/RoundedBoxGeometry.js';
+
+/* ═══════════════════════════════════════════════════════════════════════
+   0 — What each object opens.  One place to edit.
+   ═══════════════════════════════════════════════════════════════════════ */
+const DOORS = {
+  tv:       { name: 'The film',                obj: 'Television', note: 'plays here',            href: null },
+  books:    { name: "I'm a Climbing Machine",  obj: 'Books',      note: "a children's book",     href: '/builds/climbing-machine/' },
+  vcr:      { name: 'The Sonder Series',       obj: 'VCR',        note: '100 conversations',     href: '/sonder/' },
+  laptop:   { name: 'CCAT Trainer',            obj: 'Laptop',     note: 'a tool for teachers',   href: '/builds/ccat-trainer/' },
+  head:     { name: 'Cut and Donate',          obj: 'The wig',    note: 'a life-skills workshop', href: null },
+  printer:  { name: 'Writing',                 obj: 'Printer',    note: 'essays and letters',    href: '/writing/' },
+  paper:    { name: 'Résumé',                  obj: 'The page',   note: 'the short version',     href: '/resume/' },
+};
+
+/* the same doors as plain links, always in the DOM */
+document.getElementById('indexList').innerHTML = Object.keys(DOORS).map(k => {
+  const d = DOORS[k];
+  const dis = d.href ? '' : ' aria-disabled="true"';
+  return '<li><a href="' + (d.href || '#') + '"' + dis + '>' +
+           '<span class="index__obj">' + d.obj + '</span>' +
+           '<span class="index__name">' + d.name + '</span>' +
+           '<span class="index__note">' + d.note + '</span>' +
+         '</a></li>';
+}).join('');
+
+/* ═══════════════════════════════════════════════════════════════════════
+   1 — Renderer, camera, room
+   ═══════════════════════════════════════════════════════════════════════ */
+const host = document.getElementById('room');
+const tagEl = document.getElementById('tag');
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+let renderer;
+try {
+  renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+} catch (e) { renderer = null; }
+if (!renderer || !renderer.getContext()) {
+  document.body.classList.add('no-webgl');
+  throw new Error('no webgl');
+}
+renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.05;
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+host.appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x191a1d);
+
+const camera = new THREE.PerspectiveCamera(30, 16 / 10, 0.1, 60);
+const CAM = new THREE.Vector3(0, 0.86, 3.25);
+const LOOK = new THREE.Vector3(0, 0.74, 0);
+camera.position.copy(CAM);
+camera.lookAt(LOOK);
+
+/* room reflections — gives the screen, the laptop lid and the VCR face
+   something real to catch. Cheap, and the single biggest realism win. */
+const pmrem = new THREE.PMREMGenerator(renderer);
+scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.03).texture;
+scene.environmentIntensity = 0.55;
+
+/* ── procedural surface noise: nothing in a real room is perfectly smooth ── */
+function noiseTexture(size, contrast, scale) {
+  const c = document.createElement('canvas');
+  c.width = c.height = size;
+  const g = c.getContext('2d');
+  const img = g.createImageData(size, size);
+  for (let i = 0; i < size * size; i++) {
+    const v = 128 + (Math.random() - 0.5) * contrast * 255;
+    img.data[i * 4] = img.data[i * 4 + 1] = img.data[i * 4 + 2] = v;
+    img.data[i * 4 + 3] = 255;
+  }
+  g.putImageData(img, 0, 0);
+  const t = new THREE.CanvasTexture(c);
+  t.wrapS = t.wrapT = THREE.RepeatWrapping;
+  t.repeat.set(scale, scale);
+  return t;
+}
+
+function woodTexture() {
+  const c = document.createElement('canvas');
+  c.width = 512; c.height = 512;
+  const g = c.getContext('2d');
+  g.fillStyle = '#808080';
+  g.fillRect(0, 0, 512, 512);
+  for (let i = 0; i < 190; i++) {                    // grain lines
+    const y = Math.random() * 512;
+    const v = 96 + Math.random() * 74;
+    g.strokeStyle = 'rgba(' + v + ',' + v + ',' + v + ',0.5)';
+    g.lineWidth = 0.5 + Math.random() * 2.4;
+    g.beginPath();
+    g.moveTo(0, y);
+    for (let x = 0; x <= 512; x += 32) g.lineTo(x, y + Math.sin(x * 0.02 + i) * 3.4);
+    g.stroke();
+  }
+  const t = new THREE.CanvasTexture(c);
+  t.wrapS = t.wrapT = THREE.RepeatWrapping;
+  return t;
+}
+
+const GRAIN = woodTexture();
+const MICRO = noiseTexture(128, 0.5, 8);
+
+/* ── materials ───────────────────────────────────────────────────────── */
+const M = {
+  wall:    new THREE.MeshStandardMaterial({ color: 0xcfc9bd, roughness: 0.96, metalness: 0, roughnessMap: MICRO }),
+  floor:   new THREE.MeshStandardMaterial({ color: 0x4a3f36, roughness: 0.72, metalness: 0, roughnessMap: GRAIN }),
+  base:    new THREE.MeshStandardMaterial({ color: 0xdedad1, roughness: 0.7 }),
+
+  wood:    new THREE.MeshPhysicalMaterial({ color: 0x5d4130, roughness: 0.52, metalness: 0, roughnessMap: GRAIN, clearcoat: 0.18, clearcoatRoughness: 0.55 }),
+  woodDk:  new THREE.MeshPhysicalMaterial({ color: 0x452e21, roughness: 0.6,  metalness: 0, roughnessMap: GRAIN }),
+
+  bezel:   new THREE.MeshPhysicalMaterial({ color: 0x121215, roughness: 0.34, metalness: 0.55, clearcoat: 0.5, clearcoatRoughness: 0.22 }),
+  screen:  new THREE.MeshPhysicalMaterial({ color: 0x0a0b0d, roughness: 0.045, metalness: 0.2, clearcoat: 1, clearcoatRoughness: 0.03, envMapIntensity: 1.5 }),
+
+  metal:   new THREE.MeshPhysicalMaterial({ color: 0x2b2d31, roughness: 0.34, metalness: 0.8, roughnessMap: MICRO }),
+  metalLt: new THREE.MeshPhysicalMaterial({ color: 0xb6b9bd, roughness: 0.26, metalness: 0.9, roughnessMap: MICRO }),
+  black:   new THREE.MeshStandardMaterial({ color: 0x141416, roughness: 0.55, metalness: 0.2 }),
+
+  pages:   new THREE.MeshStandardMaterial({ color: 0xe6dfcd, roughness: 0.92 }),
+  ceramic: new THREE.MeshPhysicalMaterial({ color: 0xd7cec1, roughness: 0.42, clearcoat: 0.35, clearcoatRoughness: 0.4 }),
+  soil:    new THREE.MeshStandardMaterial({ color: 0x2a211a, roughness: 1 }),
+  leaf:    new THREE.MeshPhysicalMaterial({ color: 0x36703f, roughness: 0.52, sheen: 0.6, sheenColor: new THREE.Color(0x9ecf8a), side: THREE.DoubleSide }),
+  stem:    new THREE.MeshStandardMaterial({ color: 0x3d6b3a, roughness: 0.7 }),
+
+  skin:    new THREE.MeshPhysicalMaterial({ color: 0xdcd0c0, roughness: 0.72, clearcoat: 0.1 }),
+  hair:    new THREE.MeshPhysicalMaterial({ color: 0x2a1a11, roughness: 0.42, sheen: 1, sheenColor: new THREE.Color(0x8a6b4a), sheenRoughness: 0.35 }),
+
+  plastic: new THREE.MeshPhysicalMaterial({ color: 0xdcd8d1, roughness: 0.54, clearcoat: 0.2, clearcoatRoughness: 0.5, roughnessMap: MICRO }),
+  paper:   new THREE.MeshStandardMaterial({ color: 0xf3f1ea, roughness: 0.94, side: THREE.DoubleSide }),
+};
+
+const bookColors = [0x3b4a36, 0x8a5a2b, 0x6b2b2b, 0x2b3a55, 0xa08a4e];
+
+/* ── helpers ─────────────────────────────────────────────────────────── */
+function rbox(w, h, d, mat, r) {
+  const m = new THREE.Mesh(new RoundedBoxGeometry(w, h, d, 3, r === undefined ? Math.min(w, h, d) * 0.06 : r), mat);
+  m.castShadow = true; m.receiveShadow = true;
+  return m;
+}
+function put(o, x, y, z) { o.position.set(x, y, z); return o; }
+
+/* a soft dark patch under an object — reads as contact even where the
+   shadow map is too soft to bite */
+const contactTex = (function () {
+  const c = document.createElement('canvas');
+  c.width = c.height = 128;
+  const g = c.getContext('2d');
+  const grd = g.createRadialGradient(64, 64, 2, 64, 64, 62);
+  grd.addColorStop(0, 'rgba(0,0,0,0.55)');
+  grd.addColorStop(0.55, 'rgba(0,0,0,0.22)');
+  grd.addColorStop(1, 'rgba(0,0,0,0)');
+  g.fillStyle = grd; g.fillRect(0, 0, 128, 128);
+  return new THREE.CanvasTexture(c);
+})();
+function contact(w, d, x, y, z) {
+  const m = new THREE.Mesh(
+    new THREE.PlaneGeometry(w, d),
+    new THREE.MeshBasicMaterial({ map: contactTex, transparent: true, depthWrite: false, opacity: 0.9 })
+  );
+  m.rotation.x = -Math.PI / 2;
+  m.position.set(x, y + 0.0012, z);
+  m.renderOrder = 2;
+  return m;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   2 — The room shell
+   ═══════════════════════════════════════════════════════════════════════ */
+const WALL_Z = -0.34;
+
+const floor = new THREE.Mesh(new THREE.PlaneGeometry(14, 14), M.floor);
+floor.rotation.x = -Math.PI / 2;
+floor.receiveShadow = true;
+scene.add(floor);
+
+const wall = new THREE.Mesh(new THREE.PlaneGeometry(14, 7), M.wall);
+wall.position.set(0, 3.5, WALL_Z);
+wall.receiveShadow = true;
+scene.add(wall);
+
+const skirting = rbox(14, 0.09, 0.016, M.base, 0.004);
+put(skirting, 0, 0.045, WALL_Z + 0.012);
+scene.add(skirting);
+
+/* ═══════════════════════════════════════════════════════════════════════
+   3 — The stand
+   ═══════════════════════════════════════════════════════════════════════ */
+const SW = 1.74, SD = 0.44, SH = 0.78;
+const MID_Y = 0.435;           // middle shelf surface
+const LOW_Y = 0.115;           // bottom shelf surface
+
+const stand = new THREE.Group();
+scene.add(stand);
+
+const topPanel = rbox(SW, 0.038, SD, M.wood, 0.006);
+put(topPanel, 0, SH - 0.019, 0);
+stand.add(topPanel);
+
+[MID_Y, LOW_Y].forEach(y => {
+  const s = rbox(SW - 0.08, 0.03, SD - 0.03, M.wood, 0.004);
+  put(s, 0, y - 0.015, 0.005);
+  stand.add(s);
+});
+
+[-1, 1].forEach(sx => {
+  const side = rbox(0.04, SH - 0.038, SD, M.wood, 0.005);
+  put(side, sx * (SW / 2 - 0.02), (SH - 0.038) / 2, 0);
+  stand.add(side);
+});
+
+/* back panel runs the full height so no wall shows through the top gap */
+const back = rbox(SW - 0.08, SH - 0.05, 0.014, M.woodDk, 0.003);
+put(back, 0, (SH - 0.05) / 2 + 0.01, -SD / 2 + 0.012);
+stand.add(back);
+
+const LIFT = 0.045;
+stand.position.y = LIFT;       // the carcass rides on its feet
+
+/* feet live in world space so they actually reach the floor */
+[[-1, -1], [1, -1], [-1, 1], [1, 1]].forEach(([sx, sz]) => {
+  const f = rbox(0.05, LIFT, 0.05, M.woodDk, 0.008);
+  put(f, sx * (SW / 2 - 0.07), LIFT / 2, sz * (SD / 2 - 0.07));
+  scene.add(f);
+});
+scene.add(contact(2.4, 0.7, 0, 0, 0));
+
+const topSurface = SH + LIFT;
+const midSurface = MID_Y + LIFT;
+const lowSurface = LOW_Y + LIFT;
+
+/* ═══════════════════════════════════════════════════════════════════════
+   4 — Objects
+   ═══════════════════════════════════════════════════════════════════════ */
+const pickables = [];
+function hotspot(group, key) {
+  group.userData.key = key;
+  group.userData.baseY = group.position.y;
+  pickables.push(group);
+  return group;
+}
+
+/* ── television ──────────────────────────────────────────────────────── */
+const tv = new THREE.Group();
+const TVW = 1.16, TVH = 0.68;
+const tvBottom = topSurface + 0.085;
+
+const panel = rbox(TVW, TVH, 0.032, M.bezel, 0.006);
+put(panel, 0, tvBottom + TVH / 2, -0.02);
+tv.add(panel);
+
+const screenGeo = new THREE.PlaneGeometry(TVW - 0.045, TVH - 0.045);
+const screen = new THREE.Mesh(screenGeo, M.screen.clone());
+put(screen, 0, tvBottom + TVH / 2, -0.02 + 0.0175);
+tv.add(screen);
+
+/* glass catches the room: a soft off-axis sheen laid over the screen.
+   Without it the panel reads as a hole cut in the wall. */
+const sheenTex = (function () {
+  const c = document.createElement('canvas');
+  c.width = 256; c.height = 160;
+  const g = c.getContext('2d');
+  g.fillStyle = '#000'; g.fillRect(0, 0, 256, 160);
+  const grd = g.createLinearGradient(10, 0, 190, 160);
+  grd.addColorStop(0.00, 'rgba(255,255,255,0)');
+  grd.addColorStop(0.22, 'rgba(238,244,255,0.55)');
+  grd.addColorStop(0.34, 'rgba(238,244,255,0.13)');
+  grd.addColorStop(0.52, 'rgba(255,255,255,0)');
+  g.fillStyle = grd; g.fillRect(0, 0, 256, 160);
+  g.filter = 'blur(6px)';
+  g.drawImage(c, 0, 0);
+  return new THREE.CanvasTexture(c);
+})();
+const glass = new THREE.Mesh(
+  new THREE.PlaneGeometry(TVW - 0.045, TVH - 0.045),
+  new THREE.MeshBasicMaterial({ map: sheenTex, blending: THREE.AdditiveBlending, transparent: true, opacity: 0.34, depthWrite: false, toneMapped: false })
+);
+put(glass, 0, tvBottom + TVH / 2, -0.02 + 0.019);
+glass.renderOrder = 3;
+tv.add(glass);
+
+/* a faint standby glow so the set doesn't read as a dead slab */
+const standby = new THREE.Mesh(
+  new THREE.CircleGeometry(0.005, 12),
+  new THREE.MeshBasicMaterial({ color: 0x8a2a22 })
+);
+put(standby, TVW / 2 - 0.05, tvBottom + 0.022, -0.02 + 0.018);
+tv.add(standby);
+
+[-1, 1].forEach(sx => {
+  const leg = rbox(0.022, 0.13, 0.1, M.metal, 0.004);
+  leg.rotation.z = sx * 0.30;
+  put(leg, sx * 0.3, topSurface + 0.055, -0.02);
+  tv.add(leg);
+  const pad = rbox(0.12, 0.012, 0.11, M.black, 0.003);
+  put(pad, sx * 0.345, topSurface + 0.006, -0.02);
+  tv.add(pad);
+});
+scene.add(tv);
+scene.add(contact(0.95, 0.34, 0, topSurface, -0.02));
+hotspot(tv, 'tv');
+
+/* ── books, middle shelf left ────────────────────────────────────────── */
+/* a book seen edge-on is a cream block with a thin board top and bottom —
+   build it that way and it reads instantly */
+const books = new THREE.Group();
+let by = midSurface;
+[0.038, 0.031, 0.044, 0.028].forEach((th, i) => {
+  const w = 0.195 - i * 0.009, d = 0.25 - i * 0.012;
+  const board = new THREE.MeshStandardMaterial({ color: bookColors[i], roughness: 0.86 });
+  const b = new THREE.Group();
+
+  const block = rbox(w - 0.008, th - 0.007, d - 0.008, M.pages, 0.0015);
+  put(block, 0, th / 2, 0);
+  b.add(block);
+
+  [1, -1].forEach(s => {
+    const cover = rbox(w, 0.0035, d, board, 0.0012);
+    put(cover, 0, th / 2 + s * (th / 2 - 0.0017), 0);
+    b.add(cover);
+  });
+  const spine = rbox(0.006, th, d, board, 0.002);
+  put(spine, -w / 2 + 0.002, th / 2, 0);
+  b.add(spine);
+
+  b.position.set((Math.random() - 0.5) * 0.012, by, 0);
+  b.rotation.y = (Math.random() - 0.5) * 0.17;
+  books.add(b);
+  by += th;
+});
+books.position.set(-0.56, 0, 0.015);
+scene.add(books);
+scene.add(contact(0.36, 0.4, -0.56, midSurface, 0.015));
+hotspot(books, 'books');
+
+/* ── plant, middle shelf centre (decoration, not a door) ─────────────── */
+const plant = new THREE.Group();
+const potProfile = [];
+for (let i = 0; i <= 10; i++) {
+  const t = i / 10;
+  potProfile.push(new THREE.Vector2(0.042 + t * 0.028, t * 0.10));
+}
+const pot = new THREE.Mesh(new THREE.LatheGeometry(potProfile, 28), M.ceramic);
+pot.castShadow = pot.receiveShadow = true;
+put(pot, 0, midSurface, 0);
+plant.add(pot);
+
+const soil = new THREE.Mesh(new THREE.CircleGeometry(0.067, 24), M.soil);
+soil.rotation.x = -Math.PI / 2;
+put(soil, 0, midSurface + 0.094, 0);
+plant.add(soil);
+
+function leaf(len, wide, tilt, spin, curl) {
+  const s = new THREE.Shape();
+  s.moveTo(0, 0);
+  s.bezierCurveTo(wide, len * 0.28, wide * 0.82, len * 0.78, 0, len);
+  s.bezierCurveTo(-wide * 0.82, len * 0.78, -wide, len * 0.28, 0, 0);
+  const g = new THREE.ExtrudeGeometry(s, { depth: 0.0016, bevelEnabled: true, bevelSize: 0.0016, bevelThickness: 0.0012, bevelSegments: 1, curveSegments: 10 });
+  const pos = g.attributes.position;
+  for (let i = 0; i < pos.count; i++) {             // bow the blade so it isn't a flat cutout
+    const y = pos.getY(i);
+    pos.setZ(i, pos.getZ(i) + Math.sin((y / len) * Math.PI) * curl);
+  }
+  g.computeVertexNormals();
+  const m = new THREE.Mesh(g, M.leaf);
+  m.castShadow = true;
+  const holder = new THREE.Group();
+  holder.add(m);
+  m.rotation.x = -tilt;
+  holder.rotation.y = spin;
+  return holder;
+}
+const stems = [
+  [0.20, 0.036, 0.95, 0.3, 0.030], [0.17, 0.032, 1.15, 1.5, 0.026],
+  [0.22, 0.040, 0.72, 2.6, 0.034], [0.15, 0.030, 1.30, 3.6, 0.022],
+  [0.19, 0.034, 0.88, 4.6, 0.028], [0.13, 0.026, 1.42, 5.5, 0.020],
+];
+stems.forEach(([len, wide, tilt, spin, curl]) => {
+  const l = leaf(len, wide, tilt, spin, curl);
+  l.position.set(0, midSurface + 0.092, 0);
+  plant.add(l);
+  const st = new THREE.Mesh(new THREE.CylinderGeometry(0.0035, 0.005, 0.06, 6), M.stem);
+  put(st, 0, midSurface + 0.12, 0);
+  st.rotation.z = Math.sin(spin) * 0.2;
+  plant.add(st);
+});
+plant.position.set(-0.08, 0, 0.02);
+scene.add(plant);
+scene.add(contact(0.22, 0.22, -0.08, midSurface, 0.02));
+
+/* ── VCR, middle shelf right ─────────────────────────────────────────── */
+const vcr = new THREE.Group();
+const vBody = rbox(0.46, 0.088, 0.30, M.metal, 0.005);
+put(vBody, 0, midSurface + 0.044, 0);
+vcr.add(vBody);
+
+const face = rbox(0.452, 0.078, 0.006, M.black, 0.003);
+put(face, 0, midSurface + 0.044, 0.151);
+vcr.add(face);
+
+const slot = rbox(0.24, 0.014, 0.004, new THREE.MeshStandardMaterial({ color: 0x08080a, roughness: 0.9 }), 0.002);
+put(slot, -0.07, midSurface + 0.058, 0.155);
+vcr.add(slot);
+
+const disp = new THREE.Mesh(
+  new THREE.PlaneGeometry(0.062, 0.018),
+  new THREE.MeshBasicMaterial({ color: 0x2f8f74 })
+);
+put(disp, 0.14, midSurface + 0.058, 0.1555);
+vcr.add(disp);
+
+[0, 1, 2].forEach(i => {
+  const b = rbox(0.018, 0.008, 0.005, M.metalLt, 0.002);
+  put(b, 0.06 + i * 0.028, midSurface + 0.026, 0.155);
+  vcr.add(b);
+});
+vcr.position.set(0.47, 0, 0.01);
+scene.add(vcr);
+scene.add(contact(0.62, 0.44, 0.47, midSurface, 0.01));
+hotspot(vcr, 'vcr');
+
+/* ── mannequin head + wig, bottom shelf left ─────────────────────────── */
+const head = new THREE.Group();
+const stalk = new THREE.Mesh(new THREE.CylinderGeometry(0.026, 0.052, 0.055, 20), M.skin);
+stalk.castShadow = true;
+put(stalk, 0, lowSurface + 0.0275, 0);
+head.add(stalk);
+
+const HEAD_Y = lowSurface + 0.145;
+const skull = new THREE.Mesh(new THREE.SphereGeometry(0.068, 32, 26), M.skin);
+skull.scale.set(0.92, 1.16, 1);
+skull.castShadow = true;
+put(skull, 0, HEAD_Y, 0);
+head.add(skull);
+
+/* a hint of a face so it reads as a head, not an egg */
+const brow = new THREE.Mesh(new THREE.SphereGeometry(0.02, 12, 10), M.skin);
+brow.scale.set(1.6, 0.5, 0.5);
+put(brow, 0, HEAD_Y + 0.012, 0.062);
+head.add(brow);
+const nose = new THREE.Mesh(new THREE.ConeGeometry(0.011, 0.03, 10), M.skin);
+nose.rotation.x = Math.PI * 0.42;
+put(nose, 0, HEAD_Y - 0.012, 0.066);
+head.add(nose);
+
+/* the wig sits back on the skull, so the face stays clear from the front */
+const cap = new THREE.Mesh(new THREE.SphereGeometry(0.071, 32, 26), M.hair);
+cap.scale.set(0.99, 1.2, 1.02);
+cap.castShadow = true;
+put(cap, 0, HEAD_Y + 0.012, -0.016);
+head.add(cap);
+
+/* two years of hair, falling to the shelf */
+for (let i = 0; i < 26; i++) {
+  const a = (i / 26) * Math.PI * 2;
+  const front = Math.cos(a);                       // +1 is toward the viewer
+  if (front > 0.34) continue;                      // leave the face clear
+  const r = 0.066;
+  const len = 0.11 + Math.random() * 0.085 + (front < -0.4 ? 0.03 : 0);
+  const sx = Math.sin(a), sz = Math.cos(a);
+  const pts = [
+    new THREE.Vector3(sx * r * 0.9, 0.035, sz * r * 0.9 - 0.014),
+    new THREE.Vector3(sx * r * 1.12, -0.01, sz * r * 1.12 - 0.016),
+    new THREE.Vector3(sx * r * 1.1, -len * 0.55, sz * r * 1.15 - 0.014),
+    new THREE.Vector3(sx * r * 0.94, -len, sz * r * 1.02 - 0.01),
+  ];
+  const strand = new THREE.Mesh(
+    new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 14, 0.009 + Math.random() * 0.005, 6, false),
+    M.hair
+  );
+  strand.castShadow = true;
+  put(strand, 0, HEAD_Y + 0.012, 0);
+  head.add(strand);
+}
+head.position.set(-0.63, 0, 0.035);
+scene.add(head);
+scene.add(contact(0.32, 0.32, -0.63, lowSurface, 0.035));
+hotspot(head, 'head');
+
+/* ── laptop, bottom shelf right ──────────────────────────────────────── */
+const laptop = new THREE.Group();
+const lw = 0.33, ld = 0.23;
+const lbase = rbox(lw, 0.011, ld, M.metalLt, 0.003);
+put(lbase, 0, lowSurface + 0.0055, 0);
+laptop.add(lbase);
+
+const keys = rbox(lw - 0.05, 0.002, ld - 0.09, M.black, 0.001);
+put(keys, 0, lowSurface + 0.0115, 0.012);
+laptop.add(keys);
+const trackpad = rbox(0.08, 0.002, 0.05, new THREE.MeshStandardMaterial({ color: 0x9fa3a7, roughness: 0.35, metalness: 0.6 }), 0.001);
+put(trackpad, 0, lowSurface + 0.0115, 0.082);
+laptop.add(trackpad);
+
+/* lid: a group pivoted on the back edge, so opening it is one rotation */
+const LIDH = ld * 0.9;
+const hinge = new THREE.Group();
+hinge.position.set(0, lowSurface + 0.0115, -ld / 2 + 0.007);
+
+const lid = rbox(lw, LIDH, 0.008, M.metalLt, 0.003);
+put(lid, 0, LIDH / 2, 0);
+hinge.add(lid);
+
+const lscreen = new THREE.Mesh(
+  new THREE.PlaneGeometry(lw - 0.024, LIDH - 0.022),
+  new THREE.MeshStandardMaterial({ color: 0x0f151b, roughness: 0.1, metalness: 0.1, emissive: 0x1d4463, emissiveIntensity: 0.75 })
+);
+put(lscreen, 0, LIDH / 2, 0.0045);
+hinge.add(lscreen);
+
+hinge.rotation.x = -0.19;                 // leaning back, the way a laptop sits
+laptop.add(hinge);
+
+laptop.position.set(-0.02, 0, 0.035);
+laptop.rotation.y = -0.16;
+scene.add(laptop);
+scene.add(contact(0.44, 0.36, -0.02, lowSurface, 0.035));
+hotspot(laptop, 'laptop');
+
+/* ── printer, on the floor to the right of the stand ─────────────────── */
+const printer = new THREE.Group();
+const pw = 0.35, ph = 0.165, pd = 0.28;
+const pBody = rbox(pw, ph, pd, M.plastic, 0.016);
+put(pBody, 0, lowSurface + ph / 2, 0);
+printer.add(pBody);
+
+const lidTop = rbox(pw - 0.03, 0.022, pd - 0.05, new THREE.MeshPhysicalMaterial({ color: 0xcbc7c0, roughness: 0.5, clearcoat: 0.2 }), 0.008);
+put(lidTop, 0, lowSurface + ph + 0.008, -0.01);
+printer.add(lidTop);
+
+const outSlot = rbox(pw - 0.09, 0.016, 0.008, M.black, 0.002);
+put(outSlot, 0, lowSurface + ph * 0.42, pd / 2 + 0.002);
+printer.add(outSlot);
+
+const pLed = new THREE.Mesh(new THREE.CircleGeometry(0.004, 10), new THREE.MeshBasicMaterial({ color: 0x4fd08a }));
+put(pLed, -pw / 2 + 0.04, lowSurface + ph * 0.72, pd / 2 + 0.004);
+printer.add(pLed);
+
+const sheet = new THREE.Group();
+const page = new THREE.Mesh(new THREE.PlaneGeometry(0.17, 0.115, 6, 4), M.paper);
+const pp = page.geometry.attributes.position;
+for (let i = 0; i < pp.count; i++) pp.setZ(i, Math.pow((pp.getY(i) + 0.0575) / 0.115, 2) * 0.009);
+page.geometry.computeVertexNormals();
+page.castShadow = true; page.receiveShadow = true;
+/* the printed page lies on the shelf in front of the machine, overhanging
+   the front edge — a target you can actually aim at, separate from the body */
+page.rotation.x = -Math.PI / 2;
+page.rotation.z = 0.12;
+page.position.set(0.012, lowSurface + 0.0022, pd / 2 + 0.105);
+sheet.add(page);
+printer.add(sheet);
+
+printer.position.set(0.585, 0, 0.015);
+printer.rotation.y = -0.13;
+scene.add(printer);
+scene.add(contact(0.5, 0.42, 0.585, lowSurface, 0.015));
+hotspot(printer, 'printer');
+hotspot(sheet, 'paper');
+
+/* ═══════════════════════════════════════════════════════════════════════
+   5 — Light
+   ═══════════════════════════════════════════════════════════════════════ */
+const key = new THREE.DirectionalLight(0xfff1de, 2.5);
+key.position.set(-1.9, 2.6, 2.4);
+key.castShadow = true;
+key.shadow.mapSize.set(2048, 2048);
+key.shadow.camera.near = 0.5;
+key.shadow.camera.far = 9;
+key.shadow.camera.left = -2.4;
+key.shadow.camera.right = 2.4;
+key.shadow.camera.top = 2.2;
+key.shadow.camera.bottom = -0.6;
+key.shadow.bias = -0.0004;
+key.shadow.normalBias = 0.018;
+key.shadow.radius = 3;
+scene.add(key);
+
+const fill = new THREE.DirectionalLight(0xcfe0ff, 0.45);
+fill.position.set(2.6, 1.4, 1.6);
+scene.add(fill);
+
+const rim = new THREE.DirectionalLight(0xffd9b0, 0.5);
+rim.position.set(0.6, 1.2, -2.2);
+scene.add(rim);
+
+scene.add(new THREE.HemisphereLight(0xdfe6f0, 0x3a3029, 0.35));
+
+/* a warm practical off to the left, out of frame */
+const lamp = new THREE.PointLight(0xffc98a, 2.2, 5, 2);
+lamp.position.set(-1.7, 0.95, 1.1);
+scene.add(lamp);
+
+/* The inside of a cabinet is genuinely dark, and the objects live in there.
+   A broad, distant light from roughly the camera's position lifts the
+   interiors evenly — point lights this close just burn hotspots into the
+   back panel. */
+const front = new THREE.DirectionalLight(0xfff0e0, 0.85);
+front.position.set(0.35, 1.1, 4);
+scene.add(front);
+
+/* ═══════════════════════════════════════════════════════════════════════
+   6 — The film
+   ═══════════════════════════════════════════════════════════════════════ */
+const video = document.getElementById('reel');
+const soundBtn = document.getElementById('soundBtn');
+let vTex = null, playing = false;
+
+function playFilm() {
+  if (!playing) {
+    vTex = new THREE.VideoTexture(video);
+    vTex.colorSpace = THREE.SRGBColorSpace;
+    screen.material = new THREE.MeshBasicMaterial({ map: vTex, toneMapped: false });
+    playing = true;
+    soundBtn.classList.add('on');
+  }
+  video.play().catch(() => {});
+}
+soundBtn.addEventListener('click', e => {
+  e.stopPropagation();
+  video.muted = !video.muted;
+  soundBtn.textContent = video.muted ? 'Sound on' : 'Sound off';
+});
+document.addEventListener('visibilitychange', () => {
+  if (!playing) return;
+  if (document.hidden) video.pause(); else video.play().catch(() => {});
+});
+
+/* ═══════════════════════════════════════════════════════════════════════
+   7 — Hover, click, parallax
+   ═══════════════════════════════════════════════════════════════════════ */
+const ray = new THREE.Raycaster();
+const ptr = new THREE.Vector2(-9, -9);
+const aim = new THREE.Vector2(0, 0);      // parallax target, -1..1
+let hovered = null, hoverKey = null;
+
+function pointerFromEvent(e) {
+  const r = host.getBoundingClientRect();
+  ptr.x = ((e.clientX - r.left) / r.width) * 2 - 1;
+  ptr.y = -((e.clientY - r.top) / r.height) * 2 + 1;
+  aim.set(ptr.x, ptr.y);
+}
+/* hover resolves on the pointer event, not on the next frame — it stays
+   responsive even when the tab is throttled and rAF has stopped */
+host.addEventListener('pointermove', e => {
+  pointerFromEvent(e);
+  host.classList.add('is-touched');
+  updateHover();
+  positionTag();
+});
+host.addEventListener('pointerleave', () => {
+  ptr.set(-9, -9); aim.set(0, 0);
+  updateHover();
+});
+
+host.addEventListener('click', () => {
+  if (!hoverKey) return;
+  if (hoverKey === 'tv') { playFilm(); return; }
+  const d = DOORS[hoverKey];
+  if (d && d.href) location.href = d.href;
+});
+
+function updateHover() {
+  ray.setFromCamera(ptr, camera);
+  const hits = ray.intersectObjects(pickables, true);
+  let group = null;
+  if (hits.length) {
+    let o = hits[0].object;
+    while (o && pickables.indexOf(o) === -1) o = o.parent;
+    group = o;
+  }
+  if (group === hovered) return;
+
+  hovered = group;
+  hoverKey = group ? group.userData.key : null;
+
+  if (!group) {
+    tagEl.classList.remove('on');
+    host.style.cursor = 'default';
+    return;
+  }
+  const d = DOORS[hoverKey];
+  host.style.cursor = 'pointer';
+  tagEl.innerHTML = (hoverKey === 'tv' && !playing ? 'Play the film' : d.name) + '<b>' + d.note + '</b>';
+  tagEl.classList.add('on');
+}
+
+const box = new THREE.Box3();
+const anchor = new THREE.Vector3();
+function positionTag() {
+  if (!hovered) return;
+  box.setFromObject(hovered);
+  anchor.set((box.min.x + box.max.x) / 2, box.max.y + 0.03, (box.min.z + box.max.z) / 2);
+  anchor.project(camera);
+  const r = host.getBoundingClientRect();
+  tagEl.style.left = ((anchor.x * 0.5 + 0.5) * r.width) + 'px';
+  tagEl.style.top = ((-anchor.y * 0.5 + 0.5) * r.height) + 'px';
+}
+
+/* gentle lift on the hovered object — tactile without being cartoonish */
+function lift(dt) {
+  pickables.forEach(g => {
+    const want = (g === hovered ? 0.012 : 0);
+    const base = g.userData.baseY || 0;
+    g.position.y += ((base + want) - g.position.y) * Math.min(1, dt * 10);
+  });
+}
+
+/* Frame the whole stand whatever the viewport shape: a phone gets a tall,
+   narrow canvas, which would otherwise slice the ends off the shelf. */
+const FIT_W = 2.06, FIT_H = 1.70;
+function resize() {
+  const r = host.getBoundingClientRect();
+  if (!r.width || !r.height) return;
+  renderer.setSize(r.width, r.height, false);
+  camera.aspect = r.width / r.height;
+
+  const halfV = Math.tan((camera.fov * Math.PI / 180) / 2);
+  const forHeight = (FIT_H / 2) / halfV;
+  const forWidth  = (FIT_W / 2) / (halfV * camera.aspect);
+  CAM.z = Math.max(forHeight, forWidth) + 0.18;
+
+  camera.updateProjectionMatrix();
+}
+addEventListener('resize', resize);
+
+const cam = { x: 0, y: 0 };
+let prev = performance.now();
+function frame(now) {
+  const dt = Math.min(0.05, (now - prev) / 1000);
+  prev = now;
+
+  if (!reduce) {
+    cam.x += (aim.x * 0.10 - cam.x) * Math.min(1, dt * 2.4);
+    cam.y += (aim.y * 0.05 - cam.y) * Math.min(1, dt * 2.4);
+  }
+  camera.position.set(CAM.x + cam.x, CAM.y + cam.y, CAM.z);
+  camera.lookAt(LOOK);
+
+  positionTag();
+  lift(dt);
+  renderer.render(scene, camera);
+  requestAnimationFrame(frame);
+}
+
+renderer.domElement.addEventListener('webglcontextlost', e => {
+  e.preventDefault();
+  document.body.classList.add('no-webgl');
+});
+
+/* a small hook so the scene can be inspected and driven from the console */
+window.__shelf = {
+  scene, camera, pickables, DOORS,
+  screenOf(key) {
+    const g = pickables.find(p => p.userData.key === key);
+    if (!g) return null;
+    const b = new THREE.Box3().setFromObject(g);
+    const v = new THREE.Vector3((b.min.x + b.max.x) / 2, (b.min.y + b.max.y) / 2, b.max.z).project(camera);
+    const r = host.getBoundingClientRect();
+    return { x: r.left + (v.x * 0.5 + 0.5) * r.width, y: r.top + (-v.y * 0.5 + 0.5) * r.height };
+  },
+  get hovering() { return hoverKey; }
+};
+
+resize();
+requestAnimationFrame(frame);
+</script>
+
+</body>
+</html>

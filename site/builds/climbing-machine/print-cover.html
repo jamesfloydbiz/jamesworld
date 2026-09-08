@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<title>Climbing Machine — full wrap cover, 8 x 10 softcover</title>
+<meta name="robots" content="noindex, nofollow">
+<style>
+  /* ═══════════════════════════════════════════════════════════════════════
+     FULL WRAP SOFTCOVER — built to Portrait-Soft-Cover.pdf.
+
+     Template page:  16.372 x 10.250 in
+     Bleed:          0.125 in all round
+     Back panel:     0.125 -> 8.125 in   (8.000 trim)
+     Spine:          8.125 -> 8.2475 in  (0.1225, 40pp)
+     Front panel:    8.2475 -> 16.2475 in (8.000 trim)
+     Fold guides measured off the template render at 8.113 and 8.241 in,
+     matching the arithmetic: 16.372 - 0.25 bleed - 16.000 = 0.122.
+
+     Spine is 0.1225 in — roughly 3.1 mm. Far too narrow to carry type, so it
+     is a flat colour.
+
+     WHY WHITE. Alpha's brand blue is #0000EF, which is outside the CMYK gamut:
+     converted for press it lands around #275092, a dull navy, so a spine set in
+     it would not be Alpha blue on paper at all. Their lighter #47C4E6 survives
+     the conversion but relates to nothing in the painting. White is already on
+     this cover twice — the cloud lettering and the card on the back — and it is
+     the only choice that carries NO ink across the fold, which matters at 3 mm
+     on a perfect-bound spine where a heavy ink lay is what cracks.
+     ═══════════════════════════════════════════════════════════════════════ */
+  /* Montserrat — the typeface alpha.school runs on. Open Font License, so it
+     is free to embed in a printed book. Static instances generated from the
+     variable font, because Chrome turns variable faces into Type 3 in PDF. */
+  @font-face {
+    font-family: 'AlphaSans';
+    src: url('/books/climbing-machine/print/Montserrat-Static-Bold.ttf') format('truetype');
+    font-weight: 700; font-style: normal; font-display: block;
+  }
+  @font-face {
+    font-family: 'AlphaSans';
+    src: url('/books/climbing-machine/print/Montserrat-Static-Regular.ttf') format('truetype');
+    font-weight: 400; font-style: normal; font-display: block;
+  }
+  @page { size: 16.372in 10.25in; margin: 0; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+  .wrap {
+    position: relative; width: 16.372in; height: 10.25in;
+    overflow: hidden; background: #9db9d3;
+  }
+
+  /* ── back panel ─────────────────────────────────────────────────────── */
+  /* Ground is the closing scene, cropped from a stretch with no characters in
+     it and blurred hard, so it reads as colour and light rather than a picture
+     competing with the type. */
+  .back {
+    position: absolute; left: 0; top: 0;
+    width: 8.125in; height: 10.25in;
+    overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .back .bg {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover; object-position: center;
+  }
+  /* everything readable sits inside the safety area: 0.25in in from the
+     trim line, so 0.375in from the sheet edge */
+  .back .safe {
+    position: relative; z-index: 2;
+    width: 6.5in; margin-left: -0.125in;   /* centre on the TRIM, not the sheet */
+    padding: 0.58in 0.5in;
+    background: rgba(250,247,239,.93);
+    color: #2b2620; text-align: center;
+  }
+
+  /* summary first */
+  .blurb {
+    font-family: 'AlphaSans', Helvetica, sans-serif;
+    font-size: 12pt; line-height: 1.62; margin: 0 0 20pt;
+    padding-bottom: 18pt; border-bottom: .5pt solid rgba(43,38,32,.22);
+  }
+  .blurb p { margin: 0 0 9pt; }
+  .blurb p:last-child { margin-bottom: 0; }
+
+  /* then the commitments, laid out three-up the way Alpha sets them */
+  .commit-head {
+    font-family: 'AlphaSans', Helvetica, sans-serif; font-weight: 700;
+    font-size: 10.5pt; letter-spacing: .04em;
+    margin: 0 0 14pt; color: rgba(43,38,32,.78);
+  }
+  .commit {
+    display: grid; grid-template-columns: 1fr 1fr 1fr;
+    column-gap: 0.26in; margin: 0;
+  }
+  .commit .col { text-align: center; }
+  .commit .name {
+    display: block;
+    font-family: 'AlphaSans', Helvetica, sans-serif; font-weight: 700;
+    font-size: 8.5pt; letter-spacing: .07em; text-transform: uppercase;
+    margin-bottom: 5pt;
+  }
+  .commit .said {
+    display: block; font-weight: 400;
+    font-family: 'AlphaSans', Helvetica, sans-serif;
+    font-size: 8.5pt; line-height: 1.45; color: rgba(43,38,32,.82);
+  }
+  .back .by {
+    margin-top: 24pt; padding-top: 14pt;
+    border-top: .5pt solid rgba(43,38,32,.22);
+    font-family: 'AlphaSans', Helvetica, sans-serif;
+    font-size: 9.5pt; color: rgba(43,38,32,.7);
+  }
+
+  /* ── spine ──────────────────────────────────────────────────────────── */
+  .spine {
+    position: absolute; left: 8.125in; top: 0;
+    width: 0.1225in; height: 10.25in;
+    background: #ffffff;
+  }
+
+  /* ── front panel ────────────────────────────────────────────────────── */
+  .front {
+    position: absolute; left: 8.2475in; top: 0;
+    width: 8.125in; height: 10.25in;   /* runs out into the right bleed */
+    overflow: hidden;
+  }
+  .front img {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover; object-position: center bottom;
+  }
+  /* No .title rule any more — the lettering is painted into the cover
+     artwork itself (image-22), so setting type over it would double it up. */
+</style></head>
+<body>
+  <div class="wrap">
+
+    <div class="back">
+      <img class="bg" src="/books/climbing-machine/print/backcover-bg.jpg" alt="">
+      <div class="safe">
+
+        <div class="blurb">
+          <p>Alpha School is a new kind of school that teaches all of the
+             academics in 2 hours in the morning, then in the afternoons the
+             kids learn different life skills to prepare them for their
+             futures.</p>
+          <p>This story follows James, as he takes on the challenge of climbing
+             a mountain in one of those life skills workshops.</p>
+          <p>It is a story about hard things, and how a guide who believes in
+             you can help you believe anything is possible.</p>
+        </div>
+
+        <p class="commit-head">The three commitments of Alpha School</p>
+        <div class="commit">
+          <div class="col">
+            <span class="name">Love school</span>
+            <span class="said">“Alpha students love school—it’s engaging,
+              inspiring, and built for them.”</span>
+          </div>
+          <div class="col">
+            <span class="name">Learn 2x in 2hrs</span>
+            <span class="said">“Alpha classes learn twice as fast as their peers
+              and rank in the top 1% nationwide.”</span>
+          </div>
+          <div class="col">
+            <span class="name">Learn life skills</span>
+            <span class="said">“Alpha students spend afternoons developing life
+              skills and exploring their passions.”</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="spine"></div>
+
+    <div class="front">
+      <img src="/books/climbing-machine/print/cover.jpg" alt="">
+    </div>
+
+  </div>
+</body></html>
