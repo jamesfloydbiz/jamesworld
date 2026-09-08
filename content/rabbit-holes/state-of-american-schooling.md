@@ -6,10 +6,17 @@ Where they go to school
 
 About 80% of them attend traditional public schools, and another 7% or so attend charter schools.² The remaining 10% attend either private schools or homeschools, with the great majority in private schools.³
 
-Between 2019 and 2024, district enrollment fell 4.4%, a loss of 1.9 million students, while charter enrollment grew 14.7%, a gain of 492,000. Homeschool enrollment grew another 4.9% in 2024-25, double the pre-pandemic rate of 2%, and 36% of states hit their highest ever homeschool enrollment. There is debate about the total, but every study puts somewhere between 5% and 6% of school-age children in homeschooling. Private enrollment is the hardest to pin down, though Census data shows it growing 28% against pre-pandemic numbers.⁴
+From 2019-20 to 2024-25, district enrollment fell 4.4%, a loss of 1.9 million students, while charter enrollment grew 14.7% over the same five years, a gain of 492,000. Homeschool enrollment grew another 4.9% in 2024-25 alone, double the pre-pandemic rate of 2%, and 36% of states hit their highest ever homeschool enrollment.⁴
 
-![Where students went, 2019 to 2024 — district enrollment down 4.4%, charter up 14.7%, homeschool up 4.9% a year, private up 28%](/charts/schooling/enrollment-shift.svg)
-One shrinking bar and three growing ones. This is the clearest single picture of the demand shift.
+The homeschool total is genuinely contested. Estimates run from about 5.2% of school-age children on the NCES figure to 6.3% on NHERI's, and the spread is mostly an artefact of what each instrument counts: NCES counts students and excludes full-time virtual school, while the Census Household Pulse counts households with at least one homeschooled child, which reads structurally higher.⁴
+
+Private enrollment is the hardest to pin down, though Census data shows it growing 28% against pre-pandemic numbers.⁴
+
+![Administrative counts — district enrollment down 4.4% and charter up 14.7% from 2019-20 to 2024-25, homeschool up 4.9% in 2024-25](/charts/schooling/enrollment-shift-admin.svg)
+The three counted by institutions themselves, on the windows each source actually covers.
+
+![Household survey — private enrollment up 28% against pre-pandemic numbers on the Census household survey](/charts/schooling/enrollment-shift-household.svg)
+Kept separate because it is a different instrument answering the same question, and the school-based federal survey disagrees with it by roughly 2.3 million students.
 
 Governance and funding
 
@@ -150,12 +157,16 @@ While the US population continues to hold at healthy numbers, that is only becau
 
 Class sizes through hiring have taken a clear trend, from a 27:1 student-to-adult ratio in 1950 to roughly 15:1 now in traditional schools — but as enrollment falls, hiring must fall as well.⁵⁷ Studies show some effects from ratio differences, especially at the lower end, but the ratio is not near enough to cause significant positive gains.⁵⁸
 
+It is worth putting this next to the switching story from earlier, because they are the same story. District schools lost roughly 1.9 million students. Charters picked up about 490,000 of them, and private schools some further share. What is left over after that is not switching at all — it is children who were never born. That distinction decides which problem districts actually have: if the losses were pure switching, they have a competition problem, and a better product wins the students back. If a large share is demographic, they have a structural problem that no reform fixes.
+
 The falling birthrate is also affecting enrollment in schools. In 2019 enrollment peaked at 50.8 million children in public school; as the years continued, enrollment dropped off to 49.4 million in 2024 at the most recent count.⁵⁹ It is forecast to drop 8% by 2030,⁶⁰ and because there are fewer people having fewer babies, this will compound.
 
 ![The enrollment cliff — public school enrollment falling from 50.8 million in 2019 to 49.4 million in 2024, projected below 47 million by 2030](/charts/schooling/enrollment-cliff.svg)
 California and New York project roughly −15% by 2031 while Florida and Texas grow, which makes the national number concrete.
 
 The problem here is that children are revenue for schools. If schools are losing full percentages of revenue, they must also cut full percentages of expense, which is considerably harder with facilities and other static costs. Additionally, there continue to be more children with disabilities and more children who need to learn English, increasing the cost per student for every district where that is true.⁶¹
+
+The cliff is also less hypothetical than the projection makes it sound, because it has already landed in the lower grades. Since fall 2019, PK-8 enrollment has fallen 4.5% to 33.9 million, while grades 9-12 actually rose 2%, from 15.2 million to 15.6 million.⁷⁵ The high schools are still full of children born before the decline. The elementary schools are not, and that gap works its way upward one year at a time.
 
 These problems are a few years out for the US, so why mention them? Because of what is happening in Asia right now.
 
@@ -185,6 +196,7 @@ Last but not least, we have a chance to change this course. While birthrates are
 In changing our education system, we have the opportunity to uproot the practices that got us here. What has gotten us here cannot get our society out.
 
 Sources
+
 
 1. NCES Condition of Education, public preK-12 enrollment 49.4 million in fall 2024; Census Bureau puts K-12 at 54.1 million for 2025-26. https://nces.ed.gov/programs/coe/indicator/cga/public-school-enrollment
 
@@ -331,3 +343,6 @@ Sources
 73. Miller on memory capacity 1956; Neisser's Cognitive Psychology 1967; Atkinson-Shiffrin memory model 1968. Ebbinghaus published the forgetting curve and the first spacing experiments in 1885. The National Reading Panel reported in 2000.
 
 74. NCES Digest table 236.55, current expenditure per pupil in constant 2024-25 dollars: $16,667 in 2019-20 and $17,553 in 2022-23, a real increase of 5.3%. TIMSS 2023 against 2019: grade 4 maths fell 18 points and grade 8 maths fell 27 points. 2019 scores are the 2023 results plus those declines. https://nces.ed.gov/programs/digest/d25/tables/dt25_236.55.asp · https://ies.ed.gov/learn/press-release/mathematics-scores-u-s-fourth-and-eighth-graders-decline-international-mathematics-and-science
+
+
+75. Since fall 2019, PK-8 enrollment fell 4.5% to 33.9 million while grades 9-12 rose 2%, from 15.2 million to 15.6 million. NCES; FutureEd. https://www.future-ed.org/k-12-public-school-enrollment-declines-explained/
