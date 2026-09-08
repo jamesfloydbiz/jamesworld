@@ -52,14 +52,14 @@ TIMSS tests maths and science in the fourth and eighth years of schooling. For f
 
 PISA is done with 15-year-olds around the world. The most recent data is 2022, where US maths scored 465, below the OECD average of 472, placing 26th out of 81 countries.²² In reading the US placed 6th of 81 with a score of 504 against an average of 476,²³ and in science 10th of 81 with a score of 499.²⁴
 
-![How US students score — PIRLS 548, TIMSS grade 4 maths 517 and science 532, TIMSS grade 8 maths 488, PISA maths 465, reading 504, science 499](/charts/schooling/test-scores.svg)
-Reading is the one subject clearly above the line. That contrast is the finding.
-
 PIAAC is done with adults from 16 to 65. The most recent data is 2023, where the US on average placed 25th out of 31 in numeracy and close to the average in literacy. On a scale out of 500 the US scored 258 in literacy against an average of 260, 249 in numeracy against an OECD average of 263, and 247 in adaptive problem solving against an OECD average of 251.²⁵
 
 Significantly, 34.2% of US adults are at or below Level 1 in numeracy, the fifth highest share out of the 31 countries tested.²⁶ For scale, Finland leads everything with 296 in literacy, 294 in numeracy and 276 in problem solving, while Chile sits at 218 in literacy.²⁷
 
 As for young people, the 16-24 band performed better than older Americans in literacy with a score of 261, ranking 22nd of 31, but significantly worse in numeracy with a score of 248 and a rank of 29th of 31. No adaptive reasoning score is available for that band.²⁸
+
+![Where the US actually places — rank within each assessment's field, from 4th of 32 on PIRLS reading at grade 4 down to 29th of 31 on PIAAC numeracy among 16-24 year olds](/charts/schooling/test-scores.svg)
+Rank inside the field, rather than score against the 500 centrepoint. The scores read better than the placings do, and the placings get worse with age.
 
 On every test the US either did worse than when it was measured before, or stagnated. On literally no international test did the US, at any age, improve significantly.²⁹
 
@@ -165,21 +165,20 @@ Summary and insights
 
 As a reflection, I see much of this as negative. As an optimist and an entrepreneur, I see it as a huge opportunity.
 
-One key insight I had here is that taxes are not the only thing paid disproportionately by the middle and lower classes, due to their lower status and know-how with tax offsetting. Time, through school, is also paid as a tax, at close to the same total effective rate — 20-30% of a child's life, or 20-30% of an adult's income.⁶⁴
+- **Time is a tax, and it is paid disproportionately.** Taxes are not the only thing paid disproportionately by the middle and lower classes, due to their lower status and know-how with tax offsetting. Time, through school, is also paid as a tax, at close to the same total effective rate — 20-30% of a child's life, or 20-30% of an adult's income.⁶⁴
+- **The report card no longer describes the product.** It is clear to see that while GPAs are improving, the actual academic performance of US students is decaying, which puts a lot of weight on reporting systems that are not carrying it.⁶⁵
+- **Learning science has traction, not just potential.** Implementation of learning and motivation science into the school system has huge potential, because of the way the use of phonics in Mississippi inspired action across the nation.⁶⁶
+- **Teachers are not one of the worst paid professions.** That myth is disproven by this data. While they are making worse money on average than their peers from college, they are making about the average wage in many places.⁶⁷
+- **The system has no quality feedback loop.** It cannot yet improve, because it is not even measured effectively. There is no test applied nationally by our country, and the current systems like GPA are inflated. Critics may say NAEP is that test, but its standards are both controversial and hold no backing. Although it is federally run to balance the states, it carries no consequences and is only ever a sample of students rather than everyone.⁶⁸
+- **We are roughly a generation behind Korea and Japan.** Around 2028 to 2035 is when enrollment decay in US schools will accelerate to more obvious effect, as it is in Asia. That makes the most volatile period in the history of America's education system one that is coming soon — and makes now one of the greatest times to start building, as the market softens to better solutions.⁶⁹
+- **People are already leaving.** Absenteeism and private enrollment are increasing similarly, which signals disengagement from the current system.⁷⁰
+- **Satisfaction is falling and merit is being noticed.** 35% of people in the US are satisfied with the public education system, and it is decreasing: 8% fewer people are satisfied with public school this year than in 2024, per Gallup.⁷¹ More and more people are realising that competing for merit matters.⁷² And there are huge advances in our understanding and ability to teach children well, given that learning science really began roughly only 60 years ago.⁷³
+- **More money has not bought better results.** Even as we put more money into the education system, our scores continue to fall.⁷⁴
 
-Another insight is the trust we are placing in our current reporting systems, like report cards. It is clear to see that while GPAs are improving, the actual academic performance of US students is decaying.⁶⁵
+![More money, lower scores — real per-pupil spending up 5.3% between 2019 and 2023 while TIMSS grade 4 maths fell 18 points and grade 8 maths fell 27](/charts/schooling/money-vs-scores.svg)
+Indexed to 2019 so dollars and test scores share one axis. The money went up and the scores went down over the same four years.
 
-I also believe that implementation of learning and motivation science into the school system has not only traction but huge potential, because of the way the use of phonics in Mississippi inspired action across the nation.⁶⁶
-
-A myth disproven by this data is the one about teachers being one of the worst paid professions. While they are making worse money on average than their peers from college, they are making about the average wage in many places.⁶⁷
-
-The system does not have a quality feedback loop. This means it cannot yet improve, because it is not even measured effectively. There is no test applied nationally by our country, and the current systems like GPA are inflated. Critics may say NAEP is that test, but its standards are both controversial and hold no backing. Although it is federally run to balance the states, it carries no consequences and is only ever a sample of students rather than everyone.⁶⁸
-
-In terms of birthrates, we are roughly a generation behind Korea and Japan, meaning that around 2028 to 2035 is when enrollment decay in US schools will be accelerating to more obvious effect, as it is in Asia. That timeline makes the most volatile period in the history of America's education system one that is coming soon — and therefore makes now one of the greatest times to start building, as the market softens to better solutions.⁶⁹
-
-Absenteeism and private enrollment are increasing similarly, which signals disengagement from the current system.⁷⁰
-
-35% of people in the US are satisfied with the public education system, and it is decreasing: 8% fewer people are satisfied with public school this year than in 2024, per Gallup.⁷¹ More and more people are realising that competing for merit matters.⁷² And there are huge advances in our understanding and ability to teach children well, given that learning science really began roughly only 60 years ago.⁷³
+That last one is the one I keep coming back to. It means the system is broken. Just like the machine of a car that many of us drive, at some point it is best to call it a total loss.
 
 Last but not least, we have a chance to change this course. While birthrates are falling and our students are less capable, there will be greater and greater malleability in the education system.
 
@@ -330,3 +329,5 @@ Sources
 72. Charter enrollment up 492,000 while district fell 1.9 million; homeschool at all-time highs in a third of reporting states; Texas drew 100,000+ ESA applications in under two weeks. Notes 4 and 10.
 
 73. Miller on memory capacity 1956; Neisser's Cognitive Psychology 1967; Atkinson-Shiffrin memory model 1968. Ebbinghaus published the forgetting curve and the first spacing experiments in 1885. The National Reading Panel reported in 2000.
+
+74. NCES Digest table 236.55, current expenditure per pupil in constant 2024-25 dollars: $16,667 in 2019-20 and $17,553 in 2022-23, a real increase of 5.3%. TIMSS 2023 against 2019: grade 4 maths fell 18 points and grade 8 maths fell 27 points. 2019 scores are the 2023 results plus those declines. https://nces.ed.gov/programs/digest/d25/tables/dt25_236.55.asp · https://ies.ed.gov/learn/press-release/mathematics-scores-u-s-fourth-and-eighth-graders-decline-international-mathematics-and-science

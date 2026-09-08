@@ -43,7 +43,7 @@ const META = {
       { name: 'AI and tech adoption',              date: '2,982 apps' },
       { name: 'Birthrates and the future of school', date: '2028 - 2035' },
       { name: 'Summary and insights',              date: 'the takeaways' },
-      { name: 'Sources',                           date: '72 references' },
+      { name: 'Sources',                           date: '73 references' },
     ],
   },
   'history-of-education': {
