@@ -10,13 +10,13 @@ From 2019-20 to 2024-25, district enrollment fell 4.4%, a loss of 1.9 million st
 
 The homeschool total is genuinely contested. Estimates run from about 5.2% of school-age children on the NCES figure to 6.3% on NHERI's, and the spread is mostly an artefact of what each instrument counts: NCES counts students and excludes full-time virtual school, while the Census Household Pulse counts households with at least one homeschooled child, which reads structurally higher.⁴
 
-Private enrollment is the hardest to pin down, though Census data shows it growing 28% against pre-pandemic numbers.⁴
+Private enrollment is the hardest to pin down, because the two federal instruments that measure it disagree sharply. The Private School Universe Survey, which asks the schools, counted 4,652,904 private students in 2019-20 and 5,096,365 in 2023-24 — a rise of 9.5%.³ The Census household survey, which asks families, puts the growth at 28% against pre-pandemic numbers.⁴ The two differ by roughly 2.3 million students in level.
 
-![Administrative counts — district enrollment down 4.4% and charter up 14.7% from 2019-20 to 2024-25, homeschool up 4.9% in 2024-25](/charts/schooling/enrollment-shift-admin.svg)
-The three counted by institutions themselves, on the windows each source actually covers.
+![Counted at the school — district enrollment down 4.4% and charter up 14.7% from 2019-20 to 2024-25, private up 9.5% from 2019-20 to 2023-24, homeschool up 4.9% in 2024-25](/charts/schooling/enrollment-shift-admin.svg)
+The four counted by the institutions themselves, on the windows each source actually covers.
 
-![Household survey — private enrollment up 28% against pre-pandemic numbers on the Census household survey](/charts/schooling/enrollment-shift-household.svg)
-Kept separate because it is a different instrument answering the same question, and the school-based federal survey disagrees with it by roughly 2.3 million students.
+![Counted at the door — private enrollment up 28% against pre-pandemic numbers on the Census household survey](/charts/schooling/enrollment-shift-household.svg)
+The same question asked of families rather than schools. Which of the two you believe decides how large the private shift actually was.
 
 Governance and funding
 
@@ -157,7 +157,9 @@ While the US population continues to hold at healthy numbers, that is only becau
 
 Class sizes through hiring have taken a clear trend, from a 27:1 student-to-adult ratio in 1950 to roughly 15:1 now in traditional schools — but as enrollment falls, hiring must fall as well.⁵⁷ Studies show some effects from ratio differences, especially at the lower end, but the ratio is not near enough to cause significant positive gains.⁵⁸
 
-It is worth putting this next to the switching story from earlier, because they are the same story. District schools lost roughly 1.9 million students. Charters picked up about 490,000 of them, and private schools some further share. What is left over after that is not switching at all — it is children who were never born. That distinction decides which problem districts actually have: if the losses were pure switching, they have a competition problem, and a better product wins the students back. If a large share is demographic, they have a structural problem that no reform fixes.
+It is worth putting this next to the switching story from earlier, because they are the same story. District schools lost roughly 1.9 million students. Charters picked up about 490,000 of them and private schools about 443,000, on windows that differ by a year. That leaves close to a million students unaccounted for by switching of any kind — and those are children who were never born.
+
+That distinction decides which problem districts actually have. If the losses were pure switching, they have a competition problem, and a better product wins the students back. If a large share is demographic, they have a structural problem that no reform fixes. On these numbers it is roughly half and half, which means both are true at once and only one of them is solvable by getting better.
 
 The falling birthrate is also affecting enrollment in schools. In 2019 enrollment peaked at 50.8 million children in public school; as the years continued, enrollment dropped off to 49.4 million in 2024 at the most recent count.⁵⁹ It is forecast to drop 8% by 2030,⁶⁰ and because there are fewer people having fewer babies, this will compound.
 
@@ -202,7 +204,7 @@ Sources
 
 2. Public enrollment 49.4 million in fall 2024; charters roughly 7% of public enrollment. FutureEd. https://www.future-ed.org/k-12-public-school-enrollment-declines-explained/
 
-3. NCES Private School Universe Survey: 4.7 million private students, fall 2021. Census household survey: over 7 million in 2024. https://nces.ed.gov/surveys/pss/
+3. NCES Private School Universe Survey (PSS), a biennial census of US private schools: 4,652,904 students in 2019-20 and 5,096,365 in 2023-24, a rise of 9.5%. Characteristics of Private Schools in the United States: Results From the 2023-24 Private School Universe Survey, NCES 2026-015. https://nces.ed.gov/use-work/resource-library/report/first-look-ed-tab/characteristics-private-schools-united-states-results-2023-24-private-school-universe-survey
 
 4. National Alliance for Public Charter Schools: nearly 4 million charter students in more than 8,100 schools in 2024-25, up 492,000 or 14.7% since 2019-20, while district enrollment fell 4.4% or over 1.9 million. Johns Hopkins Homeschool Hub: homeschool enrollment up 4.9% in 2024-25, with 80% of reporting states growing and 36% at all-time highs. NHERI puts homeschooling at 6.3%, NCES at 5.2%. https://publiccharters.org/annual-reports/ · https://education.jhu.edu/edpolicy/policy-research-initiatives/homeschool-hub/homeschool-growth-2024-2025/ · https://nheri.org/how-many-homeschool-students-are-there-in-the-united-states/
 
