@@ -114,6 +114,7 @@ const META = {
       { name: '7. Positive Welcoming',                            date: 'd ~0.93 / ~0.87' },
       { name: '8. Coaching Training, Regulation and Interventions', date: '26% → 5% dropout' },
       { name: 'The theories underneath',                          date: 'three frameworks' },
+      { name: 'Sources',                                          date: '9 references' },
     ],
   },
   'learning-science': {
