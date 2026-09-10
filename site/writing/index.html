@@ -485,6 +485,16 @@
     details.poem-card--img[open] > summary .poem-card__img { display: none; }
     .poem-body--img { padding: 0.5rem 0 0.25rem; }
     .poem-body--img img { display: block; width: 100%; max-width: 34rem; margin: 0 auto; height: auto; }
+    .poem-body--img img + img { margin-top: 1rem; }
+    /* The typed reading of the page, under the page itself. */
+    .poem-body--img .poem-lightbox__poem {
+      max-width: 34rem;
+      margin: 1.75rem auto 0.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      font-size: 1rem;
+      color: var(--fg-75);
+    }
     details.poem-card--text > summary.poem-card__summary {
       display: block; list-style: none; cursor: pointer;
     }
@@ -4943,15 +4953,13 @@ At the least I will write my story in my own font, and have a life not gaunt.</d
           </details>
 
         <!-- BEGIN_POEM_ARCHIVE -->
-          <details class="poem-card poem-card--text" data-poem="002">
+          <details class="poem-card poem-card--img" data-poem="002">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"They ask me questions why the music? How did you get there? Do you know how far you'll go? The smart ones sometimes ask…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/002-1-thumb.jpg" alt="Dear Darkness" loading="lazy">
               <p class="poem-card__title">Dear Darkness</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/002-1.jpg" alt="Dear Darkness — the page" loading="lazy">
               <div class="poem-lightbox__poem">Dear Darkness,
 
 They ask me questions
@@ -4985,15 +4993,13 @@ There is no answer and no empathy
 I plod on</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="004">
+          <details class="poem-card poem-card--img" data-poem="004">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"In an empty room I sit. reflecting on the work. Sometimes its like a tomb but one day it will be a womb For now I…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/004-1-thumb.jpg" alt="In an empty room I sit" loading="lazy">
               <p class="poem-card__title">In an empty room I sit</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/004-1.jpg" alt="In an empty room I sit — the page" loading="lazy">
               <div class="poem-lightbox__poem">In an empty room I sit.
 reflecting on the work.
 Sometimes its like a tomb
@@ -5031,15 +5037,13 @@ In these empty rooms I wait
 for my time to come.</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="006">
+          <details class="poem-card poem-card--img" data-poem="006">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"Give instead of trying to gain Choose peace over pursuing war Paint inwards  instead of outwards Choose pain  over…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/006-1-thumb.jpg" alt="Give instead of trying to gain" loading="lazy">
               <p class="poem-card__title">Give instead of trying to gain</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/006-1.jpg" alt="Give instead of trying to gain — the page" loading="lazy">
               <div class="poem-lightbox__poem">         Give instead of trying to gain
          Choose peace over pursuing war
       Paint inwards  instead of outwards
@@ -5067,15 +5071,13 @@ So that you won't ever  need to compromise your core values
          James</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="008">
+          <details class="poem-card poem-card--img" data-poem="008">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"but I do not rest I am fed but I am  not full I drink but I am  not hydrated weary I  work but I do not provide I…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/008-1-thumb.jpg" alt="I sleep" loading="lazy">
               <p class="poem-card__title">I sleep</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/008-1.jpg" alt="I sleep — the page" loading="lazy">
               <div class="poem-lightbox__poem">   I  sleep
    but I do not rest
 
@@ -5105,15 +5107,13 @@ and  the flowers grow
 welcome</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="009">
+          <details class="poem-card poem-card--img" data-poem="009">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"confidence is not vain wisdom is   pain control is not tight gentleness  is might loyalty  is not always Love  is in…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/009-1-thumb.jpg" alt="confidence is not vain" loading="lazy">
               <p class="poem-card__title">confidence is not vain</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/009-1.jpg" alt="confidence is not vain — the page" loading="lazy">
               <div class="poem-lightbox__poem">confidence is not vain
    wisdom is   pain
    control is not tight
@@ -5150,15 +5150,13 @@ intelligence  is not knowledge
 The few do not follow the crowd</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="010">
+          <details class="poem-card poem-card--img" data-poem="010">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"The roles of men and women are so confusing now Women make more than men, more schooled too On top of that to  provide…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/010-1-thumb.jpg" alt="The roles of men and women are so confusing…" loading="lazy">
               <p class="poem-card__title">The roles of men and women are so confusing…</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/010-1.jpg" alt="The roles of men and women are so confusing… — the page" loading="lazy">
               <div class="poem-lightbox__poem">                                              Dec 21, 25
       The roles of men and women are so confusing now
    Women make more than men, more schooled too
@@ -5181,15 +5179,13 @@ So here I am sat, on my mat  dreaming of a day
       where I have captured the art of meaning</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="011">
+          <details class="poem-card poem-card--img" data-poem="011">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"Lights off, heart beating Listening for, shots ringing Thoughts zooming, calm settling A lesson in, strategic thinking…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/011-1-thumb.jpg" alt="Lights off, heart beating" loading="lazy">
               <p class="poem-card__title">Lights off, heart beating</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/011-1.jpg" alt="Lights off, heart beating — the page" loading="lazy">
               <div class="poem-lightbox__poem">Lights off, heart beating
 Listening for, shots ringing
 Thoughts zooming, calm settling
@@ -5213,15 +5209,13 @@ Stuck in an awful game
       of knowing and waiting</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="012">
+          <details class="poem-card poem-card--img" data-poem="012">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"To push, further and further A story to tell Deleted information Very   well Everyone laughs in frustration Now  we…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/012-1-thumb.jpg" alt="Stories" loading="lazy">
               <p class="poem-card__title">Stories</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/012-1.jpg" alt="Stories — the page" loading="lazy">
               <div class="poem-lightbox__poem">                                              Stories
 Spontaneity
 Sudden Adventure
@@ -5242,38 +5236,13 @@ Remembering time that was borrowed
 Eventually  we fly</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="014">
+          <details class="poem-card poem-card--img" data-poem="023">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"It  was a high like none other connection, learning Fill you up Giving,  Play but not by luck This is  the  work of…"</span>
-                <em>From the notebooks</em>
-              </div>
-              <p class="poem-card__title">smiles, laughter</p>
-            </summary>
-            <div class="poem-body">
-              <div class="poem-lightbox__poem">smiles, laughter
- eyes  water
-hugs, goodbyes
-Memories made
-It  was a high like none other
-
-connection, learning
-Fill you up
-Giving,  Play
-but not by luck
-This is  the  work of many years
-And all it took was love over fear</div>
-            </div>
-          </details>
-          <details class="poem-card poem-card--text" data-poem="023">
-            <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"the part of you not of your soul It whispers in your head, starves your core from being fed Many say it makes…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/023-1-thumb.jpg" alt="Ego" loading="lazy">
               <p class="poem-card__title">Ego</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/023-1.jpg" alt="Ego — the page" loading="lazy">
               <div class="poem-lightbox__poem">2..
          Ego
 
@@ -5299,15 +5268,13 @@ Stay on your grind and remember
    The goal is peace in your soul</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="027">
+          <details class="poem-card poem-card--img" data-poem="027">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"Beauty, Femininity                    Awe &amp; inspiration Authenticity smooth grace -7 rough edges…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/027-1-thumb.jpg" alt="Beauty, Femininity" loading="lazy">
               <p class="poem-card__title">Beauty, Femininity</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/027-1.jpg" alt="Beauty, Femininity — the page" loading="lazy">
               <div class="poem-lightbox__poem">   Beauty, Femininity                    Awe &amp; inspiration
                                          Authenticity
 smooth grace -7 rough edges              Confidence
@@ -5351,15 +5318,13 @@ There is beauty in all places and situations
    You just must learn to see</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="028">
+          <details class="poem-card poem-card--img" data-poem="028">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"The sun has set The light is gone Another day  around the sun The world slows down Cricket creak, birds roost and owls…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/028-1-thumb.jpg" alt="The sun has set" loading="lazy">
               <p class="poem-card__title">The sun has set</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/028-1.jpg" alt="The sun has set — the page" loading="lazy">
               <div class="poem-lightbox__poem">   The sun has set
  The light is gone
 Another day  around the sun
@@ -5390,15 +5355,13 @@ Now  go take
 Dreamland tours</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="030">
+          <details class="poem-card poem-card--img" data-poem="030">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"Long line, restless people wasted hours, pained  smiles crossed arms, shifting feet as we all hurry up  and wait…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/030-1-thumb.jpg" alt="Long line, restless people" loading="lazy">
               <p class="poem-card__title">Long line, restless people</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/030-1.jpg" alt="Long line, restless people — the page" loading="lazy">
               <div class="poem-lightbox__poem">   Long line, restless people
    wasted hours, pained  smiles
    crossed arms, shifting feet
@@ -5420,15 +5383,13 @@ Inflation growing , expenses up
 So in that way goes the tide, despite many who've tried</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="031">
+          <details class="poem-card poem-card--img" data-poem="031">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"a sinking, crushing of the insides Shame a profound rotting mold Results of an ingrained should the darkness seeps into…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/031-1-thumb.jpg" alt="Failure, despicable" loading="lazy">
               <p class="poem-card__title">Failure, despicable</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/031-1.jpg" alt="Failure, despicable — the page" loading="lazy">
               <div class="poem-lightbox__poem">\ .
 c
          Failure, despicable
@@ -5466,15 +5427,13 @@ Protection from a temporary failure, resulting in harm
 And yet in that moment I have succeeded.</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="033">
+          <details class="poem-card poem-card--img" data-poem="033">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"Blank Page, countless thoughts Refrigerator hums, leaves scatter Body creaks, eyes water Sitting alone, in my &quot;home&quot;…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/033-1-thumb.jpg" alt="Blank Page, countless thoughts" loading="lazy">
               <p class="poem-card__title">Blank Page, countless thoughts</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/033-1.jpg" alt="Blank Page, countless thoughts — the page" loading="lazy">
               <div class="poem-lightbox__poem">Blank Page, countless thoughts
 Refrigerator hums, leaves scatter
 Body creaks, eyes water
@@ -5518,15 +5477,13 @@ Because try as I might sometimes I don't see the light
 Is it worth the fight?</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="035">
+          <details class="poem-card poem-card--img" data-poem="035">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"Trauma and pain are called many things but in the end it is  in vain A dark seeping poison for which light is a bane…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/035-1-thumb.jpg" alt="Trauma and pain are called many things" loading="lazy">
               <p class="poem-card__title">Trauma and pain are called many things</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/035-1.jpg" alt="Trauma and pain are called many things — the page" loading="lazy">
               <div class="poem-lightbox__poem">      Trauma and pain are called many things
       but in the end it is  in vain
       A dark seeping poison for which light is a bane
@@ -5551,43 +5508,13 @@ A flowing, fantastic feeling of a full cup
 Where love begets love</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="036">
+          <details class="poem-card poem-card--img" data-poem="037">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"Empty Bed ringing head Quiet room, back to the loom Solitude found, feelings abound Heart slows, peace flows Many…"</span>
-                <em>From the notebooks</em>
-              </div>
-              <p class="poem-card__title">Empty Bed ringing head</p>
-            </summary>
-            <div class="poem-body">
-              <div class="poem-lightbox__poem">`
-Empty Bed ringing head
-Quiet room, back to the loom
-
-Solitude found, feelings abound
-Heart slows, peace flows
-
-Many questions, many paths then
-Little answers, doubts like panthers
-
-Create movement, like a movie set
-Talk to many, Spend a penny
-
-Build more skills, get more kills
-Meet more people, take one to the steeple
-
-Focused I am,</div>
-            </div>
-          </details>
-          <details class="poem-card poem-card--text" data-poem="037">
-            <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"So much time alone we now all spend A flip on its head from society on the mend Shared smiles and hugs r what we must…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/037-1-thumb.jpg" alt="So much time alone we now all spend" loading="lazy">
               <p class="poem-card__title">So much time alone we now all spend</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/037-1.jpg" alt="So much time alone we now all spend — the page" loading="lazy">
               <div class="poem-lightbox__poem">      So much time alone we now all spend
       A flip on its head from society on the mend
       Shared smiles and hugs r what we must tend
@@ -5615,15 +5542,13 @@ This is the way of the world and how we can change
    Together as one we can break chains.</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="038">
+          <details class="poem-card poem-card--img" data-poem="038">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>".  .                                               Aug 26, 2025 This  is the future and I will tell you who I AM I…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/038-1-thumb.jpg" alt="This is the future and I will tell you who I…" loading="lazy">
               <p class="poem-card__title">This is the future and I will tell you who I…</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/038-1.jpg" alt="This is the future and I will tell you who I… — the page" loading="lazy">
               <div class="poem-lightbox__poem">.  .                                               Aug 26, 2025
 This  is the future and I will tell you who I AM
 
@@ -5644,15 +5569,13 @@ I move in silence  but they will all know I've
          I am  James</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="039">
+          <details class="poem-card poem-card--img" data-poem="039">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"Much Wisdom is  buried six feet deep Still more is burned  with none to keep Very little makes  it  out If it does, its…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/039-1-thumb.jpg" alt="Much Wisdom is buried six feet deep" loading="lazy">
               <p class="poem-card__title">Much Wisdom is buried six feet deep</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/039-1.jpg" alt="Much Wisdom is buried six feet deep — the page" loading="lazy">
               <div class="poem-lightbox__poem">Much Wisdom is  buried six feet deep
 Still more is burned  with none to keep
 Very little makes  it  out
@@ -5691,47 +5614,13 @@ passed down through calculated strife
 go read the  story, of  Iron John</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="040">
+          <details class="poem-card poem-card--img" data-poem="041">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"Deep Breath, find stillness Slow down, go inward Be water, on a calm day Be wind, wispering through trees Be earth…"</span>
-                <em>From the notebooks</em>
-              </div>
-              <p class="poem-card__title">Deep Breath, find stillness</p>
-            </summary>
-            <div class="poem-body">
-              <div class="poem-lightbox__poem">Deep Breath, find stillness
-Slow down, go inward
-
-Be water, on a calm day
-Be wind, wispering through trees
-Be earth, solid and unmoving
-Be fire, burning inside.
-   Let it all Be.
-
-Be as you  are.
-Are you  who you want?
-Want to  change?
-Change you  will.
-Will  it  hurt?
-Hurt is hunger
-Hunger to grow
-.  Grow you will,
-Will it take work?
-Work is confidence
-Confidence you'll have.
-[unclear] you will</div>
-            </div>
-          </details>
-          <details class="poem-card poem-card--text" data-poem="041">
-            <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"Big dreams and Big Swings lead to Big teams   and Big things. See it in  your mind, grasp it turn it, twist it, taste…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/041-1-thumb.jpg" alt="Big dreams and Big Swings" loading="lazy">
               <p class="poem-card__title">Big dreams and Big Swings</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/041-1.jpg" alt="Big dreams and Big Swings — the page" loading="lazy">
               <div class="poem-lightbox__poem">         Big dreams and Big Swings
    lead to Big teams   and Big things.
 
@@ -5762,15 +5651,13 @@ Know that the greats often miss their small teams, but if you
 are blessed with any teams set  incentives well and all will be swell</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="042">
+          <details class="poem-card poem-card--img" data-poem="042">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"Heart Aches, Body Tired Mind Wired, Breathe Deep Path steep, Thoughts Race Fast Pace,  No Frown Don't drown,  Focus Now…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/042-1-thumb.jpg" alt="Heart Aches, Body Tired" loading="lazy">
               <p class="poem-card__title">Heart Aches, Body Tired</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/042-1.jpg" alt="Heart Aches, Body Tired — the page" loading="lazy">
               <div class="poem-lightbox__poem">Heart Aches, Body Tired
 Mind Wired, Breathe Deep
 Path steep, Thoughts Race
@@ -5798,15 +5685,13 @@ be stone, you alone
 Just hone, zero moan</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="043">
+          <details class="poem-card poem-card--img" data-poem="043">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"Anger, Fear, Sadness, Pain All  of things that are stains On  a  good, special day Are  always because we have lost our…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/043-1-thumb.jpg" alt="Miscommunication" loading="lazy">
               <p class="poem-card__title">Miscommunication</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/043-1.jpg" alt="Miscommunication — the page" loading="lazy">
               <div class="poem-lightbox__poem">      Miscommunication
    Missed community enGalvation
    Anger, Fear, Sadness, Pain
@@ -5850,15 +5735,13 @@ Public talks, transparent together we walk
 Or before long at our own creation we will balk</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="044">
+          <details class="poem-card poem-card--img" data-poem="044">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"unwanted, cast a side overlooked, taken out with the tide To me a diamond, to them  just rough There was a narrative…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/044-1-thumb.jpg" alt="unwanted, cast a side" loading="lazy">
               <p class="poem-card__title">unwanted, cast a side</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/044-1.jpg" alt="unwanted, cast a side — the page" loading="lazy">
               <div class="poem-lightbox__poem">      unwanted, cast a side
       overlooked, taken out with the tide
 To me a diamond, to them  just rough
@@ -5892,15 +5775,13 @@ So you may choose a side world
    But I do  not go with the tide</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="045">
+          <details class="poem-card poem-card--img" data-poem="045">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"My world is  weird A mix  of highs and lows I'm not sure whether to be loved or feared Or to feel   light  or  no I see…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/045-1-thumb.jpg" alt="My world is weird" loading="lazy">
               <p class="poem-card__title">My world is weird</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/045-1.jpg" alt="My world is weird — the page" loading="lazy">
               <div class="poem-lightbox__poem">      My world is  weird
    A mix  of highs and lows
 I'm not sure whether to be loved or feared
@@ -5937,15 +5818,13 @@ it does not matter whether it has murderous intent
          Gone is the very life we diss</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="046">
+          <details class="poem-card poem-card--img" data-poem="046">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"The mind at war is an interesting thing the sort of mentality that makes a king Laser focus, distractions fade Energy…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/046-1-thumb.jpg" alt="The mind at war is an interesting thing" loading="lazy">
               <p class="poem-card__title">The mind at war is an interesting thing</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/046-1.jpg" alt="The mind at war is an interesting thing — the page" loading="lazy">
               <div class="poem-lightbox__poem">`
 -
       The mind at war is an interesting thing
@@ -5969,15 +5848,13 @@ doesnt matter if you have to count soot
 Forgotten is dinner or time</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="047">
+          <details class="poem-card poem-card--img" data-poem="047">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"How you use it, what you choose to do with it is  your meaning Knowing it's finite adds hues, makes you enjoy views…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/047-1-thumb.jpg" alt="Time is everything" loading="lazy">
               <p class="poem-card__title">Time is everything</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/047-1.jpg" alt="Time is everything — the page" loading="lazy">
               <div class="poem-lightbox__poem">      Time is everything
    How you use it, what you choose to do with it
          is  your meaning
@@ -6003,15 +5880,13 @@ So  dear god let it dawn
 ~ ~ ~</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="048">
+          <details class="poem-card poem-card--img" data-poem="048">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"In this crazy world I am hounded by doom How AI will scale to the moon Or how debt is Gilling the room I am  worried…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/048-1-thumb.jpg" alt="In this crazy world" loading="lazy">
               <p class="poem-card__title">In this crazy world</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/048-1.jpg" alt="In this crazy world — the page" loading="lazy">
               <div class="poem-lightbox__poem">      In this crazy world
       I am hounded by doom
    How AI will scale to the moon
@@ -6023,15 +5898,13 @@ So  dear god let it dawn
 Power and money are what will keep you out the zoo</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="049">
+          <details class="poem-card poem-card--img" data-poem="049">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"The shadows grow darker and longer but people put on sunscreen They don't see it would seem That the world is coming to…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/049-1-thumb.jpg" alt="The world burns" loading="lazy">
               <p class="poem-card__title">The world burns</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/049-1.jpg" alt="The world burns — the page" loading="lazy">
               <div class="poem-lightbox__poem">  The world burns
   as people  walk
         Ashes fall
@@ -6051,15 +5924,13 @@ Power and money are what will keep you out the zoo</div>
   make sure that you walk with that in mind</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="050">
+          <details class="poem-card poem-card--img" data-poem="050">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"Quick steps, fast arms Beating heart, No stress there is a world where on the go, you can flowr Take leaps, give all…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/050-1-thumb.jpg" alt="Quick steps, fast arms" loading="lazy">
               <p class="poem-card__title">Quick steps, fast arms</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/050-1.jpg" alt="Quick steps, fast arms — the page" loading="lazy">
               <div class="poem-lightbox__poem">        Quick steps, fast arms
         Beating heart, No stress
         there is a world where on the go, you can flowr
@@ -6077,15 +5948,13 @@ Power and money are what will keep you out the zoo</div>
      You choose your game, and the tools you use</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="051">
+          <details class="poem-card poem-card--img" data-poem="051">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"there is a feeling that starts so deep A warm, pure feeling of a connection to keep Your heart  meets  theirs emotions…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/051-1-thumb.jpg" alt="there is a feeling that starts so deep" loading="lazy">
               <p class="poem-card__title">there is a feeling that starts so deep</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/051-1.jpg" alt="there is a feeling that starts so deep — the page" loading="lazy">
               <div class="poem-lightbox__poem">        there is a feeling that starts so deep
         A warm, pure feeling of a connection to keep
         Your heart  meets  theirs
@@ -6101,15 +5970,13 @@ Power and money are what will keep you out the zoo</div>
         A wonderful way of living where you'll feel your best &amp; above</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="052">
+          <details class="poem-card poem-card--img" data-poem="052">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"Sitting beneath the skies A wind whistling through white pines Searching for stillness in self Is a process of…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/052-1-thumb.jpg" alt="Sitting beneath the skies" loading="lazy">
               <p class="poem-card__title">Sitting beneath the skies</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/052-1.jpg" alt="Sitting beneath the skies — the page" loading="lazy">
               <div class="poem-lightbox__poem">     Sitting beneath the skies
         A wind whistling through white pines
      Searching for stillness in self
@@ -6137,15 +6004,13 @@ Power and money are what will keep you out the zoo</div>
   Stillness in Self  that is what the journey is for</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="053">
+          <details class="poem-card poem-card--img" data-poem="053">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"A spark of electricity, shocking Ice melting, a river flowing to the sea It may be silent or sing to the sky and it has…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/053-1-thumb.jpg" alt="Connection" loading="lazy">
               <p class="poem-card__title">Connection</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/053-1.jpg" alt="Connection — the page" loading="lazy">
               <div class="poem-lightbox__poem">        Connection
 
      A spark of electricity, shocking
@@ -6171,15 +6036,13 @@ Electricity, love, temperature, joy, energy in all forms
    That creates memories out of your dreams</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="054">
+          <details class="poem-card poem-card--img" data-poem="054">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"A sort of misnomer for the strategy of those who play no games They shoot you straight and do good work No pursuit of…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/054-1-thumb.jpg" alt="The long game" loading="lazy">
               <p class="poem-card__title">The long game</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/054-1.jpg" alt="The long game — the page" loading="lazy">
               <div class="poem-lightbox__poem">         The  long  game
   A sort of misnomer for the strategy of those
        who play no games
@@ -6217,15 +6080,13 @@ Electricity, love, temperature, joy, energy in all forms
           Do not be tame.</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="056">
+          <details class="poem-card poem-card--img" data-poem="056">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"Feet in the grass, sun on my back Birds chirping , clouds gliding In another world Machines  whirring, Data flowing…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/056-1-thumb.jpg" alt="Feet in the grass, sun on my back" loading="lazy">
               <p class="poem-card__title">Feet in the grass, sun on my back</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/056-1.jpg" alt="Feet in the grass, sun on my back — the page" loading="lazy">
               <div class="poem-lightbox__poem">Feet in the grass, sun on my back
 Birds chirping , clouds gliding
 
@@ -6249,30 +6110,26 @@ In a horizon unknown, timelines controversial
 exponential misunderstood, what do I do?</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="057">
+          <details class="poem-card poem-card--img" data-poem="057">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"In  my  world it is so loud Many futures, many rules, many thoughts And yet within that there is a calm, of that I am…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/057-1-thumb.jpg" alt="In my world it is so loud" loading="lazy">
               <p class="poem-card__title">In my world it is so loud</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/057-1.jpg" alt="In my world it is so loud — the page" loading="lazy">
               <div class="poem-lightbox__poem">In  my  world it is so loud
 Many futures, many rules, many thoughts
 And yet within that there is a calm, of that I am proud
 For I will not decide my horizon by casting lots</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="058">
+          <details class="poem-card poem-card--img" data-poem="058">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"It is you against you but sometimes others intervene Maybe you gave them an opening, maybe you did not regardless that…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/058-1-thumb.jpg" alt="Fuel" loading="lazy">
               <p class="poem-card__title">Fuel</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/058-1.jpg" alt="Fuel — the page" loading="lazy">
               <div class="poem-lightbox__poem">Fuel
 
         It is you against you
@@ -6307,15 +6164,13 @@ For I will not decide my horizon by casting lots</div>
         all will be seen.</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="059">
+          <details class="poem-card poem-card--img" data-poem="059">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"The solving of 'what's next' feels like an impossible problem where do I start? It's not like its written in text It's…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/059-1-thumb.jpg" alt="The solving of 'what's next'" loading="lazy">
               <p class="poem-card__title">The solving of 'what's next'</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/059-1.jpg" alt="The solving of 'what's next' — the page" loading="lazy">
               <div class="poem-lightbox__poem">  The solving of 'what's next'
   feels like an impossible problem
   where do I start? It's not like its written in text
@@ -6331,15 +6186,13 @@ For I will not decide my horizon by casting lots</div>
   pleasure as the great man Frankl said is so</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="060">
+          <details class="poem-card poem-card--img" data-poem="060">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"Energy unseen passes between It is less of a science and more of a feel Real Knows Real sometimes shown with a nod  or…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/060-1-thumb.jpg" alt="Real Knows Real" loading="lazy">
               <p class="poem-card__title">Real Knows Real</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/060-1.jpg" alt="Real Knows Real — the page" loading="lazy">
               <div class="poem-lightbox__poem">   Real Knows  Real
      An unspoken communication
   Energy unseen passes between
@@ -6366,15 +6219,13 @@ For I will not decide my horizon by casting lots</div>
   because Real Knows Real</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="061">
+          <details class="poem-card poem-card--img" data-poem="061">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"Greatness  - silent operation There is something extraordinary about excellence an energy that echoes through actions…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/061-1-thumb.jpg" alt="Greatness" loading="lazy">
               <p class="poem-card__title">Greatness</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/061-1.jpg" alt="Greatness — the page" loading="lazy">
               <div class="poem-lightbox__poem">        Greatness  - silent operation
 
   There is something extraordinary about excellence
@@ -6406,15 +6257,13 @@ For I will not decide my horizon by casting lots</div>
   So if you want to be great, dive into the depths</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="062">
+          <details class="poem-card poem-card--img" data-poem="062">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"Sitting in the shade as the birds chirp on a log, the feeling of greatness in the air there is power here, spirits call…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/062-1-thumb.jpg" alt="Sitting in the shade as the birds chirp" loading="lazy">
               <p class="poem-card__title">Sitting in the shade as the birds chirp</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/062-1.jpg" alt="Sitting in the shade as the birds chirp — the page" loading="lazy">
               <div class="poem-lightbox__poem">  Sitting in the shade as the birds chirp
   on a log, the feeling of greatness in the air
   there is power here, spirits call me
@@ -6455,15 +6304,13 @@ For I will not decide my horizon by casting lots</div>
         I am yet again grateful for this adventure since birth</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="063">
+          <details class="poem-card poem-card--img" data-poem="063">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"A wistful wind blows the longing cry of a lark echoes Mexican music plays loudly Dishes clang as they are put up to dry…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/063-1-thumb.jpg" alt="A wistful wind blows" loading="lazy">
               <p class="poem-card__title">A wistful wind blows</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/063-1.jpg" alt="A wistful wind blows — the page" loading="lazy">
               <div class="poem-lightbox__poem">      A wistful wind blows
       the longing cry of a lark echoes
    Mexican music plays loudly
@@ -6538,15 +6385,13 @@ How is it that those with no degree or credibility end
 up on top you see?</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="064">
+          <details class="poem-card poem-card--img" data-poem="064">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"An interesting feeling in the pit of my stomach A primal urge to keep whats yours yours Seeking and sickening it…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/064-1-thumb.jpg" alt="An interesting feeling in the pit of my…" loading="lazy">
               <p class="poem-card__title">An interesting feeling in the pit of my…</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/064-1.jpg" alt="An interesting feeling in the pit of my… — the page" loading="lazy">
               <div class="poem-lightbox__poem">An interesting feeling in the pit of my stomach
 A primal urge to keep whats yours yours
 Seeking and sickening it invades the mind
@@ -6562,15 +6407,13 @@ Pain plays as I am picturing a better future
 You see the devil says pick again and I say</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="065">
+          <details class="poem-card poem-card--img" data-poem="065">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"Examining all the feelings not of me Shame, worry etc There is many a feeling not of you Shame, worry, Stress, even…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/065-1-thumb.jpg" alt="Examining all the feelings not of me" loading="lazy">
               <p class="poem-card__title">Examining all the feelings not of me</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/065-1.jpg" alt="Examining all the feelings not of me — the page" loading="lazy">
               <div class="poem-lightbox__poem">      Examining all the feelings not of me
       Shame, worry etc
 
@@ -6597,15 +6440,13 @@ your heart to race, just let it feed you. Heed its call
 you will get it all, then when its time allow your mind</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="066">
+          <details class="poem-card poem-card--img" data-poem="066">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"A conversation between me and spirit Inwards I go towards the spirit that knows on this journey I bring a disconnection…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/066-1-thumb.jpg" alt="A conversation between me and spirit" loading="lazy">
               <p class="poem-card__title">A conversation between me and spirit</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/066-1.jpg" alt="A conversation between me and spirit — the page" loading="lazy">
               <div class="poem-lightbox__poem">   A conversation between me and spirit
 
       Inwards I go towards the spirit that knows
@@ -6638,16 +6479,16 @@ you will get it all, then when its time allow your mind</div>
                The way aligned</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="067">
+          <details class="poem-card poem-card--img" data-poem="067">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"It feels like I'm spinning my wheels I am watching the grains of sand fall in the hourglass of life On what strife, I…"</span>
-                <em>Oct 30, 2023</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/067-1-thumb.jpg" alt="It feels like I'm spinning my wheels" loading="lazy">
               <p class="poem-card__title">It feels like I'm spinning my wheels</p>
             </summary>
-            <div class="poem-body">
-              <div class="poem-lightbox__poem">         It feels like I'm spinning my wheels
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/067-1.jpg" alt="It feels like I'm spinning my wheels — the page" loading="lazy">
+              <div class="poem-lightbox__poem">Oct 30, 2023
+
+         It feels like I'm spinning my wheels
          I am watching the grains of sand fall in the hourglass of life
 On what strife, I am mortal and my precious time is taken
 The cost of not knowing what to do cuts me like a knife
@@ -6667,15 +6508,13 @@ me a way into history and show me.
    My dreams come true spirit, as a function of belief in you</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="068">
+          <details class="poem-card poem-card--img" data-poem="068">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"It is the fire in their eyes the staring hard, but not seeing It can be a hunter or hunted Hunger    to some it looks…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/068-1-thumb.jpg" alt="It is the fire in their eyes" loading="lazy">
               <p class="poem-card__title">It is the fire in their eyes</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/068-1.jpg" alt="It is the fire in their eyes — the page" loading="lazy">
               <div class="poem-lightbox__poem">      It is the fire in their eyes
       the staring hard, but not seeing
       It can be a hunter or hunted
@@ -6697,15 +6536,13 @@ Hunger    to some it looks like they're rich w/gold
 Enough, No. Never enough always more</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="069">
+          <details class="poem-card poem-card--img" data-poem="069">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"They see it in my eyes, I do not get distracted I go, and go again at the problems that pave my path Repeatedly, I…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/069-1-thumb.jpg" alt="relentless" loading="lazy">
               <p class="poem-card__title">relentless</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/069-1.jpg" alt="relentless — the page" loading="lazy">
               <div class="poem-lightbox__poem">            relentless
 They see it in my eyes, I do not get distracted
 I go, and go again at the problems that pave my path
@@ -6738,15 +6575,13 @@ From all angles, time fades as though I am everywhere
 Clouds rolling in, there is a way in, neverending</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="070">
+          <details class="poem-card poem-card--img" data-poem="070">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"Children laugh, bikes rev, sirens ring, men talk Cars pass, lights twinkle, women walk, bells ding Darkness comes hats…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/070-1-thumb.jpg" alt="Children laugh, bikes rev, sirens ring, men…" loading="lazy">
               <p class="poem-card__title">Children laugh, bikes rev, sirens ring, men…</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/070-1.jpg" alt="Children laugh, bikes rev, sirens ring, men… — the page" loading="lazy">
               <div class="poem-lightbox__poem">         Children laugh, bikes rev, sirens ring, men talk
 Cars pass, lights twinkle, women walk, bells ding
 Darkness comes hats warm, train horns, Buildings loom
@@ -6770,15 +6605,13 @@ we keep creating these boxes of bricks.
    making homes that bode well for our world</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="072">
+          <details class="poem-card poem-card--img" data-poem="072">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"The lightness of steps Simpleness of Minds not yet layered with thoughts Not wrought with the walls we put up that make…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/072-1-thumb.jpg" alt="Youth" loading="lazy">
               <p class="poem-card__title">Youth</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/072-1.jpg" alt="Youth — the page" loading="lazy">
               <div class="poem-lightbox__poem">               Youth
 The lightness of steps
  Simpleness of Minds not yet layered with thoughts
@@ -6830,15 +6663,13 @@ to ascend, sure. New information filling our brains
 as we boundlessly devour every occasion.</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="074">
+          <details class="poem-card poem-card--img" data-poem="074">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"Troubled mind, full day grind my path it winds, but I won't whine I put my life into this work, so that I may call…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/074-1-thumb.jpg" alt="Troubled mind, full day grind" loading="lazy">
               <p class="poem-card__title">Troubled mind, full day grind</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/074-1.jpg" alt="Troubled mind, full day grind — the page" loading="lazy">
               <div class="poem-lightbox__poem">      Troubled mind, full day grind
 my path it winds, but I won't whine
 I put my life into this work, so that I may call peace mine
@@ -6874,42 +6705,13 @@ The rays of sunshine on me as fortune does on those who dare do
       I will trust the flow</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="075">
+          <details class="poem-card poem-card--img" data-poem="076">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"The sun comes over the mountain top it's golden rays highlighting the colors the leaves have got Cycling its way around…"</span>
-                <em>From the notebooks</em>
-              </div>
-              <p class="poem-card__title">Expansion</p>
-            </summary>
-            <div class="poem-body">
-              <div class="poem-lightbox__poem">         Expansion - Metaphor
-
-   The sun comes over the mountain top
-it's golden rays highlighting the colors the leaves have got
-Cycling its way around our rock, its light covering all sides
-It's gravity guides our path through the expanse of space
-
-It continues its path until an apex for us, and then shrinks
-away. For it does not stay and rather is always moving.
-Healing, lighting, burning, exciting
-   The sun is energy and for some is frightening
-You see they play small and think scarce,
-
-   no findin
-
-   [wavy line/signature]</div>
-            </div>
-          </details>
-          <details class="poem-card poem-card--text" data-poem="076">
-            <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"We have only chatted briefly, but you have affected me You see you gave wisdom for free &quot;Loyalty is the only asset you…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/076-1-thumb.jpg" alt="We have only chatted briefly, but you have…" loading="lazy">
               <p class="poem-card__title">We have only chatted briefly, but you have…</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/076-1.jpg" alt="We have only chatted briefly, but you have… — the page" loading="lazy">
               <div class="poem-lightbox__poem">We have only chatted briefly, but you have affected me
 
 You see you gave wisdom for free
@@ -6925,42 +6727,13 @@ A longways from the superficial and that is special.
 Thank you for your kindness I have taken it with mindfulness</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="078">
+          <details class="poem-card poem-card--img" data-poem="079">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"A world of layers of characters, cunning, and sometimes cockiness an interesting series of games and social politics…"</span>
-                <em>From the notebooks</em>
-              </div>
-              <p class="poem-card__title">A world of layers</p>
-            </summary>
-            <div class="poem-body">
-              <div class="poem-lightbox__poem">         A world of layers
-   of characters, cunning, and sometimes cockiness
-   an interesting series of games and social politics
-   Made complicated by power and pressure
-I suppose the characters are the product of politics and pressure
-A glaring result, odd conduct that needs analytics and
-         Leaves me needing some space and fresh air
-
-   Now I am a man that does not choose flair
-   a lesson learned as a boy developing my views
-one of many like, do not be coy, or the best
-game is no name, but that's not news. What is
-important to know though is understanding all the cues
-Money, Ideology, coercion or compromise and ego some of these
-tell you its time to go, others still help you flow
-as</div>
-            </div>
-          </details>
-          <details class="poem-card poem-card--text" data-poem="079">
-            <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"Now that you're gone, who's going to care about me It used to be that you were only there for me Now it is me that is…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/079-1-thumb.jpg" alt="Now that you're gone, who's going to care…" loading="lazy">
               <p class="poem-card__title">Now that you're gone, who's going to care…</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/079-1.jpg" alt="Now that you're gone, who's going to care… — the page" loading="lazy">
               <div class="poem-lightbox__poem">      Now that you're gone, who's going to care about me
 It used to be that you were only there for me
 Now it is me that is only there for it
@@ -6987,15 +6760,13 @@ the field. Your grif and the fire inside you lit me
          I burn on in the darkness</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="080">
+          <details class="poem-card poem-card--img" data-poem="080">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"A day of gratitude, graced with good eats soon, for many, these days will be filled with sweet treats For me I'd rather…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/080-1-thumb.jpg" alt="A day of gratitude, graced with good eats" loading="lazy">
               <p class="poem-card__title">A day of gratitude, graced with good eats</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/080-1.jpg" alt="A day of gratitude, graced with good eats — the page" loading="lazy">
               <div class="poem-lightbox__poem">      A day of gratitude, graced with good eats
 soon, for many, these days will be filled with sweet treats
 For me I'd rather gather rays of sun on my body and finish feats
@@ -7017,15 +6788,13 @@ about being great that I never will be, What's the middle ground
 Around &amp; around the wheels in my head spin</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="081">
+          <details class="poem-card poem-card--img" data-poem="081">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"Ambiguity, Unknown     Nov 28, 29       2025 Like the pathway of what's next, unshown Feelings and thoughts swirl in…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/081-1-thumb.jpg" alt="Ambiguity, Unknown" loading="lazy">
               <p class="poem-card__title">Ambiguity, Unknown</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/081-1.jpg" alt="Ambiguity, Unknown — the page" loading="lazy">
               <div class="poem-lightbox__poem">         Ambiguity, Unknown     Nov 28, 29       2025
    Like the pathway of what's next, unshown
 
@@ -7054,15 +6823,13 @@ wondering if by then I'll have found the yin to this yang.
 The pangs of my childhood tell me, Maybe then it'll finally be enough</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="082">
+          <details class="poem-card poem-card--img" data-poem="082">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"The illusion of reality The reality of illusion The unconsciousness of thinking The consciousness of lacking thoughts…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/082-1-thumb.jpg" alt="The illusion of reality" loading="lazy">
               <p class="poem-card__title">The illusion of reality</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/082-1.jpg" alt="The illusion of reality — the page" loading="lazy">
               <div class="poem-lightbox__poem">   The illusion of reality
    The reality of illusion
 
@@ -7089,28 +6856,24 @@ compounding effects grow, one gets to focus on being
 rather than trying.</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="083">
+          <details class="poem-card poem-card--img" data-poem="083">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"The only way to win the game is to not play"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/083-1-thumb.jpg" alt="The only way to win the game" loading="lazy">
               <p class="poem-card__title">The only way to win the game</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/083-1.jpg" alt="The only way to win the game — the page" loading="lazy">
               <div class="poem-lightbox__poem">The only way to win the game
    is to not play</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="085">
+          <details class="poem-card poem-card--img" data-poem="085">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"A constant seeking of truth. A willingness to find the juice to continue. Playing, loving, dreaming, caring, creating…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/085-1-thumb.jpg" alt="Youth" loading="lazy">
               <p class="poem-card__title">Youth</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/085-1.jpg" alt="Youth — the page" loading="lazy">
               <div class="poem-lightbox__poem">         Youth.     1
 
    A constant seeking of truth.
@@ -7136,15 +6899,13 @@ is the difference of holding kids dear
                                     Angel &amp; James</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="086">
+          <details class="poem-card poem-card--img" data-poem="086">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"The sound of Rain crackles on the metal roof The light through the glass casting shadows Gods tears rolling down…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/086-1-thumb.jpg" alt="The sound of Rain crackles on the metal roof" loading="lazy">
               <p class="poem-card__title">The sound of Rain crackles on the metal roof</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/086-1.jpg" alt="The sound of Rain crackles on the metal roof — the page" loading="lazy">
               <div class="poem-lightbox__poem">The sound of Rain crackles on the metal roof
       The light through the glass casting shadows
    Gods tears rolling down towards the ground
@@ -7176,15 +6937,13 @@ Time to ride I suppose and further cast a net wide.
 Take the [unclear] in stride, Spirit be my guide</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="088">
+          <details class="poem-card poem-card--img" data-poem="088">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"Tomorrow I turn 24 That too must be symbolic for something. At least it is a fore that times score is unsettled A…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/088-1-thumb.jpg" alt="Tomorrow I turn 24" loading="lazy">
               <p class="poem-card__title">Tomorrow I turn 24</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/088-1.jpg" alt="Tomorrow I turn 24 — the page" loading="lazy">
               <div class="poem-lightbox__poem">      Tomorrow I turn 24
       That too must be symbolic for something.
       At least it is a fore that times score is unsettled
@@ -7213,15 +6972,13 @@ obsess &amp; build around things I like, solving problems I know and my
 aura will glow. I am just a man, but a man who can.</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="089">
+          <details class="poem-card poem-card--img" data-poem="089">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"There is something about creating That feels so  whole Regardless of whether or not I start with a specific goal…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/089-1-thumb.jpg" alt="There is something about creating" loading="lazy">
               <p class="poem-card__title">There is something about creating</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/089-1.jpg" alt="There is something about creating — the page" loading="lazy">
               <div class="poem-lightbox__poem">         There is something about creating
          That feels so  whole
          Regardless of whether or not I start with a specific goal.
@@ -7248,15 +7005,13 @@ For the mad men that change the world?
          They create because it makes them whole</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="090">
+          <details class="poem-card poem-card--img" data-poem="090">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"What an insane period of history to be living tech boom, AI, highschool cut by covid, and now the singularity. It is…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/090-1-thumb.jpg" alt="What an insane period of history to be living" loading="lazy">
               <p class="poem-card__title">What an insane period of history to be living</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/090-1.jpg" alt="What an insane period of history to be living — the page" loading="lazy">
               <div class="poem-lightbox__poem">      What an insane period of history to be living
       tech boom, AI, highschool cut by covid, and now
 the singularity. It is just as the sci-fi movies have
@@ -7274,15 +7029,13 @@ So I sit and wonder how might this play out.
 How can I provide for my family?</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="091">
+          <details class="poem-card poem-card--img" data-poem="091">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"In this week of solitude My eyes have raised to the horizon I see that dark clouds and lightning are beginning to…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/091-1-thumb.jpg" alt="In this week of solitude" loading="lazy">
               <p class="poem-card__title">In this week of solitude</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/091-1.jpg" alt="In this week of solitude — the page" loading="lazy">
               <div class="poem-lightbox__poem">         In this week of solitude
          My eyes have raised to the horizon
 I see that dark clouds and lightning are beginning to collude
@@ -7304,15 +7057,13 @@ dear. Crazy that I have so few peers in this.
    how to pursue a view even while in the dark.</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="092">
+          <details class="poem-card poem-card--img" data-poem="092">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"I   have no 'home' I travel where I wish to conquer Light as the wind, but punishing as lightning Ferocity bubbles in…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/092-1-thumb.jpg" alt="I have no 'home'" loading="lazy">
               <p class="poem-card__title">I have no 'home'</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/092-1.jpg" alt="I have no 'home' — the page" loading="lazy">
               <div class="poem-lightbox__poem">         I   have no 'home'
 
    I travel where I wish to conquer
@@ -7330,30 +7081,26 @@ I have no bed. They know the feeling
 and worry perhaps I'll leave them one day reeling</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="093">
+          <details class="poem-card poem-card--img" data-poem="093">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"corner chair. Lamp on. Curl in Bed. Well fed. Red swimsuit hangs drying but what is that a metaphor for Perhaps that…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/093-1-thumb.jpg" alt="corner chair. Lamp on. Curl in Bed. Well fed" loading="lazy">
               <p class="poem-card__title">corner chair. Lamp on. Curl in Bed. Well fed</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/093-1.jpg" alt="corner chair. Lamp on. Curl in Bed. Well fed — the page" loading="lazy">
               <div class="poem-lightbox__poem">      corner chair. Lamp on. Curl in Bed. Well fed.
 Red swimsuit hangs drying but what is that a metaphor for
 Perhaps that one must just try letting things be
 Trusting that indeed some things solve themselves</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="095">
+          <details class="poem-card poem-card--img" data-poem="095">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"Frankenstein was built from parts of man They called him a monster This man built himself from parts of men Am I not…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/095-1-thumb.jpg" alt="Frankenstein was built from parts of man" loading="lazy">
               <p class="poem-card__title">Frankenstein was built from parts of man</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/095-1.jpg" alt="Frankenstein was built from parts of man — the page" loading="lazy">
               <div class="poem-lightbox__poem">      Frankenstein was built from parts of man
       They called him a monster
 
@@ -7393,15 +7140,13 @@ A Frankenstein.
 But this Frankenstein's name is James Floyd</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="096">
+          <details class="poem-card poem-card--img" data-poem="096">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"I have what many wont and yet I lament as I confide You have it all they have replied In their own ways and fonts Find…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/096-1-thumb.jpg" alt="I have what many wont" loading="lazy">
               <p class="poem-card__title">I have what many wont</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/096-1.jpg" alt="I have what many wont — the page" loading="lazy">
               <div class="poem-lightbox__poem">I have what many wont
 and yet I lament as I confide
 
@@ -7424,16 +7169,16 @@ Keep going, and get better.
 The top shelf is reached through years &amp; tears</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="097">
+          <details class="poem-card poem-card--img" data-poem="097">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"By moonlight I write As my insides fright I have taken flight, to the quiet night I bask in the stars and darkness cars…"</span>
-                <em>Feb 23, 2026</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/097-1-thumb.jpg" alt="By moonlight I write" loading="lazy">
               <p class="poem-card__title">By moonlight I write</p>
             </summary>
-            <div class="poem-body">
-              <div class="poem-lightbox__poem">By moonlight I write
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/097-1.jpg" alt="By moonlight I write — the page" loading="lazy">
+              <div class="poem-lightbox__poem">Feb 23, 2026
+
+By moonlight I write
 As my insides fright
 I have taken flight, to the quiet night
 I bask in the stars and darkness
@@ -7462,15 +7207,14 @@ but stained from without. I must feed it
 more, these challenges key to it's preparedness</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="098">
+          <details class="poem-card poem-card--img" data-poem="098">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"What is a King? Well he is like the old oak tree that stands tall and strong growth happens and as a result shade for…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/098-1-thumb.jpg" alt="What is a King" loading="lazy">
               <p class="poem-card__title">What is a King</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/098-1.jpg" alt="What is a King — the page, 1 of 2" loading="lazy">
+              <img src="/poems/web/098-2.jpg" alt="What is a King — the page, 2 of 2" loading="lazy">
               <div class="poem-lightbox__poem">          What is a King?
 
 Well he is like the old oak tree that stands tall and strong
@@ -7532,15 +7276,13 @@ But a lighthouse against a storm. A guiding light
 like a lantern through the fog. A place that warms and keeps you warm</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="099">
+          <details class="poem-card poem-card--img" data-poem="099">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"Music drifting into the breeze Sun shining down out of a big blue sky People walk by their words floating as they will…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/099-1-thumb.jpg" alt="Music drifting into the breeze" loading="lazy">
               <p class="poem-card__title">Music drifting into the breeze</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/099-1.jpg" alt="Music drifting into the breeze — the page" loading="lazy">
               <div class="poem-lightbox__poem">Music drifting into the breeze
 Sun shining down out of a big blue sky
 People walk by their words floating as they will happily
@@ -7572,15 +7314,13 @@ Some laugh now, but when visions are realized we doers
 get our laughs then. That's winning</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="100">
+          <details class="poem-card poem-card--img" data-poem="100">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"Muscles move under skin contracting, pulling as they will their weight to move, Blood pumps its power to the beat of…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/100-1-thumb.jpg" alt="Muscles move under skin contracting" loading="lazy">
               <p class="poem-card__title">Muscles move under skin contracting</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/100-1.jpg" alt="Muscles move under skin contracting — the page" loading="lazy">
               <div class="poem-lightbox__poem">Muscles move under skin contracting,
 pulling as they will their weight to move,
 Blood pumps its power to the beat of
@@ -7599,15 +7339,13 @@ be analyzed, ears hear waves echoes and balance
 the body, fine tuned to the miniscule rhythyms of life</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="101">
+          <details class="poem-card poem-card--img" data-poem="101">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"Braches wave in the breeze their greens rippling , sun soaking A wonderful art project of nature, trees Wide root…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/101-1-thumb.jpg" alt="Braches wave in the breeze" loading="lazy">
               <p class="poem-card__title">Braches wave in the breeze</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/101-1.jpg" alt="Braches wave in the breeze — the page" loading="lazy">
               <div class="poem-lightbox__poem">Braches wave in the breeze
 their greens rippling , sun soaking
 A wonderful art project of nature, trees
@@ -7619,15 +7357,13 @@ The competition of darwin creating atrophy in trails unhelpful
 A synchronous oven heating and reheating biology to breaking points, convection</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="102">
+          <details class="poem-card poem-card--img" data-poem="102">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"Tail Wags, Mouth hangs open Dog leans forward, eyes focused Smile stretches , as dogs ears perk The dog is seen, so it…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/102-1-thumb.jpg" alt="Tail Wags, Mouth hangs open" loading="lazy">
               <p class="poem-card__title">Tail Wags, Mouth hangs open</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/102-1.jpg" alt="Tail Wags, Mouth hangs open — the page" loading="lazy">
               <div class="poem-lightbox__poem">Tail Wags, Mouth hangs open
 Dog leans forward, eyes focused
 
@@ -7655,15 +7391,13 @@ The crumb is shared , the friends are each seen
 and they are loed</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="103">
+          <details class="poem-card poem-card--img" data-poem="103">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"I sit on a bench, with my mics &amp; a sign I'm writing poetry /and watching passerby Sometimes people looks, and sometimes…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/103-1-thumb.jpg" alt="I sit on a bench, with my mics &amp; a sign" loading="lazy">
               <p class="poem-card__title">I sit on a bench, with my mics &amp; a sign</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/103-1.jpg" alt="I sit on a bench, with my mics &amp; a sign — the page" loading="lazy">
               <div class="poem-lightbox__poem">I sit on a bench, with my mics &amp; a sign
 I'm writing poetry /and watching passerby
 
@@ -7674,68 +7408,13 @@ We are often given these moments to see
 but rarely do we stop and just be</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="104">
+          <details class="poem-card poem-card--img" data-poem="105">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"Middle of Manhattan, sunny day builds surround, windows look down clouds abound in a spot of green here to stay Many…"</span>
-                <em>From the notebooks</em>
-              </div>
-              <p class="poem-card__title">Middle of Manhattan, sunny day</p>
-            </summary>
-            <div class="poem-body">
-              <div class="poem-lightbox__poem">character
-char-rick
-care-rick-ter
-
-Pare
-+ ear
-rare
-
-womb;oom
-boom
-zoom
-
-Middle of Manhattan, sunny day
-builds surround, windows look down
-clouds abound in a spot of green here to stay
-Many people, everything to be fand
-
-Dresses, shorts, hats, no-hair
-Smiles, frowns, Boots, flats
-Sun glasses bright eyes , in a rush, on a walk, single, in a pair
-Tourists, Locals, all in this green focal point, coldcut
-Plazzer
-Flower boxes, book carts
-This is a city full of art
-Tattoos, clothes, architecture, orchestra
-Horns Honk, buses brakes squeal
-
-You cannot see it all in one very moment
-Too many things, too few senses
-but bit by bit it will build like the romans
-You see most fences here are climbable, for New Yorkers are their
-own
-
-Resourceful, focused, diverse, sophisticated
-Cultured, un-codded, Can-doers doing
-Anyone and everyone has been in NY
-You see, they have just figured it out
-
-Groceries on subway, small room,
-Living ambitiously, less stuff
-More character, less doom
-More zoom / less</div>
-            </div>
-          </details>
-          <details class="poem-card poem-card--text" data-poem="105">
-            <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"Kids at play, people chattering The sounds of good fun Dogs walking, Birds chirping The effect of good sun Music being…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/105-1-thumb.jpg" alt="Washington Square, Midday" loading="lazy">
               <p class="poem-card__title">Washington Square, Midday</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/105-1.jpg" alt="Washington Square, Midday — the page" loading="lazy">
               <div class="poem-lightbox__poem">done
 none
 pun
@@ -7767,15 +7446,13 @@ Washington Square, Midday
 If looking for peace, you'll find none</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="108">
+          <details class="poem-card poem-card--img" data-poem="108">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"The unceasing energy of the ocean a great portion of the wald and yet always moving Wave after wave unceasing, how?…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/108-1-thumb.jpg" alt="The unceasing energy of the ocean" loading="lazy">
               <p class="poem-card__title">The unceasing energy of the ocean</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/108-1.jpg" alt="The unceasing energy of the ocean — the page" loading="lazy">
               <div class="poem-lightbox__poem">The unceasing energy of the ocean
     a great portion of the wald and yet always moving
 
@@ -7788,15 +7465,13 @@ No big increases or decreases just consistent
 It is a law followed, the gravity of great things</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="109">
+          <details class="poem-card poem-card--img" data-poem="109">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"Great trees and Greenspaces Their leaves stretching shadows around The canopy painted with depths darkness contrasted…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/109-1-thumb.jpg" alt="Great trees and Greenspaces" loading="lazy">
               <p class="poem-card__title">Great trees and Greenspaces</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/109-1.jpg" alt="Great trees and Greenspaces — the page" loading="lazy">
               <div class="poem-lightbox__poem">Great trees and Greenspaces
 Their leaves stretching shadows around
 
@@ -7827,15 +7502,13 @@ The sounds of birds chirping and dogs barking
 Mixed with the beeps of construction cars parking</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="110">
+          <details class="poem-card poem-card--img" data-poem="110">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"music rings out into the air. singing saxophone, and speakers blasting on bikes People here are following their innate…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/110-1-thumb.jpg" alt="music rings out into the air" loading="lazy">
               <p class="poem-card__title">music rings out into the air</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/110-1.jpg" alt="music rings out into the air — the page" loading="lazy">
               <div class="poem-lightbox__poem">music rings out into the air.
 singing saxophone, and speakers blasting on bikes
 People here are following their innate likes
@@ -7859,15 +7532,14 @@ Reweaving
 weaving</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="111">
+          <details class="poem-card poem-card--img" data-poem="111">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"Like  a composer of parts creating an art of a composition a conscious use of skill and creative imagination to create…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/111-1-thumb.jpg" alt="Pure of heart" loading="lazy">
               <p class="poem-card__title">Pure of heart</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/111-1.jpg" alt="Pure of heart — the page, 1 of 2" loading="lazy">
+              <img src="/poems/web/111-2.jpg" alt="Pure of heart — the page, 2 of 2" loading="lazy">
               <div class="poem-lightbox__poem">Pure of heart
 Like  a composer of parts
 creating an art of a composition
@@ -7916,37 +7588,13 @@ opportunities, and a love that pours forth
 Pureness of heart is rare</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="112">
+          <details class="poem-card poem-card--img" data-poem="113">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"A moment of presence is a moment enjoyed The presence of a moment is felt only in the now Now is only felt by being…"</span>
-                <em>From the notebooks</em>
-              </div>
-              <p class="poem-card__title">A moment of presence</p>
-            </summary>
-            <div class="poem-body">
-              <div class="poem-lightbox__poem">A moment of presence
-is a moment enjoyed
-The presence of a moment
-is felt only in the now
-
-Now is only felt by being present
-
-So how does one be in the present?
-Stay present, live presently, and enjoy it.
-
-Where</div>
-            </div>
-          </details>
-          <details class="poem-card poem-card--text" data-poem="113">
-            <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"Letters in groups, Thoughts that play in loops Hoops we create for ourselves to jump through Whoops we exclaim in…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/113-1-thumb.jpg" alt="Words" loading="lazy">
               <p class="poem-card__title">Words</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/113-1.jpg" alt="Words — the page" loading="lazy">
               <div class="poem-lightbox__poem">Words
 Letters in groups, Thoughts that play in loops
 Hoops we create for ourselves to jump through
@@ -7984,15 +7632,13 @@ They can make your reality what you want it to be.
 Those lazy in their words allow laziness in life</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="114">
+          <details class="poem-card poem-card--img" data-poem="114">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"What does it do Art is something that I have often misunderstood I may still not  to make world less blue? understand…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/114-1-thumb.jpg" alt="Art is something that I have often…" loading="lazy">
               <p class="poem-card__title">Art is something that I have often…</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/114-1.jpg" alt="Art is something that I have often… — the page" loading="lazy">
               <div class="poem-lightbox__poem">What does it do
                 Art is something that I have often misunderstood
 I may still not  to make world less blue?
@@ -8025,15 +7671,13 @@ What is your center?
                       (X) Process Base</div>
             </div>
           </details>
-          <details class="poem-card poem-card--text" data-poem="115">
+          <details class="poem-card poem-card--img" data-poem="115">
             <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"It is the fire in their eyes the staring hard, but not seeing. It can be a hunter or a hunted. Hunger    &lt;- To some it…"</span>
-                <em>From the notebooks</em>
-              </div>
+              <img class="poem-card__img" src="/poems/web/115-1-thumb.jpg" alt="It is the fire in their eyes" loading="lazy">
               <p class="poem-card__title">It is the fire in their eyes</p>
             </summary>
-            <div class="poem-body">
+            <div class="poem-body poem-body--img">
+              <img src="/poems/web/115-1.jpg" alt="It is the fire in their eyes — the page" loading="lazy">
               <div class="poem-lightbox__poem">It is the fire in their eyes
 the staring hard, but not seeing.
 It can be a hunter or a hunted.
@@ -8063,37 +7707,6 @@ destroys lives, destroys planets and yet
 
 Yet survival requires it. To break even is not enough
 Enough? No. Never enough. Always more.</div>
-            </div>
-          </details>
-          <details class="poem-card poem-card--text" data-poem="116">
-            <summary class="poem-card__summary">
-              <div class="poem-card__cover">
-                <span>"Holidays, Homecomings, Heat &amp; Cold Traditions kept from days of old Families, Fondue, Friendly greetings Memories and…"</span>
-                <em>From the notebooks</em>
-              </div>
-              <p class="poem-card__title">Holidays, Homecomings, Heat &amp; Cold</p>
-            </summary>
-            <div class="poem-body">
-              <div class="poem-lightbox__poem">Holidays, Homecomings, Heat &amp; Cold
-Traditions kept from days of old
-
-Families, Fondue, Friendly greetings
-Memories and moments creating feelings fleeting
-
-Gifts, garlands, green &amp; red
-Long, full cozy days that end in comfy beds
-
-Beautiful, Peace, Love &amp; Light
-But I would be remiss if I don't take a moment
-to remember my past.
-
-Workdays, Wellness, Well worn solitude
-Focused on a life that eludes
-
-Focus, Fighting, Fierce Hunger
-Every second knowing I don't get younger
-
-Time,</div>
             </div>
           </details>
           <details class="poem-card poem-card--text" data-poem="118">

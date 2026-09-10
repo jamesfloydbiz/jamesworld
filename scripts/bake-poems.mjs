@@ -9,12 +9,13 @@
 // Output goes between the markers inside <div class="poems-grid">, after the
 // 28 hand-written cards. Those are curated — never touch them.
 
-import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { readdirSync, readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const SRC = join(ROOT, 'content', 'poems');
+const SCANS = join(ROOT, 'public', 'poems', 'web');
 const PAGE = join(ROOT, 'site', 'writing', 'index.html');
 const BEGIN = '<!-- BEGIN_POEM_ARCHIVE -->';
 const END = '<!-- END_POEM_ARCHIVE -->';
@@ -93,7 +94,32 @@ for (const file of files) {
   if (text.split(/\s+/).length < 8) continue;    // a fragment, not a poem
   const title = shorten(meta.title, 46);
   const label = meta.date || dated || 'From the notebooks';
-  cards.push(
+
+  // Pages of the scan, if scripts/prepare-poem-scans.mjs has made them.
+  const pages = [];
+  for (let i = 1; i <= 9; i++) {
+    if (existsSync(join(SCANS, `${meta.num}-${i}.jpg`))) pages.push(i);
+  }
+
+  if (pages.length) {
+    // The handwritten page is the poem; the typed text sits underneath it so
+    // it can be read on a phone, searched, and indexed.
+    const full = pages.map((i) =>
+`              <img src="/poems/web/${meta.num}-${i}.jpg" alt="${esc(title)} — the page${pages.length > 1 ? `, ${i} of ${pages.length}` : ''}" loading="lazy">`
+    ).join('\n');
+    cards.push(
+`          <details class="poem-card poem-card--img" data-poem="${meta.num}">
+            <summary class="poem-card__summary">
+              <img class="poem-card__img" src="/poems/web/${meta.num}-1-thumb.jpg" alt="${esc(title)}" loading="lazy">
+              <p class="poem-card__title">${esc(title)}</p>
+            </summary>
+            <div class="poem-body poem-body--img">
+${full}
+              <div class="poem-lightbox__poem">${esc(dated ? dated + '\n\n' + text : text)}</div>
+            </div>
+          </details>`);
+  } else {
+    cards.push(
 `          <details class="poem-card poem-card--text" data-poem="${meta.num}">
             <summary class="poem-card__summary">
               <div class="poem-card__cover">
@@ -106,6 +132,7 @@ for (const file of files) {
               <div class="poem-lightbox__poem">${esc(text)}</div>
             </div>
           </details>`);
+  }
 }
 
 const html = readFileSync(PAGE, 'utf8');
