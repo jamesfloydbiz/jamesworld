@@ -9,11 +9,11 @@
   <meta property="og:type" content="article">
   <meta property="og:title" content="Games Night">
   <meta property="og:description" content="Some goofy games with some funky friends. Jackbox, board games, you already know.">
-  <meta property="og:image" content="https://jamesfloyds.world/events/games-night/jackbox.jpg">
+  <meta property="og:image" content="https://jamesfloyds.world/events/games-night/cover.svg">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Games Night">
   <meta name="twitter:description" content="Some goofy games with some funky friends. Jackbox, board games, you already know.">
-  <meta name="twitter:image" content="https://jamesfloyds.world/events/games-night/jackbox.jpg">
+  <meta name="twitter:image" content="https://jamesfloyds.world/events/games-night/cover.svg">
   <link rel="icon" href="/favicon.ico" sizes="any">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -21,31 +21,29 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lora:ital,wght@0,400;0,500;1,400&family=DM+Mono:wght@300;400&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap">
 
   <style>
-    /* Lifted off the two photographs: the black painted brick of the basement,
-       the warm tungsten of the festoon lights running the walls, the burgundy
-       of the rug, and the blue the television throws across the room.
-       /events/rooftop-function/ wears the blue hour and /events/pithy-party/ a
-       tan paper invite — each event page takes its colours from its own room. */
+    /* Card-table green under a low lamp, with the cream of a dice face and the
+       orange of the one that landed on three. /events/rooftop-function/ wears
+       the blue hour and /events/pithy-party/ a tan paper invite — each event
+       page takes its colours from the room it happened in. */
     :root {
-      --gn-brick: #141210;
-      --gn-deep:  #1e1a16;
-      --gn-ink:   #f2ebdf;
-      --gn-amber: #e8b06a;
-      --gn-rug:   #a3413a;
-      --gn-glow:  #5b9ec9;
-      --gn-soft:  rgba(242, 235, 223, 0.58);
-      --gn-faint: rgba(242, 235, 223, 0.14);
+      --gn-felt:  #0d241c;
+      --gn-deep:  #122e24;
+      --gn-ink:   #f3efe8;
+      --gn-amber: #e8a13f;
+      --gn-clay:  #e8663f;
+      --gn-soft:  rgba(243, 239, 232, 0.58);
+      --gn-faint: rgba(243, 239, 232, 0.14);
     }
     * { box-sizing: border-box; }
     html, body {
       margin: 0;
-      background: var(--gn-brick);
+      background: var(--gn-felt);
       color: var(--gn-ink);
       font-family: 'EB Garamond', Georgia, serif;
       -webkit-font-smoothing: antialiased;
     }
     body {
-      background-image: radial-gradient(120% 70% at 50% 0%, var(--gn-deep) 0%, var(--gn-brick) 62%);
+      background-image: radial-gradient(120% 70% at 50% 0%, var(--gn-deep) 0%, var(--gn-felt) 62%);
       background-repeat: no-repeat;
     }
     img { max-width: 100%; display: block; }
@@ -89,10 +87,8 @@
       border: 1px solid var(--gn-faint);
       margin: 3rem 0;
     }
-    /* Four facts, so two columns square off evenly; a third would leave a hole. */
-    @media (min-width: 620px) { .gn-facts { grid-template-columns: repeat(4, 1fr); } }
-    @media (min-width: 620px) and (max-width: 860px) { .gn-facts { grid-template-columns: repeat(2, 1fr); } }
-    .gn-facts > div { background: var(--gn-brick); padding: 1.1rem 1.2rem; }
+    @media (min-width: 620px) { .gn-facts { grid-template-columns: repeat(3, 1fr); } }
+    .gn-facts > div { background: var(--gn-felt); padding: 1.1rem 1.2rem; }
     .gn-facts__k {
       display: block;
       font-family: 'DM Mono', ui-monospace, monospace;
@@ -106,44 +102,17 @@
       color: rgba(243, 239, 232, 0.88);
     }
 
-    .gn-photos { margin: 3.2rem 0 0; }
-    .gn-photo {
-      display: block; width: 100%; padding: 0; margin: 0 0 1rem;
-      border: 1px solid var(--gn-faint); background: none; cursor: zoom-in;
-    }
-    .gn-photo img { width: 100%; height: auto; }
-
-    .img-lightbox {
-      border: none; padding: 0; background: transparent;
-      max-width: min(1100px, 96vw); max-height: 92vh;
-    }
-    .img-lightbox::backdrop { background: rgba(0, 0, 0, 0.88); }
-    .img-lightbox img { width: 100%; height: auto; cursor: zoom-out; }
-
-    .gn-invite {
-      display: flex; align-items: center; gap: 1.2rem;
+    .gn-invite-link {
       margin: 3rem 0 0;
       padding-left: 1.2rem;
-      border-left: 2px solid var(--gn-rug);
+      border-left: 2px solid var(--gn-clay);
     }
-    /* Jackbox's own artwork, which is what the invite went out with. Kept
-       small and clearly labelled as the invite rather than used as the page's
-       own image. */
-    .gn-invite__art {
-      width: 92px; height: 92px; flex: none;
-      border: 1px solid var(--gn-faint);
-    }
-    .gn-invite__k {
-      font-family: 'DM Mono', ui-monospace, monospace;
-      font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase;
-      color: var(--gn-soft); margin: 0 0 0.5rem;
-    }
-    .gn-invite a {
+    .gn-invite-link a {
       font-family: 'DM Mono', ui-monospace, monospace;
       font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase;
       color: var(--gn-amber); text-decoration: none;
     }
-    .gn-invite a:hover { text-decoration: underline; text-underline-offset: 4px; }
+    .gn-invite-link a:hover { text-decoration: underline; text-underline-offset: 4px; }
   </style>
 </head>
 <body>
@@ -155,9 +124,9 @@
 
     <section class="gn-hero">
       <figure class="gn-hero__img">
-        <img src="/events/games-night/jackbox.jpg" alt="The basement lounge mid-game — everyone sprawled across the couches with their phones out, the Jackbox prompt up on the television against the black brick wall">
+        <img src="/events/games-night/cover.svg" alt="Games Night — two dice thrown across a card table under a low lamp">
       </figure>
-      <p class="gn-eyebrow">September 8, 2026 · Brooklyn</p>
+      <p class="gn-eyebrow">September 8, 2026 · NYC</p>
       <h1 class="gn-title">Games Night</h1>
       <p class="gn-lede">Some goofy games with some funky friends. Jackbox, board games, you already know.</p>
     </section>
@@ -166,10 +135,6 @@
       <div>
         <span class="gn-facts__k">When</span>
         <span class="gn-facts__v">Tue · Sep 8, 2026 · 6:30 PM</span>
-      </div>
-      <div>
-        <span class="gn-facts__k">Where</span>
-        <span class="gn-facts__v">Brooklyn, NY</span>
       </div>
       <div>
         <span class="gn-facts__k">Games</span>
@@ -181,40 +146,11 @@
       </div>
     </div>
 
-    <div class="gn-photos">
-      <button class="gn-photo" data-lightbox="/events/games-night/lounge.jpg">
-        <img src="/events/games-night/lounge.jpg" alt="The wider room — stone wall and festoon lights, the burgundy rug, a keyboard in the foreground and the game still going on the screen" loading="lazy">
-      </button>
-    </div>
-
-    <div class="gn-invite">
-      <img class="gn-invite__art" src="/events/games-night/invite.jpg"
-           alt="The invite art — the Jackbox Games logo, a kid pulling a face out of a cardboard box">
-      <div class="gn-invite__text">
-        <p class="gn-invite__k">The invite</p>
-        <a href="https://partiful.com/e/XLsaXvUtcYLXhpB0pR8X" target="_blank" rel="noopener">See it on Partiful →</a>
-      </div>
-    </div>
+    <p class="gn-invite-link">
+      <a href="https://partiful.com/e/XLsaXvUtcYLXhpB0pR8X" target="_blank" rel="noopener">See the invite →</a>
+    </p>
 
   </div>
 
-  <dialog class="img-lightbox" id="img-lightbox">
-    <img id="lightbox-img" src="" alt="" onclick="document.getElementById('img-lightbox').close()">
-  </dialog>
-
-  <script>
-    var lightbox = document.getElementById('img-lightbox');
-    var lightboxImg = document.getElementById('lightbox-img');
-    document.querySelectorAll('[data-lightbox]').forEach(function(btn){
-      btn.addEventListener('click', function(){
-        lightboxImg.src = btn.getAttribute('data-lightbox');
-        lightboxImg.alt = btn.querySelector('img')?.alt || '';
-        lightbox.showModal();
-      });
-    });
-    lightbox.addEventListener('click', function(e){
-      if (e.target === lightbox) lightbox.close();
-    });
-  </script>
 </body>
 </html>
