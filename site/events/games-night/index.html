@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Games Night — James Floyd</title>
+  <meta name="description" content="Games Night — some goofy games with some funky friends. Jackbox, board games, you already know. Tuesday, September 8, 2026, 6:30 PM.">
+  <link rel="canonical" href="https://jamesfloyds.world/events/games-night/">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Games Night">
+  <meta property="og:description" content="Some goofy games with some funky friends. Jackbox, board games, you already know.">
+  <meta property="og:image" content="https://jamesfloyds.world/events/games-night/jackbox.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Games Night">
+  <meta name="twitter:description" content="Some goofy games with some funky friends. Jackbox, board games, you already know.">
+  <meta name="twitter:image" content="https://jamesfloyds.world/events/games-night/jackbox.jpg">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lora:ital,wght@0,400;0,500;1,400&family=DM+Mono:wght@300;400&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap">
+
+  <style>
+    /* Lifted off the two photographs: the black painted brick of the basement,
+       the warm tungsten of the festoon lights running the walls, the burgundy
+       of the rug, and the blue the television throws across the room.
+       /events/rooftop-function/ wears the blue hour and /events/pithy-party/ a
+       tan paper invite — each event page takes its colours from its own room. */
+    :root {
+      --gn-brick: #141210;
+      --gn-deep:  #1e1a16;
+      --gn-ink:   #f2ebdf;
+      --gn-amber: #e8b06a;
+      --gn-rug:   #a3413a;
+      --gn-glow:  #5b9ec9;
+      --gn-soft:  rgba(242, 235, 223, 0.58);
+      --gn-faint: rgba(242, 235, 223, 0.14);
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      background: var(--gn-brick);
+      color: var(--gn-ink);
+      font-family: 'EB Garamond', Georgia, serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    body {
+      background-image: radial-gradient(120% 70% at 50% 0%, var(--gn-deep) 0%, var(--gn-brick) 62%);
+      background-repeat: no-repeat;
+    }
+    img { max-width: 100%; display: block; }
+
+    .gn-logo { position: fixed; top: 18px; left: 18px; z-index: 5; opacity: 0.8; }
+    .gn-logo img { width: 26px; height: 26px; }
+    .gn-logo:hover { opacity: 1; }
+    .gn-back {
+      position: fixed; top: 22px; right: 22px; z-index: 5;
+      font-family: 'DM Mono', ui-monospace, monospace;
+      font-size: 0.7rem; letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--gn-soft); text-decoration: none;
+    }
+    .gn-back:hover { color: var(--gn-ink); }
+
+    .gn-wrap { max-width: 46rem; margin: 0 auto; padding: 6rem 1.5rem 6rem; }
+
+    .gn-hero__img {
+      margin: 0 0 2.5rem;
+      border: 1px solid var(--gn-faint);
+      overflow: hidden;
+    }
+    .gn-eyebrow {
+      font-family: 'DM Mono', ui-monospace, monospace;
+      font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--gn-amber); margin: 0 0 0.9rem;
+    }
+    .gn-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(2.4rem, 8vw, 4rem); font-weight: 400;
+      line-height: 1.05; margin: 0 0 1rem;
+    }
+    .gn-lede {
+      font-family: 'Lora', Georgia, serif; font-style: italic;
+      font-size: 1.15rem; line-height: 1.6; color: var(--gn-soft); margin: 0;
+    }
+
+    .gn-facts {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px;
+      background: var(--gn-faint);
+      border: 1px solid var(--gn-faint);
+      margin: 3rem 0;
+    }
+    @media (min-width: 620px) { .gn-facts { grid-template-columns: repeat(3, 1fr); } }
+    .gn-facts > div { background: var(--gn-brick); padding: 1.1rem 1.2rem; }
+    .gn-facts__k {
+      display: block;
+      font-family: 'DM Mono', ui-monospace, monospace;
+      font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--gn-soft); margin-bottom: 0.45rem;
+    }
+    .gn-facts__v { display: block; font-size: 1rem; line-height: 1.4; }
+
+    .gn-body p {
+      font-size: 1.12rem; line-height: 1.75; margin: 0 0 1.3rem;
+      color: rgba(243, 239, 232, 0.88);
+    }
+
+    .gn-photos { margin: 3.2rem 0 0; }
+    .gn-photo {
+      display: block; width: 100%; padding: 0; margin: 0 0 1rem;
+      border: 1px solid var(--gn-faint); background: none; cursor: zoom-in;
+    }
+    .gn-photo img { width: 100%; height: auto; }
+
+    .img-lightbox {
+      border: none; padding: 0; background: transparent;
+      max-width: min(1100px, 96vw); max-height: 92vh;
+    }
+    .img-lightbox::backdrop { background: rgba(0, 0, 0, 0.88); }
+    .img-lightbox img { width: 100%; height: auto; cursor: zoom-out; }
+
+    .gn-invite-link {
+      margin: 3rem 0 0;
+      padding-left: 1.2rem;
+      border-left: 2px solid var(--gn-rug);
+    }
+    .gn-invite-link a {
+      font-family: 'DM Mono', ui-monospace, monospace;
+      font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--gn-amber); text-decoration: none;
+    }
+    .gn-invite-link a:hover { text-decoration: underline; text-underline-offset: 4px; }
+  </style>
+</head>
+<body>
+
+  <a href="/" class="gn-logo" aria-label="Return to home"><img src="/logo.svg" alt="JF"></a>
+  <a href="/events/" class="gn-back">← Events</a>
+
+  <div class="gn-wrap">
+
+    <section class="gn-hero">
+      <figure class="gn-hero__img">
+        <img src="/events/games-night/jackbox.jpg" alt="The basement lounge mid-game — everyone sprawled across the couches with their phones out, the Jackbox prompt up on the television against the black brick wall">
+      </figure>
+      <p class="gn-eyebrow">September 8, 2026 · NYC</p>
+      <h1 class="gn-title">Games Night</h1>
+      <p class="gn-lede">Some goofy games with some funky friends. Jackbox, board games, you already know.</p>
+    </section>
+
+    <div class="gn-facts">
+      <div>
+        <span class="gn-facts__k">When</span>
+        <span class="gn-facts__v">Tue · Sep 8, 2026 · 6:30 PM</span>
+      </div>
+      <div>
+        <span class="gn-facts__k">Games</span>
+        <span class="gn-facts__v">Jackbox &amp; board games</span>
+      </div>
+      <div>
+        <span class="gn-facts__k">On the list</span>
+        <span class="gn-facts__v">10, plus 3 maybes</span>
+      </div>
+    </div>
+
+    <div class="gn-photos">
+      <button class="gn-photo" data-lightbox="/events/games-night/lounge.jpg">
+        <img src="/events/games-night/lounge.jpg" alt="The wider room — stone wall and festoon lights, the burgundy rug, a keyboard in the foreground and the game still going on the screen" loading="lazy">
+      </button>
+    </div>
+
+    <p class="gn-invite-link">
+      <a href="https://partiful.com/e/XLsaXvUtcYLXhpB0pR8X" target="_blank" rel="noopener">See the invite →</a>
+    </p>
+
+  </div>
+
+  <dialog class="img-lightbox" id="img-lightbox">
+    <img id="lightbox-img" src="" alt="" onclick="document.getElementById('img-lightbox').close()">
+  </dialog>
+
+  <script>
+    var lightbox = document.getElementById('img-lightbox');
+    var lightboxImg = document.getElementById('lightbox-img');
+    document.querySelectorAll('[data-lightbox]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        lightboxImg.src = btn.getAttribute('data-lightbox');
+        lightboxImg.alt = btn.querySelector('img')?.alt || '';
+        lightbox.showModal();
+      });
+    });
+    lightbox.addEventListener('click', function(e){
+      if (e.target === lightbox) lightbox.close();
+    });
+  </script>
+</body>
+</html>
