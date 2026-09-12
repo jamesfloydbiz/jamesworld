@@ -237,17 +237,94 @@
       pitch — it is the same one, one floor up. I made all of this before anyone asked me
       to. It lives at <a href="/alpha/" target="_blank" rel="noopener">jamesfloyds.world/alpha</a>,
       with the video that goes with it.</p>
-    <div class="cards" id="proofCards"></div>
+    <div class="cards" id="proofCards">
+      <a class="card" href="/builds/climbing-machine/" target="_blank" rel="noopener">
+        <span class="k">Picture book</span>
+        <h4>The Climbing Machine</h4>
+        <p>Written, illustrated and made print-ready — forty pages, now at the printer. A kid takes on a mountain, and a guide believes he can.</p>
+      </a>
+      <a class="card" href="/builds/ccat-trainer/" target="_blank" rel="noopener">
+        <span class="k">Trainer</span>
+        <h4>CCAT Trainer</h4>
+        <p>1,000 questions, adaptive practice, spaced repetition, and a worked line on every answer. Built because Alpha screens with the CCAT.</p>
+      </a>
+      <a class="card" href="/alpha/workshop/" target="_blank" rel="noopener">
+        <span class="k">Workshop</span>
+        <h4>Cut and Donate 13" of My Hair</h4>
+        <p>A life skills workshop written for Alpha. Two years of hair, cut by the kids and mailed to a kid who lost theirs.</p>
+      </a>
+      <a class="card" href="/alpha/" target="_blank" rel="noopener">
+        <span class="k">The pitch</span>
+        <h4>jamesfloyds.world/alpha</h4>
+        <p>All of it in one page, with the video, exactly as Alpha received it.</p>
+      </a>
+    </div>
   </section>
 
   <section id="writing">
     <div class="secthead"><h2>Writing</h2><div class="line"></div></div>
-    <div class="cards small" id="writingCards"></div>
+    <div class="cards small" id="writingCards">
+      <a class="card sm" href="/writing/rabbit-holes/state-of-american-schooling/" target="_blank" rel="noopener">
+        <h4>The State of American Schooling</h4>
+        <p>60 million kids, a trillion dollars a year, and what the numbers actually say.</p>
+      </a>
+      <a class="card sm" href="/writing/rabbit-holes/learning-science/" target="_blank" rel="noopener">
+        <h4>Is Learning 2x in 2 Hours Possible?</h4>
+        <p>Eight science-backed techniques, one bundle, and one theory — with the evidence, and what each looked like in my own life.</p>
+      </a>
+      <a class="card sm" href="/writing/rabbit-holes/montessori-findings/" target="_blank" rel="noopener">
+        <h4>The Findings of Maria Montessori</h4>
+        <p>Fifty years of watching children, and what she concluded from it.</p>
+      </a>
+      <a class="card sm" href="/writing/rabbit-holes/maria-montessori/" target="_blank" rel="noopener">
+        <h4>The Story of Maria Montessori</h4>
+        <p>One of the first Italian women to be a doctor, education pioneer, defied Mussolini.</p>
+      </a>
+      <a class="card sm" href="/writing/rabbit-holes/coaching-and-motivation/" target="_blank" rel="noopener">
+        <h4>How to be the Pied Piper</h4>
+        <p>A summary of ways to motivate kids.</p>
+      </a>
+      <a class="card sm" href="/writing/rabbit-holes/history-of-education/" target="_blank" rel="noopener">
+        <h4>A History of Education</h4>
+        <p>From play and imitation to Prussian classrooms — how schooling came to be.</p>
+      </a>
+    </div>
   </section>
 
   <section id="references">
     <div class="secthead"><h2>What people said</h2><div class="line"></div></div>
-    <div class="refs" id="refs"></div>
+    <div class="refs" id="refs">
+      <div class="ref">
+        <q>Because you understand how the current education model fails — you, a college dropout — and because of your innate and earned talent and intelligence, I can think of nobody better to work on something as transformative as Alpha School.</q>
+        <div class="who">Carlie Ostrom</div>
+        <div class="role">Founder of Possibilities</div>
+      </div>
+      <div class="ref">
+        <q>James surprised me from the first time I met him. He was volunteering at one of Andrew’s events at SXSW and he truly stood out from the crowd with his hard work. A couple weeks ago we took a walk in Central Park and we spent most of it talking about education. James told me how much he loves being with kids and how educating them can change the world. I was again mindblown. You can’t fake that kind of passion.</q>
+        <div class="who">Vitoria Okuyama</div>
+        <div class="role">Ex pro tennis player · Ex IB, Citi</div>
+      </div>
+      <div class="ref">
+        <q>This is so so sick. Public pitch FTW!! And side note: can vouch. James is as high agency and intelligent as it gets.</q>
+        <div class="who">Jay Yang</div>
+        <div class="role">Amazon bestselling author · Entrepreneur · Investor</div>
+      </div>
+      <div class="ref">
+        <q>Nat Eliason worth meeting James!</q>
+        <div class="who">Andrew Yeung</div>
+        <div class="role">Hosting the Outliers Summit · x-Google, Meta</div>
+      </div>
+      <div class="ref">
+        <q>Holy moly dude this is incredible. This is a work of art regardless of outcome. Amazing pitch, and what a perfect merging of worlds this would be.</q>
+        <div class="who">Mason Johnston</div>
+        <div class="role">What does business look like with real human connection?</div>
+      </div>
+      <div class="ref">
+        <q>Couldn’t imagine a better fit. James you have the vision!</q>
+        <div class="who">Jarom Christensen</div>
+        <div class="role">Founder &amp; CEO, Carbon AI</div>
+      </div>
+    </div>
     <p class="refnote">Public comments on that Alpha pitch —
       <a href="https://www.linkedin.com/feed/update/urn:li:activity:7495872285791301632/" target="_blank" rel="noopener">read the thread</a>.
       Forty-three more at <a href="/references/">jamesfloyds.world/references</a>.</p>
@@ -283,84 +360,22 @@
    ══════════════════════════════════════════════════════════════════════ */
 const YT_ID = 'w1wBzhHOLHo';
 
-const PROOF = [
-  { k:'Picture book', t:'The Climbing Machine',
-    d:'Written, illustrated and made print-ready — forty pages, now at the printer. A kid takes on a mountain, and a guide believes he can.',
-    href:'/builds/climbing-machine/' },
-  { k:'Trainer', t:'CCAT Trainer',
-    d:'1,000 questions, adaptive practice, spaced repetition, and a worked line on every answer. Built because Alpha screens with the CCAT.',
-    href:'/builds/ccat-trainer/' },
-  { k:'Workshop', t:'Cut and Donate 13" of My Hair',
-    d:'A life skills workshop written for Alpha. Two years of hair, cut by the kids and mailed to a kid who lost theirs.',
-    href:'/alpha/workshop/' },
-  { k:'The pitch', t:'jamesfloyds.world/alpha',
-    d:'All of it in one page, with the video, exactly as Alpha received it.',
-    href:'/alpha/' },
-];
 
 /* The writing sits in its own section, on lighter cards — title and subtitle
    only. The subtitles are the essays' own, copied from
    scripts/bake-rabbit-holes.mjs, so a card and the piece it opens can never
    describe themselves differently. */
-const WRITING = [
-  { t:'The State of American Schooling',
-    d:'60 million kids, a trillion dollars a year, and what the numbers actually say.',
-    href:'/writing/rabbit-holes/state-of-american-schooling/' },
-  { t:'Is Learning 2x in 2 Hours Possible?',
-    d:'Eight science-backed techniques, one bundle, and one theory — with the evidence, and what each looked like in my own life.',
-    href:'/writing/rabbit-holes/learning-science/' },
-  { t:'The Findings of Maria Montessori',
-    d:'Fifty years of watching children, and what she concluded from it.',
-    href:'/writing/rabbit-holes/montessori-findings/' },
-  { t:'The Story of Maria Montessori',
-    d:'One of the first Italian women to be a doctor, education pioneer, defied Mussolini.',
-    href:'/writing/rabbit-holes/maria-montessori/' },
-  { t:'How to be the Pied Piper',
-    d:'A summary of ways to motivate kids.',
-    href:'/writing/rabbit-holes/coaching-and-motivation/' },
-  { t:'A History of Education',
-    d:'From play and imitation to Prussian classrooms — how schooling came to be.',
-    href:'/writing/rabbit-holes/history-of-education/' },
-];
+
 
 /* Comments on the public pitch post. The ones that argue, not the ones that
    cheer — the cheering ones are all on /references. */
-const REFS = [
-  { q:'Because you understand how the current education model fails — you, a college dropout — and because of your innate and earned talent and intelligence, I can think of nobody better to work on something as transformative as Alpha School.',
-    who:'Carlie Ostrom', role:'Founder of Possibilities' },
-  { q:'James surprised me from the first time I met him. He was volunteering at one of Andrew’s events at SXSW and he truly stood out from the crowd with his hard work. A couple weeks ago we took a walk in Central Park and we spent most of it talking about education. James told me how much he loves being with kids and how educating them can change the world. I was again mindblown. You can’t fake that kind of passion.',
-    who:'Vitoria Okuyama', role:'Ex pro tennis player · Ex IB, Citi' },
-  { q:'This is so so sick. Public pitch FTW!! And side note: can vouch. James is as high agency and intelligent as it gets.',
-    who:'Jay Yang', role:'Amazon bestselling author · Entrepreneur · Investor' },
-  { q: 'Nat Eliason worth meeting James!',
-    who:'Andrew Yeung', role:'Hosting the Outliers Summit · x-Google, Meta' },
-  { q:'Holy moly dude this is incredible. This is a work of art regardless of outcome. Amazing pitch, and what a perfect merging of worlds this would be.',
-    who:'Mason Johnston', role:'What does business look like with real human connection?' },
-  { q:'Couldn’t imagine a better fit. James you have the vision!',
-    who:'Jarom Christensen', role:'Founder & CEO, Carbon AI' },
-];
 
-const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 
-document.getElementById('proofCards').innerHTML = PROOF.map(p =>
-  '<a class="card" href="' + p.href + '" target="_blank" rel="noopener">' +
-    '<span class="k">' + esc(p.k) + '</span>' +
-    '<h4>' + esc(p.t) + '</h4>' +
-    '<p>' + esc(p.d) + '</p>' +
-  '</a>').join('');
-
-document.getElementById('writingCards').innerHTML = WRITING.map(p =>
-  '<a class="card sm" href="' + p.href + '" target="_blank" rel="noopener">' +
-    '<h4>' + esc(p.t) + '</h4>' +
-    '<p>' + esc(p.d) + '</p>' +
-  '</a>').join('');
-
-document.getElementById('refs').innerHTML = REFS.map(r =>
-  '<div class="ref">' +
-    '<q>' + esc(r.q) + '</q>' +
-    '<div class="who">' + esc(r.who) + '</div>' +
-    '<div class="role">' + esc(r.role) + '</div>' +
-  '</div>').join('');
+/* The proof cards, the writing and the references live in the HTML above
+   rather than being built here. Anything that reads the page without running
+   JavaScript — a crawler, a link preview, an assistant someone pastes the URL
+   into — was getting three empty headings where the pitch should be. To
+   change one, edit the markup. */
 
 /* Assembled at runtime so the plain address is not sitting in the markup for
    anything that scrapes raw HTML. */

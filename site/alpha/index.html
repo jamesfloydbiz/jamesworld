@@ -140,6 +140,13 @@
   .railnote{margin:12px 0 0; font-size:12.5px; color:var(--faint); text-align:center;}
   .railnote b{color:var(--alpha-cyan); font-weight:600;}
 
+  /* The page opens on the video, so there is nowhere to put a heading
+     without changing what it looks like. This one is for machines: a reader
+     that does not run JavaScript, or paint pixels at all, otherwise finds a
+     page with no stated subject above "What I built". */
+  .vh{position:absolute; width:1px; height:1px; margin:-1px; padding:0;
+    overflow:hidden; clip:rect(0 0 0 0); clip-path:inset(50%); white-space:nowrap; border:0;}
+
   /* ── projects ───────────────────────────────────────────────────── */
   section{padding:64px 0;}
   .secthead{display:flex; align-items:baseline; gap:14px; margin-bottom:26px;}
@@ -312,6 +319,7 @@
 <div class="wrap">
 
   <header>
+    <h1 class="vh">James Floyd — for Alpha School</h1>
     <div class="stage">
       <div class="frame">
         <div class="slot">
@@ -333,7 +341,47 @@
 
   <section id="projects">
     <div class="secthead"><h2>What I built</h2><div class="line"></div></div>
-    <div class="cards" id="cards"></div>
+    <div class="cards" id="cards">
+      <article class="proj locked" data-i="0" data-at="77">
+        <div class="proj-body">
+          <div class="proj-n">01</div>
+          <h3>The Climbing Machine</h3>
+          <p>A picture book about a kid who takes on a mountain in a life skills workshop, and the guide who believes he can. Written, illustrated and made print-ready — 40 pages, at the printer.</p>
+          <a class="go" href="/builds/climbing-machine/" target="_blank" rel="noopener">Read it <span>&rarr;</span></a>
+        </div>
+        <div class="lockbadge">
+          <div class="at">Unlocks at</div>
+          <div class="t">1:17</div>
+          <div class="mini"><i></i></div>
+        </div>
+      </article>
+      <article class="proj locked" data-i="1" data-at="90">
+        <div class="proj-body">
+          <div class="proj-n">02</div>
+          <h3>CCAT Trainer</h3>
+          <p>You screen with the CCAT. So I built the trainer for it — 1,000 questions, adaptive practice, spaced repetition, and a teaching line on every single answer explaining how to get there.</p>
+          <a class="go" href="/builds/ccat-trainer/" target="_blank" rel="noopener">Try it <span>&rarr;</span></a>
+        </div>
+        <div class="lockbadge">
+          <div class="at">Unlocks at</div>
+          <div class="t">1:30</div>
+          <div class="mini"><i></i></div>
+        </div>
+      </article>
+      <article class="proj locked" data-i="2" data-at="103">
+        <div class="proj-body">
+          <div class="proj-n">03</div>
+          <h3>Cut and Donate 13" of My Hair</h3>
+          <p>A life skills workshop, written for you. Two years of hair, cut by your kids and mailed to a kid who lost theirs — because being trusted with something that matters is the lesson.</p>
+          <a class="go" href="/alpha/workshop/" target="_blank" rel="noopener">Read the proposal <span>&rarr;</span></a>
+        </div>
+        <div class="lockbadge">
+          <div class="at">Unlocks at</div>
+          <div class="t">1:43</div>
+          <div class="mini"><i></i></div>
+        </div>
+      </article>
+    </div>
   </section>
 
   <section id="extracredit">
@@ -355,12 +403,107 @@
 
   <section id="extra">
     <div class="secthead"><h2>Writing</h2><div class="line"></div></div>
-    <div class="cards extras" id="extras"></div>
+    <div class="cards extras" id="extras">
+      <a class="wcard" href="/writing/rabbit-holes/state-of-american-schooling/" target="_blank" rel="noopener">
+        <h3>The State of American Schooling</h3>
+        <p>60 million kids, a trillion dollars a year, and what the numbers actually say.</p>
+      </a>
+      <a class="wcard" href="/writing/rabbit-holes/learning-science/" target="_blank" rel="noopener">
+        <h3>Is Learning 2x in 2 Hours Possible?</h3>
+        <p>Eight science-backed techniques, one bundle, and one theory — with the evidence, and what each looked like in my own life.</p>
+      </a>
+      <a class="wcard" href="/writing/rabbit-holes/montessori-findings/" target="_blank" rel="noopener">
+        <h3>The Findings of Maria Montessori</h3>
+        <p>Fifty years of watching children, and what she concluded from it.</p>
+      </a>
+      <a class="wcard" href="/writing/rabbit-holes/maria-montessori/" target="_blank" rel="noopener">
+        <h3>The Story of Maria Montessori</h3>
+        <p>One of the first Italian women to be a doctor, education pioneer, defied Mussolini.</p>
+      </a>
+      <a class="wcard" href="/writing/rabbit-holes/coaching-and-motivation/" target="_blank" rel="noopener">
+        <h3>How to be the Pied Piper</h3>
+        <p>A summary of ways to motivate kids.</p>
+      </a>
+      <a class="wcard" href="/writing/rabbit-holes/history-of-education/" target="_blank" rel="noopener">
+        <h3>A History of Education</h3>
+        <p>From play and imitation to Prussian classrooms — how schooling came to be.</p>
+      </a>
+    </div>
   </section>
 
   <section id="references">
     <div class="secthead"><h2>What people say</h2><div class="line"></div></div>
-    <div class="refs" id="refs"></div>
+    <div class="refs" id="refs">
+      <div class="ref">
+        <q>Because you understand how the current education model fails — you, a college dropout — and because of your innate and earned talent and intelligence, I can think of nobody better to work on something as transformative as Alpha School.</q>
+        <div class="who">Carlie Ostrom</div>
+        <div class="role">Founder of Possibilities · on my Alpha School pitch</div>
+        <a class="src" href="https://www.linkedin.com/feed/update/urn:li:activity:7495872285791301632/" target="_blank" rel="noopener">source &rarr;</a>
+      </div>
+      <div class="ref">
+        <q>James surprised me from the first time I met him. He was volunteering at one of Andrew's events at SXSW and he truly stood out from the crowd with his hard work. A couple weeks ago we took a walk in Central Park and we spent most of it talking about education. James told me how much he loves being with kids and how educating them can change the world. I was again mindblown. You can't fake that kind of passion.</q>
+        <div class="who">Vitoria Okuyama</div>
+        <div class="role">Ex pro tennis player · Ex IB, Citi · on my Alpha School pitch</div>
+        <a class="src" href="https://www.linkedin.com/feed/update/urn:li:activity:7495872285791301632/" target="_blank" rel="noopener">source &rarr;</a>
+      </div>
+      <div class="ref">
+        <q>This is so so sick. Public pitch FTW!! And side note: can vouch. James is as high agency and intelligent as it gets.</q>
+        <div class="who">Jay Yang</div>
+        <div class="role">Amazon bestselling author · Entrepreneur · Investor · on my Alpha School pitch</div>
+        <a class="src" href="https://www.linkedin.com/feed/update/urn:li:activity:7495872285791301632/" target="_blank" rel="noopener">source &rarr;</a>
+      </div>
+      <div class="ref">
+        <q>Couldn't imagine a better fit. James you have the vision!</q>
+        <div class="who">Jarom Christensen</div>
+        <div class="role">Founder &amp; CEO, Carbon AI · on my Alpha School pitch</div>
+        <a class="src" href="https://www.linkedin.com/feed/update/urn:li:activity:7495872285791301632/" target="_blank" rel="noopener">source &rarr;</a>
+      </div>
+      <div class="ref">
+        <q>Holy moly dude this is incredible. This is a work of art regardless of outcome. Amazing pitch, and what a perfect merging of worlds this would be.</q>
+        <div class="who">Mason Johnston</div>
+        <div class="role">What does business look like with real human connection? · on my Alpha School pitch</div>
+        <a class="src" href="https://www.linkedin.com/feed/update/urn:li:activity:7495872285791301632/" target="_blank" rel="noopener">source &rarr;</a>
+      </div>
+      <div class="ref">
+        <q>Nat Eliason worth meeting James!</q>
+        <div class="who">Andrew Yeung</div>
+        <div class="role">Hosting the Outliers Summit · x-Google, Meta · on my Alpha School pitch</div>
+        <a class="src" href="https://www.linkedin.com/feed/update/urn:li:activity:7495872285791301632/" target="_blank" rel="noopener">source &rarr;</a>
+      </div>
+      <div class="ref">
+        <q>So pumped for you man and it's so clear how much you put into this. Can't wait to see what happens.</q>
+        <div class="who">Indio Skinner</div>
+        <div class="role">Entrepreneur &amp; Speaker · on my Alpha School pitch</div>
+        <a class="src" href="https://www.linkedin.com/feed/update/urn:li:activity:7495872285791301632/" target="_blank" rel="noopener">source &rarr;</a>
+      </div>
+      <div class="ref">
+        <q>This is a great pitch.</q>
+        <div class="who">Dylan Bryan</div>
+        <div class="role">Building State @ Founders Inc. · prev. Head of Growth @ Casey · on my Alpha School pitch</div>
+        <a class="src" href="https://www.linkedin.com/feed/update/urn:li:activity:7495872285791301632/" target="_blank" rel="noopener">source &rarr;</a>
+      </div>
+      <div class="ref">
+        <q>Love it! I've been following them for a while now. They would be lucky to have a killer like you.</q>
+        <div class="who">Shire Thompson</div>
+        <div class="role">Founder, Discomfort Club · on my Alpha School post</div>
+        <a class="src" href="https://www.linkedin.com/feed/update/urn:li:activity:7493838598278914048/" target="_blank" rel="noopener">source &rarr;</a>
+      </div>
+      <div class="ref">
+        <q>I was like — this kid is different. This kid is special.</q>
+        <div class="who">Dom Rufran</div>
+        <div class="role">President, BetterWealth · Ex-NFL</div>
+      </div>
+      <div class="ref">
+        <q>The growth that you've had over the last year has been insane.</q>
+        <div class="who">Caleb Guilliams</div>
+        <div class="role">Founder, BetterWealth</div>
+      </div>
+      <div class="ref">
+        <q>You are like the master of third door. Like no one I've ever seen.</q>
+        <div class="who">Kate Kim</div>
+        <div class="role">Gates Foundation consultant · Sonder Ep. 49</div>
+      </div>
+    </div>
     <p class="refnote">Thirty-seven more, unedited and with sources, at <a href="/references/">jamesfloyds.world/references</a>.</p>
   </section>
 
@@ -393,135 +536,39 @@
 
 <script>
 /* ══════════════════════════════════════════════════════════════════════
-   EDIT HERE. `at` is seconds of video ACTUALLY WATCHED, not the position
-   of the playhead — dragging the scrubber forward does not open a card.
+   EDIT HERE — except the cards. The projects, the writing and the
+   references are written into the HTML above rather than generated down
+   here, because anything that reads the page without running JavaScript —
+   a crawler, a link preview, an assistant someone pastes the URL into —
+   used to get three empty headings where the work should be.
+
+   So: to change a card, edit the markup. `data-at` on a project is the
+   seconds of video ACTUALLY WATCHED before it opens, not the position of
+   the playhead — dragging the scrubber forward does not open a card.
    ══════════════════════════════════════════════════════════════════════ */
 const YT_ID = '9ipYNigFXbI';   // youtube.com/watch?v=9ipYNigFXbI
-
-const PROJECTS = [
-  { at: 77,
-    title: 'The Climbing Machine',
-    blurb: 'A picture book about a kid who takes on a mountain in a life skills workshop, and the guide who believes he can. Written, illustrated and made print-ready — 40 pages, at the printer.',
-    cta: 'Read it',
-    href: '/builds/climbing-machine/' },
-
-  { at: 90,
-    title: 'CCAT Trainer',
-    blurb: 'You screen with the CCAT. So I built the trainer for it — 1,000 questions, adaptive practice, spaced repetition, and a teaching line on every single answer explaining how to get there.',
-    cta: 'Try it',
-    href: '/builds/ccat-trainer/' },
-
-  { at: 103,
-    title: 'Cut and Donate 13\" of My Hair',
-    blurb: 'A life skills workshop, written for you. Two years of hair, cut by your kids and mailed to a kid who lost theirs — because being trusted with something that matters is the lesson.',
-    cta: 'Read the proposal',
-    href: '/alpha/workshop/' },
-];
 
 
 /* Not gated. These are reading, not reveals — anyone who lands here before the
    video finishes can still pick them up. Title and subtitle only, and the
    subtitles are the essays' own, copied from scripts/bake-rabbit-holes.mjs so
    the card and the piece it opens cannot describe themselves differently. */
-const EXTRAS = [
-  { title: 'The State of American Schooling',
-    sub: '60 million kids, a trillion dollars a year, and what the numbers actually say.',
-    href: '/writing/rabbit-holes/state-of-american-schooling/' },
-  { title: 'Is Learning 2x in 2 Hours Possible?',
-    sub: 'Eight science-backed techniques, one bundle, and one theory — with the evidence, and what each looked like in my own life.',
-    href: '/writing/rabbit-holes/learning-science/' },
-  { title: 'The Findings of Maria Montessori',
-    sub: 'Fifty years of watching children, and what she concluded from it.',
-    href: '/writing/rabbit-holes/montessori-findings/' },
-  { title: 'The Story of Maria Montessori',
-    sub: 'One of the first Italian women to be a doctor, education pioneer, defied Mussolini.',
-    href: '/writing/rabbit-holes/maria-montessori/' },
-  { title: 'How to be the Pied Piper',
-    sub: 'A summary of ways to motivate kids.',
-    href: '/writing/rabbit-holes/coaching-and-motivation/' },
-  { title: 'A History of Education',
-    sub: 'From play and imitation to Prussian classrooms — how schooling came to be.',
-    href: '/writing/rabbit-holes/history-of-education/' },
-];
 
-document.getElementById('extras').innerHTML = EXTRAS.map(x => `
-  <a class="wcard" href="${x.href}" target="_blank" rel="noopener">
-    <h3>${x.title}</h3>
-    <p>${x.sub}</p>
-  </a>`).join('');
-
-const REFS = [
-  // The public pitch post drew sixteen comments. These are the ones that
-  // argue a case rather than cheer, one per person, newest first.
-  { q:"Because you understand how the current education model fails — you, a college dropout — and because of your innate and earned talent and intelligence, I can think of nobody better to work on something as transformative as Alpha School.",
-    who:"Carlie Ostrom", role:"Founder of Possibilities · on my Alpha School pitch",
-    href:"https://www.linkedin.com/feed/update/urn:li:activity:7495872285791301632/" },
-  { q:"James surprised me from the first time I met him. He was volunteering at one of Andrew's events at SXSW and he truly stood out from the crowd with his hard work. A couple weeks ago we took a walk in Central Park and we spent most of it talking about education. James told me how much he loves being with kids and how educating them can change the world. I was again mindblown. You can't fake that kind of passion.",
-    who:"Vitoria Okuyama", role:"Ex pro tennis player · Ex IB, Citi · on my Alpha School pitch",
-    href:"https://www.linkedin.com/feed/update/urn:li:activity:7495872285791301632/" },
-  { q:"This is so so sick. Public pitch FTW!! And side note: can vouch. James is as high agency and intelligent as it gets.",
-    who:"Jay Yang", role:"Amazon bestselling author · Entrepreneur · Investor · on my Alpha School pitch",
-    href:"https://www.linkedin.com/feed/update/urn:li:activity:7495872285791301632/" },
-  { q:"Couldn't imagine a better fit. James you have the vision!",
-    who:"Jarom Christensen", role:"Founder & CEO, Carbon AI · on my Alpha School pitch",
-    href:"https://www.linkedin.com/feed/update/urn:li:activity:7495872285791301632/" },
-  { q:"Holy moly dude this is incredible. This is a work of art regardless of outcome. Amazing pitch, and what a perfect merging of worlds this would be.",
-    who:"Mason Johnston", role:"What does business look like with real human connection? · on my Alpha School pitch",
-    href:"https://www.linkedin.com/feed/update/urn:li:activity:7495872285791301632/" },
-  { q:"Nat Eliason worth meeting James!",
-    who:"Andrew Yeung", role:"Hosting the Outliers Summit · x-Google, Meta · on my Alpha School pitch",
-    href:"https://www.linkedin.com/feed/update/urn:li:activity:7495872285791301632/" },
-  { q:"So pumped for you man and it's so clear how much you put into this. Can't wait to see what happens.",
-    who:"Indio Skinner", role:"Entrepreneur & Speaker · on my Alpha School pitch",
-    href:"https://www.linkedin.com/feed/update/urn:li:activity:7495872285791301632/" },
-  { q:"This is a great pitch.",
-    who:"Dylan Bryan", role:"Building State @ Founders Inc. · prev. Head of Growth @ Casey · on my Alpha School pitch",
-    href:"https://www.linkedin.com/feed/update/urn:li:activity:7495872285791301632/" },
-  { q:"Love it! I've been following them for a while now. They would be lucky to have a killer like you.",
-    who:"Shire Thompson", role:"Founder, Discomfort Club · on my Alpha School post",
-    href:"https://www.linkedin.com/feed/update/urn:li:activity:7493838598278914048/" },
-  { q:"I was like — this kid is different. This kid is special.",
-    who:"Dom Rufran", role:"President, BetterWealth · Ex-NFL" },
-  { q:"The growth that you've had over the last year has been insane.",
-    who:"Caleb Guilliams", role:"Founder, BetterWealth" },
-  { q:"You are like the master of third door. Like no one I've ever seen.",
-    who:"Kate Kim", role:"Gates Foundation consultant · Sonder Ep. 49" },
-];
 
 /* ══════════════════════════════════════════════════════════════════════
    Below here is machinery.
    ══════════════════════════════════════════════════════════════════════ */
 const STORE = 'alpha-vsl-watched-v1';
 const fmt = s => Math.floor(s/60) + ':' + String(Math.floor(s%60)).padStart(2,'0');
+
+// The schedule comes off the markup: one entry per card, keyed by data-at.
+const cards = document.getElementById('cards');
+const PROJECTS = [...cards.querySelectorAll('.proj')].map((el) => ({ el, at: +el.dataset.at }));
 const goal = Math.max(...PROJECTS.map(p => p.at));
 
 let watched = Math.max(0, +localStorage.getItem(STORE) || 0);
 let lastT = 0;
 
-// ── render cards ──────────────────────────────────────────────────────
-const cards = document.getElementById('cards');
-cards.innerHTML = PROJECTS.map((p,i) => `
-  <article class="proj locked" data-i="${i}">
-    <div class="proj-body">
-      <div class="proj-n">0${i+1}</div>
-      <h3>${p.title}</h3>
-      <p>${p.blurb}</p>
-      <a class="go" href="${p.href}" target="_blank" rel="noopener">${p.cta} <span>&rarr;</span></a>
-    </div>
-    <div class="lockbadge">
-      <div class="at">Unlocks at</div>
-      <div class="t">${fmt(p.at)}</div>
-      <div class="mini"><i></i></div>
-    </div>
-  </article>`).join('');
-
-document.getElementById('refs').innerHTML = REFS.map(r => `
-  <div class="ref">
-    <q>${r.q}</q>
-    <div class="who">${r.who}</div>
-    <div class="role">${r.role}</div>
-    ${r.href ? `<a class="src" href="${r.href}" target="_blank" rel="noopener">source &rarr;</a>` : ''}
-  </div>`).join('');
 
 // ── ticks on the rail ─────────────────────────────────────────────────
 const rail = document.getElementById('rail');
@@ -538,7 +585,7 @@ const railNote = document.getElementById('railNote');
 
 function paint(){
   PROJECTS.forEach((p,i) => {
-    const card = cards.querySelector(`[data-i="${i}"]`);
+    const card = p.el;
     const open = watched >= p.at;
     if (open && card.classList.contains('locked')){
       card.classList.remove('locked');
