@@ -78,6 +78,7 @@
   .grid3 .kv span:last-child{color:var(--fg); font-variant-numeric:tabular-nums;}
   .tag{display:inline-block; padding:1px 7px; border-radius:99px; font-size:10.5px;
     border:1px solid var(--break); color:var(--break); margin:3px 4px 0 0;}
+  .tag.brk{border-color:#4a5a46; color:#9fc79a; background:rgba(108,192,139,.08);}
   .tag.none{border-color:var(--line); color:var(--faint);}
 
   /* ── the stage ───────────────────────────────────────────────────── */
@@ -321,13 +322,25 @@ const ESCAPE_NAME = {
   wave_them_down:'waved them down',
   set_a_fire:'lit the bucket',
   cross_context:'used the matchstick',
+  moved_the_dots:'moved the dots',
+  nine_dots:'went outside the nine',
+  left_the_array:'drew off the array',
 };
+
+/* Which tasks this record actually contains, rather than a number typed in
+   four places. A record made before task four existed still reads right, and
+   one made after it does too. */
+function tasksIn(){
+  const set = new Set(LOG.filter(e => e.type === 'stage_open').map(e => e.stage));
+  const ns = [...set].filter(n => n).sort((a, b) => a - b);
+  return ns.length ? ns : [1, 2, 3];
+}
 
 function headline(){
   const out = { firstStageBroken:null, secToFirstOffPath:{}, ladderAtBreak:{},
-                actionsBeforeBreak:{}, escapeKinds:{}, brokeAtL0:0 };
+                actionsBeforeBreak:{}, escapeKinds:{}, breakKinds:{}, brokeAtL0:0 };
   const ACTION = {input:1, sanctioned:1, fail:1, off_path:1, constraint_break:1};
-  for (const n of [1,2,3]){
+  for (const n of tasksIn()){
     const inS = LOG.filter(e => e.stage === n);
     const open = inS.find(e => e.type === 'stage_open');
     const esc  = inS.filter(e => e.type === 'escape');
@@ -337,6 +350,8 @@ function headline(){
       out.ladderAtBreak[n] = esc[0].lvl;
       out.actionsBeforeBreak[n] = inS.filter(e => ACTION[e.type] && e.i < esc[0].i).length;
       out.escapeKinds[n] = [...new Set(esc.map(e => (e.d && e.d.kind) || 'escape'))];
+      out.breakKinds[n] = [...new Set(inS.filter(e => e.type === 'constraint_break')
+                                         .map(e => (e.d && e.d.kind) || 'break'))];
       if (esc[0].lvl === 0) out.brokeAtL0++;
       if (out.firstStageBroken === null) out.firstStageBroken = n;
     } else {
@@ -344,6 +359,8 @@ function headline(){
       out.ladderAtBreak[n] = lv.length ? Math.max(...lv.map(e => e.d.lvl||0)) : 0;
       out.actionsBeforeBreak[n] = inS.filter(e => ACTION[e.type]).length;
       out.escapeKinds[n] = [];
+      out.breakKinds[n] = [...new Set(inS.filter(e => e.type === 'constraint_break')
+                                         .map(e => (e.d && e.d.kind) || 'break'))];
     }
   }
   return out;
@@ -358,13 +375,21 @@ function renderHead(){
   $('nums').innerHTML =
     cell('First task broken', h.firstStageBroken === null ? 'none' : h.firstStageBroken) +
     cell('Score left', (HEAD && HEAD.score != null) ? HEAD.score : last.sc) +
-    cell('Broke unprompted', h.brokeAtL0 + ' of 3') +
+    cell('Broke unprompted', h.brokeAtL0 + ' of ' + tasksIn().length) +
     cell('Took', fmt(DUR));
 
-  $('perTask').innerHTML = [1,2,3].map(n => {
-    const kinds = h.escapeKinds[n].length
+  $('perTask').innerHTML = tasksIn().map(n => {
+    /* Two different measures, kept apart on the card the way they are kept
+       apart in the log. A way through is an action nobody offered. A break is
+       solving the thing you WERE asked to solve by dropping a rule nobody
+       imposed — the matchstick equations and the nine dots are both that, and
+       a card that shows only escapes says "none" for a student who has just
+       done the most interesting thing in the task. */
+    const kinds = (h.escapeKinds[n].length
       ? h.escapeKinds[n].map(k => '<span class="tag">' + (ESCAPE_NAME[k]||k) + '</span>').join('')
-      : '<span class="tag none">none</span>';
+      : '<span class="tag none">none</span>') +
+      (h.breakKinds[n] || []).map(k =>
+        '<span class="tag brk">' + (ESCAPE_NAME[k]||k) + '</span>').join('');
     return '<div><b>Task ' + n + '</b>' +
       kv('to first step off', h.secToFirstOffPath[n] === null ? '—' : h.secToFirstOffPath[n] + 's') +
       kv('prompt reached', 'L' + h.ladderAtBreak[n]) +
@@ -388,7 +413,7 @@ const MK = { escape:'esc', off_path:'off', fail:'fail', ladder:'lad', constraint
 function buildTimeline(){
   const tl = $('tl');
   tl.querySelectorAll('.span,.mk').forEach(e => e.remove());
-  for (const n of [1,2,3]){
+  for (const n of tasksIn()){
     const o = LOG.find(e => e.stage===n && e.type==='stage_open');
     const c = [...LOG].reverse().find(e => e.stage===n && e.type==='stage_close');
     if (!o) continue;
@@ -465,6 +490,7 @@ function stateAt(t){
   const st = {
     stage:0, score:(HEAD && HEAD.startScore) || 1000, lvl:0, name:'',
     sticks:[], coins:T1.COINS0.slice(), free:[],
+    dots:null,
     race:{ scene:null, pose:null, rivals:[], trail:[], marks:[],
            wrongPct:null, escaped:false, lastT:null },
     triedL:0, triedR:0, doorFlash:0, turned:false,
@@ -573,6 +599,19 @@ function stateAt(t){
       if (e.type === 'escape' && d.kind === 'wrong_way') R.escaped = true;
     }
 
+    if (e.stage === 4){
+      if (e.type === 'scene' && d.kind === 'dots' && Array.isArray(d.dots))
+        st.dots = { pts:[], dots:d.dots.map(q => q.slice()), r:d.r || 9, hit:d.hit || 17 };
+      if (st.dots){
+        if (e.type === 'sanctioned' && d.kind === 'corner' && Array.isArray(d.at))
+          st.dots.pts.push(d.at.slice());
+        if (e.type === 'sanctioned' && d.kind === 'undo') st.dots.pts.pop();
+        if (e.type === 'sanctioned' && d.kind === 'start_again') st.dots.pts = [];
+        if (e.type === 'off_path' && (d.kind === 'moved_a_dot' || d.kind === 'moved_again') &&
+            Array.isArray(d.to) && d.which != null) st.dots.dots[d.which] = d.to.slice();
+      }
+    }
+
     if (e.stage === 3){
       // 'door_*' is the room this task used to be; records made then still play
       if (e.type === 'fail' && (d.kind === 'lever_L' || d.kind === 'door_L')){ st.triedL++; st.doorFlash = e.t; }
@@ -615,6 +654,7 @@ function draw(st){
   if (st.stage === 1) drawTable(st);
   else if (st.stage === 2) drawRun(st);
   else if (st.stage === 3) drawJunction(st);
+  else if (st.stage === 4) drawDots(st);
   else {
     ctx.fillStyle = '#5d5d66'; ctx.font = '13px ' + getComputedStyle(document.body).fontFamily;
     ctx.textAlign = 'center';
@@ -1101,6 +1141,57 @@ function drawRunUnknown(R){
   ctx.textAlign = 'left';
 }
 
+
+/* Task four: the sheet of paper, the nine dots, and the path as it stood.
+   Dots the path has taken are inked; the rest are not — which is the whole
+   of what there is to see, plus where the corners went. */
+function drawDots(st){
+  const D = st.dots;
+  const k = Math.min(VW/560, VH/400), ox = (VW-560*k)/2, oy = (VH-400*k)/2;
+  const X = x => ox+x*k, Y = y => oy+y*k;
+  const F = getComputedStyle(document.body).fontFamily;
+
+  ctx.fillStyle = '#f1ece0';
+  ctx.fillRect(X(0), Y(0), 560*k, 400*k);
+  if (!D){
+    ctx.fillStyle = '#6f6558'; ctx.textAlign = 'center';
+    ctx.font = '12px ' + F;
+    ctx.fillText('no scene for task four in this record', VW/2, VH/2);
+    ctx.textAlign = 'left';
+    return;
+  }
+
+  const near = (p, a, b) => {
+    const dx=b[0]-a[0], dy=b[1]-a[1], L2=dx*dx+dy*dy;
+    let u = L2 ? ((p[0]-a[0])*dx + (p[1]-a[1])*dy)/L2 : 0;
+    u = u<0?0:u>1?1:u;
+    return Math.hypot(p[0]-(a[0]+dx*u), p[1]-(a[1]+dy*u));
+  };
+  const hit = new Set();
+  for (let i = 1; i < D.pts.length; i++)
+    D.dots.forEach((q, j) => { if (near(q, D.pts[i-1], D.pts[i]) <= D.hit) hit.add(j); });
+
+  if (D.pts.length > 1){
+    ctx.strokeStyle = '#2a2118';
+    ctx.lineWidth = Math.max(2, 4*k);
+    ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    ctx.beginPath();
+    D.pts.forEach((q, i) => (i ? ctx.lineTo(X(q[0]), Y(q[1])) : ctx.moveTo(X(q[0]), Y(q[1]))));
+    ctx.stroke();
+  }
+  D.pts.forEach(q => {
+    ctx.fillStyle = 'rgba(42,33,24,.5)';
+    ctx.beginPath(); ctx.arc(X(q[0]), Y(q[1]), Math.max(2, 3*k), 0, Math.PI*2); ctx.fill();
+  });
+  D.dots.forEach((q, j) => {
+    ctx.fillStyle = hit.has(j) ? '#2a2118' : '#6f6558';
+    ctx.beginPath(); ctx.arc(X(q[0]), Y(q[1]), Math.max(2, (D.r||9)*k), 0, Math.PI*2); ctx.fill();
+  });
+
+  ctx.fillStyle = '#6f6558'; ctx.textAlign = 'left'; ctx.font = '11px ' + F;
+  ctx.fillText(Math.max(0, D.pts.length-1) + ' of 4 lines · ' + hit.size + ' of 9 joined',
+               X(14), Y(390));
+}
 
 function drawJunction(st){
   const k = Math.min(VW/800, VH/470), ox = (VW-800*k)/2, oy = (VH-470*k)/2;

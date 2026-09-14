@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>The Test</title>
-<meta name="description" content="Three tasks, one attempt at each.">
+<meta name="description" content="Four tasks, one attempt at each.">
 <link rel="canonical" href="https://jamesfloyds.world/builds/the-test/">
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#0b0b0c">
@@ -223,6 +223,15 @@
      the ground. Nothing in here is an opening, which is the whole reason it
      replaced a room with doors in it. */
   a.btn{display:inline-flex; align-items:center; text-decoration:none;}
+  /* Task four is a sheet of paper. Light, because a pen on a dark screen is
+     a different object from a pen on paper, and the whole item is about what
+     you take the paper to be. */
+  .d4{position:relative; border:1px solid var(--border); border-radius:10px;
+    overflow:hidden; background:#f1ece0; line-height:0; margin-bottom:10px;}
+  .d4 svg{display:block; width:100%; height:auto; touch-action:none;}
+  .d4-dot{cursor:default;}
+  .d4-dot:focus{outline:none;}
+  .d4-dot:focus-visible{outline:2px solid #8a7f63; outline-offset:3px;}
   .r3{position:relative; border:1px solid var(--border); border-radius:10px;
     overflow:hidden; background:#0e0e11; line-height:0; margin-bottom:8px;}
   .r3 svg{display:block; width:100%; height:auto;}
@@ -298,13 +307,18 @@
   <!-- ══ INTRO ═══════════════════════════════════════════════════════ -->
   <section id="p-intro">
     <header>
-      <p class="eyebrow">Three tasks</p>
+      <p class="eyebrow">Four tasks</p>
       <h1>The Test</h1>
     </header>
     <div class="card">
-      <p class="lede">Three tasks. One attempt at each — there are no retries, and
+      <p class="lede">Four tasks. One attempt at each — there are no retries, and
         what happens is kept.</p>
-      <p class="lede">Your score starts at 1000. It can go down. It cannot go up.</p>
+      <!-- "It can go down. It cannot go up." was true and stopped being true
+           the moment getting through a task started paying. No sentence in the
+           app's own voice is allowed to be untrue, and that one was. This says
+           the same amount about the scoring rule as the old one did, which is
+           nothing: which way it moves for what is the thing being measured. -->
+      <p class="lede">Your score starts at 1000. What you do changes it.</p>
       <p class="lede">The record stays on this device until you hand it in.</p>
     </div>
     <div class="row">
@@ -670,6 +684,33 @@
   </section>
 
   <!-- ══ END / DEBRIEF ═══════════════════════════════════════════════ -->
+  <section id="p4" hidden>
+    <header><p class="eyebrow">Task four</p><h1 id="h1-4">The dots</h1></header>
+    <p class="tiny">Join all nine dots with four straight lines, without lifting the pen.</p>
+    <p class="tiny" id="t4How">Click to start a line. Click again for each corner. Backspace takes one back.</p>
+
+    <div class="d4" id="dots">
+      <svg id="d4Svg" viewBox="0 0 560 400" role="img"
+           aria-label="A sheet of paper with nine dots on it">
+        <rect id="d4Paper" x="0" y="0" width="560" height="400" fill="#f1ece0"/>
+        <g id="d4Ink"></g>
+        <g id="d4Dots"></g>
+      </svg>
+    </div>
+
+    <div class="t1read" id="t4State"></div>
+    <div class="t1bar">
+      <button class="btn" id="d4Undo">Undo</button>
+      <button class="btn" id="d4Clear">Start again</button>
+      <span class="t1note" id="d4Count">no lines yet</span>
+    </div>
+
+    <div class="slot" id="slot4"><p></p></div>
+    <div class="row" style="margin-top:14px;">
+      <button class="btn" id="exit4" hidden></button>
+    </div>
+  </section>
+
   <section id="p-end" hidden>
     <header><p class="eyebrow">Done</p><h1>What that measured</h1></header>
     <div class="card" id="debriefBody"></div>
@@ -741,6 +782,11 @@
    ══════════════════════════════════════════════════════════════════════ */
 
 /* ══ CONSTANTS + STORAGE ═════════════════════════════════════════════ */
+
+/* The tasks, in the order they are given. Everything that used to say [1,2,3]
+   reads this instead, so a fourth one is a row in the STAGES map and an entry
+   here rather than a hunt through the file for the number three. */
+const TASKS = [1, 2, 3, 4];
 
 const LS = {
   session: 'thetest.session.v1',
@@ -900,19 +946,25 @@ const rec = (function(){
    the two ever disagree, the log is missing a field. Fix the log. */
 function headline(log){
   const ev = log || rec.stored();
+  /* Keyed off TASKS rather than typed out. These were three literals with
+     1, 2 and 3 in them, so the moment a fourth task existed escapeKinds[4]
+     was undefined, the debrief threw reading .length off it, and the end
+     screen never appeared at all — after a finished attempt. */
+  const by = (v) => TASKS.reduce((o, n) => (o[n] = (typeof v === 'function' ? v() : v), o), {});
   const out = {
     firstStageBroken: null,
-    secToFirstOffPath: {1:null, 2:null, 3:null},
-    ladderAtBreak:     {1:null, 2:null, 3:null},
-    actionsBeforeBreak:{1:null, 2:null, 3:null},
+    secToFirstOffPath: by(null),
+    ladderAtBreak:     by(null),
+    actionsBeforeBreak:by(null),
     brokeAtL0: 0,
-    escapeKinds: {1:[], 2:[], 3:[]},
+    escapeKinds: by(() => []),
+    breakKinds:  by(() => []),
     carriedStick: false,
     totalActiveMs: 0,
   };
   const ACTION = {input:1, sanctioned:1, fail:1, off_path:1, constraint_break:1};
 
-  for (const n of [1,2,3]){
+  for (const n of TASKS){
     const inStage = ev.filter(e => e.stage === n);
     const open    = inStage.find(e => e.type === EV.stage_open);
     const esc     = inStage.filter(e => e.type === EV.escape);
@@ -920,6 +972,8 @@ function headline(log){
 
     if (open && first) out.secToFirstOffPath[n] = +(((first.am - open.am) / 1000).toFixed(1));
 
+    out.breakKinds[n] = [...new Set(inStage.filter(e => e.type === EV.constraint_break)
+                                           .map(e => (e.d && e.d.kind) || 'break'))];
     if (esc.length){
       out.ladderAtBreak[n] = esc[0].lvl;
       out.actionsBeforeBreak[n] = inStage.filter(e => ACTION[e.type] && e.i < esc[0].i).length;
@@ -953,7 +1007,8 @@ function freshSession(){
     startedAt: now(), lastSeenAt: now(),
     name: '', score: 1000, stage: 0,
     carry: { sticks: [] },
-    stages: { 1:freshStage(), 2:freshStage(), 3:freshStage() },
+    // built from TASKS, so a task that exists always has a slot to live in
+    stages: TASKS.reduce((o, n) => (o[n] = freshStage(), o), {}),
     finished: false,
     seq: 0,
   };
@@ -981,7 +1036,7 @@ function bootSession(){
   const resumed = stored && stored.v === 1 && stored.id;
   if (resumed){
     SESSION = stored;
-    for (const n of [1,2,3]) SESSION.stages[n] = Object.assign(freshStage(), SESSION.stages[n]);
+    for (const n of TASKS) SESSION.stages[n] = Object.assign(freshStage(), SESSION.stages[n]);
     rec.seed(SESSION.seq || 0);
     rec.ev(EV.session_resume, null, { life: LIFE });
   } else {
@@ -1079,6 +1134,11 @@ const LADDER_TEXT = {
       'That gap will not close. No run-up clears it.',
       'The way to the finish may not point at the finish.',
       'The circuit continues behind the start line.'],
+  4: ['',
+      'Take your time.',
+      'Four lines, and they have to be one unbroken path.',
+      'A line does not have to stop where a dot does.',
+      'The paper is bigger than the nine dots.'],
   3: ['',
       'Take your time.',
       'The rule is the examiner’s. It is not the line’s.',
@@ -4327,7 +4387,266 @@ const STAGE3 = {
 
 };
 
-const STAGES = { 1: STAGE1, 2: STAGE2, 3: STAGE3 };
+/* ── TASK FOUR — THE DOTS ────────────────────────────────────────────
+   Maier's nine dots, 1930, and still the cleanest instance of the thing this
+   whole instrument is for: nobody is told to stay inside the square, and
+   almost everybody does. Four straight lines, one unbroken path, all nine
+   dots — and there is no such path whose corners all sit on the array. That
+   is not folklore here, ?selftest=1 searches every one of them.
+
+   So the affordance is the paper. It is drawn to the edges of the frame,
+   there is no box around the dots, no border, no shading, no change of
+   colour and no line of text about where you may click. You can put a corner
+   anywhere on it from the first frame. Leaving the array is recorded as a
+   constraint_break and NOT as an off_path, for the same reason the matchstick
+   solution is: drawing lines is what you were asked to do, and doing it
+   somewhere unexpected is solving the puzzle rather than stepping outside it.
+
+   The step outside the sanctioned set is different and quieter: the dots can
+   be dragged. Nothing says so, nothing about them suggests it, and moving one
+   makes the four lines easy. That is the off_path, and a solve that follows
+   moved dots is the escape. */
+
+const T4 = {
+  GAP: 84,
+  ORIGIN: [170, 100],          // top-left dot; the array is 3x3 from here
+  DOTR: 9,                     // drawn radius
+  HIT: 17,                     // how near a line has to pass to take a dot
+  LINES: 4,                    // the number in the sentence
+  grid(){
+    const out = [];
+    for (let r = 0; r < 3; r++)
+      for (let c = 0; c < 3; c++)
+        out.push([T4.ORIGIN[0] + c * T4.GAP, T4.ORIGIN[1] + r * T4.GAP]);
+    return out;
+  },
+  /* The box the dots imply and nobody draws. Used to tell a corner placed on
+     the array from one placed off it, and for nothing else — it is never
+     painted, never stroked, and never mentioned. */
+  inArray(p){
+    const [x0, y0] = T4.ORIGIN, s = T4.GAP * 2;
+    return p[0] >= x0 - T4.DOTR && p[0] <= x0 + s + T4.DOTR &&
+           p[1] >= y0 - T4.DOTR && p[1] <= y0 + s + T4.DOTR;
+  },
+  near(p, a, b){
+    const dx = b[0]-a[0], dy = b[1]-a[1], L2 = dx*dx + dy*dy;
+    let u = L2 ? ((p[0]-a[0])*dx + (p[1]-a[1])*dy) / L2 : 0;
+    u = u < 0 ? 0 : u > 1 ? 1 : u;
+    return Math.hypot(p[0] - (a[0]+dx*u), p[1] - (a[1]+dy*u));
+  },
+  /* Which dots the path covers. A dot counts once, however many lines cross
+     it, and a line takes every dot it passes rather than only the ones at its
+     ends — which is the other half of this puzzle and is why the prompt at L3
+     says a line need not stop where a dot does. */
+  covered(pts, dots){
+    const hit = new Set();
+    for (let i = 1; i < pts.length; i++)
+      dots.forEach((d, k) => { if (T4.near(d, pts[i-1], pts[i]) <= T4.HIT) hit.add(k); });
+    return hit;
+  },
+  solved(pts, dots){
+    return pts.length >= 2 && pts.length - 1 <= T4.LINES &&
+           T4.covered(pts, dots).size === dots.length;
+  },
+};
+
+const STAGE4 = {
+  n:4, paneId:'p4', exitLabel:'Leave it as it is',
+
+  fresh(){ return { dots:T4.grid(), pts:[], outside:false, moved:[],
+                    tries:0, best:0, _lives:0 }; },
+
+  mount(w){
+    this.w = w;
+    this.done = false;
+    this.svg = document.getElementById('d4Svg');
+    if (!w.dots || w.dots.length !== 9) w.dots = T4.grid();
+
+    document.getElementById('d4Undo').onclick  = () => this.undo();
+    document.getElementById('d4Clear').onclick = () => this.clear();
+
+    if (!this._wired){
+      this._wired = true;
+      this.svg.addEventListener('pointerdown', e => {
+        if (this.done) return;
+        if (e.target.closest && e.target.closest('.d4-dot')) return;   // that is a dot
+        this.addPoint(this.toSvg(e.clientX, e.clientY));
+      });
+      this.svg.addEventListener('pointermove', e => {
+        if (this.done || !this.w.pts.length) return;
+        this.hover = this.toSvg(e.clientX, e.clientY);
+        this.paint();
+      });
+      this.svg.addEventListener('pointerleave', () => { this.hover = null; this.paint(); });
+    }
+    /* Once a mount, so a replay can lay the paper out without a second copy
+       of these numbers going stale somewhere else. */
+    rec.ev(EV.scene, 4, { kind:'dots', dots:w.dots.map(d => [Math.round(d[0]), Math.round(d[1])]),
+                          w:560, h:400, r:T4.DOTR, hit:T4.HIT, lines:T4.LINES });
+    this.paint();
+  },
+
+  unmount(){ this.done = true; },
+  tick(){},
+
+  onKey(e, down){
+    if (!down || this.done) return false;
+    if (e.key === 'Backspace'){ this.undo(); return true; }
+    return false;
+  },
+
+  toSvg(cx, cy){
+    const r = this.svg.getBoundingClientRect(), k = r.width / 560;
+    return [(cx - r.left) / k, (cy - r.top) / k];
+  },
+
+  addPoint(p){
+    const w = this.w;
+    if (w.pts.length - 1 >= T4.LINES){
+      /* Already at four. Say so rather than silently ignoring the click —
+         a control that does nothing reads as broken, and what is being
+         measured here is not whether somebody can work out the interface. */
+      w.tries++;
+      fail(4, 'fifth_line', { lines:w.pts.length - 1 });
+      this.paint();
+      return;
+    }
+    w.pts.push([+p[0].toFixed(1), +p[1].toFixed(1)]);
+    act(4, 'corner', { at:[Math.round(p[0]), Math.round(p[1])],
+                       outside:!T4.inArray(p), n:w.pts.length });
+
+    /* Off the array. It is the solution, so it is a constraint break inside
+       the sanctioned set — the Knoblich measure — and not a step outside it.
+       Charged once; where they went is evidence, not a second offence. */
+    if (!w.outside && !T4.inArray(p)){
+      w.outside = true;
+      constraintBreak(4, 'left_the_array', { at:[Math.round(p[0]), Math.round(p[1])],
+                                             after:w.pts.length });
+    }
+    this.after();
+  },
+
+  undo(){
+    if (this.done || !this.w.pts.length) return;
+    this.w.pts.pop();
+    act(4, 'undo', { left:this.w.pts.length });
+    this.after();
+  },
+  clear(){
+    if (this.done || !this.w.pts.length) return;
+    this.w.pts = [];
+    act(4, 'start_again', {});
+    this.after();
+  },
+
+  after(){
+    const w = this.w;
+    const n = T4.covered(w.pts, w.dots).size;
+    if (n > w.best) w.best = n;
+    this.paint();
+    saveSession();
+    if (T4.solved(w.pts, w.dots)) this.finish();
+  },
+
+  finish(){
+    if (this.done) return;
+    const w = this.w;
+    if (w.moved.length){
+      escape(4, 'moved_the_dots', { moved:w.moved.length, lines:w.pts.length - 1 });
+      this.close('broke');
+    } else {
+      constraintBreak(4, 'nine_dots', { lines:w.pts.length - 1, outside:w.outside });
+      this.close('solved');
+    }
+  },
+  exit(){ this.close('complied'); },
+  close(how){
+    if (this.done) return;
+    this.done = true;
+    closeStage(4, how);
+  },
+
+  /* ── the paper ──────────────────────────────────────────────────── */
+  paint(){
+    const w = this.w;
+    const ink = document.getElementById('d4Ink');
+    const dots = document.getElementById('d4Dots');
+    if (!ink || !dots) return;
+
+    let d = '';
+    if (w.pts.length){
+      d = 'M' + w.pts.map(p => p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' L');
+    }
+    const rubber = (this.hover && w.pts.length && w.pts.length - 1 < T4.LINES)
+      ? '<line x1="' + w.pts[w.pts.length-1][0] + '" y1="' + w.pts[w.pts.length-1][1] +
+        '" x2="' + this.hover[0].toFixed(1) + '" y2="' + this.hover[1].toFixed(1) +
+        '" stroke="#2a2118" stroke-width="3" stroke-linecap="round" opacity="0.28"/>'
+      : '';
+    ink.innerHTML =
+      (d ? '<path d="' + d + '" fill="none" stroke="#2a2118" stroke-width="4" ' +
+           'stroke-linecap="round" stroke-linejoin="round"/>' : '') + rubber;
+
+    const hit = T4.covered(w.pts, w.dots);
+    dots.innerHTML = w.dots.map((p, i) =>
+      '<g class="d4-obj"><circle class="d4-dot" data-i="' + i + '" tabindex="0" ' +
+        'aria-label="Dot" cx="' + p[0].toFixed(1) + '" cy="' + p[1].toFixed(1) +
+        '" r="' + T4.DOTR + '" fill="' + (hit.has(i) ? '#2a2118' : '#6f6558') + '"/></g>'
+    ).join('');
+    this.wireDots();
+
+    const lines = Math.max(0, w.pts.length - 1);
+    document.getElementById('d4Count').textContent =
+      (lines === 0 ? 'no lines yet' : lines + (lines === 1 ? ' line' : ' lines')) +
+      ' · ' + hit.size + ' of 9 joined';
+    const el = document.getElementById('t4State');
+    if (el){
+      el.innerHTML = w.tries
+        ? '<span class="rd"><b>✗</b><code>four lines</code> <i>that is all there is</i></span>'
+        : '';
+    }
+  },
+
+  /* The dots answer the pointer. Nothing says they do, and the puzzle never
+     needs it — it is the one thing here that is outside what was asked for. */
+  wireDots(){
+    const S = this;
+    this.svg.querySelectorAll('.d4-dot').forEach(el => {
+      let drag = null;
+      el.addEventListener('pointerdown', e => {
+        if (S.done) return;
+        e.stopPropagation();
+        try { el.setPointerCapture(e.pointerId); } catch(err){}
+        drag = { i:+el.dataset.i, moved:false };
+      });
+      el.addEventListener('pointermove', e => {
+        if (!drag) return;
+        const p = S.toSvg(e.clientX, e.clientY);
+        S.w.dots[drag.i] = [clamp(p[0], 8, 552), clamp(p[1], 8, 392)];
+        drag.moved = true;
+        S.paint();
+      });
+      const up = () => {
+        if (!drag) return;
+        const i = drag.i, moved = drag.moved;
+        drag = null;
+        if (!moved) return;
+        if (!S.w.moved.includes(i)){
+          S.w.moved.push(i);
+          offPath(4, 'moved_a_dot', { which:i, n:S.w.moved.length,
+                                     to:S.w.dots[i].map(Math.round) });
+        } else {
+          rec.ev(EV.off_path, 4, { kind:'moved_again', which:i,
+                                   to:S.w.dots[i].map(Math.round) });
+        }
+        S.after();
+      };
+      el.addEventListener('pointerup', up);
+      el.addEventListener('pointercancel', () => { drag = null; });
+    });
+  },
+};
+
+const STAGES = { 1: STAGE1, 2: STAGE2, 3: STAGE3, 4: STAGE4 };
 
 /* ══ EVENT HELPERS the stages call ═══════════════════════════════════ */
 
@@ -4368,7 +4687,10 @@ function escape(n, kind, d){
 
 /* ══ ROUTER ══════════════════════════════════════════════════════════ */
 
-const PANES = ['p-intro','p-refused','p1','p2','p3','p-end'];
+/* Every pane, including the task panes, because showPane hides everything not
+   named here — a task missing from this list is a task that can never be put
+   on the screen. */
+const PANES = ['p-intro','p-refused','p1','p2','p3','p4','p-end'];
 function showPane(id){
   for (const p of PANES) document.getElementById(p).hidden = (p !== id);
   window.scrollTo(0, 0);
@@ -4417,14 +4739,14 @@ function closeStage(n, outcome){
   rec.flush();
   SESSION.stage = 0;
   saveSession(true);
-  if (n < 3) enterStage(n + 1); else finish();
+  if (n < TASKS.length) enterStage(n + 1); else finish();
 }
 
 function refuse(n){
   document.getElementById('refusedBody').textContent =
     'You have already had your attempt at task ' + n + '.';
   document.getElementById('refusedNext').onclick = () => {
-    if (n < 3) enterStage(n + 1); else finish();
+    if (n < TASKS.length) enterStage(n + 1); else finish();
   };
   showPane('p-refused');
 }
@@ -4457,14 +4779,23 @@ const ESCAPE_NAME = {
   wave_them_down:     'waved them down',
   set_a_fire:         'lit the bucket',
   cross_context:      'used the matchstick',
+  moved_the_dots:     'moved the dots',
   wrong_way:         'went the wrong way round',
 };
 
 function renderDebrief(){
   const h = headline();
-  const esc = n => h.escapeKinds[n].length
+  /* A way through is an action nobody offered. A break is solving the thing
+     you WERE asked to solve by dropping a rule nobody imposed — the matchstick
+     equations and the nine dots are both that, and a line that shows only
+     escapes says "none" to somebody who has just done the most interesting
+     thing in the task. Both, named apart. */
+  const esc = n => (h.escapeKinds[n] || []).length
     ? h.escapeKinds[n].map(k => ESCAPE_NAME[k] || k).join(', ')
     : 'none';
+  const brk = n => (h.breakKinds[n] || []).length
+    ? h.breakKinds[n].map(k => ESCAPE_NAME[k] || k).join(', ')
+    : null;
 
   document.getElementById('debriefBody').innerHTML =
     '<p>Each task had a way through that nothing on the screen mentioned. ' +
@@ -4482,14 +4813,15 @@ function renderDebrief(){
   document.getElementById('headlineBody').innerHTML =
     row('First task you broke', h.firstStageBroken === null ? 'none' : h.firstStageBroken) +
     row('Score', SESSION.score) +
-    row('Broke with no prompting', h.brokeAtL0 + ' of 3') +
+    row('Broke with no prompting', h.brokeAtL0 + ' of ' + TASKS.length) +
     '<hr class="rule">' +
-    [1,2,3].map(n =>
+    TASKS.map(n =>
       row('Task ' + n + ' — seconds to first step off the path',
           h.secToFirstOffPath[n] === null ? '—' : h.secToFirstOffPath[n] + 's') +
       row('Task ' + n + ' — prompt level reached', 'L' + h.ladderAtBreak[n]) +
       row('Task ' + n + ' — actions first', h.actionsBeforeBreak[n]) +
-      row('Task ' + n + ' — way through found', esc(n))
+      row('Task ' + n + ' — way through found', esc(n)) +
+      (brk(n) ? row('Task ' + n + ' — rule dropped', brk(n)) : '')
     ).join('<hr class="rule">');
 
   function row(k, v){
@@ -4579,7 +4911,7 @@ window.addEventListener('pagehide', () => { rec.flush(); saveSession(true); });
    box is however wide the page is; the inner frame is the fixed 560x400 space
    everything is actually laid out in, centred inside it. Using the box put the
    replay's cursor left of where the hand was, and squashed. */
-const SCENE_OF = { 1:'room1In', 2:'run', 3:'r3' };
+const SCENE_OF = { 1:'room1In', 2:'run', 3:'r3', 4:'dots' };
 let lastPtrAt = 0;
 
 function logPointer(e, kind){
@@ -4678,7 +5010,7 @@ if (window.matchMedia && window.matchMedia('(hover:none) and (pointer:coarse)').
 document.getElementById('beginBtn').onclick = () => enterStage(1);
 document.getElementById('dlBtn').onclick    = download;
 document.getElementById('copyBtn').onclick  = e => copyOut(e.currentTarget);
-for (const n of [1,2,3]){
+for (const n of TASKS){
   document.getElementById('exit' + n).onclick = () => {
     const st = STAGES[n];
     if (typeof st.exit === 'function') st.exit(); else closeStage(n, 'complied');
@@ -4687,10 +5019,10 @@ for (const n of [1,2,3]){
 
 /* Resume lands you back where you were, including mid-task. */
 if (resumed && !SESSION.finished){
-  const open = [1,2,3].find(n => SESSION.stages[n].status === 'open');
+  const open = TASKS.find(n => SESSION.stages[n].status === 'open');
   if (open) enterStage(open);
   else {
-    const next = [1,2,3].find(n => SESSION.stages[n].status === 'locked');
+    const next = TASKS.find(n => SESSION.stages[n].status === 'locked');
     if (next && SESSION.stages[next === 1 ? 1 : next - 1].status === 'closed') enterStage(next);
     else if (next === 1) showPane('p-intro');
     else finish();
@@ -4770,6 +5102,55 @@ if (SELFTEST){
        T1.ORIENT.every(x => STAGE1.orientOfRot(T1.ANGLE[x]) === x) &&
        STAGE1.orientOfRot(204) === 'r' && STAGE1.orientOfRot(180) === 'v',
        'including half a turn round');
+  })();
+
+  /* 1c. the nine dots. The whole item rests on one claim — that four lines
+          cannot do it while every corner stays on the array — and that claim
+          is normally passed around as folklore. It is searched here instead:
+          every path of four segments whose five corners are all dots, which
+          is 9^5, and none covers all nine. Then the same search one step
+          wider finds paths that do, so it is solvable as well as not
+          solvable the obvious way. */
+  (function(){
+    const dots = T4.grid();
+    const search = (pool) => {
+      let best = 0, found = null;
+      const n = pool.length, pts = new Array(5);
+      const walk = (k) => {
+        if (found) return;
+        if (k === 5){
+          const cov = T4.covered(pts, dots).size;
+          if (cov > best) best = cov;
+          if (cov === 9) found = pts.slice();
+          return;
+        }
+        for (let i = 0; i < n; i++){ pts[k] = pool[i]; walk(k + 1); }
+      };
+      walk(0);
+      return { best, found };
+    };
+
+    const inside = search(dots);
+    ok('four lines cannot do it while every corner is on the array',
+       !inside.found, 'the best of all 59,049 covers ' + inside.best + ' of 9');
+
+    const wide = [];
+    for (let r = -1; r <= 3; r++)
+      for (let c = -1; c <= 3; c++)
+        wide.push([T4.ORIGIN[0] + c * T4.GAP, T4.ORIGIN[1] + r * T4.GAP]);
+    const out = search(wide);
+    ok('and off the array four lines can', !!out.found,
+       out.found ? 'one runs ' + out.found.map(q => q.join(',')).join(' → ')
+                 : 'best covers ' + out.best);
+
+    ok('the way through fits on the paper',
+       !!out.found && out.found.every(q => q[0] >= 0 && q[0] <= 560 && q[1] >= 0 && q[1] <= 400),
+       out.found ? 'all five corners inside 560x400' : 'no solution to place');
+
+    ok('the dots sit on the paper with a clear step beyond them',
+       dots.every(d => d[0] > T4.GAP && d[0] < 560 - T4.GAP &&
+                       d[1] > T4.GAP && d[1] < 400 - T4.GAP),
+       'a whole spacing of paper on every side');
   })();
 
   // 2. the eight-coin problem: not already solved, solved by leaving the
@@ -5048,9 +5429,11 @@ if (SELFTEST){
        new with the junction: a stone on a rail, a bowl in the light and the
        point blades each have to stay unsaid in text, labels and titles, and
        the only way to be sure of that after an edit is to assert it. */
-    const BAN = /keep|pocket|carry|stash|hold on ?to|reverse|backwards?|behind the (start|line)|refuse|walk out|turn (around|back)|leave the (room|table)|rewrite|your name|type your|tunnel|arch|way out|off the (felt|table)|(stone|rock|boulder)s? on|block the (line|track|rail)|stop the train|signal the (train|driver|cab)|reflect|point blades|pick (up|it up)|call (it in|for help)|dial|emergency|set (fire|light) to|light the|wave (it|them)|go(es)? red|in your pocket|look inside/i;
+    const BAN = /keep|pocket|carry|stash|hold on ?to|reverse|backwards?|behind the (start|line)|refuse|walk out|turn (around|back)|leave the (room|table)|rewrite|your name|type your|tunnel|arch|way out|off the (felt|table)|(stone|rock|boulder)s? on|block the (line|track|rail)|stop the train|signal the (train|driver|cab)|reflect|point blades|pick (up|it up)|call (it in|for help)|dial|emergency|set (fire|light) to|light the|wave (it|them)|go(es)? red|in your pocket|look inside|outside the (box|square|grid)|move (a|the) dots?|bigger than the/i;
     const hits = [];
-    for (const id of ['p-intro','p1','p2','p3']){
+    /* Every task pane, taken from the same list the shell uses. A pane missing
+       from here is a pane nobody ever checked for a signpost. */
+    for (const id of ['p-intro'].concat(TASKS.map(n => 'p' + n))){
       const el = document.getElementById(id), was = el.hidden;
       el.hidden = false;
       // the corridor text only exists after a way through has been taken
