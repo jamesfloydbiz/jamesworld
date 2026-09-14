@@ -963,6 +963,26 @@ const T1 = {
   SLOT:{ vert:{x:22,y:34,r:0}, hA:{x:22,y:27,r:90}, hB:{x:22,y:43,r:90},
          // the tops diverge and the feet meet: a V, not a caret
          dL:{x:14,y:34,r:-24}, dR:{x:30,y:34,r:24} },
+
+  /* Four orientations, and R turns a matchstick clockwise through them:
+     upright, leaning right, flat, leaning left. Each owns its own positions
+     and no two positions one orientation owns are close enough to be taken
+     for each other, which is the whole reason the carried orientation exists.
+     The set has to cover all five positions. When it did not — when a carried
+     stick could only ever be upright or flat — the two leaning positions were
+     out of reach, so the V in the first equation could be taken apart and
+     never put back together, and there is now a check for exactly that. */
+  /* How close to a position a released stick has to be to take it, and how
+     far one arrow press moves. The step has to be the larger of the two or
+     the keyboard route does not work at all: at 22px against a 40px window
+     every press snapped the stick back into the position it had just left,
+     so a stick could be arrowed for ever and never leave the felt. They are
+     named here together so they cannot drift apart again. */
+  SNAPY: 40, SNAPK: 0.75, STEP: 46,
+  ORIENT: ['v', 'r', 'h', 'l'],
+  ANGLE:  { v:0, r:24, h:90, l:-24 },
+  OWNS:   { v:['vert'], r:['dR'], h:['hA','hB'], l:['dL'] },
+  OF:     { vert:'v', dR:'r', hA:'h', hB:'h', dL:'l' },
   // '_' is a latent column: it is never drawn and nothing refers to it.
   LAYOUT:{
     A:[['dL','dR'],['vert'],[],['hA','hB'],['dL','dR'],['vert'],['vert'],['vert','hA'],['vert']],
@@ -1102,7 +1122,17 @@ const STAGE1 = {
     // the edge does. No extra key, and nothing says so.
     const s = this.w.sticks.find(x => x.id === el.dataset.id);
     const p = this.centreOf(s);
-    this.place(s, p.x + d[0] * 22, p.y + d[1] * 22);
+    // with the orientation it already has. Arrowing used to drop this
+    // argument, which left a keyboard user with no orientation at all and put
+    // them back on the ambiguous nearest-position rule the carried
+    // orientation exists to replace — and set the stick's angle to undefined.
+    this.place(s, p.x + d[0] * T1.STEP, p.y + d[1] * T1.STEP, this.orientOfStick(s));
+    /* place() ends in renderSticks(), which throws away every stick element
+       and builds new ones — so the element the arrow key was aimed at stops
+       existing and the focus goes with it. Without this the first press moved
+       a stick and every press after it did nothing at all, which is the
+       keyboard route to the felt edge not working. */
+    this.focusStick(s.id);
     return true;
   },
 
@@ -1171,6 +1201,11 @@ const STAGE1 = {
       this.placeEl(el, s);
       this.wireStick(el, s);
     }
+  },
+  focusStick(id){
+    const el = Array.prototype.find.call(
+      this.inner.querySelectorAll('.stick'), e => e.dataset.id === id);
+    if (el) el.focus({ preventScroll:true });
   },
   placeEl(el, s){
     const c = this.centreOf(s);
@@ -1253,8 +1288,7 @@ const STAGE1 = {
     el.addEventListener('pointerdown', e => {
       try { el.setPointerCapture(e.pointerId); } catch(err){}
       const p = this.toLocal(e.clientX, e.clientY), c = this.centreOf(s);
-      drag = { dx:p.x - c.x, dy:p.y - c.y, moved:false,
-               orient: s.eq ? this.orientOf(s.slot) : (s.rot === 90 ? 'h' : 'v') };
+      drag = { dx:p.x - c.x, dy:p.y - c.y, moved:false, orient:this.orientOfStick(s) };
       this.drag = drag; this.dragEl = el; this.dragStick = s; this.last = s.id;
       el.classList.add('lift');
       this.showGhosts();
@@ -1289,24 +1323,38 @@ const STAGE1 = {
   place(s, x, y, orient){
     const from = { eq:s.eq, col:s.col, slot:s.slot };
     this.last = s.id;
+    // never trust the caller for this: an orientation is what decides both
+    // where the stick can land and what angle it lies at
+    orient = orient || this.orientOfStick(s);
 
     if (!this.onFelt(x, y)){
       // Off the felt. It stays exactly where it was put and it is kept.
-      s.eq = null; s.x = x; s.y = y; s.rot = orient === 'h' ? 90 : 0;
+      s.eq = null; s.x = x; s.y = y; s.rot = T1.ANGLE[orient];
       if (!SESSION.carry.sticks.includes(s.id)) SESSION.carry.sticks.push(s.id);
       offPath(1, 'pocket_stick', { id:s.id, from });
       return this.after(s);
     }
 
     if (this.overCoins(x, y)){
-      s.eq = null; s.x = x; s.y = y; s.rot = orient === 'h' ? 90 : 0;
+      s.eq = null; s.x = x; s.y = y; s.rot = T1.ANGLE[orient];
       offPath(1, 'stick_on_coin', { id:s.id, from });
       return this.after(s);
     }
 
     const t = this.nearestSlot(x, y, s, orient);
     if (!t){
-      if (from.eq){ s.eq = from.eq; s.col = from.col; s.slot = from.slot; }
+      /* Nowhere in particular on the felt is a place. The stick stays exactly
+         where it was let go of, at the angle it was carried at, instead of
+         springing back to where it came from. Springing back is the table
+         overruling a deliberate act, and it reads as the drag having failed
+         rather than as the table having an opinion — which is how a person
+         ends up dragging the same stick four times wondering what is broken.
+         A stick lying loose on the felt is in no column, so it is in no
+         equation, and the reading says as much without anyone guessing. */
+      const loose = SESSION.carry.sticks.indexOf(s.id);
+      if (loose >= 0) SESSION.carry.sticks.splice(loose, 1);
+      s.eq = null; s.x = x; s.y = y; s.rot = T1.ANGLE[orient];
+      act(1, 'place_loose', { id:s.id, from, at:[Math.round(x), Math.round(y)] });
       return this.after(s);
     }
 
@@ -1318,8 +1366,6 @@ const STAGE1 = {
     else act(1, 'move_stick', { id:s.id, from, to:t });
     this.after(s);
   },
-  DROPS:['vert','hA','hB'],
-
   /* One integrator for where a released coin comes to rest. A coin dropped
      over the dimple between three touching coins sits down on them; anywhere
      else on the felt it simply stays, nudged clear of anything it overlaps;
@@ -1439,7 +1485,7 @@ const STAGE1 = {
     const d = this.drag, el = this.dragEl, s = this.dragStick;
     if (!d || !el) return;
     const t = this.nearestSlot(d.x, d.y, s, d.orient);
-    const rot = d.orient === 'h' ? 90 : 0;
+    const rot = T1.ANGLE[d.orient];
     el.style.transform = 'translate(' + (d.x - T1.TH/2) + 'px,' +
       (d.y - T1.LEN/2) + 'px) rotate(' + rot + 'deg)';
     this.markGhost(t);
@@ -1450,23 +1496,40 @@ const STAGE1 = {
      is interface, not a hint — it takes noise out of the measure. */
   rotate(){
     if (this.drag){
-      this.drag.orient = this.drag.orient === 'h' ? 'v' : 'h';
+      this.drag.orient = this.nextOrient(this.drag.orient);
       this.paintDrag();
       return true;
     }
     const s = this.last && this.w.sticks.find(x => x.id === this.last);
-    if (!s || !s.eq) return false;
-    const want = this.orientOf(s.slot) === 'h' ? 'v' : 'h';
-    const free = this.slotsFor(want).find(sl =>
-      !this.w.sticks.some(o => o !== s && o.eq === s.eq && o.col === s.col && o.slot === sl));
-    if (!free) return false;
+    if (!s) return false;
+
+    if (!s.eq){                      // loose on the felt: it simply turns
+      s.rot = T1.ANGLE[this.nextOrient(this.orientOfRot(s.rot || 0))];
+      act(1, 'turn_stick', { id:s.id, loose:true, rot:s.rot });
+      this.renderSticks();
+      saveSession();
+      return true;
+    }
+
+    /* Round the four, stopping at the first orientation with a free position
+       in this column. Skipping the full ones rather than giving up on them
+       means R always does something you can see; a key that silently does
+       nothing gets read as a key that does not work. */
     const from = { eq:s.eq, col:s.col, slot:s.slot };
-    s.slot = free;
-    act(1, 'turn_stick', { id:s.id, from, to:{ eq:s.eq, col:s.col, slot:free } });
-    this.renderSticks();
-    this.check(false);
-    saveSession();
-    return true;
+    let o = this.orientOf(s.slot);
+    for (let i = 0; i < T1.ORIENT.length; i++){
+      o = this.nextOrient(o);
+      const free = this.slotsFor(o).find(sl =>
+        !this.w.sticks.some(x => x !== s && x.eq === s.eq && x.col === s.col && x.slot === sl));
+      if (!free) continue;
+      s.slot = free;
+      act(1, 'turn_stick', { id:s.id, from, to:{ eq:s.eq, col:s.col, slot:free } });
+      this.renderSticks();
+      this.check(false);
+      saveSession();
+      return true;
+    }
+    return false;
   },
 
   showGhosts(){
@@ -1491,22 +1554,46 @@ const STAGE1 = {
      other at the same x, so "nearest place" could never tell them apart: a
      stick carried down to be laid flat snapped back to upright and quietly
      left a plus where an equals was meant. So the stick you are carrying has
-     an orientation, you change it with R, and only the places that accept
+     an orientation, you turn it with R, and only the positions that accept
      that orientation are candidates. Upright competes with upright, bar with
-     bar, and the two bars are unambiguous because one is above the other. */
-  slotsFor(orient){ return orient === 'h' ? ['hA','hB'] : ['vert']; },
-  orientOf(slot){ return (slot === 'hA' || slot === 'hB') ? 'h' : 'v'; },
+     bar, lean with lean, and within each of those the positions are far
+     enough apart to be told apart. */
+  slotsFor(orient){ return T1.OWNS[orient] || []; },
+  orientOf(slot){ return T1.OF[slot] || 'v'; },
+  orientOfStick(s){
+    return s.eq ? this.orientOf(s.slot) : this.orientOfRot(s.rot || 0);
+  },
+  nextOrient(o){
+    const i = T1.ORIENT.indexOf(o);
+    return T1.ORIENT[(i + 1) % T1.ORIENT.length];
+  },
+  /* A matchstick lying at 24 degrees and one at 204 are the same matchstick,
+     so the comparison is modulo half a turn. */
+  orientOfRot(rot){
+    const half = a => ((a % 180) + 180) % 180;
+    let best = 'v', bd = Infinity;
+    for (const o of T1.ORIENT){
+      const raw = Math.abs(half(T1.ANGLE[o]) - half(rot));
+      const d = Math.min(raw, 180 - raw);
+      if (d < bd){ bd = d; best = o; }
+    }
+    return best;
+  },
 
+  /* An orientation is always given — place() fills one in if a caller forgets
+     — so there is no "any position" branch here any more. There used to be,
+     it listed three of the five positions, and anything that reached it got
+     the ambiguity back without saying so. */
   nearestSlot(x, y, self, orient){
-    let best = null, bestD = orient ? 999 : 34;
-    const slots = orient ? this.slotsFor(orient) : this.DROPS;
+    let best = null, bestD = 999;
+    const slots = this.slotsFor(orient);
     for (const eq of ['A','B']){
       for (let col = 0; col < T1.LAYOUT[eq].length; col++){
         for (const slot of slots){
           const taken = this.w.sticks.some(s => s !== self && s.eq === eq && s.col === col && s.slot === slot);
           if (taken) continue;
           const c = this.slotCentre(eq, col, slot);
-          if (orient && (Math.abs(c.x - x) > T1.COLW * 0.75 || Math.abs(c.y - y) > 46)) continue;
+          if (Math.abs(c.x - x) > T1.COLW * T1.SNAPK || Math.abs(c.y - y) > T1.SNAPY) continue;
           const d = Math.hypot(c.x - x, c.y - y);
           if (d < bestD){ bestD = d; best = { eq, col, slot }; }
         }
@@ -1634,6 +1721,19 @@ const T2 = {
   WIDTH: 200,               // asphalt, kerb to kerb
   VERGE: 96,                // run-off outside the kerb, out to the barrier
   VIEW: 900,                // world units across the frame, at any width
+  /* The count starts at five with the camera sat back off the whole grid, so
+     you can see who you are racing before you race them, and comes in to the
+     car from three.
+
+     1.5 is not the biggest number that works, it is the one that trades best.
+     Once the grid boxes were sized for this lap rather than the old one the
+     whole field fits at 1.0 with 82 units to spare, so the pull-back buys
+     framing rather than visibility — and every notch of it spends clearance
+     against the finish, which sits 1,371 units behind the grid and must not
+     appear before a wheel has turned. At 1.9 that clearance was down to 193.
+     At 1.5 it is 405 and the outermost car still sits 211 inside the edge.
+     Both numbers have floors in ?selftest=1 rather than a bare "> 0". */
+  GRIDZOOM: 1.5, ZOOM_IN: 3.0,
 
   FINISH: 0.95,
   BOOSTS: [0.075, 0.276, 0.398, 0.529],
@@ -1653,9 +1753,16 @@ const T2 = {
   ],
   /* Five boxes, yours at the back. They sit AHEAD of the start line so that
      "behind the line" stays an unambiguous reading rather than a fact about
-     where you were parked. */
-  GRID: [ { t:0.0105, lat:-46 }, { t:0.0210, lat:46 }, { t:0.0315, lat:-46 },
-          { t:0.0420, lat:46 },  { t:0.0525, lat:-46 } ],
+     where you were parked.
+
+     These are fractions of a lap, and the lap is three times what it was, so
+     the old numbers quietly became six car lengths of gap and boxes 218 units
+     long for a 46-unit car. BOX is the half-length in lap fractions and is
+     used by the painter too, so the box, the number in it and the line across
+     it cannot be rescaled apart from each other again. */
+  GRID: [ { t:0.0034, lat:-46 }, { t:0.0068, lat:46 }, { t:0.0102, lat:-46 },
+          { t:0.0136, lat:46 },  { t:0.0170, lat:-46 } ],
+  BOX: 0.00135,             // ~35 world units: half a grid box, half the line
 
   ACC:320, ACC_B:520, BRAKE:560, REV:200, COAST:0.9, SPILL:300,
   VMAX:340, VBOOST:520, VREV:210, BOOST_S:2.6,
@@ -1983,7 +2090,9 @@ const STAGE2 = {
       x:p.x + p.nx*g.lat, y:p.y + p.ny*g.lat, a:p.a, v:0, steer:0,
       t:g.t, tPrev:g.t, prog:0, lat:g.lat,
       z:0, air:null, fall:0, over:0, overMsg:'', spin:0, wet:false, boost:0,
-      lights: first ? 3.2 : 1.4, last:0,
+      lights: first ? 5.4 : 3.2, last:0,
+      // only the first count gets the wide opening; a restart is not a parade
+      wide: !!first, zoom: first ? T2.GRIDZOOM : 1,
       camX:0, camY:0, marks:[], dust:[], skid:0,
     };
     this.RUN.camX = this.RUN.x; this.RUN.camY = this.RUN.y;
@@ -2391,8 +2500,25 @@ const STAGE2 = {
   camera(dt){
     const R = this.RUN;
     if (!R) return;
-    const tx = R.x + Math.cos(R.a) * R.v * 0.22;
-    const ty = R.y + Math.sin(R.a) * R.v * 0.22;
+
+    const want = (R.wide && R.lights > T2.ZOOM_IN) ? T2.GRIDZOOM : 1;
+    R.zoom += (want - R.zoom) * Math.min(1, dt * 2.3);
+    if (Math.abs(R.zoom - want) < 0.004) R.zoom = want;
+
+    let tx, ty;
+    if (R.lights > 0){
+      /* Off the middle of the grid rather than off your own car, or the four
+         ahead of you are simply out of frame and the pull-back shows you an
+         empty road. The pan and the zoom run off the same number, so they
+         arrive together instead of the frame sliding after it has settled. */
+      const g = T2.GRID[Math.floor(T2.GRID.length / 2)], m = T2.at(g.t);
+      const f = clamp((R.zoom - 1) / (T2.GRIDZOOM - 1), 0, 1);
+      tx = R.x + (m.x - R.x) * f;
+      ty = R.y + (m.y - R.y) * f;
+    } else {
+      tx = R.x + Math.cos(R.a) * R.v * 0.22;
+      ty = R.y + Math.sin(R.a) * R.v * 0.22;
+    }
     const k = Math.min(1, dt * 4.5);
     R.camX += (tx - R.camX) * k;
     R.camY += (ty - R.camY) * k;
@@ -2459,7 +2585,7 @@ const STAGE2 = {
   paint(){
     const c = this.ctx, R = this.RUN;
     if (!R) return;
-    const W = this.VW, H = this.VH, S = this.SCALE, still = prefersStill();
+    const W = this.VW, H = this.VH, S = this.SCALE / (R.zoom || 1), still = prefersStill();
     const hw = T2.WIDTH/2;
 
     c.setTransform(this.DPR, 0, 0, this.DPR, 0, 0);
@@ -2530,11 +2656,11 @@ const STAGE2 = {
     // the grid, and the line across it
     const gp = T2.at(0);
     if (near(gp.x, gp.y, 460)){
-      this.chequer(c, -0.0042, 0.0042, 10, 2, '#e9e5da', '#1b1d20');
+      this.chequer(c, -T2.BOX, T2.BOX, 10, 2, '#e9e5da', '#1b1d20');
       c.strokeStyle = 'rgba(232,230,225,.62)'; c.lineWidth = 3;
       T2.GRID.forEach((b, i) => {
-        const q = [T2.edge(b.t - 0.0042, b.lat - 26), T2.edge(b.t - 0.0042, b.lat + 26),
-                   T2.edge(b.t + 0.0042, b.lat + 26), T2.edge(b.t + 0.0042, b.lat - 26)];
+        const q = [T2.edge(b.t - T2.BOX, b.lat - 26), T2.edge(b.t - T2.BOX, b.lat + 26),
+                   T2.edge(b.t + T2.BOX, b.lat + 26), T2.edge(b.t + T2.BOX, b.lat - 26)];
         c.beginPath();
         c.moveTo(q[0][0], q[0][1]);
         for (let k = 1; k < 4; k++) c.lineTo(q[k][0], q[k][1]);
@@ -2543,7 +2669,7 @@ const STAGE2 = {
            it covers the number. Upright, not along the track: the camera
            never rotates, so a number rotated with the asphalt is just a
            number lying on its side. */
-        const m = T2.edge(b.t - 0.0033, b.lat);
+        const m = T2.edge(b.t - T2.BOX * 0.78, b.lat);
         c.save(); c.translate(m[0], m[1]);
         c.fillStyle = 'rgba(232,230,225,.5)';
         c.font = '700 20px ui-monospace,Menlo,monospace';
@@ -2646,7 +2772,7 @@ const STAGE2 = {
 
     const fp = T2.at(T2.FINISH);
     if (near(fp.x, fp.y, 520))
-      this.chequer(c, T2.FINISH - 0.0045, T2.FINISH + 0.0045, 10, 3, '#e9e5da', '#15171a');
+      this.chequer(c, T2.FINISH - T2.BOX, T2.FINISH + T2.BOX, 10, 3, '#e9e5da', '#15171a');
 
     // cars, rivals first so yours is never behind one
     for (const o of this.cars) if (near(o.x, o.y, 90)) this.car(c, o, T2LIVERY[1 + o.k]);
@@ -2785,14 +2911,17 @@ const STAGE2 = {
     }
 
     if (R.lights > 0){
-      const lit = R.lights > 0.8 ? Math.min(5, Math.ceil((3.2 - R.lights) / 0.5) + 1) : 0;
+      /* One number a second off the clock rather than a ladder of thresholds,
+         so a five-second count and a three-second one are the same code. */
+      const n = Math.ceil(R.lights - 0.4);
+      const lit = n > 0 ? clamp(6 - n, 0, 5) : 0;
       for (let i = 0; i < 5; i++){
         c.beginPath(); c.arc(W/2 - 64 + i*32, 26, 9, 0, Math.PI*2);
-        c.fillStyle = (R.lights > 0.8 && i < lit) ? '#d0403a' : 'rgba(255,255,255,.12)';
+        c.fillStyle = (i < lit) ? '#d0403a' : 'rgba(255,255,255,.12)';
         c.fill();
       }
-      const word = R.lights > 2.4 ? '3' : R.lights > 1.6 ? '2' : R.lights > 0.8 ? '1' : 'GO';
-      const pop = still ? 1 : 1 + 0.12 * Math.max(0, Math.sin(R.lights * Math.PI * 1.25));
+      const word = n > 0 ? String(n) : 'GO';
+      const pop = still ? 1 : 1 + 0.12 * Math.max(0, Math.sin((R.lights % 1) * Math.PI));
       c.save();
       c.translate(W/2, H/2);
       c.scale(pop, pop);
@@ -3580,6 +3709,48 @@ if (SELFTEST){
   ok('eqB has its chunk-decomposition solution', rB.ok && rB.str === 'III=III=III', rB.str);
   ok('roman numerals', romanVal('IV') === 4 && romanVal('VII') === 7 && romanVal('IX') === 9);
 
+  /* 1b. turning a matchstick reaches every position it can occupy. This is
+         the check the last fix needed and did not have: restricting a carried
+         stick to upright-or-flat did cure the plus that would not become an
+         equals, and it also quietly took both leaning positions out of reach,
+         so the V in the first equation could be taken apart and never put
+         back. Coverage, separation, and that the cycle closes. */
+  (function(){
+    const all = Object.keys(T1.SLOT).sort();
+    const owned = T1.ORIENT.reduce((a, o) => a.concat(STAGE1.slotsFor(o)), []).sort();
+    ok('turning reaches every matchstick position',
+       owned.length === all.length && all.every(x => owned.includes(x)),
+       owned.join(',') + ' vs ' + all.join(','));
+
+    let worst = Infinity, pair = '';
+    for (const o of T1.ORIENT){
+      const ss = STAGE1.slotsFor(o);
+      for (let i = 0; i < ss.length; i++)
+        for (let j = i + 1; j < ss.length; j++){
+          const a = T1.SLOT[ss[i]], b = T1.SLOT[ss[j]];
+          const d = Math.hypot(a.x - b.x, a.y - b.y);
+          if (d < worst){ worst = d; pair = ss[i] + '/' + ss[j]; }
+        }
+    }
+    ok('no orientation owns two positions that could be confused',
+       worst > 15, worst === Infinity ? 'one position each'
+                                      : pair + ' are ' + worst.toFixed(0) + ' apart');
+
+    let o = 'v', seen = [];
+    for (let i = 0; i < T1.ORIENT.length; i++){ o = STAGE1.nextOrient(o); seen.push(o); }
+    ok('turning four times comes back where it started', o === 'v', seen.join('→'));
+
+    ok('an arrow press clears the snap window',
+       T1.STEP > T1.COLW * T1.SNAPK && T1.STEP > T1.SNAPY,
+       T1.STEP + 'px against a window of ' + Math.round(T1.COLW * T1.SNAPK) +
+       ' by ' + T1.SNAPY);
+
+    ok('an angle reads back as the orientation that made it',
+       T1.ORIENT.every(x => STAGE1.orientOfRot(T1.ANGLE[x]) === x) &&
+       STAGE1.orientOfRot(204) === 'r' && STAGE1.orientOfRot(180) === 'v',
+       'including half a turn round');
+  })();
+
   // 2. the eight-coin problem: not already solved, solved by leaving the
   //    plane, and NOT solved by the same two moves kept flat
   (function(){
@@ -3745,6 +3916,39 @@ if (SELFTEST){
       wc = Math.min(wc, Math.hypot(ch.x - gx, ch.y - gy) - half);
     }
     ok('the finish is off screen from the grid', wf > 0, 'clearance ' + Math.round(wf));
+
+    /* And off screen during the count, which is the one moment the camera is
+       deliberately wider than the width everything else is checked at. It
+       looks back off the middle of the grid, which is further from the finish
+       than the car is — but further is not proof, so it is measured. */
+    const gm = T2.at(T2.GRID[Math.floor(T2.GRID.length / 2)].t);
+    let wz = Infinity;
+    for (let vw = 320; vw <= 1600; vw += 10){
+      const h = Math.max(250, Math.min(540, Math.round(vw * 0.62)));
+      const S = T2.scaleFor(vw) / T2.GRIDZOOM;
+      const half = Math.hypot(vw/S/2, h/S/2) + 140;
+      wz = Math.min(wz, Math.hypot(f.x - gm.x, f.y - gm.y) - half);
+    }
+    /* A floor, not a bare "> 0". Passing by nine units is not passing. */
+    ok('the finish is off screen during the count as well', wz > 250,
+       'clearance ' + Math.round(wz) + ' at ' + T2.GRIDZOOM + '\u00d7 out');
+
+    /* And the whole grid is inside that wider frame, which is what it is for.
+       The frame is a rectangle and the camera never rotates, so this is the
+       rectangle test and not a radius — a radius passes a car that is off the
+       top of a frame that is wider than it is tall, which this one is. */
+    let worstFit = Infinity;
+    for (let vw = 320; vw <= 1600; vw += 10){
+      const h = Math.max(250, Math.min(540, Math.round(vw * 0.62)));
+      const S = T2.scaleFor(vw) / T2.GRIDZOOM;
+      for (const b of T2.GRID){
+        const p = T2.at(b.t);
+        worstFit = Math.min(worstFit, vw/S/2 - Math.abs(p.x - gm.x),
+                                      h/S/2  - Math.abs(p.y - gm.y));
+      }
+    }
+    ok('every car on the grid is in frame for the count', worstFit > 80,
+       'tightest car clears the edge by ' + Math.round(worstFit));
     ok('the chasm is off screen from the grid', wc > 0, 'clearance ' + Math.round(wc));
     ok('the way back is the short way', (1 - T2.FINISH) < T2.FINISH,
        Math.round((1 - T2.FINISH) * T2.LAP) + ' back vs ' +
