@@ -28,6 +28,7 @@ export const ROUTES = [
   { path: '/36-questions', priority: 0.6, changefreq: 'monthly' },
   { path: '/mentor-mindset', priority: 0.8, changefreq: 'monthly' },
   { path: '/writing', priority: 0.8, changefreq: 'daily' },
+  { path: '/builds/paradigm-shifts', priority: 0.7, changefreq: 'monthly' },
   { path: '/alpha', priority: 0.7, changefreq: 'monthly' },
   { path: '/foundersschool', priority: 0.7, changefreq: 'monthly' },
   { path: '/writing/rabbit-holes/the-future-of-assessments', priority: 0.6, changefreq: 'monthly' },
