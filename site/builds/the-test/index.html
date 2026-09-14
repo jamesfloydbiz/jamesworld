@@ -477,19 +477,28 @@
             <rect x="468" y="300" width="18" height="6" rx="2" fill="#191b1f"/>
           </g>
 
-          <!-- the train, on the approach -->
+          <!-- The train, on the approach. Drawn short on purpose: the whole
+               approach is 136 units long and the old art was 86 tall, which
+               cannot sit in perspective on it at any size — a train far up
+               the line came out with its chimney above the horizon. Nose at
+               y=282, fifty units from end to end, and the transform scales it
+               about the nose. -->
           <g id="r3Train">
-            <polygon points="422,196 434,196 437,214 419,214" fill="#15171b"/>
-            <polygon points="419,216 437,216 441,232 415,232" fill="#181b20"/>
-            <polygon points="414,234 442,234 447,276 409,276" fill="#1d2129"/>
-            <polygon points="417,236 439,236 441,250 415,250" fill="#111318"/>
-            <rect x="421" y="239" width="14" height="8" rx="1" fill="#e8c98e" opacity="0.5"/>
-            <polygon points="409,276 447,276 448,282 408,282" fill="#101216"/>
-            <circle id="r3Lamp" cx="419" cy="279" r="3.6" fill="#ffe9bd"/>
-            <circle cx="437" cy="279" r="3.6" fill="#ffe9bd" opacity="0.85"/>
-            <polygon points="415,282 441,282 466,346 388,346" fill="#ffe9bd" opacity="0.07"/>
-            <path id="r3Smoke" d="M428,194 q-9,-14 1,-22 q10,-8 4,-18" stroke="#43454a"
-                  stroke-width="6" fill="none" stroke-linecap="round" opacity="0.5"/>
+            <!-- the beam first, so the engine sits in front of its own light -->
+            <polygon points="417,282 439,282 476,362 380,362" fill="#ffe9bd" opacity="0.10"/>
+            <polygon points="421,282 435,282 456,340 400,340" fill="#ffe9bd" opacity="0.10"/>
+            <polygon points="420,232 436,232 438,244 418,244" fill="#31363f"/>
+            <polygon points="417,246 439,246 442,276 414,276" fill="#3c434e"/>
+            <polygon points="417,246 425,246 423,276 414,276" fill="#4a525f"/>
+            <polygon points="420,249 436,249 437,261 419,261" fill="#12151b"/>
+            <rect x="422" y="251" width="12" height="8" rx="1" fill="#f0cf8d" opacity="0.85"/>
+            <polygon points="414,276 442,276 443,283 413,283" fill="#1a1e25"/>
+            <circle cx="421" cy="279" r="7" fill="#ffe9bd" opacity="0.2"/>
+            <circle cx="435" cy="279" r="7" fill="#ffe9bd" opacity="0.2"/>
+            <circle id="r3Lamp" cx="421" cy="279" r="3.4" fill="#fff4d8"/>
+            <circle cx="435" cy="279" r="3.4" fill="#fff4d8" opacity="0.9"/>
+            <path id="r3Smoke" d="M428,230 q-9,-13 1,-20 q10,-8 3,-16" stroke="#5a5f68"
+                  stroke-width="5" fill="none" stroke-linecap="round" opacity="0.55"/>
           </g>
 
           <!-- the permanent-way hut -->
@@ -3609,6 +3618,25 @@ const T3 = {
   atBlades(p){ return Math.hypot(p[0] - T3.BLADES[0], p[1] - T3.BLADES[1]) <= T3.BLADER; },
   atBrazier(p){ return Math.hypot(p[0] - 568, p[1] - 314) <= 34; },
 
+  /* The train comes down the approach and gets bigger, and never arrives.
+     Never arriving is deliberate and it is the whole of the design here:
+     a thing that lands measures who panics, and this instrument is for who
+     thinks. So the distance left decays towards a limit short of the points
+     and the rate decays with it — it is always moving, always closer, always
+     short. Nothing on the screen says it will get there, and nothing says it
+     will not, which is the honest version of a runaway train.
+
+     HOME is where the art is drawn on the line; the transform puts that
+     point wherever u says and scales about it. */
+  TRAIN: { home:0.618, start:0.20, limit:0.60, tau:46000, k0:0.10, k1:1.55 },
+  trainAt(u){
+    const [x, y] = T3.along(0, u);
+    const [hx, hy] = T3.along(0, T3.TRAIN.home);
+    const k = T3.TRAIN.k0 + u * T3.TRAIN.k1;
+    return 'translate(' + x.toFixed(1) + ',' + y.toFixed(1) + ') scale(' + k.toFixed(3) +
+           ') translate(' + (-hx).toFixed(1) + ',' + (-hy).toFixed(1) + ')';
+  },
+
   /* hidden is a property of HTMLElement and NOT of SVGElement, so el.hidden =
      false on an SVG group sets a JS expando that nothing reads and leaves the
      attribute — and the group — exactly where it was. Everything behind the
@@ -3690,9 +3718,8 @@ const STAGE3 = {
     this.done = false;
     this.outcome = 'broke';
     this.svg = document.getElementById('r3Svg');
-    const tr = document.getElementById('r3Train');
-    if (tr) tr.removeAttribute('transform');
     document.querySelectorAll('#r3Folk > g').forEach(g => g.removeAttribute('opacity'));
+    this.approach();
     this.paintPlaque();
     this.scatter();
     this.layObjects();
@@ -3725,6 +3752,7 @@ const STAGE3 = {
 
   unmount(){
     this.done = true;
+    if (this._rafTrain){ cancelAnimationFrame(this._rafTrain); this._rafTrain = 0; }
     onNameCommit = null;
     if (this.onPop) window.removeEventListener('popstate', this.onPop);
     const s = document.getElementById('r3Stick');
@@ -4085,17 +4113,37 @@ const STAGE3 = {
     this.runTheTrain(rail, killed);
   },
 
+  /* Coming, slowly, and getting bigger. Ambient: it drives nothing, it ends
+     nothing, and if the tab is hidden it simply stops until you come back. */
+  approach(){
+    const el = document.getElementById('r3Train');
+    if (!el) return;
+    if (this._rafTrain){ cancelAnimationFrame(this._rafTrain); this._rafTrain = 0; }
+    const T = T3.TRAIN, T0 = performance.now();
+    if (prefersStill()){ el.setAttribute('transform', T3.trainAt((T.start + T.limit) / 2)); return; }
+    const tick = () => {
+      if (this.done || SESSION.stage !== 3){ this._rafTrain = 0; return; }
+      const e = performance.now() - T0;
+      const u = T.limit - (T.limit - T.start) * Math.exp(-e / T.tau);
+      el.setAttribute('transform', T3.trainAt(u));
+      this._rafTrain = requestAnimationFrame(tick);
+    };
+    this._rafTrain = requestAnimationFrame(tick);
+  },
+
   /* The train goes down the road the lever set. Restrained on purpose: it
      moves, the figures on that road go dark, and that is all — the weight is
      meant to be in the sentence afterwards, not in the picture. */
   runTheTrain(rail, killed){
+    if (this._rafTrain){ cancelAnimationFrame(this._rafTrain); this._rafTrain = 0; }
     const train = document.getElementById('r3Train');
     const folk = Array.prototype.slice.call(
       document.querySelectorAll('#r3Folk > g[data-rail="' + rail + '"]'));
     const [a, b] = T3.RAILS[rail];
     const deg = Math.atan2(b[1]-a[1], b[0]-a[0]) * 180 / Math.PI;
-    const from = 103.2;                     // the way the train is drawn, pointing down the approach
-    const NOSE = [428, 279];
+    const [ax, ay] = T3.RAILS[0][0], [bx, by] = T3.RAILS[0][1];
+    const from = Math.atan2(by-ay, bx-ax) * 180 / Math.PI;   // the way it is drawn
+    const HOME = T3.along(0, T3.TRAIN.home);
     const still = prefersStill();
     const WORDS = { 1:'one person', 2:'two people', 3:'three people',
                     4:'four people', 5:'five people', 6:'six people' };
@@ -4120,10 +4168,10 @@ const STAGE3 = {
       const u = Math.min(1, (performance.now() - T0) / DUR);
       const e = u * u;                      // it is accelerating, not braking
       const [x, y] = T3.along(rail, e * 0.92);
-      const k = 1 + e * 1.5;
+      const k = (T3.TRAIN.k0 + T3.TRAIN.limit * T3.TRAIN.k1) + e * 1.4;
       if (train) train.setAttribute('transform',
         'translate(' + x.toFixed(1) + ',' + y.toFixed(1) + ') rotate(' + (deg - from).toFixed(1) +
-        ') scale(' + k.toFixed(3) + ') translate(' + (-NOSE[0]) + ',' + (-NOSE[1]) + ')');
+        ') scale(' + k.toFixed(3) + ') translate(' + (-HOME[0]).toFixed(1) + ',' + (-HOME[1]).toFixed(1) + ')');
       folk.forEach(g => {
         const fu = +g.dataset.u;
         if (e * 0.92 >= fu) g.setAttribute('opacity', '0.18');
