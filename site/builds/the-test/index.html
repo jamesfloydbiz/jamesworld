@@ -179,6 +179,15 @@
 
   .t1bar{display:flex; gap:10px; align-items:center; margin-top:10px; flex-wrap:wrap;}
   .t1note{font-size:12px; color:var(--faint);}
+  /* the reading sits under the button, one line per thing being judged */
+  .t1read{display:flex; flex-direction:column; gap:4px; margin-top:10px;}
+  .rd{display:flex; align-items:baseline; gap:9px; font-size:12.5px; color:var(--dim);}
+  .rd b{color:var(--faint); font-weight:400; width:1em; text-align:center;}
+  .rd code{font-family:inherit; color:var(--fg); letter-spacing:.08em;}
+  .rd i{font-style:normal; color:var(--faint);}
+  .badcol{position:absolute; width:40px; height:80px; border-radius:6px;
+    border:1px solid rgba(208,90,78,.6); background:rgba(208,90,78,.09);
+    pointer-events:none; z-index:3;}
 
   /* ══ TASK TWO — THE RUN ══════════════════════════════════════════════ */
   .run{position:relative; background:#0b0d10; border:1px solid var(--border);
@@ -306,8 +315,8 @@
 
     <div class="t1bar">
       <button class="btn" id="checkBtn">Check</button>
-      <span class="t1note" id="t1State"></span>
     </div>
+    <div class="t1read" id="t1State"></div>
 
     <div class="slot" id="slot1"><p></p></div>
     <div class="row" style="margin-top:14px;">
@@ -892,7 +901,9 @@ function tokenOf(set){
   if (n === 1 && (has('vert') || has('dL') || has('dR'))) return 'I';
   if (n === 1 && has('hA'))   return '-';
   if (n === 2 && has('dL') && has('dR'))   return 'V';
-  if (n === 2 && has('vert') && has('hA')) return '+';
+  // a bar through an upright is a plus, high bar or low. The two bar slots are
+  // sixteen pixels apart and nobody aiming for a plus means one of them.
+  if (n === 2 && has('vert') && (has('hA') || has('hB'))) return '+';
   if (n === 2 && has('hA') && has('hB'))   return '=';
   return '?';
 }
@@ -921,15 +932,17 @@ function evalExpr(p){
 /* The arrangement is evaluated. It is never compared against a stored answer,
    so an unintended true equation passes and the log records which one — the
    alternative punishes exactly the behaviour this whole thing exists to find. */
-function evalEquation(cols){
+function evalEquation(cols, eq){
   const toks = cols.map(tokenOf);
+  const bad  = [];
+  toks.forEach((t, col) => { if (t === '?') bad.push({ eq:eq, col:col }); });
   const str  = toks.join('');
-  if (!str || str.includes('?')) return { ok:false, str };
+  if (!str || str.indexOf('?') >= 0) return { ok:false, str:str, bad:bad };
   const parts = str.split('=');
-  if (parts.length < 2) return { ok:false, str };
+  if (parts.length < 2) return { ok:false, str:str, bad:bad };
   const vals = parts.map(evalExpr);
-  if (vals.some(v => v === null)) return { ok:false, str };
-  return { ok: vals.every(v => v === vals[0]), str, vals };
+  if (vals.some(v => v === null)) return { ok:false, str:str, bad:bad };
+  return { ok: vals.every(v => v === vals[0]), str:str, vals:vals, bad:bad };
 }
 
 /* Two coins on the table touch when their rims meet. A coin resting on
@@ -1083,14 +1096,44 @@ const STAGE1 = {
   },
 
 
+  /* What the table reads as, in its own words. A bare cross sent James round
+     in circles twice: once on an arrangement that plainly said VII = VII, and
+     once on a line that looked exactly like III = III = III with one stick a
+     slot out of place. This is not a hint about which arrangement is true —
+     it is the table saying what it currently sees, which is the difference
+     between measuring insight and measuring whether someone can guess the
+     parser. */
   paintState(){
-    const a = evalEquation(this.colsOf('A')), b = evalEquation(this.colsOf('B'));
     const el = document.getElementById('t1State');
-    el.textContent = this.w.checks
-      ? (a.ok ? '✓' : '✗') + ' · ' + (b.ok ? '✓' : '✗') +
-        ' · ' + (coinsDone(this.w.coins) ? '✓' : '✗')
-      : '';
+    if (!this.w.checks){ el.innerHTML = ''; this.markUnreadable([]); return; }
+    const a = evalEquation(this.colsOf('A'), 'A');
+    const b = evalEquation(this.colsOf('B'), 'B');
+    const read = r => {
+      const spaced = (r.str || '').replace(/([=+\-?])/g, ' $1 ').replace(/\s+/g, ' ').trim();
+      const note = r.str.indexOf('?') >= 0
+        ? ' <i>that shape is not a number or a sign</i>'
+        : (r.ok ? '' : ' <i>not true</i>');
+      return '<span class="rd"><b>' + (r.ok ? '\u2713' : '\u2717') + '</b><code>' +
+             (spaced || '\u2014') + '</code>' + note + '</span>';
+    };
+    el.innerHTML = read(a) + read(b) +
+      '<span class="rd"><b>' + (coinsDone(this.w.coins) ? '\u2713' : '\u2717') +
+      '</b><code>the coins</code></span>';
+    this.markUnreadable(a.bad.concat(b.bad));
   },
+
+  markUnreadable(list){
+    this.inner.querySelectorAll('.badcol').forEach(e => e.remove());
+    for (const item of list){
+      const o = this.colOrigin(item.eq, item.col);
+      const d = document.createElement('div');
+      d.className = 'badcol';
+      d.style.left = (o.x + 2) + 'px';
+      d.style.top  = (o.y - 4) + 'px';
+      this.inner.appendChild(d);
+    }
+  },
+
   colsOf(eq){
     return T1.LAYOUT[eq].map((_, col) =>
       this.w.sticks.filter(s => s.eq === eq && s.col === col).map(s => s.slot));
