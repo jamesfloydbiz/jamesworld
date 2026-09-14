@@ -254,6 +254,10 @@
 
   /* Where each problem comes from. Small, grey, and under the instruction —
      these are somebody else's problems and this says whose. */
+  /* The instruction, on the table rather than above it. */
+  .feltnote{position:absolute; left:40px; top:36px; margin:0; z-index:4;
+    font-size:12px; line-height:1.5; color:rgba(232,230,225,.42);
+    pointer-events:none; letter-spacing:.01em;}
   .cite{font-size:11px; color:var(--faint); margin:2px 0 14px; font-style:italic;}
   .rec{border:1px solid var(--border); border-radius:10px; background:var(--card);}
   .rec>summary{cursor:pointer; padding:14px 16px; font-size:13px; color:var(--dim);
@@ -393,15 +397,17 @@
     <header><p class="eyebrow" data-pos></p><h1 id="h1-1">Matchstick Arithmetic</h1></header>
     <p class="lede" id="t1Ask">Both lines are Roman numeral equations, and both are false.
       Move matchsticks to make them true.</p>
-    <p class="tiny" id="t1How">Drag a matchstick. R turns it.</p>
     <p class="cite">Knoblich, Ohlsson, Haider &amp; Rhenius (1999), <em>Constraint relaxation and
       chunk decomposition in insight problem solving</em></p>
 
     <div class="room1" id="room1">
       <div class="room1-inner" id="room1In">
         <div class="felt" id="felt"></div>
-        <div class="eqrow" id="eqA" style="top:40px;"></div>
-        <div class="eqrow" id="eqB" style="top:132px;"></div>
+        <!-- Centred down the felt. They sat in the top half with a third of
+             the table empty under them. -->
+        <div class="eqrow" id="eqA" style="top:96px;"></div>
+        <div class="eqrow" id="eqB" style="top:194px;"></div>
+        <p class="feltnote">Drag with the mouse. R turns a matchstick.</p>
       </div>
     </div>
 
@@ -1317,7 +1323,7 @@ function revealExit(n){
    corner of the screen two tasks later. */
 
 const T1 = {
-  COLW:42, COLH:72, LEN:48, TH:5,
+  COLW:40, COLH:72, LEN:48, TH:5,
   /* Air either side of an operator. A matchstick laid flat is 48 long and a
      column is 44 wide, so every equals sign and every plus spilled into the
      column beside it — the equals in the first line sat on the V next to it
@@ -1328,10 +1334,18 @@ const T1 = {
      on the table now. Read live, a column would stop being an operator the
      moment somebody moved the bar out of it, and the entire equation would
      jump sideways underneath their hand. */
-  OPGAP:15,
+  OPGAP:22,
   SLOT:{ vert:{x:22,y:34,r:0}, hA:{x:22,y:27,r:90}, hB:{x:22,y:43,r:90},
-         // the tops diverge and the feet meet: a V, not a caret
-         dL:{x:14,y:34,r:-24}, dR:{x:30,y:34,r:24} },
+         /* The tops diverge and the feet meet: a V, not a caret. Thirty
+            degrees each way rather than twenty-four, so the two arms are two
+            of the twelve positions R turns through and a V can be built by
+            turning rather than only by starting with one.
+
+            The feet have to MEET, and where they meet depends on the angle:
+            two arms half a matchstick long opened thirty degrees each way put
+            their feet 24 apart. The centres were 16 apart, so the arms crossed
+            eight units BELOW the point of the V instead of closing on it. */
+         dL:{x:10,y:34,r:-30}, dR:{x:34,y:34,r:30} },
 
   /* Four orientations, and R turns a matchstick clockwise through them:
      upright, leaning right, flat, leaning left. Each owns its own positions
@@ -1348,10 +1362,22 @@ const T1 = {
      so a stick could be arrowed for ever and never leave the felt. They are
      named here together so they cannot drift apart again. */
   SNAPY: 40, SNAPK: 0.75, STEP: 46,
-  ORIENT: ['v', 'r', 'h', 'l'],
-  ANGLE:  { v:0, r:24, h:90, l:-24 },
-  OWNS:   { v:['vert'], r:['dR'], h:['hA','hB'], l:['dL'] },
-  OF:     { vert:'v', dR:'r', hA:'h', hB:'h', dL:'l' },
+  /* Twelve positions, one every thirty degrees, like the hours on a clock.
+     R turns the matchstick to the next one. Six of them are the same LINE as
+     another six with the head at the other end — which is why the positions
+     that hold a symbol are worked out from the angle modulo half a turn, and
+     why a stick pointing down the way still makes a perfectly good upright.
+
+     Four of the twelve hold nothing: sixty and a hundred and twenty do not
+     name a shape here. A stick turned to one of those is not refused, it just
+     lies where it is put, which is the same thing that happens anywhere else
+     on the felt that is not a place for a symbol. */
+  ORIENT: ['h0','h1','h2','h3','h4','h5','h6','h7','h8','h9','h10','h11'],
+  ANGLE:  { h0:0, h1:30, h2:60, h3:90, h4:120, h5:150,
+            h6:180, h7:210, h8:240, h9:270, h10:300, h11:330 },
+  /* Which angle each place on a column wants, as a line rather than as a
+     direction: an upright is an upright whichever end the head is at. */
+  SLOTANG:{ vert:0, dR:30, hA:90, hB:90, dL:150 },
   // '_' is a latent column: it is never drawn and nothing refers to it.
   LAYOUT:{
     A:[['dL','dR'],['vert'],[],['hA','hB'],['dL','dR'],['vert'],['vert'],['vert','hA'],['vert']],
@@ -1790,8 +1816,17 @@ const STAGE1 = {
      that orientation are candidates. Upright competes with upright, bar with
      bar, lean with lean, and within each of those the positions are far
      enough apart to be told apart. */
-  slotsFor(orient){ return T1.OWNS[orient] || []; },
-  orientOf(slot){ return T1.OF[slot] || 'v'; },
+  /* Every place whose line matches this position. Two positions half a turn
+     apart own the same places, which is right: a matchstick laid flat is laid
+     flat whichever way its head points. */
+  slotsFor(orient){
+    const a = ((T1.ANGLE[orient] % 180) + 180) % 180;
+    return Object.keys(T1.SLOTANG).filter(k => T1.SLOTANG[k] === a);
+  },
+  orientOf(slot){
+    const a = T1.SLOTANG[slot];
+    return T1.ORIENT.find(o => T1.ANGLE[o] === a) || 'h0';
+  },
   orientOfStick(s){
     return s.eq ? this.orientOf(s.slot) : this.orientOfRot(s.rot || 0);
   },
@@ -1802,11 +1837,11 @@ const STAGE1 = {
   /* A matchstick lying at 24 degrees and one at 204 are the same matchstick,
      so the comparison is modulo half a turn. */
   orientOfRot(rot){
-    const half = a => ((a % 180) + 180) % 180;
-    let best = 'v', bd = Infinity;
+    const full = a => ((a % 360) + 360) % 360;
+    let best = 'h0', bd = Infinity;
     for (const o of T1.ORIENT){
-      const raw = Math.abs(half(T1.ANGLE[o]) - half(rot));
-      const d = Math.min(raw, 180 - raw);
+      const raw = Math.abs(full(T1.ANGLE[o]) - full(rot));
+      const d = Math.min(raw, 360 - raw);
       if (d < bd){ bd = d; best = o; }
     }
     return best;
@@ -5309,8 +5344,8 @@ if (QS.get('dbg') === 'stick'){
 if (window.matchMedia && window.matchMedia('(hover:none) and (pointer:coarse)').matches){
   const t2 = document.getElementById('t2How');
   if (t2) t2.textContent = 'Use the pads to drive.';
-  const t1 = document.getElementById('t1How');
-  if (t1) t1.textContent = 'Drag a matchstick or a coin. Tap one, then R, to turn it.';
+  const t1 = document.querySelector('#p1 .feltnote');
+  if (t1) t1.textContent = 'Drag with a finger. Tap one, then R, to turn it.';
   const t3 = document.getElementById('t3How');
   if (t3) t3.textContent = 'Tap a lever.';
 }
@@ -5378,7 +5413,9 @@ if (SELFTEST){
          back. Coverage, separation, and that the cycle closes. */
   (function(){
     const all = Object.keys(T1.SLOT).sort();
-    const owned = T1.ORIENT.reduce((a, o) => a.concat(STAGE1.slotsFor(o)), []).sort();
+    /* Unique, because two positions half a turn apart own the same places —
+       an upright is an upright whichever end the head is at. */
+    const owned = [...new Set(T1.ORIENT.reduce((a, o) => a.concat(STAGE1.slotsFor(o)), []))].sort();
     ok('turning reaches every matchstick position',
        owned.length === all.length && all.every(x => owned.includes(x)),
        owned.join(',') + ' vs ' + all.join(','));
@@ -5397,19 +5434,44 @@ if (SELFTEST){
        worst > 15, worst === Infinity ? 'one position each'
                                       : pair + ' are ' + worst.toFixed(0) + ' apart');
 
-    let o = 'v', seen = [];
-    for (let i = 0; i < T1.ORIENT.length; i++){ o = STAGE1.nextOrient(o); seen.push(o); }
-    ok('turning four times comes back where it started', o === 'v', seen.join('→'));
+    let o = T1.ORIENT[0], seen = [];
+    for (let i = 0; i < T1.ORIENT.length; i++){ o = STAGE1.nextOrient(o); seen.push(T1.ANGLE[o]); }
+    ok('turning right round comes back where it started', o === T1.ORIENT[0],
+       T1.ORIENT.length + ' positions: ' + seen.join('°, ') + '°');
+
+    /* Every one of the twelve has to be reachable and distinct, or "turn it
+       to any hour on the clock" is not what the key does. */
+    const angles = T1.ORIENT.map(x => T1.ANGLE[x]);
+    ok('there are twelve positions, thirty degrees apart',
+       angles.length === 12 && angles.every((a, i) => a === i * 30),
+       angles.join(', '));
+
+    /* And the V has to be buildable by turning rather than only by starting
+       with one: its two arms have to BE two of the twelve. */
+    /* And the V closes. Two arms of half a matchstick opened to the angle the
+       slots use put their feet 2*(LEN/2)*sin(angle) apart, and the slot
+       centres have to be that far apart or the arms cross below the point
+       instead of meeting at it. */
+    const foot = 2 * (T1.LEN / 2) * Math.sin(Math.abs(T1.SLOT.dR.r) * Math.PI / 180);
+    ok('the two arms of a V meet at the bottom rather than crossing',
+       Math.abs((T1.SLOT.dR.x - T1.SLOT.dL.x) - foot) < 1.5,
+       'centres ' + (T1.SLOT.dR.x - T1.SLOT.dL.x) + ' apart, feet want ' + foot.toFixed(1));
+
+    ok('both arms of a V are positions you can turn to',
+       angles.indexOf(((T1.SLOT.dR.r % 360) + 360) % 360) >= 0 &&
+       angles.indexOf(((T1.SLOT.dL.r % 360) + 360) % 360) >= 0,
+       'arms at ' + T1.SLOT.dL.r + '° and ' + T1.SLOT.dR.r + '°');
 
     ok('an arrow press clears the snap window',
        T1.STEP > T1.COLW * T1.SNAPK && T1.STEP > T1.SNAPY,
        T1.STEP + 'px against a window of ' + Math.round(T1.COLW * T1.SNAPK) +
        ' by ' + T1.SNAPY);
 
-    ok('an angle reads back as the orientation that made it',
+    ok('an angle reads back as the position that made it',
        T1.ORIENT.every(x => STAGE1.orientOfRot(T1.ANGLE[x]) === x) &&
-       STAGE1.orientOfRot(204) === 'r' && STAGE1.orientOfRot(180) === 'v',
-       'including half a turn round');
+       T1.ANGLE[STAGE1.orientOfRot(-30)] === 330 &&
+       T1.ANGLE[STAGE1.orientOfRot(388)] === 30,
+       'all twelve, and negative and over-a-turn angles land right');
   })();
 
   /* 1c. the nine dots. The whole item rests on one claim — that four lines
