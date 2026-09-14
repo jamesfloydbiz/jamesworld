@@ -24,7 +24,7 @@
   <style>
     .post-list { list-style: none; padding: 0; margin: 0; }
     .post-list-item {
-      border-bottom: 1px solid var(--border);
+      border-bottom: 1px solid var(--brown-15);
       padding-bottom: 2rem;
       margin-bottom: 2rem;
     }
@@ -46,12 +46,15 @@
       line-height: 1.3;
     }
     @media (min-width: 768px) { .post-title { font-size: 1.75rem; } }
+    /* The dateline is an editorial mark, so it is the tobacco. It is the
+       only warm thing in a card, which is why it reads as considered rather
+       than as colour for its own sake. */
     .post-meta {
       font-family: var(--font-mono);
       font-size: 11px;
       letter-spacing: 0.2em;
       text-transform: uppercase;
-      color: var(--fg-50);
+      color: var(--brown);
       margin-bottom: 0.75rem;
     }
     .post-excerpt {
@@ -66,17 +69,26 @@
       font-size: 11px;
       letter-spacing: 0.2em;
       text-transform: uppercase;
-      color: var(--fg-50);
+      color: var(--green-70);
       transition: color 0.2s;
     }
-    .post-list-btn:hover .post-cta { color: var(--fg); }
+    .post-list-btn:hover .post-cta { color: var(--green); }
+
+    /* A link in the standfirst keeps the prose colour and takes the sage
+       under it, so the eye finds it without the word changing colour. */
+    .page-subtitle .prose-link, .noscript-note .prose-link {
+      text-decoration-color: var(--green-30);
+    }
+    .page-subtitle .prose-link:hover, .noscript-note .prose-link:hover {
+      text-decoration-color: var(--green);
+    }
 
     /* ── Tab strip: Letters / Posts ─────────────────────────────────────── */
     .writing-tabs {
       display: flex;
       flex-wrap: wrap;
       gap: 0 2px;
-      border-bottom: 1px solid var(--border);
+      border-bottom: 1px solid var(--brown-15);
       margin: 0 0 2.5rem;
     }
     .writing-tab {
@@ -99,8 +111,9 @@
       .writing-tab { padding: 10px 10px; letter-spacing: 0.08em; }
     }
     .writing-tab:hover { color: var(--fg-70); }
-    .writing-tab.is-active { color: var(--fg); border-bottom-color: var(--fg); }
-    .writing-tab .count { color: var(--fg-30); margin-left: 6px; }
+    .writing-tab.is-active { color: var(--fg); border-bottom-color: var(--green); }
+    .writing-tab .count { color: var(--brown-45); margin-left: 6px; }
+    .writing-tab.is-active .count { color: var(--brown-70); }
 
     /* The lists/grids swap based on the active tab. Each sets its own display
        (grid/flex), so a plain [hidden] attribute isn't enough — force it. */
@@ -119,8 +132,8 @@
       transition: border-color 0.2s, background 0.2s;
     }
     .rh-shelf__card:hover {
-      border-color: var(--fg-45);
-      background: rgba(255,255,255,0.02);
+      border-color: var(--green-30);
+      background: var(--green-12);
     }
     .rh-shelf__eyebrow {
       display: block;
@@ -128,7 +141,7 @@
       font-size: 0.7rem;
       letter-spacing: 0.15em;
       text-transform: uppercase;
-      color: var(--fg-55);
+      color: var(--brown);
       margin-bottom: 8px;
     }
     .rh-shelf__title {
@@ -151,8 +164,10 @@
       font-size: 0.72rem;
       letter-spacing: 0.1em;
       text-transform: uppercase;
-      color: var(--fg-70);
+      color: var(--green-70);
+      transition: color 0.2s;
     }
+    .rh-shelf__card:hover .rh-shelf__cta { color: var(--green); }
 
     /* ── LinkedIn list controls (sort + curated/all toggle) ─────────────── */
     .li-controls {
@@ -181,12 +196,12 @@
       transition: color 0.2s;
     }
     .li-controls__btn:hover { color: var(--fg-80); }
-    .li-controls__btn.is-active { color: var(--fg); border-bottom: 1px solid var(--fg); }
+    .li-controls__btn.is-active { color: var(--fg); border-bottom: 1px solid var(--green); }
 
     /* ── LinkedIn post card (collapsed) ─────────────────────────────────── */
     .li-post-list { list-style: none; padding: 0; margin: 0; }
     .li-post-item {
-      border-bottom: 1px solid var(--border);
+      border-bottom: 1px solid var(--brown-15);
       padding-bottom: 2rem;
       margin-bottom: 2rem;
     }
@@ -206,7 +221,7 @@
       font-size: 11px;
       letter-spacing: 0.18em;
       text-transform: uppercase;
-      color: var(--fg-50);
+      color: var(--brown);
       margin-bottom: 0.5rem;
     }
     .li-post-chip {
@@ -229,10 +244,10 @@
       font-size: 11px;
       letter-spacing: 0.2em;
       text-transform: uppercase;
-      color: var(--fg-50);
+      color: var(--green-70);
       transition: color 0.2s;
     }
-    .li-post-btn:hover .li-post-cta { color: var(--fg); }
+    .li-post-btn:hover .li-post-cta { color: var(--green); }
 
     /* Full-post modal */
     .post-modal {
@@ -265,7 +280,7 @@
       font-size: 11px;
       letter-spacing: 0.2em;
       text-transform: uppercase;
-      color: var(--fg-40);
+      color: var(--brown-70);
     }
     .post-modal__close {
       font-family: var(--font-mono);

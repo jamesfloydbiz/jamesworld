@@ -30,7 +30,25 @@
   --fg-30: hsl(0 0% 100% / 0.30);
   --fg-25: hsl(0 0% 100% / 0.25);   /* 2.02:1 on black — decorative only, never text */
   --fg-20: hsl(0 0% 100% / 0.20);
+  --fg-15: hsl(0 0% 100% / 0.15);
   --fg-12: hsl(0 0% 100% / 0.12);
+
+  /* ── Two accents, and only on the furniture ───────────────────────────
+     A sage for anything you can act on — a link, the tab you are in, the
+     line that says read on — and a tobacco for the editorial marks: dates,
+     kickers, the rule beside a quotation. The prose itself never takes a
+     colour, so the page still reads as black and white with two warm
+     things in it rather than as a coloured page. Both clear AA on black at
+     small sizes; the low-alpha steps are for rules and never for text. */
+  --green:    hsl(152 24% 62%);
+  --green-70: hsl(152 24% 62% / 0.70);
+  --green-30: hsl(152 24% 62% / 0.30);
+  --green-12: hsl(152 24% 62% / 0.12);
+  --brown:    hsl(30 34% 62%);
+  --brown-70: hsl(30 34% 62% / 0.70);
+  --brown-45: hsl(30 34% 62% / 0.45);
+  --brown-15: hsl(30 34% 62% / 0.15);
+  --acc: var(--green);
 
   /* Surface colors */
   --card-bg:      hsl(0 0% 2%);

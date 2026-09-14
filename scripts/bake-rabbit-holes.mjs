@@ -476,9 +476,11 @@ function pageTemplate(slug, meta, timelineItems, articleHtml) {
       box-sizing: border-box;
       transition: background 0.2s, border-color 0.2s;
     }
+    /* The dot for the section you are in. Sage, like everything else on the
+       page you can act on, and the one saturated thing in the left column. */
     .rh-timeline__item.is-active::before {
-      background: var(--fg);
-      border-color: var(--fg);
+      background: var(--green);
+      border-color: var(--green);
     }
     .rh-timeline__link {
       display: block;
@@ -498,11 +500,11 @@ function pageTemplate(slug, meta, timelineItems, articleHtml) {
       display: block;
       font-size: 0.62rem;
       letter-spacing: 0.05em;
-      color: var(--fg-30);
+      color: var(--brown-45);
       text-transform: none;
       margin-top: 2px;
     }
-    .rh-timeline__item.is-active .rh-timeline__date { color: var(--fg-55); }
+    .rh-timeline__item.is-active .rh-timeline__date { color: var(--brown); }
 
     /* Article (right column) */
     .rh-article { max-width: 680px; min-width: 0; }
@@ -517,7 +519,7 @@ function pageTemplate(slug, meta, timelineItems, articleHtml) {
       font-size: 0.72rem;
       letter-spacing: 0.15em;
       text-transform: uppercase;
-      color: var(--fg-55);
+      color: var(--brown);
       margin-bottom: 12px;
     }
     .rh-article__title {
@@ -541,7 +543,7 @@ function pageTemplate(slug, meta, timelineItems, articleHtml) {
       font-size: 0.72rem;
       letter-spacing: 0.08em;
       text-transform: uppercase;
-      color: var(--fg-45);
+      color: var(--brown-70);
     }
 
     .rh-section { margin-bottom: 40px; scroll-margin-top: 96px; }
@@ -557,15 +559,16 @@ function pageTemplate(slug, meta, timelineItems, articleHtml) {
     }
     /* A heading that goes somewhere says so, quietly — the arrow is the tell,
        since an underline on a heading this small reads as a mistake. */
-    .rh-section__to { color: inherit; text-decoration: none; border-bottom: 1px solid var(--fg-25); }
+    .rh-section__to { color: inherit; text-decoration: none; border-bottom: 1px solid var(--green-30); }
     .rh-section__to::after { content: ' →'; }
-    .rh-section__to:hover, .rh-section__to:focus-visible { color: var(--acc, #6ee7a8); }
+    .rh-section__to:hover, .rh-section__to:focus-visible {
+      color: var(--green); border-bottom-color: var(--green); }
     .rh-section__date {
       display: inline-block;
       margin-left: 10px;
       font-size: 0.72rem;
       letter-spacing: 0.08em;
-      color: var(--fg-45);
+      color: var(--brown);
       text-transform: none;
       font-weight: normal;
     }
@@ -579,7 +582,7 @@ function pageTemplate(slug, meta, timelineItems, articleHtml) {
     .rh-quote {
       margin: 1.8rem 0;
       padding: 0 0 0 20px;
-      border-left: 2px solid var(--fg-45);
+      border-left: 2px solid var(--brown-45);
       font-family: 'Lora', Georgia, serif;
       font-size: 1.18rem;
       line-height: 1.65;
@@ -590,7 +593,7 @@ function pageTemplate(slug, meta, timelineItems, articleHtml) {
        without them, and a reader who wants the receipt clicks through. */
     .rh-fn { font-size: 0.62em; line-height: 0; vertical-align: super; margin-left: 1px; }
     .rh-fn a { color: var(--fg-40); text-decoration: none; }
-    .rh-fn a:hover { color: var(--acc, #6ee7a8); }
+    .rh-fn a:hover { color: var(--green); }
 
     /* Sources, collapsed. Seventy-odd citations under an essay is a wall, so it
        stays shut until asked for. */
@@ -665,7 +668,7 @@ function pageTemplate(slug, meta, timelineItems, articleHtml) {
       font-size: 0.72rem;
       line-height: 1.6;
       letter-spacing: 0.02em;
-      color: var(--fg-55);
+      color: var(--brown-70);
       margin-top: 10px;
     }
     .rh-section .rh-list {
