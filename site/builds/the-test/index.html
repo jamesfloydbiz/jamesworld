@@ -2403,7 +2403,7 @@ const STAGE2 = {
       t:g.t, tPrev:g.t, prog:0, lat:g.lat,
       z:0, air:null, fall:0, over:0, overMsg:'', spin:0, wet:false, boost:0,
       tun:null,
-      lights: first ? 5.4 : 3.2, last:0,
+      lights: first ? 5.4 : 3.2, last:0, raceT:0,
       // only the first count gets the wide opening; a restart is not a parade
       wide: !!first, zoom: first ? T2.GRIDZOOM : 1,
       camX:0, camY:0, marks:[], dust:[], skid:0,
@@ -2447,6 +2447,7 @@ const STAGE2 = {
       this.camera(dt); this.telemetry();
       return;
     }
+    R.raceT += dt;
     this.runCars(dt);
     this.decay(dt);
     if (R.tun) return this.ride(dt);
@@ -2570,15 +2571,42 @@ const STAGE2 = {
      going forwards and LAST while you are not, which is both true and the
      point — reverse off the line and you watch yourself drop to eleventh,
      and you come up out of the tube in first. Nothing says that will happen. */
+  /* How far round you are, in the same units the rivals are measured in.
+
+     Signed lap progress, not raw position on the lap: raw position wraps past
+     1, so the instant you cross the line backwards you are at 0.999 and the
+     board calls you the leader for a frame before it calls you last.
+
+     In the tube it runs from wherever you went in to where it comes out. You
+     are not standing still down there — you are going past all of them, one
+     at a time, and the board counts up as you do. That is the truth of it and
+     it is the best thing that happens in this task. */
+  myProg(){
+    const R = this.RUN;
+    if (!R) return -1;
+    if (R.tun){
+      const u = clamp(R.tun.s / T2.TUNL, 0, 1);
+      return R.tun.p0 + (T2.TUNOUT - R.tun.p0) * u;
+    }
+    return R.prog + T2.GRID[0].t;
+  },
+  myName(){
+    const v = (SESSION.name || '').trim();
+    return v ? v.toUpperCase().slice(0, 9) : 'YOU';
+  },
+  /* Everybody, sorted. One list, so the board and the position can never
+     disagree about who is where. */
+  order(){
+    const rows = this.cars.map(o => ({ name:'#' + T2LIVERY[1 + o.k].num, prog:o.t }));
+    rows.push({ name:this.myName(), prog:this.myProg(), me:true });
+    rows.sort((a, b) => b.prog - a.prog);
+    rows.forEach((r, i) => { r.pos = i + 1; });
+    return rows;
+  },
   position(){
     const R = this.RUN;
     if (!R) return T2.GRID.length;
-    /* Signed lap progress, not raw position on the lap. Raw position wraps
-       past 1, so the instant you cross the line backwards you are at 0.999
-       and the board calls you the leader for a frame before it calls you
-       last. Progress just goes negative, which is what going backwards is.
-       No rival ever passes the gap, so their own t needs no such care. */
-    const mine = R.tun ? -1 : (R.prog + T2.GRID[0].t);
+    const mine = this.myProg();
     let ahead = 0;
     for (const o of this.cars) if (o.t > mine) ahead++;
     return ahead + 1;
@@ -2611,7 +2639,7 @@ const STAGE2 = {
 
   intoTheTunnel(p){
     const R = this.RUN, w = this.w;
-    R.tun = { s:0, pct:0 };
+    R.tun = { s:0, pct:0, p0:R.prog + T2.GRID[0].t };
     R.air = null; R.fall = 0; R.z = 0;
     R.v = Math.max(200, Math.abs(R.v));
     if (!w.escaped){
@@ -3355,7 +3383,12 @@ const STAGE2 = {
     this.car(c, R, T2LIVERY[0]);
     c.restore();
 
-    this.posBoard(c, W, H);
+    this.board(c, W, H);
+    // the chevrons run right under this, so it gets something to sit on
+    const grad = c.createLinearGradient(0, H - 72, 0, H);
+    grad.addColorStop(0, 'rgba(7,7,10,0)');
+    grad.addColorStop(1, 'rgba(7,7,10,.85)');
+    c.fillStyle = grad; c.fillRect(W - 180, H - 72, 180, 72);
     c.textAlign = 'right'; c.textBaseline = 'alphabetic';
     c.fillStyle = 'rgba(70,214,224,.95)';
     c.font = '700 30px ui-monospace,Menlo,monospace';
@@ -3442,32 +3475,70 @@ const STAGE2 = {
     c.globalAlpha = 1;
   },
 
-  /* The board. Top left, out of the way of the speed and the lights. */
-  posBoard(c, W, H){
+  /* The board: the top five and you, top right, with the clock on the leader
+     and everyone else's gap to them. Drawn from order(), so it cannot say one
+     thing while the position says another. It is clamped to the canvas rather
+     than trusted to fit — at a narrow width it used to run off the edge. */
+  board(c, W, H){
     const R = this.RUN;
     if (!R || R.lights > 0) return;
-    const p = this.position(), n = T2.GRID.length;
-    const lead = p === 1;
-    c.fillStyle = 'rgba(11,11,12,.72)';
-    c.fillRect(14, 14, 74, 40);
-    c.strokeStyle = lead ? 'rgba(201,162,39,.85)' : 'rgba(80,80,90,.7)';
-    c.lineWidth = 1;
-    c.strokeRect(14.5, 14.5, 73, 39);
-    c.textAlign = 'left'; c.textBaseline = 'alphabetic';
-    c.fillStyle = 'rgba(138,138,147,.8)';
+    const rows = this.order();
+    const mine = rows.find(r => r.me);
+    const top = rows.slice(0, 5);
+    const list = top.indexOf(mine) >= 0 ? top : top.concat([null, mine]);
+
+    const RH = 22, HDR = 26, PAD = 10;
+    const WID = Math.min(230, Math.max(150, W - PAD * 2));
+    const HGT = HDR + list.length * RH + 8;
+    const x = Math.max(PAD, W - WID - PAD), y = PAD;
+
+    c.save();
+    c.fillStyle = 'rgba(10,10,12,.80)';
+    c.fillRect(x, y, WID, HGT);
+    c.strokeStyle = 'rgba(96,96,108,.65)'; c.lineWidth = 1;
+    c.strokeRect(x + 0.5, y + 0.5, WID - 1, HGT - 1);
+
+    const t = R.raceT || 0;
+    const clock = Math.floor(t / 60) + ':' + String(Math.floor(t % 60)).padStart(2, '0') +
+                  '.' + Math.floor((t * 10) % 10);
+    c.textBaseline = 'alphabetic';
+    c.fillStyle = 'rgba(138,138,147,.85)';
     c.font = '700 8px ui-monospace,Menlo,monospace';
-    c.fillText('POSITION', 22, 27);
-    c.fillStyle = lead ? '#c9a227' : 'rgba(232,230,225,.95)';
-    c.font = '700 22px ui-monospace,Menlo,monospace';
-    c.fillText('P' + p, 22, 48);
-    c.fillStyle = 'rgba(138,138,147,.75)';
-    c.font = '700 11px ui-monospace,Menlo,monospace';
-    c.fillText('/ ' + n, 56, 48);
+    c.textAlign = 'left';  c.fillText('ORDER', x + 10, y + 17);
+    c.textAlign = 'right'; c.fillText(clock, x + WID - 10, y + 17);
+    c.strokeStyle = 'rgba(96,96,108,.4)';
+    c.beginPath(); c.moveTo(x + 8, y + HDR - 4); c.lineTo(x + WID - 8, y + HDR - 4); c.stroke();
+
+    const lead = rows[0];
+    list.forEach((r, i) => {
+      const ry = y + HDR + i * RH + 15;
+      if (!r){                                  // the break between the five and you
+        c.strokeStyle = 'rgba(96,96,108,.35)';
+        c.setLineDash([2, 3]);
+        c.beginPath(); c.moveTo(x + 10, ry - 7); c.lineTo(x + WID - 10, ry - 7); c.stroke();
+        c.setLineDash([]);
+        return;
+      }
+      const lit = r.me;
+      if (lit){ c.fillStyle = 'rgba(201,162,39,.14)'; c.fillRect(x + 4, ry - 15, WID - 8, RH - 2); }
+      c.fillStyle = lit ? '#c9a227' : 'rgba(180,180,190,.9)';
+      c.font = '700 12px ui-monospace,Menlo,monospace';
+      c.textAlign = 'left';
+      c.fillText('P' + r.pos, x + 10, ry);
+      c.fillStyle = lit ? '#e8e6e1' : 'rgba(210,210,216,.85)';
+      c.fillText(r.name, x + 42, ry);
+      c.textAlign = 'right';
+      c.fillStyle = lit ? '#c9a227' : 'rgba(138,138,147,.85)';
+      c.font = '700 11px ui-monospace,Menlo,monospace';
+      const gap = (lead.prog - r.prog) * T2.LAP / T2.VMAX;
+      c.fillText(r === lead ? 'LEAD' : '+' + gap.toFixed(1), x + WID - 10, ry);
+    });
+    c.restore();
   },
 
   hud(c, W, H, still){
     const R = this.RUN;
-    this.posBoard(c, W, H);
+    this.board(c, W, H);
     c.textAlign = 'right'; c.textBaseline = 'alphabetic';
     c.fillStyle = 'rgba(232,230,225,.92)';
     c.font = '700 30px ui-monospace,Menlo,monospace';
