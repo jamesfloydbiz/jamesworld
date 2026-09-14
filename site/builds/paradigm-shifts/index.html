@@ -232,6 +232,22 @@
   .d4-dot:focus{outline:none;}
   .d4-dot:focus-visible{outline:2px solid #8a7f63; outline-offset:3px;}
   /* The record, folded away. */
+  .taskbar{position:fixed; left:50%; transform:translateX(-50%); top:10px; z-index:78;
+    display:flex; gap:4px; align-items:center; padding:5px;
+    background:rgba(14,14,16,.9); border:1px solid var(--border); border-radius:999px;
+    backdrop-filter:blur(6px);}
+  .taskbar button{appearance:none; border:0; background:transparent; color:var(--faint);
+    font:inherit; font-size:11px; padding:5px 10px; border-radius:999px; cursor:pointer;
+    white-space:nowrap;}
+  .taskbar button:hover{color:var(--fg); background:#1d1d22;}
+  .taskbar button.on{background:var(--acc); color:#1b1b12; font-weight:700;}
+  .taskbar button.spent{color:var(--dim);}
+  .taskbar .lbl{font-size:9px; letter-spacing:.18em; text-transform:uppercase;
+    color:var(--faint); padding:0 6px 0 8px;}
+  @media (max-width:640px){
+    .taskbar{top:auto; bottom:10px; max-width:calc(100vw - 20px); overflow-x:auto;}
+  }
+
   /* Where each problem comes from. Small, grey, and under the instruction —
      these are somebody else's problems and this says whose. */
   .cite{font-size:11px; color:var(--faint); margin:2px 0 14px; font-style:italic;}
@@ -302,6 +318,14 @@
   <a class="logo" href="/" aria-label="Return to home"><img src="/logo.svg" alt="JF"></a>
   <a class="back" href="/builds/">Back</a>
 </div>
+
+<!-- The task bar. This is a demonstration as well as an instrument, and the
+     two want opposite things: one attempt each is what makes a reading mean
+     anything, and being able to show somebody task four without sitting
+     through three is what makes it a demo. So it is both, and it says which
+     one you are in — every jump is written to the record, and a record with
+     jumps in it is not a clean attempt and can be told apart from one. -->
+<nav class="taskbar" id="taskbar" hidden aria-label="Tasks"></nav>
 
 <div class="score" id="scoreChip">
   <span class="k">Score</span><span class="v" id="scoreV">1000</span>
@@ -1036,6 +1060,7 @@ function freshSession(){
     carry: { sticks: [] },
     // built from TASKS, so a task that exists always has a slot to live in
     stages: TASKS.reduce((o, n) => (o[n] = freshStage(), o), {}),
+    jumped: false,          // set the first time the task bar is used
     finished: false,
     seq: 0,
   };
@@ -4721,6 +4746,56 @@ const PANES = ['p-intro','p-refused','p1','p2','p3','p4','p-end'];
 function showPane(id){
   for (const p of PANES) document.getElementById(p).hidden = (p !== id);
   window.scrollTo(0, 0);
+  paintTaskbar();
+}
+
+/* ══ THE TASK BAR ════════════════════════════════════════════════════
+   Jump to any task, forwards or back. This is the demonstration half of the
+   thing and it pulls against the instrument half: one attempt each is what
+   makes a reading mean anything, and being able to show somebody task four
+   without sitting through three is what makes it showable at all.
+
+   So it does not pretend. A jump is written to the record as its own event,
+   a task opened by jumping is marked in the log, and headline() carries a
+   jumped flag — a record with jumps in it is a walkthrough and can be told
+   apart from an attempt by anybody reading it. What it does NOT do is undo a
+   spent task: going back to one you have finished shows you what you did,
+   and does not hand you a second go. That part is still true. */
+const TASK_NAME = { 1:'Matchsticks', 2:'Race', 3:'Trolley', 4:'Nine dots' };
+
+function paintTaskbar(){
+  const bar = document.getElementById('taskbar');
+  if (!bar) return;
+  const live = SESSION.stage || 0;
+  const started = TASKS.some(n => SESSION.stages[n].status !== 'locked') || SESSION.finished;
+  bar.hidden = !started;
+  if (bar.hidden) return;
+  const DONE = ls(LS.done, {});
+  bar.innerHTML = '<span class="lbl">Jump to</span>' + TASKS.map(n =>
+    '<button type="button" data-n="' + n + '" class="' +
+      (n === live ? 'on' : (DONE[n] ? 'spent' : '')) + '">' +
+      n + '. ' + (TASK_NAME[n] || 'Task ' + n) + '</button>').join('') +
+    '<button type="button" data-n="end"' + (SESSION.finished ? ' class="spent"' : '') + '>Record</button>';
+  bar.querySelectorAll('button').forEach(b => {
+    b.onclick = () => jumpTo(b.dataset.n === 'end' ? 'end' : +b.dataset.n);
+  });
+}
+
+function jumpTo(to){
+  const from = SESSION.stage || 0;
+  if (to === from) return;
+  rec.ev(EV.debug, null, { dbg:'jump', from, to });
+  SESSION.jumped = true;
+  /* Leave whatever is running without closing it. Closing would record an
+     outcome nobody chose, and an outcome nobody chose is worse in the record
+     than a task left open. */
+  if (from && SESSION.stages[from] && SESSION.stages[from].status === 'open'){
+    STAGES[from].unmount();
+    SESSION.stage = 0;
+  }
+  saveSession(true);
+  if (to === 'end') return finish();
+  enterStage(to);
 }
 
 function enterStage(n){
@@ -4751,6 +4826,7 @@ function enterStage(n){
   showPane('p' + n);
   STAGES[n].mount(st.w);
   ladder.arm(n);
+  paintTaskbar();
 }
 
 function closeStage(n, outcome){
@@ -4780,6 +4856,7 @@ function refuse(n){
 
 function finish(){
   SESSION.finished = true;
+  SESSION.stage = 0;
   SESSION.stage = 0;
   saveSession(true);
   rec.ev(EV.debrief, null, null);
@@ -4855,7 +4932,11 @@ function renderDebrief(){
     'help youth learn to take control of problems.</p>' +
     '<p class="muted">Task three’s card said one of the two roads was the right ' +
     'answer. Neither was. That is the one untrue sentence in here, and it ' +
-    'belonged to the examiner at the junction, not to this page.</p>';
+    'belonged to the examiner at the junction, not to this page.</p>' +
+    (SESSION.jumped
+      ? '<p class="muted">You moved between tasks with the bar at the top, so this ' +
+        'is a walkthrough rather than an attempt. The record says so too.</p>'
+      : '');
 
   /* Shut by default. What it holds is what somebody actually did and how long
      they were at it — the score on its own said very little, so it is one row
@@ -4890,7 +4971,8 @@ function renderDebrief(){
 function ndjson(){
   const log = rec.stored().length ? rec.stored() : rec.all();
   const head = { header:1, sid:SESSION.id, v:1, startedAt:SESSION.startedAt,
-                 name:SESSION.name, score:SESSION.score, dropped:rec.dropped(),
+                 name:SESSION.name, score:SESSION.score, jumped:!!SESSION.jumped,
+                 dropped:rec.dropped(),
                  storageOk:STORAGE_OK, headline:headline(log) };
   return [head].concat(log).map(o => JSON.stringify(o)).join('\n') + '\n';
 }
