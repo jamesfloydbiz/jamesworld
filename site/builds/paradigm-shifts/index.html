@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Paradigm Shifts</title>
-<meta name="description" content="Four tasks, one attempt at each.">
+<meta name="description" content="Five classic insight problems, one attempt at each.">
 <link rel="canonical" href="https://jamesfloyds.world/builds/paradigm-shifts/">
 <meta name="theme-color" content="#0b0b0c">
 <style>
@@ -346,7 +346,7 @@
   <!-- ══ INTRO ═══════════════════════════════════════════════════════ -->
   <section id="p-intro">
     <header>
-      <p class="eyebrow">Four tasks</p>
+      <p class="eyebrow">Five tasks</p>
       <h1>Paradigm Shifts</h1>
       <!-- The thinking behind it, at the top and only here. It names the
            puzzles this is built from, so a link to it from inside a task
@@ -357,7 +357,7 @@
       </p>
     </header>
     <div class="card">
-      <p class="lede">Four tasks. One attempt at each — there are no retries, and
+      <p class="lede">Five tasks. One attempt at each — there are no retries, and
         what happens is kept.</p>
       <!-- "It can go down. It cannot go up." was true and stopped being true
            the moment getting through a task started paying. No sentence in the
@@ -386,13 +386,12 @@
        Each pane holds its own scene and nothing else. No pane carries a
        control legend, a hint, or a label that names a way out. -->
   <section id="p1" hidden>
-    <header><p class="eyebrow">Task one</p><h1 id="h1-1">Matchstick Arithmetic</h1></header>
+    <header><p class="eyebrow" data-pos></p><h1 id="h1-1">Matchstick Arithmetic</h1></header>
     <p class="lede" id="t1Ask">Both lines are Roman numeral equations, and both are false.
-      Move matchsticks to make them true. Then make every coin touch exactly three others.</p>
-    <p class="tiny" id="t1How">Drag a matchstick or a coin. R turns a matchstick.</p>
+      Move matchsticks to make them true.</p>
+    <p class="tiny" id="t1How">Drag a matchstick. R turns it.</p>
     <p class="cite">Knoblich, Ohlsson, Haider &amp; Rhenius (1999), <em>Constraint relaxation and
-      chunk decomposition in insight problem solving</em> · the coins are the eight-coin problem,
-      Ormerod, MacGregor &amp; Chronicle (2002)</p>
+      chunk decomposition in insight problem solving</em></p>
 
     <div class="room1" id="room1">
       <div class="room1-inner" id="room1In">
@@ -413,8 +412,33 @@
     </div>
   </section>
 
+  <section id="p5" hidden>
+    <header><p class="eyebrow" data-pos></p><h1 id="h1-5">The Eight-Coin Problem</h1></header>
+    <p class="lede">Make every coin touch exactly three others.</p>
+    <p class="tiny" id="t5How">Drag a coin.</p>
+    <p class="cite">Ormerod, MacGregor &amp; Chronicle (2002), <em>Dynamics and constraints in
+      insight problem solving</em> · run against Ohlsson's representational change theory by
+      &Ouml;llinger, Jones &amp; Knoblich (2012)</p>
+
+    <div class="room1" id="room5">
+      <div class="room1-inner" id="room5In">
+        <div class="felt"></div>
+      </div>
+    </div>
+
+    <div class="t1read" id="t5State"></div>
+    <div class="t1bar">
+      <button class="btn" id="checkBtn5">Check</button>
+    </div>
+
+    <div class="slot" id="slot5"><p></p></div>
+    <div class="row" style="margin-top:14px;">
+      <button class="btn" id="exit5" hidden></button>
+    </div>
+  </section>
+
   <section id="p2" hidden>
-    <header><p class="eyebrow">Task two</p><h1 id="h1-2">The Race</h1></header>
+    <header><p class="eyebrow" data-pos></p><h1 id="h1-2">The Race</h1></header>
     <p class="lede">Place first.</p>
     <p class="tiny" id="t2How">W A S D to drive.</p>
 
@@ -436,7 +460,7 @@
   </section>
 
   <section id="p3" hidden>
-    <header><p class="eyebrow">Task three</p><h1 id="h1-3">The Trolley Problem</h1></header>
+    <header><p class="eyebrow" data-pos></p><h1 id="h1-3">The Trolley Problem</h1></header>
     <p class="tiny" id="t3How">Pull a lever.</p>
     <p class="cite">Foot (1967), <em>The Problem of Abortion and the Doctrine of the Double
       Effect</em> · the lever version is Thomson (1976)</p>
@@ -740,7 +764,7 @@
 
   <!-- ══ END / DEBRIEF ═══════════════════════════════════════════════ -->
   <section id="p4" hidden>
-    <header><p class="eyebrow">Task four</p><h1 id="h1-4">The Nine-Dot Problem</h1></header>
+    <header><p class="eyebrow" data-pos></p><h1 id="h1-4">The Nine-Dot Problem</h1></header>
     <p class="lede">Join all nine dots with four straight lines, without lifting the pen.</p>
     <p class="tiny" id="t4How">Click to start a line. Click again for each corner. Backspace takes one back.</p>
     <p class="cite">Maier (1930), <em>Reasoning in humans</em> · the form most people know it in
@@ -837,10 +861,21 @@
 
 /* ══ CONSTANTS + STORAGE ═════════════════════════════════════════════ */
 
-/* The tasks, in the order they are given. Everything that used to say [1,2,3]
-   reads this instead, so a fourth one is a row in the STAGES map and an entry
-   here rather than a hunt through the file for the number three. */
-const TASKS = [1, 2, 3, 4];
+/* The tasks, IN THE ORDER THEY ARE GIVEN — which is not the same as their
+   numbers. The coins came out of the matchstick task and became a problem of
+   their own; renumbering everything after them would have rewritten the stage
+   id on every escape, every fail and every scene in code that already works,
+   and made every record taken before today read as a different test. So the
+   coins keep the next free number and the ORDER is data.
+   Position in this list is what a person is shown; the number is what the
+   record keeps. */
+const TASKS = [1, 5, 2, 3, 4];
+const POS_OF = TASKS.reduce((o, n, i) => (o[n] = i + 1, o), {});
+const WORD_POS = ['', 'one', 'two', 'three', 'four', 'five'];
+function nextTask(n){
+  const i = TASKS.indexOf(n);
+  return (i >= 0 && i < TASKS.length - 1) ? TASKS[i + 1] : null;
+}
 
 const LS = {
   session: 'thetest.session.v1',
@@ -1189,6 +1224,11 @@ const LADDER_TEXT = {
       'That gap will not close. No run-up clears it.',
       'The way to the finish may not point at the finish.',
       'The circuit continues behind the start line.'],
+  5: ['',
+      'Take your time.',
+      'There is no way to lay these out on the table that does it.',
+      'Two coins meeting rim to rim is not the only way two coins can meet.',
+      'A coin can come to rest on top of three others.'],
   4: ['',
       'Take your time.',
       'Four lines, and they have to be one unbroken path.',
@@ -1403,8 +1443,7 @@ const STAGE1 = {
     for (const eq of ['A','B'])
       T1.LAYOUT[eq].forEach((slots, col) =>
         slots.forEach(slot => sticks.push({ id:'s' + (id++), eq, col, slot, x:0, y:0 })));
-    return { sticks, coins:T1.COINS0.map(c => ({ x:c.x, y:c.y, z:0 })),
-             checks:0, stacked:false, solvedA:false, solvedB:false, _lives:0 };
+    return { sticks, checks:0, solvedA:false, solvedB:false, _lives:0 };
   },
 
   mount(w){
@@ -1413,7 +1452,6 @@ const STAGE1 = {
     this.room  = document.getElementById('room1');
     this.buildGrid();
     this.renderSticks();
-    this.renderCoins();
     this.fit();
     if (!this._ro){
       this._ro = new ResizeObserver(() => this.fit());
@@ -1485,13 +1523,6 @@ const STAGE1 = {
     const f = document.getElementById('felt');
     return x >= 24 && x <= 536 && y >= 20 && y <= 330;
   },
-  /* The coins are loose on the felt now; there is no strip to be over. This
-     used to read a row of slots that no longer exists, and calling
-     getBoundingClientRect on the missing element threw inside every single
-     stick drop — so drops silently did nothing. */
-  overCoins(x, y){
-    return this.w.coins.some(c => Math.hypot(c.x - x, c.y - y) < T1.CR + 10);
-  },
 
   /* ── build ──────────────────────────────────────────────────────── */
   buildGrid(){
@@ -1529,27 +1560,6 @@ const STAGE1 = {
     const c = this.centreOf(s);
     el.style.transform = 'translate(' + (c.x - T1.TH/2) + 'px,' + (c.y - T1.LEN/2) + 'px) rotate(' + (c.r || 0) + 'deg)';
   },
-  renderCoins(){
-    this.inner.querySelectorAll('.coin').forEach(e => e.remove());
-    // draw the table first, then whatever is resting on it
-    this.w.coins
-      .map((c, i) => ({ c, i }))
-      .sort((a, b) => (a.c.z || 0) - (b.c.z || 0))
-      .forEach(({ c, i }) => {
-        const el = document.createElement('div');
-        const bad = this.w.checks && (this.w.badCoins || []).indexOf(i) >= 0;
-        el.className = 'coin' + (c.z ? ' up' : '') + (bad ? ' off' : '');
-        el.dataset.i = i;
-        el.tabIndex = 0;
-        el.style.left = (c.x - T1.CR) + 'px';
-        el.style.top  = (c.y - T1.CR - (c.z || 0) * 3) + 'px';
-        el.style.zIndex = 5 + (c.z || 0) * 2;
-        this.inner.appendChild(el);
-        this.wireCoin(el, i);
-      });
-  },
-
-
   /* What the table reads as, in its own words. A bare cross sent James round
      in circles twice: once on an arrangement that plainly said VII = VII, and
      once on a line that looked exactly like III = III = III with one stick a
@@ -1570,17 +1580,8 @@ const STAGE1 = {
       return '<span class="rd"><b>' + (r.ok ? '\u2713' : '\u2717') + '</b><code>' +
              (spaced || '\u2014') + '</code>' + note + '</span>';
     };
-    const deg = coinDegrees(this.w.coins);
-    const off = deg.map((d, i) => ({ d, i })).filter(o => o.d !== 3);
-    this.w.badCoins = off.map(o => o.i);
-    const coinNote = off.length === 0 ? ''
-      : ' <i>' + (off.length === 1 ? 'one of them touches ' + off[0].d
-                 : off.length + ' of them do not touch exactly three') + '</i>';
-    el.innerHTML = read(a) + read(b) +
-      '<span class="rd"><b>' + (coinsDone(this.w.coins) ? '\u2713' : '\u2717') +
-      '</b><code>the coins</code>' + coinNote + '</span>';
+    el.innerHTML = read(a) + read(b);
     this.markUnreadable(a.bad.concat(b.bad));
-    this.renderCoins();
   },
 
   markUnreadable(list){
@@ -1653,12 +1654,6 @@ const STAGE1 = {
       return this.after(s);
     }
 
-    if (this.overCoins(x, y)){
-      s.eq = null; s.x = x; s.y = y; s.rot = T1.ANGLE[orient];
-      offPath(1, 'stick_on_coin', { id:s.id, from });
-      return this.after(s);
-    }
-
     const t = this.nearestSlot(x, y, s, orient);
     if (!t){
       /* Nowhere in particular on the felt is a place. The stick stays exactly
@@ -1684,120 +1679,6 @@ const STAGE1 = {
     else act(1, 'move_stick', { id:s.id, from, to:t });
     this.after(s);
   },
-  /* One integrator for where a released coin comes to rest. A coin dropped
-     over the dimple between three touching coins sits down on them; anywhere
-     else on the felt it simply stays, nudged clear of anything it overlaps;
-     off the felt it is off the table, the same as a matchstick. Nothing
-     announces the dimple. */
-  restFor(i, x, y){
-    const w = this.w;
-    const flat = w.coins.map((c, j) => ({ c, j })).filter(o => o.j !== i && !o.c.z);
-    let best = null, bestD = 15;
-    for (let a = 0; a < flat.length; a++)
-      for (let b = a + 1; b < flat.length; b++)
-        for (let c = b + 1; c < flat.length; c++){
-          const t = [flat[a], flat[b], flat[c]];
-          if (!coinTouch(t[0].c, t[1].c) || !coinTouch(t[1].c, t[2].c) || !coinTouch(t[0].c, t[2].c)) continue;
-          const cx = (t[0].c.x + t[1].c.x + t[2].c.x) / 3;
-          const cy = (t[0].c.y + t[1].c.y + t[2].c.y) / 3;
-          const d = Math.hypot(cx - x, cy - y);
-          if (d < bestD){ bestD = d; best = { x:cx, y:cy, z:1, on:t.map(o => o.j) }; }
-        }
-    return best;
-  },
-
-  wireCoin(el, i){
-    let drag = null;
-    el.addEventListener('pointerdown', e => {
-      try { el.setPointerCapture(e.pointerId); } catch(err){}
-      const p = this.toLocal(e.clientX, e.clientY), c = this.w.coins[i];
-      drag = { dx:p.x - c.x, dy:p.y - c.y, moved:false };
-      el.classList.add('lift');
-      this.showRest();
-      e.preventDefault();
-    });
-    el.addEventListener('pointermove', e => {
-      if (!drag) return;
-      const p = this.toLocal(e.clientX, e.clientY);
-      if (!drag.moved && Math.hypot(p.x - drag.dx - this.w.coins[i].x,
-                                    p.y - drag.dy - this.w.coins[i].y) < 4) return;
-      drag.moved = true;
-      const gx = p.x - drag.dx, gy = p.y - drag.dy;
-      el.style.left = (gx - T1.CR) + 'px';
-      el.style.top  = (gy - T1.CR) + 'px';
-      this.markRest(this.restFor(i, gx, gy));
-    });
-    const up = e => {
-      if (!drag) return;
-      const moved = drag.moved; drag = null;
-      el.classList.remove('lift');
-      this.clearRest();
-      if (!moved){ this.renderCoins(); return; }
-      const p = this.toLocal(e.clientX, e.clientY);
-      this.dropCoin(i, p.x, p.y);
-    };
-    el.addEventListener('pointerup', up);
-    el.addEventListener('pointercancel', () => {
-      drag = null; el.classList.remove('lift'); this.clearRest(); this.renderCoins();
-    });
-  },
-
-  dropCoin(i, x, y){
-    const w = this.w, c = w.coins[i];
-    const from = { x:c.x, y:c.y, z:c.z || 0 };
-
-    if (!this.onFelt(x, y)){
-      c.x = x; c.y = y; c.z = 0;
-      offPath(1, 'coin_off_table', { i, from });
-      return this.afterCoins();
-    }
-
-    const rest = this.restFor(i, x, y);
-    if (rest){
-      c.x = rest.x; c.y = rest.y; c.z = rest.z;
-      act(1, 'coin_rest', { i, on:rest.on });
-      // leaving the plane is the insight this puzzle is made of, and it is a
-      // constraint break inside the offered set, not a step off the path
-      if (!w.stacked){ w.stacked = true; constraintBreak(1, 'left_the_plane', { i, on:rest.on }); }
-      return this.afterCoins();
-    }
-
-    // anywhere else on the felt: it stays, clear of whatever it would sit in
-    c.z = 0; c.x = x; c.y = y;
-    for (let pass = 0; pass < 6; pass++){
-      let moved = false;
-      w.coins.forEach((o, j) => {
-        if (j === i || o.z) return;
-        const d = Math.hypot(c.x - o.x, c.y - o.y);
-        if (d < T1.CD - 3.5 && d > 0.01){
-          const k = (T1.CD - d) / d;
-          c.x += (c.x - o.x) * k; c.y += (c.y - o.y) * k; moved = true;
-        }
-      });
-      if (!moved) break;
-    }
-    act(1, 'coin_move', { i, from });
-    this.afterCoins();
-  },
-
-  afterCoins(){ this.renderCoins(); this.check(false); saveSession(); },
-
-  showRest(){
-    if (!this.rest){
-      this.rest = document.createElement('div');
-      this.rest.className = 'rest';
-      this.inner.appendChild(this.rest);
-    }
-    this.rest.classList.remove('on');
-  },
-  markRest(t){
-    if (!this.rest) return;
-    if (!t){ this.rest.classList.remove('on'); return; }
-    this.rest.style.left = (t.x - 17) + 'px';
-    this.rest.style.top  = (t.y - 17) + 'px';
-    this.rest.classList.add('on');
-  },
-  clearRest(){ if (this.rest) this.rest.classList.remove('on'); },
 
   paintDrag(){
     const d = this.drag, el = this.dragEl, s = this.dragStick;
@@ -1948,16 +1829,15 @@ const STAGE1 = {
     const w = this.w;
     const a = evalEquation(this.colsOf('A'));
     const b = evalEquation(this.colsOf('B'));
-    const coins = coinsDone(w.coins);
 
     if (a.ok && !w.solvedA){ w.solvedA = true; constraintBreak(1, 'eqA', { str:a.str }); }
     if (b.ok && !w.solvedB){ w.solvedB = true; constraintBreak(1, 'eqB', { str:b.str }); }
 
     if (explicit){
       w.checks++;
-      if (a.ok && b.ok && coins) { this.paintState(); return this.finish(); }
-      fail(1, 'check', { a:a.ok, b:b.ok, coins, strA:a.str, strB:b.str });
-    } else if (a.ok && b.ok && coins){
+      if (a.ok && b.ok) { this.paintState(); return this.finish(); }
+      fail(1, 'check', { a:a.ok, b:b.ok, strA:a.str, strB:b.str });
+    } else if (a.ok && b.ok){
       this.paintState();
       return this.finish();
     }
@@ -4699,7 +4579,241 @@ const STAGE4 = {
   },
 };
 
-const STAGES = { 1: STAGE1, 2: STAGE2, 3: STAGE3, 4: STAGE4 };
+/* ── THE EIGHT-COIN PROBLEM ──────────────────────────────────────────
+   Ormerod, MacGregor and Chronicle (2002); Ollinger, Jones and Knoblich
+   (2012) ran it against Ohlsson's representational change theory. It lived on
+   the same felt as the matchsticks and it should not have: they are two
+   different published problems with two different constraints, and a task
+   that holds both reads as one puzzle with two halves rather than as two
+   items. It has its own felt, its own name and its own citation now, and it
+   keeps its own stage number in the record so anything already recorded
+   still reads.
+
+   Two rhombi of four. Every coin starts touching either three or two others,
+   which is the trap — it looks nearly done. There is no flat arrangement of
+   eight equal discs in which all eight touch exactly three: every connected
+   eight-disc arrangement on the triangular lattice was searched and none
+   works, and the only disconnected split that could, 4+4, needs two sets of
+   four mutually touching equal discs, which a plane does not allow. Leaving
+   the plane is not a shortcut here, it is the only route — and it is a
+   constraint break inside the sanctioned set, because moving coins is what
+   you were asked to do. */
+const STAGE5 = {
+  n:5, paneId:'p5', exitLabel:'Leave the coins',
+
+  fresh(){ return { coins:T1.COINS0.map(c => ({ x:c.x, y:c.y, z:0 })),
+                    checks:0, stacked:false, _lives:0 }; },
+
+  mount(w){
+    this.w = w;
+    this.inner = document.getElementById('room5In');
+    this.room  = document.getElementById('room5');
+    this.renderCoins();
+    this.fit();
+    if (!this._ro){
+      this._ro = new ResizeObserver(() => this.fit());
+      this._ro.observe(this.room);
+    }
+    document.getElementById('checkBtn5').onclick = () => this.check(true);
+    this.paintState();
+  },
+
+  unmount(){ if (this._ro){ this._ro.disconnect(); this._ro = null; } },
+  tick(){},
+  onKey(){ return false; },
+
+  fit(){
+    const w = this.room.clientWidth || 560;
+    const k = Math.min(1.45, w / 560);
+    this.scale = k;
+    this.offX = Math.max(0, (w - 560 * k) / 2);
+    this.inner.style.transform = 'translateX(' + this.offX + 'px) scale(' + k + ')';
+    this.room.style.height = Math.round(400 * k) + 'px';
+  },
+  toLocal(clientX, clientY){
+    const r = this.room.getBoundingClientRect();
+    return { x:(clientX - r.left - this.offX) / this.scale,
+             y:(clientY - r.top) / this.scale };
+  },
+  onFelt(x, y){ return x >= 24 && x <= 536 && y >= 20 && y <= 330; },
+
+  renderCoins(){
+    this.inner.querySelectorAll('.coin').forEach(e => e.remove());
+    // draw the table first, then whatever is resting on it
+    this.w.coins
+      .map((c, i) => ({ c, i }))
+      .sort((a, b) => (a.c.z || 0) - (b.c.z || 0))
+      .forEach(({ c, i }) => {
+        const el = document.createElement('div');
+        const bad = this.w.checks && (this.w.badCoins || []).indexOf(i) >= 0;
+        el.className = 'coin' + (c.z ? ' up' : '') + (bad ? ' off' : '');
+        el.dataset.i = i;
+        el.tabIndex = 0;
+        el.style.left = (c.x - T1.CR) + 'px';
+        el.style.top  = (c.y - T1.CR - (c.z || 0) * 3) + 'px';
+        el.style.zIndex = 5 + (c.z || 0) * 2;
+        this.inner.appendChild(el);
+        this.wireCoin(el, i);
+      });
+  },
+
+
+
+  /* One integrator for where a released coin comes to rest. A coin dropped
+     over the dimple between three touching coins sits down on them; anywhere
+     else on the felt it simply stays, nudged clear of anything it overlaps;
+     off the felt it is off the table, the same as a matchstick. Nothing
+     announces the dimple. */
+  restFor(i, x, y){
+    const w = this.w;
+    const flat = w.coins.map((c, j) => ({ c, j })).filter(o => o.j !== i && !o.c.z);
+    let best = null, bestD = 15;
+    for (let a = 0; a < flat.length; a++)
+      for (let b = a + 1; b < flat.length; b++)
+        for (let c = b + 1; c < flat.length; c++){
+          const t = [flat[a], flat[b], flat[c]];
+          if (!coinTouch(t[0].c, t[1].c) || !coinTouch(t[1].c, t[2].c) || !coinTouch(t[0].c, t[2].c)) continue;
+          const cx = (t[0].c.x + t[1].c.x + t[2].c.x) / 3;
+          const cy = (t[0].c.y + t[1].c.y + t[2].c.y) / 3;
+          const d = Math.hypot(cx - x, cy - y);
+          if (d < bestD){ bestD = d; best = { x:cx, y:cy, z:1, on:t.map(o => o.j) }; }
+        }
+    return best;
+  },
+
+  wireCoin(el, i){
+    let drag = null;
+    el.addEventListener('pointerdown', e => {
+      try { el.setPointerCapture(e.pointerId); } catch(err){}
+      const p = this.toLocal(e.clientX, e.clientY), c = this.w.coins[i];
+      drag = { dx:p.x - c.x, dy:p.y - c.y, moved:false };
+      el.classList.add('lift');
+      this.showRest();
+      e.preventDefault();
+    });
+    el.addEventListener('pointermove', e => {
+      if (!drag) return;
+      const p = this.toLocal(e.clientX, e.clientY);
+      if (!drag.moved && Math.hypot(p.x - drag.dx - this.w.coins[i].x,
+                                    p.y - drag.dy - this.w.coins[i].y) < 4) return;
+      drag.moved = true;
+      const gx = p.x - drag.dx, gy = p.y - drag.dy;
+      el.style.left = (gx - T1.CR) + 'px';
+      el.style.top  = (gy - T1.CR) + 'px';
+      this.markRest(this.restFor(i, gx, gy));
+    });
+    const up = e => {
+      if (!drag) return;
+      const moved = drag.moved; drag = null;
+      el.classList.remove('lift');
+      this.clearRest();
+      if (!moved){ this.renderCoins(); return; }
+      const p = this.toLocal(e.clientX, e.clientY);
+      this.dropCoin(i, p.x, p.y);
+    };
+    el.addEventListener('pointerup', up);
+    el.addEventListener('pointercancel', () => {
+      drag = null; el.classList.remove('lift'); this.clearRest(); this.renderCoins();
+    });
+  },
+
+  dropCoin(i, x, y){
+    const w = this.w, c = w.coins[i];
+    const from = { x:c.x, y:c.y, z:c.z || 0 };
+
+    if (!this.onFelt(x, y)){
+      c.x = x; c.y = y; c.z = 0;
+      offPath(5, 'coin_off_table', { i, from });
+      return this.afterCoins();
+    }
+
+    const rest = this.restFor(i, x, y);
+    if (rest){
+      c.x = rest.x; c.y = rest.y; c.z = rest.z;
+      act(1, 'coin_rest', { i, on:rest.on });
+      // leaving the plane is the insight this puzzle is made of, and it is a
+      // constraint break inside the offered set, not a step off the path
+      if (!w.stacked){ w.stacked = true; constraintBreak(5, 'left_the_plane', { i, on:rest.on }); }
+      return this.afterCoins();
+    }
+
+    // anywhere else on the felt: it stays, clear of whatever it would sit in
+    c.z = 0; c.x = x; c.y = y;
+    for (let pass = 0; pass < 6; pass++){
+      let moved = false;
+      w.coins.forEach((o, j) => {
+        if (j === i || o.z) return;
+        const d = Math.hypot(c.x - o.x, c.y - o.y);
+        if (d < T1.CD - 3.5 && d > 0.01){
+          const k = (T1.CD - d) / d;
+          c.x += (c.x - o.x) * k; c.y += (c.y - o.y) * k; moved = true;
+        }
+      });
+      if (!moved) break;
+    }
+    act(5, 'coin_move', { i, from });
+    this.afterCoins();
+  },
+
+  afterCoins(){ this.renderCoins(); this.check(false); saveSession(); },
+
+  showRest(){
+    if (!this.rest){
+      this.rest = document.createElement('div');
+      this.rest.className = 'rest';
+      this.inner.appendChild(this.rest);
+    }
+    this.rest.classList.remove('on');
+  },
+  markRest(t){
+    if (!this.rest) return;
+    if (!t){ this.rest.classList.remove('on'); return; }
+    this.rest.style.left = (t.x - 17) + 'px';
+    this.rest.style.top  = (t.y - 17) + 'px';
+    this.rest.classList.add('on');
+  },
+  clearRest(){ if (this.rest) this.rest.classList.remove('on'); },
+
+  /* ── checking ───────────────────────────────────────────────────── */
+  check(explicit){
+    const w = this.w;
+    const done = coinsDone(w.coins);
+    if (explicit){
+      w.checks++;
+      if (done){ this.paintState(); return this.finish(); }
+      fail(5, 'check', { degrees:coinDegrees(w.coins).join('') });
+    } else if (done){
+      this.paintState();
+      return this.finish();
+    }
+    this.paintState();
+  },
+
+  paintState(){
+    const el = document.getElementById('t5State');
+    if (!this.w.checks){ el.innerHTML = ''; this.renderCoins(); return; }
+    const deg = coinDegrees(this.w.coins);
+    const off = deg.map((d, i) => ({ d, i })).filter(o => o.d !== 3);
+    this.w.badCoins = off.map(o => o.i);
+    const note = off.length === 0 ? ''
+      : ' <i>' + (off.length === 1 ? 'one of them touches ' + off[0].d
+                 : off.length + ' of them do not touch exactly three') + '</i>';
+    el.innerHTML = '<span class="rd"><b>' +
+      (coinsDone(this.w.coins) ? '\u2713' : '\u2717') +
+      '</b><code>the coins</code>' + note + '</span>';
+    this.renderCoins();
+  },
+
+  finish(){ this.close('solved'); },
+  exit(){ this.close('complied'); },
+  close(how){
+    if (this.done) return;
+    this.done = true;
+    closeStage(5, how);
+  },
+};
+
+const STAGES = { 1: STAGE1, 2: STAGE2, 3: STAGE3, 4: STAGE4, 5: STAGE5 };
 
 /* ══ EVENT HELPERS the stages call ═══════════════════════════════════ */
 
@@ -4743,7 +4857,7 @@ function escape(n, kind, d){
 /* Every pane, including the task panes, because showPane hides everything not
    named here — a task missing from this list is a task that can never be put
    on the screen. */
-const PANES = ['p-intro','p-refused','p1','p2','p3','p4','p-end'];
+const PANES = ['p-intro','p-refused'].concat(TASKS.map(n => 'p' + n)).concat(['p-end']);
 function showPane(id){
   for (const p of PANES) document.getElementById(p).hidden = (p !== id);
   window.scrollTo(0, 0);
@@ -4762,7 +4876,7 @@ function showPane(id){
    apart from an attempt by anybody reading it. What it does NOT do is undo a
    spent task: going back to one you have finished shows you what you did,
    and does not hand you a second go. That part is still true. */
-const TASK_NAME = { 1:'Matchsticks', 2:'Race', 3:'Trolley', 4:'Nine dots' };
+const TASK_NAME = { 1:'Matchsticks', 5:'Coins', 2:'Race', 3:'Trolley', 4:'Nine dots' };
 
 function paintTaskbar(){
   const bar = document.getElementById('taskbar');
@@ -4775,7 +4889,7 @@ function paintTaskbar(){
   bar.innerHTML = '<span class="lbl">Jump to</span>' + TASKS.map(n =>
     '<button type="button" data-n="' + n + '" class="' +
       (n === live ? 'on' : (DONE[n] ? 'spent' : '')) + '">' +
-      n + '. ' + (TASK_NAME[n] || 'Task ' + n) + '</button>').join('') +
+      POS_OF[n] + '. ' + (TASK_NAME[n] || 'Task ' + n) + '</button>').join('') +
     '<button type="button" data-n="end"' + (SESSION.finished ? ' class="spent"' : '') + '>Record</button>';
   bar.querySelectorAll('button').forEach(b => {
     b.onclick = () => jumpTo(b.dataset.n === 'end' ? 'end' : +b.dataset.n);
@@ -4825,6 +4939,8 @@ function enterStage(n){
   }
 
   showPane('p' + n);
+  const eyebrow = document.querySelector('#p' + n + ' .eyebrow');
+  if (eyebrow) eyebrow.textContent = 'Task ' + (WORD_POS[POS_OF[n]] || POS_OF[n]);
   STAGES[n].mount(st.w);
   ladder.arm(n);
   paintTaskbar();
@@ -4843,14 +4959,16 @@ function closeStage(n, outcome){
   rec.flush();
   SESSION.stage = 0;
   saveSession(true);
-  if (n < TASKS.length) enterStage(n + 1); else finish();
+  const next = nextTask(n);
+  if (next) enterStage(next); else finish();
 }
 
 function refuse(n){
   document.getElementById('refusedBody').textContent =
     'You have already had your attempt at task ' + n + '.';
   document.getElementById('refusedNext').onclick = () => {
-    if (n < TASKS.length) enterStage(n + 1); else finish();
+    const next = nextTask(n);
+    if (next) enterStage(next); else finish();
   };
   showPane('p-refused');
 }
@@ -4894,6 +5012,7 @@ const ESCAPE_NAME = {
   eqA:                'made the first line true',
   eqB:                'made the second line true',
   left_the_plane:     'stacked the coins',
+  coin_off_table:     'took a coin off the table',
   left_the_array:     'drew off the array',
   nine_dots:          'joined all nine',
   wrong_way:         'went the wrong way round',
@@ -4931,9 +5050,11 @@ function renderDebrief(){
     '<p class="lede">While these assessments are one time use, we live now with ' +
     'technology that can make ever more engaging, and personalized problems to ' +
     'help youth learn to take control of problems.</p>' +
-    '<p class="muted">Task three’s card said one of the two roads was the right ' +
-    'answer. Neither was. That is the one untrue sentence in here, and it ' +
-    'belonged to the examiner at the junction, not to this page.</p>' +
+    /* Named rather than numbered: the order the tasks are given in is data
+       now, so "task three" would go wrong the next time one moves. */
+    '<p class="muted">The card on the trolley problem said one of the two roads ' +
+    'was the right answer. Neither was. That is the one untrue sentence in ' +
+    'here, and it belonged to the examiner at the junction, not to this page.</p>' +
     (SESSION.jumped
       ? '<p class="muted">You moved between tasks with the bar at the top, so this ' +
         'is a walkthrough rather than an attempt. The record says so too.</p>'
@@ -4948,7 +5069,7 @@ function renderDebrief(){
       '<div class="rec__in">' +
         TASKS.map(n =>
           '<div class="rec__task">' +
-            '<div class="rec__h"><b>Task ' + n + '</b><span>' +
+            '<div class="rec__h"><b>' + (TASK_NAME[n] || 'Task ' + n) + '</b><span>' +
               secs(SESSION.stages[n].activeMs) + '</span></div>' +
             row('How it went', how(n)) +
             row('Prompts taken', h.ladderAtBreak[n] ? 'L' + h.ladderAtBreak[n] : 'none') +
@@ -4956,7 +5077,8 @@ function renderDebrief(){
           '</div>'
         ).join('') +
         '<hr class="rule">' +
-        row('First task you broke', h.firstStageBroken === null ? 'none' : h.firstStageBroken) +
+            row('First task you broke', h.firstStageBroken === null ? 'none'
+              : (TASK_NAME[h.firstStageBroken] || h.firstStageBroken)) +
         row('Broke with no prompting', h.brokeAtL0 + ' of ' + TASKS.length) +
         row('Score', SESSION.score) +
       '</div>' +
@@ -5050,7 +5172,7 @@ window.addEventListener('pagehide', () => { rec.flush(); saveSession(true); });
    box is however wide the page is; the inner frame is the fixed 560x400 space
    everything is actually laid out in, centred inside it. Using the box put the
    replay's cursor left of where the hand was, and squashed. */
-const SCENE_OF = { 1:'room1In', 2:'run', 3:'r3', 4:'dots' };
+const SCENE_OF = { 1:'room1In', 5:'room5In', 2:'run', 3:'r3', 4:'dots' };
 let lastPtrAt = 0;
 
 function logPointer(e, kind){

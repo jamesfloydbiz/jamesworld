@@ -309,6 +309,7 @@ drop.addEventListener('drop', e => {
    names are kept because records made then still play. */
 const ESCAPE_NAME = {
   pocket_stick:'threw matchsticks off the table',
+  coin_off_table:'took a coin off the table',
   wrong_way:'took the way back',
   tunnel:'went the other way',                       // before it was a circuit
   refuse_frame:'stepped back from the frame',
@@ -653,7 +654,9 @@ function draw(st){
   ctx.clearRect(0,0,VW,VH);
   ctx.fillStyle = '#0e0e11'; ctx.fillRect(0,0,VW,VH);
 
-  if (st.stage === 1) drawTable(st);
+  /* Task five is the coins, which used to share task one's felt. drawTable
+     already draws both halves and simply has no sticks to draw for it. */
+  if (st.stage === 1 || st.stage === 5) drawTable(st);
   else if (st.stage === 2) drawRun(st);
   else if (st.stage === 3) drawJunction(st);
   else if (st.stage === 4) drawDots(st);
