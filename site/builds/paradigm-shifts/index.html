@@ -105,6 +105,11 @@
     border-radius:10px; padding:18px; margin-bottom:14px;}
   .muted{color:var(--dim); font-size:13px;}
   .tiny{font-size:11.5px; color:var(--faint);}
+  /* The default link blue on a near-black page is both ugly and hard to read.
+     Every link in here is prose, so it takes the prose colour. */
+  a{color:var(--dim); text-decoration:underline; text-underline-offset:3px;
+    text-decoration-color:var(--faint);}
+  a:hover, a:focus-visible{color:var(--fg); text-decoration-color:var(--dim);}
   .rule{height:1px; background:var(--border); border:0; margin:26px 0;}
 
   .btn{appearance:none; border:1px solid var(--border); background:#17171a;
