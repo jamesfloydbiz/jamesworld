@@ -523,11 +523,12 @@ const EV = {
   off_path:'off_path', constraint_break:'constraint_break', escape:'escape',
   ladder:'ladder', penalty:'penalty', idle:'idle', visibility:'visibility',
   name_edit:'name_edit', storage_fail:'storage_fail', debug:'debug',
-  export:'export', debrief:'debrief', telemetry:'telemetry',
+  export:'export', debrief:'debrief', telemetry:'telemetry', pointer:'pointer',
 };
 
 const LIFE = rid();                 // per page-load, so pt values are comparable
-const CAP  = 4000;                  // events kept in localStorage
+const CAP  = 14000;                 // events kept in localStorage
+const SHED = ['pointer', 'telemetry', 'input'];   // dropped in this order
 const KEEP = { escape:1, off_path:1, constraint_break:1, ladder:1, penalty:1,
                stage_open:1, stage_resume:1, stage_close:1,
                session_start:1, session_resume:1, storage_fail:1, export:1 };
@@ -566,13 +567,22 @@ const rec = (function(){
       let arr = ls(LS.log, []);
       for (const e of batch) arr.push(e);
       if (arr.length > CAP){
-        // drop the cheapest events first, never a measured one
-        const keep = [], spill = [];
-        for (const e of arr) (KEEP[e.type] ? keep : spill).push(e);
-        const room = Math.max(0, CAP - keep.length);
-        const tail = spill.slice(Math.max(0, spill.length - room));
-        dropped += spill.length - tail.length;
-        arr = keep.concat(tail).sort((a,b) => a.i - b.i);
+        // Shed the cursor track first and the measured events never. A replay
+        // losing its earliest movement is a cosmetic loss; losing an escape is
+        // losing the reading.
+        for (const kind of SHED){
+          if (arr.length <= CAP) break;
+          const over = arr.length - CAP;
+          let cut = 0;
+          arr = arr.filter(e => (e.type === kind && cut < over) ? (cut++, dropped++, false) : true);
+        }
+        if (arr.length > CAP){
+          const keep = arr.filter(e => KEEP[e.type]);
+          const spill = arr.filter(e => !KEEP[e.type]);
+          const tail = spill.slice(Math.max(0, spill.length - Math.max(0, CAP - keep.length)));
+          dropped += spill.length - tail.length;
+          arr = keep.concat(tail).sort((a, b) => a.i - b.i);
+        }
       }
       save(LS.log, arr);
     },
@@ -1482,6 +1492,15 @@ const STAGE2 = {
     }
     if (R.under > 0) R.under = Math.max(0, R.under - dt * 1.6);
 
+    const tnow = performance.now();
+    if (!this._telAt || tnow - this._telAt > 120){
+      this._telAt = tnow;
+      if (Math.abs(R.vx) > 1 || !this._telOnce){
+        this._telOnce = true;
+        rec.ev(EV.telemetry, 2, { x:Math.round(R.x), vx:Math.round(R.vx) });
+      }
+    }
+
     if (R.x >= T2.FLAG){ this.finish(); return; }
 
     const want = R.x - this.VW * 0.34;
@@ -1983,6 +2002,38 @@ document.addEventListener('visibilitychange', () => {
   rec.ev(EV.visibility, SESSION.stage || null, { hidden: document.hidden });
 });
 window.addEventListener('pagehide', () => { rec.flush(); saveSession(true); });
+
+/* ══ THE CURSOR TRACK ════════════════════════════════════════════════
+   Sampled positions and every press, in coordinates relative to whichever
+   scene is live, normalised so a replay can redraw them at any size. Values
+   outside 0..1 are real and wanted: carrying a matchstick off the felt is
+   the single most interesting thing anyone does in task one, and it happens
+   at the edge of the box. Throttled, and the first thing shed if the log
+   ever fills. */
+const SCENE_OF = { 1:'room1', 2:'run', 3:'r3' };
+let lastPtrAt = 0;
+
+function logPointer(e, kind){
+  const n = SESSION.stage;
+  if (!n || !SESSION.stages[n] || SESSION.stages[n].status !== 'open') return;
+  const host = document.getElementById(SCENE_OF[n]);
+  if (!host) return;
+  const b = host.getBoundingClientRect();
+  if (!b.width || !b.height) return;
+  rec.ev(EV.pointer, n, {
+    k: kind,
+    nx: +(((e.clientX - b.left) / b.width).toFixed(4)),
+    ny: +(((e.clientY - b.top) / b.height).toFixed(4)),
+  });
+}
+document.addEventListener('pointermove', e => {
+  const t = performance.now();
+  if (t - lastPtrAt < 90) return;
+  lastPtrAt = t;
+  logPointer(e, 'm');
+}, { passive:true });
+document.addEventListener('pointerdown', e => logPointer(e, 'd'), { passive:true });
+document.addEventListener('pointerup',   e => logPointer(e, 'u'), { passive:true });
 
 /* ══ THE CORNER FIELD ════════════════════════════════════════════════
    Through tasks one and two this does nothing except get recorded. In task
