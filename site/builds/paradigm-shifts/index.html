@@ -1104,6 +1104,10 @@ function headline(log){
     totalActiveMs: 0,
   };
   const ACTION = {input:1, sanctioned:1, fail:1, off_path:1, constraint_break:1};
+  /* Climbing the leaderboard is not something the student did — it is the race
+     telling them where they are. Counting it made the race read as a dozen
+     moves nobody made. */
+  const isAction = e => !!ACTION[e.type] && !(e.d && e.d.kind === 'position');
 
   for (const n of TASKS){
     const inStage = ev.filter(e => e.stage === n);
@@ -1117,14 +1121,14 @@ function headline(log){
                                            .map(e => (e.d && e.d.kind) || 'break'))];
     if (esc.length){
       out.ladderAtBreak[n] = esc[0].lvl;
-      out.actionsBeforeBreak[n] = inStage.filter(e => ACTION[e.type] && e.i < esc[0].i).length;
+      out.actionsBeforeBreak[n] = inStage.filter(e => isAction(e) && e.i < esc[0].i).length;
       out.escapeKinds[n] = [...new Set(esc.map(e => (e.d && e.d.kind) || 'escape'))];
       if (esc[0].lvl === 0) out.brokeAtL0++;
       if (out.firstStageBroken === null) out.firstStageBroken = n;
     } else {
       const lv = inStage.filter(e => e.type === EV.ladder);
       out.ladderAtBreak[n] = lv.length ? Math.max(...lv.map(e => (e.d && e.d.lvl) || 0)) : 0;
-      out.actionsBeforeBreak[n] = inStage.filter(e => ACTION[e.type]).length;
+      out.actionsBeforeBreak[n] = inStage.filter(isAction).length;
     }
     const closes = inStage.filter(e => e.type === EV.stage_close);
     if (closes.length) out.totalActiveMs += closes[closes.length - 1].am;

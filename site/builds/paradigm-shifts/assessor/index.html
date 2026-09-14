@@ -343,6 +343,8 @@ function headline(){
   const out = { firstStageBroken:null, secToFirstOffPath:{}, ladderAtBreak:{},
                 actionsBeforeBreak:{}, escapeKinds:{}, breakKinds:{}, brokeAtL0:0 };
   const ACTION = {input:1, sanctioned:1, fail:1, off_path:1, constraint_break:1};
+  /* A place gained on the leaderboard is the race speaking, not the student. */
+  const isAction = e => !!ACTION[e.type] && !(e.d && e.d.kind === 'position');
   for (const n of tasksIn()){
     const inS = LOG.filter(e => e.stage === n);
     const open = inS.find(e => e.type === 'stage_open');
@@ -351,7 +353,7 @@ function headline(){
     out.secToFirstOffPath[n] = (open && first) ? +(((first.am - open.am)/1000).toFixed(1)) : null;
     if (esc.length){
       out.ladderAtBreak[n] = esc[0].lvl;
-      out.actionsBeforeBreak[n] = inS.filter(e => ACTION[e.type] && e.i < esc[0].i).length;
+      out.actionsBeforeBreak[n] = inS.filter(e => isAction(e) && e.i < esc[0].i).length;
       out.escapeKinds[n] = [...new Set(esc.map(e => (e.d && e.d.kind) || 'escape'))];
       out.breakKinds[n] = [...new Set(inS.filter(e => e.type === 'constraint_break')
                                          .map(e => (e.d && e.d.kind) || 'break'))];
@@ -360,7 +362,7 @@ function headline(){
     } else {
       const lv = inS.filter(e => e.type === 'ladder');
       out.ladderAtBreak[n] = lv.length ? Math.max(...lv.map(e => e.d.lvl||0)) : 0;
-      out.actionsBeforeBreak[n] = inS.filter(e => ACTION[e.type]).length;
+      out.actionsBeforeBreak[n] = inS.filter(isAction).length;
       out.escapeKinds[n] = [];
       out.breakKinds[n] = [...new Set(inS.filter(e => e.type === 'constraint_break')
                                          .map(e => (e.d && e.d.kind) || 'break'))];
