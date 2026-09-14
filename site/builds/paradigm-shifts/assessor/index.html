@@ -492,7 +492,7 @@ function stateAt(t){
   const abs = T0 + t;
   const st = {
     stage:0, score:(HEAD && HEAD.startScore) || 1000, lvl:0, name:'',
-    sticks:[], coins:T1.COINS0.slice(), free:[],
+    sticks:[], eq:'A', coins:T1.COINS0.slice(), free:[],
     dots:null,
     race:{ scene:null, pose:null, rivals:[], trail:[], marks:[],
            wrongPct:null, escaped:false, lastT:null },
@@ -503,7 +503,8 @@ function stateAt(t){
   let id = 0;
   for (const eq of ['A','B'])
     T1.LAYOUT[eq].forEach((slots, col) =>
-      slots.forEach(slot => st.sticks.push({ id:'s'+(id++), eq, col, slot, x:0, y:0 })));
+      slots.forEach(slot => st.sticks.push({ id:'s'+(id++), eq, col, slot,
+                                             home:{ eq, col, slot }, x:0, y:0 })));
 
   for (const e of LOG){
     if (e.t > abs) break;
@@ -519,6 +520,23 @@ function stateAt(t){
         const s = st.sticks.find(x => x.eq === d.from.eq && x.col === d.from.col && x.slot === d.from.slot)
                || st.sticks.find(x => x.id === d.id);
         if (s){ s.eq = d.to.eq; s.col = d.to.col; s.slot = d.to.slot; }
+      }
+      if (e.type === 'sanctioned' && d.kind === 'turn_stick' && d.from && d.to){
+        const s = st.sticks.find(x => x.id === d.id);
+        if (s){ s.eq = d.to.eq; s.col = d.to.col; s.slot = d.to.slot; }
+      }
+      /* Nowhere in particular on the felt. It has left its column, so it is
+         in no equation, which is exactly what the table showed. */
+      if (e.type === 'sanctioned' && d.kind === 'place_loose'){
+        const s = st.sticks.find(x => x.id === d.id);
+        if (s){ s.eq = null; s.loose = 'place_loose'; }
+      }
+      /* The second line comes up and the first one goes back as it was —
+         except for anything that was taken off the felt, which stays off. */
+      if (e.type === 'sanctioned' && d.kind === 'next_line'){
+        st.eq = d.to || 'B';
+        for (const s of st.sticks)
+          if (s.home.eq === 'A' && !s.loose){ s.eq = 'A'; s.col = s.home.col; s.slot = s.home.slot; }
       }
       if (e.type === 'off_path' && d.kind === 'cross_eq' && d.from && d.to){
         const s = st.sticks.find(x => x.eq === d.from.eq && x.col === d.from.col && x.slot === d.from.slot);
@@ -685,8 +703,8 @@ function drawTable(st){
   ctx.fillStyle = '#15201a';
   ctx.fillRect(X(24), Y(20), 512*k, 310*k);
 
-  const rowTop = { A:40, B:132 };
-  for (const eq of ['A','B']){
+  const rowTop = { A:86, B:86 };
+  for (const eq of [st.eq]){
     const n = T1.LAYOUT[eq].length;
     const left = (560 - n*T1.COLW)/2;
     for (const s of st.sticks){

@@ -258,6 +258,11 @@
   .feltnote{position:absolute; left:40px; top:36px; margin:0; z-index:4;
     font-size:12px; line-height:1.5; color:rgba(232,230,225,.42);
     pointer-events:none; letter-spacing:.01em;}
+  .feltrule{position:absolute; left:40px; top:60px; margin:0; z-index:4;
+    font-size:12px; line-height:1.5; color:rgba(232,230,225,.62);
+    pointer-events:none; letter-spacing:.01em; opacity:0; transition:opacity .18s;}
+  .feltrule.on{opacity:1;}
+  @media (prefers-reduced-motion:reduce){ .feltrule{transition:none;} }
   .cite{font-size:11px; color:var(--faint); margin:2px 0 14px; font-style:italic;}
   .rec{border:1px solid var(--border); border-radius:10px; background:var(--card);}
   .rec>summary{cursor:pointer; padding:14px 16px; font-size:13px; color:var(--dim);
@@ -395,8 +400,8 @@
        control legend, a hint, or a label that names a way out. -->
   <section id="p1" hidden>
     <header><p class="eyebrow" data-pos></p><h1 id="h1-1">Matchstick Arithmetic</h1></header>
-    <p class="lede" id="t1Ask">Both lines are Roman numeral equations, and both are false.
-      Move matchsticks to make them true.</p>
+    <p class="lede" id="t1Ask">The line on the mat is a Roman numeral equation, and it is false.
+      You are only allowed to move one matchstick around on the mat to make the equation true.</p>
     <p class="cite">Knoblich, Ohlsson, Haider &amp; Rhenius (1999), <em>Constraint relaxation and
       chunk decomposition in insight problem solving</em></p>
 
@@ -405,9 +410,10 @@
         <div class="felt" id="felt"></div>
         <!-- Centred down the felt. They sat in the top half with a third of
              the table empty under them. -->
-        <div class="eqrow" id="eqA" style="top:96px;"></div>
-        <div class="eqrow" id="eqB" style="top:194px;"></div>
-        <p class="feltnote">Drag with the mouse. R turns a matchstick.</p>
+        <div class="eqrow" id="eqA" style="top:141px;"></div>
+        <div class="eqrow" id="eqB" style="top:141px;"></div>
+        <p class="feltnote">Drag with the mouse. R turns a matchstick.<br>One matchstick may be moved.</p>
+        <p class="feltrule" id="t1Rule"></p>
       </div>
     </div>
 
@@ -535,12 +541,12 @@
 
           <!-- the line in, the points, and the two roads -->
           <g id="r3Bed" fill="#221f1b" stroke="#2c2924" stroke-width="1">
-            <polygon points="36,282 36,318 436,336 436,300"/>
+            <polygon points="-30,279 -30,317 436,336 436,300"/>
             <polygon points="436,300 436,336 800,424 800,242"/>
           </g>
           <g id="r3Ties" stroke="#15161a" stroke-width="2" opacity="0.95"></g>
           <g stroke="url(#railG)" stroke-width="2.6" fill="none" stroke-linecap="round">
-            <line x1="36" y1="288" x2="430" y2="306"/><line x1="36" y1="312" x2="430" y2="330"/>
+            <line x1="-30" y1="285" x2="430" y2="306"/><line x1="-30" y1="309" x2="430" y2="330"/>
             <line x1="430" y1="306" x2="792" y2="250"/><line x1="430" y1="330" x2="792" y2="274"/>
             <line x1="430" y1="306" x2="792" y2="380"/><line x1="430" y1="330" x2="792" y2="404"/>
           </g>
@@ -1228,7 +1234,7 @@ const LADDER_TEXT = {
       'Take your time.',
       'Not everything on this table is fixed in place.',
       'A shape you are reading as one piece may be more than one piece.',
-      'A plus sign is two matchsticks. So is an equals sign. The three whites are not a block.'],
+      'A plus sign is two matchsticks. So is an equals sign.'],
   2: ['',
       'Take your time.',
       'That gap will not close. No run-up clears it.',
@@ -1484,13 +1490,28 @@ const STAGE1 = {
     for (const eq of ['A','B'])
       T1.LAYOUT[eq].forEach((slots, col) =>
         slots.forEach(slot => sticks.push({ id:'s' + (id++), eq, col, slot, x:0, y:0 })));
-    return { sticks, checks:0, solvedA:false, solvedB:false, _lives:0 };
+    /* home is where every stick started. One equation is on the mat at a
+       time, and exactly one matchstick may be away from its own home at any
+       moment — which is the rule the studies actually run, and the whole of
+       what they measure is whether somebody can relax a constraint inside it.
+
+       "One move" is read as one matchstick DISPLACED, not one drag: pushing
+       the same stick about, or putting it back and thinking again, is still
+       one matchstick moved. Anything else is a dead end you cannot undo, and
+       a dead end measures patience rather than insight. */
+    sticks.forEach(s => { s.home = { eq:s.eq, col:s.col, slot:s.slot }; });
+    return { sticks, eq:'A', checks:0, solvedA:false, solvedB:false,
+             movedId:null, blocked:0, _lives:0 };
   },
 
   mount(w){
     this.w = w;
+    // a record written before the mat held one line at a time
+    if (!w.eq) w.eq = 'A';
+    if (!w.sticks[0].home) w.sticks.forEach(x => { x.home = { eq:x.eq, col:x.col, slot:x.slot }; });
     this.inner = document.getElementById('room1In');
     this.room  = document.getElementById('room1');
+    w.movedId = this.movedOnLine();
     this.buildGrid();
     this.renderSticks();
     this.fit();
@@ -1588,6 +1609,7 @@ const STAGE1 = {
     for (const eq of ['A','B']){
       const row = document.getElementById('eq' + eq);
       row.innerHTML = '';
+      row.hidden = eq !== this.w.eq;          // one line on the mat at a time
       for (let i = 0; i < T1.LAYOUT[eq].length; i++){
         const c = document.createElement('div');
         c.className = 'col';
@@ -1596,11 +1618,34 @@ const STAGE1 = {
     }
   },
 
+  /* Home is where a stick started. A stick is "moved" when it is anywhere
+     else — a different place on the mat, loose on the felt, or off it. */
+  atHome(s){
+    const h = s.home;
+    return !!h && s.eq === h.eq && s.col === h.col && s.slot === h.slot;
+  },
+  onThisLine(s){ return s.eq === this.w.eq || (!s.eq && s.home && s.home.eq === this.w.eq); },
+
+  /* A matchstick taken off the felt is outside the sanctioned set entirely —
+     that is the thing being measured, and it is already recorded as such — so
+     it is not spent as the one move. The rule governs the mat. */
+  countsAsMove(s){
+    return !!s.home && s.home.eq === this.w.eq && !this.atHome(s)
+        && SESSION.carry.sticks.indexOf(s.id) < 0;
+  },
+  movedOnLine(){
+    const s = this.w.sticks.find(x => this.countsAsMove(x));
+    return s ? s.id : null;
+  },
+
 
   /* ── render ─────────────────────────────────────────────────────── */
   renderSticks(){
     this.inner.querySelectorAll('.stick').forEach(e => e.remove());
     for (const s of this.w.sticks){
+      // the other line is not on the mat. A stick that is off the felt is
+      // wherever it was left, and stays there.
+      if (s.eq && s.eq !== this.w.eq) continue;
       const el = document.createElement('div');
       el.className = 'stick';
       el.dataset.id = s.id;
@@ -1629,8 +1674,7 @@ const STAGE1 = {
   paintState(){
     const el = document.getElementById('t1State');
     if (!this.w.checks){ el.innerHTML = ''; this.markUnreadable([]); return; }
-    const a = evalEquation(this.colsOf('A'), 'A');
-    const b = evalEquation(this.colsOf('B'), 'B');
+    const a = evalEquation(this.colsOf(this.w.eq), this.w.eq);
     const read = r => {
       const spaced = (r.str || '').replace(/([=+\-?])/g, ' $1 ').replace(/\s+/g, ' ').trim();
       const note = r.str.indexOf('?') >= 0
@@ -1639,8 +1683,8 @@ const STAGE1 = {
       return '<span class="rd"><b>' + (r.ok ? '\u2713' : '\u2717') + '</b><code>' +
              (spaced || '\u2014') + '</code>' + note + '</span>';
     };
-    el.innerHTML = read(a) + read(b);
-    this.markUnreadable(a.bad.concat(b.bad));
+    el.innerHTML = read(a);
+    this.markUnreadable(a.bad);
   },
 
   markUnreadable(list){
@@ -1704,6 +1748,23 @@ const STAGE1 = {
     // never trust the caller for this: an orientation is what decides both
     // where the stick can land and what angle it lies at
     orient = orient || this.orientOfStick(s);
+
+    /* One matchstick away from home on the mat. A second is refused, and said
+       out loud — a drag that silently undoes itself reads as the page being
+       broken rather than as a rule. It costs nothing: the rule is stated, and
+       charging somebody for meeting a stated rule measures patience.
+       Off the felt is not on the mat, so it is not refused here. */
+    const w = this.w;
+    // a matchstick still sitting in the line that is not on the mat is not
+    // on the mat either, and nothing can be done with it
+    if (s.eq && s.eq !== w.eq) return;
+
+    if (this.onFelt(x, y) && w.movedId && w.movedId !== s.id){
+      w.blocked++;
+      act(1, 'second_matchstick', { tried:s.id, already:w.movedId });
+      this.paintRule('One matchstick. Put that one back first.');
+      return this.after(s);
+    }
 
     if (!this.onFelt(x, y)){
       // Off the felt. It stays exactly where it was put and it is kept.
@@ -1773,6 +1834,14 @@ const STAGE1 = {
        in this column. Skipping the full ones rather than giving up on them
        means R always does something you can see; a key that silently does
        nothing gets read as a key that does not work. */
+    const w = this.w;
+    if (w.movedId && w.movedId !== s.id){
+      w.blocked++;
+      act(1, 'second_matchstick', { tried:s.id, already:w.movedId, via:'turn' });
+      this.paintRule('One matchstick. Put that one back first.');
+      return true;
+    }
+
     const from = { eq:s.eq, col:s.col, slot:s.slot };
     let o = this.orientOf(s.slot);
     for (let i = 0; i < T1.ORIENT.length; i++){
@@ -1854,7 +1923,7 @@ const STAGE1 = {
   nearestSlot(x, y, self, orient){
     let best = null, bestD = 999;
     const slots = this.slotsFor(orient);
-    for (const eq of ['A','B']){
+    for (const eq of [this.w.eq]){          // the other line is not on the mat
       for (let col = 0; col < T1.LAYOUT[eq].length; col++){
         for (const slot of slots){
           const taken = this.w.sticks.some(s => s !== self && s.eq === eq && s.col === col && s.slot === slot);
@@ -1869,9 +1938,24 @@ const STAGE1 = {
     return best;
   },
   after(s){
+    this.w.movedId = this.movedOnLine();
     this.renderSticks();
     this.check(false);
     saveSession();
+  },
+
+  /* The rule, on the felt, only once somebody has run into it. Saying it
+     before that would be an instruction nobody needed. */
+  paintRule(msg){
+    const el = document.getElementById('t1Rule');
+    if (!el) return;
+    el.textContent = msg || '';
+    el.classList.toggle('on', !!msg);
+    clearTimeout(this._ruleT);
+    if (msg) this._ruleT = setTimeout(() => {
+      const e2 = document.getElementById('t1Rule');
+      if (e2) e2.classList.remove('on');
+    }, 2600);
   },
 
   /* ── moving a coin pair ─────────────────────────────────────────── */
@@ -1895,21 +1979,44 @@ const STAGE1 = {
   /* ── checking ───────────────────────────────────────────────────── */
   check(explicit){
     const w = this.w;
-    const a = evalEquation(this.colsOf('A'));
-    const b = evalEquation(this.colsOf('B'));
+    const r = evalEquation(this.colsOf(w.eq), w.eq);
+    const key = 'solved' + w.eq;
 
-    if (a.ok && !w.solvedA){ w.solvedA = true; constraintBreak(1, 'eqA', { str:a.str }); }
-    if (b.ok && !w.solvedB){ w.solvedB = true; constraintBreak(1, 'eqB', { str:b.str }); }
+    if (r.ok && !w[key]){
+      w[key] = true;
+      constraintBreak(1, 'eq' + w.eq, { str:r.str, moved:w.movedId });
+    }
+    if (r.ok){ this.paintState(); return this.nextLine(); }
 
     if (explicit){
       w.checks++;
-      if (a.ok && b.ok) { this.paintState(); return this.finish(); }
-      fail(1, 'check', { a:a.ok, b:b.ok, strA:a.str, strB:b.str });
-    } else if (a.ok && b.ok){
-      this.paintState();
-      return this.finish();
+      fail(1, 'check', { eq:w.eq, str:r.str });
     }
     this.paintState();
+  },
+
+  /* The first line is the warm-up and the second is the item. One move each,
+     and the move resets with the line. A matchstick that was taken off the
+     felt stays off it — putting it back would undo the one thing here that
+     is worth recording. */
+  nextLine(){
+    const w = this.w;
+    if (w.eq !== 'A') return this.finish();
+    w.eq = 'B';
+    w.checks = 0;
+    w.sticks.forEach(x => {
+      if (x.home && x.home.eq === 'A' && SESSION.carry.sticks.indexOf(x.id) < 0){
+        x.eq = x.home.eq; x.col = x.home.col; x.slot = x.home.slot;
+      }
+    });
+    w.movedId = this.movedOnLine();
+    this.last = null;
+    act(1, 'next_line', { to:'B' });
+    this.buildGrid();
+    this.renderSticks();
+    this.paintRule('');
+    this.paintState();
+    saveSession();
   },
 
   finish(){ this.close('solved'); },
@@ -3743,7 +3850,7 @@ const T3 = {
      beside the line those are the only words that mean anything, and the card
      says the same. */
   RAILS: [                        // centre lines
-    [[36,300],[430,318]],         // the line the trolley is on
+    [[-30,297],[430,318]],        // the line the trolley is on, off the left edge
     [[430,318],[792,392]],        // the NEAR road, with five on it
     [[430,318],[792,262]],        // the FAR road, with one
   ],
@@ -3808,7 +3915,7 @@ const T3 = {
      The limit is where the nose stops short of the points: the body runs 94
      units ahead of its anchor, the points are at 430, and 0.68 leaves about
      thirty between them. Always closer, never there. */
-  TRAIN: { home:0.30, start:0.02, limit:0.68, tau:46000, k0:0.95, k1:0.07 },
+  TRAIN: { home:0.40, start:0.20, limit:0.72, tau:46000, k0:0.95, k1:0.07 },
   trainAt(u){
     const [x, y] = T3.along(0, u);
     const [hx, hy] = T3.along(0, T3.TRAIN.home);
@@ -3988,7 +4095,7 @@ const STAGE3 = {
                  '" x2="' + (x + (-dy/m)*w).toFixed(1) + '" y2="' + (y + (dx/m)*w).toFixed(1) + '"/>';
         }
       };
-      run([40,300], [426,318], 13, 30, 34);
+      run([-26,297], [426,318], 15, 28, 34);
       run([434,320], [788,392], 11, 34, 46);
       run([434,316], [788,262], 11, 34, 46);
       ties.innerHTML = out;
@@ -5345,7 +5452,7 @@ if (window.matchMedia && window.matchMedia('(hover:none) and (pointer:coarse)').
   const t2 = document.getElementById('t2How');
   if (t2) t2.textContent = 'Use the pads to drive.';
   const t1 = document.querySelector('#p1 .feltnote');
-  if (t1) t1.textContent = 'Drag with a finger. Tap one, then R, to turn it.';
+  if (t1) t1.innerHTML = 'Drag with a finger. Tap one, then R, to turn it.<br>One matchstick may be moved.';
   const t3 = document.getElementById('t3How');
   if (t3) t3.textContent = 'Tap a lever.';
 }
@@ -5472,6 +5579,59 @@ if (SELFTEST){
        T1.ANGLE[STAGE1.orientOfRot(-30)] === 330 &&
        T1.ANGLE[STAGE1.orientOfRot(388)] === 30,
        'all twelve, and negative and over-a-turn angles land right');
+  })();
+
+  /* 1b-ii. one line on the mat, one matchstick moved. The rule is stated on
+         the page, so the page has to actually keep it — and it has to keep it
+         without swallowing the thing being measured, which is a matchstick
+         that leaves the felt and does not come back. */
+  (function(){
+    const held = STAGE1.w, carried = SESSION.carry.sticks.slice();
+    try {
+      const w = STAGE1.fresh();
+      STAGE1.w = w;
+      ok('the mat starts on the first line with nothing moved',
+         w.eq === 'A' && w.movedId === null && w.sticks.every(x => !!x.home));
+      ok('every matchstick starts at home',
+         w.sticks.every(x => STAGE1.atHome(x)) && STAGE1.movedOnLine() === null);
+
+      STAGE1.buildGrid();
+      ok('only the line on the mat is on the mat',
+         document.getElementById('eqA').hidden === false &&
+         document.getElementById('eqB').hidden === true);
+
+      const a0 = w.sticks.find(x => x.home.eq === 'A');
+      const b0 = w.sticks.find(x => x.home.eq === 'B');
+      a0.col = a0.col + 1;
+      ok('a matchstick off its own place is the one move',
+         STAGE1.countsAsMove(a0) && STAGE1.movedOnLine() === a0.id);
+
+      SESSION.carry.sticks = [a0.id];
+      a0.eq = null;
+      ok('a matchstick taken off the felt does not spend the move',
+         !STAGE1.countsAsMove(a0) && STAGE1.movedOnLine() === null);
+      SESSION.carry.sticks = [];
+      a0.eq = a0.home.eq; a0.col = a0.home.col;
+
+      ok('a matchstick on the other line is not counted at all',
+         !STAGE1.countsAsMove(Object.assign({}, b0, { col:b0.col + 1 })));
+
+      /* Nowhere on the mat may offer a place belonging to the line that is
+         not on it — the two rows sit at the same height now, so an unscoped
+         search would hand back the wrong line's places and look fine. */
+      let stray = null;
+      for (let x = 0; x <= 560 && !stray; x += 7)
+        for (let y = 0; y <= 340 && !stray; y += 7)
+          for (const o of T1.ORIENT){
+            const t = STAGE1.nearestSlot(x, y, null, o);
+            if (t && t.eq !== 'A'){ stray = t; break; }
+          }
+      ok('no place on the other line can be dropped into', !stray,
+         stray ? JSON.stringify(stray) : 'swept the whole mat at all twelve angles');
+    } finally {
+      STAGE1.w = held;
+      SESSION.carry.sticks = carried;
+    }
   })();
 
   /* 1c. the nine dots. The whole item rests on one claim — that four lines
