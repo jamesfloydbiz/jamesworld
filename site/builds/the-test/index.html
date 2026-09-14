@@ -781,7 +781,7 @@ const LADDER_TEXT = {
       'A plus sign is two matchsticks. So is an equals sign. The three whites are not a block.'],
   2: ['',
       'Take your time.',
-      'The gap will not close. No run-up clears it.',
+      'That gap will not close. No run-up clears it.',
       'The way to the finish may not point at the finish.',
       'The circuit continues behind the start line.'],
   3: ['',
@@ -1482,16 +1482,26 @@ const STAGE1 = {
 
 /* ── TASK TWO — THE CIRCUIT ──────────────────────────────────────────
    A closed top-down circuit, a grid, four rivals, and a finish line that
-   racing cannot reach. Forward from the grid the road runs into a chasm no
-   speed clears. The ramp, the two boost pads and the rock slide are there
-   to make forward feel like the route and to sell the idea that a longer
-   run-up would do it; it never would, because the top speed is capped and
-   the flight is closed form. ?selftest=1 proves the landing is short by
-   search over every approach rather than by anyone's feel for it.
+   racing cannot reach. Forward from the grid the road runs 13,886 units to
+   a chasm no speed clears. Everything before it is there to make forward
+   feel like the route: four boost pads, two jumps that do go over, a rock
+   slide that finishes the car if you touch it, and a flooded ford with a
+   current across it that puts you in the gravel unless you come in on the
+   right side of the road pointing the right way. None of it is decoration.
+   A gap you have already sailed over twice is a gap you believe in, and it
+   is that belief the last one has to break — which is also why the road to
+   it is three times as long as it used to be, and why the field breaks down
+   on it in front of you.
+
+   It never would clear, because the top speed is capped and the flight is
+   closed form. ?selftest=1 proves the last landing is short by search over
+   every approach rather than by anyone's feel for it — and proves the other
+   two jumps are makeable the same way, because a jump advertised as makeable
+   that is not would be the app lying in the other direction.
 
    The constraint to drop is that the direction of travel is the direction
-   of the goal. The finish sits at 0.85 of the lap, which is 0.15 BEHIND the
-   grid: 0 → 0.99 → 0.90 → 0.85, clear road, and a sixth of the distance.
+   of the goal. The finish sits at 0.95 of the lap, which is 0.05 BEHIND the
+   grid: 1,567 units back against 13,886 forward, and clear road all the way.
    Nothing says so. The arrows painted on the asphalt point forward and are
    scenery the way a posted rule is scenery — they are not a lie, and they
    never mention reversing. There is deliberately NO wrong-way warning
@@ -1505,31 +1515,46 @@ const STAGE1 = {
    recorded as the same step off the path, because both are the same
    insight, and the payload says which.
 
-   The camera holds about a tenth of the lap and the circuit is convex, so
-   no far part of the loop is ever in frame beside you. The finish is 1,278
-   world units from the grid box and is off screen at every viewport width;
-   that is checked rather than eyeballed. */
+   The camera holds a fixed 900 world units across at every viewport width
+   and the circuit is convex, so no far part of the loop is ever in frame
+   beside you. The finish is 1,371 world units from the grid box and is off
+   screen at every width; that is checked rather than eyeballed. A window
+   pinned to a fraction of the lap — which is what this was — would have
+   quietly widened with the circuit and put the finish on screen. */
 
 const T2 = {
   /* The circuit: a convex polygon with rounded corners. Convex is not a
      style choice — it is what guarantees no two parts of the lap share a
      frame, which is what keeps the finish hidden from the grid. */
   SHAPE: [
-    { x:-1400, y:-900, r:360 }, { x: 1000, y:-900, r:460 },
-    { x: 1500, y:-420, r:320 }, { x: 1500, y: 520, r:380 },
-    { x:  700, y: 950, r:420 }, { x:-1000, y: 950, r:380 },
-    { x:-1500, y: 300, r:340 },
+    { x:-4300, y:-2750, r:520 }, { x:  500, y:-3000, r:560 },
+    { x: 2900, y:-2450, r:470 }, { x: 4500, y:-1250, r:540 },
+    { x: 4750, y:  900, r:620 }, { x: 3500, y: 2450, r:520 },
+    { x:  900, y: 2950, r:580 }, { x:-2300, y: 2850, r:540 },
+    { x:-4300, y: 1650, r:500 }, { x:-4800, y: -700, r:520 },
   ],
   SEG: 16,                  // samples per corner arc
-  ANCHOR: 0.682,            // rotates t=0 onto the bottom straight
+  ANCHOR: 0.034748,         // rotates t=0 onto the pit straight
   WIDTH: 200,               // asphalt, kerb to kerb
   VERGE: 96,                // run-off outside the kerb, out to the barrier
+  VIEW: 900,                // world units across the frame, at any width
 
-  FINISH: 0.85,
-  BOOSTS: [0.15, 0.45],
-  SLIDE:  [0.283, 0.322],
-  RAMP:   [0.532, 0.550],
-  GAP:    [0.550, 0.5952],
+  FINISH: 0.95,
+  BOOSTS: [0.075, 0.276, 0.398, 0.529],
+  SLIDE:  [0.1900, 0.2140],
+  WATER:  [0.3600, 0.3724],
+  WPUSH:  155,              // the current, world units per second, toward -lat
+
+  /* Three gaps in the road. The first two go over at racing speed and are
+     meant to; the last is 381 units against a longest possible flight of
+     331, which is half a car short and looks it. Every one of them is cut
+     wider than the barriers, so none is driven round. Each is sat on its
+     own straight, and the whole set is checked by ?selftest=1. */
+  JUMPS: [
+    { ramp:[0.1180, 0.1238], gap:[0.1238, 0.1279] },               //  106 units
+    { ramp:[0.4500, 0.4558], gap:[0.4558, 0.4610] },               //  135 units
+    { ramp:[0.5408, 0.5466], gap:[0.5466, 0.5613], last:true },    //  381 units
+  ],
   /* Five boxes, yours at the back. They sit AHEAD of the start line so that
      "behind the line" stays an unambiguous reading rather than a fact about
      where you were parked. */
@@ -1542,16 +1567,15 @@ const T2 = {
   GRAV:900, RAMPTAN:0.448, RAMP_H:34,
   CARL:46, CARW:24,
 
-  /* The slide leaves one clean lane on the inside. It is survivable on
-     purpose: an obstacle you can beat teaches that the road ahead is the
-     road, which is the belief the chasm then has to break. */
-  ROCKS: [
-    { t:0.2860, lat:-86, r:30 }, { t:0.2905, lat:-30, r:26 },
-    { t:0.2930, lat: 16, r:22 }, { t:0.2975, lat:-62, r:34 },
-    { t:0.3010, lat: -6, r:28 }, { t:0.3048, lat:-44, r:24 },
-    { t:0.3085, lat: 20, r:20 }, { t:0.3105, lat:-78, r:30 },
-    { t:0.3160, lat:-18, r:26 },
-  ],
+  /* The slide runs 622 units and leaves one clean lane on the inside — the
+     rocks are laid down in buildCircuit from a fixed seed against ROCK_LANE,
+     so widening the sector never means hand-typing another dozen of them and
+     never quietly walls the road off. Touch one above a walking pace now and
+     the car is finished. That is a change: it used to deflect you. An
+     obstacle that can end the run is fair here because it can be steered
+     round in plain sight, and the field breaking down on it is the point. */
+  ROCK_N: 26,
+  ROCK_LANE: 36,            // no rock reaches past this; +lat of it is clear road
 
   at(t){
     const C = T2.CUM, P = T2.PTS;
@@ -1605,10 +1629,11 @@ const T2 = {
 
   /* World units per CSS pixel. One definition, used by the camera and by the
      self test that proves the finish is off screen — the two must not be
-     allowed to drift apart. The max() is the load-bearing half: it is what
-     stops a narrow screen from widening the frame until parts of the circuit
-     you have not driven to start appearing in it. */
-  scaleFor(w){ return Math.max(w / (T2.LAP * 0.10), 0.62); },
+     allowed to drift apart. A fixed window rather than a fraction of the lap:
+     the fraction quietly widened when the circuit grew, which is exactly the
+     bug that puts the finish on screen. The max() is the other half of it,
+     and stops a narrow screen widening the frame instead. */
+  scaleFor(w){ return Math.max(w / T2.VIEW, 0.62); },
 
   /* Closed form rather than integrated, because Euler over a 64ms frame
      overshoots the apex by enough to matter, and I am not prepared to have
@@ -1618,7 +1643,18 @@ const T2 = {
     const t = (vz + Math.sqrt(vz*vz + 2*T2.GRAV*T2.RAMP_H)) / T2.GRAV;
     return { t, d:s*t, vz };
   },
+
+  /* Which gap, if any, the car is over or on the lip of. One lookup, used by
+     the car, the rivals and the painter, so the three cannot disagree about
+     where the road stops. */
+  jumpAt(t){
+    for (const j of T2.JUMPS)
+      if (t >= j.ramp[0] - 0.0005 && t <= j.gap[1] + 0.0005) return j;
+    return null;
+  },
 };
+T2.RAMP = T2.JUMPS[T2.JUMPS.length-1].ramp;   // the one that cannot be made:
+T2.GAP  = T2.JUMPS[T2.JUMPS.length-1].gap;    // named, because it is the task
 T2.LIM  = T2.WIDTH/2 + T2.VERGE;      // barrier: the furthest off line you get
 T2.VOID = T2.LIM + 70;                // the gap runs wider than that: no way round
 
@@ -1698,30 +1734,61 @@ T2.VOID = T2.LIM + 70;                // the gap runs wider than that: no way ro
   }
 
   T2.ARROWS = [];
-  for (let s = 150; s < T2.LAP; s += 330){
+  for (let s = 240; s < T2.LAP; s += 420){
     const t = s / T2.LAP;
-    const near = x => Math.abs(t - x) < 0.013;
-    if (t > T2.RAMP[0] - 0.013 && t < T2.GAP[1] + 0.013) continue;
+    const near = x => Math.abs(t - x) < 0.006;
+    if (T2.JUMPS.some(j => t > j.ramp[0] - 0.006 && t < j.gap[1] + 0.006)) continue;
     if (near(0) || near(1) || near(T2.FINISH)) continue;
     if (T2.BOOSTS.some(near)) continue;
-    if (t > T2.SLIDE[0] - 0.01 && t < T2.SLIDE[1] + 0.01) continue;
+    if (t > T2.SLIDE[0] - 0.004 && t < T2.SLIDE[1] + 0.004) continue;
+    if (t > T2.WATER[0] - 0.004 && t < T2.WATER[1] + 0.004) continue;
     const m = T2.at(t);
     T2.ARROWS.push({ t, x:m.x, y:m.y, a:m.a });
   }
 
   let seed = 7;
   const rnd = () => (seed = (seed * 1103515245 + 12345) & 0x7fffffff) / 0x7fffffff;
-  T2.ROCKS.forEach(r => {
+
+  T2.JUMPS.forEach((j, i) => { j.n = i + 1; });
+
+  /* The slide. Laid out rather than listed: a rock is placed across the
+     sector and pushed to the outside half, and its near edge is never
+     allowed past ROCK_LANE, which is what keeps a lane open on the inside
+     at every width the sector is ever given. */
+  T2.ROCKS = [];
+  for (let k = 0; k < T2.ROCK_N; k++){
+    const f = (k + 0.5) / T2.ROCK_N + (rnd() - 0.5) * 0.9 / T2.ROCK_N;
+    const rr = 18 + rnd() * 18;
+    const hi = T2.ROCK_LANE - rr, lo = -T2.WIDTH/2 - 24;
+    const r = { t: T2.SLIDE[0] + f * (T2.SLIDE[1] - T2.SLIDE[0]),
+                lat: lo + rnd() * (hi - lo), r: rr };
     const p = T2.edge(r.t, r.lat);
     r.x = p[0]; r.y = p[1];
     r.poly = [];
-    for (let k = 0; k < 9; k++){
-      const th = k / 9 * Math.PI * 2, rr = r.r * (0.72 + rnd() * 0.42);
-      r.poly.push([Math.cos(th) * rr, Math.sin(th) * rr]);
+    for (let q = 0; q < 9; q++){
+      const th = q / 9 * Math.PI * 2, rad = r.r * (0.72 + rnd() * 0.42);
+      r.poly.push([Math.cos(th) * rad, Math.sin(th) * rad]);
     }
     r.tilt = rnd() * 3;
-  });
+    T2.ROCKS.push(r);
+  }
+
+  // surface streaks for the ford, so the current reads as a direction
+  T2.WSTREAK = [];
+  for (let k = 0; k < 30; k++)
+    T2.WSTREAK.push({ t: T2.WATER[0] + rnd() * (T2.WATER[1] - T2.WATER[0]),
+                      lat: -T2.LIM + rnd() * 2 * T2.LIM,
+                      len: 14 + rnd() * 30, ph: rnd() });
 })();
+
+/* Each rival is handed one obstacle it does not get through, so the field is
+   seen to break on the road and not only at the last gap. It fails there once,
+   is dug out, and races on — a car that failed the same corner on every lap
+   would read as scenery on a loop rather than as a race going wrong. The last
+   gap is the exception: everyone who reaches it goes in, every time, with no
+   flag to stop it happening again, because a rival who cleared it would be the
+   app lying about what is possible. */
+const T2FATE = ['rocks', 'water', 'gap2', 'none'];
 
 /* One livery each, so four rivals never read as one grey smear. */
 const T2LIVERY = [
@@ -1738,7 +1805,8 @@ const STAGE2 = {
   /* Counters live in w so a reload keeps them. The car does not: the attempt
      is the stage, the run is not, and every restart starts on the grid the
      way the first one did. One mount path for a fresh w and a restored one. */
-  fresh(){ return { runs:0, jumps:0, chasmFails:0, rockHits:0, revHit:false,
+  fresh(){ return { runs:0, jumps:0, cleared:0, gapFails:0, chasmFails:0,
+                    rockHits:0, swept:0, revHit:false,
                     backPct:0, maxT:0, escaped:false, _lives:0 }; },
 
   mount(w){
@@ -1773,7 +1841,8 @@ const STAGE2 = {
     rec.ev(EV.scene, 2, { kind:'track',
       pts: T2.PTS.map(p => [Math.round(p[0]), Math.round(p[1])]),
       w: T2.WIDTH, startT: 0, finishT: T2.FINISH,
-      chasm: T2.GAP.slice(), slide: T2.SLIDE.slice(),
+      chasm: T2.GAP.slice(), slide: T2.SLIDE.slice(), water: T2.WATER.slice(),
+      jumps: T2.JUMPS.filter(j => !j.last).map(j => j.gap.slice()),
       boosts: T2.BOOSTS.slice(), cars: T2.GRID.length });
 
     this.loop = this.loop.bind(this);
@@ -1817,14 +1886,20 @@ const STAGE2 = {
     this.RUN = {
       x:p.x + p.nx*g.lat, y:p.y + p.ny*g.lat, a:p.a, v:0, steer:0,
       t:g.t, tPrev:g.t, prog:0, lat:g.lat,
-      z:0, air:null, fall:0, over:0, boost:0,
+      z:0, air:null, fall:0, over:0, overMsg:'', spin:0, wet:false, boost:0,
       lights: first ? 3.2 : 1.4, last:0,
       camX:0, camY:0, marks:[], dust:[], skid:0,
     };
     this.RUN.camX = this.RUN.x; this.RUN.camY = this.RUN.y;
     this.cars = T2.GRID.slice(1).map((b, i) => ({
+      /* Top speeds are not free numbers: a rival slower than about 318 cannot
+         clear the second gap, and a field that keeps falling into a gap the
+         student is meant to sail over would teach the exact opposite of what
+         that gap is for. The spread is kept just under the car's own VMAX so
+         the race is winnable on the road. */
       home:b, k:i, t:b.t, lat:b.lat, a:T2.at(b.t).a, v:0, z:0, air:null,
-      fall:0, wait:0, boost:0, top:292 + i*14,
+      fall:0, retryT:null, wreck:0, spin:0, fate:T2FATE[i % T2FATE.length],
+      failed:false, wait:0, boost:0, top:312 + i*8,
       x:T2.edge(b.t, b.lat)[0], y:T2.edge(b.t, b.lat)[1],
     }));
   },
@@ -1853,6 +1928,11 @@ const STAGE2 = {
 
     if (R.over > 0){
       R.over -= dt;
+      if (R.spin){                        // a wrecked car is still turning
+        R.a += R.spin * dt;
+        R.spin *= Math.pow(0.16, dt);
+        if (Math.random() < 0.35) this.puff(R.x, R.y, 1, '#6b6b72');
+      }
       if (R.over <= 0){ this.reset(false); return; }
       this.camera(dt); return;
     }
@@ -1868,7 +1948,15 @@ const STAGE2 = {
       R.x += A.vx * s; R.y += A.vy * s;
       R.z = T2.RAMP_H + A.vz*A.age - 0.5*T2.GRAV*A.age*A.age;
       R.a += A.spin * s;
-      if (A.age >= A.T - 1e-9){ R.air = null; R.z = 0; }
+      if (A.age >= A.T - 1e-9){
+        const q = T2.project(R.x, R.y);
+        R.air = null; R.z = 0;
+        // landed anywhere but inside the hole it took off over
+        if (A.j && !(q.t > A.j.gap[0] && q.t < A.j.gap[1])){
+          this.w.cleared++;
+          act(2, 'jump_cleared', { jump:A.j.n, v:Math.round(Math.abs(R.v)) });
+        }
+      }
     } else {
       const up   = HELD.has('ArrowUp')    || HELD.has('w') || HELD.has('W');
       const down = HELD.has('ArrowDown')  || HELD.has('s') || HELD.has('S');
@@ -1890,6 +1978,35 @@ const STAGE2 = {
       }
       R.x += Math.cos(R.a) * R.v * dt;
       R.y += Math.sin(R.a) * R.v * dt;
+
+      /* The ford. A current running across the road at a fixed rate, which
+         means the only things that decide where it puts you are how far over
+         you came in, how fast, and where the nose is pointing — steer into it
+         and you hold your line, cross it square and slow and you are in the
+         gravel on the far side. Nothing about it is random and nothing about
+         it is a wall: every crossing is recoverable, which is what keeps the
+         belief that the road ahead is the road. */
+      if (R.t > T2.WATER[0] && R.t < T2.WATER[1]){
+        const f = T2.at(R.t), push = T2.WPUSH * dt;
+        R.x -= f.nx * push; R.y -= f.ny * push;
+        R.v *= Math.pow(0.80, dt);
+        if (Math.abs(R.lat) > T2.WIDTH/2){        // off the asphalt and slewing
+          R.a += 1.5 * dt * (R.lat < 0 ? -1 : 1);
+          R.v *= Math.pow(0.45, dt);
+        }
+        this.puff(R.x - Math.cos(R.a)*15, R.y - Math.sin(R.a)*15, 1, '#9fd2da');
+        R.wet = true;
+      } else if (R.wet){
+        R.wet = false;
+        if (Math.abs(R.lat) > T2.WIDTH/2){
+          this.w.swept++;
+          /* x and y on every one of these, so the replay pins the wreck where
+             it happened rather than at the last telemetry sample — telemetry
+             is throttled, and a sparse run put the mark a third of a lap out. */
+          fail(2, 'water', { lat:Math.round(R.lat), v:Math.round(Math.abs(R.v)),
+                             x:Math.round(R.x), y:Math.round(R.y) });
+        } else act(2, 'ford', { lat:Math.round(R.lat) });
+      }
 
       if (down && wasV > 150){
         R.skid += dt;
@@ -1930,12 +2047,16 @@ const STAGE2 = {
     }
 
     if (!R.air){
-      const onRamp = p.t >= T2.RAMP[0] && p.t <= T2.RAMP[1];
-      R.z = onRamp ? T2.RAMP_H * (p.t - T2.RAMP[0]) / (T2.RAMP[1] - T2.RAMP[0]) : 0;
-      // it has to be a crossing of the lip. Merely being past it — which is
-      // what a car that has just landed short is — falls instead.
-      if (d > 0 && p.t >= T2.RAMP[1] && p.t - d < T2.RAMP[1] && p.t < T2.GAP[1]) this.launch();
-      else if (p.t > T2.GAP[0] && p.t < T2.GAP[1]) return this.intoTheGap();
+      const j = T2.jumpAt(p.t);
+      R.z = 0;
+      if (j){
+        const onRamp = p.t >= j.ramp[0] && p.t <= j.ramp[1];
+        if (onRamp) R.z = T2.RAMP_H * (p.t - j.ramp[0]) / (j.ramp[1] - j.ramp[0]);
+        // it has to be a crossing of the lip. Merely being past it — which is
+        // what a car that has just landed short is — falls instead.
+        if (d > 0 && p.t >= j.ramp[1] && p.t - d < j.ramp[1] && p.t < j.gap[1]) this.launch(j);
+        else if (p.t > j.gap[0] && p.t < j.gap[1]) return this.intoTheGap(j);
+      }
     }
 
     for (const bt of T2.BOOSTS){
@@ -1943,29 +2064,20 @@ const STAGE2 = {
       if (g < 0.0045 && Math.abs(p.lat) < T2.WIDTH/2) R.boost = T2.BOOST_S;
     }
 
-    if (!R.air && !R.fall){
+    if (!R.air && !R.fall && R.over <= 0){
       for (const r of T2.ROCKS){
         const dx = R.x - r.x, dy = R.y - r.y, rr = r.r + 15;
         if (dx*dx + dy*dy > rr*rr) continue;
         const m = Math.hypot(dx, dy) || 1;
         R.x = r.x + dx/m * rr; R.y = r.y + dy/m * rr;
-        const hard = Math.abs(R.v) > 110;
-        /* Deflected round it, not pinned against it. The slide has to be
-           survivable — it is here to make the road ahead feel like the road,
-           and an obstacle that simply ends the run would do the opposite. */
-        const tan = Math.atan2(dx/m, -dy/m) + (R.v < 0 ? Math.PI : 0);
-        let da = tan - R.a;
-        while (da >  Math.PI) da -= Math.PI * 2;
-        while (da < -Math.PI) da += Math.PI * 2;
-        if (Math.abs(da) > Math.PI/2) da += da > 0 ? -Math.PI : Math.PI;
-        R.a += da * 0.5;
-        R.v *= 0.62;
-        this.puff(r.x, r.y, 4);
-        if (hard && (!this._rockAt || performance.now() - this._rockAt > 700)){
-          this._rockAt = performance.now();
-          w.rockHits++;
-          fail(2, 'rockslide', { t:+p.t.toFixed(3), v:Math.round(Math.abs(R.v)) });
-        }
+        /* Hit at anything above a crawl and the car is finished. A lane is
+           open on the inside and the rubble is visible the whole way down the
+           straight, so this is a wreck you can see coming and steer round;
+           nosing into a rock at walking pace is not a crash and is nudged
+           clear instead, because killing a car that is barely moving reads as
+           the game being arbitrary rather than as a consequence. */
+        if (Math.abs(R.v) > 60) return this.wreck(p, Math.abs(R.v));
+        R.v *= 0.4;
       }
     }
 
@@ -1980,7 +2092,8 @@ const STAGE2 = {
     if (behind > 0.002 && d < 0 && !w.revHit){
       w.revHit = true;
       offPath(2, 'reverse', { t:+p.t.toFixed(3), back:+behind.toFixed(3),
-                              gear: R.v < -4 ? 'reverse' : 'turned', via:this.via || 'key' });
+                              gear: R.v < -4 ? 'reverse' : 'turned', via:this.via || 'key',
+                              x:Math.round(R.x), y:Math.round(R.y) });
     }
     if (behind > 0){
       /* The gradient, raw like task one's milestones: the step off the path
@@ -2001,22 +2114,45 @@ const STAGE2 = {
     if (!w.escaped && R.prog + T2.GRID[0].t >= T2.FINISH) return this.finish('complied');
   },
 
-  launch(){
+  launch(j){
     const R = this.RUN, f = T2.flight(R.v);
-    R.air = { age:0, T:f.t, vz:f.vz,
+    R.air = { age:0, T:f.t, vz:f.vz, j,
               vx:Math.cos(R.a) * R.v, vy:Math.sin(R.a) * R.v,
               spin:(R.steer || 0) * 0.35 };
     this.w.jumps++;
-    act(2, 'jump', { v:Math.round(R.v), boost:R.boost > 0 });
+    act(2, 'jump', { jump:j.n, v:Math.round(R.v), boost:R.boost > 0,
+                     gap:Math.round((j.gap[1] - j.gap[0]) * T2.LAP) });
   },
 
-  intoTheGap(){
+  /* Falling into a gap and hitting the rubble are one outcome with two
+     causes, and the record keeps them apart: 'gap' is a jump that could have
+     been made, 'chasm' is the one that could not, 'rockslide' is the rocks.
+     Rolling them into one number would make the last gap look like a driving
+     mistake, which is the one reading this task cannot afford. */
+  intoTheGap(j){
     const R = this.RUN, w = this.w;
     if (R.fall > 0 || R.over > 0) return;
     R.fall = 0.6; R.air = null; R.v = 0;
-    w.chasmFails++;
-    fail(2, 'chasm', { jumps:w.jumps, t:+R.t.toFixed(3),
-                       short:Math.round((T2.GAP[1] - R.t) * T2.LAP) });
+    R.overMsg = "Game over. You didn't make the jump!";
+    if (j.last) w.chasmFails++; else w.gapFails++;
+    fail(2, j.last ? 'chasm' : 'gap',
+         { jump:j.n, jumps:w.jumps, cleared:w.cleared, t:+R.t.toFixed(3),
+           short:Math.round((j.gap[1] - R.t) * T2.LAP),
+           x:Math.round(R.x), y:Math.round(R.y) });
+  },
+
+  wreck(p, speed){
+    const R = this.RUN, w = this.w;
+    if (R.over > 0) return;
+    R.v = 0; R.air = null;
+    R.spin = (R.steer >= 0 ? 1 : -1) * (5 + Math.random() * 3);
+    R.over = 2.1;
+    R.overMsg = 'Game over. Your car is wrecked!';
+    w.rockHits++;
+    this.puff(R.x, R.y, 16, '#6b6b72');
+    fail(2, 'rockslide', { t:+p.t.toFixed(3), lat:Math.round(p.lat),
+                           v:Math.round(speed),
+                           x:Math.round(R.x), y:Math.round(R.y) });
   },
 
   runCars(dt){
@@ -2024,9 +2160,23 @@ const STAGE2 = {
       if (o.fall > 0){
         o.fall -= dt; o.z -= 300 * dt;
         if (o.fall <= 0){
-          o.t = o.home.t; o.lat = o.home.lat; o.v = 0; o.z = 0; o.boost = 0;
+          /* Out of the last gap they are craned back to the near side of it
+             and go again, which is how a student watching the field learns
+             what that gap is without a word being said about it. Out of one
+             of the others, back to their box. */
+          o.t = o.retryT != null ? o.retryT : o.home.t;
+          o.retryT = null;
+          o.lat = o.home.lat; o.v = 0; o.z = 0; o.boost = 0;
           const p = T2.at(o.t); o.x = p.x + p.nx*o.lat; o.y = p.y + p.ny*o.lat; o.a = p.a;
         }
+        continue;
+      }
+      if (o.wreck > 0){                   // stopped, turning, smoking
+        o.wreck -= dt;
+        o.a += o.spin * dt;
+        o.spin *= Math.pow(0.18, dt);
+        if (Math.random() < 0.3) this.puff(o.x, o.y, 1, '#6b6b72');
+        if (o.wreck <= 0){ o.v = 0; o.lat = clamp(o.lat, -70, 70); }
         continue;
       }
       if (o.boost > 0) o.boost -= dt;
@@ -2038,28 +2188,54 @@ const STAGE2 = {
         o.z = T2.RAMP_H + A.vz*A.age - 0.5*T2.GRAV*A.age*A.age;
         if (A.age >= A.T - 1e-9){
           o.air = null;
-          /* No rival ever clears it. A rival who cleared it would be the app
-             lying about what is possible, so this is a fall, not a test. */
-          o.fall = 0.55; o.z = 0;
+          const over = A.j ? A.v * A.T > (A.j.gap[1] - A.j.gap[0]) * T2.LAP : true;
+          if (over){ o.z = 0; }
+          else {
+            if (A.j && !A.j.last) o.failed = true;     // one bad jump each
+            else if (A.j) o.retryT = A.j.ramp[0] - 0.075;
+            o.fall = 0.55; o.z = 0;
+          }
         }
       } else {
         const cap = Math.min(T2.VBOOST, o.top + (o.boost > 0 ? 150 : 0));
         o.v = Math.min(cap, o.v + 280 * dt);
         const inSlide = o.t > T2.SLIDE[0] - 0.024 && o.t < T2.SLIDE[1] + 0.012;
-        const want = inSlide ? 62 : Math.sin(o.t * 31 + o.k * 1.9) * 48 + (o.k - 1.5) * 12;
+        const inFord  = o.t > T2.WATER[0] - 0.018 && o.t < T2.WATER[1] + 0.006;
+        const doomed  = !o.failed;
+        let want;
+        if (inSlide) want = (o.fate === 'rocks' && doomed) ? -54 : 68;
+        else if (inFord) want = (o.fate === 'water' && doomed) ? -T2.LIM - 60 : 86;
+        else want = Math.sin(o.t * 31 + o.k * 1.9) * 48 + (o.k - 1.5) * 12;
         /* Scaled by speed, or a standing car slides across its grid box and
            the heading — which comes from where it moved — points sideways. */
         o.lat += (want - o.lat) * Math.min(1, dt * 2.4 * Math.min(1, o.v / 170));
         const was = o.t;
         o.t += (o.v * dt) / T2.LAP;
         for (const bt of T2.BOOSTS) if (was < bt && o.t >= bt) o.boost = T2.BOOST_S;
-        if (o.t >= T2.RAMP[1]){
-          const f = T2.flight(o.v);
-          o.air = { age:0, T:f.t, vz:f.vz, v:o.v };
+
+        if (o.fate === 'rocks' && doomed &&
+            was < T2.SLIDE[0] + 0.009 && o.t >= T2.SLIDE[0] + 0.009){
+          o.failed = true; o.wreck = 3.2; o.spin = 6.4; o.v = 0;
+          this.puff(o.x, o.y, 13, '#6b6b72');
+        }
+        if (o.fate === 'water' && doomed && inFord && o.lat < -T2.LIM + 12){
+          o.failed = true; o.wreck = 2.8; o.spin = 3.4; o.v = 0;
+          o.lat = -T2.LIM + 12;
+          this.puff(o.x, o.y, 10, '#9fd2da');
+        }
+
+        const j = T2.JUMPS.find(x => was < x.ramp[1] && o.t >= x.ramp[1]);
+        if (j){
+          // the one car that gets the second jump wrong lifts off too slowly
+          const v = (j.n === 2 && o.fate === 'gap2' && doomed)
+                    ? 150 : (j.last ? Math.min(o.v, 300) : o.v);
+          const f = T2.flight(v);
+          o.air = { age:0, T:f.t, vz:f.vz, v, j };
           this.mark(o.x, o.y, o.a);
         }
-        const onRamp = o.t >= T2.RAMP[0] && o.t <= T2.RAMP[1];
-        o.z = onRamp ? T2.RAMP_H * (o.t - T2.RAMP[0]) / (T2.RAMP[1] - T2.RAMP[0]) : 0;
+        const jr = T2.jumpAt(o.t);
+        o.z = (jr && o.t >= jr.ramp[0] && o.t <= jr.ramp[1])
+              ? T2.RAMP_H * (o.t - jr.ramp[0]) / (jr.ramp[1] - jr.ramp[0]) : 0;
       }
 
       const p = T2.at(o.t);
@@ -2105,13 +2281,14 @@ const STAGE2 = {
     if (R.marks.length > 170) R.marks.shift();
   },
 
-  puff(x, y, n){
+  puff(x, y, n, col){
     const R = this.RUN;
     if (!R || prefersStill()) return;     // decoration only, never a route
     for (let i = 0; i < n; i++)
       R.dust.push({ x:x + (Math.random()-0.5)*18, y:y + (Math.random()-0.5)*18,
                     vx:(Math.random()-0.5)*70, vy:(Math.random()-0.5)*70,
-                    life:0.5 + Math.random()*0.4, r:4 + Math.random()*6 });
+                    life:0.5 + Math.random()*0.4, r:4 + Math.random()*6,
+                    col:col || '#b9ab92' });
     if (R.dust.length > 90) R.dust.splice(0, R.dust.length - 90);
   },
 
@@ -2316,29 +2493,55 @@ const STAGE2 = {
       c.restore();
     }
 
-    /* The chasm: a kicker, hazard stripes, and a hole that runs wider than
-       the barriers on both sides, so there is nothing to drive round. */
-    const rp = T2.at(T2.RAMP[1]);
-    if (near(rp.x, rp.y, 620)){
-      this.band(c, T2.RAMP[0], T2.RAMP[1], -T2.LIM, T2.LIM, '#34383d', 4);
-      this.band(c, T2.RAMP[0] + 0.006, T2.RAMP[1], -T2.LIM, T2.LIM, '#41464c', 3);
+    /* The ford. Painted before the gaps because nothing is ever in frame
+       with both, and after the kerbs because the water runs over them. */
+    const wm = (T2.WATER[0] + T2.WATER[1]) / 2, wp = T2.at(wm);
+    if (near(wp.x, wp.y, 460)){
+      this.band(c, T2.WATER[0] - 0.0013, T2.WATER[1] + 0.0013, -T2.LIM, T2.LIM, '#22414a', 4);
+      this.band(c, T2.WATER[0], T2.WATER[1], -T2.LIM, T2.LIM, '#356874', 4);
+      // the downstream bank sits deeper, which is where the current is taking you
+      this.band(c, T2.WATER[0], T2.WATER[1], -T2.LIM, -T2.LIM + 64, '#27525f', 3);
+      const ph = still ? 0 : performance.now() / 760;
+      c.strokeStyle = 'rgba(196,230,236,.30)'; c.lineWidth = 3; c.lineCap = 'round';
+      for (const k of T2.WSTREAK){
+        const span = 2 * T2.LIM;
+        let lat = k.lat - (still ? 0 : ((k.ph + ph) % 1) * 140);
+        lat = ((lat + T2.LIM) % span + span) % span - T2.LIM;
+        const a = T2.edge(k.t, lat), b = T2.edge(k.t, Math.max(-T2.LIM, lat - k.len));
+        c.beginPath(); c.moveTo(a[0], a[1]); c.lineTo(b[0], b[1]); c.stroke();
+      }
+      // wet asphalt dragged out of the far bank
+      this.band(c, T2.WATER[1], T2.WATER[1] + 0.0018, -T2.LIM, T2.LIM, 'rgba(36,60,66,.5)', 3);
+    }
+
+    /* The gaps: a kicker, hazard stripes, and a hole that runs wider than the
+       barriers on both sides, so there is nothing to drive round. All three
+       are painted the same, on purpose. The last one is not marked out as
+       different anywhere — the only thing that tells you it is different is
+       trying it, or watching somebody else try it. */
+    for (const j of T2.JUMPS){
+      const rp = T2.at(j.ramp[1]);
+      if (!near(rp.x, rp.y, 640)) continue;
+      this.band(c, j.ramp[0], j.ramp[1], -T2.LIM, T2.LIM, '#34383d', 4);
+      this.band(c, j.ramp[0] + (j.ramp[1]-j.ramp[0])*0.34, j.ramp[1], -T2.LIM, T2.LIM, '#41464c', 3);
       for (let k = 0; k < 12; k++){
         const l0 = -T2.LIM + (2*T2.LIM) * (k/12), l1 = -T2.LIM + (2*T2.LIM) * ((k+1)/12);
-        this.band(c, T2.RAMP[1] - 0.0026, T2.RAMP[1], l0, l1, (k % 2) ? '#1a1c1f' : '#d8a72c', 1);
+        this.band(c, j.ramp[1] - 0.0009, j.ramp[1], l0, l1, (k % 2) ? '#1a1c1f' : '#d8a72c', 1);
       }
-      this.band(c, T2.GAP[0], T2.GAP[1], -T2.VOID, T2.VOID, '#05070a', 4);
-      this.band(c, T2.GAP[0] + 0.004, T2.GAP[1] - 0.004, -T2.VOID + 26, T2.VOID - 26, '#0a0d12', 4);
-      for (const lip of [[T2.GAP[0], 1], [T2.GAP[1], -1]]){       // broken edges
+      this.band(c, j.gap[0], j.gap[1], -T2.VOID, T2.VOID, '#05070a', 4);
+      const inset = Math.min(0.0014, (j.gap[1] - j.gap[0]) * 0.27);
+      this.band(c, j.gap[0] + inset, j.gap[1] - inset, -T2.VOID + 26, T2.VOID - 26, '#0a0d12', 4);
+      for (const lip of [[j.gap[0], 1], [j.gap[1], -1]]){          // broken edges
         c.fillStyle = '#2b2f34';
         c.beginPath();
         const n = 16;
         for (let k = 0; k <= n; k++){
-          const p = T2.edge(lip[0] + lip[1] * 0.0009 * (k % 2 ? 1 : 2.2),
+          const p = T2.edge(lip[0] + lip[1] * 0.00032 * (k % 2 ? 1 : 2.2),
                             -T2.VOID + (2*T2.VOID) * (k/n));
           if (k) c.lineTo(p[0], p[1]); else c.moveTo(p[0], p[1]);
         }
         for (let k = n; k >= 0; k--){
-          const p = T2.edge(lip[0] - lip[1] * 0.0016, -T2.VOID + (2*T2.VOID) * (k/n));
+          const p = T2.edge(lip[0] - lip[1] * 0.00056, -T2.VOID + (2*T2.VOID) * (k/n));
           c.lineTo(p[0], p[1]);
         }
         c.closePath(); c.fill();
@@ -2356,7 +2559,7 @@ const STAGE2 = {
     if (!still){
       for (const d of R.dust){
         c.globalAlpha = Math.max(0, d.life) * 0.5;
-        c.fillStyle = '#b9ab92';
+        c.fillStyle = d.col || '#b9ab92';
         c.beginPath(); c.arc(d.x, d.y, d.r, 0, Math.PI*2); c.fill();
       }
       c.globalAlpha = 1;
@@ -2506,8 +2709,8 @@ const STAGE2 = {
       c.restore();
     }
 
-    if (R.over > 0){
-      const msg = "Game over. You didn't make the jump!";
+    if (R.over > 0 && R.overMsg){
+      const msg = R.overMsg;
       c.textAlign = 'center'; c.textBaseline = 'middle';
       c.font = '700 15px ui-monospace,Menlo,monospace';
       const w = Math.min(W - 24, c.measureText(msg).width + 40);
@@ -3135,6 +3338,98 @@ if (SELFTEST){
        'short by ' + Math.round(gap - worst) + ', car is ' + T2.CARL + ' long');
     ok('there is no way round the chasm', T2.VOID > T2.LIM,
        'void half-width ' + T2.VOID + ' vs barrier ' + T2.LIM);
+  })();
+
+  /* 3a. and the other way round: a gap the car is meant to clear had better
+         clear, or the run never reaches the one that matters and the whole
+         reading is of a driving game the student gave up on. Same integrator,
+         same closed-form flight, run up from the last thing on the road
+         before it with no boost — the pessimistic case. */
+  (function(){
+    const before = j => {
+      let best = 0;
+      for (const t of [0.0525, T2.SLIDE[1], T2.WATER[1], ...T2.BOOSTS,
+                       ...T2.JUMPS.map(x => x.gap[1])])
+        if (t < j.ramp[0] && t > best) best = t;
+      return best;
+    };
+    for (const j of T2.JUMPS){
+      if (j.last) continue;
+      const gap = (j.gap[1] - j.gap[0]) * T2.LAP;
+      const run = (j.ramp[1] - before(j)) * T2.LAP;
+      let v = 0, s = 0;
+      for (let i = 0; i < 40000 && s < run; i++){
+        v = T2.drive(v, true, false, false, 1/120);   // no boost: the hard case
+        s += Math.max(0, v) / 120;
+      }
+      const d = T2.flight(v).d;
+      ok('jump ' + j.n + ' goes over from a standing start', d > gap + 12,
+         'flight ' + Math.round(d) + ' vs gap ' + Math.round(gap) +
+         ' off a ' + Math.round(run) + ' run-up at ' + Math.round(v));
+    }
+    ok('the last gap is the only one that cannot be made',
+       T2.JUMPS.filter(j => j.last).length === 1 &&
+       T2.JUMPS[T2.JUMPS.length-1].last === true, T2.JUMPS.length + ' gaps');
+  })();
+
+  /* 3c. the slide has a lane through it, and the ford has a line through it.
+         Both are obstacles the run has to survive to reach the last gap, so
+         both being passable is load-bearing rather than a nicety. */
+  (function(){
+    let lane = 0;
+    for (let lat = -T2.LIM; lat <= T2.LIM; lat += 2){
+      const p0 = T2.edge(T2.SLIDE[0], lat), p1 = T2.edge(T2.SLIDE[1], lat);
+      const clear = T2.ROCKS.every(r => {
+        const a = T2.project(r.x, r.y);
+        return Math.abs(a.lat - lat) > r.r + 16;
+      });
+      if (clear && Math.abs(lat) <= T2.WIDTH/2) lane += 2;
+      void p0; void p1;
+    }
+    ok('the rock slide leaves a lane on the asphalt', lane >= 34,
+       Math.round(lane) + ' units of clear asphalt across ' + T2.ROCKS.length + ' rocks');
+
+    /* The ford, driven for real — the shared integrator, the gravel clamp
+       and the barrier clamp, not a sketch of them. Three things have to be
+       true at once: the right line crosses on the asphalt, a bad line ends
+       off it, and NO line gets stuck. The third is the one that matters. A
+       current that pins a slow car against the barrier and holds it there
+       would be a wall dressed as an obstacle, and the run would end at the
+       ford instead of at the gap this whole task is built around. */
+    const cross = (lat0, v0) => {
+      let lat = lat0, v = v0, t = T2.WATER[0], dt = 1/120, i = 0;
+      for (; i < 6000 && t < T2.WATER[1]; i++){
+        v = T2.drive(v, true, false, false, dt);           // throttle pinned
+        if (Math.abs(lat) > T2.WIDTH/2 + 6){               // gravel bites
+          v *= Math.pow(0.4, dt);
+          v = clamp(v, -140, 175);
+        }
+        lat -= T2.WPUSH * dt;
+        v *= Math.pow(0.80, dt);
+        if (Math.abs(lat) > T2.WIDTH/2) v *= Math.pow(0.45, dt);
+        lat = clamp(lat, -T2.LIM, T2.LIM);                 // the barrier holds
+        t += (v * dt) / T2.LAP;
+      }
+      return { lat, secs:i / 120, out:t >= T2.WATER[1] };
+    };
+    const good = cross(88, T2.VMAX), bad = cross(-40, 150);
+    ok('the ford can be crossed on the right line',
+       good.out && Math.abs(good.lat) < T2.WIDTH/2,
+       'ends at lat ' + Math.round(good.lat) + ' after ' + good.secs.toFixed(1) + 's');
+    ok('the ford puts a bad line off the road',
+       bad.out && bad.lat < -T2.WIDTH/2,
+       'ends at lat ' + Math.round(bad.lat) + ' vs kerb ' + (-T2.WIDTH/2));
+    let slowest = 0, stuck = null;
+    for (let lat0 = -T2.LIM; lat0 <= T2.LIM; lat0 += 8)
+      for (const v0 of [0, 40, 90, 150, 240, T2.VMAX, T2.VBOOST]){
+        const r = cross(lat0, v0);
+        if (!r.out) stuck = lat0 + '@' + v0;
+        slowest = Math.max(slowest, r.secs);
+      }
+    ok('no line through the ford gets stuck in it', !stuck,
+       stuck ? 'stuck from lat ' + stuck : 'worst crossing ' + slowest.toFixed(1) + 's');
+    ok('nothing in the ford is a barrier', T2.WPUSH > 0 && T2.WPUSH < 400,
+       'current ' + T2.WPUSH + ' units/s');
   })();
 
   /* 3b. the finish is never in frame from the grid — at any viewport width,

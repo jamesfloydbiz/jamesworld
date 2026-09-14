@@ -541,7 +541,9 @@ function stateAt(t){
       // things that happened somewhere, pinned to where the car was
       const here = () => (d.x != null && d.y != null) ? { x:d.x, y:d.y }
                        : (R.pose ? { x:R.pose.x, y:R.pose.y } : null);
-      if (e.type === 'fail' && (d.kind === 'chasm' || d.kind === 'rockslide')){
+      if (e.type === 'fail' &&
+          (d.kind === 'chasm' || d.kind === 'rockslide' ||
+           d.kind === 'gap'   || d.kind === 'water')){
         const p = here(); if (p) R.marks.push({ kind:d.kind, x:p.x, y:p.y });
       }
       if (e.type === 'off_path' && d.kind === 'reverse'){
@@ -799,6 +801,43 @@ function drawRun(st){
     label(g.at(f0 + len/2), 'rock slide', '#8a8a93', w*0.9);
   }
 
+  /* the ford — the current runs across the road, and the arrow says which way */
+  if (Array.isArray(sc.water) && sc.water.length === 2){
+    const sp = g.span(sc.water[0], sc.water[1]);
+    trace(sp, false);
+    ctx.lineWidth = (w + kerb*2)*k; ctx.strokeStyle = 'rgba(53,104,116,.85)'; ctx.stroke();
+    let len = ((sc.water[1] - sc.water[0]) % 1 + 1) % 1;
+    for (let i = 0; i < 7; i++){
+      onTrack(sc.water[0] + len*((i + 0.5)/7), () => {
+        ctx.strokeStyle = 'rgba(196,230,236,.42)'; ctx.lineWidth = 1.5;
+        const a = (w/2 + kerb)*k;
+        ctx.beginPath(); ctx.moveTo(0, -a*0.55); ctx.lineTo(0, a*0.75); ctx.stroke();
+      });
+    }
+    label(g.at(sc.water[0] + len/2), 'ford', '#6fb6c4', w*0.95);
+  }
+
+  /* the gaps that do go over — the same cut, drawn cooler and named for what
+     they are, because the point of the record is that two of these closed and
+     one did not */
+  for (const j of (Array.isArray(sc.jumps) ? sc.jumps : [])){
+    if (!Array.isArray(j) || j.length !== 2) continue;
+    const sp = g.span(j[0], j[1]);
+    ctx.save();
+    ctx.lineCap = 'butt';
+    trace(sp, false);
+    ctx.lineWidth = (w + kerb*2)*k + 2; ctx.strokeStyle = '#0e0e11'; ctx.stroke();
+    ctx.restore();
+    for (const f of j) onTrack(f, () => {
+      ctx.strokeStyle = 'rgba(201,162,39,.75)'; ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(0, -(w/2 + kerb)*k); ctx.lineTo(0, (w/2 + kerb)*k);
+      ctx.stroke();
+    });
+    const len = ((j[1] - j[0]) % 1 + 1) % 1;
+    label(g.at(j[0] + len/2), 'jump', '#c9a227', w*0.95);
+  }
+
   /* the chasm — cut clean through the band so the gap is a gap */
   if (Array.isArray(sc.chasm) && sc.chasm.length === 2){
     const sp = g.span(sc.chasm[0], sc.chasm[1]);
@@ -870,7 +909,12 @@ function drawRun(st){
       ctx.closePath(); ctx.fill();
       tag(px, py+24, 'turned round', '#c9a227');
     } else {
-      ctx.strokeStyle = m.kind === 'chasm' ? '#d05a4e' : '#8a6a5e';
+      /* Every wreck is drawn as the same starburst; only the colour and the
+         caption separate them, because what the reader needs at a glance is
+         where the run kept ending, not a different icon per hazard. */
+      const COL = { chasm:'#d05a4e', gap:'#c9a227', water:'#6fb6c4', rockslide:'#8a6a5e' };
+      const CAP = { chasm:'fell in', gap:'missed the jump', water:'swept off', rockslide:'wrecked' };
+      ctx.strokeStyle = COL[m.kind] || '#8a6a5e';
       ctx.lineWidth = 2;
       for (let i = 0; i < 6; i++){
         const a = i*Math.PI/3 + 0.3;
@@ -879,7 +923,7 @@ function drawRun(st){
         ctx.lineTo(px + Math.cos(a)*12, py + Math.sin(a)*12);
         ctx.stroke();
       }
-      if (m.kind === 'chasm') tag(px, py+24, 'fell in', '#d05a4e');
+      if (CAP[m.kind]) tag(px, py+24, CAP[m.kind], COL[m.kind] || '#8a6a5e');
     }
   }
 
@@ -909,7 +953,8 @@ function drawRun(st){
 
   /* a small key, because a gap and a slide are not obvious at this size */
   ctx.textAlign = 'right'; ctx.font = '10px ' + FONT;
-  const key = [['chasm','#d05a4e'], ['rock slide','#8a8a93'], ['boost','#6cc08b'],
+  const key = [['chasm','#d05a4e'], ['jump','#c9a227'], ['ford','#6fb6c4'],
+               ['rock slide','#8a8a93'], ['boost','#6cc08b'],
                ['drove forwards','#c9a227'], ['drove backwards','#d05a4e']];
   key.forEach((e, i) => {
     ctx.fillStyle = e[1];
