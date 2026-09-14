@@ -548,12 +548,20 @@
             <rect x="198" y="406" width="14" height="58" fill="#141518"/>
             <g id="r3LevL">
               <rect x="76" y="318" width="9" height="80" rx="4" fill="#53565d"/>
-              <rect x="72" y="310" width="17" height="16" rx="3" fill="#9c4038"/>
+              <rect x="72" y="310" width="17" height="16" rx="3" fill="#b04a40"/>
             </g>
             <g id="r3LevR">
               <rect x="160" y="318" width="9" height="80" rx="4" fill="#53565d"/>
-              <rect x="156" y="310" width="17" height="16" rx="3" fill="#33618f"/>
+              <rect x="156" y="318" width="17" height="16" rx="3" fill="#3a72a6"/>
             </g>
+            <!-- which lever sets which road. The sanctioned choice is allowed
+                 to be obvious; it is the only thing here that is. -->
+            <rect x="60" y="374" width="40" height="15" rx="2" fill="#0f1012" stroke="#3a3d43"/>
+            <path d="M88,381 L72,381 M78,376 L71,381 L78,386" stroke="#b04a40"
+                  stroke-width="2" fill="none" stroke-linecap="round"/>
+            <rect x="144" y="374" width="40" height="15" rx="2" fill="#0f1012" stroke="#3a3d43"/>
+            <path d="M156,381 L172,381 M166,376 L173,381 L166,386" stroke="#3a72a6"
+                  stroke-width="2" fill="none" stroke-linecap="round"/>
           </g>
 
           <!-- your own coat, at the bottom of the frame -->
@@ -572,19 +580,33 @@
             <rect x="701" y="384" width="20" height="32" rx="1.5" fill="#7fa0bb"/>
           </g>
 
-          <!-- the examiner's card -->
-          <rect x="172" y="14" width="456" height="108" rx="4"
-                fill="#141418" stroke="#2c2c33" stroke-width="1"/>
-          <text x="400" y="36" text-anchor="middle" fill="#6f6f79"
-                font-family="ui-monospace,Menlo,monospace" font-size="10"
-                letter-spacing="3">RULE 3</text>
-          <text x="400" y="58" text-anchor="middle" fill="#ddd9d2"
-                font-family="ui-monospace,Menlo,monospace" font-size="12">A runaway train is coming. Five people are tied to the</text>
-          <text x="400" y="75" text-anchor="middle" fill="#ddd9d2"
-                font-family="ui-monospace,Menlo,monospace" font-size="12">left-hand track. One is tied to the right-hand track.</text>
-          <text x="400" y="92" text-anchor="middle" fill="#ddd9d2"
-                font-family="ui-monospace,Menlo,monospace" font-size="12">The lever decides. One of them is the right answer.</text>
-          <text x="400" y="112" text-anchor="middle" fill="#6f6f79"
+          <!-- The examiner's card, as an enamel sign on the post. The
+               question is the loudest thing on it: the frame has to be
+               perfectly clear or refusing it does not mean anything. -->
+          <g id="r3Card">
+            <rect x="148" y="10" width="504" height="134" rx="5"
+                  fill="#101216" stroke="#3a3e46" stroke-width="1.5"/>
+            <rect x="154" y="16" width="492" height="122" rx="3"
+                  fill="none" stroke="#23262c" stroke-width="1"/>
+            <circle cx="160" cy="22" r="2.2" fill="#4c515a"/>
+            <circle cx="640" cy="22" r="2.2" fill="#4c515a"/>
+            <circle cx="160" cy="132" r="2.2" fill="#4c515a"/>
+            <circle cx="640" cy="132" r="2.2" fill="#4c515a"/>
+            <text x="400" y="34" text-anchor="middle" fill="#75798a"
+                  font-family="ui-monospace,Menlo,monospace" font-size="9.5"
+                  letter-spacing="4">RULE 3</text>
+            <text x="400" y="62" text-anchor="middle" fill="#f0ece4"
+                  font-family="ui-monospace,Menlo,monospace" font-size="21"
+                  font-weight="700" letter-spacing="4">WHICH TRACK?</text>
+            <line x1="236" y1="74" x2="564" y2="74" stroke="#2b2f37" stroke-width="1"/>
+            <text x="400" y="93" text-anchor="middle" fill="#cfcabf"
+                  font-family="ui-monospace,Menlo,monospace" font-size="12.5">A runaway train. It cannot stop.</text>
+            <text x="400" y="111" text-anchor="middle" fill="#cfcabf"
+                  font-family="ui-monospace,Menlo,monospace" font-size="12.5">Five are tied to the left. One is tied to the right.</text>
+            <text x="400" y="129" text-anchor="middle" fill="#cfcabf"
+                  font-family="ui-monospace,Menlo,monospace" font-size="12.5">Pull a lever. One of them is the right answer.</text>
+          </g>
+          <text x="400" y="160" text-anchor="middle" fill="#6b6f7a"
                 font-family="ui-monospace,Menlo,monospace" font-size="10.5"
                 id="r3Admin">administered to: &#8212;</text>
 
@@ -3622,6 +3644,19 @@ const STAGE3 = {
             '<rect x="-9.5" y="3.2" width="13" height="1.8" fill="#8a5f34"/>' +
           '</g>';
       });
+      /* A marker post beside each road in the colour of the lever that sets
+         it. The two roads have to be told apart at a glance or the question
+         on the card is not a question about anything you can see. */
+      [[1, '#b04a40', 0.16], [2, '#3a72a6', 0.20]].forEach(([rail, col, u]) => {
+        const [x, y] = T3.along(rail, u);
+        const [a, b] = T3.RAILS[rail];
+        const dx = b[0]-a[0], dy = b[1]-a[1], m = Math.hypot(dx, dy) || 1;
+        const px = x + (-dy/m) * 46, py = y + (dx/m) * 46;
+        out += '<g transform="translate(' + px.toFixed(1) + ',' + py.toFixed(1) + ')">' +
+               '<rect x="-1.6" y="-22" width="3.2" height="22" fill="#2b2d32"/>' +
+               '<rect x="-7" y="-30" width="14" height="10" rx="2" fill="' + col + '"/>' +
+               '</g>';
+      });
       folk.innerHTML = out;
     }
   },
@@ -4780,10 +4815,18 @@ if (SELFTEST){
        is the examiner being wrong by accident rather than on purpose. */
     const left = T3.FOLK.filter(f => f.rail === 1).length;
     const right = T3.FOLK.filter(f => f.rail === 2).length;
-    const card = (document.querySelector('#p3 svg').textContent || '');
+    const card = (document.getElementById('r3Card').textContent || '');
+    /* The numbers on the card are matched against the numbers in the table
+       the figures are drawn from, so rewording it cannot quietly leave it
+       describing a scene that is not on the screen — which is the examiner
+       being wrong by accident rather than on purpose, and the one kind of
+       wrong this card is not allowed to be. */
+    const WORD = { 1:'One', 2:'Two', 3:'Three', 4:'Four', 5:'Five', 6:'Six' };
     ok('the card and the track agree about who is on them',
-       left === 5 && right === 1 && /Five people/.test(card) && /One is tied/.test(card),
-       left + ' on the left, ' + right + ' on the right');
+       left === 5 && right === 1 &&
+       new RegExp(WORD[left] + ' are tied to the left', 'i').test(card) &&
+       new RegExp(WORD[right] + ' is tied to the right', 'i').test(card),
+       left + ' on the left, ' + right + ' on the right, and the card says so');
     ok('nobody is standing where the train already is',
        T3.FOLK.every(f => f.rail !== 0), 'all six are past the points');
 
