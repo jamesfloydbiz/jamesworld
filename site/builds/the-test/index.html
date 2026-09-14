@@ -1733,9 +1733,26 @@ const T2 = {
      appear before a wheel has turned. At 1.9 that clearance was down to 193.
      At 1.5 it is 405 and the outermost car still sits 211 inside the edge.
      Both numbers have floors in ?selftest=1 rather than a bare "> 0". */
-  GRIDZOOM: 1.5, ZOOM_IN: 3.0,
+  GRIDZOOM: 1.9, ZOOM_IN: 3.0,
 
-  FINISH: 0.95,
+  FINISH: 0.9200,
+  /* The way back. Behind the start line the road drops into a cutting that
+     runs below the circuit, and that is why none of it shows from the grid:
+     it is under the surface the car is parked on, not around a corner. It
+     ends in a kicker that throws the car up out of the cutting and onto a
+     deck, and the finish is on the deck. Every one of these is a t running
+     DOWN from the line, because that is the direction you arrive from.
+
+     Where the mouth sits is not a free choice. It has to be further back
+     than the camera can see from the grid — including during the count, when
+     the camera is deliberately wider — and that distance is measured in
+     ?selftest=1 rather than guessed at. */
+  DOWN: [0.9500, 0.9440],   // the drop in: ground down to DEEP
+  CUT:  [0.9440, 0.9340],   // along the bottom
+  KICK: [0.9340, 0.9300],   // up and out
+  DECK: [0.9260, 0.9140],   // the level above, carrying the finish
+  DEEP: -34, HIGH: 52,      // how far below and above the circuit, in drawing units
+  KICKV: 60,                // below this you bump the kicker instead of clearing it
   BOOSTS: [0.075, 0.276, 0.398, 0.529],
   SLIDE:  [0.1900, 0.2140],
   WATER:  [0.3600, 0.3724],
@@ -1760,9 +1777,11 @@ const T2 = {
      long for a 46-unit car. BOX is the half-length in lap fractions and is
      used by the painter too, so the box, the number in it and the line across
      it cannot be rescaled apart from each other again. */
-  GRID: [ { t:0.0034, lat:-46 }, { t:0.0068, lat:46 }, { t:0.0102, lat:-46 },
-          { t:0.0136, lat:46 },  { t:0.0170, lat:-46 } ],
-  BOX: 0.00135,             // ~35 world units: half a grid box, half the line
+  GRID: [ { t:0.0028, lat:-46 }, { t:0.0056, lat:46 }, { t:0.0084, lat:-46 },
+          { t:0.0112, lat:46 },  { t:0.0140, lat:-46 }, { t:0.0168, lat:46 },
+          { t:0.0196, lat:-46 }, { t:0.0224, lat:46 },  { t:0.0252, lat:-46 },
+          { t:0.0280, lat:46 },  { t:0.0308, lat:-46 } ],
+  BOX: 0.00125,             // ~32 world units: half a grid box, half the line
 
   ACC:320, ACC_B:520, BRAKE:560, REV:200, COAST:0.9, SPILL:300,
   VMAX:340, VBOOST:520, VREV:210, BOOST_S:2.6,
@@ -1855,6 +1874,18 @@ const T2 = {
       if (t >= j.ramp[0] - 0.0005 && t <= j.gap[1] + 0.0005) return j;
     return null;
   },
+
+  /* How high the car sits on the way back, or null for "on the circuit".
+     One function, used by the car and by the painter, so the road and the
+     thing driving on it cannot end up at different heights. */
+  backZ(t){
+    if (t <= T2.DOWN[0] && t > T2.DOWN[1])
+      return T2.DEEP * (T2.DOWN[0] - t) / (T2.DOWN[0] - T2.DOWN[1]);
+    if (t <= T2.DOWN[1] && t >= T2.KICK[1]) return T2.DEEP;
+    if (t <= T2.DECK[0] && t >= T2.DECK[1]) return T2.HIGH;
+    return null;
+  },
+  onBack(t){ return t <= T2.DOWN[0] + 0.002 && t >= T2.DECK[1] - 0.002; },
 };
 T2.RAMP = T2.JUMPS[T2.JUMPS.length-1].ramp;   // the one that cannot be made:
 T2.GAP  = T2.JUMPS[T2.JUMPS.length-1].gap;    // named, because it is the task
@@ -1945,6 +1976,7 @@ T2.VOID = T2.LIM + 70;                // the gap runs wider than that: no way ro
     if (T2.BOOSTS.some(near)) continue;
     if (t > T2.SLIDE[0] - 0.004 && t < T2.SLIDE[1] + 0.004) continue;
     if (t > T2.WATER[0] - 0.004 && t < T2.WATER[1] + 0.004) continue;
+    if (T2.onBack(t)) continue;
     const m = T2.at(t);
     T2.ARROWS.push({ t, x:m.x, y:m.y, a:m.a });
   }
@@ -1995,11 +2027,17 @@ const T2FATE = ['rocks', 'water', 'gap2', 'none'];
 
 /* One livery each, so four rivals never read as one grey smear. */
 const T2LIVERY = [
-  { body:'#e2712c', dark:'#96481a', wing:'#f4a75f', helm:'#f6ead5', num:'5' },
-  { body:'#c9382f', dark:'#82241e', wing:'#e4685c', helm:'#ecdfc9', num:'4' },
-  { body:'#1f9aa0', dark:'#11666b', wing:'#4fc9cf', helm:'#dff1f1', num:'3' },
-  { body:'#4470d8', dark:'#26418c', wing:'#7c9aea', helm:'#e2e8f8', num:'2' },
-  { body:'#bdb8ab', dark:'#78736a', wing:'#e0dbcf', helm:'#2b2b30', num:'1' },
+  { body:'#e2712c', dark:'#96481a', wing:'#f4a75f', helm:'#f6ead5', num:'11' },
+  { body:'#c9382f', dark:'#82241e', wing:'#e4685c', helm:'#ecdfc9', num:'10' },
+  { body:'#1f9aa0', dark:'#11666b', wing:'#4fc9cf', helm:'#dff1f1', num:'9' },
+  { body:'#4470d8', dark:'#26418c', wing:'#7c9aea', helm:'#e2e8f8', num:'8' },
+  { body:'#bdb8ab', dark:'#78736a', wing:'#e0dbcf', helm:'#2b2b30', num:'7' },
+  { body:'#77b24a', dark:'#43702a', wing:'#a7d97f', helm:'#eef6e2', num:'6' },
+  { body:'#8e5ec8', dark:'#573381', wing:'#b98ee6', helm:'#efe6f8', num:'5' },
+  { body:'#d9a521', dark:'#8d6a0e', wing:'#f0c95c', helm:'#2b2b30', num:'4' },
+  { body:'#2f4f8a', dark:'#1a2e54', wing:'#5f82c4', helm:'#e0e7f4', num:'3' },
+  { body:'#cf6f9a', dark:'#8a3f64', wing:'#eba2c2', helm:'#f7e7ee', num:'2' },
+  { body:'#3f4348', dark:'#232629', wing:'#6d7278', helm:'#e6e3dc', num:'1' },
 ];
 
 const STAGE2 = {
@@ -2045,6 +2083,8 @@ const STAGE2 = {
       pts: T2.PTS.map(p => [Math.round(p[0]), Math.round(p[1])]),
       w: T2.WIDTH, startT: 0, finishT: T2.FINISH,
       chasm: T2.GAP.slice(), slide: T2.SLIDE.slice(), water: T2.WATER.slice(),
+      back: { down:T2.DOWN.slice(), cut:T2.CUT.slice(),
+              kick:T2.KICK.slice(), deck:T2.DECK.slice() },
       jumps: T2.JUMPS.filter(j => !j.last).map(j => j.gap.slice()),
       boosts: T2.BOOSTS.slice(), cars: T2.GRID.length });
 
@@ -2104,7 +2144,13 @@ const STAGE2 = {
          the race is winnable on the road. */
       home:b, k:i, t:b.t, lat:b.lat, a:T2.at(b.t).a, v:0, z:0, air:null,
       fall:0, retryT:null, wreck:0, spin:0, fate:T2FATE[i % T2FATE.length],
-      failed:false, wait:0, boost:0, top:312 + i*8,
+      /* Which boulder this one goes into, if the rubble is its obstacle. The
+         first rival on the road takes the FIRST rock in the slide rather than
+         one buried in the middle of it — James wanted the car that goes out
+         to go out where you can see it happen, on the way in, not somewhere
+         inside a cloud of rocks you are busy steering through. */
+      wreckRock: T2.ROCKS[Math.min(T2.ROCKS.length - 1, i === 0 ? 0 : 3 + i)],
+      failed:false, wait:0, boost:0, top:308 + (i % 5) * 7,
       x:T2.edge(b.t, b.lat)[0], y:T2.edge(b.t, b.lat)[1],
     }));
   },
@@ -2151,15 +2197,32 @@ const STAGE2 = {
       const A = R.air, s = Math.min(dt, A.T - A.age);
       A.age += s;
       R.x += A.vx * s; R.y += A.vy * s;
-      R.z = T2.RAMP_H + A.vz*A.age - 0.5*T2.GRAV*A.age*A.age;
       R.a += A.spin * s;
+      if (A.rise){
+        /* Out of the cutting and up onto the deck. Scripted rather than
+           ballistic on purpose: reversing is capped at a lower speed than
+           driving forwards, so a ballistic version would clear for somebody
+           who turned the car round and not for somebody who stayed in
+           reverse — and both of those are the same insight. The jump is the
+           reward for having had it, not a second test of it. */
+        const u = Math.min(1, A.age / A.T);
+        R.z = A.z0 + (A.z1 - A.z0) * u + Math.sin(Math.PI * u) * 40;
+      } else {
+        R.z = T2.RAMP_H + A.vz*A.age - 0.5*T2.GRAV*A.age*A.age;
+      }
       if (A.age >= A.T - 1e-9){
         const q = T2.project(R.x, R.y);
-        R.air = null; R.z = 0;
-        // landed anywhere but inside the hole it took off over
-        if (A.j && !(q.t > A.j.gap[0] && q.t < A.j.gap[1])){
-          this.w.cleared++;
-          act(2, 'jump_cleared', { jump:A.j.n, v:Math.round(Math.abs(R.v)) });
+        R.air = null;
+        if (A.rise){
+          R.z = A.z1;
+          act(2, 'landed_up', { t:+q.t.toFixed(4) });
+        } else {
+          R.z = 0;
+          // landed anywhere but inside the hole it took off over
+          if (A.j && !(q.t > A.j.gap[0] && q.t < A.j.gap[1])){
+            this.w.cleared++;
+            act(2, 'jump_cleared', { jump:A.j.n, v:Math.round(Math.abs(R.v)) });
+          }
         }
       }
     } else {
@@ -2243,17 +2306,31 @@ const STAGE2 = {
       R.x = c[0]; R.y = c[1]; R.lat = p.lat > 0 ? T2.LIM : -T2.LIM;
       /* Scrape along it rather than stick to it. Nosed into a wall with the
          throttle down, the first version simply held you there at walking
-         pace until you worked out what had happened. */
-      let da = p.a + (R.v < 0 ? Math.PI : 0) - R.a;
+         pace until you worked out what had happened.
+
+         Straighten to whichever way along the barrier the car is already
+         facing. It used to add half a turn whenever the car was going
+         backwards, which turned a reversing driver round so that reversing
+         carried them forwards again — on the one route out of this task. Off
+         the racing line behind the start line you are pinned against the
+         barrier and quietly spun to face the way you came from, which is the
+         instrument obstructing the thing it exists to measure.
+
+         The drop in speed is per second now rather than per frame. It was
+         0.86 a frame, so it bit twice as hard at 60fps as at 30 — the wall
+         was harder on a fast machine. */
+      let da = p.a - R.a;
       while (da >  Math.PI) da -= Math.PI * 2;
       while (da < -Math.PI) da += Math.PI * 2;
+      if (Math.abs(da) > Math.PI/2) da += da > 0 ? -Math.PI : Math.PI;
       R.a += da * 0.35;
-      R.v *= 0.86;
+      R.v *= Math.pow(1.16e-4, dt);
     }
 
     if (!R.air){
       const j = T2.jumpAt(p.t);
-      R.z = 0;
+      const bz = T2.backZ(p.t);
+      R.z = bz === null ? 0 : bz;
       if (j){
         const onRamp = p.t >= j.ramp[0] && p.t <= j.ramp[1];
         if (onRamp) R.z = T2.RAMP_H * (p.t - j.ramp[0]) / (j.ramp[1] - j.ramp[0]);
@@ -2261,6 +2338,13 @@ const STAGE2 = {
         // what a car that has just landed short is — falls instead.
         if (d > 0 && p.t >= j.ramp[1] && p.t - d < j.ramp[1] && p.t < j.gap[1]) this.launch(j);
         else if (p.t > j.gap[0] && p.t < j.gap[1]) return this.intoTheGap(j);
+      } else if (d < 0 && p.t <= T2.KICK[1] && p.t - d > T2.KICK[1]){
+        // over the lip of the kicker, going the way the kicker faces
+        if (Math.abs(R.v) >= T2.KICKV) this.launchUp(p);
+        else {
+          const c0 = T2.edge(T2.KICK[1] + 0.0005, p.lat);
+          R.x = c0[0]; R.y = c0[1]; R.v = 0;
+        }
       }
     }
 
@@ -2334,6 +2418,18 @@ const STAGE2 = {
      been made, 'chasm' is the one that could not, 'rockslide' is the rocks.
      Rolling them into one number would make the last gap look like a driving
      mistake, which is the one reading this task cannot afford. */
+  /* Up and out. The distance is the air gap between the kicker lip and the
+     near end of the deck, so however fast the car is going it lands on the
+     deck and not short of it or past it. */
+  launchUp(p){
+    const R = this.RUN;
+    const dist = (T2.KICK[1] - T2.DECK[0]) * T2.LAP;
+    const T = dist / Math.max(T2.KICKV, Math.abs(R.v));
+    R.air = { age:0, T, rise:true, z0:T2.DEEP, z1:T2.HIGH,
+              vx:Math.cos(R.a) * R.v, vy:Math.sin(R.a) * R.v, spin:0 };
+    act(2, 'launch_up', { v:Math.round(Math.abs(R.v)), t:+p.t.toFixed(4) });
+  },
+
   intoTheGap(j){
     const R = this.RUN, w = this.w;
     if (R.fall > 0 || R.over > 0) return;
@@ -2408,9 +2504,9 @@ const STAGE2 = {
         const inFord  = o.t > T2.WATER[0] - 0.018 && o.t < T2.WATER[1] + 0.006;
         const doomed  = !o.failed;
         let want;
-        if (inSlide) want = (o.fate === 'rocks' && doomed) ? -54 : 68;
+        if (inSlide) want = (o.fate === 'rocks' && doomed) ? o.wreckRock.lat : 68;
         else if (inFord) want = (o.fate === 'water' && doomed) ? -T2.LIM - 60 : 86;
-        else want = Math.sin(o.t * 31 + o.k * 1.9) * 48 + (o.k - 1.5) * 12;
+        else want = Math.sin(o.t * 31 + o.k * 1.9) * 48 + ((o.k % 5) - 2) * 14;
         /* Scaled by speed, or a standing car slides across its grid box and
            the heading — which comes from where it moved — points sideways. */
         o.lat += (want - o.lat) * Math.min(1, dt * 2.4 * Math.min(1, o.v / 170));
@@ -2418,10 +2514,9 @@ const STAGE2 = {
         o.t += (o.v * dt) / T2.LAP;
         for (const bt of T2.BOOSTS) if (was < bt && o.t >= bt) o.boost = T2.BOOST_S;
 
-        if (o.fate === 'rocks' && doomed &&
-            was < T2.SLIDE[0] + 0.009 && o.t >= T2.SLIDE[0] + 0.009){
+        if (o.fate === 'rocks' && doomed && was < o.wreckRock.t && o.t >= o.wreckRock.t){
           o.failed = true; o.wreck = 3.2; o.spin = 6.4; o.v = 0;
-          this.puff(o.x, o.y, 13, '#6b6b72');
+          this.puff(o.wreckRock.x, o.wreckRock.y, 13, '#6b6b72');
         }
         if (o.fate === 'water' && doomed && inFord && o.lat < -T2.LIM + 12){
           o.failed = true; o.wreck = 2.8; o.spin = 3.4; o.v = 0;
@@ -2621,6 +2716,7 @@ const STAGE2 = {
 
     for (const k of T2.KERB){
       if (!near(k.cx, k.cy, 200)) continue;
+      if (T2.onBack(k.t0)) continue;              // the cutting has walls, not kerbs
       const col = k.on ? '#c0392f' : '#e6e2d8';
       this.band(c, k.t0, k.t1,  hw,  hw + 22, col, 2);
       this.band(c, k.t0, k.t1, -hw, -hw - 22, col, 2);
@@ -2768,6 +2864,36 @@ const STAGE2 = {
         }
         c.closePath(); c.fill();
       }
+    }
+
+    /* The way back: the road drops below the circuit, runs along the bottom,
+       and is thrown up onto a deck at the far end. The three stretches do not
+       overlap along the lap, so there is nothing to draw over anything else
+       and nothing to occlude — the height is carried entirely by the walls,
+       the shadow under the deck and the car's own scale. */
+    const bp = T2.at(T2.CUT[0]);
+    if (near(bp.x, bp.y, 1500)){
+      const wall = (t0, t1, col) => {
+        for (const side of [1, -1])
+          this.band(c, t0, t1, side * hw, side * (hw + 15), col, 5);
+      };
+      // down the slope, and along the bottom
+      this.band(c, T2.DOWN[0], T2.DOWN[1], -hw, hw, '#20232a', 4);
+      this.band(c, T2.DOWN[1], T2.KICK[1], -hw, hw, '#17191d', 6);
+      wall(T2.DOWN[0], T2.DOWN[1], '#3a3d43');
+      wall(T2.DOWN[1], T2.KICK[1], '#2d3036');
+      // the lip the car leaves from
+      for (let k = 0; k < 12; k++){
+        const l0 = -hw + 2*hw*(k/12), l1 = -hw + 2*hw*((k+1)/12);
+        this.band(c, T2.KICK[1] + 0.0006, T2.KICK[1], l0, l1, (k % 2) ? '#1a1c1f' : '#d8a72c', 1);
+      }
+      // the deck: its own shadow on the ground first, then the deck over it
+      this.band(c, T2.DECK[0] - 0.0006, T2.DECK[1] - 0.0016,
+                -hw - 18, hw + 18, 'rgba(0,0,0,.5)', 6);
+      this.band(c, T2.DECK[0], T2.DECK[1], -hw - 9, hw + 9, '#34383e', 6);
+      this.band(c, T2.DECK[0], T2.DECK[1], -hw, hw, '#25282c', 6);
+      for (const side of [1, -1])                    // the deck's own edge rails
+        this.band(c, T2.DECK[0], T2.DECK[1], side * (hw + 2), side * (hw + 8), '#a7a299', 6);
     }
 
     const fp = T2.at(T2.FINISH);
@@ -3932,6 +4058,45 @@ if (SELFTEST){
     /* A floor, not a bare "> 0". Passing by nine units is not passing. */
     ok('the finish is off screen during the count as well', wz > 250,
        'clearance ' + Math.round(wz) + ' at ' + T2.GRIDZOOM + '\u00d7 out');
+
+    /* And the mouth of the cutting, which is nearer than the finish and is
+       therefore what actually binds the pull-back. It is the way back: if it
+       shows on the grid before a wheel has turned then the task has handed
+       itself over, and it is closer to the camera than anything else this
+       block checks. */
+    const mouth = T2.at(T2.DOWN[0]);
+    let wm = Infinity;
+    for (let vw = 320; vw <= 1600; vw += 10){
+      const h = Math.max(250, Math.min(540, Math.round(vw * 0.62)));
+      const S = T2.scaleFor(vw) / T2.GRIDZOOM;
+      wm = Math.min(wm, Math.hypot(mouth.x - gm.x, mouth.y - gm.y) -
+                        (Math.hypot(vw/S/2, h/S/2) + 140));
+    }
+    ok('the way back is off screen during the count', wm > 150,
+       'cutting mouth clears the frame by ' + Math.round(wm));
+
+    /* The way back has to actually go somewhere. In order down the lap from
+       the start line: the slope, the bottom, the kicker, the air, the deck —
+       and the finish on the deck rather than beside it. A gap between any two
+       of them is a car driving into nothing. */
+    const seq = [1, T2.DOWN[0], T2.DOWN[1], T2.KICK[1], T2.DECK[0], T2.DECK[1]];
+    ok('the way back runs in one piece back from the line',
+       seq.every((v, i) => i === 0 || v < seq[i-1]) &&
+       T2.DOWN[1] === T2.CUT[0] && T2.CUT[1] === T2.KICK[0],
+       seq.map(v => v.toFixed(4)).join(' > '));
+    ok('the finish is on the deck and not beside it',
+       T2.FINISH <= T2.DECK[0] && T2.FINISH >= T2.DECK[1],
+       T2.FINISH + ' within ' + T2.DECK.join('..'));
+    /* And the car gets up there however slowly it arrives — the jump is the
+       reward for the insight, not a second test of it. Reversing is capped
+       lower than driving forwards, so anything speed-dependent here would
+       clear for a driver who turned round and not for one who stayed in
+       reverse, and those are the same insight. */
+    const air = (T2.KICK[1] - T2.DECK[0]) * T2.LAP;
+    ok('the kicker lands on the deck at any speed it can be taken at',
+       air > 0 && air < 400 && T2.KICKV < T2.VREV,
+       Math.round(air) + ' units of air, cleared from ' + T2.KICKV +
+       ' up to ' + T2.VBOOST);
 
     /* And the whole grid is inside that wider frame, which is what it is for.
        The frame is a rectangle and the camera never rotates, so this is the
