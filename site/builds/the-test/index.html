@@ -232,6 +232,19 @@
   .d4-dot{cursor:default;}
   .d4-dot:focus{outline:none;}
   .d4-dot:focus-visible{outline:2px solid #8a7f63; outline-offset:3px;}
+  /* The record, folded away. */
+  .rec{border:1px solid var(--border); border-radius:10px; background:var(--card);}
+  .rec>summary{cursor:pointer; padding:14px 16px; font-size:13px; color:var(--dim);
+    list-style:none;}
+  .rec>summary::-webkit-details-marker{display:none;}
+  .rec>summary::after{content:'▾'; float:right; color:var(--faint);}
+  .rec[open]>summary::after{content:'▴';}
+  .rec>summary:hover{color:var(--fg);}
+  .rec__in{padding:0 16px 14px;}
+  .rec__task{padding:10px 0; border-top:1px solid var(--border);}
+  .rec__h{display:flex; justify-content:space-between; font-size:12px;
+    color:var(--acc); margin-bottom:6px;}
+  .rec__h span{color:var(--faint);}
   .r3{position:relative; border:1px solid var(--border); border-radius:10px;
     overflow:hidden; background:#0e0e11; line-height:0; margin-bottom:8px;}
   .r3 svg{display:block; width:100%; height:auto;}
@@ -309,6 +322,13 @@
     <header>
       <p class="eyebrow">Four tasks</p>
       <h1>The Test</h1>
+      <!-- The thinking behind it, at the top and only here. It names the
+           puzzles this is built from, so a link to it from inside a task
+           would be handing over the answers mid-attempt. -->
+      <p class="tiny" style="margin-top:6px;">
+        <a href="/writing/rabbit-holes/the-future-of-assessments/" target="_blank"
+           rel="noopener">Why this exists →</a>
+      </p>
     </header>
     <div class="card">
       <p class="lede">Four tasks. One attempt at each — there are no retries, and
@@ -712,12 +732,9 @@
   </section>
 
   <section id="p-end" hidden>
-    <header><p class="eyebrow">Done</p><h1>What that measured</h1></header>
+    <header><p class="eyebrow">Done</p><h1>That was the test</h1></header>
     <div class="card" id="debriefBody"></div>
-    <div class="card">
-      <h2>Your record</h2>
-      <div id="headlineBody"></div>
-    </div>
+    <div id="headlineBody"></div>
     <div class="row">
       <button class="btn btn-p" id="dlBtn">Download the record</button>
       <button class="btn" id="copyBtn">Copy it</button>
@@ -3726,7 +3743,6 @@ const T3 = {
      ballast that cannot be lifted. */
   ROCKS: [[275,328],[317,424],[386,394],[455,304],[455,421],[524,331],[596,375]],
   BOWL:  [746,348],
-  STICK: [329,277],
   /* Five on the left-hand road and one on the right, as the card says. They
      are placed along the rails rather than typed out, so the drawing and the
      sentence on the card cannot end up disagreeing about how many there are. */
@@ -4033,29 +4049,19 @@ const STAGE3 = {
     });
     this.liven(document.getElementById('r3Bowl'), 'bowl', at.bowl || T3.BOWL, 'Bowl');
 
-    /* The matchstick, if one was kept, laid in the ballast with everything
-       else. It used to be an HTML div pinned over the picture at a fixed
-       74 by 9 pixels, which on a scene this size read as something stuck on
-       the front of the screen rather than a thing lying in the world — James
-       called it a random match twice and he was right both times. It is drawn
-       in scene units now, with a shadow, at an angle, and it is picked up by
-       exactly the same handler as a stone. */
-    const old = document.getElementById('r3Stick');
-    if (old) old.remove();
-    if (SESSION.carry.sticks.length){
-      const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-      g.id = 'r3Stick';
-      g.innerHTML =
-        '<g transform="rotate(-13)">' +
-        '<ellipse cx="2" cy="5" rx="23" ry="4" fill="#08080a" opacity="0.45"/>' +
-        '<rect x="-21" y="-2.7" width="38" height="5.4" rx="2.4" fill="#b8a578"/>' +
-        '<rect x="-21" y="-2.7" width="38" height="2.2" rx="1.1" fill="#d8c79c"/>' +
-        '<circle cx="19" cy="0" r="4.8" fill="#a8403a"/>' +
-        '<circle cx="17.6" cy="-1.5" r="1.9" fill="#cc6659"/>' +
-        '</g>';
-      document.getElementById('r3Rocks').appendChild(g);
-      this.liven(g, 'stick', at.stick || T3.STICK, 'Matchstick');
-    }
+    /* The matchstick that used to lie here is gone. James asked three times
+       and the third time was to delete it: on a scene this size it read as a
+       stray object nobody had explained, whatever it was drawn in.
+
+       That costs a real thing and it is worth writing down. It was the
+       cross_context way through — the one that only existed for somebody who
+       had done something unprompted two tasks earlier — and the point of the
+       point blades and the fire bucket. Keeping a matchstick in task one is
+       still recorded there as its own escape, so nothing is lost from the
+       measure of task ONE; what is gone is the payoff for it here, and with
+       it the reading of whether somebody carries a thing across a boundary.
+       The blades and the bucket are still drawn, and still do nothing on
+       their own, which is what they always did. */
   },
 
   wireTaps(){
@@ -4164,20 +4170,6 @@ const STAGE3 = {
     if (this.done) return;
     const id = g.dataset.id, p = [+g.dataset.x, +g.dataset.y];
     this.touch(id);
-
-    if (id === 'stick'){
-      if (T3.atBlades(p)){
-        this.record('cross_context', { on:'blades', at:[Math.round(p[0]), Math.round(p[1])] });
-        this.finishWith('blades', 'The blades will not close. The train takes neither.', 'broke');
-      } else if (T3.atBrazier(p)){
-        this.w.lit = true;
-        T3.show('r3Fire', true);
-        saveSession();
-        this.record('cross_context', { on:'brazier', at:[Math.round(p[0]), Math.round(p[1])] });
-        this.finishWith('fire', 'It catches. The smoke goes straight up, and it is seen.', 'broke');
-      }
-      return;
-    }
 
     if (id === 'bowl'){
       if (T3.inLight(p)){
@@ -4766,7 +4758,11 @@ function finish(){
 /* The log keeps machine names; a person reading their own record should not
    have to. */
 const ESCAPE_NAME = {
-  pocket_stick:      'kept a matchstick',
+  /* James's own word for it: he takes matchsticks off the table. It read as
+     "kept a matchstick", which describes where it ended up rather than what
+     was done, and throwing them away is a method in its own right — it is in
+     the essay this was built from, next to moving one onto the operator. */
+  pocket_stick:      'threw matchsticks off the table',
   wrong_way:         'went the other way',
   tunnel:            'went the other way',   // task two, before it was a circuit
   refuse_frame:       'stepped back from the frame',
@@ -4780,6 +4776,13 @@ const ESCAPE_NAME = {
   set_a_fire:         'lit the bucket',
   cross_context:      'used the matchstick',
   moved_the_dots:     'moved the dots',
+  /* The rules dropped, as well as the ways through — both show in "how it
+     went" and both want reading by a person rather than by a parser. */
+  eqA:                'made the first line true',
+  eqB:                'made the second line true',
+  left_the_plane:     'stacked the coins',
+  left_the_array:     'drew off the array',
+  nine_dots:          'joined all nine',
   wrong_way:         'went the wrong way round',
 };
 
@@ -4792,37 +4795,55 @@ function renderDebrief(){
      thing in the task. Both, named apart. */
   const esc = n => (h.escapeKinds[n] || []).length
     ? h.escapeKinds[n].map(k => ESCAPE_NAME[k] || k).join(', ')
-    : 'none';
+    : null;
   const brk = n => (h.breakKinds[n] || []).length
     ? h.breakKinds[n].map(k => ESCAPE_NAME[k] || k).join(', ')
     : null;
+  const how = n => [esc(n), brk(n)].filter(Boolean).join(' · ') || 'left it as it was';
+  const secs = ms => {
+    const t = Math.round((ms || 0) / 1000);
+    return t < 60 ? t + 's' : Math.floor(t/60) + 'm ' + String(t % 60).padStart(2,'0') + 's';
+  };
 
+  /* The closing line is James's, from the piece this was built out of. What
+     stood here before was three paragraphs explaining the instrument to the
+     person who had just sat it, which is the least interesting thing that
+     could be said at that point.
+
+     The last line stays. The card in task three says one of the two roads is
+     the right answer and neither is, and that is the only untrue sentence in
+     the build — disclosing it is the thing that makes the whole of this an
+     assessment rather than a trick played on somebody. */
   document.getElementById('debriefBody').innerHTML =
-    '<p>Each task had a way through that nothing on the screen mentioned. ' +
-    'Every one of them worked from the first second. The measure was whether ' +
-    'you tried one, and how long it took you to.</p>' +
-    '<p>The score was the test. Every point an unasked-for move cost you was ' +
-    'the instrument recording the thing it came for — and getting through a ' +
-    'task paid back several times what getting through it cost. That is the ' +
-    'whole shape of it: the move looks like it is costing you, right up until ' +
-    'it is the only thing that worked.</p>' +
+    '<p class="lede">While these assessments are one time use, we live now with ' +
+    'technology that can make ever more engaging, and personalized problems to ' +
+    'help youth learn to take control of problems.</p>' +
     '<p class="muted">Task three’s card said one of the two roads was the right ' +
-    'answer. Neither was. That was the one untrue sentence in here, and it ' +
+    'answer. Neither was. That is the one untrue sentence in here, and it ' +
     'belonged to the examiner at the junction, not to this page.</p>';
 
+  /* Shut by default. What it holds is what somebody actually did and how long
+     they were at it — the score on its own said very little, so it is one row
+     inside this rather than a heading over it. */
   document.getElementById('headlineBody').innerHTML =
-    row('First task you broke', h.firstStageBroken === null ? 'none' : h.firstStageBroken) +
-    row('Score', SESSION.score) +
-    row('Broke with no prompting', h.brokeAtL0 + ' of ' + TASKS.length) +
-    '<hr class="rule">' +
-    TASKS.map(n =>
-      row('Task ' + n + ' — seconds to first step off the path',
-          h.secToFirstOffPath[n] === null ? '—' : h.secToFirstOffPath[n] + 's') +
-      row('Task ' + n + ' — prompt level reached', 'L' + h.ladderAtBreak[n]) +
-      row('Task ' + n + ' — actions first', h.actionsBeforeBreak[n]) +
-      row('Task ' + n + ' — way through found', esc(n)) +
-      (brk(n) ? row('Task ' + n + ' — rule dropped', brk(n)) : '')
-    ).join('<hr class="rule">');
+    '<details class="rec">' +
+      '<summary>What you did, task by task</summary>' +
+      '<div class="rec__in">' +
+        TASKS.map(n =>
+          '<div class="rec__task">' +
+            '<div class="rec__h"><b>Task ' + n + '</b><span>' +
+              secs(SESSION.stages[n].activeMs) + '</span></div>' +
+            row('How it went', how(n)) +
+            row('Prompts taken', h.ladderAtBreak[n] ? 'L' + h.ladderAtBreak[n] : 'none') +
+            row('Moves first', h.actionsBeforeBreak[n]) +
+          '</div>'
+        ).join('') +
+        '<hr class="rule">' +
+        row('First task you broke', h.firstStageBroken === null ? 'none' : h.firstStageBroken) +
+        row('Broke with no prompting', h.brokeAtL0 + ' of ' + TASKS.length) +
+        row('Score', SESSION.score) +
+      '</div>' +
+    '</details>';
 
   function row(k, v){
     return '<div class="stat"><span>' + k + '</span><span class="n">' + v + '</span></div>';
@@ -5467,10 +5488,6 @@ if (SELFTEST){
     const savedW = STAGE3.w;
     STAGE3.w = STAGE3.fresh();
     STAGE3.svg = document.getElementById('r3Svg');
-    /* With a kept matchstick, because it is one of the loose things now and
-       layObjects is what puts it there. */
-    const hadStick = SESSION.carry.sticks.length;
-    if (!hadStick) SESSION.carry.sticks.push('selftest');
     STAGE3.scatter();
     STAGE3.layObjects();
     STAGE3.wireTaps();
@@ -5506,12 +5523,9 @@ if (SELFTEST){
     const objs = Array.prototype.slice.call(document.querySelectorAll('#p3 .r3-obj'));
     const drags = objs.filter(g => g.dataset.drag);
     ok('task three lays out every loose thing',
-       drags.length === T3.ROCKS.length + 2 && objs.length === drags.length + T3.TAPS.length,
-       drags.length + ' to pick up (stones, bowl, matchstick), ' +
+       drags.length === T3.ROCKS.length + 1 && objs.length === drags.length + T3.TAPS.length,
+       drags.length + ' to pick up (stones and the bowl), ' +
        (objs.length - drags.length) + ' to press');
-    ok('the matchstick is one of the loose things and not stuck on the front',
-       !!document.querySelector('#r3Svg #r3Stick.r3-obj'),
-       'in the scene, in scene units');
 
     /* Nothing is buried. This is the check that earns its keep in here,
        because the failure is silent: the lever hit boxes, the near-ballast
@@ -5565,14 +5579,8 @@ if (SELFTEST){
        Math.round(r.width) + 'x' + Math.round(r.height) + ' in view');
     ok('nothing in the junction is buried under an overlay', buried.length === 0,
        buried.length ? buried.join(', ') + ' cannot be reached'
-                     : objs.length + ' reachable by pointer, matchstick included');
-    ok('the matchstick can still reach both things it fits',
-       T3.near(T3.STICK, [T3.STICK, T3.BLADES]) < 400 &&
-       Math.hypot(T3.STICK[0] - 568, T3.STICK[1] - 314) < 400,
-       'blades ' + Math.round(Math.hypot(T3.STICK[0]-T3.BLADES[0], T3.STICK[1]-T3.BLADES[1])) +
-       ', bucket ' + Math.round(Math.hypot(T3.STICK[0]-568, T3.STICK[1]-314)) + ' away');
-
-    const started = drags.filter(g => g.dataset.id !== 'bowl' && g.dataset.id !== 'stick')
+                     : objs.length + ' reachable by pointer');
+    const started = drags.filter(g => g.dataset.id !== 'bowl')
                          .filter(g => T3.onRail([+g.dataset.x, +g.dataset.y]));
     ok('no stone starts on a rail', started.length === 0,
        started.map(g => g.dataset.id).join(', ') || T3.ROCKS.length + ' clear of the line');
@@ -5584,7 +5592,7 @@ if (SELFTEST){
        as an affordance nobody can lift. */
     let near = Infinity;
     for (const g of drags){
-      if (g.dataset.id === 'bowl' || g.dataset.id === 'stick') continue;
+      if (g.dataset.id === 'bowl') continue;
       const p = [+g.dataset.x, +g.dataset.y];
       for (const rail of T3.RAILS) near = Math.min(near, T3.near(p, rail));
     }
@@ -5621,7 +5629,6 @@ if (SELFTEST){
        T3.FOLK.every(f => f.rail !== 0), 'all six are past the points');
 
     T3.show('r3Inside', !hidIn); T3.show('r3Phone', !hidPh);
-    if (!hadStick) SESSION.carry.sticks.length = 0;
     STAGE3.w = savedW;
     pane.hidden = was;
   })();
