@@ -825,14 +825,14 @@
       Watching it back reads the copy on this device.
     </p>
     <!-- Only here, only once everything is spent, and it says exactly what it
-         does. One attempt is what makes the three tasks worth anything, so a
+         does. One attempt is what makes each task worth anything, so a
          second one has to be a decision taken with the eyes open rather than
          something that happens to somebody. -->
     <div class="row" style="margin-top:24px;">
       <button class="btn" id="againBtn">Start a fresh attempt</button>
     </div>
     <p class="tiny" id="againNote" style="margin-top:10px; color:var(--faint);">
-      That wipes this record from this device and gives all three tasks back.
+      That wipes this record from this device and gives every task back.
       Download it first if you want to keep it.
     </p>
   </section>
@@ -911,7 +911,22 @@ function ls(k, d){
     return parsed;
   }catch(e){ return d; }
 }
-function save(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){ STORAGE_OK = false; } }
+function save(k, v){
+  try{ localStorage.setItem(k, JSON.stringify(v)); return true; }
+  catch(e){ storageLost(); return false; }
+}
+
+/* The quota running out mid-attempt is the failure that matters here, because
+   it is invisible: setItem throws, the catch swallows it, and the page goes on
+   looking exactly as if the record were being kept. The banner was painted at
+   boot and never again, so it said nothing. Say it the moment it happens. */
+function storageLost(){
+  if (!STORAGE_OK) return;
+  STORAGE_OK = false;
+  try { rec.ev(EV.storage_fail, null, { at:'save' }); } catch(e){}
+  const b = document.getElementById('storageBanner');
+  if (b) b.hidden = false;
+}
 
 let STORAGE_OK = true;
 function probeStorage(){
@@ -958,6 +973,12 @@ const EV = {
 
 const LIFE = rid();                 // per page-load, so pt values are comparable
 const CAP  = 14000;                 // events kept in localStorage
+/* And a second cap, in bytes, because the count is not the real limit: the
+   race writes telemetry eight times a second with every rival's position in
+   it, about 370 bytes each, so fourteen thousand of them is five megabytes —
+   which is the whole localStorage quota in every browser that matters. The
+   count cap would never fire and setItem would throw instead. */
+const BYTECAP = 2500000;
 const SHED = ['pointer', 'telemetry', 'input'];   // dropped in this order
 const KEEP = { escape:1, off_path:1, constraint_break:1, ladder:1, penalty:1,
                stage_open:1, stage_resume:1, stage_close:1,
@@ -1017,6 +1038,21 @@ const rec = (function(){
           dropped += spill.length - tail.length;
           arr = keep.concat(tail).sort((a, b) => a.i - b.i);
         }
+      }
+
+      // and the same shedding order again, by size
+      let bytes = 2, sizes = null;
+      for (const e of arr) bytes += JSON.stringify(e).length + 1;
+      if (bytes > BYTECAP){
+        sizes = arr.map(e => JSON.stringify(e).length + 1);
+        for (const kind of SHED){
+          if (bytes <= BYTECAP) break;
+          for (let i = 0; i < arr.length && bytes > BYTECAP; i++){
+            if (!arr[i] || arr[i].type !== kind) continue;
+            bytes -= sizes[i]; dropped++; arr[i] = null;
+          }
+        }
+        arr = arr.filter(Boolean);
       }
       save(LS.log, arr);
     },
@@ -5917,6 +5953,17 @@ if (SELFTEST){
        'best rival flight ' + Math.round(rivalBest) + ' vs ' + Math.round(hole) +
        ', tube out at ' + T2.TUNOUT);
 
+    /* The log has to fit the device it is kept on. A record that stops being
+       written half way through an attempt is the one failure nobody would
+       notice, so the size cap has to bite before the browser's does. */
+    ok('the log cannot fill the storage quota',
+       BYTECAP <= 3000000 && CAP * 370 > BYTECAP,
+       BYTECAP / 1e6 + 'MB against a 5MB quota, and a full ' + CAP +
+       ' events would want ' + Math.round(CAP * 370 / 1e5) / 10 + 'MB');
+    ok('nothing measured is ever shed to make room',
+       !SHED.some(k => KEEP[k]), SHED.join(', ') + ' go first, and never ' +
+       Object.keys(KEEP).join(', '));
+
     /* Scoring. The falls have to hurt more than any single gain is worth per
        event, or the board stops reading as a cost at the moment of the act —
        which is the one moment it has to. */
@@ -5925,9 +5972,9 @@ if (SELFTEST){
        '+' + GAIN.broke + ' against \u2212' + COST.off + ' for stepping off ' +
        'and \u2212' + COST.fail + ' for a failed try');
     /* And that it is still genuinely losable. Somebody who takes every prompt
-       on all three tasks and gets through none of them is down 810 of the
-       1000 they started with, which is the score still being a score. */
-    const allRungs = (COST.l2 + COST.l3 + COST.l4) * 3;
+       on every task and gets through none of them is down most of the 1000
+       they started with, which is the score still being a score. */
+    const allRungs = (COST.l2 + COST.l3 + COST.l4) * TASKS.length;
     ok('taking every prompt and breaking nothing costs most of the score',
        allRungs >= 800, '\u2212' + allRungs + ' of the 1000 you start with');
 
