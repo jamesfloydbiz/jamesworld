@@ -253,14 +253,6 @@
   .r3-out .in{text-align:center; line-height:1.6;}
   .r3-out p{margin:0 0 14px; font-size:14px; color:var(--dim);}
 
-  .r3-stick{position:absolute; width:74px; height:9px; cursor:grab;
-    touch-action:none; z-index:6;}
-  .r3-stick:active{cursor:grabbing;}
-  .r3-stick .wood{position:absolute; inset:0 6px 0 0; border-radius:2px;
-    background:linear-gradient(180deg,#d8c9a8,#b7a687);}
-  .r3-stick .head{position:absolute; right:0; top:-1px; width:11px; height:11px;
-    border-radius:50%; background:#b4443a;}
-
   /* The lamp and the smoke, so the train reads as a train that is running
      rather than a picture of one. Decoration: no route depends on either. */
   @keyframes r3lamp{ 0%,100%{opacity:1;} 50%{opacity:.72;} }
@@ -3674,6 +3666,7 @@ const T3 = {
      ballast that cannot be lifted. */
   ROCKS: [[275,328],[317,424],[386,394],[455,304],[455,421],[524,331],[596,375]],
   BOWL:  [746,348],
+  STICK: [329,277],
   /* Five on the left-hand road and one on the right, as the card says. They
      are placed along the rails rather than typed out, so the drawing and the
      sentence on the card cannot end up disagreeing about how many there are. */
@@ -3838,7 +3831,6 @@ const STAGE3 = {
       this.finishWith('name', 'You wrote the rule.');
     };
 
-    this.mountStick();
   },
 
   unmount(){
@@ -3846,8 +3838,6 @@ const STAGE3 = {
     if (this._rafTrain){ cancelAnimationFrame(this._rafTrain); this._rafTrain = 0; }
     onNameCommit = null;
     if (this.onPop) window.removeEventListener('popstate', this.onPop);
-    const s = document.getElementById('r3Stick');
-    if (s) s.remove();
   },
 
   tick(){},
@@ -3982,6 +3972,30 @@ const STAGE3 = {
       host.appendChild(g);
     });
     this.liven(document.getElementById('r3Bowl'), 'bowl', at.bowl || T3.BOWL, 'Bowl');
+
+    /* The matchstick, if one was kept, laid in the ballast with everything
+       else. It used to be an HTML div pinned over the picture at a fixed
+       74 by 9 pixels, which on a scene this size read as something stuck on
+       the front of the screen rather than a thing lying in the world — James
+       called it a random match twice and he was right both times. It is drawn
+       in scene units now, with a shadow, at an angle, and it is picked up by
+       exactly the same handler as a stone. */
+    const old = document.getElementById('r3Stick');
+    if (old) old.remove();
+    if (SESSION.carry.sticks.length){
+      const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+      g.id = 'r3Stick';
+      g.innerHTML =
+        '<g transform="rotate(-13)">' +
+        '<ellipse cx="2" cy="5" rx="23" ry="4" fill="#08080a" opacity="0.45"/>' +
+        '<rect x="-21" y="-2.7" width="38" height="5.4" rx="2.4" fill="#b8a578"/>' +
+        '<rect x="-21" y="-2.7" width="38" height="2.2" rx="1.1" fill="#d8c79c"/>' +
+        '<circle cx="19" cy="0" r="4.8" fill="#a8403a"/>' +
+        '<circle cx="17.6" cy="-1.5" r="1.9" fill="#cc6659"/>' +
+        '</g>';
+      document.getElementById('r3Rocks').appendChild(g);
+      this.liven(g, 'stick', at.stick || T3.STICK, 'Matchstick');
+    }
   },
 
   wireTaps(){
@@ -4091,17 +4105,31 @@ const STAGE3 = {
     const id = g.dataset.id, p = [+g.dataset.x, +g.dataset.y];
     this.touch(id);
 
+    if (id === 'stick'){
+      if (T3.atBlades(p)){
+        this.record('cross_context', { on:'blades', at:[Math.round(p[0]), Math.round(p[1])] });
+        this.finishWith('blades', 'The blades will not close. The train takes neither.', 'broke');
+      } else if (T3.atBrazier(p)){
+        this.w.lit = true;
+        T3.show('r3Fire', true);
+        saveSession();
+        this.record('cross_context', { on:'brazier', at:[Math.round(p[0]), Math.round(p[1])] });
+        this.finishWith('fire', 'It catches. The smoke goes straight up, and it is seen.', 'broke');
+      }
+      return;
+    }
+
     if (id === 'bowl'){
       if (T3.inLight(p)){
         this.record('signal_the_train', { how:'bowl', at:[Math.round(p[0]), Math.round(p[1])] });
-        this.finishWith('bowl', 'The light finds the cab. The train is slowing.');
+        this.finishWith('bowl', 'The light finds the cab. The train is slowing.', 'broke');
       }
       return;
     }
     const rail = T3.onRail(p);
     if (rail){
       this.record('stop_the_line', { rail, at:[Math.round(p[0]), Math.round(p[1])] });
-      this.finishWith('rock', 'The driver has seen it. The train stops short of the points.');
+      this.finishWith('rock', 'The driver has seen it. The train stops short of the points.', 'broke');
     }
   },
 
@@ -4297,60 +4325,6 @@ const STAGE3 = {
     document.getElementById('r3Leave').focus({ preventScroll:true });
   },
 
-  /* The stick, if one was kept, is lying in the corner it has occupied since
-     task one. No label, no hint, no outline on anything it fits. It fits two
-     things: the point blades, and the bucket. */
-  mountStick(){
-    if (!SESSION.carry.sticks.length) return;
-    const host = document.getElementById('r3');
-    const el = document.createElement('div');
-    el.className = 'r3-stick';
-    el.id = 'r3Stick';
-    /* On the ballast, in percentages so it sits in the same place whatever
-       the scene is scaled to. It was pinned in the top corner, where it read
-       as something that had appeared over the picture rather than something
-       lying in it — and the corner it used before that is the lever frame. */
-    el.style.left = '43%'; el.style.top = '75%'; el.style.position = 'absolute';
-    el.innerHTML = '<span class="wood"></span><span class="head"></span>';
-    host.appendChild(el);
-
-    let drag = null;
-    el.addEventListener('pointerdown', e => {
-      if (this.done) return;
-      try { el.setPointerCapture(e.pointerId); } catch(err){}
-      const r = el.getBoundingClientRect();
-      drag = { dx: e.clientX - r.left, dy: e.clientY - r.top, moved:false };
-      e.preventDefault();
-    });
-    el.addEventListener('pointermove', e => {
-      if (!drag) return;
-      const hr = host.getBoundingClientRect();
-      el.style.left = (e.clientX - hr.left - drag.dx) + 'px';
-      el.style.top  = (e.clientY - hr.top  - drag.dy) + 'px';
-      el.style.bottom = 'auto';
-      drag.moved = true;
-    });
-    const release = e => {
-      if (!drag) return;
-      const moved = drag.moved; drag = null;
-      if (!moved) return;
-      const p = this.toSvg(e.clientX, e.clientY);
-      if (T3.atBlades(p)){
-        this.record('cross_context', { on:'blades', at:[Math.round(p[0]), Math.round(p[1])] });
-        this.finishWith('blades', 'The blades will not close. The train takes neither.');
-      } else if (T3.atBrazier(p)){
-        this.w.lit = true;
-        T3.show('r3Fire', true);
-        saveSession();
-        this.record('cross_context', { on:'brazier', at:[Math.round(p[0]), Math.round(p[1])] });
-        this.finishWith('fire', 'It catches. The smoke goes straight up, and it is seen.');
-      } else {
-        offPath(3, 'stick_moved', {});
-      }
-    };
-    el.addEventListener('pointerup', release);
-    el.addEventListener('pointercancel', () => { drag = null; });
-  },
 };
 
 const STAGES = { 1: STAGE1, 2: STAGE2, 3: STAGE3 };
@@ -5110,6 +5084,10 @@ if (SELFTEST){
     const savedW = STAGE3.w;
     STAGE3.w = STAGE3.fresh();
     STAGE3.svg = document.getElementById('r3Svg');
+    /* With a kept matchstick, because it is one of the loose things now and
+       layObjects is what puts it there. */
+    const hadStick = SESSION.carry.sticks.length;
+    if (!hadStick) SESSION.carry.sticks.push('selftest');
     STAGE3.scatter();
     STAGE3.layObjects();
     STAGE3.wireTaps();
@@ -5145,8 +5123,12 @@ if (SELFTEST){
     const objs = Array.prototype.slice.call(document.querySelectorAll('#p3 .r3-obj'));
     const drags = objs.filter(g => g.dataset.drag);
     ok('task three lays out every loose thing',
-       drags.length === T3.ROCKS.length + 1 && objs.length === drags.length + T3.TAPS.length,
-       drags.length + ' to pick up, ' + (objs.length - drags.length) + ' to press');
+       drags.length === T3.ROCKS.length + 2 && objs.length === drags.length + T3.TAPS.length,
+       drags.length + ' to pick up (stones, bowl, matchstick), ' +
+       (objs.length - drags.length) + ' to press');
+    ok('the matchstick is one of the loose things and not stuck on the front',
+       !!document.querySelector('#r3Svg #r3Stick.r3-obj'),
+       'in the scene, in scene units');
 
     /* Nothing is buried. This is the check that earns its keep in here,
        because the failure is silent: the lever hit boxes, the near-ballast
@@ -5156,10 +5138,7 @@ if (SELFTEST){
        neighbours, which is a signpost made of behaviour rather than of words
        — and it is exactly what happened the first two times this was laid
        out, once to a stone and once to two of them. */
-    const hadStick = SESSION.carry.sticks.length;
-    if (!hadStick) SESSION.carry.sticks.push('selftest');
     STAGE3.done = false;
-    STAGE3.mountStick();
     /* elementFromPoint only sees what is actually on the screen, so the pane
        has to be in the viewport for any of this to mean anything. It was not,
        once the report above it grew by a few lines, and every single thing in
@@ -5197,9 +5176,6 @@ if (SELFTEST){
     }
     T3.show('r3Inside', true); T3.show('r3Phone', true);
     const buried = objs.filter(g => !reach.has(g.dataset.id)).map(g => g.dataset.id);
-    const stick = document.getElementById('r3Stick');
-    if (stick) stick.remove();
-    if (!hadStick) SESSION.carry.sticks.length = 0;
     window.scrollTo(0, scrollWas);
     ok('the junction was on screen to be checked at all',
        r.width > 0 && r.top < window.innerHeight && r.bottom > 0,
@@ -5207,8 +5183,13 @@ if (SELFTEST){
     ok('nothing in the junction is buried under an overlay', buried.length === 0,
        buried.length ? buried.join(', ') + ' cannot be reached'
                      : objs.length + ' reachable by pointer, matchstick included');
+    ok('the matchstick can still reach both things it fits',
+       T3.near(T3.STICK, [T3.STICK, T3.BLADES]) < 400 &&
+       Math.hypot(T3.STICK[0] - 568, T3.STICK[1] - 314) < 400,
+       'blades ' + Math.round(Math.hypot(T3.STICK[0]-T3.BLADES[0], T3.STICK[1]-T3.BLADES[1])) +
+       ', bucket ' + Math.round(Math.hypot(T3.STICK[0]-568, T3.STICK[1]-314)) + ' away');
 
-    const started = drags.filter(g => g.dataset.id !== 'bowl')
+    const started = drags.filter(g => g.dataset.id !== 'bowl' && g.dataset.id !== 'stick')
                          .filter(g => T3.onRail([+g.dataset.x, +g.dataset.y]));
     ok('no stone starts on a rail', started.length === 0,
        started.map(g => g.dataset.id).join(', ') || T3.ROCKS.length + ' clear of the line');
@@ -5220,7 +5201,7 @@ if (SELFTEST){
        as an affordance nobody can lift. */
     let near = Infinity;
     for (const g of drags){
-      if (g.dataset.id === 'bowl') continue;
+      if (g.dataset.id === 'bowl' || g.dataset.id === 'stick') continue;
       const p = [+g.dataset.x, +g.dataset.y];
       for (const rail of T3.RAILS) near = Math.min(near, T3.near(p, rail));
     }
@@ -5257,6 +5238,7 @@ if (SELFTEST){
        T3.FOLK.every(f => f.rail !== 0), 'all six are past the points');
 
     T3.show('r3Inside', !hidIn); T3.show('r3Phone', !hidPh);
+    if (!hadStick) SESSION.carry.sticks.length = 0;
     STAGE3.w = savedW;
     pane.hidden = was;
   })();
