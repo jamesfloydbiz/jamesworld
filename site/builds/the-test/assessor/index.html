@@ -842,23 +842,25 @@ function drawRun(st){
     label(g.at(j[0] + len/2), 'jump', '#c9a227', w*0.95);
   }
 
-  /* the way back — the cutting below the circuit and the deck above it */
-  if (sc.back && Array.isArray(sc.back.deck)){
-    const b = sc.back;
-    const stretch = (pair, col, w2) => {
-      if (!Array.isArray(pair)) return;
-      const sp = g.span(pair[1], pair[0]);      // these run backwards down the lap
-      trace(sp, false);
-      ctx.lineWidth = (w + kerb*2)*k * (w2 || 1); ctx.strokeStyle = col; ctx.stroke();
-    };
-    stretch(b.down, '#20232a');
-    stretch(b.cut,  '#15171b');
-    stretch(b.kick, '#2a2d33');
-    stretch(b.deck, '#3a3f46', 1.25);
-    stretch(b.deck, '#25282c');
-    const mid = p => { let len = ((p[0] - p[1]) % 1 + 1) % 1; return p[1] + len/2; };
-    label(g.at(mid(b.cut)),  'below', '#7f848c', w*0.95);
-    label(g.at(mid(b.deck)), 'above', '#6cc08b', w*0.95);
+  /* the way back — the tube under the infield, drawn as the chord it is */
+  if (sc.back && Array.isArray(sc.back.tun) && sc.back.tun.length > 1){
+    const T = sc.back.tun;
+    ctx.save();
+    ctx.setLineDash([9, 7]);
+    ctx.lineWidth = Math.max(2, w*k*0.5);
+    ctx.strokeStyle = 'rgba(70,214,224,.45)';
+    ctx.beginPath();
+    T.forEach((q, i) => (i ? ctx.lineTo(X(q[0]), Y(q[1])) : ctx.moveTo(X(q[0]), Y(q[1]))));
+    ctx.stroke();
+    ctx.restore();
+    const mid = T[Math.floor(T.length/2)];
+    label({ x:mid[0], y:mid[1] }, 'under the infield', '#46d6e0', w*0.95);
+    if (sc.back.tunIn != null){
+      const mouth = g.at(sc.back.tunIn);
+      ctx.fillStyle = '#46d6e0';
+      ctx.beginPath(); ctx.arc(X(mouth.x), Y(mouth.y), 5, 0, Math.PI*2); ctx.fill();
+      label(mouth, 'the mouth', '#46d6e0', w*0.95);
+    }
   }
 
   /* the chasm — cut clean through the band so the gap is a gap */
@@ -977,7 +979,7 @@ function drawRun(st){
   /* a small key, because a gap and a slide are not obvious at this size */
   ctx.textAlign = 'right'; ctx.font = '10px ' + FONT;
   const key = [['chasm','#d05a4e'], ['jump','#c9a227'], ['ford','#6fb6c4'],
-               ['the way back','#6cc08b'],
+               ['the way back','#46d6e0'],
                ['rock slide','#8a8a93'], ['boost','#6cc08b'],
                ['drove forwards','#c9a227'], ['drove backwards','#d05a4e']];
   key.forEach((e, i) => {

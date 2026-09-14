@@ -211,6 +211,7 @@
      away, a lever frame, a hut, ballast, and a low sun throwing light across
      the ground. Nothing in here is an opening, which is the whole reason it
      replaced a room with doors in it. */
+  a.btn{display:inline-flex; align-items:center; text-decoration:none;}
   .r3{position:relative; border:1px solid var(--border); border-radius:10px;
     overflow:hidden; background:#0e0e11; line-height:0; margin-bottom:8px;}
   .r3 svg{display:block; width:100%; height:auto;}
@@ -624,9 +625,14 @@
     <div class="row">
       <button class="btn btn-p" id="dlBtn">Download the record</button>
       <button class="btn" id="copyBtn">Copy it</button>
+      <!-- Only here, and only once the attempt is spent. The replay shows
+           every route through every task, so a link to it anywhere earlier
+           would be the answer sheet stapled to the paper. -->
+      <a class="btn" id="watchBtn" href="assessor/">Watch the attempt back</a>
     </div>
     <p class="tiny" id="exportNote" style="margin-top:12px;">
       The record is on this device only. Hand it in and it exists somewhere else too.
+      Watching it back reads the copy on this device.
     </p>
   </section>
 
@@ -1815,24 +1821,30 @@ const T2 = {
      Both numbers have floors in ?selftest=1 rather than a bare "> 0". */
   GRIDZOOM: 1.9, ZOOM_IN: 3.0,
 
-  FINISH: 0.9200,
-  /* The way back. Behind the start line the road drops into a cutting that
-     runs below the circuit, and that is why none of it shows from the grid:
-     it is under the surface the car is parked on, not around a corner. It
-     ends in a kicker that throws the car up out of the cutting and onto a
-     deck, and the finish is on the deck. Every one of these is a t running
-     DOWN from the line, because that is the direction you arrive from.
+  FINISH: 0.6000,
+  /* THE WAY BACK. Reverse past the start line and the road falls away into a
+     mouth in the bank. It doubles back on itself under the circuit, then runs
+     dead straight across the middle of the infield, boost the whole length,
+     and comes up at the FAR lip of the gap — the one place on the circuit
+     that racing cannot reach. You come out of it in front of the entire
+     field, pointing the right way, with a clear road to the flag.
 
-     Where the mouth sits is not a free choice. It has to be further back
-     than the camera can see from the grid — including during the count, when
-     the camera is deliberately wider — and that distance is measured in
-     ?selftest=1 rather than guessed at. */
-  DOWN: [0.9500, 0.9440],   // the drop in: ground down to DEEP
-  CUT:  [0.9440, 0.9340],   // along the bottom
-  KICK: [0.9340, 0.9300],   // up and out
-  DECK: [0.9260, 0.9140],   // the level above, carrying the finish
-  DEEP: -34, HIGH: 52,      // how far below and above the circuit, in drawing units
-  KICKV: 60,                // below this you bump the kicker instead of clearing it
+     It is underground, which is why none of it shows from the surface. The
+     mouth is the exception and is the affordance: it is drawn from the first
+     frame, it is never named, and it has to sit further back than the camera
+     can see from the grid — including during the count, when the camera is
+     deliberately wider. That distance is measured in ?selftest=1.
+
+     TUNV is a cap of its own and not a raise of VBOOST. VBOOST is what makes
+     the gap unjumpable and is proved by search over the shared integrator; a
+     tube that never touches the near side of the gap cannot be used to cross
+     it, and drive() — the thing the proof runs on — is untouched. Without a
+     separate cap the ride is 8,048 units at 520, which is fifteen and a half
+     seconds of straight line. */
+  TUNIN: 0.9500,            // the mouth, behind the start line
+  TUNOUT: 0.5640,           // where it surfaces: just past the far lip of the gap
+  TUNV: 880, TUNW: 150,     // its own ceiling, and how wide the bore is
+  TUNACC: 900,              // it pulls harder than the circuit does
   BOOSTS: [0.075, 0.276, 0.398, 0.529],
   SLIDE:  [0.1900, 0.2140],
   WATER:  [0.3600, 0.3724],
@@ -1955,17 +1967,20 @@ const T2 = {
     return null;
   },
 
-  /* How high the car sits on the way back, or null for "on the circuit".
-     One function, used by the car and by the painter, so the road and the
-     thing driving on it cannot end up at different heights. */
-  backZ(t){
-    if (t <= T2.DOWN[0] && t > T2.DOWN[1])
-      return T2.DEEP * (T2.DOWN[0] - t) / (T2.DOWN[0] - T2.DOWN[1]);
-    if (t <= T2.DOWN[1] && t >= T2.KICK[1]) return T2.DEEP;
-    if (t <= T2.DECK[0] && t >= T2.DECK[1]) return T2.HIGH;
-    return null;
+  /* Where the tube is at s units along it. One function, used by the car and
+     by the painter, so the bore and the thing driving down it cannot end up
+     in different places. */
+  tunAt(s){
+    const C = T2.TUNC, P = T2.TUNP;
+    s = clamp(s, 0, T2.TUNL);
+    let lo = 1, hi = C.length - 1;
+    while (lo < hi){ const m = (lo + hi) >> 1; if (C[m] < s) lo = m + 1; else hi = m; }
+    const a = P[lo-1], b = P[lo], len = (C[lo] - C[lo-1]) || 1;
+    const f = (s - C[lo-1]) / len;
+    return { x:a[0] + (b[0]-a[0])*f, y:a[1] + (b[1]-a[1])*f,
+             a:Math.atan2(b[1]-a[1], b[0]-a[0]) };
   },
-  onBack(t){ return t <= T2.DOWN[0] + 0.002 && t >= T2.DECK[1] - 0.002; },
+  onBack(t){ return t <= T2.TUNIN + 0.004 && t >= T2.TUNIN - 0.004; },
 };
 T2.RAMP = T2.JUMPS[T2.JUMPS.length-1].ramp;   // the one that cannot be made:
 T2.GAP  = T2.JUMPS[T2.JUMPS.length-1].gap;    // named, because it is the task
@@ -2088,6 +2103,54 @@ T2.VOID = T2.LIM + 70;                // the gap runs wider than that: no way ro
     T2.ROCKS.push(r);
   }
 
+  /* The tube. Waypoints out of the mouth, doubling back on themselves, then
+     straight across the middle to the far lip of the gap — smoothed, because
+     a car on rails through a polyline corner snaps its heading and looks
+     broken. The two ends are pinned to the track so the mouth and the exit
+     are where the circuit actually is rather than near it. */
+  (function buildTunnel(){
+    const A = T2.at(T2.TUNIN), B = T2.at(T2.TUNOUT);
+    const back = A.a + Math.PI;                       // the way you arrive: backwards
+    const way = [
+      [A.x, A.y],
+      [A.x + Math.cos(back)*130, A.y + Math.sin(back)*130],
+      [A.x + Math.cos(back)*240 - A.nx*120, A.y + Math.sin(back)*240 - A.ny*120],
+      [A.x + Math.cos(back)*190 - A.nx*330, A.y + Math.sin(back)*190 - A.ny*330],
+      [A.x + Math.cos(back)*20  - A.nx*420, A.y + Math.sin(back)*20  - A.ny*420],
+    ];
+    // and then straight for the far lip, coming in along the track's own line
+    const pre = [B.x - Math.cos(B.a)*620, B.y - Math.sin(B.a)*620];
+    const last = way[way.length-1];
+    for (let i = 1; i <= 7; i++){
+      const u = i / 8;
+      way.push([last[0] + (pre[0]-last[0])*u, last[1] + (pre[1]-last[1])*u]);
+    }
+    way.push(pre, [B.x - Math.cos(B.a)*260, B.y - Math.sin(B.a)*260], [B.x, B.y]);
+
+    // Catmull-Rom through the waypoints, so the bore has no corners in it
+    const P = [];
+    const at = i => way[clamp(i, 0, way.length-1)];
+    for (let i = 0; i < way.length - 1; i++){
+      const p0 = at(i-1), p1 = at(i), p2 = at(i+1), p3 = at(i+2);
+      for (let k = 0; k < 12; k++){
+        const u = k/12, u2 = u*u, u3 = u2*u;
+        P.push([
+          0.5*((2*p1[0]) + (-p0[0]+p2[0])*u + (2*p0[0]-5*p1[0]+4*p2[0]-p3[0])*u2 + (-p0[0]+3*p1[0]-3*p2[0]+p3[0])*u3),
+          0.5*((2*p1[1]) + (-p0[1]+p2[1])*u + (2*p0[1]-5*p1[1]+4*p2[1]-p3[1])*u2 + (-p0[1]+3*p1[1]-3*p2[1]+p3[1])*u3),
+        ]);
+      }
+    }
+    P.push(way[way.length-1].slice());
+    const C = [0];
+    for (let i = 1; i < P.length; i++)
+      C.push(C[i-1] + Math.hypot(P[i][0]-P[i-1][0], P[i][1]-P[i-1][1]));
+    T2.TUNP = P; T2.TUNC = C; T2.TUNL = C[C.length-1];
+
+    // boost chevrons down the whole bore, every 240 units
+    T2.TUNBOOST = [];
+    for (let s = 300; s < T2.TUNL - 300; s += 240) T2.TUNBOOST.push(s);
+  })();
+
   // surface streaks for the ford, so the current reads as a direction
   T2.WSTREAK = [];
   for (let k = 0; k < 30; k++)
@@ -2163,8 +2226,8 @@ const STAGE2 = {
       pts: T2.PTS.map(p => [Math.round(p[0]), Math.round(p[1])]),
       w: T2.WIDTH, startT: 0, finishT: T2.FINISH,
       chasm: T2.GAP.slice(), slide: T2.SLIDE.slice(), water: T2.WATER.slice(),
-      back: { down:T2.DOWN.slice(), cut:T2.CUT.slice(),
-              kick:T2.KICK.slice(), deck:T2.DECK.slice() },
+      back: { tunIn:T2.TUNIN, tunOut:T2.TUNOUT,
+              tun:T2.TUNP.filter((_, i) => i % 6 === 0).map(q => [Math.round(q[0]), Math.round(q[1])]) },
       jumps: T2.JUMPS.filter(j => !j.last).map(j => j.gap.slice()),
       boosts: T2.BOOSTS.slice(), cars: T2.GRID.length });
 
@@ -2210,6 +2273,7 @@ const STAGE2 = {
       x:p.x + p.nx*g.lat, y:p.y + p.ny*g.lat, a:p.a, v:0, steer:0,
       t:g.t, tPrev:g.t, prog:0, lat:g.lat,
       z:0, air:null, fall:0, over:0, overMsg:'', spin:0, wet:false, boost:0,
+      tun:null,
       lights: first ? 5.4 : 3.2, last:0,
       // only the first count gets the wide opening; a restart is not a parade
       wide: !!first, zoom: first ? T2.GRIDZOOM : 1,
@@ -2256,6 +2320,7 @@ const STAGE2 = {
     }
     this.runCars(dt);
     this.decay(dt);
+    if (R.tun) return this.ride(dt);
 
     if (R.over > 0){
       R.over -= dt;
@@ -2371,6 +2436,61 @@ const STAGE2 = {
     this.telemetry();
   },
 
+  /* Down the tube. The car is on rails in here — the bore steers it and the
+     throttle is all that is left — because a tunnel you can crash into the
+     side of is a driving test, and this is the reward for having found it
+     rather than a second thing to be good at. */
+  ride(dt){
+    const R = this.RUN, T = R.tun;
+    const up = HELD.has('ArrowUp') || HELD.has('w') || HELD.has('W');
+    const br = HELD.has('ArrowDown') || HELD.has('s') || HELD.has('S');
+    if (br) R.v = Math.max(120, R.v - T2.BRAKE * dt);
+    else    R.v = Math.min(T2.TUNV, R.v + (up ? T2.TUNACC : T2.TUNACC * 0.55) * dt);
+
+    T.s += R.v * dt;
+    const p = T2.tunAt(T.s);
+    R.x = p.x; R.y = p.y; R.a = p.a; R.z = 0;
+    R.camX += (R.x - R.camX) * Math.min(1, dt * 6);
+    R.camY += (R.y - R.camY) * Math.min(1, dt * 6);
+
+    const pct = Math.floor(T.s / T2.TUNL * 10) * 10;
+    if (pct > T.pct){ T.pct = pct; rec.ev(EV.off_path, 2, { kind:'in_the_tunnel', pct }); }
+    this.telemetry();
+
+    if (T.s >= T2.TUNL - 0.5) this.outOfTheTunnel();
+  },
+
+  intoTheTunnel(p){
+    const R = this.RUN, w = this.w;
+    R.tun = { s:0, pct:0 };
+    R.air = null; R.fall = 0; R.z = 0;
+    R.v = Math.max(200, Math.abs(R.v));
+    if (!w.escaped){
+      w.escaped = true;
+      /* The escape is entering it, not finishing afterwards. Going in is the
+         act; the run to the flag after it is a victory lap, and somebody who
+         shuts the tab on the way down the bore has still done the thing this
+         task exists to find. */
+      escape(2, 'wrong_way', { via:this.via || 'key', runs:w.runs, jumps:w.jumps,
+                               t:+p.t.toFixed(3) });
+    }
+    act(2, 'tunnel_in', { v:Math.round(R.v) });
+    saveSession();
+  },
+
+  outOfTheTunnel(){
+    const R = this.RUN;
+    const B = T2.at(T2.TUNOUT);
+    R.tun = null;
+    R.a = B.a;
+    R.v = Math.min(T2.VBOOST, R.v);
+    R.boost = T2.BOOST_S;
+    const f = T2.flight(R.v);
+    R.air = { age:0, T:f.t * 0.7, vz:f.vz, j:null,
+              vx:Math.cos(R.a) * R.v, vy:Math.sin(R.a) * R.v, spin:0 };
+    act(2, 'tunnel_out', { v:Math.round(R.v) });
+  },
+
   /* Everything the record cares about is derived here, from one projection. */
   bookkeep(dt){
     const R = this.RUN, w = this.w;
@@ -2409,8 +2529,7 @@ const STAGE2 = {
 
     if (!R.air){
       const j = T2.jumpAt(p.t);
-      const bz = T2.backZ(p.t);
-      R.z = bz === null ? 0 : bz;
+      R.z = 0;
       if (j){
         const onRamp = p.t >= j.ramp[0] && p.t <= j.ramp[1];
         if (onRamp) R.z = T2.RAMP_H * (p.t - j.ramp[0]) / (j.ramp[1] - j.ramp[0]);
@@ -2418,13 +2537,10 @@ const STAGE2 = {
         // what a car that has just landed short is — falls instead.
         if (d > 0 && p.t >= j.ramp[1] && p.t - d < j.ramp[1] && p.t < j.gap[1]) this.launch(j);
         else if (p.t > j.gap[0] && p.t < j.gap[1]) return this.intoTheGap(j);
-      } else if (d < 0 && p.t <= T2.KICK[1] && p.t - d > T2.KICK[1]){
-        // over the lip of the kicker, going the way the kicker faces
-        if (Math.abs(R.v) >= T2.KICKV) this.launchUp(p);
-        else {
-          const c0 = T2.edge(T2.KICK[1] + 0.0005, p.lat);
-          R.x = c0[0]; R.y = c0[1]; R.v = 0;
-        }
+      } else if (d < 0 && p.t <= T2.TUNIN && p.t - d > T2.TUNIN &&
+                 Math.abs(p.lat) < T2.WIDTH/2 + 30){
+        // backwards over the mouth, and in
+        return this.intoTheTunnel(p);
       }
     }
 
@@ -2464,7 +2580,12 @@ const STAGE2 = {
                               gear: R.v < -4 ? 'reverse' : 'turned', via:this.via || 'key',
                               x:Math.round(R.x), y:Math.round(R.y) });
     }
-    if (behind > 0){
+    /* Only while the tube is still ahead of them. Once they are through it
+       the car has been carried across the middle of the infield, so lap
+       progress measured against the circuit is no longer a thing anybody
+       drove — it would post a "went backwards" milestone for a car that is
+       on its way to the flag. */
+    if (behind > 0 && !w.escaped){
       /* The gradient, raw like task one's milestones: the step off the path
          is charged once, and how far they took it is evidence, not a second
          offence. Someone who reverses a little and gives up is not someone
@@ -2473,14 +2594,12 @@ const STAGE2 = {
       if (pct > w.backPct){ w.backPct = pct; rec.ev(EV.off_path, 2, { kind:'wrong_way', pct }); }
     }
 
-    if (!w.escaped && behind >= 1 - T2.FINISH){
-      w.escaped = true;
-      escape(2, 'wrong_way', { t:+p.t.toFixed(3), back:+behind.toFixed(3),
-                               runs:w.runs, jumps:w.jumps, via:this.via || 'key' });
-      return this.finish('broke');
-    }
-    // unreachable while the chasm holds, and kept honest rather than removed
-    if (!w.escaped && R.prog + T2.GRID[0].t >= T2.FINISH) return this.finish('complied');
+    /* The flag is forward of the gap, so racing cannot reach it and the tube
+       can. Crossing it having come through the tube closes the stage as a
+       break; crossing it any other way is unreachable while the gap holds,
+       and is kept honest rather than removed. */
+    if (p.t >= T2.FINISH && p.t < T2.FINISH + 0.02 && d > 0 && p.t - d < T2.FINISH)
+      return this.finish(w.escaped ? 'broke' : 'complied');
   },
 
   launch(j){
@@ -2498,18 +2617,6 @@ const STAGE2 = {
      been made, 'chasm' is the one that could not, 'rockslide' is the rocks.
      Rolling them into one number would make the last gap look like a driving
      mistake, which is the one reading this task cannot afford. */
-  /* Up and out. The distance is the air gap between the kicker lip and the
-     near end of the deck, so however fast the car is going it lands on the
-     deck and not short of it or past it. */
-  launchUp(p){
-    const R = this.RUN;
-    const dist = (T2.KICK[1] - T2.DECK[0]) * T2.LAP;
-    const T = dist / Math.max(T2.KICKV, Math.abs(R.v));
-    R.air = { age:0, T, rise:true, z0:T2.DEEP, z1:T2.HIGH,
-              vx:Math.cos(R.a) * R.v, vy:Math.sin(R.a) * R.v, spin:0 };
-    act(2, 'launch_up', { v:Math.round(Math.abs(R.v)), t:+p.t.toFixed(4) });
-  },
-
   intoTheGap(j){
     const R = this.RUN, w = this.w;
     if (R.fall > 0 || R.over > 0) return;
@@ -2760,6 +2867,7 @@ const STAGE2 = {
   paint(){
     const c = this.ctx, R = this.RUN;
     if (!R) return;
+    if (R.tun) return this.paintTunnel();
     const W = this.VW, H = this.VH, S = this.SCALE / (R.zoom || 1), still = prefersStill();
     const hw = T2.WIDTH/2;
 
@@ -2946,34 +3054,19 @@ const STAGE2 = {
       }
     }
 
-    /* The way back: the road drops below the circuit, runs along the bottom,
-       and is thrown up onto a deck at the far end. The three stretches do not
-       overlap along the lap, so there is nothing to draw over anything else
-       and nothing to occlude — the height is carried entirely by the walls,
-       the shadow under the deck and the car's own scale. */
-    const bp = T2.at(T2.CUT[0]);
-    if (near(bp.x, bp.y, 1500)){
-      const wall = (t0, t1, col) => {
-        for (const side of [1, -1])
-          this.band(c, t0, t1, side * hw, side * (hw + 15), col, 5);
-      };
-      // down the slope, and along the bottom
-      this.band(c, T2.DOWN[0], T2.DOWN[1], -hw, hw, '#20232a', 4);
-      this.band(c, T2.DOWN[1], T2.KICK[1], -hw, hw, '#17191d', 6);
-      wall(T2.DOWN[0], T2.DOWN[1], '#3a3d43');
-      wall(T2.DOWN[1], T2.KICK[1], '#2d3036');
-      // the lip the car leaves from
-      for (let k = 0; k < 12; k++){
-        const l0 = -hw + 2*hw*(k/12), l1 = -hw + 2*hw*((k+1)/12);
-        this.band(c, T2.KICK[1] + 0.0006, T2.KICK[1], l0, l1, (k % 2) ? '#1a1c1f' : '#d8a72c', 1);
-      }
-      // the deck: its own shadow on the ground first, then the deck over it
-      this.band(c, T2.DECK[0] - 0.0006, T2.DECK[1] - 0.0016,
-                -hw - 18, hw + 18, 'rgba(0,0,0,.5)', 6);
-      this.band(c, T2.DECK[0], T2.DECK[1], -hw - 9, hw + 9, '#34383e', 6);
-      this.band(c, T2.DECK[0], T2.DECK[1], -hw, hw, '#25282c', 6);
-      for (const side of [1, -1])                    // the deck's own edge rails
-        this.band(c, T2.DECK[0], T2.DECK[1], side * (hw + 2), side * (hw + 8), '#a7a299', 6);
+    /* The mouth, and nothing else of the tube. It is underground: the only
+       part of it there is to see from up here is the hole it goes into, and
+       that hole is the affordance. It is drawn from the first frame, it is
+       never named, and ?selftest=1 measures that it cannot be seen from the
+       grid — including during the count, when the camera is widest. */
+    const mp = T2.at(T2.TUNIN);
+    if (near(mp.x, mp.y, 520)){
+      const m0 = T2.TUNIN + 0.0022, m1 = T2.TUNIN - 0.0016;
+      this.band(c, m0, m1, -hw - 34, hw + 34, '#15171a', 4);
+      this.band(c, m0 - 0.0004, m1, -hw - 22, hw + 22, '#08090b', 4);
+      c.strokeStyle = '#3c4046'; c.lineWidth = 5;
+      const L = T2.edge(m0, hw + 34), Rt = T2.edge(m0, -hw - 34);
+      c.beginPath(); c.moveTo(L[0], L[1]); c.lineTo(Rt[0], Rt[1]); c.stroke();
     }
 
     const fp = T2.at(T2.FINISH);
@@ -3021,6 +3114,86 @@ const STAGE2 = {
 
     c.restore();
     this.hud(c, W, H, still);
+  },
+
+  /* Underground. The circuit is not drawn at all down here, because none of
+     it is visible from inside a tube under the infield — drawing it would be
+     the picture telling a lie the geometry does not. */
+  paintTunnel(){
+    const c = this.ctx, R = this.RUN;
+    const W = this.VW, H = this.VH, S = this.SCALE, still = prefersStill();
+    const hw = T2.TUNW / 2;
+
+    c.setTransform(this.DPR, 0, 0, this.DPR, 0, 0);
+    c.fillStyle = '#07070a';
+    c.fillRect(0, 0, W, H);
+    c.save();
+    c.translate(W/2 - R.camX*S, H/2 - R.camY*S);
+    c.scale(S, S);
+
+    const s0 = Math.max(0, R.tun.s - 900), s1 = Math.min(T2.TUNL, R.tun.s + 900);
+    const edge = (s, lat) => {
+      const p = T2.tunAt(s);
+      return [p.x - Math.sin(p.a)*lat, p.y + Math.cos(p.a)*lat];
+    };
+    const ribbon = (l0, l1, fill) => {
+      c.beginPath();
+      for (let s = s0; s <= s1; s += 30){ const q = edge(s, l0); if (s === s0) c.moveTo(q[0], q[1]); else c.lineTo(q[0], q[1]); }
+      for (let s = s1; s >= s0; s -= 30){ const q = edge(s, l1); c.lineTo(q[0], q[1]); }
+      c.closePath(); c.fillStyle = fill; c.fill();
+    };
+    ribbon(-hw - 46, hw + 46, '#131015');        // rock
+    ribbon(-hw - 14, hw + 14, '#2a2630');        // the lining
+    ribbon(-hw, hw, '#1b1a20');                  // the road
+
+    // boost chevrons the whole length, which is what the tube is for
+    const pulse = still ? 0.55 : 0.55 + 0.3 * Math.sin(performance.now() / 150);
+    c.fillStyle = 'rgba(70,214,224,' + pulse.toFixed(2) + ')';
+    for (const bs of T2.TUNBOOST){
+      if (bs < s0 || bs > s1) continue;
+      for (let k = 0; k < 2; k++){
+        const t0 = bs + k*40;
+        const a1 = edge(t0 + 34, 0), a2 = edge(t0, -hw + 14);
+        const a3 = edge(t0 - 8, -hw + 14), a4 = edge(t0 + 20, 0);
+        const a5 = edge(t0 - 8, hw - 14),  a6 = edge(t0, hw - 14);
+        c.beginPath();
+        c.moveTo(a1[0], a1[1]); c.lineTo(a2[0], a2[1]); c.lineTo(a3[0], a3[1]);
+        c.lineTo(a4[0], a4[1]); c.lineTo(a5[0], a5[1]); c.lineTo(a6[0], a6[1]);
+        c.closePath(); c.fill();
+      }
+    }
+    // lamps in the roof, streaming past
+    for (let s = Math.ceil(s0/160)*160; s <= s1; s += 160){
+      const q = edge(s, -hw - 6);
+      c.fillStyle = 'rgba(255,226,170,.75)';
+      c.beginPath(); c.arc(q[0], q[1], 4, 0, Math.PI*2); c.fill();
+      c.fillStyle = 'rgba(255,226,170,.10)';
+      c.beginPath(); c.arc(q[0], q[1], 26, 0, Math.PI*2); c.fill();
+    }
+    // the light at the end of it
+    if (T2.TUNL - R.tun.s < 1400){
+      const q = T2.tunAt(T2.TUNL);
+      const f = clamp(1 - (T2.TUNL - R.tun.s) / 1400, 0, 1);
+      c.fillStyle = 'rgba(232,201,142,' + (0.10 + f*0.5).toFixed(2) + ')';
+      c.beginPath(); c.arc(q.x, q.y, 60 + f*150, 0, Math.PI*2); c.fill();
+    }
+
+    for (const d of R.dust){
+      c.globalAlpha = Math.max(0, d.life) * 0.4;
+      c.fillStyle = d.col || '#b9ab92';
+      c.beginPath(); c.arc(d.x, d.y, d.r, 0, Math.PI*2); c.fill();
+    }
+    c.globalAlpha = 1;
+    this.car(c, R, T2LIVERY[0]);
+    c.restore();
+
+    c.textAlign = 'right'; c.textBaseline = 'alphabetic';
+    c.fillStyle = 'rgba(70,214,224,.95)';
+    c.font = '700 30px ui-monospace,Menlo,monospace';
+    c.fillText(String(Math.round(Math.abs(R.v) * 0.7)), W - 18, H - 26);
+    c.fillStyle = 'rgba(138,138,147,.85)';
+    c.font = '700 9px ui-monospace,Menlo,monospace';
+    c.fillText('KM/H', W - 18, H - 13);
   },
 
   /* A top-down F1 car: front wing, nose, tub, pods, airbox, rear wing and
@@ -4380,12 +4553,11 @@ if (SELFTEST){
     ok('the finish is off screen during the count as well', wz > 250,
        'clearance ' + Math.round(wz) + ' at ' + T2.GRIDZOOM + '\u00d7 out');
 
-    /* And the mouth of the cutting, which is nearer than the finish and is
+    /* And the mouth of the tube, which is nearer than the flag and is
        therefore what actually binds the pull-back. It is the way back: if it
        shows on the grid before a wheel has turned then the task has handed
-       itself over, and it is closer to the camera than anything else this
-       block checks. */
-    const mouth = T2.at(T2.DOWN[0]);
+       itself over. */
+    const mouth = T2.at(T2.TUNIN);
     let wm = Infinity;
     for (let vw = 320; vw <= 1600; vw += 10){
       const h = Math.max(250, Math.min(540, Math.round(vw * 0.62)));
@@ -4394,30 +4566,34 @@ if (SELFTEST){
                         (Math.hypot(vw/S/2, h/S/2) + 140));
     }
     ok('the way back is off screen during the count', wm > 150,
-       'cutting mouth clears the frame by ' + Math.round(wm));
+       'the mouth clears the frame by ' + Math.round(wm));
 
-    /* The way back has to actually go somewhere. In order down the lap from
-       the start line: the slope, the bottom, the kicker, the air, the deck —
-       and the finish on the deck rather than beside it. A gap between any two
-       of them is a car driving into nothing. */
-    const seq = [1, T2.DOWN[0], T2.DOWN[1], T2.KICK[1], T2.DECK[0], T2.DECK[1]];
-    ok('the way back runs in one piece back from the line',
-       seq.every((v, i) => i === 0 || v < seq[i-1]) &&
-       T2.DOWN[1] === T2.CUT[0] && T2.CUT[1] === T2.KICK[0],
-       seq.map(v => v.toFixed(4)).join(' > '));
-    ok('the finish is on the deck and not beside it',
-       T2.FINISH <= T2.DECK[0] && T2.FINISH >= T2.DECK[1],
-       T2.FINISH + ' within ' + T2.DECK.join('..'));
-    /* And the car gets up there however slowly it arrives — the jump is the
-       reward for the insight, not a second test of it. Reversing is capped
-       lower than driving forwards, so anything speed-dependent here would
-       clear for a driver who turned round and not for one who stayed in
-       reverse, and those are the same insight. */
-    const air = (T2.KICK[1] - T2.DECK[0]) * T2.LAP;
-    ok('the kicker lands on the deck at any speed it can be taken at',
-       air > 0 && air < 400 && T2.KICKV < T2.VREV,
-       Math.round(air) + ' units of air, cleared from ' + T2.KICKV +
-       ' up to ' + T2.VBOOST);
+    /* The tube has to come out where the task says it comes out: at the FAR
+       lip of the gap, which is the one piece of road racing cannot reach. */
+    const inP = T2.at(T2.TUNIN), outP = T2.at(T2.TUNOUT);
+    const q0 = T2.TUNP[0], q1 = T2.TUNP[T2.TUNP.length-1];
+    ok('the tube starts at its mouth and ends at the far lip',
+       Math.hypot(q0[0]-inP.x, q0[1]-inP.y) < 2 &&
+       Math.hypot(q1[0]-outP.x, q1[1]-outP.y) < 2, 'both ends are on the circuit');
+    ok('it surfaces past the gap, not short of it',
+       T2.TUNOUT >= T2.GAP[1] - 1e-9 && T2.TUNOUT < T2.FINISH,
+       'out at ' + T2.TUNOUT + ', gap ends ' + T2.GAP[1] + ', flag at ' + T2.FINISH);
+    ok('the flag is forward of the gap, where racing cannot reach it',
+       T2.FINISH > T2.GAP[1],
+       Math.round((T2.FINISH - T2.GAP[1]) * T2.LAP) + ' units past the far lip');
+
+    /* And it is a ride rather than a wait. Long enough to be the set piece it
+       is meant to be, short enough that it is not a straight line you sit in
+       — at its own cap, which is NOT a raise of the ceiling the gap depends
+       on. drive(), the thing that proof runs on, is untouched by it. */
+    const secs = T2.TUNL / T2.TUNV;
+    ok('the tube is a ride and not a wait', secs > 5 && secs < 14,
+       Math.round(T2.TUNL) + ' units at ' + T2.TUNV + ' is ' + secs.toFixed(1) + 's');
+    ok('the tube has its own ceiling and did not raise the circuit’s',
+       T2.TUNV > T2.VBOOST && T2.drive(1e6, true, false, true, 1/60) <= T2.VBOOST,
+       'tube ' + T2.TUNV + ', circuit still ' + T2.VBOOST);
+    ok('it is boosted the whole way down', T2.TUNBOOST.length > 20,
+       T2.TUNBOOST.length + ' sets of chevrons');
 
     /* And the whole grid is inside that wider frame, which is what it is for.
        The frame is a rectangle and the camera never rotates, so this is the
