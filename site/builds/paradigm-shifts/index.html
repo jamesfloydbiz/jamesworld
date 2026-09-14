@@ -205,6 +205,9 @@
   .rd b{color:var(--faint); font-weight:400; width:1em; text-align:center;}
   .rd code{font-family:inherit; color:var(--fg); letter-spacing:.08em;}
   .rd i{font-style:normal; color:var(--faint);}
+  /* The beat after a line comes out true: the tick is the acknowledgement,
+     and it is the same reading strip that has been talking all along. */
+  .rd.yes b, .rd.yes code{color:var(--good);}
   .badcol{position:absolute; width:40px; height:80px; border-radius:6px;
     border:1px solid rgba(208,90,78,.6); background:rgba(208,90,78,.09);
     pointer-events:none; z-index:3;}
@@ -1560,6 +1563,8 @@ const STAGE1 = {
     this.buildGrid();
     this.renderSticks();
     this.fit();
+    // a reload during the beat finishes it rather than stranding a solved line
+    if (w.holding) this.afterHold();
     if (!this._ro){
       this._ro = new ResizeObserver(() => this.fit());
       this._ro.observe(this.room);
@@ -1725,7 +1730,7 @@ const STAGE1 = {
       const note = r.str.indexOf('?') >= 0
         ? ' <i>that shape is not a number or a sign</i>'
         : (r.ok ? '' : ' <i>not true</i>');
-      return '<span class="rd"><b>' + (r.ok ? '\u2713' : '\u2717') + '</b><code>' +
+      return '<span class="rd' + (r.ok ? ' yes' : '') + '"><b>' + (r.ok ? '\u2713' : '\u2717') + '</b><code>' +
              (spaced || '\u2014') + '</code>' + note + '</span>';
     };
     el.innerHTML = read(a);
@@ -1800,6 +1805,7 @@ const STAGE1 = {
        charging somebody for meeting a stated rule measures patience.
        Off the felt is not on the mat, so it is not refused here. */
     const w = this.w;
+    if (w.holding) return;              // the line is being acknowledged
     // a matchstick still sitting in the line that is not on the mat is not
     // on the mat either, and nothing can be done with it
     if (s.eq && s.eq !== w.eq) return;
@@ -1859,6 +1865,7 @@ const STAGE1 = {
      one you touched, in place. Telling someone which key turns a matchstick
      is interface, not a hint — it takes noise out of the measure. */
   rotate(){
+    if (this.w && this.w.holding) return true;
     if (this.drag){
       this.drag.orient = this.nextOrient(this.drag.orient);
       this.paintDrag();
@@ -2040,12 +2047,31 @@ const STAGE1 = {
     this.paintState();
   },
 
+  /* A beat with the line you just made true still on the mat. Swapping it out
+     the instant the parser agrees reads as the page having lost your work,
+     not as the answer having been taken. */
+  HOLD: 600,
+  nextLine(){
+    const w = this.w;
+    if (w.holding) return;
+    w.holding = true;
+    w.checks = Math.max(w.checks, 1);   // so the reading shows the tick
+    this.paintState();
+    this.paintRule('');
+    clearTimeout(this._holdT);
+    this._holdT = setTimeout(() => this.afterHold(), this.HOLD);
+    saveSession();
+  },
+
   /* The first line is the warm-up and the second is the item. One move each,
      and the move resets with the line. A matchstick that was taken off the
      felt stays off it — putting it back would undo the one thing here that
      is worth recording. */
-  nextLine(){
+  afterHold(){
     const w = this.w;
+    if (!w || !w.holding) return;
+    w.holding = false;
+    clearTimeout(this._holdT);
     if (w.eq !== 'A') return this.finish();
     w.eq = 'B';
     w.checks = 0;
@@ -5671,6 +5697,18 @@ if (SELFTEST){
             const t = STAGE1.nearestSlot(x, y, null, o);
             if (t && t.eq !== 'A'){ stray = t; break; }
           }
+      /* The beat after a line comes out true is an acknowledgement, not a
+         stall, and nothing on the mat may move during it. */
+      ok('the beat after a solved line is a beat',
+         STAGE1.HOLD >= 300 && STAGE1.HOLD <= 1200, STAGE1.HOLD + 'ms');
+      w.holding = true;
+      const s0 = w.sticks[0], at = JSON.stringify([s0.eq, s0.col, s0.slot]);
+      STAGE1.place(s0, 300, 300, 'h0');
+      ok('nothing moves while a solved line is on the mat',
+         JSON.stringify([s0.eq, s0.col, s0.slot]) === at &&
+         SESSION.carry.sticks.length === 0);
+      w.holding = false;
+
       ok('no place on the other line can be dropped into', !stray,
          stray ? JSON.stringify(stray) : 'swept the whole mat at all twelve angles');
     } finally {

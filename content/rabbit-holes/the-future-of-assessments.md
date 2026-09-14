@@ -19,6 +19,9 @@ So how is it tested?
 In Ender's game he is given a simulation tapped directly into his brain that is generated as he goes. His character is a little mouse, and he begins down the path in the game. As he walks along he comes across a giant ogre blocking his path. This guard growls out an ultimatum and offers two cups. "One is poison, one is not. Guess right and I take you to Fairyland."
 
 
+![The giant of the Mind Game holding out two cups, over the line "One is poison, one is not. Choose right and you'll go to Fairyland."](/pictures/the-future-of-assessments/enders-game-the-giant.jpg)
+
+
 Ender, knowing that he can rejoin and go again, so decides quickly and takes the 50/50. He jumps into the left cup and dies. Unemotional, he rejoins and jumps into the right cup only to die again.
 
 
@@ -35,6 +38,9 @@ In another story, Red Rising, a miner of the lowest social class is saved from d
 
 
 In a crowd favorite movie, Hunger Games, there is no such two options test, just the skills assessment before the games. This skills demonstration is a chance to get a high-rating and with it sponsors and fans that may save her life in the arena. Fighting without sponsors is hugely negative to her chances of getting back to her family. She is ignored by the assessors so she shoots an arrow between them and into the decoration apple of the pig they're about to eat.
+
+
+![Katniss drawing her bow at the assessors' banquet table, the arrow pointed at the apple in the roast pig's mouth](/pictures/the-future-of-assessments/hunger-games-the-apple.jpg)
 
 
 She was awarded the highest score that year of 11/12
