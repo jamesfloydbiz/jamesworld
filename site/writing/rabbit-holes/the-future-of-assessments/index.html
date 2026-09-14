@@ -152,6 +152,11 @@
       padding-top: 16px;
       border-top: 1px solid var(--fg-15);
     }
+    /* A heading that goes somewhere says so, quietly — the arrow is the tell,
+       since an underline on a heading this small reads as a mistake. */
+    .rh-section__to { color: inherit; text-decoration: none; border-bottom: 1px solid var(--fg-25); }
+    .rh-section__to::after { content: ' →'; }
+    .rh-section__to:hover, .rh-section__to:focus-visible { color: var(--acc, #6ee7a8); }
     .rh-section__date {
       display: inline-block;
       margin-left: 10px;
@@ -483,7 +488,7 @@
           <p>This is a truth created by the technology of past times, but does not need to be true anymore. Generative AI can create infinite novel situations to assess students on.</p>
         </section>
         <section id="so-i-built-one" class="rh-section">
-          <h2>So I built one <span class="rh-section__date">the MVP</span></h2>
+          <h2><a class="rh-section__to" href="/builds/paradigm-shifts/">So I built one</a> <span class="rh-section__date">the MVP</span></h2>
           <p>So, I have built an MVP assessment demonstrating some of the tests that encourage mapping constraints, functions, and chunks to find novel solutions. I propose using these kinds of tests to encourage and assess kids ability to shift the paradigm because after all what shifting the paradigm is, is being limitless.</p>
           <p>An advanced version could call APIs to create new situations for each student based on their knowledge graph, interest graph, and any other data inputted by their guides or assessors.</p>
         </section>

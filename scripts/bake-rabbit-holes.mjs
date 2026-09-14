@@ -36,7 +36,8 @@ const META = {
       { name: 'PISA, 2012',                  date: 'buttons that do nothing' },
       { name: 'Matchstick arithmetic',       date: 'Ohlsson' },
       { name: 'Each test is one time use',   date: 'the big issue' },
-      { name: 'So I built one',              date: 'the MVP' },
+      { name: 'So I built one',              date: 'the MVP',
+        href: '/builds/paradigm-shifts/' },
     ],
   },
   'state-of-american-schooling': {
@@ -234,6 +235,10 @@ function slugify(s) {
 // heading lines) and optional `date` (era range shown in nav + article).
 function parse(md, sectionSpec) {
   const dateByName = new Map(sectionSpec.map((s) => [s.name.trim(), s.date || '']));
+  /* A section heading can point at the thing the section is about. The URL
+     comes from META here, never from the document, so it goes into the page
+     without ever passing through the prose path. */
+  const hrefByName = new Map(sectionSpec.map((s) => [s.name.trim(), s.href || '']));
   const blocks = md
     .replace(/\r\n/g, '\n')
     .split(/\n\s*\n/g)
@@ -244,7 +249,8 @@ function parse(md, sectionSpec) {
   let cur = null;
 
   const startSection = (heading) => {
-    cur = { heading, date: dateByName.get(heading) || '', blocks: [] };
+    cur = { heading, date: dateByName.get(heading) || '',
+            href: hrefByName.get(heading) || '', blocks: [] };
     sections.push(cur);
   };
 
@@ -380,8 +386,11 @@ function renderSections(sections) {
   const articleHtml = withIds
     .map((s) => {
       if (s.heading === SOURCES_HEADING) return renderSourcesSection(s);
+      const name = s.href
+        ? `<a class="rh-section__to" href="${escAttr(s.href)}">${esc(s.heading)}</a>`
+        : esc(s.heading);
       const heading = s.heading
-        ? `<h2>${esc(s.heading)}${s.date ? ` <span class="rh-section__date">${esc(s.date)}</span>` : ''}</h2>`
+        ? `<h2>${name}${s.date ? ` <span class="rh-section__date">${esc(s.date)}</span>` : ''}</h2>`
         : '';
       const body = s.blocks.map(renderBlock).join('\n');
       return `        <section id="${s.id}" class="rh-section">\n${heading ? `          ${heading}\n` : ''}          ${body.split('\n').join('\n          ')}\n        </section>`;
@@ -546,6 +555,11 @@ function pageTemplate(slug, meta, timelineItems, articleHtml) {
       padding-top: 16px;
       border-top: 1px solid var(--fg-15);
     }
+    /* A heading that goes somewhere says so, quietly — the arrow is the tell,
+       since an underline on a heading this small reads as a mistake. */
+    .rh-section__to { color: inherit; text-decoration: none; border-bottom: 1px solid var(--fg-25); }
+    .rh-section__to::after { content: ' →'; }
+    .rh-section__to:hover, .rh-section__to:focus-visible { color: var(--acc, #6ee7a8); }
     .rh-section__date {
       display: inline-block;
       margin-left: 10px;
