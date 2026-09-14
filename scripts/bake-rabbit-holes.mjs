@@ -23,6 +23,22 @@ const OUT_DIR = resolve(ROOT, 'site', 'writing', 'rabbit-holes');
 // current section. `date` is an optional era range shown under the heading
 // in both the timeline nav and the article.
 const META = {
+  'the-future-of-assessments': {
+    title: 'The Future of Assessments',
+    subtitle: 'Every story about a genius has the same scene in it. Nobody tests for it.',
+    reading: '~8 min',
+    sections: [
+      { name: 'The future of assessments',   date: 'the missing half' },
+      { name: 'So how is it tested?',        date: 'Ender, Darrow, Katniss' },
+      { name: 'Has this been made for schools already?', date: 'no' },
+      { name: 'The age of the captain',      date: '26 sheep, 10 goats' },
+      { name: 'The nine dot problem',        date: 'since the 1930s' },
+      { name: 'PISA, 2012',                  date: 'buttons that do nothing' },
+      { name: 'Matchstick arithmetic',       date: 'Ohlsson' },
+      { name: 'Each test is one time use',   date: 'the big issue' },
+      { name: 'So I built one',              date: 'the MVP' },
+    ],
+  },
   'state-of-american-schooling': {
     title: 'The State of American Schooling',
     subtitle: '60 million kids, a trillion dollars a year, and what the numbers actually say.',

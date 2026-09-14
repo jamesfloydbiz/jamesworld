@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Future of Assessments — Rabbit Hole — James Floyd</title>
+  <meta name="description" content="Every story about a genius has the same scene in it. Nobody tests for it.">
+  <link rel="canonical" href="https://jamesfloyds.world/writing/rabbit-holes/the-future-of-assessments/">
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="The Future of Assessments">
+  <meta property="og:description" content="Every story about a genius has the same scene in it. Nobody tests for it.">
+  <meta property="og:url" content="https://jamesfloyds.world/writing/rabbit-holes/the-future-of-assessments/">
+
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=DM+Mono:wght@300;400&family=Lora:ital,wght@0,400;0,500;1,400&family=Space+Mono:wght@400;700&display=swap">
+  <link rel="stylesheet" href="/css/site.css">
+
+  <style>
+    .rh-shell {
+      display: grid;
+      grid-template-columns: 220px minmax(0, 720px);
+      gap: 56px;
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 0 clamp(16px, 4vw, 24px);
+    }
+
+    /* Timeline (left column, sticky) */
+    .rh-timeline {
+      position: sticky;
+      top: 96px;
+      align-self: start;
+      max-height: calc(100vh - 120px);
+      max-height: calc(100dvh - 120px);
+      overflow-y: auto;
+      padding-right: 8px;
+      scrollbar-width: thin;
+    }
+    .rh-timeline__list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      position: relative;
+    }
+    .rh-timeline__list::before {
+      content: '';
+      position: absolute;
+      left: 4px;
+      top: 6px;
+      bottom: 6px;
+      width: 1px;
+      background: var(--fg-15);
+    }
+    .rh-timeline__item {
+      position: relative;
+      padding: 0 0 12px 22px;
+    }
+    .rh-timeline__item::before {
+      content: '';
+      position: absolute;
+      left: 1px;
+      top: 6px;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--bg, #000);
+      border: 1px solid var(--fg-35);
+      box-sizing: border-box;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .rh-timeline__item.is-active::before {
+      background: var(--fg);
+      border-color: var(--fg);
+    }
+    .rh-timeline__link {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--fg-45);
+      text-decoration: none;
+      line-height: 1.5;
+      transition: color 0.2s;
+    }
+    .rh-timeline__link:hover { color: var(--fg-80); }
+    .rh-timeline__item.is-active .rh-timeline__link { color: var(--fg); }
+    .rh-timeline__name { display: block; }
+    .rh-timeline__date {
+      display: block;
+      font-size: 0.62rem;
+      letter-spacing: 0.05em;
+      color: var(--fg-30);
+      text-transform: none;
+      margin-top: 2px;
+    }
+    .rh-timeline__item.is-active .rh-timeline__date { color: var(--fg-55); }
+
+    /* Article (right column) */
+    .rh-article { max-width: 680px; min-width: 0; }
+    .rh-article__masthead {
+      margin-bottom: 48px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--fg-15);
+    }
+    .rh-article__eyebrow {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--fg-55);
+      margin-bottom: 12px;
+    }
+    .rh-article__title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 700;
+      font-size: clamp(2rem, 5vw, 3rem);
+      line-height: 1.15;
+      margin: 0 0 12px 0;
+      color: var(--fg);
+    }
+    .rh-article__subtitle {
+      font-family: 'Lora', Georgia, serif;
+      font-style: italic;
+      font-size: 1.05rem;
+      line-height: 1.5;
+      color: var(--fg-70);
+      margin: 0 0 8px 0;
+    }
+    .rh-article__meta {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--fg-45);
+    }
+
+    .rh-section { margin-bottom: 40px; scroll-margin-top: 96px; }
+    .rh-section h2 {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--fg-80);
+      margin: 0 0 20px 0;
+      padding-top: 16px;
+      border-top: 1px solid var(--fg-15);
+    }
+    .rh-section__date {
+      display: inline-block;
+      margin-left: 10px;
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      color: var(--fg-45);
+      text-transform: none;
+      font-weight: normal;
+    }
+    .rh-section p {
+      font-family: 'Lora', Georgia, serif;
+      font-size: 1.02rem;
+      line-height: 1.8;
+      color: var(--fg-80);
+      margin: 0 0 1rem 0;
+    }
+    .rh-quote {
+      margin: 1.8rem 0;
+      padding: 0 0 0 20px;
+      border-left: 2px solid var(--fg-45);
+      font-family: 'Lora', Georgia, serif;
+      font-size: 1.18rem;
+      line-height: 1.65;
+      font-style: italic;
+      color: var(--fg);
+    }
+    /* Footnote markers. Small, dim, and out of the way — the prose has to read
+       without them, and a reader who wants the receipt clicks through. */
+    .rh-fn { font-size: 0.62em; line-height: 0; vertical-align: super; margin-left: 1px; }
+    .rh-fn a { color: var(--fg-40); text-decoration: none; }
+    .rh-fn a:hover { color: var(--acc, #6ee7a8); }
+
+    /* Sources, collapsed. Seventy-odd citations under an essay is a wall, so it
+       stays shut until asked for. */
+    .rh-sources { border: 1px solid var(--fg-12); border-radius: 10px; margin: 2.4rem 0 0;
+      background: hsl(0 0% 3%); }
+    .rh-sources > summary { list-style: none; cursor: pointer; display: flex; flex-wrap: wrap;
+      align-items: baseline; gap: 12px; padding: 16px 18px; min-height: 44px;
+      box-sizing: border-box; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+    .rh-sources > summary::-webkit-details-marker { display: none; }
+    .rh-sources > summary:focus-visible { outline: 2px solid var(--fg-40); outline-offset: 2px; border-radius: 10px; }
+    .rh-sources__k { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--fg-70); }
+    .rh-sources__n { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--fg-40); }
+    .rh-sources[open] > summary .rh-sources__n::after { content: ''; }
+    .rh-sources__list { margin: 0; padding: 0 18px 20px 44px; }
+    .rh-sources__list li { font-family: var(--font-serif); font-size: 0.88rem; line-height: 1.65;
+      color: var(--fg-60); margin-bottom: 12px; overflow-wrap: anywhere; }
+    .rh-sources__list li:target { color: var(--fg-85); }
+    .rh-sources__list li strong { color: var(--fg-85); }
+    .rh-src__link { color: var(--fg-50); text-decoration: none; border-bottom: 1px solid var(--fg-20); }
+    .rh-src__link:hover { color: var(--fg-85); border-bottom-color: var(--fg-50); }
+
+    .rh-tablewrap { overflow-x: auto; margin: 1.4rem 0; -webkit-overflow-scrolling: touch; }
+    .rh-table {
+      border-collapse: collapse;
+      width: 100%;
+      min-width: 420px;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      line-height: 1.55;
+    }
+    .rh-table th {
+      text-align: left;
+      font-weight: 600;
+      color: var(--fg-55);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 0.66rem;
+      padding: 0 14px 8px 0;
+      border-bottom: 1px solid var(--fg-15);
+      white-space: nowrap;
+    }
+    .rh-table td {
+      padding: 10px 14px 10px 0;
+      border-bottom: 1px solid var(--fg-15);
+      color: var(--fg-80);
+      vertical-align: top;
+    }
+    .rh-table tr:last-child td { border-bottom: 0; }
+    .rh-table td:first-child { color: var(--fg); font-weight: 600; white-space: nowrap; }
+
+    .rh-figure {
+      margin: 1.6rem 0;
+    }
+    .rh-figure img {
+      display: block;
+      /* natural size, never upscaled — these are 1914 halftones and the
+         portrait is only 312px wide, so width:100% blew it up to 680 and
+         turned it to mush. max-width still shrinks them on a phone. */
+      max-width: 100%;
+      height: auto;
+      margin: 0 auto;
+      border-radius: 3px;
+      border: 1px solid var(--fg-15);
+      /* these are 1914 halftones — a warm, slightly lifted rendering suits
+         them better than pinning them to a pure-black page */
+      filter: sepia(0.12) contrast(1.02);
+    }
+    .rh-figure figcaption {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      line-height: 1.6;
+      letter-spacing: 0.02em;
+      color: var(--fg-55);
+      margin-top: 10px;
+    }
+    .rh-section .rh-list {
+      font-family: 'Lora', Georgia, serif;
+      font-size: 1rem;
+      line-height: 1.75;
+      color: var(--fg-80);
+      padding-left: 20px;
+      margin: 0 0 1rem 0;
+    }
+    .rh-section .rh-list li { margin-bottom: 6px; }
+
+    .rh-back {
+      display: inline-block;
+      margin: 48px 0 24px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--fg-55);
+      text-decoration: none;
+    }
+    .rh-back:hover { color: var(--fg); }
+    .rh-back--top {
+      margin: 0 0 24px 0;
+      grid-column: 1 / -1;
+    }
+
+    /* Mobile: timeline collapses to a horizontal chip row above the article */
+    @media (max-width: 900px) {
+      .rh-shell {
+        /* minmax(0, 1fr), not 1fr. A bare 1fr is minmax(AUTO, 1fr), and an
+           auto minimum refuses to shrink below its content — so the table's
+           420px min-width grew this column to 420 inside a 320px phone and
+           an ancestor quietly clipped the right-hand column off. */
+        grid-template-columns: minmax(0, 1fr);
+        gap: 24px;
+      }
+      .rh-timeline {
+        position: static;
+        max-height: none;
+        overflow-x: auto;
+        overflow-y: visible;
+        padding-right: 0;
+        padding-bottom: 8px;
+        border-bottom: 1px solid var(--fg-15);
+        white-space: nowrap;
+      }
+      .rh-timeline__list { display: inline-flex; gap: 4px; }
+      .rh-timeline__list::before { display: none; }
+      .rh-timeline__item {
+        display: inline-block;
+        padding: 6px 10px;
+        border: 1px solid var(--fg-15);
+        border-radius: 999px;
+        flex-shrink: 0;
+      }
+      .rh-timeline__item::before { display: none; }
+      .rh-timeline__item.is-active {
+        background: var(--fg-10, rgba(255,255,255,0.08));
+        border-color: var(--fg-35);
+      }
+      .rh-timeline__link { font-size: 0.68rem; }
+      .rh-timeline__date { display: none; }
+      .rh-article__title { font-size: 1.75rem; }
+      .rh-section__date { display: block; margin-left: 0; margin-top: 4px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="site-header anim-slide-dn">
+    <a href="/" class="site-header__logo" aria-label="Return to home"><img src="/logo.svg" alt="JF"></a>
+    <button class="site-header__menu-btn" id="menu-btn" aria-expanded="false" aria-controls="site-nav">Menu</button>
+  </header>
+
+  <nav class="site-nav" id="site-nav" aria-label="Main navigation">
+    <ul class="site-nav__list">
+      <li class="site-nav__item"><a href="/sonder/" class="site-nav__link">Sonder Series</a></li>
+      <li class="site-nav__item"><a href="/portfolio/" class="site-nav__link">Portfolio</a></li>
+      <li class="site-nav__item" data-has-sub>
+        <a href="/projects/" class="site-nav__link">Projects</a>
+        <div class="site-nav__sub">
+          <a href="/portfolio/" class="site-nav__sub-link">Portfolio</a>
+          <a href="/resume/" class="site-nav__sub-link">Resume</a>
+          <a href="/references/" class="site-nav__sub-link">References</a>
+        </div>
+      </li>
+      <li class="site-nav__item" data-has-sub>
+        <a href="/content/" class="site-nav__link">Content</a>
+        <div class="site-nav__sub">
+          <a href="/writing/" class="site-nav__sub-link">Writing</a>
+          <a href="/poems/" class="site-nav__sub-link">Poems</a>
+          <a href="/pictures/" class="site-nav__sub-link">Memories</a>
+        </div>
+      </li>
+      <li class="site-nav__item"><a href="/network/" class="site-nav__link">Network</a></li>
+      <li class="site-nav__item"><a href="/blueprints/" class="site-nav__link">Blueprints</a></li>
+      <li class="site-nav__item" style="margin-top:24px;"><a href="/" class="site-nav__back">Back to Gallery</a></li>
+    </ul>
+    <button class="site-nav__close" id="nav-close">Close</button>
+  </nav>
+
+  <main class="page">
+    <div class="rh-shell anim-fade-up" style="animation-delay:0.3s">
+
+      <a href="/writing/#rabbit-holes" class="rh-back rh-back--top">← Back to Writing</a>
+
+      <aside class="rh-timeline" aria-label="Essay timeline">
+        <ol class="rh-timeline__list">
+        <li class="rh-timeline__item is-active" data-section="the-future-of-assessments">
+          <a class="rh-timeline__link" href="#the-future-of-assessments">
+            <span class="rh-timeline__name">The future of assessments</span>
+            <span class="rh-timeline__date">the missing half</span>
+          </a>
+        </li>
+        <li class="rh-timeline__item" data-section="so-how-is-it-tested">
+          <a class="rh-timeline__link" href="#so-how-is-it-tested">
+            <span class="rh-timeline__name">So how is it tested?</span>
+            <span class="rh-timeline__date">Ender, Darrow, Katniss</span>
+          </a>
+        </li>
+        <li class="rh-timeline__item" data-section="has-this-been-made-for-schools-already">
+          <a class="rh-timeline__link" href="#has-this-been-made-for-schools-already">
+            <span class="rh-timeline__name">Has this been made for schools already?</span>
+            <span class="rh-timeline__date">no</span>
+          </a>
+        </li>
+        <li class="rh-timeline__item" data-section="the-age-of-the-captain">
+          <a class="rh-timeline__link" href="#the-age-of-the-captain">
+            <span class="rh-timeline__name">The age of the captain</span>
+            <span class="rh-timeline__date">26 sheep, 10 goats</span>
+          </a>
+        </li>
+        <li class="rh-timeline__item" data-section="the-nine-dot-problem">
+          <a class="rh-timeline__link" href="#the-nine-dot-problem">
+            <span class="rh-timeline__name">The nine dot problem</span>
+            <span class="rh-timeline__date">since the 1930s</span>
+          </a>
+        </li>
+        <li class="rh-timeline__item" data-section="pisa-2012">
+          <a class="rh-timeline__link" href="#pisa-2012">
+            <span class="rh-timeline__name">PISA, 2012</span>
+            <span class="rh-timeline__date">buttons that do nothing</span>
+          </a>
+        </li>
+        <li class="rh-timeline__item" data-section="matchstick-arithmetic">
+          <a class="rh-timeline__link" href="#matchstick-arithmetic">
+            <span class="rh-timeline__name">Matchstick arithmetic</span>
+            <span class="rh-timeline__date">Ohlsson</span>
+          </a>
+        </li>
+        <li class="rh-timeline__item" data-section="each-test-is-one-time-use">
+          <a class="rh-timeline__link" href="#each-test-is-one-time-use">
+            <span class="rh-timeline__name">Each test is one time use</span>
+            <span class="rh-timeline__date">the big issue</span>
+          </a>
+        </li>
+        <li class="rh-timeline__item" data-section="so-i-built-one">
+          <a class="rh-timeline__link" href="#so-i-built-one">
+            <span class="rh-timeline__name">So I built one</span>
+            <span class="rh-timeline__date">the MVP</span>
+          </a>
+        </li>
+        </ol>
+      </aside>
+
+      <article class="rh-article">
+        <header class="rh-article__masthead">
+          <span class="rh-article__eyebrow">Rabbit Hole · ~8 min</span>
+          <h1 class="rh-article__title">The Future of Assessments</h1>
+          <p class="rh-article__subtitle">Every story about a genius has the same scene in it. Nobody tests for it.</p>
+          <p class="rh-article__meta">by James Floyd</p>
+        </header>
+
+        <div id="rh-readable">
+        <section id="the-future-of-assessments" class="rh-section">
+          <h2>The future of assessments <span class="rh-section__date">the missing half</span></h2>
+          <p>I was sitting in my room, the world dark outside my window. Thoughts of watching a sci-fi show I like were interspersed with re-focusing on the task at hand, a project or idea for Founders School, when an idea struck me. We live today with a view of the future of education, infinite personalized generated lessons, but I have yet to see anything about the future of assessments.</p>
+          <p>Alpha and Founders School have adaptive computer software, generated lessons, AI at the forefront of their philosophy, all pieces of my favorite media, but don't have a core piece of this future. Measuring creative thinking. (From what I know and can find the closest is DOK4's and this isn't situational thinking)</p>
+          <p>In Ender's game, Red Rising, The Hunger Games, Star Trek, Ready Player One each has a scene where the paradigm shifts for the main character because they change the paradigm of a problem.</p>
+          <p>In the real world this is true too, it is Elon realizing that the cost of rocketships was not tied to the cost of materials to make rocket ships. It is Edwin Land reading every book on light in the NYPL to make instant photography really instant. It is Henry Ford realizing charcoal, a waste product from the sawmill for Ford cars, could be a product and business in itself!</p>
+        </section>
+        <section id="so-how-is-it-tested" class="rh-section">
+          <h2>So how is it tested? <span class="rh-section__date">Ender, Darrow, Katniss</span></h2>
+          <p>In Ender's game he is given a simulation tapped directly into his brain that is generated as he goes. His character is a little mouse, and he begins down the path in the game. As he walks along he comes across a giant ogre blocking his path. This guard growls out an ultimatum and offers two cups. &quot;One is poison, one is not. Guess right and I take you to Fairyland.&quot;</p>
+          <p>Ender, knowing that he can rejoin and go again, so decides quickly and takes the 50/50. He jumps into the left cup and dies. Unemotional, he rejoins and jumps into the right cup only to die again.</p>
+          <p>Now he's frustrated, he tries again and again to choose the un-poisoned cup only to die.</p>
+          <p>Eventually he loads it up a last time, he approaches the giant, is given the ultimatum, and decides to take neither cup. He instead jumps up onto the cup and attacks the giant.</p>
+          <p>With a huge thud the giant falls to the ground, and the problem is passed.</p>
+          <p>In another story, Red Rising, a miner of the lowest social class is saved from dying and given a chance instead to join the rebellion. He agrees, and is given a final test that determines whether or not he is fit to join said rebellion. Dancer, the leader of these rebels offers him two cards, one with a scythe representing death, the other a sun offering him a place with the rebels. The miner Darrow guesses both cards are scythes so he eats the card he pulls to change the paradigm so it is his word against Dancer's.</p>
+          <p>In a crowd favorite movie, Hunger Games, there is no such two options test, just the skills assessment before the games. This skills demonstration is a chance to get a high-rating and with it sponsors and fans that may save her life in the arena. Fighting without sponsors is hugely negative to her chances of getting back to her family. She is ignored by the assessors so she shoots an arrow between them and into the decoration apple of the pig they're about to eat.</p>
+          <p>She was awarded the highest score that year of 11/12</p>
+        </section>
+        <section id="has-this-been-made-for-schools-already" class="rh-section">
+          <h2>Has this been made for schools already? <span class="rh-section__date">no</span></h2>
+          <p>If Founders School is the future of founders, then it only follows they would have the future of assessments to measure their performance especially on this paradigm shifting thinking. The kind of thinking that changes the world. With that realization I asked, has this been made for schools already?</p>
+          <p>The answer is no, but there are some one time tests typically used in labs.</p>
+        </section>
+        <section id="the-age-of-the-captain" class="rh-section">
+          <h2>The age of the captain <span class="rh-section__date">26 sheep, 10 goats</span></h2>
+          <p>One is testing for kids' ability to identify 'un-solvable' problems and is referred to as the age of the captain study. In it you ask kids 'A captain has 26 sheep and 10 goats, how old is the captain?' within a set of other questions that are possible to answer with the information given. The test is whether or not kids can identify what's improbable to answer correctly without more information.</p>
+          <p>This identification and willingness to admit the low possibility of guessing right is the first step to changing the paradigm. Ender identified both obvious paths were traps, same as Darrow, only then could they ask &quot;How can I change the paradigm?&quot;</p>
+        </section>
+        <section id="the-nine-dot-problem" class="rh-section">
+          <h2>The nine dot problem <span class="rh-section__date">since the 1930s</span></h2>
+          <p>Since the 1930's there's even been a nine dot problem where the goal is connecting the dots without crossing the line you are connecting them with. The solution? Draw outside the box.</p>
+          <p>There are puzzles like making all 8 coins touch three others shown as a 2d plane, but then the answer is stacking them, but this is not measured or analyzed well.</p>
+        </section>
+        <section id="pisa-2012" class="rh-section">
+          <h2>PISA, 2012 <span class="rh-section__date">buttons that do nothing</span></h2>
+          <p>A more recent instance of this kind of assessment I found was in 2012, there was a test done by PISA which recorded students' actions as they tried to identify and learn an unfamiliar interface where some of the buttons didn't work. This problem solving test was meant to analyze a student's process of isolating variables and trying things outside of what's visually obvious i.e. clicking hidden buttons.</p>
+        </section>
+        <section id="matchstick-arithmetic" class="rh-section">
+          <h2>Matchstick arithmetic <span class="rh-section__date">Ohlsson</span></h2>
+          <p>There are also some scientists like Ohlsson who have been studying this kind of creative thinking using tests like the matchstick arithmetic test where people are asked to move one matchstick to balance an equation. While most people try changing the numbers, moving a matchstick to the operator like the minus sign into a plus sign is what gets the person success, that or just throwing the matchsticks away.</p>
+        </section>
+        <section id="each-test-is-one-time-use" class="rh-section">
+          <h2>Each test is one time use <span class="rh-section__date">the big issue</span></h2>
+          <p>The big issue though, is that each test of these is one time use. When a student finds a way through, or talks to their friends after, the path is solved.</p>
+          <p>This is a truth created by the technology of past times, but does not need to be true anymore. Generative AI can create infinite novel situations to assess students on.</p>
+        </section>
+        <section id="so-i-built-one" class="rh-section">
+          <h2>So I built one <span class="rh-section__date">the MVP</span></h2>
+          <p>So, I have built an MVP assessment demonstrating some of the tests that encourage mapping constraints, functions, and chunks to find novel solutions. I propose using these kinds of tests to encourage and assess kids ability to shift the paradigm because after all what shifting the paradigm is, is being limitless.</p>
+          <p>An advanced version could call APIs to create new situations for each student based on their knowledge graph, interest graph, and any other data inputted by their guides or assessors.</p>
+        </section>
+        </div>
+
+        <a href="/writing/#rabbit-holes" class="rh-back">← Back to Writing</a>
+      </article>
+
+    </div>
+  </main>
+
+  <script>
+    // ── Nav (menu open/close), copy of the pattern used across the site
+    (function() {
+      var btn = document.getElementById('menu-btn');
+      var nav = document.getElementById('site-nav');
+      var close = document.getElementById('nav-close');
+      if (btn && nav) {
+        btn.addEventListener('click', function() {
+          var open = nav.classList.toggle('is-open');
+          btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+      }
+      if (close && nav) {
+        close.addEventListener('click', function() {
+          nav.classList.remove('is-open');
+          btn && btn.setAttribute('aria-expanded', 'false');
+        });
+      }
+    })();
+
+    // ── Timeline highlight: mark the section whose heading has most recently
+    //    crossed a "read line" 30% down from the top of the viewport. Simple
+    //    scroll listener beats IntersectionObserver here because a long
+    //    section keeps intersecting even after the reader has moved past.
+    (function() {
+      var sections = Array.from(document.querySelectorAll('.rh-section'));
+      var itemMap = new Map();
+      document.querySelectorAll('.rh-timeline__item').forEach(function(it) {
+        itemMap.set(it.dataset.section, it);
+      });
+      if (!sections.length || !itemMap.size) return;
+
+      var lastActive = null;
+      function update() {
+        var readLine = window.innerHeight * 0.3;
+        var active = sections[0];
+        for (var i = 0; i < sections.length; i++) {
+          if (sections[i].getBoundingClientRect().top <= readLine) active = sections[i];
+          else break;
+        }
+        if (active === lastActive) return;
+        lastActive = active;
+        itemMap.forEach(function(it) { it.classList.remove('is-active'); });
+        var el = itemMap.get(active.id);
+        if (el) {
+          el.classList.add('is-active');
+          // On mobile the timeline is a horizontal chip strip at the top of the
+          // page. Keep the active chip centered by scrolling ONLY the strip
+          // horizontally — never el.scrollIntoView(), which also scrolls the
+          // window vertically and yanks the reader back up to the top.
+          if (window.innerWidth <= 900) {
+            var strip = el.closest('.rh-timeline');
+            if (strip && strip.scrollWidth > strip.clientWidth) {
+              strip.scrollTo({
+                left: el.offsetLeft - strip.clientWidth / 2 + el.offsetWidth / 2,
+                behavior: 'smooth'
+              });
+            }
+          }
+        }
+      }
+      var ticking = false;
+      window.addEventListener('scroll', function() {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(function() { update(); ticking = false; });
+      }, { passive: true });
+      update();
+    })();
+  </script>
+</body>
+</html>
