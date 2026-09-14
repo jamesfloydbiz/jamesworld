@@ -1,0 +1,934 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>The Test</title>
+<meta name="description" content="Three tasks, one attempt at each.">
+<link rel="canonical" href="https://jamesfloyds.world/builds/the-test/">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0b0b0c">
+<style>
+  /* Sibling of /builds/derby/ — same dark, self-contained, dependency-free
+     shell. No CDN and no web fonts on purpose: this page must not fail
+     part-way through an attempt, and an attempt cannot be taken twice. */
+  :root{
+    --bg:#0b0b0c; --fg:#e8e6e1; --dim:#8a8a93; --faint:#5d5d66;
+    --card:#141416; --border:#242428; --line:#2e2e34;
+    --acc:#c9a227;            /* the score, and only the score */
+    --bad:#d05a4e;            /* a loss */
+    --mono:ui-monospace,Menlo,Consolas,"DejaVu Sans Mono",monospace;
+  }
+  *{box-sizing:border-box;}
+  html{-webkit-text-size-adjust:100%;}
+  body{
+    margin:0; background:var(--bg); color:var(--fg); font-family:var(--mono);
+    line-height:1.6; -webkit-font-smoothing:antialiased; overflow-x:hidden;
+    min-height:100vh; min-height:100dvh;
+    padding-bottom:env(safe-area-inset-bottom);
+  }
+  .wrap{max-width:760px; margin:0 auto; padding:0 16px 56px;}
+  [hidden]{display:none !important;}
+  button{font-family:inherit;}
+  .sr-only{position:absolute; width:1px; height:1px; margin:-1px; padding:0;
+    overflow:hidden; clip:rect(0 0 0 0); clip-path:inset(50%); white-space:nowrap; border:0;}
+
+  .mark{position:fixed; top:12px; left:12px; z-index:80; display:flex;
+    align-items:center; gap:10px; padding:4px 12px 4px 6px; border-radius:99px;
+    background:rgba(11,11,12,.86); backdrop-filter:blur(8px);
+    -webkit-backdrop-filter:blur(8px);}
+  .mark a{display:inline-flex; align-items:center; text-decoration:none;
+    color:var(--faint); font-size:12px; font-weight:600; letter-spacing:.04em;
+    min-height:44px; padding:0 4px;}
+  .mark a:hover{color:var(--fg);}
+  .mark .logo{width:24px; height:24px; min-height:0;}
+  .mark .logo img{width:100%; height:100%; display:block;}
+  .mark .back::before{content:'\2190'; margin-right:7px;}
+
+  /* ── the score, top right ──────────────────────────────────────────── */
+  .score{position:fixed; top:12px; right:12px; z-index:80;
+    display:flex; align-items:baseline; gap:9px; padding:8px 14px;
+    border:1px solid var(--border); border-radius:99px;
+    background:rgba(11,11,12,.86); backdrop-filter:blur(8px);
+    -webkit-backdrop-filter:blur(8px);}
+  .score .k{font-size:9.5px; letter-spacing:.22em; text-transform:uppercase; color:var(--faint);}
+  .score .v{font-size:16px; font-weight:700; color:var(--acc);
+    font-variant-numeric:tabular-nums;}
+  /* The toast says a number and nothing else. A reason would teach the
+     scoring rule, and a student who learns the scoring rule is measuring the
+     instrument instead of being measured by it. */
+  .flake{position:fixed; top:46px; right:18px; z-index:79; color:var(--bad);
+    font-size:14px; font-weight:700; font-variant-numeric:tabular-nums;
+    pointer-events:none; opacity:0; animation:flake 1.1s ease forwards;}
+  @keyframes flake{
+    0%{opacity:0; transform:translateY(-6px);}
+    18%{opacity:1; transform:translateY(0);}
+    72%{opacity:1;}
+    100%{opacity:0; transform:translateY(12px);}
+  }
+
+  /* ── the corner field ──────────────────────────────────────────────── */
+  .corner{position:fixed; left:12px; bottom:12px; z-index:78;}
+  .corner input{
+    width:150px; padding:8px 11px; border-radius:7px;
+    border:1px solid var(--border); background:rgba(20,20,22,.9); color:var(--fg);
+    font-family:inherit; font-size:12.5px; min-height:40px;
+  }
+  .corner input:focus{outline:none; border-color:var(--line); color:var(--fg);}
+  .corner input::placeholder{color:var(--faint);}
+
+  /* ── shell ─────────────────────────────────────────────────────────── */
+  header{padding:76px 0 0;}
+  .eyebrow{font-size:10px; letter-spacing:.26em; text-transform:uppercase;
+    color:var(--faint); font-weight:700; margin:0 0 10px;}
+  h1{font-size:clamp(28px,7.5vw,40px); line-height:1.05; font-weight:700;
+    letter-spacing:-.03em; margin:0 0 14px;}
+  h2{font-size:clamp(20px,5vw,26px); line-height:1.15; font-weight:700;
+    letter-spacing:-.02em; margin:0 0 12px;}
+  p{margin:0 0 14px;}
+  .lede{font-size:14.5px; color:var(--dim);}
+  .card{background:var(--card); border:1px solid var(--border);
+    border-radius:10px; padding:18px; margin-bottom:14px;}
+  .muted{color:var(--dim); font-size:13px;}
+  .tiny{font-size:11.5px; color:var(--faint);}
+  .rule{height:1px; background:var(--border); border:0; margin:26px 0;}
+
+  .btn{appearance:none; border:1px solid var(--border); background:#17171a;
+    color:var(--fg); border-radius:8px; padding:12px 18px; min-height:46px;
+    cursor:pointer; font-size:13.5px; font-family:inherit;
+    transition:background .15s,border-color .15s;}
+  .btn:hover{background:#202024; border-color:#3a3a42;}
+  .btn:disabled{opacity:.4; cursor:not-allowed;}
+  .btn-p{background:var(--fg); color:#111; border-color:var(--fg); font-weight:700;}
+  .btn-p:hover{background:#fff; border-color:#fff;}
+  .row{display:flex; flex-wrap:wrap; gap:10px;}
+
+  .btn, .corner input{touch-action:manipulation;}
+
+  /* ── the prompt slot — one fixed place, one voice ───────────────────── */
+  .slot{min-height:44px; margin:18px 0 0; display:flex; align-items:center;}
+  .slot p{margin:0; font-size:13.5px; color:var(--dim); font-style:italic;}
+  .slot.on p{color:var(--fg);}
+
+  .banner{border:1px solid var(--bad); border-radius:8px; padding:12px 14px;
+    background:rgba(208,90,78,.07); color:var(--fg); font-size:13px; margin:0 0 16px;}
+
+  .stat{display:grid; grid-template-columns:1fr auto; gap:6px 14px;
+    padding:9px 0; border-bottom:1px solid var(--border); font-size:13.5px;}
+  .stat:last-child{border-bottom:0;}
+  .stat .n{color:var(--acc); font-weight:700; font-variant-numeric:tabular-nums;}
+
+  pre#out{white-space:pre-wrap; font-size:11.5px; color:var(--dim);
+    background:#0e0e10; border:1px solid var(--border); border-radius:8px;
+    padding:12px; max-height:50vh; overflow:auto;}
+
+  @media (prefers-reduced-motion:reduce){
+    .flake{animation-duration:.01ms;}
+    *{scroll-behavior:auto !important;}
+  }
+</style>
+</head>
+<body>
+
+<div class="mark">
+  <a class="logo" href="/" aria-label="Return to home"><img src="/logo.svg" alt="JF"></a>
+  <a class="back" href="/builds/">Back</a>
+</div>
+
+<div class="score" id="scoreChip">
+  <span class="k">Score</span><span class="v" id="scoreV">1000</span>
+</div>
+
+<div class="corner">
+  <input id="nameField" type="text" aria-label="Name" placeholder="name"
+         autocomplete="off" autocapitalize="off" spellcheck="false" tabindex="9">
+</div>
+
+<div class="wrap">
+
+  <div id="storageBanner" class="banner" hidden>
+    This device is not saving your progress. Your record will only last while
+    this tab is open.
+  </div>
+
+  <!-- ══ INTRO ═══════════════════════════════════════════════════════ -->
+  <section id="p-intro">
+    <header>
+      <p class="eyebrow">Three tasks</p>
+      <h1>The Test</h1>
+    </header>
+    <div class="card">
+      <p class="lede">Three tasks. One attempt at each — there are no retries, and
+        what happens is kept.</p>
+      <p class="lede">Your score starts at 1000. It can go down. It cannot go up.</p>
+      <p class="lede">The record stays on this device until you hand it in.</p>
+    </div>
+    <div class="row">
+      <button class="btn btn-p" id="beginBtn">Begin</button>
+    </div>
+    <p class="tiny" style="margin-top:14px;">Nothing here is timed.</p>
+  </section>
+
+  <!-- ══ REFUSED ═════════════════════════════════════════════════════ -->
+  <section id="p-refused" hidden>
+    <header><p class="eyebrow">Spent</p><h1>That one is done.</h1></header>
+    <div class="card">
+      <p class="lede" id="refusedBody">You have already had your attempt at this task.</p>
+    </div>
+    <div class="row"><button class="btn btn-p" id="refusedNext">Go on</button></div>
+  </section>
+
+  <!-- ══ STAGE PANES ═════════════════════════════════════════════════
+       Phase 0: stubs. Every [data-stub] element is scaffolding and comes out
+       as each stage is built — they are named after what they exercise in the
+       recorder, which makes them signposts, which is exactly why they cannot
+       survive into a shipped stage. -->
+  <section id="p1" hidden>
+    <header><p class="eyebrow">Task one</p><h1 id="h1-1">The table</h1></header>
+    <div class="card"><div id="body1"></div></div>
+    <div class="row" data-stub>
+      <button class="btn" data-stub data-act="sanctioned">move</button>
+      <button class="btn" data-stub data-act="fail">check</button>
+      <button class="btn" data-stub data-act="off">aside</button>
+      <button class="btn" data-stub data-act="escape">through</button>
+    </div>
+    <div class="slot" id="slot1"><p></p></div>
+    <div class="row" style="margin-top:14px;">
+      <button class="btn" id="exit1" hidden></button>
+    </div>
+  </section>
+
+  <section id="p2" hidden>
+    <header><p class="eyebrow">Task two</p><h1 id="h1-2">The run</h1></header>
+    <div class="card"><div id="body2"></div></div>
+    <div class="row" data-stub>
+      <button class="btn" data-stub data-act="sanctioned">move</button>
+      <button class="btn" data-stub data-act="fail">check</button>
+      <button class="btn" data-stub data-act="off">aside</button>
+      <button class="btn" data-stub data-act="escape">through</button>
+    </div>
+    <div class="slot" id="slot2"><p></p></div>
+    <div class="row" style="margin-top:14px;">
+      <button class="btn" id="exit2" hidden></button>
+    </div>
+  </section>
+
+  <section id="p3" hidden>
+    <header><p class="eyebrow">Task three</p><h1 id="h1-3">The room</h1></header>
+    <div class="card"><div id="body3"></div></div>
+    <div class="row" data-stub>
+      <button class="btn" data-stub data-act="sanctioned">move</button>
+      <button class="btn" data-stub data-act="fail">check</button>
+      <button class="btn" data-stub data-act="off">aside</button>
+      <button class="btn" data-stub data-act="escape">through</button>
+    </div>
+    <div class="slot" id="slot3"><p></p></div>
+    <div class="row" style="margin-top:14px;">
+      <button class="btn" id="exit3" hidden></button>
+    </div>
+  </section>
+
+  <!-- ══ END / DEBRIEF ═══════════════════════════════════════════════ -->
+  <section id="p-end" hidden>
+    <header><p class="eyebrow">Done</p><h1>What that measured</h1></header>
+    <div class="card" id="debriefBody"></div>
+    <div class="card">
+      <h2>Your record</h2>
+      <div id="headlineBody"></div>
+    </div>
+    <div class="row">
+      <button class="btn btn-p" id="dlBtn">Download the record</button>
+      <button class="btn" id="copyBtn">Copy it</button>
+    </div>
+    <p class="tiny" id="exportNote" style="margin-top:12px;">
+      The record is on this device only. Hand it in and it exists somewhere else too.
+    </p>
+  </section>
+
+  <pre id="out" hidden></pre>
+
+</div>
+
+<script>
+/* ══════════════════════════════════════════════════════════════════════
+   THE TEST — an instrument for extrapolational thinking.
+
+   ┌────────────────────────────────────────────────────────────────────┐
+   │ THE INVARIANT: AFFORDANCE PRESENT, SIGNPOST ABSENT.                │
+   │                                                                    │
+   │ Every way out of every task is mechanically live in frame one and  │
+   │ is named NOWHERE — not in body text, a label, a placeholder, alt,  │
+   │ title, aria-label, a cursor change, a hover state, a prompt line,  │
+   │ or a sound. A student who tries it finds it works. A student who   │
+   │ never tries never learns it existed. That is the whole difference  │
+   │ between an instrument and a riddle.                                │
+   │                                                                    │
+   │ If you are about to add a word that helps, you are about to break  │
+   │ the thing. `?selftest=1` greps the rendered DOM for exactly this.  │
+   └────────────────────────────────────────────────────────────────────┘
+
+   Two distinctions the rest of the code depends on:
+
+   · constraint_break vs off_path. Solving the matchstick equation is a
+     constraint break INSIDE the sanctioned action set — that is Knoblich's
+     measure. Keeping a matchstick is a NON-OFFERED action — that is this
+     instrument's measure. Conflating them would read every successful
+     solver as an extrapolator.
+
+   · The ladder's L4 may name the route a task cannot be finished without.
+     It may never name an affordance whose payoff is in a later task.
+
+   Honesty rule, absolute: no sentence in the app's own voice is untrue.
+   The one falsehood in the build is the plaque in task three, which is a
+   rule quoted inside a scenario, and it is disclosed in the debrief.
+   ══════════════════════════════════════════════════════════════════════ */
+
+/* ══ CONSTANTS + STORAGE ═════════════════════════════════════════════ */
+
+const LS = {
+  session: 'thetest.session.v1',
+  log:     'thetest.log.v1',
+  done:    'thetest.done.v1',    // write-once attempt ledger, separate on purpose
+};
+
+/* Lifted from /builds/derby/. Valid JSON of the wrong shape is the dangerous
+   corruption: it parses, then explodes on .map() or Object.keys() at boot. */
+function ls(k, d){
+  try{
+    const v = localStorage.getItem(k);
+    if (v === null) return d;
+    const parsed = JSON.parse(v);
+    if (Array.isArray(d) !== Array.isArray(parsed)) return d;
+    if (!Array.isArray(d) && (parsed === null || typeof parsed !== 'object')) return d;
+    return parsed;
+  }catch(e){ return d; }
+}
+function save(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){ STORAGE_OK = false; } }
+
+let STORAGE_OK = true;
+function probeStorage(){
+  try{
+    const k = 'thetest.probe';
+    localStorage.setItem(k, '1');
+    if (localStorage.getItem(k) !== '1') throw new Error('readback');
+    localStorage.removeItem(k);
+    return true;
+  }catch(e){ return false; }
+}
+
+const QS   = new URLSearchParams(location.search);
+const FAST = QS.get('fast') === '1';        // scales ladder thresholds for testing
+const SELFTEST = QS.get('selftest') === '1';
+
+const now  = () => Date.now();
+const rid  = () => Math.random().toString(36).slice(2, 6);
+const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+
+/* ══ RECORDER ════════════════════════════════════════════════════════
+   Stage code only ever calls rec.ev(). It never knows a sink exists, which
+   is what lets the destination change later without touching a stage. */
+
+const EV = {
+  session_start:'session_start', session_resume:'session_resume',
+  session_abandon:'session_abandon',
+  stage_open:'stage_open', stage_resume:'stage_resume', stage_close:'stage_close',
+  input:'input', sanctioned:'sanctioned', fail:'fail',
+  off_path:'off_path', constraint_break:'constraint_break', escape:'escape',
+  ladder:'ladder', penalty:'penalty', idle:'idle', visibility:'visibility',
+  name_edit:'name_edit', storage_fail:'storage_fail', debug:'debug',
+  export:'export', debrief:'debrief', telemetry:'telemetry',
+};
+
+const LIFE = rid();                 // per page-load, so pt values are comparable
+const CAP  = 4000;                  // events kept in localStorage
+const KEEP = { escape:1, off_path:1, constraint_break:1, ladder:1, penalty:1,
+               stage_open:1, stage_resume:1, stage_close:1,
+               session_start:1, session_resume:1, storage_fail:1, export:1 };
+
+const rec = (function(){
+  const sinks = [];
+  let queue = [];
+  let dropped = 0;
+  let seq = 0;
+
+  function envelope(type, stage, d){
+    const st = stage != null ? SESSION.stages[stage] : null;
+    return {
+      i: ++seq,
+      sid: SESSION.id,
+      life: LIFE,
+      t: now(),
+      pt: Math.round(performance.now()),
+      am: st ? Math.round(st.activeMs) : 0,
+      stage: stage == null ? 0 : stage,
+      type,
+      lvl: st ? st.lvl : 0,
+      sc: SESSION.score,
+      d: d || null,
+    };
+  }
+
+  const memSink = {
+    name:'mem', ready:true, all:[],
+    write(batch){ for (const e of batch) this.all.push(e); },
+  };
+
+  const localSink = {
+    name:'local', ready:true,
+    write(batch){
+      let arr = ls(LS.log, []);
+      for (const e of batch) arr.push(e);
+      if (arr.length > CAP){
+        // drop the cheapest events first, never a measured one
+        const keep = [], spill = [];
+        for (const e of arr) (KEEP[e.type] ? keep : spill).push(e);
+        const room = Math.max(0, CAP - keep.length);
+        const tail = spill.slice(Math.max(0, spill.length - room));
+        dropped += spill.length - tail.length;
+        arr = keep.concat(tail).sort((a,b) => a.i - b.i);
+      }
+      save(LS.log, arr);
+    },
+  };
+
+  function flush(){
+    if (!queue.length) return;
+    const batch = queue; queue = [];
+    for (const s of sinks) { try { s.write(batch); } catch(e){} }
+  }
+
+  return {
+    use(s){ sinks.push(s); },
+    ev(type, stage, d){
+      const e = envelope(type, stage, d);
+      queue.push(e);
+      if (KEEP[type]) flush();
+      return e;
+    },
+    flush,
+    seed(n){ seq = n; },
+    seq(){ return seq; },
+    dropped(){ return dropped; },
+    all(){ return memSink.all.slice(); },
+    stored(){ return ls(LS.log, []); },
+    sinks: { mem: memSink, local: localSink },
+  };
+})();
+
+/* Every headline number is read out of the log, never out of live state.
+   §8.14 verifies that by recomputing from localStorage after a reload — if
+   the two ever disagree, the log is missing a field. Fix the log. */
+function headline(log){
+  const ev = log || rec.stored();
+  const out = {
+    firstStageBroken: null,
+    secToFirstOffPath: {1:null, 2:null, 3:null},
+    ladderAtBreak:     {1:null, 2:null, 3:null},
+    actionsBeforeBreak:{1:null, 2:null, 3:null},
+    brokeAtL0: 0,
+    escapeKinds: {1:[], 2:[], 3:[]},
+    carriedStick: false,
+    totalActiveMs: 0,
+  };
+  const ACTION = {input:1, sanctioned:1, fail:1, off_path:1, constraint_break:1};
+
+  for (const n of [1,2,3]){
+    const inStage = ev.filter(e => e.stage === n);
+    const open    = inStage.find(e => e.type === EV.stage_open);
+    const esc     = inStage.filter(e => e.type === EV.escape);
+    const first   = inStage.find(e => e.type === EV.off_path || e.type === EV.escape);
+
+    if (open && first) out.secToFirstOffPath[n] = +(((first.am - open.am) / 1000).toFixed(1));
+
+    if (esc.length){
+      out.ladderAtBreak[n] = esc[0].lvl;
+      out.actionsBeforeBreak[n] = inStage.filter(e => ACTION[e.type] && e.i < esc[0].i).length;
+      out.escapeKinds[n] = [...new Set(esc.map(e => (e.d && e.d.kind) || 'escape'))];
+      if (esc[0].lvl === 0) out.brokeAtL0++;
+      if (out.firstStageBroken === null) out.firstStageBroken = n;
+    } else {
+      const lv = inStage.filter(e => e.type === EV.ladder);
+      out.ladderAtBreak[n] = lv.length ? Math.max(...lv.map(e => (e.d && e.d.lvl) || 0)) : 0;
+      out.actionsBeforeBreak[n] = inStage.filter(e => ACTION[e.type]).length;
+    }
+    const closes = inStage.filter(e => e.type === EV.stage_close);
+    if (closes.length) out.totalActiveMs += closes[closes.length - 1].am;
+  }
+  out.carriedStick = ev.some(e => e.type === EV.off_path && e.d && e.d.kind === 'pocket_stick');
+  return out;
+}
+
+/* ══ SESSION ═════════════════════════════════════════════════════════ */
+
+function freshStage(){
+  return { status:'locked', outcome:null, openedAt:0, closedAt:0,
+           lvl:0, lvlAt:{}, lastLadderAt:0, activeMs:0, idleFrom:0,
+           actions:0, fails:0, w:null };
+}
+
+function freshSession(){
+  return {
+    v:1,
+    id: 'tt-' + now().toString(36) + '-' + rid(),
+    startedAt: now(), lastSeenAt: now(),
+    name: '', score: 1000, stage: 0,
+    carry: { sticks: [] },
+    stages: { 1:freshStage(), 2:freshStage(), 3:freshStage() },
+    finished: false,
+    seq: 0,
+  };
+}
+
+let SESSION = freshSession();
+
+let saveTimer = null;
+function saveSession(force){
+  SESSION.lastSeenAt = now();
+  SESSION.seq = rec.seq();
+  if (force){ clearTimeout(saveTimer); saveTimer = null; save(LS.session, SESSION); return; }
+  if (saveTimer) return;
+  saveTimer = setTimeout(() => { saveTimer = null; save(LS.session, SESSION); }, 250);
+}
+
+function bootSession(){
+  const stored = ls(LS.session, null);
+  const resumed = stored && stored.v === 1 && stored.id;
+  if (resumed){
+    SESSION = stored;
+    for (const n of [1,2,3]) SESSION.stages[n] = Object.assign(freshStage(), SESSION.stages[n]);
+    rec.seed(SESSION.seq || 0);
+    rec.ev(EV.session_resume, null, { life: LIFE });
+  } else {
+    SESSION = freshSession();
+    save(LS.done, {});
+    save(LS.log, []);
+    rec.ev(EV.session_start, null, { life: LIFE, fast: FAST });
+  }
+  if (!STORAGE_OK) rec.ev(EV.storage_fail, null, null);
+  return resumed;
+}
+
+/* ══ ACTIVE TIME ═════════════════════════════════════════════════════
+   Never a mount-time t0 minus now — a coffee break would read as idle and
+   fire the last prompt at a student who simply walked away. Accumulate. */
+
+let clockLast = performance.now();
+function pumpClock(){
+  const t = performance.now();
+  const d = Math.min(1000, t - clockLast);
+  clockLast = t;
+  const n = SESSION.stage;
+  if (!document.hidden && n && SESSION.stages[n] && SESSION.stages[n].status === 'open'){
+    SESSION.stages[n].activeMs += d;
+    ladder.check(n);
+  }
+}
+setInterval(pumpClock, 250);
+
+/* ══ SCORE ═══════════════════════════════════════════════════════════ */
+
+const scoreV = document.getElementById('scoreV');
+
+function penalize(points, why, stage){
+  if (points <= 0) return;
+  SESSION.score = clamp(SESSION.score - points, 0, 1000);
+  scoreV.textContent = SESSION.score;
+  rec.ev(EV.penalty, stage ?? SESSION.stage, { points, why });
+  const f = document.createElement('div');
+  f.className = 'flake';
+  f.textContent = '−' + points;     // the number, and nothing else
+  document.body.appendChild(f);
+  setTimeout(() => f.remove(), 1200);
+  saveSession();
+}
+
+const COST = { fail:5, off:25, l2:20, l3:40, l4:80 };
+
+/* ══ THE LADDER ══════════════════════════════════════════════════════ */
+
+const LADDER_TEXT = {
+  1: ['',
+      'Take your time.',
+      'Not everything on this table is fixed in place.',
+      'A shape you are reading as one piece may be more than one piece.',
+      'A plus sign is two matchsticks. So is an equals sign. The three whites are not a block.'],
+  2: ['',
+      'Take your time.',
+      'The wall will not give. Not at any speed.',
+      'The way to the flag may not point at the flag.',
+      'The course continues behind the start line.'],
+  3: ['',
+      'Take your time.',
+      'The rule is the examiner’s. It is not the room’s.',
+      'The answer may not be among the options you were given.',
+      'Nothing here requires you to choose a door.'],
+};
+const LADDER_COST = [0, 0, COST.l2, COST.l3, COST.l4];
+const IDLE_MS  = [0, 45000, 90000, 180000, 300000].map(v => FAST ? v / 30 : v);
+const FAILS_AT = [0, 3, 6, 10, 15];
+const MIN_GAP  = FAST ? 500 : 15000;
+
+const ladder = {
+  arm(n){
+    const st = SESSION.stages[n];
+    if (!st.idleFrom) st.idleFrom = st.activeMs;
+    this.paint(n);
+  },
+  poke(n){                              // any input resets the idle clock
+    SESSION.stages[n].idleFrom = SESSION.stages[n].activeMs;
+  },
+  check(n){
+    const st = SESSION.stages[n];
+    if (st.status !== 'open' || st.lvl >= 4) return;
+    const next = st.lvl + 1;
+    const idle = st.activeMs - (st.idleFrom || 0);
+    const byIdle  = idle >= IDLE_MS[next];
+    const byFails = st.fails >= FAILS_AT[next];
+    if (!byIdle && !byFails) return;
+    if (st.lastLadderAt && (st.activeMs - st.lastLadderAt) < MIN_GAP) return;
+    this.fire(n, next, byIdle ? 'idle' : 'fails');
+  },
+  fire(n, lvl, why){
+    const st = SESSION.stages[n];
+    st.lvl = lvl;
+    st.lvlAt[lvl] = Math.round(st.activeMs);
+    st.lastLadderAt = st.activeMs;
+    st.idleFrom = st.activeMs;
+    rec.ev(EV.ladder, n, { lvl, why });
+    if (LADDER_COST[lvl]) penalize(LADDER_COST[lvl], 'ladder' + lvl, n);
+    this.paint(n);
+    if (lvl >= 3) revealExit(n);
+    saveSession();
+  },
+  paint(n){
+    const slot = document.getElementById('slot' + n);
+    if (!slot) return;
+    const st = SESSION.stages[n];
+    slot.querySelector('p').textContent = LADDER_TEXT[n][st.lvl] || '';
+    slot.classList.toggle('on', st.lvl > 0);
+  },
+};
+
+/* The sanctioned way to give up. Hidden until L3 so the task is never a hard
+   wall, and worded as leaving rather than as an alternative worth finding. */
+function revealExit(n){
+  const b = document.getElementById('exit' + n);
+  if (!b || !b.hidden) return;
+  b.textContent = STAGES[n].exitLabel;
+  b.hidden = false;
+}
+
+/* ══ STAGE SEAM ══════════════════════════════════════════════════════
+   One shape per stage. mount(w) takes the work state whether it is fresh or
+   restored, so there is no second code path to drift out of sync — that is
+   the whole reload-resume mechanism. */
+
+function stubStage(n, title, exitLabel){
+  return {
+    n, paneId: 'p' + n, exitLabel,
+    fresh(){ return { acts:0, _lives:0 }; },
+    mount(w){
+      document.getElementById('body' + n).innerHTML =
+        '<p class="lede">' + title + '</p>' +
+        '<p class="muted">Attempts so far: <b>' + w.acts + '</b></p>';
+    },
+    unmount(){},
+    tick(){},
+    onKey(){ return false; },
+  };
+}
+
+const STAGES = {
+  1: stubStage(1, 'A table, an equation and a row of coins.', 'Leave the table'),
+  2: stubStage(2, 'A course, a wall, and a flag past it.',    'Stop here'),
+  3: stubStage(3, 'A room and two doors.',                    'Accept the result'),
+};
+
+/* ══ EVENT HELPERS the stages call ═══════════════════════════════════ */
+
+function act(n, kind, d){
+  const st = SESSION.stages[n];
+  st.actions++;
+  ladder.poke(n);
+  rec.ev(EV.sanctioned, n, Object.assign({ kind }, d));
+  saveSession();
+}
+function fail(n, kind, d){
+  const st = SESSION.stages[n];
+  st.actions++; st.fails++;
+  ladder.poke(n);
+  rec.ev(EV.fail, n, Object.assign({ kind }, d));
+  penalize(COST.fail, kind, n);
+  ladder.check(n);
+  saveSession();
+}
+function offPath(n, kind, d){
+  const st = SESSION.stages[n];
+  st.actions++;
+  ladder.poke(n);
+  rec.ev(EV.off_path, n, Object.assign({ kind }, d));
+  penalize(COST.off, kind, n);
+  saveSession();
+}
+function constraintBreak(n, kind, d){
+  ladder.poke(n);
+  rec.ev(EV.constraint_break, n, Object.assign({ kind }, d));
+  saveSession();
+}
+function escape(n, kind, d){
+  rec.ev(EV.escape, n, Object.assign({ kind }, d));
+  rec.flush();
+  saveSession(true);
+}
+
+/* ══ ROUTER ══════════════════════════════════════════════════════════ */
+
+const PANES = ['p-intro','p-refused','p1','p2','p3','p-end'];
+function showPane(id){
+  for (const p of PANES) document.getElementById(p).hidden = (p !== id);
+  window.scrollTo(0, 0);
+}
+
+function enterStage(n){
+  const DONE = ls(LS.done, {});
+  const st = SESSION.stages[n];
+
+  if (DONE[n] && st.status !== 'open') return refuse(n);
+
+  if (!DONE[n]){
+    // The ledger is written the instant the task becomes playable — not on
+    // completion. A reload one second in has still spent the attempt, which
+    // is what makes "one attempt" true rather than a claim.
+    DONE[n] = now(); save(LS.done, DONE);
+    st.status = 'open';
+    st.openedAt = now();
+    st.w = STAGES[n].fresh();
+    SESSION.stage = n;
+    saveSession(true);
+    rec.ev(EV.stage_open, n, null);
+  } else {
+    st.w = st.w || STAGES[n].fresh();
+    st.w._lives = (st.w._lives || 0) + 1;
+    SESSION.stage = n;
+    saveSession(true);
+    rec.ev(EV.stage_resume, n, { lives: st.w._lives });
+  }
+
+  showPane('p' + n);
+  STAGES[n].mount(st.w);
+  ladder.arm(n);
+}
+
+function closeStage(n, outcome){
+  const st = SESSION.stages[n];
+  if (st.status !== 'open') return;
+  st.status = 'closed';
+  st.outcome = outcome;
+  st.closedAt = now();
+  STAGES[n].unmount();
+  rec.ev(EV.stage_close, n, { outcome });
+  rec.flush();
+  SESSION.stage = 0;
+  saveSession(true);
+  if (n < 3) enterStage(n + 1); else finish();
+}
+
+function refuse(n){
+  document.getElementById('refusedBody').textContent =
+    'You have already had your attempt at task ' + n + '.';
+  document.getElementById('refusedNext').onclick = () => {
+    if (n < 3) enterStage(n + 1); else finish();
+  };
+  showPane('p-refused');
+}
+
+function finish(){
+  SESSION.finished = true;
+  SESSION.stage = 0;
+  saveSession(true);
+  rec.ev(EV.debrief, null, null);
+  rec.flush();
+  renderDebrief();
+  showPane('p-end');
+}
+
+/* ══ DEBRIEF ═════════════════════════════════════════════════════════ */
+
+function renderDebrief(){
+  const h = headline();
+  const esc = n => h.escapeKinds[n].length ? h.escapeKinds[n].join(', ') : '—';
+
+  document.getElementById('debriefBody').innerHTML =
+    '<p>Each task had a way through that nothing on the screen mentioned. ' +
+    'Every one of them worked from the first second. The measure was whether ' +
+    'you tried one, and how long it took you to.</p>' +
+    '<p>The score was the test. Every point it cost you was the instrument ' +
+    'recording the thing it came for — which is why it only ever went down.</p>' +
+    '<p class="muted">Task three’s plaque said one door passes and one fails. ' +
+    'Both failed. That was the one untrue sentence in here, and it belonged to ' +
+    'the examiner in the room, not to this page.</p>';
+
+  document.getElementById('headlineBody').innerHTML =
+    row('First task you broke', h.firstStageBroken === null ? 'none' : h.firstStageBroken) +
+    row('Score', SESSION.score) +
+    row('Broke with no prompting', h.brokeAtL0 + ' of 3') +
+    '<hr class="rule">' +
+    [1,2,3].map(n =>
+      row('Task ' + n + ' — seconds to first step off the path',
+          h.secToFirstOffPath[n] === null ? '—' : h.secToFirstOffPath[n] + 's') +
+      row('Task ' + n + ' — prompt level reached', 'L' + h.ladderAtBreak[n]) +
+      row('Task ' + n + ' — actions first', h.actionsBeforeBreak[n]) +
+      row('Task ' + n + ' — way out found', esc(n))
+    ).join('<hr class="rule">');
+
+  function row(k, v){
+    return '<div class="stat"><span>' + k + '</span><span class="n">' + v + '</span></div>';
+  }
+}
+
+/* ══ EXPORT ══════════════════════════════════════════════════════════ */
+
+function ndjson(){
+  const log = rec.stored().length ? rec.stored() : rec.all();
+  const head = { header:1, sid:SESSION.id, v:1, startedAt:SESSION.startedAt,
+                 name:SESSION.name, score:SESSION.score, dropped:rec.dropped(),
+                 storageOk:STORAGE_OK, headline:headline(log) };
+  return [head].concat(log).map(o => JSON.stringify(o)).join('\n') + '\n';
+}
+
+function download(){
+  const text = ndjson();
+  const blob = new Blob([text], { type:'application/x-ndjson' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url; a.download = 'the-test-' + SESSION.id + '.ndjson';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  rec.ev(EV.export, null, { via:'download', bytes:text.length });
+  rec.flush();
+}
+
+async function copyOut(btn){
+  const text = ndjson();
+  let ok = false;
+  try { await navigator.clipboard.writeText(text); ok = true; }
+  catch(e){
+    try{
+      const ta = document.createElement('textarea');
+      ta.value = text; ta.setAttribute('readonly','');
+      ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      ok = document.execCommand('copy');
+      ta.remove();
+    }catch(e2){ ok = false; }
+  }
+  btn.textContent = ok ? 'Copied' : 'Select it below';
+  if (!ok){ const o = document.getElementById('out'); o.hidden = false; o.textContent = text; }
+  setTimeout(() => { btn.textContent = 'Copy it'; }, 2200);
+  rec.ev(EV.export, null, { via:'clipboard', ok, bytes:text.length });
+  rec.flush();
+}
+
+/* ══ INPUT ═══════════════════════════════════════════════════════════ */
+
+const HELD = new Set();
+const isFormControl = el => el && /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName);
+
+document.addEventListener('keydown', e => {
+  if (isFormControl(e.target)) return;
+  if (e.metaKey || e.ctrlKey || e.altKey) return;
+  const n = SESSION.stage;
+  if (!n || SESSION.stages[n].status !== 'open') return;
+  HELD.add(e.key);
+  if (STAGES[n].onKey(e, true)) e.preventDefault();
+});
+document.addEventListener('keyup', e => {
+  HELD.delete(e.key);
+  const n = SESSION.stage;
+  if (n && SESSION.stages[n].status === 'open') STAGES[n].onKey(e, false);
+});
+/* Without these three, holding a key and then clicking the corner field
+   leaves the key held forever. It will happen. */
+window.addEventListener('blur', () => HELD.clear());
+document.addEventListener('focusin', e => { if (isFormControl(e.target)) HELD.clear(); });
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden){ HELD.clear(); rec.flush(); saveSession(true); }
+  rec.ev(EV.visibility, SESSION.stage || null, { hidden: document.hidden });
+});
+window.addEventListener('pagehide', () => { rec.flush(); saveSession(true); });
+
+/* ══ THE CORNER FIELD ════════════════════════════════════════════════
+   Through tasks one and two this does nothing except get recorded. In task
+   three it is wired into the room. It is never labelled, never focused for
+   you, and never referred to. */
+const nameField = document.getElementById('nameField');
+let nameEdits = [];
+function commitName(){
+  const v = nameField.value;
+  if (v === SESSION.name) return;
+  nameEdits.push({ t: now(), v });
+  SESSION.name = v;
+  rec.ev(EV.name_edit, SESSION.stage || null, { value: v, edits: nameEdits.length });
+  saveSession();
+  if (typeof onNameCommit === 'function') onNameCommit(v, nameEdits);
+}
+nameField.addEventListener('change', commitName);
+nameField.addEventListener('blur', commitName);
+nameField.addEventListener('keydown', e => { if (e.key === 'Enter') { commitName(); nameField.blur(); } });
+let onNameCommit = null;    // task three installs a handler here
+
+/* ══ BOOT ════════════════════════════════════════════════════════════ */
+
+STORAGE_OK = probeStorage();
+rec.use(rec.sinks.mem);
+if (STORAGE_OK) rec.use(rec.sinks.local);
+
+const resumed = bootSession();
+scoreV.textContent = SESSION.score;
+nameField.value = SESSION.name || '';
+document.getElementById('storageBanner').hidden = STORAGE_OK;
+
+setInterval(() => rec.flush(), 1000);
+
+document.getElementById('beginBtn').onclick = () => enterStage(1);
+document.getElementById('dlBtn').onclick    = download;
+document.getElementById('copyBtn').onclick  = e => copyOut(e.currentTarget);
+for (const n of [1,2,3]){
+  document.getElementById('exit' + n).onclick = () => closeStage(n, 'complied');
+}
+
+/* Phase 0 scaffolding — the stub buttons. Removed stage by stage. */
+document.querySelectorAll('[data-act]').forEach(b => {
+  b.addEventListener('click', () => {
+    const n = SESSION.stage; if (!n) return;
+    const st = SESSION.stages[n];
+    st.w.acts++;
+    STAGES[n].mount(st.w);
+    const a = b.dataset.act;
+    if (a === 'sanctioned') act(n, 'stub_move');
+    else if (a === 'fail')  fail(n, 'stub_check');
+    else if (a === 'off')   offPath(n, 'stub_aside');
+    else if (a === 'escape'){ escape(n, 'stub_through'); closeStage(n, 'broke'); }
+  });
+});
+
+/* Resume lands you back where you were, including mid-task. */
+if (resumed && !SESSION.finished){
+  const open = [1,2,3].find(n => SESSION.stages[n].status === 'open');
+  if (open) enterStage(open);
+  else {
+    const next = [1,2,3].find(n => SESSION.stages[n].status === 'locked');
+    if (next && SESSION.stages[next === 1 ? 1 : next - 1].status === 'closed') enterStage(next);
+    else if (next === 1) showPane('p-intro');
+    else finish();
+  }
+} else if (resumed && SESSION.finished){
+  renderDebrief();
+  showPane('p-end');
+}
+
+window.__test = { SESSION, rec, headline, LS, ls, ladder, STAGES, HELD,
+                  get session(){ return SESSION; } };
+</script>
+</body>
+</html>
