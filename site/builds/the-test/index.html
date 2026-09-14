@@ -304,7 +304,7 @@
   <section id="p1" hidden>
     <header><p class="eyebrow">Task one</p><h1 id="h1-1">The table</h1></header>
     <p class="lede" id="t1Ask">Make both lines true. Make every coin touch exactly three others.</p>
-    <p class="tiny" id="t1How">Drag a matchstick or a coin.</p>
+    <p class="tiny" id="t1How">Drag a matchstick or a coin. R turns a matchstick.</p>
 
     <div class="room1" id="room1">
       <div class="room1-inner" id="room1In">
@@ -997,6 +997,7 @@ const STAGE1 = {
   tick(){},
   onKey(e, down){
     if (!down) return false;
+    if (e.key === 'r' || e.key === 'R') return this.rotate();
     const el = document.activeElement;
     if (!el || !el.classList || !el.classList.contains('stick')) return false;
     const d = { ArrowLeft:[-1,0], ArrowRight:[1,0], ArrowUp:[0,-1], ArrowDown:[0,1] }[e.key];
@@ -1040,10 +1041,12 @@ const STAGE1 = {
     const f = document.getElementById('felt');
     return x >= 24 && x <= 536 && y >= 20 && y <= 330;
   },
-  overStrip(x, y){
-    const st = document.getElementById('strip').getBoundingClientRect();
-    const a = this.toLocal(st.left, st.top), b = this.toLocal(st.right, st.bottom);
-    return y >= a.y - 8 && y <= b.y + 8 && x >= a.x - 8 && x <= b.x + 8;
+  /* The coins are loose on the felt now; there is no strip to be over. This
+     used to read a row of slots that no longer exists, and calling
+     getBoundingClientRect on the missing element threw inside every single
+     stick drop — so drops silently did nothing. */
+  overCoins(x, y){
+    return this.w.coins.some(c => Math.hypot(c.x - x, c.y - y) < T1.CR + 10);
   },
 
   /* ── build ──────────────────────────────────────────────────────── */
@@ -1154,7 +1157,9 @@ const STAGE1 = {
     el.addEventListener('pointerdown', e => {
       try { el.setPointerCapture(e.pointerId); } catch(err){}
       const p = this.toLocal(e.clientX, e.clientY), c = this.centreOf(s);
-      drag = { dx:p.x - c.x, dy:p.y - c.y, moved:false, rot:c.r || 0 };
+      drag = { dx:p.x - c.x, dy:p.y - c.y, moved:false,
+               orient: s.eq ? this.orientOf(s.slot) : (s.rot === 90 ? 'h' : 'v') };
+      this.drag = drag; this.dragEl = el; this.dragStick = s; this.last = s.id;
       el.classList.add('lift');
       this.showGhosts();
       e.preventDefault();
@@ -1163,49 +1168,47 @@ const STAGE1 = {
       if (!drag) return;
       drag.moved = true;
       const p = this.toLocal(e.clientX, e.clientY);
-      const gx = p.x - drag.dx, gy = p.y - drag.dy;
-      const t = this.nearestSlot(gx, gy, s);
-      // the stick takes the pose of the place it is about to land in, so the
-      // way to lay one flat is simply to carry it to a flat place
-      const rot = t ? (T1.SLOT[t.slot].r || 0) : drag.rot;
-      el.style.transform = 'translate(' + (gx - T1.TH/2) + 'px,' + (gy - T1.LEN/2) + 'px) rotate(' + rot + 'deg)';
-      this.markGhost(t);
+      drag.x = p.x - drag.dx; drag.y = p.y - drag.dy;
+      this.paintDrag();
     });
     const up = e => {
       if (!drag) return;
-      const moved = drag.moved; drag = null;
+      const moved = drag.moved, orient = drag.orient;
+      drag = null; this.drag = null;
       el.classList.remove('lift');
       this.clearGhosts();
       if (!moved){ this.placeEl(el, s); return; }
       const p = this.toLocal(e.clientX, e.clientY);
-      this.place(s, p.x, p.y);
+      this.place(s, p.x - (0), p.y, orient);
     };
     el.addEventListener('pointerup', up);
     el.addEventListener('pointercancel', () => {
-      drag = null; el.classList.remove('lift'); this.clearGhosts(); this.placeEl(el, s);
+      drag = null; this.drag = null; el.classList.remove('lift');
+      this.clearGhosts(); this.placeEl(el, s);
     });
   },
 
   /* Where a released stick ends up. Every branch here is available from the
      first frame and none of them is mentioned anywhere on the page. */
-  place(s, x, y){
+  place(s, x, y, orient){
     const from = { eq:s.eq, col:s.col, slot:s.slot };
+    this.last = s.id;
 
     if (!this.onFelt(x, y)){
       // Off the felt. It stays exactly where it was put and it is kept.
-      s.eq = null; s.x = x; s.y = y; s.rot = 0;
+      s.eq = null; s.x = x; s.y = y; s.rot = orient === 'h' ? 90 : 0;
       if (!SESSION.carry.sticks.includes(s.id)) SESSION.carry.sticks.push(s.id);
       offPath(1, 'pocket_stick', { id:s.id, from });
       return this.after(s);
     }
 
-    if (this.overStrip(x, y)){
-      s.eq = null; s.x = x; s.y = y; s.rot = 90;
+    if (this.overCoins(x, y)){
+      s.eq = null; s.x = x; s.y = y; s.rot = orient === 'h' ? 90 : 0;
       offPath(1, 'stick_on_coin', { id:s.id, from });
       return this.after(s);
     }
 
-    const t = this.nearestSlot(x, y, s);
+    const t = this.nearestSlot(x, y, s, orient);
     if (!t){
       if (from.eq){ s.eq = from.eq; s.col = from.col; s.slot = from.slot; }
       return this.after(s);
@@ -1336,6 +1339,40 @@ const STAGE1 = {
   },
   clearRest(){ if (this.rest) this.rest.classList.remove('on'); },
 
+  paintDrag(){
+    const d = this.drag, el = this.dragEl, s = this.dragStick;
+    if (!d || !el) return;
+    const t = this.nearestSlot(d.x, d.y, s, d.orient);
+    const rot = d.orient === 'h' ? 90 : 0;
+    el.style.transform = 'translate(' + (d.x - T1.TH/2) + 'px,' +
+      (d.y - T1.LEN/2) + 'px) rotate(' + rot + 'deg)';
+    this.markGhost(t);
+  },
+
+  /* R turns the stick: the one in your hand while you carry it, or the last
+     one you touched, in place. Telling someone which key turns a matchstick
+     is interface, not a hint — it takes noise out of the measure. */
+  rotate(){
+    if (this.drag){
+      this.drag.orient = this.drag.orient === 'h' ? 'v' : 'h';
+      this.paintDrag();
+      return true;
+    }
+    const s = this.last && this.w.sticks.find(x => x.id === this.last);
+    if (!s || !s.eq) return false;
+    const want = this.orientOf(s.slot) === 'h' ? 'v' : 'h';
+    const free = this.slotsFor(want).find(sl =>
+      !this.w.sticks.some(o => o !== s && o.eq === s.eq && o.col === s.col && o.slot === sl));
+    if (!free) return false;
+    const from = { eq:s.eq, col:s.col, slot:s.slot };
+    s.slot = free;
+    act(1, 'turn_stick', { id:s.id, from, to:{ eq:s.eq, col:s.col, slot:free } });
+    this.renderSticks();
+    this.check(false);
+    saveSession();
+    return true;
+  },
+
   showGhosts(){
     if (!this.ghost){
       this.ghost = document.createElement('div');
@@ -1354,14 +1391,26 @@ const STAGE1 = {
   },
   clearGhosts(){ if (this.ghost) this.ghost.classList.remove('on'); },
 
-  nearestSlot(x, y, self){
-    let best = null, bestD = 34;
+  /* An upright and the two bar positions sit within sixteen pixels of each
+     other at the same x, so "nearest place" could never tell them apart: a
+     stick carried down to be laid flat snapped back to upright and quietly
+     left a plus where an equals was meant. So the stick you are carrying has
+     an orientation, you change it with R, and only the places that accept
+     that orientation are candidates. Upright competes with upright, bar with
+     bar, and the two bars are unambiguous because one is above the other. */
+  slotsFor(orient){ return orient === 'h' ? ['hA','hB'] : ['vert']; },
+  orientOf(slot){ return (slot === 'hA' || slot === 'hB') ? 'h' : 'v'; },
+
+  nearestSlot(x, y, self, orient){
+    let best = null, bestD = orient ? 999 : 34;
+    const slots = orient ? this.slotsFor(orient) : this.DROPS;
     for (const eq of ['A','B']){
       for (let col = 0; col < T1.LAYOUT[eq].length; col++){
-        for (const slot of this.DROPS){
+        for (const slot of slots){
           const taken = this.w.sticks.some(s => s !== self && s.eq === eq && s.col === col && s.slot === slot);
           if (taken) continue;
           const c = this.slotCentre(eq, col, slot);
+          if (orient && (Math.abs(c.x - x) > T1.COLW * 0.75 || Math.abs(c.y - y) > 46)) continue;
           const d = Math.hypot(c.x - x, c.y - y);
           if (d < bestD){ bestD = d; best = { eq, col, slot }; }
         }
@@ -2970,7 +3019,7 @@ if (window.matchMedia && window.matchMedia('(hover:none) and (pointer:coarse)').
   const t2 = document.getElementById('t2How');
   if (t2) t2.textContent = 'Use the pads to drive.';
   const t1 = document.getElementById('t1How');
-  if (t1) t1.textContent = 'Drag a matchstick or a coin.';
+  if (t1) t1.textContent = 'Drag a matchstick or a coin. Tap one, then R, to turn it.';
   const t3 = document.getElementById('t3How');
   if (t3) t3.textContent = 'Tap a door.';
 }
