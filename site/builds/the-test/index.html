@@ -377,63 +377,69 @@
              aria-label="A railway junction at dusk, seen from the lever frame">
           <defs>
             <linearGradient id="skyG" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stop-color="#171a21"/><stop offset="1" stop-color="#2a2620"/>
+              <stop offset="0" stop-color="#151a24"/>
+              <stop offset="0.55" stop-color="#2d2a2c"/>
+              <stop offset="1" stop-color="#6b4a33"/>
             </linearGradient>
             <linearGradient id="groundG" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stop-color="#191713"/><stop offset="1" stop-color="#0b0b0c"/>
+              <stop offset="0" stop-color="#211d18"/><stop offset="1" stop-color="#0a0a0b"/>
             </linearGradient>
             <radialGradient id="sunG" cx="0.5" cy="0.5" r="0.5">
-              <stop offset="0" stop-color="#f0c98a" stop-opacity="1"/>
-              <stop offset="0.5" stop-color="#e2a35c" stop-opacity="0.55"/>
-              <stop offset="1" stop-color="#e2a35c" stop-opacity="0"/>
+              <stop offset="0" stop-color="#ffe6b8" stop-opacity="1"/>
+              <stop offset="0.42" stop-color="#e9a95c" stop-opacity="0.6"/>
+              <stop offset="1" stop-color="#e9a95c" stop-opacity="0"/>
             </radialGradient>
             <linearGradient id="beamG" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stop-color="#e8bf83" stop-opacity="0.16"/>
-              <stop offset="1" stop-color="#e8bf83" stop-opacity="0.05"/>
+              <stop offset="0" stop-color="#f0c98c" stop-opacity="0.20"/>
+              <stop offset="1" stop-color="#f0c98c" stop-opacity="0.04"/>
+            </linearGradient>
+            <linearGradient id="railG" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#8b8d94"/><stop offset="1" stop-color="#4a4d54"/>
             </linearGradient>
           </defs>
 
           <rect x="0" y="0" width="800" height="470" fill="url(#skyG)"/>
-          <circle cx="672" cy="152" r="66" fill="url(#sunG)"/>
-          <circle cx="672" cy="152" r="21" fill="#f2d3a0"/>
+          <g opacity="0.5" fill="#3b3a3c">
+            <ellipse cx="180" cy="72" rx="96" ry="13"/>
+            <ellipse cx="238" cy="60" rx="62" ry="9"/>
+            <ellipse cx="560" cy="48" rx="120" ry="11"/>
+            <ellipse cx="392" cy="104" rx="78" ry="8"/>
+          </g>
+          <circle cx="672" cy="156" r="72" fill="url(#sunG)"/>
+          <circle cx="672" cy="156" r="22" fill="#ffdfa8"/>
 
-          <!-- the far side of the cutting -->
-          <path d="M0,206 L118,188 L232,198 L340,182 L452,196 L560,186 L672,200 L800,190 L800,206 Z"
-                fill="#14161a"/>
+          <!-- the far side of the cutting, and the trees on it -->
+          <path d="M0,208 L104,190 L150,196 L232,184 L300,194 L372,180 L452,194
+                   L520,186 L600,196 L672,184 L742,196 L800,188 L800,210 L0,210 Z"
+                fill="#181a20"/>
+          <g fill="#13151a">
+            <path d="M84,192 l7,-20 l7,20 z"/><path d="M262,188 l8,-22 l8,22 z"/>
+            <path d="M330,194 l6,-17 l6,17 z"/><path d="M566,192 l7,-19 l7,19 z"/>
+            <path d="M718,192 l6,-18 l6,18 z"/>
+          </g>
           <rect x="0" y="200" width="800" height="270" fill="url(#groundG)"/>
 
-          <!-- the low sun falls across the ballast. It is light on the ground,
-               drawn because the sun is drawn; it is not a marked-out area -->
+          <!-- ballast: speckle, so the ground is not a flat wash -->
+          <g id="r3Grit" opacity="0.5"></g>
+
+          <!-- the low sun falls across the ballast -->
           <polygon points="500,204 596,204 704,470 300,470" fill="url(#beamG)"/>
 
-          <!-- the permanent-way hut, and what is stacked against it -->
-          <g>
-            <rect x="604" y="238" width="164" height="86" fill="#191a1c" stroke="#2b2c30" stroke-width="1"/>
-            <polygon points="598,240 774,240 768,228 604,228" fill="#232427"/>
-            <rect x="622" y="268" width="26" height="34" fill="#0e0f11" stroke="#2b2c30" stroke-width="1"/>
-            <rect x="700" y="266" width="44" height="22" fill="#101113" stroke="#2b2c30" stroke-width="1"/>
-            <path d="M612,324 L756,324 L762,336 L606,336 Z" fill="#131315"/>
-            <rect x="616" y="316" width="74" height="7" rx="1" fill="#2a251d"/>
-            <rect x="624" y="308" width="58" height="7" rx="1" fill="#241f19"/>
-            <circle cx="742" cy="316" r="11" fill="none" stroke="#33343a" stroke-width="3"/>
-            <circle cx="742" cy="316" r="5" fill="none" stroke="#2b2c31" stroke-width="2"/>
+          <!-- telegraph poles, receding -->
+          <g stroke="#1a1c21" fill="none" stroke-width="3">
+            <path d="M126,270 L126,196 M112,206 L140,206 M114,214 L138,214"/>
+            <path d="M232,246 L232,192 M222,199 L242,199 M224,205 L240,205"/>
+            <path d="M302,232 L302,190 M294,195 L310,195"/>
           </g>
 
           <!-- the line in from the distance, the points, and the two routes -->
-          <g stroke="#3a3b40" stroke-width="1" fill="#1a1a1c">
-            <polygon points="425,198 439,198 421,334 379,334"/>
-            <polygon points="379,336 421,336 140,470 60,470"/>
-            <polygon points="381,336 423,336 740,470 660,470"/>
+          <g id="r3Bed" fill="#221f1b" stroke="#2c2924" stroke-width="1">
+            <polygon points="421,196 443,196 432,336 368,336"/>
+            <polygon points="368,338 432,338 152,470 40,470"/>
+            <polygon points="370,338 434,338 752,470 648,470"/>
           </g>
-          <g stroke="#15161a" stroke-width="1.4" opacity="0.9">
-            <line x1="427" y1="212" x2="437" y2="212"/><line x1="424" y1="236" x2="436" y2="236"/>
-            <line x1="420" y1="264" x2="434" y2="264"/><line x1="415" y1="296" x2="432" y2="296"/>
-            <line x1="366" y1="356" x2="410" y2="356"/><line x1="330" y1="382" x2="382" y2="382"/>
-            <line x1="286" y1="412" x2="346" y2="412"/><line x1="236" y1="444" x2="306" y2="444"/>
-            <line x1="392" y1="356" x2="436" y2="356"/><line x1="420" y1="382" x2="472" y2="382"/>
-            <line x1="456" y1="412" x2="516" y2="412"/><line x1="496" y1="444" x2="566" y2="444"/>
-          </g>
-          <g stroke="#53555c" stroke-width="2.4" fill="none" stroke-linecap="round">
+          <g id="r3Ties" stroke="#15161a" stroke-width="2" opacity="0.95"></g>
+          <g stroke="url(#railG)" stroke-width="2.6" fill="none" stroke-linecap="round">
             <line x1="429" y1="198" x2="387" y2="333"/><line x1="435" y1="198" x2="413" y2="333"/>
             <line x1="387" y1="335" x2="84"  y2="470"/><line x1="413" y1="335" x2="136" y2="470"/>
             <line x1="387" y1="335" x2="664" y2="470"/><line x1="413" y1="335" x2="716" y2="470"/>
@@ -441,47 +447,88 @@
 
           <!-- the switch, where the blades close against the stock rails -->
           <g id="r3Blades">
-            <path d="M400,318 L392,344 L396,345 L403,319 Z" fill="#4a4c53"/>
-            <path d="M401,318 L410,344 L406,345 L398,319 Z" fill="#3e4046"/>
+            <path d="M400,318 L392,344 L396,345 L403,319 Z" fill="#585b63"/>
+            <path d="M401,318 L410,344 L406,345 L398,319 Z" fill="#4a4d55"/>
             <rect x="378" y="346" width="46" height="5" rx="1.5" fill="#33343a"/>
-            <circle cx="401" cy="349" r="3" fill="#4a4c53"/>
+            <circle cx="401" cy="349" r="3" fill="#5a5d65"/>
           </g>
 
-          <!-- The train, on the approach and close enough to read as one.
-               It holds where it is: nothing here counts down, because a clock
-               would measure who panics rather than who thinks. -->
+          <!-- the people. Five on the left-hand road, one on the right -->
+          <g id="r3Folk"></g>
+
+          <!-- the signal, beside the line the train is on -->
+          <g id="r3Signal">
+            <rect x="474" y="216" width="6" height="86" fill="#1a1c20"/>
+            <rect x="466" y="208" width="22" height="34" rx="3" fill="#202329" stroke="#2f3238" stroke-width="1"/>
+            <circle id="r3LampA" cx="477" cy="217" r="5" fill="#2c3a2e"/>
+            <circle id="r3LampB" cx="477" cy="233" r="5" fill="#3a3630"/>
+            <rect x="468" y="300" width="18" height="6" rx="2" fill="#191b1f"/>
+          </g>
+
+          <!-- the train, on the approach -->
           <g id="r3Train">
             <polygon points="422,196 434,196 437,214 419,214" fill="#15171b"/>
             <polygon points="419,216 437,216 441,232 415,232" fill="#181b20"/>
-            <polygon points="414,234 442,234 447,276 409,276" fill="#1c2027"/>
+            <polygon points="414,234 442,234 447,276 409,276" fill="#1d2129"/>
             <polygon points="417,236 439,236 441,250 415,250" fill="#111318"/>
-            <rect x="421" y="239" width="14" height="8" rx="1" fill="#e8c98e" opacity="0.45"/>
+            <rect x="421" y="239" width="14" height="8" rx="1" fill="#e8c98e" opacity="0.5"/>
             <polygon points="409,276 447,276 448,282 408,282" fill="#101216"/>
             <circle id="r3Lamp" cx="419" cy="279" r="3.6" fill="#ffe9bd"/>
             <circle cx="437" cy="279" r="3.6" fill="#ffe9bd" opacity="0.85"/>
-            <!-- the beam it throws down the line toward the points -->
             <polygon points="415,282 441,282 466,346 388,346" fill="#ffe9bd" opacity="0.07"/>
             <path id="r3Smoke" d="M428,194 q-9,-14 1,-22 q10,-8 4,-18" stroke="#43454a"
                   stroke-width="6" fill="none" stroke-linecap="round" opacity="0.5"/>
           </g>
 
-          <!-- the lever frame -->
-          <g>
-            <rect x="30" y="392" width="196" height="16" rx="3" fill="#191a1d" stroke="#2c2d32" stroke-width="1"/>
-            <rect x="44" y="406" width="14" height="58" fill="#141518"/>
-            <rect x="198" y="406" width="14" height="58" fill="#141518"/>
-            <g id="r3LevL">
-              <rect x="76" y="318" width="9" height="80" rx="4" fill="#4c4e55"/>
-              <rect x="72" y="310" width="17" height="16" rx="3" fill="#8e3b33"/>
+          <!-- the permanent-way hut -->
+          <g id="r3Hut">
+            <polygon points="590,236 766,236 760,222 596,222" fill="#26282c"/>
+            <rect x="596" y="236" width="164" height="88" fill="#1b1d20" stroke="#2e3036" stroke-width="1"/>
+            <rect x="742" y="200" width="10" height="24" fill="#26282c"/>
+            <rect x="700" y="262" width="46" height="24" fill="#3a3222" stroke="#2e3036" stroke-width="1"/>
+            <rect x="703" y="265" width="40" height="18" fill="#6b5326" opacity="0.6"/>
+            <rect id="r3Door" x="616" y="258" width="34" height="66" rx="1"
+                  fill="#0e1012" stroke="#31343a" stroke-width="1.5"/>
+            <circle cx="644" cy="292" r="2.4" fill="#5c6068"/>
+          </g>
+          <!-- what is in it, once it is open -->
+          <g id="r3Inside" hidden>
+            <rect x="616" y="258" width="34" height="66" fill="#241f16"/>
+            <rect x="618" y="260" width="30" height="62" fill="#2e2718"/>
+            <g id="r3Radio">
+              <rect x="619" y="256" width="30" height="30" fill="transparent"/>
+              <rect x="621" y="266" width="24" height="17" rx="2" fill="#3c3a33" stroke="#54524a" stroke-width="1"/>
+              <rect x="623" y="268" width="11" height="7" rx="1" fill="#6e7d63"/>
+              <circle cx="641" cy="278" r="2.4" fill="#8c8a80"/>
+              <path d="M643,266 l4,-9" stroke="#8c8a80" stroke-width="1.4" fill="none"/>
             </g>
-            <g id="r3LevR">
-              <rect x="160" y="318" width="9" height="80" rx="4" fill="#4c4e55"/>
-              <rect x="156" y="310" width="17" height="16" rx="3" fill="#2f5a86"/>
+            <g id="r3Switch">
+              <rect x="620" y="288" width="22" height="24" fill="transparent"/>
+              <rect x="624" y="290" width="14" height="20" rx="2" fill="#4a4740" stroke="#5f5c53" stroke-width="1"/>
+              <rect x="628" y="300" width="6" height="7" rx="1.5" fill="#cfcabe"/>
+            </g>
+            <g id="r3Flag">
+              <!-- a pole and a bit of cloth leave most of their own bounding
+                   box empty, so the thing is hard to hit where it looks like
+                   it is. Transparent is painted, and painted is hit-testable -->
+              <rect x="642" y="285" width="22" height="36" fill="transparent"/>
+              <rect x="645" y="288" width="2.4" height="30" fill="#6b6259"/>
+              <path d="M647,289 l12,5 l-12,5 z" fill="#a8362c"/>
             </g>
           </g>
 
-          <!-- ballast. Every loose stone here behaves the same way as every
-               other one, so that none of them is the odd one out -->
+          <!-- a fire bucket on its post -->
+          <g id="r3Brazier">
+            <rect x="566" y="322" width="4" height="26" fill="#2a2c30"/>
+            <path d="M552,306 L584,306 L580,326 L556,326 Z" fill="#6d3a2a" stroke="#834934" stroke-width="1"/>
+            <ellipse cx="568" cy="306" rx="16" ry="4.5" fill="#4a281d"/>
+            <g id="r3Fire" hidden>
+              <path d="M568,300 q-11,-14 -2,-24 q3,10 8,12 q6,-8 3,-18 q14,14 9,30 z" fill="#e8933a"/>
+              <path d="M568,300 q-6,-9 -1,-16 q2,7 5,8 q3,-5 1,-11 q8,9 5,19 z" fill="#f6d264"/>
+            </g>
+          </g>
+
+          <!-- ballast. Every loose stone behaves the same way as every other -->
           <g id="r3Rocks"></g>
 
           <!-- a dented bowl in the junk by the hut -->
@@ -493,21 +540,54 @@
                   fill="none" stroke-linecap="round" opacity="0.8"/>
           </g>
 
-          <!-- the examiner's card, on the post -->
-          <rect x="256" y="22" width="288" height="96" rx="4"
+          <!-- the lever frame -->
+          <g>
+            <rect x="30" y="392" width="196" height="16" rx="3" fill="#1c1e21" stroke="#303237" stroke-width="1"/>
+            <rect x="44" y="406" width="14" height="58" fill="#141518"/>
+            <rect x="198" y="406" width="14" height="58" fill="#141518"/>
+            <g id="r3LevL">
+              <rect x="76" y="318" width="9" height="80" rx="4" fill="#53565d"/>
+              <rect x="72" y="310" width="17" height="16" rx="3" fill="#9c4038"/>
+            </g>
+            <g id="r3LevR">
+              <rect x="160" y="318" width="9" height="80" rx="4" fill="#53565d"/>
+              <rect x="156" y="310" width="17" height="16" rx="3" fill="#33618f"/>
+            </g>
+          </g>
+
+          <!-- your own coat, at the bottom of the frame -->
+          <!-- The pocket and what comes out of it both sit clear of the near
+               ballast, which is transparent DOM laid over the bottom of the
+               picture: anything under it does not answer the pointer. -->
+          <g id="r3Coat">
+            <path d="M642,470 L658,386 Q712,366 766,386 L784,470 Z" fill="#232329"/>
+            <path d="M658,386 Q712,370 766,386 L760,400 Q712,386 664,400 Z" fill="#2c2c33"/>
+            <rect id="r3Pocket" x="688" y="402" width="48" height="26" rx="3"
+                  fill="#1b1b20" stroke="#32323c" stroke-width="1.4"/>
+            <path d="M688,402 L736,402" stroke="#42424e" stroke-width="2.4"/>
+          </g>
+          <g id="r3Phone" hidden>
+            <rect x="698" y="380" width="26" height="42" rx="4" fill="#111318" stroke="#3f4149" stroke-width="1.2"/>
+            <rect x="701" y="384" width="20" height="32" rx="1.5" fill="#7fa0bb"/>
+          </g>
+
+          <!-- the examiner's card -->
+          <rect x="172" y="14" width="456" height="108" rx="4"
                 fill="#141418" stroke="#2c2c33" stroke-width="1"/>
-          <text x="400" y="46" text-anchor="middle" fill="#6f6f79"
+          <text x="400" y="36" text-anchor="middle" fill="#6f6f79"
                 font-family="ui-monospace,Menlo,monospace" font-size="10"
                 letter-spacing="3">RULE 3</text>
-          <text x="400" y="68" text-anchor="middle" fill="#ddd9d2"
-                font-family="ui-monospace,Menlo,monospace" font-size="12.5">One track passes. One track fails.</text>
-          <text x="400" y="86" text-anchor="middle" fill="#ddd9d2"
-                font-family="ui-monospace,Menlo,monospace" font-size="12.5">Choose one.</text>
-          <text x="400" y="108" text-anchor="middle" fill="#6f6f79"
+          <text x="400" y="58" text-anchor="middle" fill="#ddd9d2"
+                font-family="ui-monospace,Menlo,monospace" font-size="12">A runaway train is coming. Five people are tied to the</text>
+          <text x="400" y="75" text-anchor="middle" fill="#ddd9d2"
+                font-family="ui-monospace,Menlo,monospace" font-size="12">left-hand track. One is tied to the right-hand track.</text>
+          <text x="400" y="92" text-anchor="middle" fill="#ddd9d2"
+                font-family="ui-monospace,Menlo,monospace" font-size="12">The lever decides. One of them is the right answer.</text>
+          <text x="400" y="112" text-anchor="middle" fill="#6f6f79"
                 font-family="ui-monospace,Menlo,monospace" font-size="10.5"
                 id="r3Admin">administered to: &#8212;</text>
 
-          <text id="r3Verdict" x="400" y="244" text-anchor="middle" fill="#d05a4e"
+          <text id="r3Verdict" x="400" y="250" text-anchor="middle" fill="#d05a4e"
                 font-family="ui-monospace,Menlo,monospace" font-size="21"
                 letter-spacing="3" opacity="0"></text>
         </svg>
@@ -884,7 +964,7 @@ const LADDER_TEXT = {
       'Take your time.',
       'The rule is the examiner’s. It is not the line’s.',
       'The answer may not be among the options you were given.',
-      'Nothing here requires you to choose a track.'],
+      'Nothing here requires you to touch the lever at all.'],
 };
 const LADDER_COST = [0, 0, COST.l2, COST.l3, COST.l4];
 const IDLE_MS  = [0, 45000, 90000, 180000, 300000].map(v => FAST ? v / 30 : v);
@@ -3121,21 +3201,25 @@ const T3 = {
      hit tests read from one set of numbers and cannot drift apart. */
   RAILS: [                        // centre lines
     [[432,198],[400,334]],        // the line the train is on
-    [[400,334],[110,470]],        // the left route
-    [[400,334],[690,470]],        // the right route
+    [[400,334],[110,470]],        // the left-hand road, with five on it
+    [[400,334],[690,470]],        // the right-hand road, with one
   ],
   RAILR: 26,
   BEAM:  [[500,204],[596,204],[704,470],[300,470]],
   BLADES:[401,336], BLADER: 34,
-  /* Every stone is at least 46 units off the nearest rail, which is far
-     enough that nudging one cannot put it on the line by accident, and near
-     enough that putting it there is one short drag. They also all sit clear
-     of the lever hit boxes and of the near-ballast strip, both of which are
-     transparent DOM over the top of the picture: a stone underneath either of
-     those would simply not be liftable, and it would be the one stone in the
-     ballast that did not behave like the rest. */
-  ROCKS: [[40,392],[96,412],[232,332],[400,388],[616,376],[668,348],[720,376]],
+  /* Recomputed against the scene as it actually is, not as it was: every
+     stone is 46 to 190 units off the nearest rail, clear of the lever hit
+     boxes, the hut, the bucket, the lamp post, your coat and the near-ballast
+     strip — all of which are transparent DOM or drawing laid over the
+     picture, and a stone underneath any of them is the one stone in the
+     ballast that cannot be lifted. */
+  ROCKS: [[92,423],[230,285],[293,333],[386,393],[455,303],[527,336],[596,375]],
   BOWL:  [746,348],
+  /* Five on the left-hand road and one on the right, as the card says. They
+     are placed along the rails rather than typed out, so the drawing and the
+     sentence on the card cannot end up disagreeing about how many there are. */
+  FOLK:  [{ rail:1, u:0.30 }, { rail:1, u:0.42 }, { rail:1, u:0.54 },
+          { rail:1, u:0.66 }, { rail:1, u:0.78 }, { rail:2, u:0.52 }],
 
   near(p, seg){
     const [a, b] = seg;
@@ -3143,6 +3227,10 @@ const T3 = {
     let u = L2 ? ((p[0]-a[0])*dx + (p[1]-a[1])*dy) / L2 : 0;
     u = u < 0 ? 0 : u > 1 ? 1 : u;
     return Math.hypot(p[0] - (a[0]+dx*u), p[1] - (a[1]+dy*u));
+  },
+  along(rail, u){
+    const [a, b] = T3.RAILS[rail];
+    return [a[0] + (b[0]-a[0])*u, a[1] + (b[1]-a[1])*u];
   },
   onRail(p){
     let best = Infinity, which = -1;
@@ -3160,20 +3248,87 @@ const T3 = {
     return inside;
   },
   atBlades(p){ return Math.hypot(p[0] - T3.BLADES[0], p[1] - T3.BLADES[1]) <= T3.BLADER; },
+  atBrazier(p){ return Math.hypot(p[0] - 568, p[1] - 314) <= 34; },
+
+  /* hidden is a property of HTMLElement and NOT of SVGElement, so el.hidden =
+     false on an SVG group sets a JS expando that nothing reads and leaves the
+     attribute — and the group — exactly where it was. Everything behind the
+     hut door was invisible and unclickable because of that, and reading the
+     same expando back said it had opened, so the bug hid itself. Attributes
+     only, in one place, for every group in here. */
+  show(id, on){
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (on) el.removeAttribute('hidden'); else el.setAttribute('hidden', '');
+  },
+  shown(id){
+    const el = document.getElementById(id);
+    return !!el && !el.hasAttribute('hidden');
+  },
+
+  /* Everything there is to try, in one table. A row here is a thing you can
+     pick up or press; adding another is a row and nothing else. They all
+     carry the same handlers and none of them is labelled with what it does,
+     which is the whole point — a thing that behaved differently from the
+     things around it would be a signpost made of behaviour. */
+  TAPS: [
+    { id:'hut',     el:'r3Door',    label:'Hut door' },
+    { id:'radio',   el:'r3Radio',   label:'Radio',        inside:true },
+    { id:'switch',  el:'r3Switch',  label:'Switch',       inside:true },
+    { id:'flag',    el:'r3Flag',    label:'Flag',         inside:true },
+    { id:'coat',    el:'r3Pocket',  label:'Coat pocket' },
+    { id:'phone',   el:'r3Phone',   label:'Phone',        pocket:true },
+    { id:'brazier', el:'r3Brazier', label:'Bucket' },
+    { id:'signal',  el:'r3Signal',  label:'Lamp post' },
+  ],
 };
 
+/* ── TASK THREE — THE JUNCTION ───────────────────────────────────────
+   The classic question, put straight: a runaway train, five people on one
+   road and one on the other, and a lever that decides. Both levers come back
+   NOT A GOOD FIT and the stage does not end when they do. The card's claim
+   that one of them is the right answer is the one untrue sentence in the
+   build, it belongs to the examiner rather than to this page, and it is
+   disclosed in the debrief.
+
+   This replaced a room with two doors. The doors were the right shape and
+   the wrong picture: in a room the way out has to be drawn as an opening,
+   and an opening at the bottom of a frame reads as an exit whatever you do
+   to it. A railway cutting has no exit shape in it at all. What it has
+   instead is a junction with things lying about it, and the ways through are
+   things you do rather than places you go:
+
+     a stone off the ballast, on any rail    the road is blocked
+     the dented bowl, carried into the sun   the cab sees the light
+     the hut door, and what is behind it     a radio, a switch, a flag
+     your own coat, and what is in it        a phone
+     the lamp post, set against the train    once the switch is thrown
+     the fire bucket, with something lit     only if a matchstick was kept
+     the matchstick in the point blades      the same
+     the field in the corner                 the card reads from it
+     back, down, or the ground at your feet  you step away from the frame
+
+   Every one of them is live in the first frame and named in no text, no
+   title and no cursor. The aria-labels name the OBJECT and never the use:
+   "Hut door", not what is behind it. That is the same line the levers have
+   always been on, and it is what keeps the task usable from a keyboard
+   without handing it over. */
 const STAGE3 = {
   n:3, paneId:'p3', exitLabel:'Accept the result',
 
   fresh(){ return { triedL:0, triedR:0, escapes:[], leftPasses:false,
-                    lifted:[], at:{}, _lives:0 }; },
+                    lifted:[], at:{}, opened:[], lit:false, redLamp:false,
+                    _lives:0 }; },
 
   mount(w){
     this.w = w;
     this.done = false;
     this.svg = document.getElementById('r3Svg');
     this.paintPlaque();
+    this.scatter();
     this.layObjects();
+    this.wireTaps();
+    this.restore();
 
     const hitL = document.getElementById('hitL');
     const hitR = document.getElementById('hitR');
@@ -3216,7 +3371,7 @@ const STAGE3 = {
   onKey(e, down){
     if (!down || this.done) return false;
     const el = document.activeElement;
-    if (el && el.classList && el.classList.contains('r3-obj')){
+    if (el && el.classList && el.classList.contains('r3-obj') && el.dataset.drag){
       const step = e.shiftKey ? 2 : 11;
       const d = { ArrowLeft:[-step,0], ArrowRight:[step,0],
                   ArrowUp:[0,-step], ArrowDown:[0,step] }[e.key];
@@ -3231,13 +3386,80 @@ const STAGE3 = {
     return false;
   },
 
+  /* ── the scene ─────────────────────────────────────────────────── */
+  scatter(){
+    const grit = document.getElementById('r3Grit');
+    if (grit && !grit.childNodes.length){
+      let seed = 91;
+      const rnd = () => (seed = (seed * 1103515245 + 12345) & 0x7fffffff) / 0x7fffffff;
+      let out = '';
+      for (let i = 0; i < 260; i++){
+        const y = 208 + Math.pow(rnd(), 0.6) * 258;
+        const r = 0.6 + (y - 200) / 470 * 2.2 * rnd();
+        out += '<circle cx="' + (rnd()*800).toFixed(0) + '" cy="' + y.toFixed(0) +
+               '" r="' + r.toFixed(1) + '" fill="' + (rnd() < 0.5 ? '#3a352c' : '#4c4639') + '"/>';
+      }
+      grit.innerHTML = out;
+    }
+    const ties = document.getElementById('r3Ties');
+    if (ties && !ties.childNodes.length){
+      let out = '';
+      const run = (a, b, n, w0, w1) => {
+        for (let i = 0; i <= n; i++){
+          const u = i / n;
+          const x = a[0] + (b[0]-a[0])*u, y = a[1] + (b[1]-a[1])*u;
+          const dx = b[0]-a[0], dy = b[1]-a[1], m = Math.hypot(dx, dy) || 1;
+          const w = (w0 + (w1-w0)*u) / 2;
+          out += '<line x1="' + (x - (-dy/m)*w).toFixed(1) + '" y1="' + (y - (dx/m)*w).toFixed(1) +
+                 '" x2="' + (x + (-dy/m)*w).toFixed(1) + '" y2="' + (y + (dx/m)*w).toFixed(1) + '"/>';
+        }
+      };
+      run([432,200], [400,332], 9, 12, 30);
+      run([398,338], [112,468], 11, 30, 64);
+      run([402,338], [688,468], 11, 30, 64);
+      ties.innerHTML = out;
+    }
+    const folk = document.getElementById('r3Folk');
+    if (folk){
+      /* Lying across the rails, not along them, and rotated to the road they
+         are on — a figure drawn square on a track that runs away at an angle
+         reads as a sleeper rather than as somebody. Light clothing on dark
+         ballast on purpose: these are the reason the question is a question,
+         and they have to be legible at this size or the card is describing a
+         scene that is not on the screen. */
+      let out = '';
+      T3.FOLK.forEach((f, i) => {
+        const [x, y] = T3.along(f.rail, f.u);
+        const [a, b] = T3.RAILS[f.rail];
+        const deg = Math.atan2(b[1]-a[1], b[0]-a[0]) * 180 / Math.PI + 90;
+        const k = 0.86 + f.u * 0.95;              // nearer ones are bigger
+        const tint = ['#c8c3b6', '#b9b3c6', '#c6bba8', '#bdc6c2', '#cbc0bd', '#c2c6b8'][i % 6];
+        out +=
+          '<g transform="translate(' + x.toFixed(1) + ',' + y.toFixed(1) +
+            ') rotate(' + deg.toFixed(1) + ') scale(' + k.toFixed(2) + ')">' +
+            '<ellipse cx="1" cy="3" rx="17" ry="5" fill="#06060a" opacity="0.55"/>' +
+            '<rect x="2" y="-2.6" width="12" height="2.6" rx="1.2" fill="#43414c"/>' +
+            '<rect x="2" y="0.6" width="12" height="2.6" rx="1.2" fill="#43414c"/>' +
+            '<rect x="-9" y="-4.4" width="12" height="8.8" rx="3" fill="' + tint + '"/>' +
+            '<rect x="-7" y="-5.6" width="7" height="2" rx="1" fill="' + tint + '"/>' +
+            '<circle cx="-12.5" cy="0" r="4.2" fill="#d8cdbd"/>' +
+            '<path d="M-15,-3 a4.6,4.6 0 0 1 5,-0.8" stroke="#3a3038" stroke-width="2.2" ' +
+              'fill="none" stroke-linecap="round"/>' +
+            '<rect x="-9.5" y="-5" width="13" height="1.8" fill="#8a5f34"/>' +
+            '<rect x="-9.5" y="3.2" width="13" height="1.8" fill="#8a5f34"/>' +
+          '</g>';
+      });
+      folk.innerHTML = out;
+    }
+  },
+
   /* ── the loose things ──────────────────────────────────────────────
      Seven stones and a bowl, all built the same way and all carrying the
      same handlers. A stone that could not be picked up while its neighbour
      could would be a signpost made of behaviour rather than of words. */
   layObjects(){
     const host = document.getElementById('r3Rocks');
-    const at = (this.w && this.w.at) || {};      // {} when ?selftest=1 lays it out unmounted
+    const at = (this.w && this.w.at) || {};
     host.innerHTML = '';
     let seed = 31;
     const rnd = () => (seed = (seed * 1103515245 + 12345) & 0x7fffffff) / 0x7fffffff;
@@ -3254,16 +3476,43 @@ const STAGE3 = {
           '" ry="' + (r*0.42).toFixed(1) + '" fill="#08080a" opacity="0.5"/>' +
         '<polygon points="' + pts.join(' ') + '" fill="#4e4b46"/>' +
         '<polygon points="' + pts.slice(0, 5).join(' ') + '" fill="#66625b" opacity="0.7"/>';
-      this.liven(g, 'rock' + (i+1), at['rock' + (i+1)] || p);
+      this.liven(g, 'rock' + (i+1), at['rock' + (i+1)] || p, 'Stone');
       host.appendChild(g);
     });
-    this.liven(document.getElementById('r3Bowl'), 'bowl', at.bowl || T3.BOWL);
+    this.liven(document.getElementById('r3Bowl'), 'bowl', at.bowl || T3.BOWL, 'Bowl');
   },
 
-  liven(g, id, at){
+  wireTaps(){
+    for (const t of T3.TAPS){
+      const el = document.getElementById(t.el);
+      if (!el || el.dataset.id) continue;
+      el.setAttribute('class', ((el.getAttribute('class') || '') + ' r3-obj').trim());
+      el.setAttribute('tabindex', '0');
+      el.setAttribute('aria-label', t.label);
+      el.setAttribute('role', 'button');
+      el.dataset.id = t.id;
+      el.addEventListener('click', e => { e.stopPropagation(); this.tapped(t.id); });
+      el.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); this.tapped(t.id); }
+      });
+    }
+  },
+
+  // a reload lands you back in the junction as you left it, doors and all
+  restore(){
+    const w = this.w;
+    T3.show('r3Inside', w.opened.includes('hut'));
+    T3.show('r3Phone',  w.opened.includes('coat'));
+    T3.show('r3Fire',   w.lit);
+    if (w.redLamp) this.setLamp();
+  },
+
+  liven(g, id, at, label){
     g.setAttribute('class', 'r3-obj');
     g.setAttribute('tabindex', '0');
+    g.setAttribute('aria-label', label);
     g.dataset.id = id;
+    g.dataset.drag = '1';
     g.dataset.x = at[0]; g.dataset.y = at[1];
     g.setAttribute('transform', 'translate(' + at[0] + ',' + at[1] + ')');
 
@@ -3300,8 +3549,8 @@ const STAGE3 = {
 
   /* Positions live in w, so mount(w) puts everything back where it was left
      and a reload mid-attempt is not quietly a tidy-up. There is no separate
-     restore path to drift out of step with this one — laying the scene out and
-     restoring it are the same code. */
+     restore path to drift out of step with this one — laying the scene out
+     and restoring it are the same code. */
   place(g, x, y){
     x = clamp(x, 10, 790); y = clamp(y, 200, 464);
     g.dataset.x = x; g.dataset.y = y;
@@ -3315,30 +3564,34 @@ const STAGE3 = {
     this.settled(g);
   },
 
+  /* Charged once per thing, the way task two charges the step off the path
+     once and treats how far they took it as evidence. Somebody who shifts the
+     same stone six times has done one unasked-for thing, not six.
+
+     Note the raw rec.ev on the repeat rather than act(): moving a stone again
+     is still not a sanctioned action, and routing it through act() would file
+     it as one. Sanctioned and non-offered are the two things this instrument
+     exists to tell apart. */
+  touch(id, what){
+    if (!this.w.lifted.includes(id)){
+      this.w.lifted.push(id);
+      offPath(3, 'moved_object', { what:what || id.replace(/\d+$/, ''),
+                                   n:this.w.lifted.length });
+    } else rec.ev(EV.off_path, 3, { kind:'moved_again', what:id });
+    saveSession();
+  },
+
   /* Where a thing ends up is the whole of the mechanism. Nothing snaps,
      nothing lights up on the way, and putting it back does not undo the
      record of having moved it. */
   settled(g){
     if (this.done) return;
     const id = g.dataset.id, p = [+g.dataset.x, +g.dataset.y];
-
-    /* Charged once per object, the way task two charges the step off the path
-       once and treats how far they took it as evidence. Somebody who shifts
-       the same stone six times has done one unasked-for thing, not six. */
-    if (!this.w.lifted.includes(id)){
-      this.w.lifted.push(id);
-      offPath(3, 'moved_object', { what:id.replace(/\d+$/, ''), n:this.w.lifted.length });
-    } else rec.ev(EV.off_path, 3, { kind:'moved_again', what:id });
-    saveSession();
-    /* Note the raw rec.ev rather than act(): shifting a stone a second time is
-       still not a sanctioned action, and routing it through act() would file it
-       as one. Sanctioned and non-offered are the two things this instrument
-       exists to tell apart, and the count that feeds actionsBeforeBreak reads
-       straight off these type names. */
+    this.touch(id);
 
     if (id === 'bowl'){
       if (T3.inLight(p)){
-        this.record('signal_the_train', { at:[Math.round(p[0]), Math.round(p[1])] });
+        this.record('signal_the_train', { how:'bowl', at:[Math.round(p[0]), Math.round(p[1])] });
         this.finishWith('bowl', 'The light finds the cab. The train is slowing.');
       }
       return;
@@ -3348,6 +3601,64 @@ const STAGE3 = {
       this.record('stop_the_line', { rail, at:[Math.round(p[0]), Math.round(p[1])] });
       this.finishWith('rock', 'The driver has seen it. The train stops short of the points.');
     }
+  },
+
+  /* ── the things you press ──────────────────────────────────────── */
+  tapped(id){
+    if (this.done) return;
+    const w = this.w;
+    this.touch(id, id);
+
+    if (id === 'hut'){
+      if (!w.opened.includes('hut')) w.opened.push('hut');
+      T3.show('r3Inside', true);
+      act(3, 'opened', { what:'hut' });
+      saveSession();
+      return;
+    }
+    if (id === 'coat'){
+      if (!w.opened.includes('coat')) w.opened.push('coat');
+      T3.show('r3Phone', true);
+      act(3, 'opened', { what:'coat' });
+      saveSession();
+      return;
+    }
+    if (id === 'radio' || id === 'phone'){
+      this.record('call_it_in', { how:id });
+      return this.finishWith(id, id === 'radio'
+        ? 'The box answers. The train is being held outside the section.'
+        : 'It rings twice. Somebody on the other end starts asking the right questions.');
+    }
+    if (id === 'switch'){
+      w.redLamp = true;
+      this.setLamp();
+      saveSession();
+      this.record('set_the_signal', {});
+      return this.finishWith('signal', 'The lamp goes over to red. The brakes go on.');
+    }
+    if (id === 'flag'){
+      this.record('wave_them_down', {});
+      return this.finishWith('flag', 'You hold it out. The driver has seen worse signals than that, and stops.');
+    }
+    if (id === 'brazier'){
+      if (w.lit){
+        this.record('set_a_fire', {});
+        return this.finishWith('fire', 'The smoke goes straight up. You can see it from a long way off.');
+      }
+      act(3, 'nothing_to_light_it', {});
+      return;
+    }
+    if (id === 'signal'){
+      // the post on its own does nothing; what sets it is inside the hut
+      act(3, 'signal_arm', { red:w.redLamp });
+      return;
+    }
+  },
+
+  setLamp(){
+    const a = document.getElementById('r3LampA'), b = document.getElementById('r3LampB');
+    if (a) a.setAttribute('fill', '#d0403a');
+    if (b) b.setAttribute('fill', '#2a2724');
   },
 
   paintPlaque(){
@@ -3361,7 +3672,8 @@ const STAGE3 = {
      string is, and that is read by a person. Do not "improve" this into the
      instrument. */
   respondToCard(v){
-    if (/\b(pass|both|open|everyone|survive|wins?|stop)\b/i.test(v || '')) this.w.leftPasses = true;
+    if (/\b(pass|both|open|everyone|survive|wins?|stop|nobody|no ?one)\b/i.test(v || ''))
+      this.w.leftPasses = true;
   },
 
   pull(side){
@@ -3376,7 +3688,7 @@ const STAGE3 = {
     }
     if (side === 'L' && w.leftPasses){
       this.record('rewrote_terms_lever', { side });
-      return this.finishWith('lever_rewritten', 'The route you wrote open.');
+      return this.finishWith('lever_rewritten', 'The road you wrote open.');
     }
     fail(3, 'lever_' + side, { triedL:w.triedL, triedR:w.triedR });
     const v = document.getElementById('r3Verdict');
@@ -3410,7 +3722,8 @@ const STAGE3 = {
   },
 
   /* The stick, if one was kept, is lying in the corner it has occupied since
-     task one. No label, no hint, no outline on the blades it fits. */
+     task one. No label, no hint, no outline on anything it fits. It fits two
+     things: the point blades, and the bucket. */
   mountStick(){
     if (!SESSION.carry.sticks.length) return;
     const host = document.getElementById('r3');
@@ -3418,9 +3731,7 @@ const STAGE3 = {
     el.className = 'r3-stick';
     el.id = 'r3Stick';
     /* Top left, which is sky and nothing else. It rested in the bottom corner
-       in the room, where here the lever frame and the near ballast are; at a
-       phone's width it clears the nearest stone by a few pixels, which is not
-       a margin worth keeping. The selftest checks the outcome either way. */
+       in the room, where here the lever frame and the near ballast are. */
     el.style.left = '14px'; el.style.top = '14px'; el.style.position = 'absolute';
     el.innerHTML = '<span class="wood"></span><span class="head"></span>';
     host.appendChild(el);
@@ -3447,8 +3758,14 @@ const STAGE3 = {
       if (!moved) return;
       const p = this.toSvg(e.clientX, e.clientY);
       if (T3.atBlades(p)){
-        this.record('cross_context', { at:[Math.round(p[0]), Math.round(p[1])] });
+        this.record('cross_context', { on:'blades', at:[Math.round(p[0]), Math.round(p[1])] });
         this.finishWith('blades', 'The blades will not close. The train takes neither.');
+      } else if (T3.atBrazier(p)){
+        this.w.lit = true;
+        T3.show('r3Fire', true);
+        saveSession();
+        this.record('cross_context', { on:'brazier', at:[Math.round(p[0]), Math.round(p[1])] });
+        this.finishWith('fire', 'It catches. The smoke goes straight up, and it is seen.');
       } else {
         offPath(3, 'stick_moved', {});
       }
@@ -3580,8 +3897,12 @@ const ESCAPE_NAME = {
   rewrote_terms:      'wrote the rule',
   rewrote_terms_lever:'wrote the rule',
   stop_the_line:      'put a stone on the rail',
-  signal_the_train:   'signalled the train',
-  cross_context:      'used the matchstick on the points',
+  signal_the_train:   'signalled the train with the bowl',
+  set_the_signal:     'set the lamp against the train',
+  call_it_in:         'called it in',
+  wave_them_down:     'waved them down',
+  set_a_fire:         'lit the bucket',
+  cross_context:      'used the matchstick',
   wrong_way:         'went the wrong way round',
 };
 
@@ -3597,9 +3918,9 @@ function renderDebrief(){
     'you tried one, and how long it took you to.</p>' +
     '<p>The score was the test. Every point it cost you was the instrument ' +
     'recording the thing it came for — which is why it only ever went down.</p>' +
-    '<p class="muted">Task three’s card said one track passes and one fails. ' +
-    'Neither did. That was the one untrue sentence in here, and it belonged to ' +
-    'the examiner at the junction, not to this page.</p>';
+    '<p class="muted">Task three’s card said one of the two roads was the right ' +
+    'answer. Neither was. That was the one untrue sentence in here, and it ' +
+    'belonged to the examiner at the junction, not to this page.</p>';
 
   document.getElementById('headlineBody').innerHTML =
     row('First task you broke', h.firstStageBroken === null ? 'none' : h.firstStageBroken) +
@@ -4126,7 +4447,7 @@ if (SELFTEST){
        new with the junction: a stone on a rail, a bowl in the light and the
        point blades each have to stay unsaid in text, labels and titles, and
        the only way to be sure of that after an edit is to assert it. */
-    const BAN = /keep|pocket|carry|stash|hold on ?to|reverse|backwards?|behind the (start|line)|refuse|walk out|turn (around|back)|leave the (room|table)|rewrite|your name|type your|tunnel|arch|way out|off the (felt|table)|(stone|rock|boulder)s? on|block the (line|track|rail)|stop the train|signal the (train|driver|cab)|reflect|point blades|pick (up|it up)/i;
+    const BAN = /keep|pocket|carry|stash|hold on ?to|reverse|backwards?|behind the (start|line)|refuse|walk out|turn (around|back)|leave the (room|table)|rewrite|your name|type your|tunnel|arch|way out|off the (felt|table)|(stone|rock|boulder)s? on|block the (line|track|rail)|stop the train|signal the (train|driver|cab)|reflect|point blades|pick (up|it up)|call (it in|for help)|dial|emergency|set (fire|light) to|light the|wave (it|them)|go(es)? red|in your pocket|look inside/i;
     const hits = [];
     for (const id of ['p-intro','p1','p2','p3']){
       const el = document.getElementById(id), was = el.hidden;
@@ -4159,47 +4480,109 @@ if (SELFTEST){
   (function(){
     const pane = document.getElementById('p3'), was = pane.hidden;
     pane.hidden = false;
+    const savedW = STAGE3.w;
+    STAGE3.w = STAGE3.fresh();
     STAGE3.svg = document.getElementById('r3Svg');
+    STAGE3.scatter();
     STAGE3.layObjects();
-    const objs = Array.prototype.slice.call(document.querySelectorAll('#p3 .r3-obj'));
-    ok('task three lays out every loose thing', objs.length === T3.ROCKS.length + 1,
-       objs.length + ' of ' + (T3.ROCKS.length + 1));
+    STAGE3.wireTaps();
 
-    /* With the carried matchstick in place as well, because it is absolutely
-       positioned over the same box at a fixed pixel size — so the narrower the
-       screen, the more of the scene it covers. */
+    /* Every row in the TAPS table has to find its element. A typo in an id
+       there costs a whole way through the task and costs it silently — the
+       thing simply never answers, and looks like scenery that happens to be
+       scenery. */
+    const missing = T3.TAPS.filter(t => !document.getElementById(t.el)).map(t => t.id);
+    ok('every thing you can press is wired to something', missing.length === 0,
+       missing.join(', ') || T3.TAPS.length + ' wired');
+
+    /* And that showing one actually shows it. hidden is an HTMLElement
+       property, so setting it on an SVG group silently does nothing and
+       reading it back silently agrees — which is how everything behind the
+       hut door came to be invisible and unclickable while the code that put
+       it there reported success. */
+    const wasIn = T3.shown('r3Inside');
+    T3.show('r3Inside', true);
+    const opens = document.getElementById('r3Radio').getBoundingClientRect().width > 0;
+    T3.show('r3Inside', false);
+    const closes = document.getElementById('r3Radio').getBoundingClientRect().width === 0;
+    T3.show('r3Inside', wasIn);
+    ok('opening a thing in the junction really opens it', opens && closes,
+       opens ? (closes ? 'shows and hides' : 'shows but will not hide')
+             : 'stays hidden when shown');
+
+    // open what opens, so the things behind them can be checked too. Through
+    // T3.show, because these are SVG groups and .hidden does nothing to those
+    const hidIn = !T3.shown('r3Inside'), hidPh = !T3.shown('r3Phone');
+    T3.show('r3Inside', true); T3.show('r3Phone', true);
+
+    const objs = Array.prototype.slice.call(document.querySelectorAll('#p3 .r3-obj'));
+    const drags = objs.filter(g => g.dataset.drag);
+    ok('task three lays out every loose thing',
+       drags.length === T3.ROCKS.length + 1 && objs.length === drags.length + T3.TAPS.length,
+       drags.length + ' to pick up, ' + (objs.length - drags.length) + ' to press');
+
+    /* Nothing is buried. This is the check that earns its keep in here,
+       because the failure is silent: the lever hit boxes, the near-ballast
+       strip and the carried matchstick are all laid over the picture, and a
+       thing underneath any of them does not answer the pointer at all. That
+       thing is then the one in the scene that behaves differently from its
+       neighbours, which is a signpost made of behaviour rather than of words
+       — and it is exactly what happened the first two times this was laid
+       out, once to a stone and once to two of them. */
     const hadStick = SESSION.carry.sticks.length;
     if (!hadStick) SESSION.carry.sticks.push('selftest');
     STAGE3.done = false;
     STAGE3.mountStick();
     const r = STAGE3.svg.getBoundingClientRect(), k = r.width / 800;
-    const buried = [];
-    for (const g of objs){
-      const cx = Math.round(r.left + (+g.dataset.x) * k);
-      const cy = Math.round(r.top  + (+g.dataset.y) * k);
-      const hit = document.elementFromPoint(cx, cy);
-      if (!hit || !hit.closest || !hit.closest('.r3-obj')) buried.push(g.dataset.id);
+    /* "Can a person hit this" rather than "is the exact middle of its box
+       painted": a pole with a flag on it leaves most of its own box empty, and
+       the middle of that box is not where anybody aims. Probe the box. */
+    const reachable = g => {
+      const bb = g.getBoundingClientRect();
+      if (g.dataset.drag){
+        const hit = document.elementFromPoint(Math.round(r.left + (+g.dataset.x) * k),
+                                              Math.round(r.top  + (+g.dataset.y) * k));
+        return !!(hit && hit.closest && hit.closest('.r3-obj') === g);
+      }
+      for (let ix = 1; ix <= 3; ix++)
+        for (let iy = 1; iy <= 3; iy++){
+          const hit = document.elementFromPoint(Math.round(bb.left + bb.width  * ix/4),
+                                                Math.round(bb.top  + bb.height * iy/4));
+          if (hit && hit.closest && hit.closest('.r3-obj') === g) return true;
+        }
+      return false;
+    };
+    /* Both states. Shut, the hut door is on top and the radio is behind it;
+       open, the other way round, and that is right — once the door is open
+       you have no more use for it. What would be wrong is a thing that cannot
+       be reached in EITHER state, because that thing can never be used at
+       all. */
+    const reach = new Set();
+    for (const open of [false, true]){
+      T3.show('r3Inside', open); T3.show('r3Phone', open);
+      for (const g of objs) if (reachable(g)) reach.add(g.dataset.id);
     }
+    T3.show('r3Inside', true); T3.show('r3Phone', true);
+    const buried = objs.filter(g => !reach.has(g.dataset.id)).map(g => g.dataset.id);
     const stick = document.getElementById('r3Stick');
     if (stick) stick.remove();
     if (!hadStick) SESSION.carry.sticks.length = 0;
-    ok('nothing in the ballast is buried under an overlay', buried.length === 0,
-       buried.length ? buried.join(', ') + ' cannot be picked up'
+    ok('nothing in the junction is buried under an overlay', buried.length === 0,
+       buried.length ? buried.join(', ') + ' cannot be reached'
                      : objs.length + ' reachable by pointer, matchstick included');
 
-    const started = objs.filter(g => g.dataset.id !== 'bowl')
-                        .filter(g => T3.onRail([+g.dataset.x, +g.dataset.y]));
+    const started = drags.filter(g => g.dataset.id !== 'bowl')
+                         .filter(g => T3.onRail([+g.dataset.x, +g.dataset.y]));
     ok('no stone starts on a rail', started.length === 0,
        started.map(g => g.dataset.id).join(', ') || T3.ROCKS.length + ' clear of the line');
     ok('the bowl starts out of the light', !T3.inLight(T3.BOWL), T3.BOWL.join(','));
     ok('nothing starts on the point blades',
-       objs.every(g => !T3.atBlades([+g.dataset.x, +g.dataset.y])), 'blades clear');
+       drags.every(g => !T3.atBlades([+g.dataset.x, +g.dataset.y])), 'blades clear');
 
     /* And the other way round: a target nobody can reach is the same failure
-       as an affordance nobody can lift. Nearest stone to the nearest rail, and
-       the bowl to the edge of the light, both in one short drag. */
+       as an affordance nobody can lift. */
     let near = Infinity;
-    for (const g of objs){
+    for (const g of drags){
       if (g.dataset.id === 'bowl') continue;
       const p = [+g.dataset.x, +g.dataset.y];
       for (const rail of T3.RAILS) near = Math.min(near, T3.near(p, rail));
@@ -4215,6 +4598,21 @@ if (SELFTEST){
     ok('the light is one short drag from the bowl', toLight < 200,
        'bowl is ' + Math.round(toLight) + ' units from the light');
 
+    /* The card says five and one. The figures are placed from a table rather
+       than typed into the picture, so this asserts the picture and the
+       sentence agree — a card describing a scene that is not on the screen
+       is the examiner being wrong by accident rather than on purpose. */
+    const left = T3.FOLK.filter(f => f.rail === 1).length;
+    const right = T3.FOLK.filter(f => f.rail === 2).length;
+    const card = (document.querySelector('#p3 svg').textContent || '');
+    ok('the card and the track agree about who is on them',
+       left === 5 && right === 1 && /Five people/.test(card) && /One is tied/.test(card),
+       left + ' on the left, ' + right + ' on the right');
+    ok('nobody is standing where the train already is',
+       T3.FOLK.every(f => f.rail !== 0), 'all six are past the points');
+
+    T3.show('r3Inside', !hidIn); T3.show('r3Phone', !hidPh);
+    STAGE3.w = savedW;
     pane.hidden = was;
   })();
 
