@@ -206,21 +206,32 @@
   .padsep{flex:0 0 14px;}
   @media (hover:none) and (pointer:coarse){ .pads{display:flex;} }
 
-  /* ══ TASK THREE — THE ROOM ═══════════════════════════════════════════
-     One-point perspective: back wall, two doors, a plaque over them, and at
-     the very bottom of the frame a slice of the arch you came in through.
-     The arch is drawn from the first frame and is never mentioned. */
+  /* ══ TASK THREE — THE JUNCTION ═══════════════════════════════════════
+     A cutting at dusk: the line in from the distance, the points, two routes
+     away, a lever frame, a hut, ballast, and a low sun throwing light across
+     the ground. Nothing in here is an opening, which is the whole reason it
+     replaced a room with doors in it. */
   .r3{position:relative; border:1px solid var(--border); border-radius:10px;
     overflow:hidden; background:#0e0e11; line-height:0; margin-bottom:8px;}
   .r3 svg{display:block; width:100%; height:auto;}
   .r3-hit{position:absolute; appearance:none; border:0; background:transparent;
     padding:0; cursor:pointer;}
   .r3-hit:focus-visible{outline:2px solid var(--line); outline-offset:-2px;}
-  /* The floor is clickable and deliberately not focusable and not labelled —
-     labelling it would announce the way out. The keyboard route to the same
+  /* The near ballast is clickable and deliberately not focusable and not
+     labelled — labelling it would announce it. The keyboard route to the same
      place is a plain arrow key, equally unannounced. */
-  .r3-floor{position:absolute; left:0; right:0; bottom:0; height:22%;
+  .r3-floor{position:absolute; left:0; right:0; bottom:0; height:8%;
     cursor:default;}
+
+  /* The stones and the bowl. No grab cursor, no hover state, no outline in
+     the resting state: a thing that answers the pointer differently from the
+     scenery around it has announced itself, and the whole task is whether
+     anybody tries. The focus ring is the exception, and only because it is
+     the one thing a keyboard user has instead of a pointer — the levers carry
+     the same ring for the same reason. */
+  .r3-obj{touch-action:none;}
+  .r3-obj:focus{outline:none;}
+  .r3-obj:focus-visible{outline:2px solid var(--line); outline-offset:3px;}
   .r3-stage{transition:transform .5s cubic-bezier(.3,.7,.3,1), opacity .4s ease;}
   .r3.turning .r3-stage{transform:translateY(-14%) scale(.94); opacity:0;}
   .r3-out{position:absolute; inset:0; display:flex; align-items:center;
@@ -238,8 +249,17 @@
   .r3-stick .head{position:absolute; right:0; top:-1px; width:11px; height:11px;
     border-radius:50%; background:#b4443a;}
 
+  /* The lamp and the smoke, so the train reads as a train that is running
+     rather than a picture of one. Decoration: no route depends on either. */
+  @keyframes r3lamp{ 0%,100%{opacity:1;} 50%{opacity:.72;} }
+  @keyframes r3smoke{ 0%{opacity:.5; transform:translateY(0);}
+                      100%{opacity:0; transform:translateY(-16px);} }
+  #r3Lamp{animation:r3lamp 2.6s ease-in-out infinite;}
+  #r3Smoke{animation:r3smoke 4.4s linear infinite;}
+
   @media (prefers-reduced-motion:reduce){
     .r3-stage, .r3-out{transition-duration:.01ms;}
+    #r3Lamp, #r3Smoke{animation:none;}
   }
 
   @media (prefers-reduced-motion:reduce){
@@ -348,85 +368,161 @@
   </section>
 
   <section id="p3" hidden>
-    <header><p class="eyebrow">Task three</p><h1 id="h1-3">The room</h1></header>
-    <p class="tiny" id="t3How">Click a door.</p>
+    <header><p class="eyebrow">Task three</p><h1 id="h1-3">The junction</h1></header>
+    <p class="tiny" id="t3How">Pull a lever.</p>
 
     <div class="r3" id="r3">
       <div class="r3-stage" id="r3Stage">
-        <svg viewBox="0 0 800 470" role="img" aria-label="A room with two doors">
+        <svg id="r3Svg" viewBox="0 0 800 470" role="img"
+             aria-label="A railway junction at dusk, seen from the lever frame">
           <defs>
-            <linearGradient id="wallG" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stop-color="#16161a"/><stop offset="1" stop-color="#101013"/>
+            <linearGradient id="skyG" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#171a21"/><stop offset="1" stop-color="#2a2620"/>
             </linearGradient>
-            <linearGradient id="floorG" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stop-color="#131317"/><stop offset="1" stop-color="#0a0a0c"/>
+            <linearGradient id="groundG" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#191713"/><stop offset="1" stop-color="#0b0b0c"/>
+            </linearGradient>
+            <radialGradient id="sunG" cx="0.5" cy="0.5" r="0.5">
+              <stop offset="0" stop-color="#f0c98a" stop-opacity="1"/>
+              <stop offset="0.5" stop-color="#e2a35c" stop-opacity="0.55"/>
+              <stop offset="1" stop-color="#e2a35c" stop-opacity="0"/>
+            </radialGradient>
+            <linearGradient id="beamG" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#e8bf83" stop-opacity="0.16"/>
+              <stop offset="1" stop-color="#e8bf83" stop-opacity="0.05"/>
             </linearGradient>
           </defs>
 
-          <rect x="0" y="0" width="800" height="470" fill="url(#wallG)"/>
-          <!-- floor, receding -->
-          <polygon points="0,470 800,470 660,352 140,352" fill="url(#floorG)"/>
-          <line x1="140" y1="352" x2="0" y2="470" stroke="#25252b" stroke-width="1"/>
-          <line x1="660" y1="352" x2="800" y2="470" stroke="#25252b" stroke-width="1"/>
-          <line x1="140" y1="352" x2="660" y2="352" stroke="#25252b" stroke-width="1"/>
+          <rect x="0" y="0" width="800" height="470" fill="url(#skyG)"/>
+          <circle cx="672" cy="152" r="66" fill="url(#sunG)"/>
+          <circle cx="672" cy="152" r="21" fill="#f2d3a0"/>
 
-          <!-- the plaque -->
-          <rect x="262" y="26" width="276" height="92" rx="4"
+          <!-- the far side of the cutting -->
+          <path d="M0,206 L118,188 L232,198 L340,182 L452,196 L560,186 L672,200 L800,190 L800,206 Z"
+                fill="#14161a"/>
+          <rect x="0" y="200" width="800" height="270" fill="url(#groundG)"/>
+
+          <!-- the low sun falls across the ballast. It is light on the ground,
+               drawn because the sun is drawn; it is not a marked-out area -->
+          <polygon points="500,204 596,204 704,470 300,470" fill="url(#beamG)"/>
+
+          <!-- the permanent-way hut, and what is stacked against it -->
+          <g>
+            <rect x="604" y="238" width="164" height="86" fill="#191a1c" stroke="#2b2c30" stroke-width="1"/>
+            <polygon points="598,240 774,240 768,228 604,228" fill="#232427"/>
+            <rect x="622" y="268" width="26" height="34" fill="#0e0f11" stroke="#2b2c30" stroke-width="1"/>
+            <rect x="700" y="266" width="44" height="22" fill="#101113" stroke="#2b2c30" stroke-width="1"/>
+            <path d="M612,324 L756,324 L762,336 L606,336 Z" fill="#131315"/>
+            <rect x="616" y="316" width="74" height="7" rx="1" fill="#2a251d"/>
+            <rect x="624" y="308" width="58" height="7" rx="1" fill="#241f19"/>
+            <circle cx="742" cy="316" r="11" fill="none" stroke="#33343a" stroke-width="3"/>
+            <circle cx="742" cy="316" r="5" fill="none" stroke="#2b2c31" stroke-width="2"/>
+          </g>
+
+          <!-- the line in from the distance, the points, and the two routes -->
+          <g stroke="#3a3b40" stroke-width="1" fill="#1a1a1c">
+            <polygon points="425,198 439,198 421,334 379,334"/>
+            <polygon points="379,336 421,336 140,470 60,470"/>
+            <polygon points="381,336 423,336 740,470 660,470"/>
+          </g>
+          <g stroke="#15161a" stroke-width="1.4" opacity="0.9">
+            <line x1="427" y1="212" x2="437" y2="212"/><line x1="424" y1="236" x2="436" y2="236"/>
+            <line x1="420" y1="264" x2="434" y2="264"/><line x1="415" y1="296" x2="432" y2="296"/>
+            <line x1="366" y1="356" x2="410" y2="356"/><line x1="330" y1="382" x2="382" y2="382"/>
+            <line x1="286" y1="412" x2="346" y2="412"/><line x1="236" y1="444" x2="306" y2="444"/>
+            <line x1="392" y1="356" x2="436" y2="356"/><line x1="420" y1="382" x2="472" y2="382"/>
+            <line x1="456" y1="412" x2="516" y2="412"/><line x1="496" y1="444" x2="566" y2="444"/>
+          </g>
+          <g stroke="#53555c" stroke-width="2.4" fill="none" stroke-linecap="round">
+            <line x1="429" y1="198" x2="387" y2="333"/><line x1="435" y1="198" x2="413" y2="333"/>
+            <line x1="387" y1="335" x2="84"  y2="470"/><line x1="413" y1="335" x2="136" y2="470"/>
+            <line x1="387" y1="335" x2="664" y2="470"/><line x1="413" y1="335" x2="716" y2="470"/>
+          </g>
+
+          <!-- the switch, where the blades close against the stock rails -->
+          <g id="r3Blades">
+            <path d="M400,318 L392,344 L396,345 L403,319 Z" fill="#4a4c53"/>
+            <path d="M401,318 L410,344 L406,345 L398,319 Z" fill="#3e4046"/>
+            <rect x="378" y="346" width="46" height="5" rx="1.5" fill="#33343a"/>
+            <circle cx="401" cy="349" r="3" fill="#4a4c53"/>
+          </g>
+
+          <!-- The train, on the approach and close enough to read as one.
+               It holds where it is: nothing here counts down, because a clock
+               would measure who panics rather than who thinks. -->
+          <g id="r3Train">
+            <polygon points="422,196 434,196 437,214 419,214" fill="#15171b"/>
+            <polygon points="419,216 437,216 441,232 415,232" fill="#181b20"/>
+            <polygon points="414,234 442,234 447,276 409,276" fill="#1c2027"/>
+            <polygon points="417,236 439,236 441,250 415,250" fill="#111318"/>
+            <rect x="421" y="239" width="14" height="8" rx="1" fill="#e8c98e" opacity="0.45"/>
+            <polygon points="409,276 447,276 448,282 408,282" fill="#101216"/>
+            <circle id="r3Lamp" cx="419" cy="279" r="3.6" fill="#ffe9bd"/>
+            <circle cx="437" cy="279" r="3.6" fill="#ffe9bd" opacity="0.85"/>
+            <!-- the beam it throws down the line toward the points -->
+            <polygon points="415,282 441,282 466,346 388,346" fill="#ffe9bd" opacity="0.07"/>
+            <path id="r3Smoke" d="M428,194 q-9,-14 1,-22 q10,-8 4,-18" stroke="#43454a"
+                  stroke-width="6" fill="none" stroke-linecap="round" opacity="0.5"/>
+          </g>
+
+          <!-- the lever frame -->
+          <g>
+            <rect x="30" y="392" width="196" height="16" rx="3" fill="#191a1d" stroke="#2c2d32" stroke-width="1"/>
+            <rect x="44" y="406" width="14" height="58" fill="#141518"/>
+            <rect x="198" y="406" width="14" height="58" fill="#141518"/>
+            <g id="r3LevL">
+              <rect x="76" y="318" width="9" height="80" rx="4" fill="#4c4e55"/>
+              <rect x="72" y="310" width="17" height="16" rx="3" fill="#8e3b33"/>
+            </g>
+            <g id="r3LevR">
+              <rect x="160" y="318" width="9" height="80" rx="4" fill="#4c4e55"/>
+              <rect x="156" y="310" width="17" height="16" rx="3" fill="#2f5a86"/>
+            </g>
+          </g>
+
+          <!-- ballast. Every loose stone here behaves the same way as every
+               other one, so that none of them is the odd one out -->
+          <g id="r3Rocks"></g>
+
+          <!-- a dented bowl in the junk by the hut -->
+          <g id="r3Bowl">
+            <ellipse cx="0" cy="4" rx="17" ry="6" fill="#0a0a0b" opacity="0.55"/>
+            <path d="M-16,-4 Q0,12 16,-4 Q0,-11 -16,-4 Z" fill="#6f7279"/>
+            <path d="M-13,-4.6 Q0,7 13,-4.6 Q0,-8.6 -13,-4.6 Z" fill="#9aa0a8"/>
+            <path d="M-9,-5.4 Q-2,0 5,-5.6" stroke="#d6dbe2" stroke-width="2"
+                  fill="none" stroke-linecap="round" opacity="0.8"/>
+          </g>
+
+          <!-- the examiner's card, on the post -->
+          <rect x="256" y="22" width="288" height="96" rx="4"
                 fill="#141418" stroke="#2c2c33" stroke-width="1"/>
-          <text x="400" y="50" text-anchor="middle" fill="#6f6f79"
+          <text x="400" y="46" text-anchor="middle" fill="#6f6f79"
                 font-family="ui-monospace,Menlo,monospace" font-size="10"
                 letter-spacing="3">RULE 3</text>
-          <text x="400" y="72" text-anchor="middle" fill="#ddd9d2"
-                font-family="ui-monospace,Menlo,monospace" font-size="12.5">One door passes. One door fails.</text>
-          <text x="400" y="90" text-anchor="middle" fill="#ddd9d2"
+          <text x="400" y="68" text-anchor="middle" fill="#ddd9d2"
+                font-family="ui-monospace,Menlo,monospace" font-size="12.5">One track passes. One track fails.</text>
+          <text x="400" y="86" text-anchor="middle" fill="#ddd9d2"
                 font-family="ui-monospace,Menlo,monospace" font-size="12.5">Choose one.</text>
-          <text x="400" y="110" text-anchor="middle" fill="#6f6f79"
+          <text x="400" y="108" text-anchor="middle" fill="#6f6f79"
                 font-family="ui-monospace,Menlo,monospace" font-size="10.5"
                 id="r3Admin">administered to: &#8212;</text>
 
-          <!-- left door -->
-          <g id="r3DoorL">
-            <rect x="134" y="146" width="168" height="206" rx="2"
-                  fill="#191920" stroke="#33333c" stroke-width="1.5"/>
-            <rect x="148" y="160" width="140" height="178" rx="1"
-                  fill="none" stroke="#26262e" stroke-width="1"/>
-            <circle cx="278" cy="252" r="4.5" fill="#4a4a55"/>
-            <!-- latch plate, part of the door -->
-            <rect id="latchL" x="266" y="272" width="26" height="9" rx="1.5"
-                  fill="#2a2a33" stroke="#3d3d48" stroke-width="1"/>
-          </g>
-
-          <!-- right door -->
-          <g id="r3DoorR">
-            <rect x="498" y="146" width="168" height="206" rx="2"
-                  fill="#191920" stroke="#33333c" stroke-width="1.5"/>
-            <rect x="512" y="160" width="140" height="178" rx="1"
-                  fill="none" stroke="#26262e" stroke-width="1"/>
-            <circle cx="522" cy="252" r="4.5" fill="#4a4a55"/>
-            <rect id="latchR" x="508" y="272" width="26" height="9" rx="1.5"
-                  fill="#2a2a33" stroke="#3d3d48" stroke-width="1"/>
-          </g>
-
-          <!-- the arch you came in through, cut off by the bottom of the frame -->
-          <path d="M330,470 L330,432 Q400,398 470,432 L470,470 Z"
-                fill="#08080a" stroke="#1d1d22" stroke-width="1"/>
-
-          <text id="r3Verdict" x="400" y="250" text-anchor="middle" fill="#d05a4e"
-                font-family="ui-monospace,Menlo,monospace" font-size="26"
-                letter-spacing="6" opacity="0"></text>
+          <text id="r3Verdict" x="400" y="244" text-anchor="middle" fill="#d05a4e"
+                font-family="ui-monospace,Menlo,monospace" font-size="21"
+                letter-spacing="3" opacity="0"></text>
         </svg>
 
-        <button class="r3-hit" id="hitL" style="left:16.7%;top:31%;width:21%;height:44%;"
-                aria-label="Left door"></button>
-        <button class="r3-hit" id="hitR" style="left:62.2%;top:31%;width:21%;height:44%;"
-                aria-label="Right door"></button>
+        <button class="r3-hit" id="hitL" style="left:7%;top:63%;width:10%;height:21%;"
+                aria-label="Left lever"></button>
+        <button class="r3-hit" id="hitR" style="left:17.5%;top:63%;width:10%;height:21%;"
+                aria-label="Right lever"></button>
         <div class="r3-floor" id="r3Floor"></div>
       </div>
 
       <div class="r3-out" id="r3Out">
         <div class="in">
-          <p id="r3OutText">The corridor.</p>
-          <button class="btn btn-p" id="r3Leave">Keep walking</button>
+          <p id="r3OutText">The line is quiet.</p>
+          <button class="btn btn-p" id="r3Leave">Carry on</button>
         </div>
       </div>
     </div>
@@ -488,8 +584,8 @@
      It may never name an affordance whose payoff is in a later task.
 
    Honesty rule, absolute: no sentence in the app's own voice is untrue.
-   The one falsehood in the build is the plaque in task three, which is a
-   rule quoted inside a scenario, and it is disclosed in the debrief.
+   The one falsehood in the build is the card in task three, which is a rule
+   quoted inside a scenario, and it is disclosed in the debrief.
    ══════════════════════════════════════════════════════════════════════ */
 
 /* ══ CONSTANTS + STORAGE ═════════════════════════════════════════════ */
@@ -786,9 +882,9 @@ const LADDER_TEXT = {
       'The circuit continues behind the start line.'],
   3: ['',
       'Take your time.',
-      'The rule is the examiner’s. It is not the room’s.',
+      'The rule is the examiner’s. It is not the line’s.',
       'The answer may not be among the options you were given.',
-      'Nothing here requires you to choose a door.'],
+      'Nothing here requires you to choose a track.'],
 };
 const LADDER_COST = [0, 0, COST.l2, COST.l3, COST.l4];
 const IDLE_MS  = [0, 45000, 90000, 180000, 300000].map(v => FAST ? v / 30 : v);
@@ -2732,49 +2828,117 @@ const STAGE2 = {
   exit(){ closeStage(2, this.w.escaped ? 'broke' : 'complied'); },
 };
 
-/* ── TASK THREE — THE ROOM ───────────────────────────────────────────
-   Both doors fail. Three ways out, none of them named anywhere:
+/* ── TASK THREE — THE JUNCTION ───────────────────────────────────────
+   A train on the approach, a set of points, two routes, and a card telling
+   you one of them passes. Both levers come back NOT A GOOD FIT, and the
+   stage does not end when they do. The card is the one untrue sentence in
+   the build, it belongs to the examiner rather than to this page, and it is
+   disclosed in the debrief.
 
-     · turn around and leave     — arrow key, or the floor, or the browser's
-                                   own Back button
-     · write in the corner field — it has been there since the first screen
-                                   doing nothing; here it is wired into the
-                                   room, and the plaque reads from it
-     · a matchstick on a latch   — only if one was kept in task one
+   This replaces a room with two doors. The doors were the right shape and
+   the wrong picture: the way out had to be drawn as an opening, and an
+   opening at the bottom of a frame reads as an exit whatever you do to it —
+   James could see the third door before he had tried the first two. A
+   railway cutting has no exit shape in it at all. What it has instead is
+   ordinary stuff lying about, and the ways through are things you do to the
+   train rather than places you go:
 
-   The third one exists only for someone who did something unprompted two
-   tasks ago. If they kept nothing, it is simply not there, and that absence
-   is the measurement rather than a gap in it. */
+     · a stone from the ballast on any rail   — the line is blocked
+     · the dented bowl carried into the sun   — the cab sees the light
+     · the field in the corner                — the card reads from it
+     · a matchstick in the point blades       — only if one was kept
+
+   Every one of them is live in the first frame and named in no label, no
+   title, no aria-label and no cursor. The stones are all identical and all
+   behave identically, so none of them is the odd one out; the bowl is junk
+   by the hut; the light on the ground is there because the sun is drawn.
+   Nothing is outlined, nothing highlights on hover, and there is no drop
+   zone anywhere.
+
+   Deliberately not a trolley problem: there is nobody on either track. The
+   moment you put people on the rails you are measuring whether somebody will
+   reason about harm, which is a different and much louder variable than the
+   one this instrument is for, and it would drown it. The frame here is only
+   "choose one of these two", which is all the frame ever needed to be. */
+
+const T3 = {
+  /* Everything below is in the SVG's own 800×470 units, so the art and the
+     hit tests read from one set of numbers and cannot drift apart. */
+  RAILS: [                        // centre lines
+    [[432,198],[400,334]],        // the line the train is on
+    [[400,334],[110,470]],        // the left route
+    [[400,334],[690,470]],        // the right route
+  ],
+  RAILR: 26,
+  BEAM:  [[500,204],[596,204],[704,470],[300,470]],
+  BLADES:[401,336], BLADER: 34,
+  /* Every stone is at least 46 units off the nearest rail, which is far
+     enough that nudging one cannot put it on the line by accident, and near
+     enough that putting it there is one short drag. They also all sit clear
+     of the lever hit boxes and of the near-ballast strip, both of which are
+     transparent DOM over the top of the picture: a stone underneath either of
+     those would simply not be liftable, and it would be the one stone in the
+     ballast that did not behave like the rest. */
+  ROCKS: [[40,392],[96,412],[232,332],[400,388],[616,376],[668,348],[720,376]],
+  BOWL:  [746,348],
+
+  near(p, seg){
+    const [a, b] = seg;
+    const dx = b[0]-a[0], dy = b[1]-a[1], L2 = dx*dx + dy*dy;
+    let u = L2 ? ((p[0]-a[0])*dx + (p[1]-a[1])*dy) / L2 : 0;
+    u = u < 0 ? 0 : u > 1 ? 1 : u;
+    return Math.hypot(p[0] - (a[0]+dx*u), p[1] - (a[1]+dy*u));
+  },
+  onRail(p){
+    let best = Infinity, which = -1;
+    T3.RAILS.forEach((r, i) => { const d = T3.near(p, r); if (d < best){ best = d; which = i; } });
+    return best <= T3.RAILR ? ['approach','left','right'][which] : null;
+  },
+  inLight(p){
+    const q = T3.BEAM;
+    let inside = false;
+    for (let i = 0, j = q.length - 1; i < q.length; j = i++){
+      const [xi, yi] = q[i], [xj, yj] = q[j];
+      if ((yi > p[1]) !== (yj > p[1]) &&
+          p[0] < (xj - xi) * (p[1] - yi) / (yj - yi) + xi) inside = !inside;
+    }
+    return inside;
+  },
+  atBlades(p){ return Math.hypot(p[0] - T3.BLADES[0], p[1] - T3.BLADES[1]) <= T3.BLADER; },
+};
+
 const STAGE3 = {
   n:3, paneId:'p3', exitLabel:'Accept the result',
 
-  fresh(){ return { triedL:0, triedR:0, escapes:[], leftOpen:false, _lives:0 }; },
+  fresh(){ return { triedL:0, triedR:0, escapes:[], leftPasses:false,
+                    lifted:[], at:{}, _lives:0 }; },
 
   mount(w){
-    const S = this;
     this.w = w;
     this.done = false;
+    this.svg = document.getElementById('r3Svg');
     this.paintPlaque();
+    this.layObjects();
 
     const hitL = document.getElementById('hitL');
     const hitR = document.getElementById('hitR');
-    hitL.onclick = () => this.tryDoor('L');
-    hitR.onclick = () => this.tryDoor('R');
-    document.getElementById('r3Floor').onclick = () => this.walkOut('floor');
-    document.getElementById('r3Leave').onclick = () => this.commitEscape('refuse_frame');
+    hitL.onclick = () => this.pull('L');
+    hitR.onclick = () => this.pull('R');
+    document.getElementById('r3Floor').onclick = () => this.stepBack('ground');
+    document.getElementById('r3Leave').onclick = () => closeStage(3, 'broke');
 
     // The browser's own Back button is a live route out and nothing says so.
     history.pushState({ r3:1 }, '', location.href);
-    this.onPop = () => { if (!this.done) this.walkOut('history'); };
+    this.onPop = () => { if (!this.done) this.stepBack('history'); };
     window.addEventListener('popstate', this.onPop);
 
     // The corner field stops being inert here.
     onNameCommit = (v, edits) => {
       if (this.done || SESSION.stage !== 3) return;
       this.paintPlaque();
-      this.respondToPlaque(v);
+      this.respondToCard(v);
       this.record('rewrote_terms', { value:v, edits:edits.length });
-      this.walkOut('name', 'You wrote the rule.');
+      this.finishWith('name', 'You wrote the rule.');
     };
 
     this.mountStick();
@@ -2790,13 +2954,145 @@ const STAGE3 = {
 
   tick(){},
 
+  /* Arrows move whatever is focused, and only step back off the frame when
+     nothing is. Keyboard parity matters here or the whole task is mouse-only
+     — but a focused stone has to answer the arrow keys before the stage
+     does, or the first arrow press walks the student off the task. */
   onKey(e, down){
     if (!down || this.done) return false;
+    const el = document.activeElement;
+    if (el && el.classList && el.classList.contains('r3-obj')){
+      const step = e.shiftKey ? 2 : 11;
+      const d = { ArrowLeft:[-step,0], ArrowRight:[step,0],
+                  ArrowUp:[0,-step], ArrowDown:[0,step] }[e.key];
+      if (!d) return false;
+      this.nudge(el, d[0], d[1]);
+      return true;
+    }
     if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S' || e.key === 'Backspace'){
-      this.walkOut('key');
+      this.stepBack('key');
       return true;
     }
     return false;
+  },
+
+  /* ── the loose things ──────────────────────────────────────────────
+     Seven stones and a bowl, all built the same way and all carrying the
+     same handlers. A stone that could not be picked up while its neighbour
+     could would be a signpost made of behaviour rather than of words. */
+  layObjects(){
+    const host = document.getElementById('r3Rocks');
+    const at = (this.w && this.w.at) || {};      // {} when ?selftest=1 lays it out unmounted
+    host.innerHTML = '';
+    let seed = 31;
+    const rnd = () => (seed = (seed * 1103515245 + 12345) & 0x7fffffff) / 0x7fffffff;
+    T3.ROCKS.forEach((p, i) => {
+      const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+      const r = 7 + rnd() * 5;
+      const pts = [];
+      for (let k = 0; k < 8; k++){
+        const th = k / 8 * Math.PI * 2, rr = r * (0.7 + rnd() * 0.5);
+        pts.push((Math.cos(th)*rr).toFixed(1) + ',' + (Math.sin(th)*rr*0.78).toFixed(1));
+      }
+      g.innerHTML =
+        '<ellipse cx="1.5" cy="' + (r*0.5).toFixed(1) + '" rx="' + (r*1.1).toFixed(1) +
+          '" ry="' + (r*0.42).toFixed(1) + '" fill="#08080a" opacity="0.5"/>' +
+        '<polygon points="' + pts.join(' ') + '" fill="#4e4b46"/>' +
+        '<polygon points="' + pts.slice(0, 5).join(' ') + '" fill="#66625b" opacity="0.7"/>';
+      this.liven(g, 'rock' + (i+1), at['rock' + (i+1)] || p);
+      host.appendChild(g);
+    });
+    this.liven(document.getElementById('r3Bowl'), 'bowl', at.bowl || T3.BOWL);
+  },
+
+  liven(g, id, at){
+    g.setAttribute('class', 'r3-obj');
+    g.setAttribute('tabindex', '0');
+    g.dataset.id = id;
+    g.dataset.x = at[0]; g.dataset.y = at[1];
+    g.setAttribute('transform', 'translate(' + at[0] + ',' + at[1] + ')');
+
+    let drag = null;
+    g.addEventListener('pointerdown', e => {
+      if (this.done) return;
+      // setPointerCapture throws if the pointer has already gone, and an
+      // exception here would leave the thing dead for the rest of the attempt
+      try { g.setPointerCapture(e.pointerId); } catch(err){}
+      const p = this.toSvg(e.clientX, e.clientY);
+      drag = { ox:p[0] - +g.dataset.x, oy:p[1] - +g.dataset.y, moved:false };
+      e.preventDefault();
+    });
+    g.addEventListener('pointermove', e => {
+      if (!drag) return;
+      const p = this.toSvg(e.clientX, e.clientY);
+      this.place(g, p[0] - drag.ox, p[1] - drag.oy);
+      drag.moved = true;
+    });
+    const release = () => {
+      if (!drag) return;
+      const moved = drag.moved; drag = null;
+      if (moved) this.settled(g);
+    };
+    g.addEventListener('pointerup', release);
+    g.addEventListener('pointercancel', () => { drag = null; });
+  },
+
+  toSvg(cx, cy){
+    const r = this.svg.getBoundingClientRect();
+    const k = r.width / 800;
+    return [(cx - r.left) / k, (cy - r.top) / k];
+  },
+
+  /* Positions live in w, so mount(w) puts everything back where it was left
+     and a reload mid-attempt is not quietly a tidy-up. There is no separate
+     restore path to drift out of step with this one — laying the scene out and
+     restoring it are the same code. */
+  place(g, x, y){
+    x = clamp(x, 10, 790); y = clamp(y, 200, 464);
+    g.dataset.x = x; g.dataset.y = y;
+    this.w.at[g.dataset.id] = [+x.toFixed(1), +y.toFixed(1)];
+    g.setAttribute('transform', 'translate(' + x.toFixed(1) + ',' + y.toFixed(1) + ')');
+  },
+
+  nudge(g, dx, dy){
+    if (this.done) return;
+    this.place(g, +g.dataset.x + dx, +g.dataset.y + dy);
+    this.settled(g);
+  },
+
+  /* Where a thing ends up is the whole of the mechanism. Nothing snaps,
+     nothing lights up on the way, and putting it back does not undo the
+     record of having moved it. */
+  settled(g){
+    if (this.done) return;
+    const id = g.dataset.id, p = [+g.dataset.x, +g.dataset.y];
+
+    /* Charged once per object, the way task two charges the step off the path
+       once and treats how far they took it as evidence. Somebody who shifts
+       the same stone six times has done one unasked-for thing, not six. */
+    if (!this.w.lifted.includes(id)){
+      this.w.lifted.push(id);
+      offPath(3, 'moved_object', { what:id.replace(/\d+$/, ''), n:this.w.lifted.length });
+    } else rec.ev(EV.off_path, 3, { kind:'moved_again', what:id });
+    saveSession();
+    /* Note the raw rec.ev rather than act(): shifting a stone a second time is
+       still not a sanctioned action, and routing it through act() would file it
+       as one. Sanctioned and non-offered are the two things this instrument
+       exists to tell apart, and the count that feeds actionsBeforeBreak reads
+       straight off these type names. */
+
+    if (id === 'bowl'){
+      if (T3.inLight(p)){
+        this.record('signal_the_train', { at:[Math.round(p[0]), Math.round(p[1])] });
+        this.finishWith('bowl', 'The light finds the cab. The train is slowing.');
+      }
+      return;
+    }
+    const rail = T3.onRail(p);
+    if (rail){
+      this.record('stop_the_line', { rail, at:[Math.round(p[0]), Math.round(p[1])] });
+      this.finishWith('rock', 'The driver has seen it. The train stops short of the points.');
+    }
   },
 
   paintPlaque(){
@@ -2806,68 +3102,77 @@ const STAGE3 = {
   },
 
   /* A deliberately dumb responder, so that writing in the field visibly does
-     something to the room. It is NOT the measurement — the recorded string is,
-     and that is read by a person. Do not "improve" this into the instrument. */
-  respondToPlaque(v){
-    if (/\b(pass|both|open|everyone|survive|wins?)\b/i.test(v || '')) this.w.leftOpen = true;
+     something to the junction. It is NOT the measurement — the recorded
+     string is, and that is read by a person. Do not "improve" this into the
+     instrument. */
+  respondToCard(v){
+    if (/\b(pass|both|open|everyone|survive|wins?|stop)\b/i.test(v || '')) this.w.leftPasses = true;
   },
 
-  tryDoor(side){
+  pull(side){
     if (this.done) return;
     const w = this.w;
     if (side === 'L') w.triedL++; else w.triedR++;
-    if (side === 'L' && w.leftOpen){
-      this.record('rewrote_terms_door', { side });
-      return this.walkOut('door_rewritten', 'The door you wrote open.');
+    const lev = document.getElementById(side === 'L' ? 'r3LevL' : 'r3LevR');
+    if (lev){
+      lev.setAttribute('transform', 'rotate(' + (side === 'L' ? -13 : 13) + ' ' +
+                       (side === 'L' ? 80 : 164) + ' 398)');
+      setTimeout(() => lev.removeAttribute('transform'), 620);
     }
-    fail(3, 'door_' + side, { triedL:w.triedL, triedR:w.triedR });
+    if (side === 'L' && w.leftPasses){
+      this.record('rewrote_terms_lever', { side });
+      return this.finishWith('lever_rewritten', 'The route you wrote open.');
+    }
+    fail(3, 'lever_' + side, { triedL:w.triedL, triedR:w.triedR });
     const v = document.getElementById('r3Verdict');
-    v.textContent = 'FAILED';
+    v.textContent = 'NOT A GOOD FIT';
     v.setAttribute('opacity', '1');
-    setTimeout(() => v.setAttribute('opacity', '0'), 900);
+    setTimeout(() => v.setAttribute('opacity', '0'), 1100);
     if (w.triedL && w.triedR) ladder.check(3);
     saveSession();
   },
 
-  /* Every way out is recorded, not just the first — someone who backs out and
-     then comes forward and rewrites the plaque has told you two things. */
+  /* Every way through is recorded, not just the first — somebody who steps
+     back and then comes forward and rewrites the card has told you two
+     things. */
   record(kind, d){
     if (!this.w.escapes.includes(kind)) this.w.escapes.push(kind);
     escape(3, kind, d);
   },
 
-  walkOut(via, text){
+  stepBack(via){
+    if (this.done) return;
+    this.record('refuse_frame', { via });
+    this.finishWith(via, 'You step back down the line and leave the frame set as it was.');
+  },
+
+  finishWith(via, text){
     if (this.done) return;
     this.done = true;
-    if (via !== 'name' && via !== 'door_rewritten' && via !== 'latch'){
-      this.record('refuse_frame', { via });
-    }
-    document.getElementById('r3OutText').textContent = text || 'The corridor.';
+    document.getElementById('r3OutText').textContent = text;
     document.getElementById('r3').classList.add('turning');
     document.getElementById('r3Leave').focus({ preventScroll:true });
   },
 
-  commitEscape(){
-    closeStage(3, 'broke');
-  },
-
   /* The stick, if one was kept, is lying in the corner it has occupied since
-     task one. No label, no hint, no outline on the latch it fits. */
+     task one. No label, no hint, no outline on the blades it fits. */
   mountStick(){
     if (!SESSION.carry.sticks.length) return;
     const host = document.getElementById('r3');
     const el = document.createElement('div');
     el.className = 'r3-stick';
     el.id = 'r3Stick';
-    el.style.left = '14px'; el.style.bottom = '14px'; el.style.position = 'absolute';
+    /* Top left, which is sky and nothing else. It rested in the bottom corner
+       in the room, where here the lever frame and the near ballast are; at a
+       phone's width it clears the nearest stone by a few pixels, which is not
+       a margin worth keeping. The selftest checks the outcome either way. */
+    el.style.left = '14px'; el.style.top = '14px'; el.style.position = 'absolute';
     el.innerHTML = '<span class="wood"></span><span class="head"></span>';
     host.appendChild(el);
 
     let drag = null;
     el.addEventListener('pointerdown', e => {
       if (this.done) return;
-      // setPointerCapture throws if the pointer is no longer active, and an
-      // exception here would leave the stick dead for the rest of the attempt.
       try { el.setPointerCapture(e.pointerId); } catch(err){}
       const r = el.getBoundingClientRect();
       drag = { dx: e.clientX - r.left, dy: e.clientY - r.top, moved:false };
@@ -2885,25 +3190,16 @@ const STAGE3 = {
       if (!drag) return;
       const moved = drag.moved; drag = null;
       if (!moved) return;
-      const over = this.latchUnder(e.clientX, e.clientY);
-      if (over){
-        this.record('cross_context', { latch: over });
-        this.walkOut('latch', 'The door gives, and it is neither.');
+      const p = this.toSvg(e.clientX, e.clientY);
+      if (T3.atBlades(p)){
+        this.record('cross_context', { at:[Math.round(p[0]), Math.round(p[1])] });
+        this.finishWith('blades', 'The blades will not close. The train takes neither.');
       } else {
         offPath(3, 'stick_moved', {});
       }
     };
     el.addEventListener('pointerup', release);
     el.addEventListener('pointercancel', () => { drag = null; });
-  },
-
-  latchUnder(x, y){
-    for (const id of ['latchL','latchR']){
-      const r = document.getElementById(id).getBoundingClientRect();
-      const pad = 14;
-      if (x >= r.left-pad && x <= r.right+pad && y >= r.top-pad && y <= r.bottom+pad) return id;
-    }
-    return null;
   },
 };
 
@@ -3025,10 +3321,12 @@ const ESCAPE_NAME = {
   pocket_stick:      'kept a matchstick',
   wrong_way:         'went the other way',
   tunnel:            'went the other way',   // task two, before it was a circuit
-  refuse_frame:      'walked out',
-  rewrote_terms:     'wrote the rule',
-  rewrote_terms_door:'wrote the rule',
-  cross_context:     'used the matchstick on the door',
+  refuse_frame:       'stepped back from the frame',
+  rewrote_terms:      'wrote the rule',
+  rewrote_terms_lever:'wrote the rule',
+  stop_the_line:      'put a stone on the rail',
+  signal_the_train:   'signalled the train',
+  cross_context:      'used the matchstick on the points',
   wrong_way:         'went the wrong way round',
 };
 
@@ -3044,9 +3342,9 @@ function renderDebrief(){
     'you tried one, and how long it took you to.</p>' +
     '<p>The score was the test. Every point it cost you was the instrument ' +
     'recording the thing it came for — which is why it only ever went down.</p>' +
-    '<p class="muted">Task three’s plaque said one door passes and one fails. ' +
-    'Both failed. That was the one untrue sentence in here, and it belonged to ' +
-    'the examiner in the room, not to this page.</p>';
+    '<p class="muted">Task three’s card said one track passes and one fails. ' +
+    'Neither did. That was the one untrue sentence in here, and it belonged to ' +
+    'the examiner at the junction, not to this page.</p>';
 
   document.getElementById('headlineBody').innerHTML =
     row('First task you broke', h.firstStageBroken === null ? 'none' : h.firstStageBroken) +
@@ -3224,7 +3522,7 @@ if (window.matchMedia && window.matchMedia('(hover:none) and (pointer:coarse)').
   const t1 = document.getElementById('t1How');
   if (t1) t1.textContent = 'Drag a matchstick or a coin. Tap one, then R, to turn it.';
   const t3 = document.getElementById('t3How');
-  if (t3) t3.textContent = 'Tap a door.';
+  if (t3) t3.textContent = 'Tap a lever.';
 }
 
 document.getElementById('beginBtn').onclick = () => enterStage(1);
@@ -3455,7 +3753,11 @@ if (SELFTEST){
 
   // 4. nothing on any task pane names a way through
   (function(){
-    const BAN = /keep|pocket|carry|stash|hold on ?to|reverse|backwards?|behind the (start|line)|refuse|walk out|turn (around|back)|leave the (room|table)|rewrite|your name|type your|tunnel|arch|way out|off the (felt|table)/i;
+    /* Anything that would hand a task over. The three task-three clauses are
+       new with the junction: a stone on a rail, a bowl in the light and the
+       point blades each have to stay unsaid in text, labels and titles, and
+       the only way to be sure of that after an edit is to assert it. */
+    const BAN = /keep|pocket|carry|stash|hold on ?to|reverse|backwards?|behind the (start|line)|refuse|walk out|turn (around|back)|leave the (room|table)|rewrite|your name|type your|tunnel|arch|way out|off the (felt|table)|(stone|rock|boulder)s? on|block the (line|track|rail)|stop the train|signal the (train|driver|cab)|reflect|point blades|pick (up|it up)/i;
     const hits = [];
     for (const id of ['p-intro','p1','p2','p3']){
       const el = document.getElementById(id), was = el.hidden;
@@ -3475,6 +3777,76 @@ if (SELFTEST){
       el.hidden = was;
     }
     ok('no signpost in any task pane', hits.length === 0, hits.join(' | '));
+  })();
+
+  /* 5. the loose things in task three can actually be picked up. This is the
+        check that earns its keep in there, because the failure mode is
+        silent: the lever hit boxes and the near-ballast strip are transparent
+        DOM laid over the picture, and a stone underneath either of them does
+        not answer the pointer at all. That stone is then the one stone in the
+        ballast that behaves differently from its neighbours, which is a
+        signpost made of behaviour rather than of words — and it is exactly
+        what happened the first time this scene was laid out. */
+  (function(){
+    const pane = document.getElementById('p3'), was = pane.hidden;
+    pane.hidden = false;
+    STAGE3.svg = document.getElementById('r3Svg');
+    STAGE3.layObjects();
+    const objs = Array.prototype.slice.call(document.querySelectorAll('#p3 .r3-obj'));
+    ok('task three lays out every loose thing', objs.length === T3.ROCKS.length + 1,
+       objs.length + ' of ' + (T3.ROCKS.length + 1));
+
+    /* With the carried matchstick in place as well, because it is absolutely
+       positioned over the same box at a fixed pixel size — so the narrower the
+       screen, the more of the scene it covers. */
+    const hadStick = SESSION.carry.sticks.length;
+    if (!hadStick) SESSION.carry.sticks.push('selftest');
+    STAGE3.done = false;
+    STAGE3.mountStick();
+    const r = STAGE3.svg.getBoundingClientRect(), k = r.width / 800;
+    const buried = [];
+    for (const g of objs){
+      const cx = Math.round(r.left + (+g.dataset.x) * k);
+      const cy = Math.round(r.top  + (+g.dataset.y) * k);
+      const hit = document.elementFromPoint(cx, cy);
+      if (!hit || !hit.closest || !hit.closest('.r3-obj')) buried.push(g.dataset.id);
+    }
+    const stick = document.getElementById('r3Stick');
+    if (stick) stick.remove();
+    if (!hadStick) SESSION.carry.sticks.length = 0;
+    ok('nothing in the ballast is buried under an overlay', buried.length === 0,
+       buried.length ? buried.join(', ') + ' cannot be picked up'
+                     : objs.length + ' reachable by pointer, matchstick included');
+
+    const started = objs.filter(g => g.dataset.id !== 'bowl')
+                        .filter(g => T3.onRail([+g.dataset.x, +g.dataset.y]));
+    ok('no stone starts on a rail', started.length === 0,
+       started.map(g => g.dataset.id).join(', ') || T3.ROCKS.length + ' clear of the line');
+    ok('the bowl starts out of the light', !T3.inLight(T3.BOWL), T3.BOWL.join(','));
+    ok('nothing starts on the point blades',
+       objs.every(g => !T3.atBlades([+g.dataset.x, +g.dataset.y])), 'blades clear');
+
+    /* And the other way round: a target nobody can reach is the same failure
+       as an affordance nobody can lift. Nearest stone to the nearest rail, and
+       the bowl to the edge of the light, both in one short drag. */
+    let near = Infinity;
+    for (const g of objs){
+      if (g.dataset.id === 'bowl') continue;
+      const p = [+g.dataset.x, +g.dataset.y];
+      for (const rail of T3.RAILS) near = Math.min(near, T3.near(p, rail));
+    }
+    ok('a rail is one short drag from a stone, and never a nudge',
+       near - T3.RAILR > 14 && near < 200,
+       'nearest stone is ' + Math.round(near - T3.RAILR) + ' units off the line');
+    let toLight = Infinity;
+    for (let x = 0; x <= 800; x += 4)
+      for (let y = 204; y <= 470; y += 4)
+        if (T3.inLight([x, y]))
+          toLight = Math.min(toLight, Math.hypot(x - T3.BOWL[0], y - T3.BOWL[1]));
+    ok('the light is one short drag from the bowl', toLight < 200,
+       'bowl is ' + Math.round(toLight) + ' units from the light');
+
+    pane.hidden = was;
   })();
 
   out.textContent = L.join('\n') + '\n\n' +

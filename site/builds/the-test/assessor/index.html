@@ -555,9 +555,13 @@ function stateAt(t){
     }
 
     if (e.stage === 3){
-      if (e.type === 'fail' && d.kind === 'door_L'){ st.triedL++; st.doorFlash = e.t; }
-      if (e.type === 'fail' && d.kind === 'door_R'){ st.triedR++; st.doorFlash = e.t; }
-      if (e.type === 'escape') st.turned = true;
+      // 'door_*' is the room this task used to be; records made then still play
+      if (e.type === 'fail' && (d.kind === 'lever_L' || d.kind === 'door_L')){ st.triedL++; st.doorFlash = e.t; }
+      if (e.type === 'fail' && (d.kind === 'lever_R' || d.kind === 'door_R')){ st.triedR++; st.doorFlash = e.t; }
+      if (e.type === 'escape') st.turned = d.kind || true;
+      // where each loose thing was put, so the junction replays as it stood
+      if (e.type === 'escape' && Array.isArray(d.at)) st.placed = { kind:d.kind, at:d.at };
+      if (e.type === 'off_path' && d.kind === 'moved_object') st.lifted = (st.lifted||0) + 1;
     }
 
     if (e.type === 'pointer'){
@@ -591,7 +595,7 @@ function draw(st){
 
   if (st.stage === 1) drawTable(st);
   else if (st.stage === 2) drawRun(st);
-  else if (st.stage === 3) drawRoom(st);
+  else if (st.stage === 3) drawJunction(st);
   else {
     ctx.fillStyle = '#5d5d66'; ctx.font = '13px ' + getComputedStyle(document.body).fontFamily;
     ctx.textAlign = 'center';
@@ -1057,46 +1061,81 @@ function drawRunUnknown(R){
 }
 
 
-function drawRoom(st){
+function drawJunction(st){
   const k = Math.min(VW/800, VH/470), ox = (VW-800*k)/2, oy = (VH-470*k)/2;
   const X = x => ox+x*k, Y = y => oy+y*k;
+  const F = getComputedStyle(document.body).fontFamily;
 
-  ctx.fillStyle = '#16161a'; ctx.fillRect(X(0), Y(0), 800*k, 470*k);
-  ctx.fillStyle = '#101014';
-  ctx.beginPath(); ctx.moveTo(X(0),Y(470)); ctx.lineTo(X(800),Y(470));
-  ctx.lineTo(X(660),Y(352)); ctx.lineTo(X(140),Y(352)); ctx.closePath(); ctx.fill();
+  ctx.fillStyle = '#1a1c22'; ctx.fillRect(X(0), Y(0), 800*k, 470*k);
+  ctx.fillStyle = '#121113'; ctx.fillRect(X(0), Y(200), 800*k, 270*k);
 
-  ctx.strokeStyle = '#2c2c33'; ctx.lineWidth = 1;
-  ctx.fillStyle = '#141418';
-  ctx.fillRect(X(262), Y(26), 276*k, 92*k); ctx.strokeRect(X(262), Y(26), 276*k, 92*k);
-  ctx.fillStyle = '#ddd9d2'; ctx.textAlign = 'center';
-  ctx.font = Math.round(12*k) + 'px ' + getComputedStyle(document.body).fontFamily;
-  ctx.fillText('One door passes. One door fails.', X(400), Y(72));
-  ctx.fillStyle = '#6f6f79';
-  ctx.font = Math.round(10*k) + 'px ' + getComputedStyle(document.body).fontFamily;
-  ctx.fillText('administered to: ' + (st.name ? st.name.toUpperCase() : '—'), X(400), Y(110));
-  ctx.textAlign = 'left';
-
-  for (const [dx, tried] of [[134, st.triedL], [498, st.triedR]]){
-    ctx.fillStyle = tried ? '#211a1a' : '#191920';
-    ctx.fillRect(X(dx), Y(146), 168*k, 206*k);
-    ctx.strokeStyle = tried ? '#5a3a36' : '#33333c';
-    ctx.strokeRect(X(dx), Y(146), 168*k, 206*k);
-    ctx.fillStyle = '#2a2a33';
-    ctx.fillRect(X(dx + (dx < 400 ? 132 : 10)), Y(272), 26*k, 9*k);
-    if (tried){
-      ctx.fillStyle = '#d05a4e'; ctx.textAlign = 'center';
-      ctx.font = Math.round(11*k) + 'px ' + getComputedStyle(document.body).fontFamily;
-      ctx.fillText('tried ×' + tried, X(dx+84), Y(262));
-      ctx.textAlign = 'left';
-    }
-  }
-
-  ctx.fillStyle = '#08080a';
-  ctx.beginPath(); ctx.moveTo(X(330),Y(470)); ctx.lineTo(X(330),Y(432));
-  ctx.quadraticCurveTo(X(400),Y(398), X(470),Y(432)); ctx.lineTo(X(470),Y(470));
+  // the sun, and the light it throws on the ground — the bowl's target
+  ctx.fillStyle = 'rgba(232,191,131,.16)';
+  ctx.beginPath();
+  ctx.moveTo(X(500),Y(204)); ctx.lineTo(X(596),Y(204));
+  ctx.lineTo(X(704),Y(470)); ctx.lineTo(X(300),Y(470));
   ctx.closePath(); ctx.fill();
-  ctx.strokeStyle = st.turned ? '#6cc08b' : '#1d1d22'; ctx.stroke();
+  ctx.fillStyle = '#f2d3a0';
+  ctx.beginPath(); ctx.arc(X(672), Y(152), 18*k, 0, Math.PI*2); ctx.fill();
+
+  // the line in, and the two routes out
+  ctx.strokeStyle = '#53555c'; ctx.lineWidth = Math.max(1, 2.2*k); ctx.lineCap = 'round';
+  const rail = (a, b) => { ctx.beginPath(); ctx.moveTo(X(a[0]),Y(a[1])); ctx.lineTo(X(b[0]),Y(b[1])); ctx.stroke(); };
+  rail([429,198],[387,333]); rail([435,198],[413,333]);
+  rail([387,335],[84,470]);  rail([413,335],[136,470]);
+  rail([387,335],[664,470]); rail([413,335],[716,470]);
+  ctx.fillStyle = '#33343a'; ctx.fillRect(X(378), Y(346), 46*k, 5*k);
+
+  // the train
+  ctx.fillStyle = '#171a1f'; ctx.fillRect(X(424), Y(186), 16*k, 25*k);
+  ctx.fillStyle = '#ffe9bd';
+  ctx.beginPath(); ctx.arc(X(432), Y(208), 3.4*k, 0, Math.PI*2); ctx.fill();
+
+  // the hut
+  ctx.fillStyle = '#191a1c'; ctx.fillRect(X(604), Y(238), 164*k, 86*k);
+  ctx.strokeStyle = '#2b2c30'; ctx.lineWidth = 1;
+  ctx.strokeRect(X(604), Y(238), 164*k, 86*k);
+
+  // the card, and the levers
+  ctx.fillStyle = '#141418'; ctx.strokeStyle = '#2c2c33';
+  ctx.fillRect(X(256), Y(22), 288*k, 96*k); ctx.strokeRect(X(256), Y(22), 288*k, 96*k);
+  ctx.fillStyle = '#ddd9d2'; ctx.textAlign = 'center';
+  ctx.font = Math.round(12*k) + 'px ' + F;
+  ctx.fillText('One track passes. One track fails.', X(400), Y(68));
+  ctx.fillStyle = '#6f6f79';
+  ctx.font = Math.round(10*k) + 'px ' + F;
+  ctx.fillText('administered to: ' + (st.name ? st.name.toUpperCase() : '—'), X(400), Y(108));
+
+  ctx.fillStyle = '#191a1d'; ctx.fillRect(X(30), Y(392), 196*k, 16*k);
+  [[76, st.triedL, '#8e3b33'], [160, st.triedR, '#2f5a86']].forEach(([lx, tried, cap]) => {
+    ctx.fillStyle = tried ? '#6a4a44' : '#4c4e55';
+    ctx.fillRect(X(lx), Y(318), 9*k, 80*k);
+    ctx.fillStyle = cap; ctx.fillRect(X(lx-4), Y(310), 17*k, 16*k);
+    if (tried){
+      ctx.fillStyle = '#d05a4e';
+      ctx.font = Math.round(10*k) + 'px ' + F;
+      ctx.fillText('pulled ×' + tried, X(lx+4), Y(300));
+    }
+  });
+
+  /* Where the thing was put, if anything was. This is the whole of what task
+     three looks like from the outside, so it is drawn plainly and named. */
+  if (st.placed && Array.isArray(st.placed.at)){
+    const [px, py] = st.placed.at;
+    const isBowl = st.placed.kind === 'signal_the_train';
+    ctx.strokeStyle = isBowl ? '#c9a227' : '#6cc08b';
+    ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(X(px), Y(py), 13, 0, Math.PI*2); ctx.stroke();
+    ctx.fillStyle = ctx.strokeStyle;
+    ctx.font = '10px ' + F;
+    ctx.fillText(isBowl ? 'bowl, in the light' : 'stone, on the rail', X(px), Y(py) + 26);
+  }
+  if (st.lifted){
+    ctx.fillStyle = '#8a8a93'; ctx.textAlign = 'left'; ctx.font = '10px ' + F;
+    ctx.fillText(st.lifted + (st.lifted === 1 ? ' thing' : ' things') + ' picked up',
+                 X(18), Y(462));
+  }
+  ctx.textAlign = 'left';
 }
 
 /* The cursor, and a ring that blooms out of every press. Presses are what a
