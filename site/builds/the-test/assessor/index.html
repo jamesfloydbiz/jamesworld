@@ -188,7 +188,7 @@
       <button class="btn on" id="play">Play</button>
       <button class="btn" id="back">&#8592; 5s</button>
       <button class="btn" id="fwd">5s &#8594;</button>
-      <button class="btn" id="speed" data-s="1">1&times;</button>
+      <button class="btn" id="speed" data-s="3">3&times;</button>
       <button class="btn" id="jumpEsc">Next way through</button>
       <button class="btn" id="another">Load another</button>
     </div>
@@ -229,7 +229,7 @@ const T1 = {
 const T2 = { GROUND:-700, TUNNEL:-420, START:200, WALL:2600, TOUT:3000, FLAG:3400, CARW:56, CARH:26, W:150 };
 
 let LOG = [], HEAD = null, T0 = 0, T1END = 0, DUR = 0;
-let playing = false, speed = 1, cursorT = 0, raf = null;
+let playing = false, speed = 3, cursorT = 0, raf = null;   // 3x reads best
 
 /* ══ LOADING ═════════════════════════════════════════════════════════ */
 
@@ -262,6 +262,7 @@ function load(text){
   buildStream();
   size();
   seek(0);
+  start();
 }
 
 $('file').addEventListener('change', e => {
@@ -747,7 +748,7 @@ $('play').onclick = () => playing ? stop() : start();
 $('back').onclick = () => seek(cursorT - 5000);
 $('fwd').onclick  = () => seek(cursorT + 5000);
 $('speed').onclick = e => {
-  const next = { 1:2, 2:4, 4:8, 8:1 }[speed] || 1;
+  const next = { 1:2, 2:3, 3:4, 4:8, 8:1 }[speed] || 1;
   speed = next; e.currentTarget.dataset.s = next;
   e.currentTarget.innerHTML = next + '&times;';
 };

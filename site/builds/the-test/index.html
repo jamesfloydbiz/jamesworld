@@ -2010,7 +2010,11 @@ window.addEventListener('pagehide', () => { rec.flush(); saveSession(true); });
    the single most interesting thing anyone does in task one, and it happens
    at the edge of the box. Throttled, and the first thing shed if the log
    ever fills. */
-const SCENE_OF = { 1:'room1', 2:'run', 3:'r3' };
+/* Task one normalises against the inner frame, not the outer box. The outer
+   box is however wide the page is; the inner frame is the fixed 560x400 space
+   everything is actually laid out in, centred inside it. Using the box put the
+   replay's cursor left of where the hand was, and squashed. */
+const SCENE_OF = { 1:'room1In', 2:'run', 3:'r3' };
 let lastPtrAt = 0;
 
 function logPointer(e, kind){
