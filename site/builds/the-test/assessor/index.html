@@ -271,17 +271,23 @@ $('file').addEventListener('change', e => {
 $('pickBtn').onclick = () => $('file').click();
 $('pasteBtn').onclick = () => load($('paste').value);
 $('another').onclick  = () => { $('view').hidden = true; $('load').hidden = false; stop(); };
-$('thisBtn').onclick = () => {
-  // Same origin as the test, so a record still on this machine can be opened
-  // without exporting it first — useful for checking the thing works.
+/* Same origin as the test, so a record still on this machine can be opened
+   without exporting it first. */
+function useThisDevice(quiet){
   try {
     const raw = localStorage.getItem('thetest.log.v1');
     if (!raw) throw new Error('no record on this device');
     const arr = JSON.parse(raw);
     if (!Array.isArray(arr) || !arr.length) throw new Error('no record on this device');
     load(arr.map(o => JSON.stringify(o)).join('\n'));
-  } catch(e){ $('loadErr').textContent = e.message; }
-};
+    return true;
+  } catch(e){
+    if (!quiet) $('loadErr').textContent = e.message;
+    return false;
+  }
+}
+$('thisBtn').onclick = () => useThisDevice(false);
+
 
 const drop = $('drop');
 ['dragenter','dragover'].forEach(k => drop.addEventListener(k, e => {
@@ -297,11 +303,24 @@ drop.addEventListener('drop', e => {
 
 /* ══ THE NUMBERS ═════════════════════════════════════════════════════ */
 
+/* Every kind the test can write. It had drifted behind the junction rebuild,
+   so a real way through came out as its raw key on the card. The room's old
+   names are kept because records made then still play. */
 const ESCAPE_NAME = {
-  pocket_stick:'kept a matchstick', tunnel:'went the other way',
-  refuse_frame:'walked out', rewrote_terms:'wrote the rule',
-  rewrote_terms_door:'wrote the rule', cross_context:'used the matchstick on the door',
-  wrong_way:'went the wrong way round',
+  pocket_stick:'kept a matchstick',
+  wrong_way:'took the way back',
+  tunnel:'went the other way',                       // before it was a circuit
+  refuse_frame:'stepped back from the frame',
+  rewrote_terms:'wrote the rule',
+  rewrote_terms_lever:'wrote the rule',
+  rewrote_terms_door:'wrote the rule',               // when it was a room
+  stop_the_line:'put a stone on the rail',
+  signal_the_train:'signalled with the bowl',
+  set_the_signal:'set the lamp against it',
+  call_it_in:'called it in',
+  wave_them_down:'waved them down',
+  set_a_fire:'lit the bucket',
+  cross_context:'used the matchstick',
 };
 
 function headline(){
@@ -1241,6 +1260,18 @@ document.addEventListener('keydown', e => {
 });
 
 size();
+
+/* Arriving from the button at the end of the test. It said "watch the attempt
+   back" and then showed a file drop, which is not watching anything — the
+   record was already sitting in localStorage on the same origin and nothing
+   went and got it.
+
+   At the very end of the script on purpose. Run where it was written, it
+   fired before the consts further down were initialised, so load() got as far
+   as showing the view and then threw out of renderHead on one of them — and
+   the quiet catch swallowed it. The record appeared with an empty summary and
+   nothing said why. */
+if (/[?&]use=1\b/.test(location.search)) useThisDevice(true);
 </script>
 </body>
 </html>

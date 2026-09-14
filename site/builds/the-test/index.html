@@ -691,7 +691,7 @@
       <!-- Only here, and only once the attempt is spent. The replay shows
            every route through every task, so a link to it anywhere earlier
            would be the answer sheet stapled to the paper. -->
-      <a class="btn" id="watchBtn" href="assessor/">Watch the attempt back</a>
+      <a class="btn" id="watchBtn" href="assessor/?use=1">Watch the attempt back</a>
     </div>
     <p class="tiny" id="exportNote" style="margin-top:12px;">
       The record is on this device only. Hand it in and it exists somewhere else too.
@@ -2584,11 +2584,31 @@ const STAGE2 = {
   myProg(){
     const R = this.RUN;
     if (!R) return -1;
-    if (R.tun){
-      const u = clamp(R.tun.s / T2.TUNL, 0, 1);
-      return R.tun.p0 + (T2.TUNOUT - R.tun.p0) * u;
-    }
-    return R.prog + T2.GRID[0].t;
+    if (!R.tun) return R.prog + T2.GRID[0].t;
+
+    /* In the tube, against the field rather than against the lap.
+
+       Running it from where you went in to where it comes out was the obvious
+       thing and it is wrong: the field is still bunched near the start when
+       you go down there, so a straight line to the far side of the gap passed
+       all ten of them inside the first second and the board said FIRST for
+       the rest of the ride. There is no true answer to what position you hold
+       on a road nobody else is on — so it is pinned to the cars instead of to
+       the geometry, and you take one of them roughly every tenth of the way
+       down. Last when you go in, first as you come out, and the climb is the
+       length of the tube.
+
+       It reads off their live positions every frame, so a rival who wrecks
+       while you are down there really does fall behind you sooner. */
+    const u = clamp(R.tun.s / T2.TUNL, 0, 1);
+    const ts = this.cars.map(o => o.t).sort((a, b) => a - b);
+    const n = ts.length;
+    if (!n) return T2.TUNOUT;
+    const idx = u * (n + 0.5);            // first a little before the exit
+    const m = Math.min(n, Math.floor(idx));
+    const lo = m === 0 ? ts[0] - 0.02 : ts[m-1];
+    const hi = m >= n ? ts[n-1] + 0.02 : ts[m];
+    return lo + (hi - lo) * clamp(idx - m, 0, 1);
   },
   myName(){
     const v = (SESSION.name || '').trim();
