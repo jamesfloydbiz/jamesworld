@@ -169,6 +169,7 @@
     border:1px solid rgba(120,110,92,.45);}
   .coin:active{cursor:grabbing;}
   .coin.lift{z-index:12; box-shadow:0 10px 18px rgba(0,0,0,.6);}
+  .coin.off{box-shadow:0 0 0 2px rgba(208,90,78,.85), 0 1px 3px rgba(0,0,0,.6);}
   .coin.up{box-shadow:0 7px 12px rgba(0,0,0,.65), inset 0 0 0 1px rgba(255,255,255,.3);}
   .coin:focus-visible{outline:2px solid #e8e6e1; outline-offset:2px;}
   /* the one marker again: where the coin in your hand would come to rest */
@@ -1084,7 +1085,8 @@ const STAGE1 = {
       .sort((a, b) => (a.c.z || 0) - (b.c.z || 0))
       .forEach(({ c, i }) => {
         const el = document.createElement('div');
-        el.className = 'coin' + (c.z ? ' up' : '');
+        const bad = this.w.checks && (this.w.badCoins || []).indexOf(i) >= 0;
+        el.className = 'coin' + (c.z ? ' up' : '') + (bad ? ' off' : '');
         el.dataset.i = i;
         el.tabIndex = 0;
         el.style.left = (c.x - T1.CR) + 'px';
@@ -1116,10 +1118,17 @@ const STAGE1 = {
       return '<span class="rd"><b>' + (r.ok ? '\u2713' : '\u2717') + '</b><code>' +
              (spaced || '\u2014') + '</code>' + note + '</span>';
     };
+    const deg = coinDegrees(this.w.coins);
+    const off = deg.map((d, i) => ({ d, i })).filter(o => o.d !== 3);
+    this.w.badCoins = off.map(o => o.i);
+    const coinNote = off.length === 0 ? ''
+      : ' <i>' + (off.length === 1 ? 'one of them touches ' + off[0].d
+                 : off.length + ' of them do not touch exactly three') + '</i>';
     el.innerHTML = read(a) + read(b) +
       '<span class="rd"><b>' + (coinsDone(this.w.coins) ? '\u2713' : '\u2717') +
-      '</b><code>the coins</code></span>';
+      '</b><code>the coins</code>' + coinNote + '</span>';
     this.markUnreadable(a.bad.concat(b.bad));
+    this.renderCoins();
   },
 
   markUnreadable(list){
