@@ -17,6 +17,7 @@
     --card:#141416; --border:#242428; --line:#2e2e34;
     --acc:#c9a227;            /* the score, and only the score */
     --bad:#d05a4e;            /* a loss */
+    --good:#6cc08b;           /* a gain, which only happens when a task closes */
     --mono:ui-monospace,Menlo,Consolas,"DejaVu Sans Mono",monospace;
   }
   *{box-sizing:border-box;}
@@ -60,6 +61,10 @@
   .flake{position:fixed; top:46px; right:18px; z-index:79; color:var(--bad);
     font-size:14px; font-weight:700; font-variant-numeric:tabular-nums;
     pointer-events:none; opacity:0; animation:flake 1.1s ease forwards;}
+  /* The one thing that goes the other way, and it is paid at the close of a
+     task rather than during one — so it still never reads as approval of a
+     move while a move is being made. */
+  .flake.up{color:var(--good); font-size:22px; animation-duration:1.5s;}
   @keyframes flake{
     0%{opacity:0; transform:translateY(-6px);}
     18%{opacity:1; transform:translateY(0);}
@@ -755,6 +760,7 @@ const EV = {
   ladder:'ladder', penalty:'penalty', idle:'idle', visibility:'visibility',
   name_edit:'name_edit', storage_fail:'storage_fail', debug:'debug',
   export:'export', debrief:'debrief', telemetry:'telemetry', pointer:'pointer',
+  award:'award',
   /* One per mount, carrying the scene a stage drew itself from, so a replay
      can rebuild it without a second copy of the constants to fall behind. */
   scene:'scene',
@@ -960,20 +966,56 @@ setInterval(pumpClock, 250);
 
 const scoreV = document.getElementById('scoreV');
 
+function flake(text, cls){
+  const f = document.createElement('div');
+  f.className = 'flake' + (cls ? ' ' + cls : '');
+  f.textContent = text;             // the number, and nothing else
+  document.body.appendChild(f);
+  setTimeout(() => f.remove(), 1600);
+}
+
 function penalize(points, why, stage){
   if (points <= 0) return;
-  SESSION.score = clamp(SESSION.score - points, 0, 1000);
+  SESSION.score = clamp(SESSION.score - points, 0, SCORE_CAP);
   scoreV.textContent = SESSION.score;
   rec.ev(EV.penalty, stage ?? SESSION.stage, { points, why });
-  const f = document.createElement('div');
-  f.className = 'flake';
-  f.textContent = '−' + points;     // the number, and nothing else
-  document.body.appendChild(f);
-  setTimeout(() => f.remove(), 1200);
+  flake('−' + points);
   saveSession();
 }
 
-const COST = { fail:5, off:25, l2:20, l3:40, l4:80 };
+/* The other direction, and the only thing that goes that way. It is paid when
+   a task closes, never while one is being played, so nothing in the middle of
+   a task can be read as the app approving of a particular move. */
+function award(points, why, stage){
+  if (points <= 0) return;
+  SESSION.score = clamp(SESSION.score + points, 0, SCORE_CAP);
+  scoreV.textContent = SESSION.score;
+  rec.ev(EV.award, stage ?? SESSION.stage, { points, why });
+  flake('+' + points, 'up');
+  saveSession();
+}
+
+/* James asked for the falls to bite harder and for getting through a task to
+   pay a lot. Both, and they pull the same way rather than against each other:
+   the unsanctioned act still costs you at the moment you do it, visibly and
+   more than it used to, and only afterwards does it turn out to have been
+   worth six times what it cost. That is the shape of the thing this whole
+   instrument is about.
+
+   BROKE is for finding the way through; SOLVED is for finishing a task the
+   way it was posed, which only task one can be. Both are paid at the close.
+
+   Worth saying plainly, because it is a real cost and not a style note:
+   paying 400 in front of somebody the moment they break task one teaches
+   them that breaking pays, and tasks two and three then measure a learned
+   strategy rather than the willingness they arrived with. The headline
+   number — which task they FIRST broke on — is unaffected, because by
+   definition nothing has been paid before it. Everything after it is
+   softened. Holding both awards back to the debrief would remove that
+   entirely and keep the rest; it is one constant away. */
+const SCORE_CAP = 3000;          // the ceiling the score is clamped to
+const COST = { fail:15, off:60, l2:40, l3:80, l4:150 };
+const GAIN = { broke:400, solved:150 };
 
 /* ══ THE LADDER ══════════════════════════════════════════════════════ */
 
@@ -1766,7 +1808,7 @@ const STAGE1 = {
       escape(1, 'pocket_stick', { kept:SESSION.carry.sticks.length, how });
       closeStage(1, 'broke');
     } else {
-      closeStage(1, how === 'solved' ? 'complied' : 'complied');
+      closeStage(1, how === 'solved' ? 'solved' : 'complied');
     }
   },
 };
@@ -2212,7 +2254,7 @@ const STAGE2 = {
      is the stage, the run is not, and every restart starts on the grid the
      way the first one did. One mount path for a fresh w and a restored one. */
   fresh(){ return { runs:0, jumps:0, cleared:0, gapFails:0, chasmFails:0,
-                    rockHits:0, swept:0, revHit:false,
+                    rockHits:0, swept:0, revHit:false, bestPos:99,
                     backPct:0, maxT:0, escaped:false, _lives:0 }; },
 
   mount(w){
@@ -2458,6 +2500,25 @@ const STAGE2 = {
     this.telemetry();
   },
 
+  /* Where you are in the race, out of eleven. Rivals are ranked on how far
+     round they have actually got; you are ranked the same way while you are
+     going forwards and LAST while you are not, which is both true and the
+     point — reverse off the line and you watch yourself drop to eleventh,
+     and you come up out of the tube in first. Nothing says that will happen. */
+  position(){
+    const R = this.RUN;
+    if (!R) return T2.GRID.length;
+    /* Signed lap progress, not raw position on the lap. Raw position wraps
+       past 1, so the instant you cross the line backwards you are at 0.999
+       and the board calls you the leader for a frame before it calls you
+       last. Progress just goes negative, which is what going backwards is.
+       No rival ever passes the gap, so their own t needs no such care. */
+    const mine = R.tun ? -1 : (R.prog + T2.GRID[0].t);
+    let ahead = 0;
+    for (const o of this.cars) if (o.t > mine) ahead++;
+    return ahead + 1;
+  },
+
   /* Down the tube. The car is on rails in here — the bore steers it and the
      throttle is all that is left — because a tunnel you can crash into the
      side of is a driving test, and this is the reward for having found it
@@ -2477,6 +2538,7 @@ const STAGE2 = {
 
     const pct = Math.floor(T.s / T2.TUNL * 10) * 10;
     if (pct > T.pct){ T.pct = pct; rec.ev(EV.off_path, 2, { kind:'in_the_tunnel', pct }); }
+    this.trackPos();
     this.telemetry();
 
     if (T.s >= T2.TUNL - 0.5) this.outOfTheTunnel();
@@ -2504,6 +2566,13 @@ const STAGE2 = {
     const R = this.RUN;
     const B = T2.at(T2.TUNOUT);
     R.tun = null;
+    /* Put lap progress back where the car physically is. It has been carried
+       across the middle of the infield, so the number it accumulated on the
+       way in describes a lap nobody drove — and the position board reads off
+       it. Without this you surface in front of the field and are shown as
+       last. */
+    R.prog = T2.TUNOUT - T2.GRID[0].t;
+    R.tPrev = T2.TUNOUT;
     R.a = B.a;
     R.v = Math.min(T2.VBOOST, R.v);
     R.boost = T2.BOOST_S;
@@ -2589,6 +2658,7 @@ const STAGE2 = {
     }
 
     if (R.prog > w.maxT) w.maxT = +R.prog.toFixed(3);
+    this.trackPos();
 
     /* behind = how far past the start line, the wrong way, in laps. Braking
        to a stop while still ahead of the line cannot make this positive,
@@ -2622,6 +2692,17 @@ const STAGE2 = {
        and is kept honest rather than removed. */
     if (p.t >= T2.FINISH && p.t < T2.FINISH + 0.02 && d > 0 && p.t - d < T2.FINISH)
       return this.finish(w.escaped ? 'broke' : 'complied');
+  },
+
+  /* The best place they ever held, logged when it changes rather than every
+     frame. Coming out of the tube in front of the whole field is the payoff
+     of the task, and a record that does not carry it cannot show that. */
+  trackPos(){
+    const p = this.position();
+    if (p < this.w.bestPos){
+      this.w.bestPos = p;
+      act(2, 'position', { pos:p, of:T2.GRID.length, tube:!!this.RUN.tun });
+    }
   },
 
   launch(j){
@@ -3209,6 +3290,7 @@ const STAGE2 = {
     this.car(c, R, T2LIVERY[0]);
     c.restore();
 
+    this.posBoard(c, W, H);
     c.textAlign = 'right'; c.textBaseline = 'alphabetic';
     c.fillStyle = 'rgba(70,214,224,.95)';
     c.font = '700 30px ui-monospace,Menlo,monospace';
@@ -3295,8 +3377,32 @@ const STAGE2 = {
     c.globalAlpha = 1;
   },
 
+  /* The board. Top left, out of the way of the speed and the lights. */
+  posBoard(c, W, H){
+    const R = this.RUN;
+    if (!R || R.lights > 0) return;
+    const p = this.position(), n = T2.GRID.length;
+    const lead = p === 1;
+    c.fillStyle = 'rgba(11,11,12,.72)';
+    c.fillRect(14, 14, 74, 40);
+    c.strokeStyle = lead ? 'rgba(201,162,39,.85)' : 'rgba(80,80,90,.7)';
+    c.lineWidth = 1;
+    c.strokeRect(14.5, 14.5, 73, 39);
+    c.textAlign = 'left'; c.textBaseline = 'alphabetic';
+    c.fillStyle = 'rgba(138,138,147,.8)';
+    c.font = '700 8px ui-monospace,Menlo,monospace';
+    c.fillText('POSITION', 22, 27);
+    c.fillStyle = lead ? '#c9a227' : 'rgba(232,230,225,.95)';
+    c.font = '700 22px ui-monospace,Menlo,monospace';
+    c.fillText('P' + p, 22, 48);
+    c.fillStyle = 'rgba(138,138,147,.75)';
+    c.font = '700 11px ui-monospace,Menlo,monospace';
+    c.fillText('/ ' + n, 56, 48);
+  },
+
   hud(c, W, H, still){
     const R = this.RUN;
+    this.posBoard(c, W, H);
     c.textAlign = 'right'; c.textBaseline = 'alphabetic';
     c.fillStyle = 'rgba(232,230,225,.92)';
     c.font = '700 30px ui-monospace,Menlo,monospace';
@@ -3351,6 +3457,8 @@ const STAGE2 = {
 
   finish(outcome){
     if (this.done) return;
+    const pos = this.position();
+    act(2, 'crossed_the_line', { pos, of:T2.GRID.length, best:this.w.bestPos });
     this.done = true;
     closeStage(2, outcome);
   },
@@ -4068,6 +4176,8 @@ function closeStage(n, outcome){
   st.closedAt = now();
   STAGES[n].unmount();
   rec.ev(EV.stage_close, n, { outcome });
+  if (outcome === 'broke')        award(GAIN.broke, 'broke_' + n, n);
+  else if (outcome === 'solved')  award(GAIN.solved, 'solved_' + n, n);
   rec.flush();
   SESSION.stage = 0;
   saveSession(true);
@@ -4124,8 +4234,11 @@ function renderDebrief(){
     '<p>Each task had a way through that nothing on the screen mentioned. ' +
     'Every one of them worked from the first second. The measure was whether ' +
     'you tried one, and how long it took you to.</p>' +
-    '<p>The score was the test. Every point it cost you was the instrument ' +
-    'recording the thing it came for — which is why it only ever went down.</p>' +
+    '<p>The score was the test. Every point an unasked-for move cost you was ' +
+    'the instrument recording the thing it came for — and getting through a ' +
+    'task paid back several times what getting through it cost. That is the ' +
+    'whole shape of it: the move looks like it is costing you, right up until ' +
+    'it is the only thing that worked.</p>' +
     '<p class="muted">Task three’s card said one of the two roads was the right ' +
     'answer. Neither was. That was the one untrue sentence in here, and it ' +
     'belonged to the examiner at the junction, not to this page.</p>';
@@ -4630,6 +4743,30 @@ if (SELFTEST){
     ok('it is boosted the whole way down', T2.TUNBOOST.length > 20,
        T2.TUNBOOST.length + ' sets of chevrons');
 
+    /* Surfacing in front of the whole field is the payoff of the task, and it
+       is only true because no rival can ever get past the gap. Rivals are
+       pegged to 300 at the last lip, so this is the same closed-form flight
+       the chasm proof uses, asked of the fastest takeoff a rival can have. */
+    const rivalBest = T2.flight(300).d, hole = (T2.GAP[1] - T2.GAP[0]) * T2.LAP;
+    ok('no rival can ever be past the gap, so the tube surfaces you in front',
+       rivalBest < hole && T2.TUNOUT > T2.GAP[1],
+       'best rival flight ' + Math.round(rivalBest) + ' vs ' + Math.round(hole) +
+       ', tube out at ' + T2.TUNOUT);
+
+    /* Scoring. The falls have to hurt more than any single gain is worth per
+       event, or the board stops reading as a cost at the moment of the act —
+       which is the one moment it has to. */
+    ok('a way through pays several times what it costs to take one',
+       GAIN.broke >= COST.off * 4 && COST.off > COST.fail * 3,
+       '+' + GAIN.broke + ' against \u2212' + COST.off + ' for stepping off ' +
+       'and \u2212' + COST.fail + ' for a failed try');
+    /* And that it is still genuinely losable. Somebody who takes every prompt
+       on all three tasks and gets through none of them is down 810 of the
+       1000 they started with, which is the score still being a score. */
+    const allRungs = (COST.l2 + COST.l3 + COST.l4) * 3;
+    ok('taking every prompt and breaking nothing costs most of the score',
+       allRungs >= 800, '\u2212' + allRungs + ' of the 1000 you start with');
+
     /* And the whole grid is inside that wider frame, which is what it is for.
        The frame is a rectangle and the camera never rotates, so this is the
        rectangle test and not a radius — a radius passes a car that is off the
@@ -4744,6 +4881,12 @@ if (SELFTEST){
     if (!hadStick) SESSION.carry.sticks.push('selftest');
     STAGE3.done = false;
     STAGE3.mountStick();
+    /* elementFromPoint only sees what is actually on the screen, so the pane
+       has to be in the viewport for any of this to mean anything. It was not,
+       once the report above it grew by a few lines, and every single thing in
+       the scene came back unreachable. */
+    const scrollWas = window.scrollY;
+    pane.scrollIntoView({ block:'center' });
     const r = STAGE3.svg.getBoundingClientRect(), k = r.width / 800;
     /* "Can a person hit this" rather than "is the exact middle of its box
        painted": a pole with a flag on it leaves most of its own box empty, and
@@ -4778,6 +4921,10 @@ if (SELFTEST){
     const stick = document.getElementById('r3Stick');
     if (stick) stick.remove();
     if (!hadStick) SESSION.carry.sticks.length = 0;
+    window.scrollTo(0, scrollWas);
+    ok('the junction was on screen to be checked at all',
+       r.width > 0 && r.top < window.innerHeight && r.bottom > 0,
+       Math.round(r.width) + 'x' + Math.round(r.height) + ' in view');
     ok('nothing in the junction is buried under an overlay', buried.length === 0,
        buried.length ? buried.join(', ') + ' cannot be reached'
                      : objs.length + ' reachable by pointer, matchstick included');
