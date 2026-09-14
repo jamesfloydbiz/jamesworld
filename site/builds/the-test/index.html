@@ -122,6 +122,57 @@
     background:#0e0e10; border:1px solid var(--border); border-radius:8px;
     padding:12px; max-height:50vh; overflow:auto;}
 
+  /* ══ TASK ONE — THE TABLE ════════════════════════════════════════════
+     The felt has no border, no rim and no shadow wall. Its edge is a change
+     of colour and nothing else, because a drawn rim reads as a barrier and
+     a barrier is a signpost that there is something on the other side. */
+  .room1{position:relative; width:100%; background:#0b0b0c; border-radius:10px;
+    overflow:hidden; border:1px solid var(--border);}
+  /* Everything lives in a fixed 560x400 space and the whole space is scaled to
+     fit. That keeps one coordinate system for hit-testing at every width. */
+  .room1-inner{position:absolute; left:0; top:0; width:560px; height:400px;
+    transform-origin:0 0;}
+  .felt{position:absolute; left:24px; right:24px; top:20px; height:310px;
+    background:#15201a; border-radius:6px;}
+  .eqrow{position:absolute; left:0; right:0; display:flex; justify-content:center;}
+  .col{width:44px; height:72px; position:relative;}
+  .stick{position:absolute; width:5px; height:48px; border-radius:2.5px;
+    transform-origin:50% 50%; cursor:grab; touch-action:none; z-index:4;
+    background:linear-gradient(180deg,#e2d4b4,#bda98a);
+    box-shadow:0 1px 2px rgba(0,0,0,.5);}
+  .stick::after{content:''; position:absolute; left:-1px; right:-1px; top:-2px;
+    height:9px; border-radius:50%; background:#b4443a;}
+  .stick:active{cursor:grabbing;}
+  .stick.lift{z-index:9; box-shadow:0 6px 16px rgba(0,0,0,.6);}
+  .stick:focus-visible{outline:2px solid #e8e6e1; outline-offset:2px;}
+
+  .strip{position:absolute; left:0; right:0; display:flex; justify-content:center; gap:3px;}
+  .slotc{width:26px; height:26px; border-radius:50%; background:rgba(255,255,255,.045);
+    border:0; padding:0; cursor:pointer; position:relative;}
+  .slotc:focus-visible{outline:2px solid #e8e6e1; outline-offset:2px;}
+  .coin{position:absolute; inset:2px; border-radius:50%; touch-action:none;
+    box-shadow:0 1px 3px rgba(0,0,0,.55);}
+  .coin.b{background:linear-gradient(180deg,#4a4a52,#2b2b31);}
+  .coin.w{background:linear-gradient(180deg,#e6e2d8,#b9b5ab);}
+  .coin.sel{box-shadow:0 0 0 2px #c9a227, 0 1px 3px rgba(0,0,0,.55);}
+  .coin.free{position:absolute; width:22px; height:22px; inset:auto; z-index:7;}
+
+  .t1bar{display:flex; gap:10px; align-items:center; margin-top:10px; flex-wrap:wrap;}
+  .t1note{font-size:12px; color:var(--faint);}
+
+  /* ══ TASK TWO — THE RUN ══════════════════════════════════════════════ */
+  .run{position:relative; background:#0b0d10; border:1px solid var(--border);
+    border-radius:10px; overflow:hidden; line-height:0;}
+  .run canvas{display:block; width:100%;}
+  /* Two pads, because two pads is universal convention rather than a hint.
+     On a keyboard there is no legend at all — which does make this task
+     measurably easier on a phone, and the record stores which was used. */
+  .pads{display:none; justify-content:space-between; gap:10px; margin-top:10px;}
+  .pad{flex:1; height:64px; border-radius:10px; border:1px solid var(--border);
+    background:#17171a; color:var(--fg); font-size:22px; touch-action:none;}
+  .pad:active{background:#23232a;}
+  @media (hover:none) and (pointer:coarse){ .pads{display:flex;} }
+
   /* ══ TASK THREE — THE ROOM ═══════════════════════════════════════════
      One-point perspective: back wall, two doors, a plaque over them, and at
      the very bottom of the frame a slice of the arch you came in through.
@@ -214,20 +265,27 @@
     <div class="row"><button class="btn btn-p" id="refusedNext">Go on</button></div>
   </section>
 
-  <!-- ══ STAGE PANES ═════════════════════════════════════════════════
-       Phase 0: stubs. Every [data-stub] element is scaffolding and comes out
-       as each stage is built — they are named after what they exercise in the
-       recorder, which makes them signposts, which is exactly why they cannot
-       survive into a shipped stage. -->
+  <!-- ══ THE THREE TASKS ═════════════════════════════════════════════
+       Each pane holds its own scene and nothing else. No pane carries a
+       control legend, a hint, or a label that names a way out. -->
   <section id="p1" hidden>
     <header><p class="eyebrow">Task one</p><h1 id="h1-1">The table</h1></header>
-    <div class="card"><div id="body1"></div></div>
-    <div class="row" data-stub>
-      <button class="btn" data-stub data-act="sanctioned">move</button>
-      <button class="btn" data-stub data-act="fail">check</button>
-      <button class="btn" data-stub data-act="off">aside</button>
-      <button class="btn" data-stub data-act="escape">through</button>
+    <p class="lede" id="t1Ask">Make both lines true. Make the coins alternate.</p>
+
+    <div class="room1" id="room1">
+      <div class="room1-inner" id="room1In">
+        <div class="felt" id="felt"></div>
+        <div class="eqrow" id="eqA" style="top:40px;"></div>
+        <div class="eqrow" id="eqB" style="top:132px;"></div>
+        <div class="strip" id="strip" style="top:244px;"></div>
+      </div>
     </div>
+
+    <div class="t1bar">
+      <button class="btn" id="checkBtn">Check</button>
+      <span class="t1note" id="t1State"></span>
+    </div>
+
     <div class="slot" id="slot1"><p></p></div>
     <div class="row" style="margin-top:14px;">
       <button class="btn" id="exit1" hidden></button>
@@ -236,13 +294,16 @@
 
   <section id="p2" hidden>
     <header><p class="eyebrow">Task two</p><h1 id="h1-2">The run</h1></header>
-    <div class="card"><div id="body2"></div></div>
-    <div class="row" data-stub>
-      <button class="btn" data-stub data-act="sanctioned">move</button>
-      <button class="btn" data-stub data-act="fail">check</button>
-      <button class="btn" data-stub data-act="off">aside</button>
-      <button class="btn" data-stub data-act="escape">through</button>
+    <p class="lede">Reach the flag.</p>
+
+    <div class="run" id="run">
+      <canvas id="runCvs"></canvas>
     </div>
+    <div class="pads">
+      <button class="pad" id="padL" aria-label="Left">&#8592;</button>
+      <button class="pad" id="padR" aria-label="Right">&#8594;</button>
+    </div>
+
     <div class="slot" id="slot2"><p></p></div>
     <div class="row" style="margin-top:14px;">
       <button class="btn" id="exit2" hidden></button>
@@ -429,6 +490,11 @@ function probeStorage(){
 const QS   = new URLSearchParams(location.search);
 const FAST = QS.get('fast') === '1';        // scales ladder thresholds for testing
 const SELFTEST = QS.get('selftest') === '1';
+
+const prefersStill = () => {
+  try { return window.matchMedia('(prefers-reduced-motion: reduce)').matches; }
+  catch(e){ return false; }
+};
 
 const now  = () => Date.now();
 const rid  = () => Math.random().toString(36).slice(2, 6);
@@ -733,20 +799,676 @@ function revealExit(n){
    restored, so there is no second code path to drift out of sync — that is
    the whole reload-resume mechanism. */
 
-function stubStage(n, title, exitLabel){
-  return {
-    n, paneId: 'p' + n, exitLabel,
-    fresh(){ return { acts:0, _lives:0 }; },
-    mount(w){
-      document.getElementById('body' + n).innerHTML =
-        '<p class="lede">' + title + '</p>' +
-        '<p class="muted">Attempts so far: <b>' + w.acts + '</b></p>';
-    },
-    unmount(){},
-    tick(){},
-    onKey(){ return false; },
-  };
+
+/* ── TASK ONE — THE TABLE ────────────────────────────────────────────
+   Two false equations and six coins. Both puzzles turn on the same thing:
+   a shape you are reading as one piece is not one piece. The plus sign is
+   two matchsticks; the run of three whites is not a block.
+
+   The unsignposted affordance is separate from either puzzle and does
+   nothing here: a matchstick dropped off the felt stays where it is put.
+   There is no pocket, no counter, no outline, no cursor change at the
+   edge. The only feedback is persistence — it is still lying in that
+   corner of the screen two tasks later. */
+
+const T1 = {
+  COLW:44, COLH:72, LEN:48, TH:5,
+  SLOT:{ vert:{x:22,y:34,r:0}, hA:{x:22,y:27,r:90}, hB:{x:22,y:43,r:90},
+         // the tops diverge and the feet meet: a V, not a caret
+         dL:{x:14,y:34,r:-24}, dR:{x:30,y:34,r:24} },
+  // '_' is a latent column: it is never drawn and nothing refers to it.
+  LAYOUT:{
+    A:[['dL','dR'],['vert'],[],['hA','hB'],['dL','dR'],['vert'],['vert'],['vert','hA'],['vert']],
+    B:[['vert'],['vert'],['vert'],['hA','hB'],['vert'],['vert'],['vert'],['vert','hA'],['vert'],['vert'],['vert']],
+  },
+  COINS0:[null,null,null,null,'B','B','B','W','W','W',null,null,null,null],
+};
+
+function tokenOf(set){
+  const s = new Set(set), n = s.size, has = k => s.has(k);
+  if (n === 0) return '';
+  if (n === 1 && has('vert')) return 'I';
+  if (n === 1 && has('hA'))   return '-';
+  if (n === 2 && has('dL') && has('dR'))   return 'V';
+  if (n === 2 && has('vert') && has('hA')) return '+';
+  if (n === 2 && has('hA') && has('hB'))   return '=';
+  return '?';
 }
+function romanVal(s){
+  if (!/^[IVX]+$/.test(s)) return null;
+  const V = {I:1, V:5, X:10};
+  let t = 0;
+  for (let i = 0; i < s.length; i++){
+    const a = V[s[i]], b = V[s[i+1]];
+    t += (b && b > a) ? -a : a;
+  }
+  return t;
+}
+function evalExpr(p){
+  if (!p) return null;
+  let total = null, op = '+';
+  for (const t of p.split(/([+-])/)){
+    if (t === '') continue;
+    if (t === '+' || t === '-'){ op = t; continue; }
+    const v = romanVal(t);
+    if (v === null) return null;
+    total = total === null ? v : (op === '+' ? total + v : total - v);
+  }
+  return total;
+}
+/* The arrangement is evaluated. It is never compared against a stored answer,
+   so an unintended true equation passes and the log records which one — the
+   alternative punishes exactly the behaviour this whole thing exists to find. */
+function evalEquation(cols){
+  const toks = cols.map(tokenOf);
+  const str  = toks.join('');
+  if (!str || str.includes('?')) return { ok:false, str };
+  const parts = str.split('=');
+  if (parts.length < 2) return { ok:false, str };
+  const vals = parts.map(evalExpr);
+  if (vals.some(v => v === null)) return { ok:false, str };
+  return { ok: vals.every(v => v === vals[0]), str, vals };
+}
+
+function coinsAlternating(coins){
+  const occ = [];
+  coins.forEach((c, i) => { if (c) occ.push(i); });
+  if (occ.length !== 6) return false;
+  for (let k = 1; k < 6; k++) if (occ[k] !== occ[0] + k) return false;
+  for (let k = 0; k < 5; k++) if (coins[occ[k]] === coins[occ[k+1]]) return false;
+  return true;
+}
+
+const STAGE1 = {
+  n:1, paneId:'p1', exitLabel:'Leave the table',
+
+  fresh(){
+    const sticks = [];
+    let id = 0;
+    for (const eq of ['A','B'])
+      T1.LAYOUT[eq].forEach((slots, col) =>
+        slots.forEach(slot => sticks.push({ id:'s' + (id++), eq, col, slot, x:0, y:0 })));
+    return { sticks, coins:T1.COINS0.slice(), free:[], sel:null, checks:0,
+             solvedA:false, solvedB:false, _lives:0 };
+  },
+
+  mount(w){
+    this.w = w;
+    this.inner = document.getElementById('room1In');
+    this.room  = document.getElementById('room1');
+    this.buildGrid();
+    this.buildStrip();
+    this.renderSticks();
+    this.renderCoins();
+    this.fit();
+    if (!this._ro){
+      this._ro = new ResizeObserver(() => this.fit());
+      this._ro.observe(this.room);
+    }
+    document.getElementById('checkBtn').onclick = () => this.check(true);
+    this.paintState();
+  },
+
+  unmount(){ if (this._ro){ this._ro.disconnect(); this._ro = null; } },
+  tick(){},
+  onKey(e, down){
+    if (!down) return false;
+    const el = document.activeElement;
+    if (!el || !el.classList || !el.classList.contains('stick')) return false;
+    const d = { ArrowLeft:[-1,0], ArrowRight:[1,0], ArrowUp:[0,-1], ArrowDown:[0,1] }[e.key];
+    if (!d) return false;
+    // Arrowing a stick past the felt edge does exactly what dragging it past
+    // the edge does. No extra key, and nothing says so.
+    const s = this.w.sticks.find(x => x.id === el.dataset.id);
+    const p = this.centreOf(s);
+    this.place(s, p.x + d[0] * 22, p.y + d[1] * 22);
+    return true;
+  },
+
+  /* ── geometry ───────────────────────────────────────────────────── */
+  fit(){
+    const w = this.room.clientWidth || 560;
+    const k = Math.min(1, w / 560);
+    this.scale = k;
+    this.offX = Math.max(0, (w - 560 * k) / 2);
+    this.inner.style.transform = 'translateX(' + this.offX + 'px) scale(' + k + ')';
+    this.room.style.height = Math.round(400 * k) + 'px';
+  },
+  toLocal(clientX, clientY){
+    const r = this.room.getBoundingClientRect();
+    return { x:(clientX - r.left - this.offX) / this.scale,
+             y:(clientY - r.top) / this.scale };
+  },
+  colOrigin(eq, col){
+    const row = document.getElementById('eq' + eq);
+    const n = T1.LAYOUT[eq].length;
+    const left = (560 - n * T1.COLW) / 2;
+    return { x: left + col * T1.COLW, y: parseFloat(row.style.top) };
+  },
+  slotCentre(eq, col, slot){
+    const o = this.colOrigin(eq, col), s = T1.SLOT[slot];
+    return { x:o.x + s.x, y:o.y + s.y, r:s.r };
+  },
+  centreOf(s){
+    return s.eq ? this.slotCentre(s.eq, s.col, s.slot) : { x:s.x, y:s.y, r:s.rot || 0 };
+  },
+  onFelt(x, y){
+    const f = document.getElementById('felt');
+    return x >= 24 && x <= 536 && y >= 20 && y <= 330;
+  },
+  overStrip(x, y){
+    const st = document.getElementById('strip').getBoundingClientRect();
+    const a = this.toLocal(st.left, st.top), b = this.toLocal(st.right, st.bottom);
+    return y >= a.y - 8 && y <= b.y + 8 && x >= a.x - 8 && x <= b.x + 8;
+  },
+
+  /* ── build ──────────────────────────────────────────────────────── */
+  buildGrid(){
+    for (const eq of ['A','B']){
+      const row = document.getElementById('eq' + eq);
+      row.innerHTML = '';
+      for (let i = 0; i < T1.LAYOUT[eq].length; i++){
+        const c = document.createElement('div');
+        c.className = 'col';
+        row.appendChild(c);
+      }
+    }
+  },
+  buildStrip(){
+    const strip = document.getElementById('strip');
+    strip.innerHTML = '';
+    for (let i = 0; i < 14; i++){
+      const b = document.createElement('button');
+      b.className = 'slotc';
+      b.dataset.i = i;
+      b.setAttribute('aria-label', 'Position ' + (i + 1));
+      b.onclick = () => this.clickSlot(i);
+      strip.appendChild(b);
+    }
+  },
+
+  /* ── render ─────────────────────────────────────────────────────── */
+  renderSticks(){
+    this.inner.querySelectorAll('.stick').forEach(e => e.remove());
+    for (const s of this.w.sticks){
+      const el = document.createElement('div');
+      el.className = 'stick';
+      el.dataset.id = s.id;
+      el.tabIndex = 0;
+      this.inner.appendChild(el);
+      this.placeEl(el, s);
+      this.wireStick(el, s);
+    }
+  },
+  placeEl(el, s){
+    const c = this.centreOf(s);
+    el.style.transform = 'translate(' + (c.x - T1.TH/2) + 'px,' + (c.y - T1.LEN/2) + 'px) rotate(' + (c.r || 0) + 'deg)';
+  },
+  renderCoins(){
+    this.inner.querySelectorAll('.coin').forEach(e => e.remove());
+    const strip = document.getElementById('strip');
+    this.w.coins.forEach((c, i) => {
+      if (!c) return;
+      const host = strip.children[i];
+      const el = document.createElement('div');
+      el.className = 'coin ' + c.toLowerCase();
+      el.dataset.i = i;
+      if (this.w.sel !== null && (i === this.w.sel || i === this.w.sel + 1)) el.classList.add('sel');
+      host.appendChild(el);
+      this.wireCoin(el, i);
+    });
+    for (const f of this.w.free){
+      const el = document.createElement('div');
+      el.className = 'coin free ' + f.kind.toLowerCase();
+      el.style.left = f.x + 'px'; el.style.top = f.y + 'px';
+      this.inner.appendChild(el);
+    }
+  },
+  paintState(){
+    const a = evalEquation(this.colsOf('A')), b = evalEquation(this.colsOf('B'));
+    const el = document.getElementById('t1State');
+    el.textContent = this.w.checks
+      ? (a.ok ? '✓' : '✗') + ' · ' + (b.ok ? '✓' : '✗') +
+        ' · ' + (coinsAlternating(this.w.coins) ? '✓' : '✗')
+      : '';
+  },
+  colsOf(eq){
+    return T1.LAYOUT[eq].map((_, col) =>
+      this.w.sticks.filter(s => s.eq === eq && s.col === col).map(s => s.slot));
+  },
+
+  /* ── moving a stick ─────────────────────────────────────────────── */
+  wireStick(el, s){
+    let drag = null;
+    el.addEventListener('pointerdown', e => {
+      try { el.setPointerCapture(e.pointerId); } catch(err){}
+      const p = this.toLocal(e.clientX, e.clientY), c = this.centreOf(s);
+      drag = { dx:p.x - c.x, dy:p.y - c.y, moved:false };
+      el.classList.add('lift');
+      e.preventDefault();
+    });
+    el.addEventListener('pointermove', e => {
+      if (!drag) return;
+      const p = this.toLocal(e.clientX, e.clientY);
+      if (Math.abs(p.x - drag.dx - this.centreOf(s).x) > 3) drag.moved = true;
+      drag.moved = true;
+      el.style.transform = 'translate(' + (p.x - drag.dx - T1.TH/2) + 'px,' +
+        (p.y - drag.dy - T1.LEN/2) + 'px) rotate(' + (this.centreOf(s).r || 0) + 'deg)';
+    });
+    const up = e => {
+      if (!drag) return;
+      const moved = drag.moved; drag = null;
+      el.classList.remove('lift');
+      if (!moved){ this.placeEl(el, s); return; }
+      const p = this.toLocal(e.clientX, e.clientY);
+      this.place(s, p.x, p.y);
+    };
+    el.addEventListener('pointerup', up);
+    el.addEventListener('pointercancel', () => { drag = null; el.classList.remove('lift'); this.placeEl(el, s); });
+  },
+
+  /* Where a released stick ends up. Every branch here is available from the
+     first frame and none of them is mentioned anywhere on the page. */
+  place(s, x, y){
+    const from = { eq:s.eq, col:s.col, slot:s.slot };
+
+    if (!this.onFelt(x, y)){
+      // Off the felt. It stays exactly where it was put and it is kept.
+      s.eq = null; s.x = x; s.y = y; s.rot = 0;
+      if (!SESSION.carry.sticks.includes(s.id)) SESSION.carry.sticks.push(s.id);
+      offPath(1, 'pocket_stick', { id:s.id, from });
+      return this.after(s);
+    }
+
+    if (this.overStrip(x, y)){
+      s.eq = null; s.x = x; s.y = y; s.rot = 90;
+      offPath(1, 'stick_on_coin', { id:s.id, from });
+      return this.after(s);
+    }
+
+    const t = this.nearestSlot(x, y, s);
+    if (!t){
+      if (from.eq){ s.eq = from.eq; s.col = from.col; s.slot = from.slot; }
+      return this.after(s);
+    }
+
+    const carried = SESSION.carry.sticks.indexOf(s.id);
+    if (carried >= 0) SESSION.carry.sticks.splice(carried, 1);
+    s.eq = t.eq; s.col = t.col; s.slot = t.slot;
+
+    if (from.eq && from.eq !== t.eq) offPath(1, 'cross_eq', { id:s.id, from, to:t });
+    else act(1, 'move_stick', { id:s.id, from, to:t });
+    this.after(s);
+  },
+  nearestSlot(x, y, self){
+    let best = null, bestD = 30;
+    for (const eq of ['A','B']){
+      for (let col = 0; col < T1.LAYOUT[eq].length; col++){
+        for (const slot in T1.SLOT){
+          const taken = this.w.sticks.some(s => s !== self && s.eq === eq && s.col === col && s.slot === slot);
+          if (taken) continue;
+          const c = this.slotCentre(eq, col, slot);
+          const d = Math.hypot(c.x - x, c.y - y);
+          if (d < bestD){ bestD = d; best = { eq, col, slot }; }
+        }
+      }
+    }
+    return best;
+  },
+  after(s){
+    this.renderSticks();
+    this.check(false);
+    saveSession();
+  },
+
+  /* ── moving a coin pair ─────────────────────────────────────────── */
+  wireCoin(el, i){
+    let drag = null;
+    el.addEventListener('pointerdown', e => {
+      try { el.setPointerCapture(e.pointerId); } catch(err){}
+      drag = { moved:false, sx:e.clientX, sy:e.clientY };
+      e.preventDefault(); e.stopPropagation();
+    });
+    el.addEventListener('pointermove', e => {
+      if (!drag) return;
+      if (Math.hypot(e.clientX - drag.sx, e.clientY - drag.sy) > 4) drag.moved = true;
+      if (!drag.moved) return;
+      const p = this.toLocal(e.clientX, e.clientY);
+      el.classList.add('free');
+      el.style.left = (p.x - 11) + 'px'; el.style.top = (p.y - 11) + 'px';
+      if (el.parentElement !== this.inner) this.inner.appendChild(el);
+    });
+    el.addEventListener('pointerup', e => {
+      if (!drag) return;
+      const moved = drag.moved; drag = null;
+      if (!moved){ this.clickCoin(i); return; }
+      const p = this.toLocal(e.clientX, e.clientY);
+      const kind = this.w.coins[i];
+      const onto = this.coinUnder(p.x, p.y, i);
+      this.w.coins[i] = null;
+      if (onto !== null){
+        this.w.free.push({ kind, x:p.x - 11, y:p.y - 11 });
+        offPath(1, 'coin_stack', { from:i, onto });
+      } else if (!this.onFelt(p.x, p.y)){
+        this.w.free.push({ kind, x:p.x - 11, y:p.y - 11 });
+        offPath(1, 'coin_off_table', { from:i });
+      } else {
+        this.w.free.push({ kind, x:p.x - 11, y:p.y - 11 });
+        offPath(1, 'coin_loose', { from:i });
+      }
+      this.w.sel = null;
+      this.renderCoins(); this.check(false); saveSession();
+    });
+    el.addEventListener('pointercancel', () => { drag = null; this.renderCoins(); });
+  },
+  coinUnder(x, y, notI){
+    const strip = document.getElementById('strip');
+    for (let i = 0; i < 14; i++){
+      if (i === notI || !this.w.coins[i]) continue;
+      const r = strip.children[i].getBoundingClientRect();
+      const c = this.toLocal(r.left + r.width/2, r.top + r.height/2);
+      if (Math.hypot(c.x - x, c.y - y) < 16) return i;
+    }
+    return null;
+  },
+  clickCoin(i){
+    const w = this.w;
+    if (w.sel === i){ w.sel = null; this.renderCoins(); return; }
+    if (w.coins[i] && w.coins[i+1]) w.sel = i;
+    else if (w.coins[i] && w.coins[i-1]) w.sel = i - 1;
+    else { fail(1, 'coin_no_pair', { i }); this.renderCoins(); return; }
+    act(1, 'select_pair', { at:w.sel });
+    this.renderCoins();
+  },
+  clickSlot(j){
+    const w = this.w;
+    if (w.sel === null) return;
+    if (w.coins[j] || w.coins[j+1] || j > 12){ fail(1, 'coin_bad_drop', { j }); return; }
+    const a = w.coins[w.sel], b = w.coins[w.sel + 1];
+    w.coins[w.sel] = null; w.coins[w.sel + 1] = null;
+    w.coins[j] = a; w.coins[j + 1] = b;
+    const mixed = a !== b;
+    act(1, 'move_pair', { from:w.sel, to:j, mixed });
+    if (mixed) constraintBreak(1, 'mixed_pair', { from:w.sel, to:j });
+    w.sel = null;
+    this.renderCoins(); this.check(false); saveSession();
+  },
+
+  /* ── checking ───────────────────────────────────────────────────── */
+  check(explicit){
+    const w = this.w;
+    const a = evalEquation(this.colsOf('A'));
+    const b = evalEquation(this.colsOf('B'));
+    const coins = coinsAlternating(w.coins);
+
+    if (a.ok && !w.solvedA){ w.solvedA = true; constraintBreak(1, 'eqA', { str:a.str }); }
+    if (b.ok && !w.solvedB){ w.solvedB = true; constraintBreak(1, 'eqB', { str:b.str }); }
+
+    if (explicit){
+      w.checks++;
+      if (a.ok && b.ok && coins) { this.paintState(); return this.finish(); }
+      fail(1, 'check', { a:a.ok, b:b.ok, coins, strA:a.str, strB:b.str });
+    } else if (a.ok && b.ok && coins){
+      this.paintState();
+      return this.finish();
+    }
+    this.paintState();
+  },
+
+  finish(){ this.close('solved'); },
+  exit(){ this.close('left'); },
+
+  /* Keeping a matchstick is the extrapolation, and it counts as kept only if
+     it is still off the felt when the table is left — by either route. Picking
+     one up and putting it back is a different thing, and the log separates the
+     two: the off_path is recorded when it happens, the escape only here. */
+  close(how){
+    if (SESSION.carry.sticks.length){
+      escape(1, 'pocket_stick', { kept:SESSION.carry.sticks.length, how });
+      closeStage(1, 'broke');
+    } else {
+      closeStage(1, how === 'solved' ? 'complied' : 'complied');
+    }
+  },
+};
+
+/* ── TASK TWO — THE RUN ──────────────────────────────────────────────
+   A wall that cannot be passed at any speed, and a flag behind it. The
+   constraint to drop is that the direction of travel is the direction of
+   the goal: the way through runs backwards, off the start line, into an
+   arch that is drawn from the first frame at the far left and is never
+   mentioned, never pointed at, and never on screen unless you go there.
+
+   There is deliberately no jump. Clearing a wall to reach a goal you are
+   already facing does not drop the constraint under test, and shipping a
+   second solution that is not the measured one would muddy the reading.
+   The wall is impassable by clamp, and that is checked rather than felt. */
+
+/* The arch sits about one screen behind the line. Far enough that going there
+   is a commitment and never visible from the start, close enough that someone
+   who tries reversing for a couple of seconds is actually rewarded for it —
+   at the first distance I built (1,350px, nearly six seconds of holding a key
+   the wrong way) a student could have the whole insight, act on it, see
+   nothing, and give up, and the log would have read as a false negative. */
+const T2 = {
+  GROUND:-700, TUNNEL:-420, START:200, WALL:2600, TOUT:3000, FLAG:3400, END:3600,
+  W:150,                      // wall height, in a 150-tall drivable band
+  ACC:620, BRAKE:900, DRAG:0.86, VMAX:400, VREV:240,
+  CARW:56, CARH:26,
+};
+
+const STAGE2 = {
+  n:2, paneId:'p2', exitLabel:'Stop here',
+
+  fresh(){ return { runs:0, wallHits:0, maxX:T2.START, minX:T2.START,
+                    revHit:false, tunnel:false, marks:0, _lives:0 }; },
+
+  mount(w){
+    this.w = w;
+    this.cvs = document.getElementById('runCvs');
+    this.ctx = this.cvs.getContext('2d');
+    this.host = document.getElementById('run');
+    this.done = false;
+    this.RUN = { x:T2.START, vx:0, camX:T2.START - 200, under:0, last:0 };
+    w.runs++;
+    this.size();
+    if (!this._ro){ this._ro = new ResizeObserver(() => this.size()); this._ro.observe(this.host); }
+    const hold = (el, key) => {
+      el.addEventListener('pointerdown', e => { e.preventDefault(); HELD.add(key); this.via = 'touch'; });
+      const off = () => HELD.delete(key);
+      el.addEventListener('pointerup', off);
+      el.addEventListener('pointerleave', off);
+      el.addEventListener('pointercancel', off);
+    };
+    hold(document.getElementById('padL'), 'ArrowLeft');
+    hold(document.getElementById('padR'), 'ArrowRight');
+    this.loop = this.loop.bind(this);
+    requestAnimationFrame(this.loop);
+  },
+
+  unmount(){
+    this.done = true;
+    this.RUN = null;
+    if (this._ro){ this._ro.disconnect(); this._ro = null; }
+  },
+
+  onKey(e, down){
+    if (this.done) return false;
+    if (['ArrowLeft','ArrowRight','a','A','d','D'].includes(e.key)){
+      if (down){ this.via = 'key'; ladder.poke(2); }
+      return true;
+    }
+    return false;
+  },
+
+  size(){
+    const w = this.host.clientWidth || 640;
+    const h = Math.max(200, Math.round(w * 0.36));
+    this.DPR = Math.min(2, window.devicePixelRatio || 1);
+    this.cvs.width = Math.round(w * this.DPR);
+    this.cvs.height = Math.round(h * this.DPR);
+    this.cvs.style.width = w + 'px';
+    this.cvs.style.height = h + 'px';
+    this.ctx.setTransform(this.DPR, 0, 0, this.DPR, 0, 0);
+    this.VW = w; this.VH = h;
+  },
+
+  loop(now){
+    if (this.done || !this.RUN) return;
+    const R = this.RUN;
+    const dt = Math.min(64, now - (R.last || now)) / 1000;
+    R.last = now;
+    this.step(dt);
+    this.paint();
+    requestAnimationFrame(this.loop);
+  },
+
+  step(dt){
+    const R = this.RUN, w = this.w;
+    const right = HELD.has('ArrowRight') || HELD.has('d') || HELD.has('D');
+    const left  = HELD.has('ArrowLeft')  || HELD.has('a') || HELD.has('A');
+
+    // Right accelerates. Left slows you, and keeps going once you are stopped —
+    // the conventional binding stops at zero, and that extra clause is the
+    // whole affordance. Nothing says so.
+    if (right) R.vx += T2.ACC * dt;
+    else if (left) R.vx -= (R.vx > 0 ? T2.BRAKE : T2.ACC) * dt;
+    else R.vx *= Math.pow(T2.DRAG, dt * 60);
+
+    R.vx = Math.max(-T2.VREV, Math.min(T2.VMAX, R.vx));
+    R.x += R.vx * dt;
+
+    if (R.x > T2.GROUND && R.x < T2.END){ /* in bounds */ }
+    if (R.x < T2.GROUND + 40){ R.x = T2.GROUND + 40; R.vx = 0; }
+
+    // the wall, approached from the near side
+    if (R.x < T2.WALL && R.x + T2.CARW/2 > T2.WALL - 4){
+      R.x = T2.WALL - 4 - T2.CARW/2;
+      if (R.vx > 60){ w.wallHits++; fail(2, 'wall', { v:Math.round(R.vx) }); }
+      R.vx = 0;
+    }
+
+    w.maxX = Math.max(w.maxX, R.x);
+    w.minX = Math.min(w.minX, R.x);
+
+    // The clause that stops a plain brake-to-stop from reading as reversing:
+    // braking never carries you behind the line.
+    if (!w.revHit && R.vx < -10 && R.x < T2.START){
+      w.revHit = true;
+      offPath(2, 'reverse', { x:Math.round(R.x), via:this.via || 'key' });
+    }
+    if (R.x < T2.START){
+      const mark = Math.floor((T2.START - R.x) / 200);
+      if (mark > w.marks){ w.marks = mark; rec.ev(EV.off_path, 2, { kind:'behind_line', px:mark * 200 }); }
+    }
+
+    if (!w.tunnel && R.x <= T2.TUNNEL){
+      w.tunnel = true;
+      escape(2, 'tunnel', { x:Math.round(R.x), via:this.via || 'key' });
+      R.under = 1;
+      R.x = T2.TOUT; R.vx = Math.max(120, R.vx * -1);
+      saveSession();
+    }
+    if (R.under > 0) R.under = Math.max(0, R.under - dt * 1.6);
+
+    if (R.x >= T2.FLAG){ this.finish(); return; }
+
+    const want = R.x - this.VW * 0.34;
+    R.camX += (want - R.camX) * Math.min(1, dt * 6);
+  },
+
+  paint(){
+    const c = this.ctx, R = this.RUN, W = this.VW, H = this.VH;
+    const gy = H - 46;
+    const sx = x => x - R.camX;
+    const still = prefersStill();
+
+    const sky = c.createLinearGradient(0, 0, 0, H);
+    sky.addColorStop(0, '#0d1017'); sky.addColorStop(1, '#0a0c10');
+    c.fillStyle = sky; c.fillRect(0, 0, W, H);
+
+    // far bank — the arch is cut into it, drawn at full contrast, just never
+    // anywhere the camera goes unless you take it there
+    c.fillStyle = '#12161d';
+    c.beginPath();
+    c.moveTo(sx(T2.GROUND) - 40, gy);
+    c.lineTo(sx(T2.GROUND) - 40, gy - 96);
+    c.lineTo(sx(T2.START + 160), gy - 96);
+    c.lineTo(sx(T2.START + 460), gy);          // slope down to the plain
+    c.closePath(); c.fill();
+
+    const tx = sx(T2.TUNNEL);
+    if (tx > -200 && tx < W + 200){
+      c.fillStyle = '#05070a';
+      c.beginPath();
+      c.moveTo(tx - 46, gy);
+      c.lineTo(tx - 46, gy - 40);
+      c.quadraticCurveTo(tx, gy - 84, tx + 46, gy - 40);
+      c.lineTo(tx + 46, gy);
+      c.closePath(); c.fill();
+      c.strokeStyle = '#1e242e'; c.lineWidth = 1.5; c.stroke();
+    }
+
+    c.fillStyle = '#0e1116'; c.fillRect(0, gy, W, H - gy);
+    c.strokeStyle = '#242b35'; c.lineWidth = 1;
+    c.beginPath(); c.moveTo(0, gy + .5); c.lineTo(W, gy + .5); c.stroke();
+
+    if (!still){
+      c.strokeStyle = '#1a1f27';
+      for (let m = Math.floor((R.camX - 200) / 120) * 120; m < R.camX + W + 200; m += 120){
+        const x = sx(m);
+        c.beginPath(); c.moveTo(x, gy + 10); c.lineTo(x + 14, gy + 10); c.stroke();
+      }
+    }
+
+    // start line
+    c.strokeStyle = '#3a4250'; c.setLineDash([5, 5]); c.lineWidth = 2;
+    c.beginPath(); c.moveTo(sx(T2.START), gy); c.lineTo(sx(T2.START), gy - 74); c.stroke();
+    c.setLineDash([]);
+
+    // the wall
+    const wx = sx(T2.WALL);
+    if (wx > -120 && wx < W + 120){
+      c.fillStyle = '#272c35'; c.fillRect(wx - 12, gy - T2.W, 24, T2.W);
+      c.fillStyle = '#1b1f26';
+      for (let i = 0; i < 7; i++) c.fillRect(wx - 12, gy - T2.W + i * (T2.W / 7), 24, 2);
+    }
+
+    // the flag
+    const fx = sx(T2.FLAG);
+    if (fx > -80 && fx < W + 80){
+      c.strokeStyle = '#8a8a93'; c.lineWidth = 2;
+      c.beginPath(); c.moveTo(fx, gy); c.lineTo(fx, gy - 70); c.stroke();
+      c.fillStyle = '#c9a227';
+      c.beginPath(); c.moveTo(fx, gy - 70); c.lineTo(fx + 30, gy - 60); c.lineTo(fx, gy - 50);
+      c.closePath(); c.fill();
+    }
+
+    // the car
+    const cx = sx(R.x), cy = gy - T2.CARH / 2 - 5;
+    c.globalAlpha = 1 - R.under * 0.85;
+    c.fillStyle = '#d8d3c8';
+    c.beginPath();
+    c.roundRect ? c.roundRect(cx - T2.CARW/2, cy - T2.CARH/2, T2.CARW, T2.CARH, 5)
+                : c.rect(cx - T2.CARW/2, cy - T2.CARH/2, T2.CARW, T2.CARH);
+    c.fill();
+    c.fillStyle = '#7d8794';
+    c.fillRect(cx - T2.CARW/2 + 9, cy - T2.CARH/2 + 4, 16, 8);
+    c.fillStyle = '#15171b';
+    for (const off of [-14, 14]){
+      c.beginPath(); c.arc(cx + off, cy + T2.CARH/2, 6, 0, Math.PI * 2); c.fill();
+    }
+    c.globalAlpha = 1;
+  },
+
+  finish(){
+    if (this.done) return;
+    this.done = true;
+    closeStage(2, this.w.tunnel ? 'broke' : 'complied');
+  },
+
+  exit(){ closeStage(2, this.w.tunnel ? 'broke' : 'complied'); },
+};
 
 /* ── TASK THREE — THE ROOM ───────────────────────────────────────────
    Both doors fail. Three ways out, none of them named anywhere:
@@ -923,11 +1645,7 @@ const STAGE3 = {
   },
 };
 
-const STAGES = {
-  1: stubStage(1, 'A table, an equation and a row of coins.', 'Leave the table'),
-  2: stubStage(2, 'A course, a wall, and a flag past it.',    'Stop here'),
-  3: STAGE3,
-};
+const STAGES = { 1: STAGE1, 2: STAGE2, 3: STAGE3 };
 
 /* ══ EVENT HELPERS the stages call ═══════════════════════════════════ */
 
@@ -1039,9 +1757,22 @@ function finish(){
 
 /* ══ DEBRIEF ═════════════════════════════════════════════════════════ */
 
+/* The log keeps machine names; a person reading their own record should not
+   have to. */
+const ESCAPE_NAME = {
+  pocket_stick:      'kept a matchstick',
+  tunnel:            'went the other way',
+  refuse_frame:      'walked out',
+  rewrote_terms:     'wrote the rule',
+  rewrote_terms_door:'wrote the rule',
+  cross_context:     'used the matchstick on the door',
+};
+
 function renderDebrief(){
   const h = headline();
-  const esc = n => h.escapeKinds[n].length ? h.escapeKinds[n].join(', ') : '—';
+  const esc = n => h.escapeKinds[n].length
+    ? h.escapeKinds[n].map(k => ESCAPE_NAME[k] || k).join(', ')
+    : 'none';
 
   document.getElementById('debriefBody').innerHTML =
     '<p>Each task had a way through that nothing on the screen mentioned. ' +
@@ -1063,7 +1794,7 @@ function renderDebrief(){
           h.secToFirstOffPath[n] === null ? '—' : h.secToFirstOffPath[n] + 's') +
       row('Task ' + n + ' — prompt level reached', 'L' + h.ladderAtBreak[n]) +
       row('Task ' + n + ' — actions first', h.actionsBeforeBreak[n]) +
-      row('Task ' + n + ' — way out found', esc(n))
+      row('Task ' + n + ' — way through found', esc(n))
     ).join('<hr class="rule">');
 
   function row(k, v){
@@ -1189,23 +1920,11 @@ document.getElementById('beginBtn').onclick = () => enterStage(1);
 document.getElementById('dlBtn').onclick    = download;
 document.getElementById('copyBtn').onclick  = e => copyOut(e.currentTarget);
 for (const n of [1,2,3]){
-  document.getElementById('exit' + n).onclick = () => closeStage(n, 'complied');
+  document.getElementById('exit' + n).onclick = () => {
+    const st = STAGES[n];
+    if (typeof st.exit === 'function') st.exit(); else closeStage(n, 'complied');
+  };
 }
-
-/* Phase 0 scaffolding — the stub buttons. Removed stage by stage. */
-document.querySelectorAll('[data-act]').forEach(b => {
-  b.addEventListener('click', () => {
-    const n = SESSION.stage; if (!n) return;
-    const st = SESSION.stages[n];
-    st.w.acts++;
-    STAGES[n].mount(st.w);
-    const a = b.dataset.act;
-    if (a === 'sanctioned') act(n, 'stub_move');
-    else if (a === 'fail')  fail(n, 'stub_check');
-    else if (a === 'off')   offPath(n, 'stub_aside');
-    else if (a === 'escape'){ escape(n, 'stub_through'); closeStage(n, 'broke'); }
-  });
-});
 
 /* Resume lands you back where you were, including mid-task. */
 if (resumed && !SESSION.finished){
@@ -1224,6 +1943,106 @@ if (resumed && !SESSION.finished){
 
 window.__test = { SESSION, rec, headline, LS, ls, ladder, STAGES, HELD,
                   get session(){ return SESSION; } };
+
+/* ══ SELF TEST ═══════════════════════════════════════════════════════
+   ?selftest=1 only. Inert otherwise. These are the four things that would
+   rot silently under a later edit: a puzzle that stops being solvable, an
+   evaluator that starts rejecting a correct answer, a wall that becomes
+   passable, and a word that leaks a way out into the page. Everything else
+   is checked by driving the real thing. */
+if (SELFTEST){
+  const out = document.getElementById('out');
+  out.hidden = false;
+  const L = [];
+  const ok = (name, pass, detail) => L.push((pass ? 'PASS  ' : 'FAIL  ') + name + (detail ? '  — ' + detail : ''));
+
+  // 1. the matchstick items, and the evaluator that judges them
+  const mk = layout => layout.map(c => c.slice());
+  const colsFrom = l => l;
+  ok('eqA starts false', evalEquation(colsFrom(T1.LAYOUT.A)).str === 'VI=VII+I'
+      && !evalEquation(colsFrom(T1.LAYOUT.A)).ok, evalEquation(colsFrom(T1.LAYOUT.A)).str);
+  ok('eqB starts false', evalEquation(colsFrom(T1.LAYOUT.B)).str === 'III=III+III'
+      && !evalEquation(colsFrom(T1.LAYOUT.B)).ok, evalEquation(colsFrom(T1.LAYOUT.B)).str);
+  const solvedA = mk(T1.LAYOUT.A); solvedA[6] = []; solvedA[2] = ['vert'];
+  const rA = evalEquation(solvedA);
+  ok('eqA has its one-move solution', rA.ok && rA.str === 'VII=VI+I', rA.str);
+  const solvedB = mk(T1.LAYOUT.B); solvedB[7] = ['hA','hB'];
+  const rB = evalEquation(solvedB);
+  ok('eqB has its chunk-decomposition solution', rB.ok && rB.str === 'III=III=III', rB.str);
+  ok('roman numerals', romanVal('IV') === 4 && romanVal('VII') === 7 && romanVal('IX') === 9);
+
+  // 2. the coin strip — re-run the search rather than trusting the layout
+  (function(){
+    const goal = c => coinsAlternating(c);
+    const key = c => c.map(x => x || '.').join('');
+    const seen = new Set([key(T1.COINS0)]);
+    let frontier = [T1.COINS0.slice()], depth = 0, found = 0;
+    while (frontier.length && depth < 6 && !found){
+      const next = [];
+      for (const c of frontier){
+        if (goal(c)){ found = depth; break; }
+        for (let i = 0; i < 13; i++){
+          if (!c[i] || !c[i+1]) continue;
+          for (let j = 0; j < 13; j++){
+            if (j === i || c[j] || c[j+1]) continue;
+            const t = c.slice();
+            t[j] = c[i]; t[j+1] = c[i+1]; t[i] = null; t[i+1] = null;
+            const k = key(t);
+            if (!seen.has(k)){ seen.add(k); next.push(t); }
+          }
+        }
+      }
+      if (found) break;
+      frontier = next; depth++;
+    }
+    ok('coins are solvable', found > 0 || depth < 6, 'minimum ' + (found || depth) + ' moves');
+  })();
+
+  // 3. the wall, from every approach at full speed
+  (function(){
+    const R = { x:0, vx:0, under:0, last:0 };
+    const w = { wallHits:0, maxX:0, minX:0, revHit:true, tunnel:true, marks:99 };
+    let worst = -Infinity;
+    for (let d = 100; d <= 2400; d += 50){
+      let x = T2.WALL - d, vx = T2.VMAX;
+      for (let i = 0; i < 600; i++){
+        vx = Math.min(T2.VMAX, vx + T2.ACC / 60);
+        x += vx / 60;
+        if (x < T2.WALL && x + T2.CARW/2 > T2.WALL - 4){ x = T2.WALL - 4 - T2.CARW/2; vx = 0; }
+      }
+      worst = Math.max(worst, x + T2.CARW/2);
+    }
+    ok('the wall cannot be passed', worst < T2.WALL,
+       'furthest right edge ' + Math.round(worst) + ' vs wall ' + T2.WALL);
+  })();
+
+  // 4. nothing on any task pane names a way through
+  (function(){
+    const BAN = /keep|pocket|carry|stash|hold on ?to|reverse|backwards?|behind the (start|line)|refuse|walk out|turn (around|back)|leave the (room|table)|rewrite|your name|type your|tunnel|arch|way out|off the (felt|table)/i;
+    const hits = [];
+    for (const id of ['p-intro','p1','p2','p3']){
+      const el = document.getElementById(id), was = el.hidden;
+      el.hidden = false;
+      // the corridor text only exists after a way through has been taken
+      const skip = el.querySelector('.r3-out');
+      const stash = skip ? skip.innerHTML : null;
+      if (skip) skip.innerHTML = '';
+      (el.innerText || '').split('\n').forEach(t => { if (t.trim() && BAN.test(t)) hits.push(id + ' text: ' + t.trim()); });
+      el.querySelectorAll('*').forEach(n => {
+        for (const a of ['aria-label','title','placeholder','alt']){
+          const v = n.getAttribute && n.getAttribute(a);
+          if (v && BAN.test(v)) hits.push(id + ' ' + a + ': ' + v);
+        }
+      });
+      if (skip) skip.innerHTML = stash;
+      el.hidden = was;
+    }
+    ok('no signpost in any task pane', hits.length === 0, hits.join(' | '));
+  })();
+
+  out.textContent = L.join('\n') + '\n\n' +
+    (L.every(l => l.startsWith('PASS')) ? 'all clear' : 'SOMETHING IS WRONG');
+}
 </script>
 </body>
 </html>
