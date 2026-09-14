@@ -469,148 +469,161 @@
           </defs>
 
           <rect x="0" y="0" width="800" height="470" fill="url(#skyG)"/>
-          <g opacity="0.5" fill="#3b3a3c">
-            <ellipse cx="180" cy="72" rx="96" ry="13"/>
-            <ellipse cx="238" cy="60" rx="62" ry="9"/>
-            <ellipse cx="560" cy="48" rx="120" ry="11"/>
-            <ellipse cx="392" cy="104" rx="78" ry="8"/>
+          <g opacity="0.45" fill="#3b3a3c">
+            <ellipse cx="150" cy="60" rx="92" ry="12"/>
+            <ellipse cx="214" cy="48" rx="58" ry="8"/>
+            <ellipse cx="520" cy="40" rx="112" ry="10"/>
           </g>
-          <circle cx="672" cy="156" r="72" fill="url(#sunG)"/>
-          <circle cx="672" cy="156" r="22" fill="#ffdfa8"/>
+          <circle cx="690" cy="118" r="70" fill="url(#sunG)"/>
+          <circle cx="690" cy="118" r="21" fill="#ffdfa8"/>
 
-          <!-- the far side of the cutting, and the trees on it -->
-          <path d="M0,208 L104,190 L150,196 L232,184 L300,194 L372,180 L452,194
-                   L520,186 L600,196 L672,184 L742,196 L800,188 L800,210 L0,210 Z"
-                fill="#181a20"/>
+          <!-- the far bank, seen side on -->
+          <path d="M0,196 L96,178 L180,190 L268,172 L360,188 L452,174 L548,190
+                   L640,176 L726,190 L800,180 L800,206 L0,206 Z" fill="#191b21"/>
+          <path d="M0,188 L110,168 L206,182 L300,164 L398,180 L500,166 L600,182
+                   L700,168 L800,182 L800,200 L0,200 Z" fill="#1e2029" opacity="0.7"/>
           <g fill="#13151a">
-            <path d="M84,192 l7,-20 l7,20 z"/><path d="M262,188 l8,-22 l8,22 z"/>
-            <path d="M330,194 l6,-17 l6,17 z"/><path d="M566,192 l7,-19 l7,19 z"/>
-            <path d="M718,192 l6,-18 l6,18 z"/>
+            <path d="M72,182 l7,-19 l7,19 z"/><path d="M246,174 l8,-21 l8,21 z"/>
+            <path d="M430,180 l6,-16 l6,16 z"/><path d="M618,178 l7,-18 l7,18 z"/>
           </g>
-          <rect x="0" y="200" width="800" height="270" fill="url(#groundG)"/>
-
-          <!-- ballast: speckle, so the ground is not a flat wash -->
+          <rect x="0" y="196" width="800" height="274" fill="url(#groundG)"/>
           <g id="r3Grit" opacity="0.5"></g>
 
-          <!-- the low sun falls across the ballast -->
-          <polygon points="500,204 596,204 704,470 300,470" fill="url(#beamG)"/>
+          <!-- the low sun across the ballast -->
+          <polygon points="540,286 640,286 740,470 470,470" fill="url(#beamG)"/>
 
-          <!-- telegraph poles, receding -->
+          <!-- telegraph poles, going away up the line -->
           <g stroke="#1a1c21" fill="none" stroke-width="3">
-            <path d="M126,270 L126,196 M112,206 L140,206 M114,214 L138,214"/>
-            <path d="M232,246 L232,192 M222,199 L242,199 M224,205 L240,205"/>
-            <path d="M302,232 L302,190 M294,195 L310,195"/>
+            <path d="M92,268 L92,190 M78,200 L106,200 M80,208 L104,208"/>
+            <path d="M286,250 L286,196 M276,203 L296,203 M278,209 L294,209"/>
+            <path d="M502,238 L502,200 M494,205 L510,205"/>
           </g>
 
-          <!-- the line in from the distance, the points, and the two routes -->
+          <!-- the line in, the points, and the two roads -->
           <g id="r3Bed" fill="#221f1b" stroke="#2c2924" stroke-width="1">
-            <polygon points="421,196 443,196 432,336 368,336"/>
-            <polygon points="368,338 432,338 152,470 40,470"/>
-            <polygon points="370,338 434,338 752,470 648,470"/>
+            <polygon points="36,282 36,318 436,336 436,300"/>
+            <polygon points="436,300 436,336 800,424 800,242"/>
           </g>
           <g id="r3Ties" stroke="#15161a" stroke-width="2" opacity="0.95"></g>
           <g stroke="url(#railG)" stroke-width="2.6" fill="none" stroke-linecap="round">
-            <line x1="429" y1="198" x2="387" y2="333"/><line x1="435" y1="198" x2="413" y2="333"/>
-            <line x1="387" y1="335" x2="84"  y2="470"/><line x1="413" y1="335" x2="136" y2="470"/>
-            <line x1="387" y1="335" x2="664" y2="470"/><line x1="413" y1="335" x2="716" y2="470"/>
+            <line x1="36" y1="288" x2="430" y2="306"/><line x1="36" y1="312" x2="430" y2="330"/>
+            <line x1="430" y1="306" x2="792" y2="250"/><line x1="430" y1="330" x2="792" y2="274"/>
+            <line x1="430" y1="306" x2="792" y2="380"/><line x1="430" y1="330" x2="792" y2="404"/>
           </g>
 
-          <!-- the switch, where the blades close against the stock rails -->
+          <!-- the switch, where the blades close -->
           <g id="r3Blades">
-            <path d="M400,318 L392,344 L396,345 L403,319 Z" fill="#585b63"/>
-            <path d="M401,318 L410,344 L406,345 L398,319 Z" fill="#4a4d55"/>
-            <rect x="378" y="346" width="46" height="5" rx="1.5" fill="#33343a"/>
-            <circle cx="401" cy="349" r="3" fill="#5a5d65"/>
+            <path d="M416,312 L444,306 L444,310 L417,316 Z" fill="#585b63"/>
+            <path d="M416,324 L444,330 L444,334 L417,328 Z" fill="#4a4d55"/>
+            <rect x="412" y="302" width="6" height="34" rx="2" fill="#33343a"/>
+            <circle cx="415" cy="319" r="3" fill="#5a5d65"/>
           </g>
 
-          <!-- the people. Five on the left-hand road, one on the right -->
+          <!-- five on the near road, one on the far one -->
           <g id="r3Folk"></g>
 
-          <!-- the signal, beside the line the train is on -->
+          <!-- the signal, beside the line the trolley is on -->
           <g id="r3Signal">
-            <rect x="474" y="216" width="6" height="86" fill="#1a1c20"/>
-            <rect x="466" y="208" width="22" height="34" rx="3" fill="#202329" stroke="#2f3238" stroke-width="1"/>
-            <circle id="r3LampA" cx="477" cy="217" r="5" fill="#2c3a2e"/>
-            <circle id="r3LampB" cx="477" cy="233" r="5" fill="#3a3630"/>
-            <rect x="468" y="300" width="18" height="6" rx="2" fill="#191b1f"/>
+            <rect x="344" y="216" width="6" height="76" fill="#1a1c20"/>
+            <rect x="336" y="208" width="22" height="34" rx="3" fill="#202329" stroke="#2f3238" stroke-width="1"/>
+            <circle id="r3LampA" cx="347" cy="217" r="5" fill="#2c3a2e"/>
+            <circle id="r3LampB" cx="347" cy="233" r="5" fill="#3a3630"/>
+            <rect x="338" y="290" width="18" height="6" rx="2" fill="#191b1f"/>
           </g>
 
-          <!-- The train, on the approach. Drawn short on purpose: the whole
-               approach is 136 units long and the old art was 86 tall, which
-               cannot sit in perspective on it at any size — a train far up
-               the line came out with its chimney above the horizon. Nose at
-               y=282, fifty units from end to end, and the transform scales it
-               about the nose. -->
+          <!-- THE TROLLEY. Side on, three quarters from the front, the way the
+               drawing everybody knows has it: a cable car with a clerestory
+               roof, running right, on the line that forks. -->
           <g id="r3Train">
-            <!-- the beam first, so the engine sits in front of its own light -->
-            <polygon points="417,282 439,282 476,362 380,362" fill="#ffe9bd" opacity="0.10"/>
-            <polygon points="421,282 435,282 456,340 400,340" fill="#ffe9bd" opacity="0.10"/>
-            <polygon points="420,232 436,232 438,244 418,244" fill="#31363f"/>
-            <polygon points="417,246 439,246 442,276 414,276" fill="#3c434e"/>
-            <polygon points="417,246 425,246 423,276 414,276" fill="#4a525f"/>
-            <polygon points="420,249 436,249 437,261 419,261" fill="#12151b"/>
-            <rect x="422" y="251" width="12" height="8" rx="1" fill="#f0cf8d" opacity="0.85"/>
-            <polygon points="414,276 442,276 443,283 413,283" fill="#1a1e25"/>
-            <circle cx="421" cy="279" r="7" fill="#ffe9bd" opacity="0.2"/>
-            <circle cx="435" cy="279" r="7" fill="#ffe9bd" opacity="0.2"/>
-            <circle id="r3Lamp" cx="421" cy="279" r="3.4" fill="#fff4d8"/>
-            <circle cx="435" cy="279" r="3.4" fill="#fff4d8" opacity="0.9"/>
-            <path id="r3Smoke" d="M428,230 q-9,-13 1,-20 q10,-8 3,-16" stroke="#5a5f68"
-                  stroke-width="5" fill="none" stroke-linecap="round" opacity="0.55"/>
+            <ellipse cx="150" cy="300" rx="104" ry="9" fill="#07070a" opacity="0.5"/>
+            <rect x="52" y="286" width="196" height="8" rx="2" fill="#15171b"/>
+            <rect x="60" y="196" width="180" height="92" rx="5" fill="#2f353f" stroke="#454c58" stroke-width="1.5"/>
+            <rect x="60" y="196" width="180" height="10" rx="4" fill="#3d4450"/>
+            <!-- clerestory, the raised strip down the middle of the roof -->
+            <rect x="82" y="182" width="136" height="16" rx="4" fill="#353c47" stroke="#454c58" stroke-width="1.2"/>
+            <rect x="88" y="186" width="124" height="6" rx="2" fill="#20252c"/>
+            <path d="M56,196 L244,196 L238,188 L62,188 Z" fill="#434a56"/>
+            <!-- windows -->
+            <g fill="#101319">
+              <rect x="74" y="212" width="26" height="30" rx="2"/>
+              <rect x="108" y="212" width="26" height="30" rx="2"/>
+              <rect x="142" y="212" width="26" height="30" rx="2"/>
+              <rect x="176" y="212" width="26" height="30" rx="2"/>
+            </g>
+            <g fill="#e8c98e" opacity="0.30">
+              <rect x="74" y="212" width="26" height="30" rx="2"/>
+              <rect x="142" y="212" width="26" height="30" rx="2"/>
+            </g>
+            <!-- the front, nearer the camera and a little wider -->
+            <rect x="206" y="206" width="38" height="80" rx="4" fill="#39404b" stroke="#4d5462" stroke-width="1.2"/>
+            <rect x="212" y="214" width="26" height="28" rx="2" fill="#0f1218"/>
+            <rect x="212" y="214" width="26" height="28" rx="2" fill="#e8c98e" opacity="0.22"/>
+            <rect x="204" y="248" width="42" height="6" rx="2" fill="#20252c"/>
+            <circle id="r3Lamp" cx="243" cy="262" r="5" fill="#fff4d8"/>
+            <circle cx="243" cy="262" r="12" fill="#ffe9bd" opacity="0.18"/>
+            <polygon points="246,254 246,270 320,296 320,236" fill="#ffe9bd" opacity="0.08"/>
+            <!-- trucks -->
+            <g fill="#141519">
+              <circle cx="86" cy="296" r="11"/><circle cx="116" cy="296" r="11"/>
+              <circle cx="188" cy="296" r="11"/><circle cx="218" cy="296" r="11"/>
+            </g>
+            <g fill="#2b2d33">
+              <circle cx="86" cy="296" r="4"/><circle cx="116" cy="296" r="4"/>
+              <circle cx="188" cy="296" r="4"/><circle cx="218" cy="296" r="4"/>
+            </g>
+            <!-- the pole on the roof -->
+            <path d="M150,182 L176,150" stroke="#4d5462" stroke-width="3" stroke-linecap="round"/>
+            <circle cx="177" cy="149" r="3.4" fill="#6a7180"/>
+            <path id="r3Smoke" d="M120,180 q-9,-13 1,-20 q10,-8 3,-16" stroke="#5a5f68"
+                  stroke-width="5" fill="none" stroke-linecap="round" opacity="0.4"/>
           </g>
 
           <!-- the permanent-way hut -->
           <g id="r3Hut">
-            <polygon points="590,236 766,236 760,222 596,222" fill="#26282c"/>
-            <rect x="596" y="236" width="164" height="88" fill="#1b1d20" stroke="#2e3036" stroke-width="1"/>
-            <rect x="742" y="200" width="10" height="24" fill="#26282c"/>
-            <rect x="700" y="262" width="46" height="24" fill="#3a3222" stroke="#2e3036" stroke-width="1"/>
-            <rect x="703" y="265" width="40" height="18" fill="#6b5326" opacity="0.6"/>
-            <rect id="r3Door" x="616" y="258" width="34" height="66" rx="1"
+            <polygon points="590,152 782,152 774,138 598,138" fill="#26282c"/>
+            <rect x="596" y="152" width="176" height="92" fill="#1b1d20" stroke="#2e3036" stroke-width="1"/>
+            <rect x="752" y="116" width="10" height="24" fill="#26282c"/>
+            <rect x="700" y="176" width="48" height="26" fill="#3a3222" stroke="#2e3036" stroke-width="1"/>
+            <rect x="703" y="179" width="42" height="20" fill="#6b5326" opacity="0.6"/>
+            <rect id="r3Door" x="616" y="172" width="36" height="72" rx="1"
                   fill="#0e1012" stroke="#31343a" stroke-width="1.5"/>
-            <circle cx="644" cy="292" r="2.4" fill="#5c6068"/>
+            <circle cx="646" cy="208" r="2.4" fill="#5c6068"/>
           </g>
-          <!-- what is in it, once it is open -->
           <g id="r3Inside" hidden>
-            <rect x="616" y="258" width="34" height="66" fill="#241f16"/>
-            <rect x="618" y="260" width="30" height="62" fill="#2e2718"/>
+            <rect x="616" y="172" width="36" height="72" fill="#241f16"/>
+            <rect x="618" y="174" width="32" height="68" fill="#2e2718"/>
             <g id="r3Radio">
-              <rect x="619" y="256" width="30" height="30" fill="transparent"/>
-              <rect x="621" y="266" width="24" height="17" rx="2" fill="#3c3a33" stroke="#54524a" stroke-width="1"/>
-              <rect x="623" y="268" width="11" height="7" rx="1" fill="#6e7d63"/>
-              <circle cx="641" cy="278" r="2.4" fill="#8c8a80"/>
-              <path d="M643,266 l4,-9" stroke="#8c8a80" stroke-width="1.4" fill="none"/>
+              <rect x="617" y="176" width="34" height="32" fill="transparent"/>
+              <rect x="621" y="180" width="26" height="18" rx="2" fill="#3c3a33" stroke="#54524a" stroke-width="1"/>
+              <rect x="623" y="182" width="12" height="8" rx="1" fill="#6e7d63"/>
+              <circle cx="643" cy="193" r="2.4" fill="#8c8a80"/>
+              <path d="M645,180 l4,-9" stroke="#8c8a80" stroke-width="1.4" fill="none"/>
             </g>
             <g id="r3Switch">
-              <rect x="620" y="288" width="22" height="24" fill="transparent"/>
-              <rect x="624" y="290" width="14" height="20" rx="2" fill="#4a4740" stroke="#5f5c53" stroke-width="1"/>
-              <rect x="628" y="300" width="6" height="7" rx="1.5" fill="#cfcabe"/>
+              <rect x="618" y="206" width="24" height="26" fill="transparent"/>
+              <rect x="623" y="209" width="14" height="20" rx="2" fill="#4a4740" stroke="#5f5c53" stroke-width="1"/>
+              <rect x="627" y="219" width="6" height="7" rx="1.5" fill="#cfcabe"/>
             </g>
             <g id="r3Flag">
-              <!-- a pole and a bit of cloth leave most of their own bounding
-                   box empty, so the thing is hard to hit where it looks like
-                   it is. Transparent is painted, and painted is hit-testable -->
-              <rect x="642" y="285" width="22" height="36" fill="transparent"/>
-              <rect x="645" y="288" width="2.4" height="30" fill="#6b6259"/>
-              <path d="M647,289 l12,5 l-12,5 z" fill="#a8362c"/>
+              <rect x="641" y="200" width="22" height="38" fill="transparent"/>
+              <rect x="645" y="204" width="2.4" height="32" fill="#6b6259"/>
+              <path d="M647,205 l13,5 l-13,5 z" fill="#a8362c"/>
             </g>
           </g>
 
           <!-- a fire bucket on its post -->
           <g id="r3Brazier">
-            <rect x="566" y="322" width="4" height="26" fill="#2a2c30"/>
-            <path d="M552,306 L584,306 L580,326 L556,326 Z" fill="#6d3a2a" stroke="#834934" stroke-width="1"/>
-            <ellipse cx="568" cy="306" rx="16" ry="4.5" fill="#4a281d"/>
+            <rect x="534" y="240" width="4" height="26" fill="#2a2c30"/>
+            <path d="M520,224 L552,224 L548,244 L524,244 Z" fill="#6d3a2a" stroke="#834934" stroke-width="1"/>
+            <ellipse cx="536" cy="224" rx="16" ry="4.5" fill="#4a281d"/>
             <g id="r3Fire" hidden>
-              <path d="M568,300 q-11,-14 -2,-24 q3,10 8,12 q6,-8 3,-18 q14,14 9,30 z" fill="#e8933a"/>
-              <path d="M568,300 q-6,-9 -1,-16 q2,7 5,8 q3,-5 1,-11 q8,9 5,19 z" fill="#f6d264"/>
+              <path d="M536,218 q-11,-14 -2,-24 q3,10 8,12 q6,-8 3,-18 q14,14 9,30 z" fill="#e8933a"/>
+              <path d="M536,218 q-6,-9 -1,-16 q2,7 5,8 q3,-5 1,-11 q8,9 5,19 z" fill="#f6d264"/>
             </g>
           </g>
 
-          <!-- ballast. Every loose stone behaves the same way as every other -->
           <g id="r3Rocks"></g>
 
-          <!-- a dented bowl in the junk by the hut -->
           <g id="r3Bowl">
             <ellipse cx="0" cy="4" rx="17" ry="6" fill="#0a0a0b" opacity="0.55"/>
             <path d="M-16,-4 Q0,12 16,-4 Q0,-11 -16,-4 Z" fill="#6f7279"/>
@@ -619,69 +632,59 @@
                   fill="none" stroke-linecap="round" opacity="0.8"/>
           </g>
 
-          <!-- The lever frame. The sanctioned choice is allowed to be
-               unmissable and is the only thing here that is: two big painted
-               levers, lit from the side, each with a plate saying which road
-               it sets. Refusing a frame you cannot see is not refusing
-               anything. -->
+          <!-- the lever frame, in the foreground where the switchman stands -->
           <g>
-            <rect x="18" y="392" width="248" height="20" rx="4" fill="#1f2226" stroke="#3b3f45" stroke-width="1.5"/>
-            <rect x="22" y="396" width="240" height="5" rx="2" fill="#2b2f35"/>
-            <rect x="34" y="410" width="18" height="60" fill="#16181b"/>
-            <rect x="232" y="410" width="18" height="60" fill="#16181b"/>
+            <rect x="214" y="384" width="256" height="20" rx="4" fill="#1f2226" stroke="#3b3f45" stroke-width="1.5"/>
+            <rect x="218" y="388" width="248" height="5" rx="2" fill="#2b2f35"/>
+            <rect x="230" y="402" width="18" height="60" fill="#16181b"/>
+            <rect x="436" y="402" width="18" height="60" fill="#16181b"/>
             <g id="r3LevL">
-              <rect x="70" y="290" width="15" height="110" rx="7" fill="#43464d"/>
-              <rect x="73" y="290" width="5" height="110" rx="2.5" fill="#6a6e77"/>
-              <rect x="62" y="272" width="31" height="26" rx="6" fill="#c0503f"/>
-              <rect x="66" y="276" width="23" height="8" rx="4" fill="#dc7a63"/>
+              <rect x="266" y="282" width="15" height="110" rx="7" fill="#43464d"/>
+              <rect x="269" y="282" width="5" height="110" rx="2.5" fill="#6a6e77"/>
+              <rect x="258" y="264" width="31" height="26" rx="6" fill="#c0503f"/>
+              <rect x="262" y="268" width="23" height="8" rx="4" fill="#dc7a63"/>
             </g>
             <g id="r3LevR">
-              <rect x="186" y="290" width="15" height="110" rx="7" fill="#43464d"/>
-              <rect x="189" y="290" width="5" height="110" rx="2.5" fill="#6a6e77"/>
-              <rect x="178" y="272" width="31" height="26" rx="6" fill="#3f7cb4"/>
-              <rect x="182" y="276" width="23" height="8" rx="4" fill="#69a3d8"/>
+              <rect x="390" y="282" width="15" height="110" rx="7" fill="#43464d"/>
+              <rect x="393" y="282" width="5" height="110" rx="2.5" fill="#6a6e77"/>
+              <rect x="382" y="264" width="31" height="26" rx="6" fill="#3f7cb4"/>
+              <rect x="386" y="268" width="23" height="8" rx="4" fill="#69a3d8"/>
             </g>
-            <rect x="48" y="416" width="60" height="22" rx="3" fill="#0e1012" stroke="#474b52" stroke-width="1.2"/>
-            <path d="M96,427 L62,427 M74,419 L60,427 L74,435" stroke="#c0503f"
+            <rect x="244" y="410" width="62" height="22" rx="3" fill="#0e1012" stroke="#474b52" stroke-width="1.2"/>
+            <!-- red is the NEAR road, which is the lower one on screen -->
+            <path d="M266,414 L266,427 M259,421 L266,429 L273,421" stroke="#c0503f"
                   stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-            <rect x="164" y="416" width="60" height="22" rx="3" fill="#0e1012" stroke="#474b52" stroke-width="1.2"/>
-            <path d="M176,427 L210,427 M198,419 L212,427 L198,435" stroke="#3f7cb4"
+            <rect x="368" y="410" width="62" height="22" rx="3" fill="#0e1012" stroke="#474b52" stroke-width="1.2"/>
+            <!-- blue is the FAR road, the upper one -->
+            <path d="M399,427 L399,414 M392,420 L399,412 L406,420" stroke="#3f7cb4"
                   stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
           </g>
 
-          <!-- your own coat, at the bottom of the frame -->
-          <!-- The pocket and what comes out of it both sit clear of the near
-               ballast, which is transparent DOM laid over the bottom of the
-               picture: anything under it does not answer the pointer. -->
+          <!-- your own coat, bottom left -->
           <g id="r3Coat">
-            <path d="M642,470 L658,386 Q712,366 766,386 L784,470 Z" fill="#232329"/>
-            <path d="M658,386 Q712,370 766,386 L760,400 Q712,386 664,400 Z" fill="#2c2c33"/>
-            <rect id="r3Pocket" x="688" y="402" width="48" height="26" rx="3"
+            <path d="M0,470 L8,372 Q60,350 118,372 L142,470 Z" fill="#232329"/>
+            <path d="M8,372 Q60,354 118,372 L112,386 Q60,372 14,386 Z" fill="#2c2c33"/>
+            <rect id="r3Pocket" x="34" y="390" width="50" height="26" rx="3"
                   fill="#1b1b20" stroke="#32323c" stroke-width="1.4"/>
-            <path d="M688,402 L736,402" stroke="#42424e" stroke-width="2.4"/>
+            <path d="M34,390 L84,390" stroke="#42424e" stroke-width="2.4"/>
           </g>
           <g id="r3Phone" hidden>
-            <rect x="698" y="380" width="26" height="42" rx="4" fill="#111318" stroke="#3f4149" stroke-width="1.2"/>
-            <rect x="701" y="384" width="20" height="32" rx="1.5" fill="#7fa0bb"/>
+            <rect x="44" y="366" width="26" height="42" rx="4" fill="#111318" stroke="#3f4149" stroke-width="1.2"/>
+            <rect x="47" y="370" width="20" height="32" rx="1.5" fill="#7fa0bb"/>
           </g>
 
-          <!-- The sun is behind and to the right, so everything that faces it
-               gets an edge of it. Cheap, and it is most of what stops a scene
-               of flat shapes reading as flat shapes. -->
-          <g opacity="0.45" stroke="#e8b676" fill="none" stroke-linecap="round">
-            <path d="M760,238 L760,322" stroke-width="2"/>
-            <path d="M700,266 L744,266" stroke-width="1.5"/>
-            <path d="M584,306 L580,326" stroke-width="1.5"/>
-            <path d="M488,210 L488,240" stroke-width="1.5"/>
-            <path d="M93,274 L93,296" stroke-width="2.5"/>
-            <path d="M209,274 L209,296" stroke-width="2.5"/>
-            <path d="M266,394 L266,410" stroke-width="2"/>
+          <!-- rim light off the low sun -->
+          <g opacity="0.4" stroke="#e8b676" fill="none" stroke-linecap="round">
+            <path d="M772,152 L772,244" stroke-width="2"/>
+            <path d="M552,224 L548,244" stroke-width="1.5"/>
+            <path d="M358,210 L358,240" stroke-width="1.5"/>
+            <path d="M244,206 L244,286" stroke-width="2"/>
+            <path d="M289,266 L289,288" stroke-width="2.5"/>
+            <path d="M413,266 L413,288" stroke-width="2.5"/>
           </g>
           <rect x="0" y="0" width="800" height="470" fill="url(#vigG)" pointer-events="none"/>
 
-          <!-- The examiner's card, as an enamel sign on the post. The
-               question is the loudest thing on it: the frame has to be
-               perfectly clear or refusing it does not mean anything. -->
+          <!-- the examiner's card -->
           <g id="r3Card">
             <rect x="148" y="10" width="504" height="134" rx="5"
                   fill="#101216" stroke="#3a3e46" stroke-width="1.5"/>
@@ -699,9 +702,9 @@
                   font-weight="700" letter-spacing="4">WHICH TRACK?</text>
             <line x1="236" y1="74" x2="564" y2="74" stroke="#2b2f37" stroke-width="1"/>
             <text x="400" y="93" text-anchor="middle" fill="#cfcabf"
-                  font-family="ui-monospace,Menlo,monospace" font-size="12.5">A runaway train. It cannot stop.</text>
+                  font-family="ui-monospace,Menlo,monospace" font-size="12.5">A runaway trolley. It cannot stop.</text>
             <text x="400" y="111" text-anchor="middle" fill="#cfcabf"
-                  font-family="ui-monospace,Menlo,monospace" font-size="12.5">Five are tied to the left. One is tied to the right.</text>
+                  font-family="ui-monospace,Menlo,monospace" font-size="12.5">Five are tied to the near track. One is tied to the far track.</text>
             <text x="400" y="129" text-anchor="middle" fill="#cfcabf"
                   font-family="ui-monospace,Menlo,monospace" font-size="12.5">Pull a lever. One of them is the right answer.</text>
           </g>
@@ -714,10 +717,10 @@
                 letter-spacing="3" opacity="0"></text>
         </svg>
 
-        <button class="r3-hit" id="hitL" style="left:6.5%;top:56%;width:11%;height:32%;"
-                aria-label="Left lever"></button>
-        <button class="r3-hit" id="hitR" style="left:21%;top:56%;width:11%;height:32%;"
-                aria-label="Right lever"></button>
+        <button class="r3-hit" id="hitL" style="left:31%;top:55%;width:9%;height:33%;"
+                aria-label="Near lever"></button>
+        <button class="r3-hit" id="hitR" style="left:46.5%;top:55%;width:9%;height:33%;"
+                aria-label="Far lever"></button>
         <div class="r3-floor" id="r3Floor"></div>
       </div>
 
@@ -3787,27 +3790,25 @@ const STAGE2 = {
 const T3 = {
   /* Everything below is in the SVG's own 800×470 units, so the art and the
      hit tests read from one set of numbers and cannot drift apart. */
+  /* Side on, three quarters from the front, the way the drawing everybody
+     knows has it. NEAR and FAR rather than left and right — with the camera
+     beside the line those are the only words that mean anything, and the card
+     says the same. */
   RAILS: [                        // centre lines
-    [[432,198],[400,334]],        // the line the train is on
-    [[400,334],[110,470]],        // the left-hand road, with five on it
-    [[400,334],[690,470]],        // the right-hand road, with one
+    [[36,300],[430,318]],         // the line the trolley is on
+    [[430,318],[792,392]],        // the NEAR road, with five on it
+    [[430,318],[792,262]],        // the FAR road, with one
   ],
   RAILR: 26,
-  BEAM:  [[500,204],[596,204],[704,470],[300,470]],
-  BLADES:[401,336], BLADER: 34,
-  /* Recomputed against the scene as it actually is, not as it was: every
-     stone is 46 to 190 units off the nearest rail, clear of the lever hit
-     boxes, the hut, the bucket, the lamp post, your coat and the near-ballast
-     strip — all of which are transparent DOM or drawing laid over the
-     picture, and a stone underneath any of them is the one stone in the
-     ballast that cannot be lifted. */
-  ROCKS: [[275,328],[317,424],[386,394],[455,304],[455,421],[524,331],[596,375]],
-  BOWL:  [746,348],
+  BEAM:  [[540,286],[640,286],[740,470],[470,470]],
+  BLADES:[424,318], BLADER: 34,
+  ROCKS: [[154,354],[313,255],[427,255],[478,375],[589,399],[694,324],[727,426]],
+  BOWL:  [700,266],
   /* Five on the left-hand road and one on the right, as the card says. They
      are placed along the rails rather than typed out, so the drawing and the
      sentence on the card cannot end up disagreeing about how many there are. */
-  FOLK:  [{ rail:1, u:0.30 }, { rail:1, u:0.42 }, { rail:1, u:0.54 },
-          { rail:1, u:0.66 }, { rail:1, u:0.78 }, { rail:2, u:0.52 }],
+  FOLK:  [{ rail:1, u:0.34 }, { rail:1, u:0.46 }, { rail:1, u:0.58 },
+          { rail:1, u:0.70 }, { rail:1, u:0.82 }, { rail:2, u:0.56 }],
 
   near(p, seg){
     const [a, b] = seg;
@@ -3836,7 +3837,7 @@ const T3 = {
     return inside;
   },
   atBlades(p){ return Math.hypot(p[0] - T3.BLADES[0], p[1] - T3.BLADES[1]) <= T3.BLADER; },
-  atBrazier(p){ return Math.hypot(p[0] - 568, p[1] - 314) <= 34; },
+  atBrazier(p){ return Math.hypot(p[0] - 536, p[1] - 232) <= 34; },
 
   /* The train comes down the approach and gets bigger, and never arrives.
      Never arriving is deliberate and it is the whole of the design here:
@@ -4028,9 +4029,9 @@ const STAGE3 = {
                  '" x2="' + (x + (-dy/m)*w).toFixed(1) + '" y2="' + (y + (dx/m)*w).toFixed(1) + '"/>';
         }
       };
-      run([432,200], [400,332], 9, 12, 30);
-      run([398,338], [112,468], 11, 30, 64);
-      run([402,338], [688,468], 11, 30, 64);
+      run([40,300], [426,318], 13, 30, 34);
+      run([434,320], [788,392], 11, 34, 46);
+      run([434,316], [788,262], 11, 34, 46);
       ties.innerHTML = out;
     }
     const folk = document.getElementById('r3Folk');
@@ -4067,7 +4068,7 @@ const STAGE3 = {
       /* A marker post beside each road in the colour of the lever that sets
          it. The two roads have to be told apart at a glance or the question
          on the card is not a question about anything you can see. */
-      [[1, '#b04a40', 0.16], [2, '#3a72a6', 0.20]].forEach(([rail, col, u]) => {
+      [[1, '#c0503f', 0.18], [2, '#3f7cb4', 0.22]].forEach(([rail, col, u]) => {
         const [x, y] = T3.along(rail, u);
         const [a, b] = T3.RAILS[rail];
         const dx = b[0]-a[0], dy = b[1]-a[1], m = Math.hypot(dx, dy) || 1;
@@ -4339,7 +4340,7 @@ const STAGE3 = {
     this.done = true;                       // no second pull while it runs
     const rail = side === 'L' ? 1 : 2;
     const killed = T3.FOLK.filter(f => f.rail === rail).length;
-    act(3, 'pulled_the_lever', { side, rail:side === 'L' ? 'left' : 'right', killed });
+    act(3, 'pulled_the_lever', { side, rail:side === 'L' ? 'near' : 'far', killed });
     saveSession();
     this.runTheTrain(rail, killed);
   },
@@ -5728,8 +5729,8 @@ if (SELFTEST){
        than typed into the picture, so this asserts the picture and the
        sentence agree — a card describing a scene that is not on the screen
        is the examiner being wrong by accident rather than on purpose. */
-    const left = T3.FOLK.filter(f => f.rail === 1).length;
-    const right = T3.FOLK.filter(f => f.rail === 2).length;
+    const left = T3.FOLK.filter(f => f.rail === 1).length;    // the near road
+    const right = T3.FOLK.filter(f => f.rail === 2).length;   // the far one
     const card = (document.getElementById('r3Card').textContent || '');
     /* The numbers on the card are matched against the numbers in the table
        the figures are drawn from, so rewording it cannot quietly leave it
@@ -5739,9 +5740,9 @@ if (SELFTEST){
     const WORD = { 1:'One', 2:'Two', 3:'Three', 4:'Four', 5:'Five', 6:'Six' };
     ok('the card and the track agree about who is on them',
        left === 5 && right === 1 &&
-       new RegExp(WORD[left] + ' are tied to the left', 'i').test(card) &&
-       new RegExp(WORD[right] + ' is tied to the right', 'i').test(card),
-       left + ' on the left, ' + right + ' on the right, and the card says so');
+       new RegExp(WORD[left] + ' are tied to the near', 'i').test(card) &&
+       new RegExp(WORD[right] + ' is tied to the far', 'i').test(card),
+       left + ' on the near road, ' + right + ' on the far one, and the card says so');
     ok('nobody is standing where the train already is',
        T3.FOLK.every(f => f.rail !== 0), 'all six are past the points');
 
