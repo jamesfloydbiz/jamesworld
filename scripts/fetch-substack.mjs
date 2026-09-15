@@ -13,6 +13,7 @@
 import { writeFileSync, readFileSync, existsSync, mkdirSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { UPDATE_PAGES, updatePath } from './updates.config.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const OUT_PATH = resolve(__dirname, '..', 'public', 'data', 'substack-posts.json');
@@ -231,6 +232,13 @@ function renderPostListHtml(posts) {
     lines.push(`                <span class="post-cta">Read the post →</span>`);
     lines.push(`              </summary>`);
     lines.push(`              <div class="post-body">`);
+    // An update that has a page of its own says so before the letter starts,
+    // so a reader who wants a URL to send someone does not have to hunt.
+    const m = /\/p\/([^/?#]+)/.exec(p.link || '');
+    const slug = m ? m[1] : '';
+    if (slug && UPDATE_PAGES.includes(slug)) {
+      lines.push(`                <p class="post-onsite"><a href="${escAttr(updatePath(slug))}">Open as a page →</a></p>`);
+    }
     lines.push(`                ${p.bodyHtml}`);
     lines.push(`                <p class="post-source"><a href="${escAttr(p.link)}" target="_blank" rel="noopener noreferrer">Read on Substack ↗</a></p>`);
     lines.push(`              </div>`);

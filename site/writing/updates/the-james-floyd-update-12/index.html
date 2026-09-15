@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The James Floyd Update #12 — The James Floyd Update</title>
+  <meta name="description" content="One year of updates... — the monthly update from James Floyd, September 15, 2026.">
+  <link rel="canonical" href="https://jamesfloyds.world/writing/updates/the-james-floyd-update-12/">
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="The James Floyd Update #12">
+  <meta property="og:description" content="One year of updates... — the monthly update from James Floyd, September 15, 2026.">
+  <meta property="og:url" content="https://jamesfloyds.world/writing/updates/the-james-floyd-update-12/">
+  <meta property="article:published_time" content="2026-09-15T06:17:28.000Z">
+  <meta name="twitter:card" content="summary">
+
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lora:ital,wght@0,400;0,500;1,400&family=DM+Mono:wght@300;400&display=swap">
+  <link rel="stylesheet" href="/css/site.css">
+
+  <style>
+    /* A letter, so it is set as one: a single measured column, the masthead
+       marks in tobacco like every other dateline on the site, and the things
+       you can act on in sage. */
+    .up-shell { max-width: 680px; margin: 0 auto; padding: 0 clamp(16px, 4vw, 24px); }
+
+    .up-back {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--green-70);
+      text-decoration: none;
+      margin-bottom: 40px;
+      transition: color 0.2s;
+    }
+    .up-back:hover { color: var(--green); }
+
+    .up-masthead {
+      margin-bottom: 44px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--fg-15);
+    }
+    .up-eyebrow {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--brown);
+      margin-bottom: 12px;
+    }
+    .up-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 700;
+      font-size: clamp(2rem, 5vw, 3rem);
+      line-height: 1.15;
+      margin: 0 0 12px 0;
+      color: var(--fg);
+      text-wrap: balance;
+    }
+    .up-subtitle {
+      font-family: 'Lora', Georgia, serif;
+      font-style: italic;
+      font-size: 1.05rem;
+      line-height: 1.5;
+      color: var(--fg-70);
+      margin: 0 0 8px 0;
+    }
+    .up-byline {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--brown-70);
+      margin: 0;
+    }
+
+    /* ── the letter itself ────────────────────────────────────────────── */
+    .up-body {
+      font-family: 'Lora', Georgia, serif;
+      font-size: 1.05rem;
+      line-height: 1.8;
+      color: var(--fg-80);
+    }
+    .up-body p { margin: 0 0 1.35rem; }
+    .up-body strong { color: var(--fg); font-weight: 500; }
+    .up-body a {
+      color: var(--fg-85);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      text-decoration-color: var(--green-30);
+      transition: text-decoration-color 0.2s, color 0.2s;
+    }
+    .up-body a:hover { color: var(--fg); text-decoration-color: var(--green); }
+
+    .up-body h2 {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      font-weight: 400;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--fg-80);
+      margin: 2.6rem 0 1.1rem;
+      padding-top: 16px;
+      border-top: 1px solid var(--fg-15);
+    }
+    .up-body ul { margin: 0 0 1.35rem; padding-left: 1.1rem; }
+    .up-body li { margin-bottom: 0.5rem; }
+    .up-body li p { margin: 0; }
+    .up-body li::marker { color: var(--brown-70); }
+
+    /* Substack separates every section with a rule as well as a heading. One
+       or the other is the divider; two is a stutter, so the rule that lands
+       straight before a heading is dropped. */
+    .up-body hr { border: 0; border-top: 1px solid var(--fg-15); margin: 2.4rem 0; }
+    .up-body hr + h2 { border-top: 0; padding-top: 0; margin-top: 0; }
+
+    .up-poem {
+      font-family: 'Lora', Georgia, serif;
+      font-style: italic;
+      font-size: 1.05rem;
+      line-height: 1.75;
+      color: var(--fg);
+      white-space: pre-wrap;
+      margin: 1.6rem 0 2rem;
+      padding-left: 20px;
+      border-left: 2px solid var(--brown-45);
+      overflow-x: auto;
+    }
+
+    .up-shots {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 8px;
+      margin: 1.8rem 0 2rem;
+    }
+    .up-shots img {
+      width: 100%;
+      height: 100%;
+      aspect-ratio: 1;
+      object-fit: cover;
+      display: block;
+      border: 1px solid var(--fg-15);
+      border-radius: 2px;
+    }
+    .up-shots--one { grid-template-columns: 1fr; }
+    .up-shots--one img { aspect-ratio: auto; height: auto; }
+
+    /* ── foot of the letter ───────────────────────────────────────────── */
+    .up-foot {
+      margin-top: 56px;
+      padding-top: 24px;
+      border-top: 1px solid var(--brown-15);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px 28px;
+      align-items: baseline;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .up-foot a { color: var(--green-70); text-decoration: none; transition: color 0.2s; }
+    .up-foot a:hover { color: var(--green); }
+    .up-foot .up-foot__note {
+      flex-basis: 100%;
+      color: var(--fg-45);
+      letter-spacing: 0.02em;
+      text-transform: none;
+      font-size: 0.74rem;
+      line-height: 1.7;
+    }
+
+    @media (max-width: 640px) {
+      .up-body { font-size: 1rem; }
+      .up-back { margin-bottom: 28px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="site-header anim-slide-dn">
+    <a href="/" class="site-header__logo" aria-label="Return to home"><img src="/logo.svg" alt="JF"></a>
+    <button class="site-header__menu-btn" id="menu-btn" aria-expanded="false" aria-controls="site-nav">Menu</button>
+  </header>
+
+  <nav class="site-nav" id="site-nav" aria-label="Main navigation">
+    <ul class="site-nav__list">
+      <li class="site-nav__item"><a href="/sonder/" class="site-nav__link">Sonder Series</a></li>
+      <li class="site-nav__item"><a href="/portfolio/" class="site-nav__link">Portfolio</a></li>
+      <li class="site-nav__item" data-has-sub>
+        <a href="/projects/" class="site-nav__link">Projects</a>
+        <div class="site-nav__sub">
+          <a href="/portfolio/" class="site-nav__sub-link">Portfolio</a>
+          <a href="/resume/" class="site-nav__sub-link">Resume</a>
+          <a href="/references/" class="site-nav__sub-link">References</a>
+        </div>
+      </li>
+      <li class="site-nav__item" data-has-sub>
+        <a href="/content/" class="site-nav__link">Content</a>
+        <div class="site-nav__sub">
+          <a href="/writing/" class="site-nav__sub-link">Writing</a>
+          <a href="/poems/" class="site-nav__sub-link">Poems</a>
+          <a href="/pictures/" class="site-nav__sub-link">Memories</a>
+        </div>
+      </li>
+      <li class="site-nav__item"><a href="/network/" class="site-nav__link">Network</a></li>
+      <li class="site-nav__item"><a href="/blueprints/" class="site-nav__link">Blueprints</a></li>
+      <li class="site-nav__item" style="margin-top:24px;"><a href="/" class="site-nav__back">Back to Gallery</a></li>
+    </ul>
+    <button class="site-nav__close" id="nav-close">Close</button>
+  </nav>
+
+  <main class="page">
+    <article class="up-shell anim-fade-up" style="animation-delay:0.3s">
+
+      <a href="/writing/" class="up-back">← Back to Writing</a>
+
+      <header class="up-masthead">
+        <span class="up-eyebrow">The James Floyd Update · September 15, 2026</span>
+        <h1 class="up-title">The James Floyd Update #12</h1>
+        <p class="up-subtitle">One year of updates...</p>
+        <p class="up-byline">by James Floyd</p>
+      </header>
+
+      <div class="up-body">
+<p>Dear Reader,</p><p>This is my monthly update email. The twelfth of its kind.</p><p><br>It was an idea created in a time of question marks with the purpose of changing them to exclamation marks. It has become a way that I show my gratitude and life with those that have invested in me.<br><br>I&#8217;m writing this from my desk in my little New York apartment room. There is a bit of a mess, things stacked on my desk, sports equipment on the floor, clean laundry to be put away, but that is because it has started to feel like a home.</p><hr><p>Rather than write about things I&#8217;ve done this month (It&#8217;s been a good one.) It feels most true to write a poem reflecting on this last year. <br><br>I will still put my notes of work done at the bottom for accountability.<br>~~</p><figure class="up-shots up-shots--one"><img src="/pictures/updates/the-james-floyd-update-12/01.jpg" alt="From The James Floyd Update #12" loading="lazy" decoding="async"></figure><pre class="up-poem">One Year.
+
+One year ago I was sitting alone in my Nashville apartment living on a dash of will.
+
+Now I am living in New York City with late nights and magical delights.
+
+My life is better and my life is  d i f f e r e n t  again.
+
+
+That in it of itself is a win, but lets look at the scoreboard.
+
+
+One year ago my feet were slipping and sliding, I knew not where to go.
+
+Now my feet have found a floor poured of solid rock.
+
+
+That is a game won, but I know the 'job's not done'. In fact the work has just begun, and I relish it. 
+
+
+One year ago I was a man just coming out of loneliness.
+
+Now I am surrounded by wise, well adjusted, wonderful women and men who walk alongside me in this city of many lives. I am coming into my own I guess.
+
+
+One year ago I was a wanderer, moving from place to place.
+
+I live now in one space.
+
+
+One year ago I was a more willing man.
+
+Now I am a knowing man.
+
+
+One year ago I had just began my poetry. This practice of taking my heart and molding it into creation.
+
+Today I am creating my heart. Elation.
+
+
+One year ago I was learning to ask the question of 'Do I like this?' and 'Why?'
+
+That process continues until I die.
+
+
+One year ago I felt shy.
+
+Now I will fight till the end is nigh.
+
+
+One year ago I wrote you that I was narrowing my focus towards my next chapter. 
+
+Now I look at my hopes of a quick discovery with laughter.
+
+
+One year ago, One year from now. With no raised brow, I'll say it was the people that mattered most. One day soon we will drink a toast.
+
+
+As for business, because I'm going to win at this.
+
+The word <em>cadere</em> means cutting and is the father of <em>decision</em>.
+
+In the last year I have done that with precision. Now the work continues.</pre><figure class="up-shots"><img src="/pictures/updates/the-james-floyd-update-12/02.jpg" alt="From The James Floyd Update #12" loading="lazy" decoding="async"><img src="/pictures/updates/the-james-floyd-update-12/03.jpg" alt="From The James Floyd Update #12" loading="lazy" decoding="async"><img src="/pictures/updates/the-james-floyd-update-12/04.jpg" alt="From The James Floyd Update #12" loading="lazy" decoding="async"><img src="/pictures/updates/the-james-floyd-update-12/05.jpg" alt="From The James Floyd Update #12" loading="lazy" decoding="async"><img src="/pictures/updates/the-james-floyd-update-12/06.jpg" alt="From The James Floyd Update #12" loading="lazy" decoding="async"><img src="/pictures/updates/the-james-floyd-update-12/07.jpg" alt="From The James Floyd Update #12" loading="lazy" decoding="async"></figure><hr><p>Work Done:<br>- Added 6 new papers to rabbit holes<br>- Pivoted public pitch from Alpha.School to Founders.School { <a href="https://jamesfloyds.world/foundersschool">LINK</a> }</p><ul><li><p>Filmed Video</p></li><li><p>Built a main sales teaching project</p></li><li><p>Built two follow up projects (A cheat sheet for guides on motivation techniques and a project around the future of assessments)</p></li></ul><p>- Built my soccer league list to 75 people with a consistent game every Sunday</p><p>- Hosted two other social events where I brought together 10+ people</p><p>- Published my 100th personal poem to my website</p><p>- Raised my CCAT score from 85th percentile to 98th using a learning app I made + re-memorized my multiplication tables to 13. </p><hr><p><strong>Past Updates:</strong></p><p><a href="https://jamesfloyd.substack.com/p/the-james-update-1" target="_blank" rel="noopener noreferrer">The James Update #1</a><br><a href="https://jamesfloyd.substack.com/p/the-james-update-2" target="_blank" rel="noopener noreferrer">The James Update #2</a><br><a href="https://jamesfloyd.substack.com/p/the-james-floyd-update-3" target="_blank" rel="noopener noreferrer">The James Update #3</a><br><a href="https://jamesfloyd.substack.com/p/the-james-floyd-update-4" target="_blank" rel="noopener noreferrer">The James Update #4</a><br><a href="https://jamesfloyd.substack.com/p/the-james-floyd-update-5" target="_blank" rel="noopener noreferrer">The James Update #5</a><br><a href="https://jamesfloyd.substack.com/p/the-james-floyd-update-6" target="_blank" rel="noopener noreferrer">The James Update #6</a><br><a href="https://jamesfloyd.substack.com/p/the-james-floyd-update-7" target="_blank" rel="noopener noreferrer">The James Update #7</a><br><a href="https://substack.com/home/post/p-197365694" target="_blank" rel="noopener noreferrer">The James Update #8</a><br><a href="https://open.substack.com/pub/jamesfloyd/p/the-james-floyd-update-9" target="_blank" rel="noopener noreferrer">The James Update #9</a><br><a href="https://jamesfloyd.substack.com/p/the-james-floyd-update-10" target="_blank" rel="noopener noreferrer">The James Update #10</a><br><a href="https://jamesfloyd.substack.com/p/putting-my-heart-on-my-sleeve" target="_blank" rel="noopener noreferrer">The James Update #11</a></p>
+      </div>
+
+      <footer class="up-foot">
+        <a href="/writing/">← All writing</a>
+        <a href="https://jamesfloyd.substack.com/p/the-james-floyd-update-12" target="_blank" rel="noopener noreferrer">Read on Substack ↗</a>
+        <a href="https://jamesfloyd.substack.com/subscribe" target="_blank" rel="noopener noreferrer">Get the next one ↗</a>
+        <p class="up-foot__note">Sent monthly to the people I have met on my path. Just like companies
+        send updates to their investors, I send updates to you because you have invested in me.</p>
+      </footer>
+
+    </article>
+  </main>
+
+  <script>
+    (function () {
+      var btn = document.getElementById('menu-btn');
+      var nav = document.getElementById('site-nav');
+      var close = document.getElementById('nav-close');
+      if (btn && nav) {
+        btn.addEventListener('click', function () {
+          var open = nav.classList.toggle('is-open');
+          btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+      }
+      if (close && nav) {
+        close.addEventListener('click', function () {
+          nav.classList.remove('is-open');
+          if (btn) btn.setAttribute('aria-expanded', 'false');
+        });
+      }
+    })();
+  </script>
+
+</body>
+</html>
