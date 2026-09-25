@@ -208,10 +208,18 @@
     if (e.pointerType !== 'mouse') { S.hover = n; showTip(n, sx, sy); }
   });
   canvas.addEventListener('pointerleave', () => { if (!drag) { S.hover = null; hideTip(); requestDraw(); } });
-  /* The map fills the window, so the wheel over it is for the map: holding a
-     modifier to zoom the thing you are looking at was the wrong default. The
-     page still scrolls normally everywhere else. */
-  canvas.addEventListener('wheel', (e) => { e.preventDefault(); const [sx, sy] = pt(e); zoomAt(sx, sy, Math.exp(-e.deltaY * 0.004)); }, { passive: false });
+  /* The wheel scrolls the page, including over the map.
+     Taking the plain wheel for zooming made the map a trap: it fills the
+     window, so scrolling down the page put the pointer over it and the page
+     stopped moving. Zoom has its own controls -- the buttons, double-click,
+     pinch -- so the wheel does not need to be one of them. Holding Ctrl or the
+     command key still zooms, which is what a browser means by that gesture
+     anyway. */
+  canvas.addEventListener('wheel', (e) => {
+    if (!e.ctrlKey && !e.metaKey) return;            // let the page scroll
+    e.preventDefault();
+    const [sx, sy] = pt(e); zoomAt(sx, sy, Math.exp(-e.deltaY * 0.004));
+  }, { passive: false });
   canvas.addEventListener('dblclick', (e) => { const [sx, sy] = pt(e); zoomAt(sx, sy, 2.2); });
   const zoomCentre = (f) => { const r = canvas.getBoundingClientRect(); zoomAt(r.width / 2, r.height / 2, f); };
   $('#zin').addEventListener('click', () => zoomCentre(1.6));
@@ -252,7 +260,7 @@
         `<span class="sw"><i style="background:${COL.nodata}"></i><span>No forecast</span></span></span>`;
     }
     $('#legend').innerHTML = html;
-    $('#mapnote').textContent = 'Census population estimates (Vintage 2025) and NCES enrollment, fall 2024. Ctrl/⌘-scroll or double-click to zoom; drag to pan.';
+    $('#mapnote').textContent = 'Census population estimates (Vintage 2025) and NCES enrollment, fall 2024. Zoom with the + and \u2212 buttons, a double-click, a pinch, or Ctrl/\u2318-scroll; drag to pan.';
   }
   /* The same figure the headline states, kept in the corner of the map so it
      is still there once you have scrolled the sentence off or panned away. */
