@@ -112,7 +112,9 @@ select,input[type=search]{font:500 14px var(--sans); color:var(--ink); backgroun
   background:var(--raise, var(--surface)); color:var(--ink); font:600 17px/1 var(--sans); cursor:pointer;
   box-shadow:0 2px 8px rgba(0,0,0,.12)}
 .zoomers button:hover{border-color:var(--ink-2)}
-.zoomers button.rs{font-size:10px; font-weight:600; letter-spacing:.04em}
+/* A word does not fit a 32px square, and shrinking it until it did made it
+   unreadable. The glyph matches the + and - beside it. */
+.zoomers button.rs{font-size:19px; line-height:1}
 .legend{display:flex; flex-wrap:wrap; align-items:center; gap:6px 14px; font-size:12px; color:var(--ink-2)}
 .legend .ttl{font-weight:700; color:var(--ink)}
 .swatches{display:flex; flex-wrap:wrap; gap:6px 4px; min-width:0}
@@ -230,7 +232,7 @@ footer{font-size:12px; color:var(--muted)}
       <div class="zoomers">
         <button type="button" id="zin" aria-label="Zoom in">+</button>
         <button type="button" id="zout" aria-label="Zoom out">−</button>
-        <button type="button" id="zrs" class="rs" aria-label="Reset the view">RESET</button>
+        <button type="button" id="zrs" class="rs" aria-label="Reset the view" title="Reset the view">↺</button>
       </div>
       <div class="hbox" id="hbox" aria-hidden="true"></div>
       <canvas id="map" role="img" aria-label="Map of the United States colored by the selected measure. The table below lists the same values."></canvas>
