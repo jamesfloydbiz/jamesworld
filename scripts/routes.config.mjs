@@ -33,6 +33,7 @@ export const ROUTES = [
   { path: '/foundersschool', priority: 0.7, changefreq: 'monthly' },
   { path: '/education', priority: 0.8, changefreq: 'monthly' },
   { path: '/education/us-vs-world', priority: 0.8, changefreq: 'monthly' },
+  { path: '/education/school-outlook', priority: 0.8, changefreq: 'monthly' },
   { path: '/writing/updates/the-james-floyd-update-12', priority: 0.7, changefreq: 'monthly' },
   { path: '/writing/rabbit-holes/the-future-of-assessments', priority: 0.6, changefreq: 'monthly' },
   { path: '/writing/rabbit-holes/state-of-american-schooling', priority: 0.6, changefreq: 'monthly' },
