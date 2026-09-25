@@ -30,8 +30,13 @@ section. Delete a line when it ships.
   wipes them, but they are a sign iCloud is racing the build.
 - **Simplification, from the earlier pass**: `brand/` is dead, `images/` holds
   duplicate logos, `models/` is 51 MB and referenced by nothing.
-- **`/builds` vs `/projects` naming** — two index pages that overlap. Pick one
-  story.
+- ~~**`/builds` vs `/projects` naming**~~ — done 2026-09-24. `/builds/` was
+  relabelled **Tech Builds** ("automations, software, dashboards") and moved to
+  `/projects/tech-builds/`; the old URL is a redirect stub. `/projects` owns it
+  and `/education/` as live cards (it had Builds filed under *Archived*), and
+  both sit in the Projects submenu in the nav. The individual builds keep their
+  `/builds/<slug>/` URLs — those are published in the Substack essay and in the
+  Alpha and Founders School pitches.
 - **Untracked and unreviewed**: `site/builds/the-shelf/`, `public/vendor/three/`,
   and two dead prototypes `site/builds/climbing-machine/_drag.html` / `_peel.html`.
 - **`CLAUDE.md` has two stale claims**: it says `package.json` lists zero
