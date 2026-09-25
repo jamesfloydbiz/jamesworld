@@ -88,6 +88,26 @@ select,input[type=search]{font:500 14px var(--sans); color:var(--ink); backgroun
 .found .note{margin-top:9px}
 .headline{margin:0; font-size:15px; color:var(--ink-2)}
 .headline b{color:var(--ink); font-variant-numeric:tabular-nums}
+/* Two countries, two maps, never both at once. */
+.views{display:flex; gap:6px; margin:0 0 4px; flex-wrap:wrap}
+.views button{appearance:none; cursor:pointer; font:inherit; font-weight:600; font-size:13px;
+  padding:9px 15px; border-radius:999px; border:1px solid var(--line);
+  background:var(--surface); color:var(--ink-2)}
+.views button:hover{border-color:var(--line-2); color:var(--ink)}
+.views button[aria-pressed="true"]{background:var(--ink); border-color:var(--ink); color:var(--ground)}
+.views button small{display:block; font-weight:400; font-size:10.5px; font-family:var(--mono);
+  letter-spacing:.04em; opacity:.72; margin-top:1px}
+
+/* Korea. Seventeen provinces and a slider: much less machinery than the U.S.
+   map needs, because nothing here is modelled. */
+#kr-map{width:100%; height:clamp(340px, 60vh, 720px); display:block}
+.kr-stage{display:grid; grid-template-columns:minmax(0,1fr) 320px; gap:14px; align-items:start}
+.kr-stage > *{min-width:0}
+.kr-year{display:flex; align-items:center; gap:12px; flex-wrap:wrap}
+.kr-year input[type=range]{flex:1; min-width:220px; accent-color:var(--ink-2)}
+.kr-year b{font-variant-numeric:tabular-nums; font-size:20px; min-width:3.2em}
+@media (max-width: 860px){ .kr-stage{grid-template-columns:minmax(0,1fr)} }
+
 /* The map is the page, so it leaves the reading column and runs the width of
    the window less a small margin. --vw is the viewport WITHOUT the scrollbar,
    set from JS: 100vw includes it and the page would scroll sideways. */
@@ -207,6 +227,12 @@ footer{font-size:12px; color:var(--muted)}
     </div>
   </header>
 
+  <nav class="views" id="views" aria-label="Country">
+    <button type="button" data-view="us" aria-pressed="true">United States<small>counties and districts, to 2055</small></button>
+    <button type="button" data-view="kr" aria-pressed="false">South Korea<small>provinces, 1965–2026</small></button>
+  </nav>
+
+  <div id="view-us">
   <div class="controls">
     <div class="ctl"><label for="geo">Map by</label>
       <select id="geo"><option value="c">County</option><option value="d">School district</option><option value="s">High school district</option></select></div>
@@ -264,6 +290,36 @@ footer{font-size:12px; color:var(--muted)}
   </section>
 
   <section class="method" id="method" aria-label="How this works"></section>
+  </div>
+
+  <div id="view-kr" hidden>
+    <section class="card found" id="kr-found" aria-label="What happened"></section>
+
+    <div class="controls">
+      <div class="ctl"><span class="lab" id="krlvl">School level</span>
+        <div class="seg" id="kr-levels" role="group" aria-labelledby="krlvl"></div></div>
+      <div class="ctl kr-year" style="flex:1; min-width:280px;">
+        <label for="kr-year">Year</label>
+        <input id="kr-year" type="range" step="1" aria-describedby="kr-yearlab">
+        <b id="kr-yearlab"></b>
+      </div>
+    </div>
+
+    <main class="kr-stage">
+      <section class="mapwrap" aria-label="Map of South Korea">
+        <div class="legend" id="kr-legend"></div>
+        <canvas id="kr-map" role="img" aria-label="South Korea by province, coloured by how much of its own peak student population each province still has. The table below lists the same values."></canvas>
+      </section>
+      <aside class="panel" id="kr-panel" aria-live="polite"></aside>
+    </main>
+
+    <section class="rank">
+      <div class="rank-head"><div><h2>Every province, furthest fallen first</h2>
+        <p class="note" id="kr-src"></p></div></div>
+      <div class="tablewrap"><table id="kr-tbl"><thead></thead><tbody></tbody></table></div>
+    </section>
+  </div>
+
   <footer id="foot"></footer>
 </div>
 
@@ -278,3 +334,23 @@ footer{font-size:12px; color:var(--muted)}
 <script src="geo_districts.js"></script>
 <script src="geo_secondary.js"></script>
 <script src="app.js"></script>
+<script src="data_korea.js"></script>
+<script src="geo_korea.js"></script>
+<script src="korea.js"></script>
+<script>
+  /* The view switch. Korea's canvas has no size while it is hidden, so it is
+     measured the moment it is shown. */
+  (function () {
+    const views = document.getElementById('views');
+    if (!views) return;
+    function show(v) {
+      document.getElementById('view-us').hidden = v !== 'us';
+      document.getElementById('view-kr').hidden = v !== 'kr';
+      views.querySelectorAll('[data-view]').forEach((b) => b.setAttribute('aria-pressed', b.dataset.view === v ? 'true' : 'false'));
+      if (v === 'kr' && window.KR_APP) window.KR_APP.resize();
+      else if (v === 'us' && window.SOM_APP) window.dispatchEvent(new Event('resize'));
+    }
+    views.addEventListener('click', (e) => { const b = e.target.closest('[data-view]'); if (b) show(b.dataset.view); });
+    window.__showView = show;
+  })();
+</script>
