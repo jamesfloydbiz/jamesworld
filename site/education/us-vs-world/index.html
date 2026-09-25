@@ -1,0 +1,200 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>US vs World in Education — James Floyd</title>
+<meta name="description" content="Every international test the U.S. takes, from grade 4 to adulthood, compared country by country, with notes on how each school system differs from the American one.">
+<link rel="canonical" href="https://jamesfloyds.world/education/us-vs-world/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="US vs World in Education">
+<meta property="og:description" content="Every international test the U.S. takes, from grade 4 to adulthood, compared country by country.">
+<meta property="og:url" content="https://jamesfloyds.world/education/us-vs-world/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="US vs World in Education">
+<meta name="twitter:description" content="Every international test the U.S. takes, from grade 4 to adulthood, compared country by country.">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  color-scheme: light;
+  --ground:#f4f5f3; --surface:#fcfcfb; --raise:#ffffff;
+  --ink:#121416; --ink-2:#4a4c4d; --muted:#686a69; --axis:#8a8c89;
+  --line:#dfe1dd; --line-2:#c6c9c4; --accent:#f2b705; --accent-ink:#7a5600;
+  --ramp:#abec9d #a9d080 #a3b468 #999a55 #8c8147 #7e6932 #6f521f #5f3c0f #4e2702;   /* rank colors, 1st (light green) to last (dark brown) */
+  --untested:#eceeea; --edge:rgba(18,20,22,.22); --us:#f2b705;
+  --good:#2f6b1f; --bad:#8a4a18;
+  --sans:"Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+    --ground:#0e0f10; --surface:#18191a; --raise:#202223;
+    --ink:#f3f4f2; --ink-2:#c4c6c2; --muted:#a2a5a0; --axis:#8a8c89;
+    --line:#2b2d2e; --line-2:#3c3e3f; --accent:#f2b705; --accent-ink:#f2b705;
+    --ramp:#abec9d #acd383 #a9bb6e #a2a35e #988d52 #8d7841 #816331 #744f25 #653c1a;   /* last stop lifted so it stays clear of "not tested" */
+    --untested:#232526; --edge:rgba(255,255,255,.14); --us:#f2b705;
+    --good:#9fd88a; --bad:#d9a066;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --ground:#0e0f10; --surface:#18191a; --raise:#202223;
+  --ink:#f3f4f2; --ink-2:#c4c6c2; --muted:#a2a5a0; --axis:#8a8c89;
+  --line:#2b2d2e; --line-2:#3c3e3f; --accent:#f2b705; --accent-ink:#f2b705;
+  --ramp:#abec9d #acd383 #a9bb6e #a2a35e #988d52 #8d7841 #816331 #744f25 #653c1a;
+  --untested:#232526; --edge:rgba(255,255,255,.14); --us:#f2b705;
+  --good:#9fd88a; --bad:#d9a066;
+}
+*{box-sizing:border-box}
+.home-link{display:inline-block; margin:0 0 14px; font-family:var(--mono); font-size:11px;
+  letter-spacing:.14em; text-transform:uppercase; color:var(--muted); text-decoration:none;}
+.home-link:hover,.home-link:focus-visible{color:var(--ink);}
+[hidden]{display:none!important}
+body{background:var(--ground); color:var(--ink); font-family:var(--sans); font-size:14px; line-height:1.45}
+.app{max-width:1440px; margin:0 auto; padding-inline:clamp(16px,2.4vw,32px); padding-block:18px 48px; display:flex; flex-direction:column; gap:14px}
+h1,h2,h3{margin:0; text-wrap:balance}
+h1{font-size:clamp(22px,2.6vw,30px); font-weight:800; letter-spacing:-.02em}
+h2{font-size:19px; font-weight:700; letter-spacing:-.01em}
+h3{font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:var(--ink-2)}
+a{color:inherit; text-decoration-color:var(--line-2); text-underline-offset:2px}
+a:hover{text-decoration-color:var(--ink)}
+:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+.thesis{margin:4px 0 0; color:var(--ink-2); max-width:70ch}
+.ages{display:flex; flex-wrap:wrap; gap:8px}
+.age{font:600 14px var(--sans); background:var(--raise); color:var(--ink-2); border:1px solid var(--line-2); border-radius:10px; padding:9px 14px; cursor:pointer; text-align:left; display:flex; flex-direction:column; gap:1px; min-width:0}
+.age small{font:500 11px var(--sans); color:var(--muted)}
+.age[aria-pressed="true"]{background:var(--ink); color:var(--surface); border-color:var(--ink)}
+.age[aria-pressed="true"] small{color:color-mix(in srgb, var(--surface) 75%, transparent)}
+.subjects{display:flex; flex-wrap:wrap; gap:6px; align-items:center}
+.subj{font:600 13px var(--sans); background:transparent; color:var(--ink-2); border:1px solid var(--line-2); border-radius:999px; padding:6px 12px; cursor:pointer}
+.subj[aria-pressed="true"]{background:var(--raise); color:var(--ink); border-color:var(--ink)}
+.bar{display:flex; flex-wrap:wrap; gap:10px 16px; align-items:center; justify-content:space-between}
+.stand{font-size:15px; color:var(--ink-2); margin:0}
+.stand b{color:var(--ink); font-variant-numeric:tabular-nums}
+.stage{display:grid; grid-template-columns:minmax(0,1fr) 400px; gap:14px; align-items:start}
+.stage > *{min-width:0}
+.card{background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:14px; display:flex; flex-direction:column; gap:10px; min-width:0}
+#map{width:100%; aspect-ratio:1.9/1; display:block; cursor:crosshair; touch-action:manipulation}
+.legend{display:flex; flex-wrap:wrap; gap:6px 14px; align-items:center; font-size:12px; color:var(--ink-2)}
+.legend .ttl{font-weight:700; color:var(--ink)}
+.key{display:inline-flex; align-items:center; gap:6px}
+.key i{width:14px; height:12px; border-radius:2px; display:inline-block; border:1px solid var(--edge)}
+.key i.usk{background:transparent; border:2px solid var(--us); outline:1px solid var(--ink)}
+.key i.dotk{width:10px; height:10px; border-radius:50%; border:1.5px solid var(--ink)}
+.scale{display:inline-flex; align-items:center; gap:6px}
+.ramp{position:relative; display:inline-block; width:clamp(120px,22vw,220px); height:12px; border-radius:3px; border:1px solid var(--edge)}
+.ramp .usm{position:absolute; top:-4px; bottom:-4px; width:6px; transform:translateX(-50%); background:var(--us); border:1px solid var(--ink); border-radius:2px}
+.sw{display:inline-block; width:10px; height:10px; border-radius:2px; margin-right:6px; vertical-align:-1px; border:1px solid var(--edge)}
+td.rk{white-space:nowrap}
+.sw.lg{width:16px; height:16px; margin-right:0; align-self:center}
+.mapfoot{display:flex; flex-wrap:wrap; justify-content:space-between; gap:8px; font-size:12px; color:var(--muted)}
+.tip{position:absolute; pointer-events:none; z-index:10; background:var(--raise); border:1px solid var(--line-2); border-radius:8px; padding:8px 10px; font-size:12px; box-shadow:0 6px 18px rgba(0,0,0,.16); max-width:260px}
+.tip b{display:block; font-size:13px}
+.mapwrap{position:relative}
+.ghost{font:600 12px var(--sans); background:transparent; border:1px solid var(--line-2); color:var(--ink-2); border-radius:6px; padding:5px 9px; cursor:pointer}
+.kind{font:500 11px var(--mono); color:var(--muted)}
+.chip{display:inline-flex; align-items:center; gap:5px; font-size:12px; font-weight:600; border-radius:999px; padding:2px 8px; border:1px solid var(--line-2); white-space:nowrap}
+.chip i{width:9px; height:9px; border-radius:50%; display:inline-block}
+.chip.usc{border-color:var(--us)}
+.big{display:flex; align-items:baseline; gap:10px; flex-wrap:wrap}
+.big .n{font-size:32px; font-weight:800; letter-spacing:-.02em; line-height:1; font-variant-numeric:tabular-nums}
+.big .u{color:var(--ink-2); font-size:13px}
+.hi{color:var(--good)} .lo{color:var(--bad)}
+.note{font-size:12px; color:var(--muted); margin:0}
+.panel h2{font-size:21px}
+.sec{display:flex; flex-direction:column; gap:8px; padding-top:12px; border-top:1px solid var(--line)}
+.sec ul{margin:0; padding-left:18px; display:flex; flex-direction:column; gap:6px; color:var(--ink-2)}
+.facts{display:grid; grid-template-columns:auto 1fr; gap:4px 12px; font-size:13px}
+.facts dt{color:var(--muted)} .facts dd{margin:0; color:var(--ink)}
+.srcs{display:flex; flex-direction:column; gap:3px; font-size:12px}
+.cite{font:600 10px var(--mono); vertical-align:super; margin-left:2px; padding:0 1px; text-decoration:none; color:var(--accent-ink)}
+.cite:hover{text-decoration:underline}
+.cmp{display:flex; flex-direction:column; gap:3px; padding:7px 0 2px; border-top:1px dashed var(--line)}
+.cmp:first-of-type{border-top:0}
+.cmp h4{margin:0; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--muted)}
+.cmp p{margin:0} .cmp p b{margin-right:4px} .cmp p.us{color:var(--ink-2)}
+ol.srcs{margin:0; padding-left:20px}
+.found ul{margin:0; padding-left:18px; display:flex; flex-direction:column; gap:6px; max-width:90ch}
+.found h2{font-size:17px}
+.common{display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr)); gap:14px}
+.theme{display:flex; flex-direction:column; gap:6px; padding-top:10px; border-top:1px solid var(--line)}
+.theme h3{text-transform:none; letter-spacing:0; font-size:14px; color:var(--ink)} .theme p{margin:0; color:var(--ink-2)}
+.cult td:first-child{white-space:normal; min-width:180px} .cult td{vertical-align:top}
+.goto{margin:3px 3px 0 0; padding:3px 8px}
+.goto[aria-pressed="true"]{background:var(--ink); color:var(--surface); border-color:var(--ink)}
+table{border-collapse:collapse; width:100%; font-size:13px}
+th{font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); text-align:right; padding:6px; border-bottom:1px solid var(--line-2); white-space:nowrap}
+td{padding:6px; border-bottom:1px solid var(--line); text-align:right; font-variant-numeric:tabular-nums}
+th:first-child,td:first-child{text-align:left}
+.mini td,.mini th{padding:4px 5px; font-size:12px}
+.tablewrap{overflow-x:auto}
+#rank tbody tr{cursor:pointer}
+#rank tbody tr:hover{background:var(--line)}
+#rank tbody tr.us{background:color-mix(in srgb, var(--us) 16%, transparent)}
+#rank tbody tr[aria-selected="true"]{outline:2px solid var(--ink); outline-offset:-2px}
+#rank{min-width:560px}
+svg.chart{width:100%; height:auto; display:block; overflow:visible}
+svg.chart text{fill:var(--muted); font:11px var(--sans); font-variant-numeric:tabular-nums}
+svg.chart .lbl{fill:var(--ink-2); font-weight:600}
+svg.chart .row{cursor:pointer}
+svg.chart .row:hover rect.hit{fill:var(--line)}
+.method{display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr)); gap:14px}
+.method p,.method li{color:var(--ink-2); max-width:70ch}
+.method p{margin:0}
+.method ul{margin:0; padding-left:18px; display:flex; flex-direction:column; gap:5px}
+footer{font-size:12px; color:var(--muted)}
+@media (max-width: 1040px){ .stage{grid-template-columns:minmax(0,1fr)} }
+@media (max-width: 520px){ .age{padding:8px 10px; font-size:13px} .big .n{font-size:26px} }
+@media (prefers-reduced-motion: reduce){ *{transition:none!important} }
+</style>
+
+<div class="app">
+  <a class="home-link" href="/education/">← James' Education Dashboards</a>
+  <header>
+    <h1>How U.S. Learners Compare</h1>
+    <p class="thesis">Every international test the United States takes part in, from fourth grade to adulthood. Countries are colored by their rank on the selected test, from light green (1st) to dark brown (last). The U.S. is outlined in gold.</p>
+    <p class="note" id="updated"></p>
+  </header>
+
+  <section class="card found" id="found" aria-label="What the data shows"></section>
+
+  <nav class="ages" id="ages" aria-label="Age tested"></nav>
+  <div class="bar"><div class="subjects" id="subjects" role="group" aria-label="Subject"></div><p class="stand" id="stand"></p></div>
+
+  <main class="stage">
+    <section class="card mapwrap" aria-label="World map">
+      <div class="legend" id="legend"></div>
+      <canvas id="map" role="img" aria-label="World map colored by each country's rank on the selected test, from light green (highest) to dark brown (lowest). The table below lists the same results."></canvas>
+      <div class="tip" id="tip" hidden></div>
+      <div class="mapfoot"><span id="mapnote"></span><button class="ghost" id="reset">Reset view</button></div>
+    </section>
+    <aside class="card panel" id="panel" aria-live="polite"></aside>
+  </main>
+
+  <section class="card" aria-labelledby="ov-title">
+    <div class="bar"><div><h2 id="ov-title">The U.S. at every age tested</h2>
+      <p class="note">Each dot is a country, placed by its rank on that test from 1st to last. The gold bar is the U.S., and ringed dots are countries not measurably different from it. On the right, ▲▼ show a significant U.S. change since the previous round (● = no measurable change). Each test has its own set of countries, so compare positions across rows with care. Click a row to map that test.</p></div></div>
+    <div id="overview"></div>
+  </section>
+
+  <section class="card" aria-labelledby="common-title">
+    <div><h2 id="common-title">What the leaders have in common</h2><p class="note" id="common-note"></p></div>
+    <div class="common" id="common"></div>
+  </section>
+
+  <section class="card" aria-labelledby="rank-title">
+    <div class="bar"><h2 id="rank-title">Rankings</h2><p class="note" id="rank-note"></p></div>
+    <div class="tablewrap"><table id="rank"><thead></thead><tbody></tbody></table></div>
+  </section>
+
+  <section class="method" id="method"></section>
+  <footer id="foot"></footer>
+</div>
+
+<script src="vendor/topojson-client.min.js"></script>
+<script src="data_world.js"></script>
+<script src="text_world.js"></script>
+<script src="geo_world.js"></script>
+<script src="app.js"></script>
