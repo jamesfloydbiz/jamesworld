@@ -36,3 +36,9 @@ public/sonder/.png_originals/
 
 # Audio-gen cache metadata (regenerated locally by scripts/gen-audio.mjs)
 public/audio/*.sha1
+
+# iCloud makes "* 2" copies while a build is writing; they are never wanted.
+*\ 2.js
+*\ 2.html
+*\ 2.css
+*\ 2.json
