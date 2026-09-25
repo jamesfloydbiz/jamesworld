@@ -293,6 +293,57 @@
     return h;
   }
 
+  // The U.S. profile, on the page rather than only behind a click on the map.
+  function renderUSSys() {
+    const e = TXT['840'];
+    if (!(e && e.v2)) { $('#ussys').hidden = true; return; }
+    $('#ussys-body').innerHTML = v2HTML('840', e).replace(/<div class="sec"><h3>How the U\.S\. system works<\/h3>/, '<div class="sec">');
+  }
+
+  // ------------------------------------------------------------------ the U.S. over time
+  /* One small chart per test, every point from an official trend table. The
+     line is drawn to the range of that test's own series, so the shape is the
+     movement in the scores and never a comparison between tests. */
+  function renderUsTrend() {
+    const U = D.usTrend;
+    if (!U) { $('#ut').closest('section').hidden = true; return; }
+    const keys = Object.keys(U);
+    const rounds = keys.reduce((a, k) => a + U[k].points.length, 0);
+    $('#ut-note').textContent = `${keys.length} tests, ${rounds} rounds of testing, earliest 1995. Each line is the U.S. average on that test; the figure below is the change since the first round shown.`;
+
+    const W = 200, H = 78, PAD = 8;
+    $('#ut').innerHTML = keys.map((k) => {
+      const s = U[k], pts = s.points;
+      const ys = pts.map((p) => p.score), lo = Math.min(...ys), hi = Math.max(...ys), span = Math.max(hi - lo, 1);
+      const x = (i) => PAD + (i * (W - 2 * PAD)) / Math.max(pts.length - 1, 1);
+      const y = (v) => PAD + (hi - v) * (H - 2 * PAD) / span;
+      const line = pts.map((p, i) => `${i ? 'L' : 'M'}${x(i).toFixed(1)} ${y(p.score).toFixed(1)}`).join(' ');
+      const area = `${line} L${x(pts.length - 1).toFixed(1)} ${H - PAD} L${x(0).toFixed(1)} ${H - PAD} Z`;
+      const first = pts[0], last = pts[pts.length - 1];
+      // The published change where the table carries one, and its own
+      // significance flag: a move the publisher will not call a change is
+      // printed in the muted colour and said so in words.
+      const net = first.chg != null ? first.chg : last.score - first.score;
+      const cls = first.sig ? (net > 0 ? 'up' : net < 0 ? 'dn' : 'flat') : 'flat';
+      const word = `since ${first.year}` + (first.sig === false ? ' \u00b7 not a measurable change'
+        : first.sig == null ? ' \u00b7 no significance test published' : '');
+      const dots = pts.map((p, i) => `<circle cx="${x(i).toFixed(1)}" cy="${y(p.score).toFixed(1)}" r="${i === pts.length - 1 ? 3 : 1.8}" fill="${i === pts.length - 1 ? 'var(--us)' : 'var(--axis)'}"><title>${p.year}: ${p.score.toFixed(0)}</title></circle>`).join('');
+      return `<figure>
+        <figcaption><span class="ttl">${esc(s.label)}</span><span class="prog">${esc(s.test)}</span></figcaption>
+        <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(s.label)}, U.S. average by year: ${pts.map((p) => `${p.year} ${p.score.toFixed(0)}`).join(', ')}">
+          <path d="${area}" fill="var(--accent)" opacity=".07"></path>
+          <path d="${line}" fill="none" stroke="var(--ink-2)" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"></path>
+          ${dots}
+        </svg>
+        <div class="ends"><span>${first.year} · ${first.score.toFixed(0)}</span><span>${last.year} · ${last.score.toFixed(0)}</span></div>
+        <p class="net"><b class="${cls}">${fmtD(net)}</b> <span class="flat">${esc(word)}</span></p>
+      </figure>`;
+    }).join('');
+
+    const srcs = [...new Set(keys.map((k) => U[k].source))];
+    $('#ut-src').textContent = 'Every point is a published average: ' + srcs.join('; ') + '. Changes marked "no measurable change" use the publisher\u2019s own significance test; PIRLS publishes none, so no change there is called significant. ICILS and PIAAC are not shown: the U.S. has sat each of them fewer than three times.';
+  }
+
   // ------------------------------------------------------------------ what the data shows (computed) + what the leaders share (research/common.json)
   function findings() {
     const u = (k) => T[k].byIso['840'], rk = (k) => rankTxt(u(k), T[k]), pct = (k) => (u(k).rank - 1) / (T[k].n - 1);
@@ -318,9 +369,14 @@
   $('#common').addEventListener('click', (ev) => { const b = ev.target.closest('[data-goto]'); if (b) { select(b.dataset.goto); $('#panel').scrollIntoView({ behavior: 'smooth', block: 'start' }); } });
 
   // ------------------------------------------------------------------ rankings
+  const RANK_SUBJ = [['a15_math', 'Math'], ['a15_read', 'Literacy'], ['a15_sci', 'Science']].filter(([k]) => T[k]);
+  S.rt = (RANK_SUBJ[0] || [])[0];
+  $('#rank-subj').innerHTML = RANK_SUBJ.map(([k, lab]) => `<button class="subj" data-rt="${k}"${k === S.rt ? ' aria-pressed="true"' : ''}>${esc(lab)}</button>`).join('');
+  $('#rank-subj').addEventListener('click', (e) => { const b = e.target.closest('[data-rt]'); if (!b) return; S.rt = b.dataset.rt; renderRank(); });
+
   function renderRank() {
-    const t = T[S.t];
-    $('#rank-title').textContent = `Rankings: ${t.program} ${SHORT[t.subject] || t.subject}`;
+    const t = T[S.rt] || T[S.t];
+    $('#rank-subj').querySelectorAll('[data-rt]').forEach((b) => b.setAttribute('aria-pressed', b.dataset.rt === S.rt ? 'true' : 'false'));
     $('#rank-note').textContent = `${t.n} education systems, ${t.age}. Ranked by average score; "T-" marks a tie. Reference: ${t.ref ? `${t.ref.name} ${t.ref.mean.toFixed(0)}` : '—'}.`;
     $('#rank thead').innerHTML = `<tr><th>#</th><th style="text-align:left">Education system</th><th>Average</th><th>± margin</th><th>${t.trend ? `Since ${t.trend.from}` : 'Change'}</th><th>vs U.S.</th><th>Result</th></tr>`;
     $('#rank tbody').innerHTML = t.rows.map((r) => { const us = r.iso === '840'; return `<tr data-iso="${esc(r.iso || '')}" class="${us ? 'us' : ''}"${r.iso && r.iso === S.sel ? ' aria-selected="true"' : ''}>` +
@@ -334,9 +390,9 @@
   function renderMethod() {
     const list = D.groups.map((g) => g.tests.map((k) => { const t = T[k]; return `<li><b>${esc(g.label)}</b>: ${esc(t.program)} ${esc(SHORT[t.subject] || t.subject)}. ${t.rows.length} systems, U.S. ${t.us.mean.toFixed(0)}. <a href="${esc(t.source)}" target="_blank" rel="noopener">Official table ↗</a></li>`; }).join('')).join('');
     $('#method').innerHTML = `
-      <article class="card"><h2>What's compared</h2><ul>${list}</ul>
-        <p class="note">No early-childhood comparison is possible: the only international study of five-year-olds (IELS 2025) did not include the U.S. The 2018 round covered just England, Estonia and the U.S.</p></article>
-      <article class="card"><h2>How to read it</h2>
+      <details class="fold"><summary><span>What's compared</span></summary><div class="body"><ul>${list}</ul>
+        <p class="note">No early-childhood comparison is possible: the only international study of five-year-olds (IELS 2025) did not include the U.S. The 2018 round covered just England, Estonia and the U.S.</p></div></details>
+      <details class="fold"><summary><span>How to read it</span></summary><div class="body">
         <p>Each test reports a country's average score and its standard error. A country counts as higher or lower than the U.S. only when the gap is larger than the combined 95% margin of error. Otherwise it is marked "no measurable difference." For ICILS, this rule matches the U.S. National Center for Education Statistics' own comparisons for all 31 countries.</p>
         <p>Scales differ by test. PISA, TIMSS, PIRLS and ICILS are centered near 500 with a spread of about 100 points; PIAAC's adult scale has about half that spread. So the map shows rank instead of score: on every test, light green is 1st and dark brown is last.</p>
         <p>Ranks follow the average scores in the official tables, and countries with the same published average share a rank. Countries a few places apart often aren't measurably different, so the panel and table also say whether each country is measurably higher or lower than the U.S.</p>
@@ -346,17 +402,17 @@
           <li>Norway, South Africa and Türkiye take TIMSS in grades 5 and 9 instead of 4 and 8.</li>
           <li><b>Change since the last round</b> comes from the organizers' own trend tables: PISA 2025 vs 2022 (OECD Tables I.B1.2a.36–38; counted as a real change when it is larger than 1.96 standard errors), TIMSS 2023 vs 2019 (IEA trend tables, which mark significant changes) and ICILS 2023 vs 2018 (NCES). PIRLS isn't shown because its trend table has no significance test, and the adult survey's trend tables couldn't be downloaded.</li>
           <li><b>Flags on the U.S. results.</b> PISA 2025: the OECD marks U.S. results with an asterisk because student response rates fell below the minimum target, so they "could be affected by greater uncertainty, or even be biased" (<a href="https://www.oecd.org/en/publications/pisa-2025-results-volume-i-country-notes_2d4ff9ea-en/united-states_0c8cbc7c-en.html" target="_blank" rel="noopener">OECD</a>); Albania, Canada, the Netherlands, New Zealand and Norway are also flagged. TIMSS 2023: at grade 8 the U.S. "did not satisfy guidelines for sample participation rates"; at grade 4 it met them only after replacement schools were included (<a href="https://nces.ed.gov/timss/results23/doc/TIMSS2023_compiled.pdf" target="_blank" rel="noopener">NCES</a>). ICILS 2023: the U.S. did not meet the 85% sample-participation guideline (<a href="https://nces.ed.gov/surveys/icils/icils2023/tables/ICILS_2023_Web_Tables.xlsx" target="_blank" rel="noopener">NCES</a>).</li>
-          <li>Each test covers a different set of countries, so rankings aren't comparable across tests.</li></ul></article>
-      <article class="card"><h2>About the country notes</h2>
+          <li>Each test covers a different set of countries, so rankings aren't comparable across tests.</li></ul></div></details>
+      <details class="fold"><summary><span>About the country notes</span></summary><div class="body">
         <p><b>Scores</b> come straight from the official tables and were checked against them.</p>
         <p><b>Rewritten profiles</b> (the ${V2.length} systems far ahead of the U.S., plus the U.S. column) were drafted with AI, but only from word-for-word quotes in official and research sources: ministries, the TIMSS and PIRLS encyclopedias, the OECD, the World Bank, NCEE and national statistics offices. A script confirms that each of the ${nQuotes()} quotes appears in its source, and rules block overstatement: words like "all" or "only" must appear in the quote, numbers must match it, and claims of cause and effect must say who makes them. A second AI review then read every statement against its quotes, and a separate AI check of ${AUDIT2.n} randomly chosen statements, reading each source in context, found ${AUDIT2.supported} fully supported, ${AUDIT2.minor} with a small wording issue and ${AUDIT2.wrong} wrong; all were fixed. Ideas about why a system does well are the named sources' views, not proven causes. Culture figures are read directly from the OECD's PISA 2022 and 2025 student surveys and its TALIS 2024 teacher survey.</p>
         <p><b>Older notes</b> for the other countries were drafted with AI from the TIMSS 2023 and PIRLS 2021 encyclopedias, Eurydice, the OECD and education ministries, then checked claim by claim against the linked sources. That check covered ${AUDIT.checked} claims: ${AUDIT.corrected} were corrected and ${AUDIT.deleted} deleted, and over-broad wording was narrowed to match each source.</p>
-        <p>An independent audit of ${AUDIT.n} randomly chosen claims, made after that check, found ${AUDIT.supported} fully supported, ${AUDIT.broad} right but stated too broadly, ${AUDIT.uncited} right but missing from its cited source, and ${AUDIT.wrong} wrong. All ${AUDIT.n - AUDIT.supported} were fixed. Because most problems were over-broad words, ${AUDIT.flagged} claims containing words like "all", "only" or "every" were then re-checked: ${AUDIT.narrowed} were narrowed and ${AUDIT.qdeleted} deleted. That last pass hasn't been re-audited. Notes describe how systems work, not why scores differ. Check the linked source before quoting a note.</p></article>`;
+        <p>An independent audit of ${AUDIT.n} randomly chosen claims, made after that check, found ${AUDIT.supported} fully supported, ${AUDIT.broad} right but stated too broadly, ${AUDIT.uncited} right but missing from its cited source, and ${AUDIT.wrong} wrong. All ${AUDIT.n - AUDIT.supported} were fixed. Because most problems were over-broad words, ${AUDIT.flagged} claims containing words like "all", "only" or "every" were then re-checked: ${AUDIT.narrowed} were narrowed and ${AUDIT.qdeleted} deleted. That last pass hasn't been re-audited. Notes describe how systems work, not why scores differ. Check the linked source before quoting a note.</p></div></details>`;
     $('#method').insertAdjacentHTML('beforeend', `
-      <article class="card"><h2>Sources and permissions</h2>
+      <details class="fold"><summary><span>Sources and permissions</span></summary><div class="body">
         <p><b>OECD</b> (PISA, PIAAC, TALIS and the OECD reports quoted in the profiles): used under the <a href="https://www.oecd.org/en/about/terms-conditions.html" target="_blank" rel="noopener">OECD's terms</a>, which allow reuse with citation; each source is cited where it's used. This is an adaptation of original works by the OECD. The opinions expressed and arguments employed in this adaptation should not be reported as representing the official views of the OECD or of its Member countries.</p>
         <p><b>IEA</b> (TIMSS, PIRLS, ICILS): used for non-commercial, educational purposes under the <a href="https://timss2023.org/data/" target="_blank" rel="noopener">IEA's terms</a>. SOURCE: IEA's Trends in International Mathematics and Science Study – TIMSS 2023. Copyright © 2025 International Association for the Evaluation of Educational Achievement (IEA). SOURCE: IEA's Progress in International Reading Literacy Study – PIRLS 2021 and International Computer and Information Literacy Study – ICILS 2023. Copyright © International Association for the Evaluation of Educational Achievement (IEA).</p>
-        <p><b>Other sources</b>: U.S. National Center for Education Statistics tables (U.S. government, public domain); short quotes from ministries, NCEE, the World Bank and research papers, each linked to its source; country shapes from Natural Earth (public domain).</p></article>`);
+        <p><b>Other sources</b>: U.S. National Center for Education Statistics tables (U.S. government, public domain); short quotes from ministries, NCEE, the World Bank and research papers, each linked to its source; country shapes from Natural Earth (public domain).</p></div></details>`);
     $('#foot').textContent = `Built ${D.built}. Scores from the IEA (TIMSS, PIRLS, ICILS via NCES) and the OECD (PISA 2025, PIAAC 2023). Not affiliated with either.`;
   }
 
@@ -370,7 +426,7 @@
   const CONTACT = [['LinkedIn', 'https://www.linkedin.com/in/jamesfloydl/'], ['X', 'https://x.com/jamesfloydswrld']];   // corrections (from jamesfloyds.world)
   $('#updated').innerHTML = `Last updated ${new Intl.DateTimeFormat('en-US', { dateStyle: 'long' }).format(new Date(D.built + 'T12:00:00'))}.` +
     (CONTACT.length ? ` Spot an error? Message James Floyd on ${CONTACT.map(([n, u]) => `<a href="${esc(u)}" target="_blank" rel="noopener">${esc(n)}</a>`).join(' or ')}.` : '');
-  readColors(); renderMethod(); findings(); renderCommon(); refresh(); resize();
+  readColors(); renderMethod(); findings(); renderCommon(); renderUSSys(); renderUsTrend(); refresh(); resize();
   const screenOf = (iso) => (featBy[iso] ? toScreen(featBy[iso].c[0], featBy[iso].c[1]) : null);   // for verify/browser_check.js
   const dots = () => feats.filter((f) => f.iso && isDot(f) && (T[S.t].byIso[f.iso] || f.iso === '840')).map((f) => f.iso);   // for verify/browser_check.js
   const areaKm2 = (iso) => (featBy[iso] ? featBy[iso].area / 1e6 : null);   // map units are meters on the Equal Earth (equal-area) projection
