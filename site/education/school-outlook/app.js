@@ -19,7 +19,7 @@
   DT.rows.forEach((r, i) => dIdx.set(r[DT.ix.id], i));
 
   const S = { geo: 'c', h: 2, s: 1, f: 1, mo: 'pct', st: '', sel: null, hover: null,
-    minn: 500, dtype: 'reg', shown: 50, sort: null, dir: 1 };
+    minn: 500, dtype: 'reg', shown: 50, sort: null, dir: 1, scope: 'place' };
 
   // ------------------------------------------------------------------ values
   const T = (g) => (g === 'c' ? CT : DT);
@@ -270,8 +270,37 @@
       `<span class="s">public K\u201312 students by ${y}</span>`;
   }
 
+  /* What the data shows, computed here rather than written down, so it cannot
+     drift away from the numbers underneath it when a setting changes. */
+  function findings() {
+    const el = $('#found'); if (!el) return;
+    const y = YEARS[S.h];
+    let dec = 0, grow = 0, n = 0, lost = 0, gained = 0;
+    CT.rows.forEach((r, i) => {
+      const p = chgPct('c', i); if (p == null) return;
+      n++; if (p < 0) dec++; else if (p > 0) grow++;
+      const st2 = students('c', i); if (st2 == null) return;
+      if (st2 < 0) lost += st2; else gained += st2;
+    });
+    const sts = ST_ROWS.map((o) => ({ o, p: stPct(o) })).filter((x) => x.p != null && x.o.enr >= 50000);
+    sts.sort((a, b) => a.p - b.p);
+    const worst = sts[0], best = sts[sts.length - 1];
+    const us = (S.f ? M.us_chg_f['S' + S.s + 'f'] : M.us_chg['S' + S.s])[S.h];
+    const big = CT.rows.map((r, i) => [students('c', i), i]).filter((x) => x[0] != null).sort((a, b) => a[0] - b[0])[0];
+    const items = [
+      `<b>${fmtPct(us)}</b> fewer public K\u201312 students nationally by ${y}, about <b>${fmtStu(M.us_enr_2024 * us / 100)}</b>.`,
+      `<b>${Math.round(100 * dec / n)}%</b> of counties shrink (${nf.format(dec)} of ${nf.format(n)}); <b>${nf.format(grow)}</b> grow.`,
+      worst ? `Hardest hit state: <b>${esc(stName[worst.o.st] || worst.o.st)}</b> at <b>${fmtPct(worst.p)}</b>. Least: <b>${esc(stName[best.o.st] || best.o.st)}</b> at <b>${fmtPct(best.p)}</b>.` : '',
+      big ? `Biggest single loss: <b>${esc(placeName('c', big[1]))}</b>, <b>${fmtStu(big[0])}</b> students.` : '',
+      `Growth does not offset decline: <b>${fmtStu(gained)}</b> gained against <b>${fmtStu(lost)}</b> lost.`,
+    ].filter(Boolean);
+    el.innerHTML = `<h2>What the data shows</h2><ul>${items.map((t) => `<li>${t}</li>`).join('')}</ul>` +
+      `<p class="note">Computed from the counties on the map at the settings above \u2014 immigration ${SCEN[S.s]}, births ${S.f ? 'falling 1.4% a year' : 'at the 2025 rate'}. States are summed from their counties; only those with 50,000+ students are ranked.</p>`;
+  }
+
   function headline() {
     cornerBox();
+    findings();
     const el = $('#headline');
     let dec = 0, n = 0; CT.rows.forEach((r, i) => { const p = chgPct('c', i); if (p != null) { n++; if (p < 0) dec++; } });
     const us = (S.f ? M.us_chg_f['S' + S.s + 'f'] : M.us_chg['S' + S.s])[S.h];
@@ -450,12 +479,66 @@
       return (col.txt ? String(va).localeCompare(String(vb)) : va - vb) * dir; });
     return out;
   }
+  /* States, summed from their counties. The map has always let you filter to
+     one state; this answers the question that filter cannot -- which states are
+     hit hardest -- without a second data file, because a state is only ever the
+     sum of its counties. */
+  const ST_ROWS = (() => {
+    const by = new Map();
+    CT.rows.forEach((r, i) => {
+      const st = (r[CT.ix.id] || '').slice(0, 2);
+      if (!st) return;
+      const o = by.get(st) || { st, idx: [], enr: 0 };
+      o.idx.push(i); o.enr += r[CT.ix.enr] || 0; by.set(st, o);
+    });
+    return [...by.values()].sort((a, b) => a.st.localeCompare(b.st));
+  })();
+  const stPct = (o, s = S.s, h = S.h) => {
+    let base = 0, end = 0;
+    for (const i of o.idx) {
+      const e = CT.rows[i][CT.ix.enr] || 0, p = chgPct('c', i, s, h);
+      if (!e) continue;
+      base += e; end += e * (1 + (p == null ? 0 : p) / 100);
+    }
+    return base ? (end / base - 1) * 100 : null;
+  };
+  const stShrink = (o) => o.idx.filter((i) => (chgPct('c', i) || 0) < 0).length;
+
+  const SCOLS = [
+    { k: 'name', t: 'State', get: (o) => stName[o.st] || o.st, fmt: (v) => esc(v), txt: true },
+    { k: 'enr', t: 'Students 2024-25', get: (o) => o.enr, fmt: fmtN },
+    { k: 'pct', t: 'Change by YEAR', get: (o) => stPct(o), fmt: (v) => `<span class="${cls(v)}">${fmtPct(v)}</span>` },
+    { k: 'n', t: 'Students ±', get: (o) => { const p = stPct(o); return p == null ? null : o.enr * p / 100; }, fmt: fmtStu },
+    { k: 'drv', t: 'Counties shrinking', get: (o) => stShrink(o), fmt: (v, o) => `${v} of ${o.idx.length}`, txt: true },
+  ];
+
+  function renderStates() {
+    const y = YEARS[S.h];
+    const key = S.sort || 'pct';
+    const col = SCOLS.find((c) => c.k === key) || SCOLS[2];
+    const dir = S.sort ? S.dir : 1;
+    const rows = ST_ROWS.slice().sort((a, b) => {
+      const x = col.get(a), z = col.get(b);
+      if (col.txt) return dir * String(x).localeCompare(String(z));
+      return dir * ((x == null ? 1e18 : x) - (z == null ? 1e18 : z));
+    });
+    $('#rank-title').textContent = `States, hardest hit by ${y}`;
+    $('#rank-note').textContent = `All ${rows.length} states and territories with counties in the forecast, summed from their counties. Immigration ${SCEN[S.s]}. Click a column to sort.`;
+    $('#typewrap').hidden = true;
+    $('#minnwrap').hidden = true;
+    $('#tbl thead').innerHTML = '<tr>' + SCOLS.map((c) => `<th data-k="${c.k}"${c.k === key ? ` aria-sort="${dir > 0 ? 'ascending' : 'descending'}"` : ''}>${c.t.replace('YEAR', y)}</th>`).join('') + '</tr>';
+    $('#tbl tbody').innerHTML = rows.map((o) => '<tr>' + SCOLS.map((c) => `<td>${c.fmt(c.get(o), o)}</td>`).join('') + '</tr>').join('');
+    $('#more').hidden = true;
+  }
+
   function renderTable() {
+    if (S.scope === 'st') return renderStates();
     const g = fam(S.geo), rows = tableRows(), y = YEARS[S.h];
     const key = S.sort || (S.mo === 'n' ? 'n' : 'pct');
     $('#rank-title').textContent = `Most affected by ${y}`;
     $('#rank-note').textContent = `${nf.format(rows.length)} ${g === 'c' ? 'counties' : 'districts'}${S.st ? ' in ' + stName[S.st] : ''}. Immigration ${SCEN[S.s]}. Click a column to sort; click a row to see it on the map.`;
     $('#typewrap').hidden = g === 'c';
+    $('#minnwrap').hidden = false;
     $('#tbl thead').innerHTML = '<tr>' + COLS.map((c) => `<th data-k="${c.k}"${c.k === key ? ` aria-sort="${(S.sort ? S.dir : 1) > 0 ? 'ascending' : 'descending'}"` : ''}>${c.t.replace('YEAR', y)}</th>`).join('') + '</tr>';
     $('#tbl tbody').innerHTML = rows.slice(0, S.shown).map((i) => `<tr data-i="${i}"${S.sel && S.sel.g === g && S.sel.i === i ? ' aria-selected="true"' : ''}>` +
       COLS.map((c) => `<td>${c.fmt(c.get(g, i))}</td>`).join('') + '</tr>').join('');
@@ -465,6 +548,12 @@
     if (S.sort === k) S.dir = -S.dir; else { S.sort = k; S.dir = k === 'name' ? 1 : 1; } renderTable(); });
   $('#tbl tbody').addEventListener('click', (e) => { const tr = e.target.closest('tr'); if (!tr) return; select(fam(S.geo), +tr.dataset.i, { zoom: true }); });
   $('#more').addEventListener('click', () => { S.shown += 50; renderTable(); });
+  $('#scope').addEventListener('click', (e) => {
+    const b = e.target.closest('[data-scope]'); if (!b) return;
+    S.scope = b.dataset.scope; S.sort = null;
+    $('#scope').querySelectorAll('[data-scope]').forEach((x) => x.setAttribute('aria-pressed', x.dataset.scope === S.scope ? 'true' : 'false'));
+    renderTable();
+  });
   $('#copy').addEventListener('click', async () => {
     const g = fam(S.geo), rows = tableRows(), y = YEARS[S.h];
     const head = ['id', 'place', 'students_2024', `pct_change_${y}`, `students_change_${y}`, 'biggest_reason'];
