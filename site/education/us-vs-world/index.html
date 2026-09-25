@@ -138,6 +138,17 @@ svg.chart .lbl{fill:var(--ink-2); font-weight:600}
 svg.chart .row{cursor:pointer}
 svg.chart .row:hover rect.hit{fill:var(--line)}
 .method{display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr)); gap:14px}
+/* Two views of the same data: the world at one moment, or the U.S. across
+   every round it has sat. The switch is the first control on the page. */
+.views{display:flex; gap:6px; margin:0 0 12px; flex-wrap:wrap}
+.views button{appearance:none; cursor:pointer; font:inherit; font-weight:600; font-size:13px;
+  padding:9px 15px; border-radius:999px; border:1px solid var(--line);
+  background:var(--surface); color:var(--ink-2)}
+.views button:hover{border-color:var(--line-2); color:var(--ink)}
+.views button[aria-pressed="true"]{background:var(--ink); border-color:var(--ink); color:var(--ground)}
+.views button small{display:block; font-weight:400; font-size:10.5px; font-family:var(--mono);
+  letter-spacing:.04em; opacity:.72; margin-top:1px}
+
 /* The U.S. over time: one small chart per test, read left to right. */
 .ut{display:grid; grid-template-columns:repeat(auto-fit,minmax(215px,1fr)); gap:14px}
 .ut figure{margin:0; padding:12px 12px 10px; background:var(--surface); border:1px solid var(--line); border-radius:10px}
@@ -178,6 +189,12 @@ footer{font-size:12px; color:var(--muted)}
     <p class="note" id="updated"></p>
   </header>
 
+  <nav class="views" id="views" aria-label="View">
+    <button type="button" data-view="map" aria-pressed="true">The world today<small>one test at a time</small></button>
+    <button type="button" data-view="us" aria-pressed="false">The U.S. over time<small>every round since 1995</small></button>
+  </nav>
+
+  <div id="view-map">
   <nav class="ages" id="ages" aria-label="Age tested"></nav>
   <div class="bar"><div class="subjects" id="subjects" role="group" aria-label="Subject"></div><p class="stand" id="stand"></p></div>
 
@@ -190,6 +207,20 @@ footer{font-size:12px; color:var(--muted)}
     </section>
     <aside class="card panel" id="panel" aria-live="polite"></aside>
   </main>
+  </div>
+
+  <div id="view-us" hidden>
+    <section class="card" aria-labelledby="usr-title">
+      <div><h2 id="usr-title">U.S. results at every age</h2><p class="note" id="usr-note"></p></div>
+      <div id="usr"></div>
+    </section>
+
+    <section class="card" aria-labelledby="ut-title">
+      <div><h2 id="ut-title">Every round, back to the first</h2><p class="note" id="ut-note"></p></div>
+      <div class="ut" id="ut"></div>
+      <p class="note" id="ut-src"></p>
+    </section>
+  </div>
 
   <section class="card" id="ussys" aria-labelledby="ussys-title">
     <div><h2 id="ussys-title">US Education system</h2><p class="note">How it is run, in the words of the sources. Hover a number for the quote.</p></div>
@@ -199,12 +230,6 @@ footer{font-size:12px; color:var(--muted)}
   <section class="card" aria-labelledby="common-title">
     <div><h2 id="common-title">What the leaders have in common</h2><p class="note" id="common-note"></p></div>
     <div class="common" id="common"></div>
-  </section>
-
-  <section class="card" aria-labelledby="ut-title">
-    <div><h2 id="ut-title">The U.S. over time</h2><p class="note" id="ut-note"></p></div>
-    <div class="ut" id="ut"></div>
-    <p class="note" id="ut-src"></p>
   </section>
 
   <details class="fold" id="fold-rank">

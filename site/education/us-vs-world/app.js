@@ -246,7 +246,8 @@
       if (V2.length) text += `<div class="sec"><p class="note">This is an older note. Rewritten, fully quoted profiles so far: ${chips(iso)}</p></div>`;
     } else text = '<div class="sec"><p class="note">No system write-up yet for this country.</p></div>';
     $('#panel').innerHTML = head + `<div class="sec"><h3>${esc(t.program)} · ${esc(SHORT[t.subject] || t.subject)} · ${esc(t.age)}</h3>${now}</div>` +
-      `<div class="sec"><h3>${isUS ? 'U.S. results at every age' : 'Every test, against the U.S.'}</h3>${everyTest(iso)}</div>` + text;
+      (isUS ? `<div class="sec"><p class="note"><button class="ghost" data-view="us">U.S. results at every age, and every round since 1995 \u2192</button></p></div>`
+            : `<div class="sec"><h3>Every test, against the U.S.</h3>${everyTest(iso)}</div>`) + text;
   }
 
   // ------------------------------------------------------------------ v2 profiles: quote-checked notes (research/profiles)
@@ -300,6 +301,29 @@
     $('#ussys-body').innerHTML = v2HTML('840', e).replace(/<div class="sec"><h3>How the U\.S\. system works<\/h3>/, '<div class="sec">');
   }
 
+  // ------------------------------------------------------------------ views
+  /* Two ways in: the world on one test, or the U.S. across every round. They
+     are the same data and never both on screen, so the map keeps its height
+     and the trends are not something you have to scroll past the map to find. */
+  function showView(v) {
+    S.view = v;
+    $('#view-map').hidden = v !== 'map';
+    $('#view-us').hidden = v !== 'us';
+    $('#views').querySelectorAll('[data-view]').forEach((b) => b.setAttribute('aria-pressed', b.dataset.view === v ? 'true' : 'false'));
+    if (v === 'map') resize();        // the canvas was display:none and has no size
+    else renderUsResults();
+  }
+  $('#views').addEventListener('click', (e) => { const b = e.target.closest('[data-view]'); if (b) showView(b.dataset.view); });
+  document.addEventListener('click', (e) => { const b = e.target.closest('button[data-view]'); if (b && !b.closest('#views')) showView(b.dataset.view); });
+
+  // The same table the panel used to carry, on its own page with room for it.
+  function renderUsResults() {
+    const n = D.tests.length;
+    $('#usr-note').textContent = `Every international test the U.S. sits, newest round of each. Rank is out of the countries that took that test, so ranks are not comparable between rows. "Change" is the move since the previous round, where the organisers publish one.`;
+    $('#usr').innerHTML = everyTest('840');
+    $('#usr-title').textContent = `U.S. results at every age \u2014 ${n} tests`;
+  }
+
   // ------------------------------------------------------------------ the U.S. over time
   /* One small chart per test, every point from an official trend table. The
      line is drawn to the range of that test's own series, so the shape is the
@@ -307,9 +331,10 @@
   function renderUsTrend() {
     const U = D.usTrend;
     if (!U) { $('#ut').closest('section').hidden = true; return; }
+    if (!$('#view-us')) return;
     const keys = Object.keys(U);
     const rounds = keys.reduce((a, k) => a + U[k].points.length, 0);
-    $('#ut-note').textContent = `${keys.length} tests, ${rounds} rounds of testing, earliest 1995. Each line is the U.S. average on that test; the figure below is the change since the first round shown.`;
+    $('#ut-note').textContent = `${keys.length} tests, ${rounds} rounds of testing, earliest 1995. Each line is the U.S. average on that test, and the figure below it is the published change since the first round shown \u2014 greyed out where the test's own publisher will not call it a change.`;
 
     const W = 200, H = 78, PAD = 8;
     $('#ut').innerHTML = keys.map((k) => {
@@ -427,6 +452,7 @@
   $('#updated').innerHTML = `Last updated ${new Intl.DateTimeFormat('en-US', { dateStyle: 'long' }).format(new Date(D.built + 'T12:00:00'))}.` +
     (CONTACT.length ? ` Spot an error? Message James Floyd on ${CONTACT.map(([n, u]) => `<a href="${esc(u)}" target="_blank" rel="noopener">${esc(n)}</a>`).join(' or ')}.` : '');
   readColors(); renderMethod(); findings(); renderCommon(); renderUSSys(); renderUsTrend(); refresh(); resize();
+  showView('map');
   const screenOf = (iso) => (featBy[iso] ? toScreen(featBy[iso].c[0], featBy[iso].c[1]) : null);   // for verify/browser_check.js
   const dots = () => feats.filter((f) => f.iso && isDot(f) && (T[S.t].byIso[f.iso] || f.iso === '840')).map((f) => f.iso);   // for verify/browser_check.js
   const areaKm2 = (iso) => (featBy[iso] ? featBy[iso].area / 1e6 : null);   // map units are meters on the Equal Earth (equal-area) projection
