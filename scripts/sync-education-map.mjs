@@ -64,6 +64,20 @@ for (const m of MAPS) {
   };
   walk(m.src, dest);
 
+  /* A rename over there -- korea.js became overtime.js -- leaves the old file
+     sitting in site/ forever, shipped and unreferenced, because copying never
+     removes. So anything here that is no longer in the build goes. */
+  const prune = (from, to) => {
+    if (!existsSync(to)) return;
+    const keep = new Set(readdirSync(from));
+    for (const name of readdirSync(to)) {
+      const t = join(to, name);
+      if (!keep.has(name)) { rmSync(t, { recursive: true }); console.log(`    removed ${name}, no longer in the build`); }
+      else if (statSync(t).isDirectory()) prune(join(from, name), t);
+    }
+  };
+  prune(m.src, dest);
+
   /* iCloud copies files while a build is writing them; a "name 2.js" left in
      site/ ships as dead weight and has been committed once already. */
   for (const name of readdirSync(dest)) {

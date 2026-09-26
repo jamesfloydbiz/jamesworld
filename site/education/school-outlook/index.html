@@ -100,12 +100,14 @@ select,input[type=search]{font:500 14px var(--sans); color:var(--ink); backgroun
 
 /* Korea. Seventeen provinces and a slider: much less machinery than the U.S.
    map needs, because nothing here is modelled. */
-#kr-map{width:100%; height:clamp(340px, 60vh, 720px); display:block}
+#kr-map,#uh-map{width:100%; height:clamp(340px, 60vh, 720px); display:block}
 .kr-stage{display:grid; grid-template-columns:minmax(0,1fr) 320px; gap:14px; align-items:start}
 .kr-stage > *{min-width:0}
 .kr-year{display:flex; align-items:center; gap:12px; flex-wrap:wrap}
 .kr-year input[type=range]{flex:1; min-width:220px; accent-color:var(--ink-2)}
 .kr-year b{font-variant-numeric:tabular-nums; font-size:20px; min-width:3.2em}
+.kr-proj{font:600 10px/1 var(--mono,ui-monospace,monospace); letter-spacing:.12em; text-transform:uppercase;
+  padding:4px 7px; border:1px dashed var(--ink-2); border-radius:3px; color:var(--ink-2); white-space:nowrap}
 @media (max-width: 860px){ .kr-stage{grid-template-columns:minmax(0,1fr)} }
 
 /* The map is the page, so it leaves the reading column and runs the width of
@@ -229,7 +231,8 @@ footer{font-size:12px; color:var(--muted)}
 
   <nav class="views" id="views" aria-label="Country">
     <button type="button" data-view="us" aria-pressed="true">United States<small>counties and districts, to 2055</small></button>
-    <button type="button" data-view="kr" aria-pressed="false">South Korea<small>provinces, 1965–2026</small></button>
+    <button type="button" data-view="uh" aria-pressed="false">U.S. over time<small>states, 1990–2055</small></button>
+    <button type="button" data-view="kr" aria-pressed="false">South Korea<small>provinces, 1965–2041</small></button>
   </nav>
 
   <div id="view-us">
@@ -292,6 +295,35 @@ footer{font-size:12px; color:var(--muted)}
   <section class="method" id="method" aria-label="How this works"></section>
   </div>
 
+  <div id="view-uh" hidden>
+    <section class="card found" id="uh-found" aria-label="What happened"></section>
+
+    <div class="controls">
+      <div class="ctl"><span class="lab" id="uhlvl">School level</span>
+        <div class="seg" id="uh-levels" role="group" aria-labelledby="uhlvl"></div></div>
+      <div class="ctl kr-year" style="flex:1; min-width:280px;">
+        <label for="uh-year">Year</label>
+        <input id="uh-year" type="range" step="1" aria-describedby="uh-yearlab">
+        <b id="uh-yearlab"></b>
+        <span class="kr-proj" id="uh-projchip" hidden>projected</span>
+      </div>
+    </div>
+
+    <main class="kr-stage">
+      <section class="mapwrap" aria-label="Map of the United States">
+        <div class="legend" id="uh-legend"></div>
+        <canvas id="uh-map" role="img" aria-label="The United States by state, coloured by how much of its highest enrollment since 1990 each state still has. The table below lists the same values."></canvas>
+      </section>
+      <aside class="panel" id="uh-panel" aria-live="polite"></aside>
+    </main>
+
+    <section class="rank">
+      <div class="rank-head"><div><h2>Every state, furthest fallen first</h2>
+        <p class="note" id="uh-src"></p></div></div>
+      <div class="tablewrap"><table id="uh-tbl"><thead></thead><tbody></tbody></table></div>
+    </section>
+  </div>
+
   <div id="view-kr" hidden>
     <section class="card found" id="kr-found" aria-label="What happened"></section>
 
@@ -302,6 +334,7 @@ footer{font-size:12px; color:var(--muted)}
         <label for="kr-year">Year</label>
         <input id="kr-year" type="range" step="1" aria-describedby="kr-yearlab">
         <b id="kr-yearlab"></b>
+        <span class="kr-proj" id="kr-projchip" hidden>projected</span>
       </div>
     </div>
 
@@ -336,18 +369,28 @@ footer{font-size:12px; color:var(--muted)}
 <script src="app.js"></script>
 <script src="data_korea.js"></script>
 <script src="geo_korea.js"></script>
-<script src="korea.js"></script>
+<script src="data_ushist.js"></script>
+<script src="overtime.js"></script>
+<script>
+  /* The same renderer, twice. Anything that differs between the two countries
+     comes out of its data file, not out of here. */
+  window.UH_APP = window.WL_OVERTIME({ data: window.WL_USHIST, geo: window.SOM_GEO_STATES,
+                                       p: 'uh', key: 'STATEFP' });
+  window.KR_APP = window.WL_OVERTIME({ data: window.WL_KOREA, geo: window.WL_KOREA_GEO,
+                                       p: 'kr', key: 'iso_3166_2', level: 'elementary' });
+</script>
 <script>
   /* The view switch. Korea's canvas has no size while it is hidden, so it is
      measured the moment it is shown. */
   (function () {
     const views = document.getElementById('views');
     if (!views) return;
+    const APP = { kr: () => window.KR_APP, uh: () => window.UH_APP };
     function show(v) {
-      document.getElementById('view-us').hidden = v !== 'us';
-      document.getElementById('view-kr').hidden = v !== 'kr';
+      ['us', 'uh', 'kr'].forEach((k) => { document.getElementById('view-' + k).hidden = v !== k; });
       views.querySelectorAll('[data-view]').forEach((b) => b.setAttribute('aria-pressed', b.dataset.view === v ? 'true' : 'false'));
-      if (v === 'kr' && window.KR_APP) window.KR_APP.resize();
+      const a = APP[v] && APP[v]();
+      if (a) a.resize();
       else if (v === 'us' && window.SOM_APP) window.dispatchEvent(new Event('resize'));
     }
     views.addEventListener('click', (e) => { const b = e.target.closest('[data-view]'); if (b) show(b.dataset.view); });
