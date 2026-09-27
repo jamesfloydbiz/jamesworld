@@ -909,6 +909,28 @@
     const y = year(), sl = $('#us-year');
     if (!sl) return;
     sl.max = AXIS.length - 1; sl.value = S.y;
+    const ticks = $('#us-ticks');
+    if (ticks && !ticks.childElementCount) {
+      /* The slider steps through the years that EXIST, not through time: 1899
+         to 1980 is six of the fifty-seven steps because that is how many years
+         could be proved. So each label is placed at its real position on the
+         track. Spacing them evenly would put 1965 a quarter of the way along
+         when the handle for 1965 sits near the left end -- a caption that
+         disagrees with the control under it. */
+      const last = AXIS.length - 1;
+      // The middle two are dropped on a narrow screen, where the early years
+      // sit so close together that their labels would overlap.
+      [[AXIS[0], 0], [1965, 1], [1990, 0], [2010, 1], [UH ? UH.counted : 2024, 0],
+       [AXIS[last], 1]].forEach(([yy, tight]) => {
+        const k = AXIS.indexOf(yy);
+        if (k < 0) return;
+        const s = document.createElement('span');
+        s.textContent = yy;
+        if (tight) s.className = 'tight';
+        s.style.left = (k / last * 100) + '%';
+        ticks.append(s);
+      });
+    }
     sl.setAttribute('aria-valuetext', y + (counted() ? ', counted' : ', modelled'));
     $('#us-yearlab').textContent = y;
     const chip = $('#us-projchip');
@@ -998,7 +1020,8 @@
   S.sel = null;   // default panel = national overview
   syncYear(); refresh(); resize();
   window.SOM_APP = { S, M, colorFor, valueFor, chgPct, students, drivers, mainReason, select, setGeo, placeName, getLayer,
-    setHorizon: (h) => $('#horizon').querySelectorAll('button')[h].click(), cIdx, dIdx,
+    // no longer a click on a button that may be folded away
+    setHorizon: (h) => setYear(AXIS.indexOf(YEARS[h])), cIdx, dIdx,
     setYear, year, axis: AXIS, counted, hasPlaces, uhShare,
     view: () => view };   // for verify/browser_check.js: the zoom level
 })();

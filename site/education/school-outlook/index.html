@@ -58,14 +58,14 @@
 body{background:var(--ground); color:var(--ink); font-family:var(--sans); font-size:14px; line-height:1.45}
 .app{max-width:1440px; margin:0 auto; padding-inline:clamp(16px,2.4vw,32px); padding-block:18px 48px; display:flex; flex-direction:column; gap:14px}
 h1,h2,h3{text-wrap:balance; margin:0}
-h1{font-size:clamp(22px,2.6vw,30px); font-weight:800; letter-spacing:-.02em}
+h1{font-size:clamp(20px,2.2vw,26px); font-weight:800; letter-spacing:-.02em}
 h2{font-size:19px; font-weight:700; letter-spacing:-.01em}
 h3{font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:var(--ink-2)}
 a{color:inherit; text-decoration-color:var(--line-2); text-underline-offset:2px}
 a:hover{text-decoration-color:var(--ink)}
 :focus-visible{outline:2px solid var(--accent-fill); outline-offset:2px}
 .top{display:flex; flex-wrap:wrap; align-items:end; justify-content:space-between; gap:12px 24px}
-.thesis{margin:4px 0 0; color:var(--ink-2); max-width:62ch}
+.thesis{margin:3px 0 0; color:var(--ink-2); max-width:78ch; font-size:13.5px}
 .controls{display:flex; flex-wrap:wrap; gap:10px 16px; align-items:end; padding:12px 14px; background:var(--surface); border:1px solid var(--line); border-radius:10px}
 .ctl{display:flex; flex-direction:column; gap:4px; min-width:0}
 .ctl > label,.ctl > .lab{font-size:11px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:var(--muted)}
@@ -100,7 +100,9 @@ select,input[type=search]{font:500 14px var(--sans); color:var(--ink); backgroun
 
 /* Korea. Seventeen provinces and a slider: much less machinery than the U.S.
    map needs, because nothing here is modelled. */
-#kr-map,#uh-map{width:100%; height:clamp(340px, 60vh, 720px); display:block}
+/* Korea is tall and narrow, so a full-width canvas is mostly empty paper on
+   either side of the country. Cap it and centre it. */
+#kr-map{width:100%; max-width:660px; margin-inline:auto; height:clamp(340px, 58vh, 660px); display:block}
 .kr-stage{display:grid; grid-template-columns:minmax(0,1fr) 320px; gap:14px; align-items:start}
 .kr-stage > *{min-width:0}
 .kr-year{display:flex; align-items:center; gap:12px; flex-wrap:wrap}
@@ -122,7 +124,7 @@ select,input[type=search]{font:500 14px var(--sans); color:var(--ink); backgroun
 #map{width:100%; height:clamp(380px, 68vh, 860px); display:block; touch-action:none; cursor:crosshair}
 
 /* The number the map is about, kept in the corner of the map while you pan. */
-.hbox{position:absolute; top:52px; right:24px; z-index:3; pointer-events:none;
+.hbox{position:absolute; top:12px; right:12px; z-index:3; pointer-events:none;
   background:var(--raise, var(--surface)); border:1px solid var(--line-2); border-radius:10px;
   padding:9px 13px; box-shadow:0 6px 22px rgba(0,0,0,.16); max-width:min(260px, 42vw)}
 .hbox .k{font:500 10px var(--mono); letter-spacing:.11em; text-transform:uppercase; color:var(--muted); display:block}
@@ -130,7 +132,8 @@ select,input[type=search]{font:500 14px var(--sans); color:var(--ink); backgroun
 .hbox .s{font-size:11px; color:var(--ink-2); display:block; margin-top:2px}
 
 /* Zoom, without needing to know about Ctrl-scroll. */
-.zoomers{position:absolute; top:52px; left:24px; z-index:3; display:flex; flex-direction:column; gap:4px}
+.canvasbox{position:relative}
+.zoomers{position:absolute; top:12px; left:12px; z-index:3; display:flex; flex-direction:column; gap:4px}
 .zoomers button{width:32px; height:32px; border-radius:8px; border:1px solid var(--line-2);
   background:var(--raise, var(--surface)); color:var(--ink); font:600 17px/1 var(--sans); cursor:pointer;
   box-shadow:0 2px 8px rgba(0,0,0,.12)}
@@ -213,11 +216,73 @@ td .chip i{width:9px; height:9px; border-radius:2px; display:inline-block}
 footer{font-size:12px; color:var(--muted)}
 @media (max-width: 720px){
   .stage{--m:8px}
-  .hbox{top:auto; bottom:52px; right:14px; padding:7px 10px}
+  .hbox{right:10px; padding:7px 10px}
   .hbox .v{font-size:20px}
-  .zoomers{top:auto; bottom:52px; left:14px; flex-direction:row}
+  .zoomers{left:10px; flex-direction:row}
 }
 @media (max-width: 520px){ .sw{min-width:42px} .big .n{font-size:28px} .legend .ttl{flex-basis:100%} }
+/* ---- the year bar -------------------------------------------------------
+   The year is the one control you hold while watching the map, so it sits
+   directly above it and stays there when the page scrolls. Before this it was
+   at the top of a tall stack and the map began below the fold: you could drag
+   the year and see nothing move, which is the opposite of what a slider is
+   for. Frosted rather than opaque so the map reads as continuing underneath. */
+.yearbar{position:sticky; top:0; z-index:40; display:flex; align-items:center; gap:16px;
+  padding:10px clamp(12px,2vw,18px); border:1px solid var(--line); border-radius:12px;
+  background:color-mix(in srgb, var(--surface) 86%, transparent);
+  -webkit-backdrop-filter:saturate(180%) blur(16px); backdrop-filter:saturate(180%) blur(16px)}
+.yearbar .yb-lab{font-size:11px; font-weight:700; letter-spacing:.07em; text-transform:uppercase;
+  color:var(--muted); flex:0 0 auto}
+.yb-slide{flex:1 1 auto; min-width:120px; display:flex; flex-direction:column; gap:3px}
+.yb-slide input[type=range]{width:100%; margin:0; accent-color:var(--ink-2)}
+.yb-ticks{position:relative; height:12px; margin-top:1px;
+  font:500 10px var(--mono); color:var(--axis); letter-spacing:.02em}
+.yb-ticks span{position:absolute; top:0; transform:translateX(-50%); white-space:nowrap}
+.yb-ticks span:first-child{transform:none}
+.yb-ticks span:last-child{transform:translateX(-100%)}
+.yb-read{flex:0 0 auto; display:flex; align-items:baseline; gap:8px; min-width:7.5em}
+.yb-read b{font:700 26px/1 var(--sans); font-variant-numeric:tabular-nums; letter-spacing:-.01em}
+.yearbar .yb-geo{border-left:1px solid var(--line); padding-left:16px; margin-left:2px}
+.yearbar .yb-geo .seg button{padding:6px 9px; font-size:12px}
+.yearbar .yb-geo{flex:0 0 auto; flex-direction:row; align-items:center; gap:7px}
+.yearbar .yb-geo > label{font-size:11px; font-weight:700; letter-spacing:.07em;
+  text-transform:uppercase; color:var(--muted); white-space:nowrap}
+.yearbar .yb-geo select{padding:6px 8px; font-size:13px}
+.yb-note{margin:0; min-height:1.15em; font-size:12px; color:var(--muted); padding-inline:clamp(12px,2vw,18px)}
+.yb-note:empty{min-height:0}
+
+/* Everything that is not the year: real controls, but not ones you hold, so
+   they fold away rather than standing between the reader and the map. */
+.more{border:1px solid var(--line); border-radius:12px; background:var(--surface)}
+.more > summary{cursor:pointer; padding:11px 14px; font-weight:600; font-size:13px;
+  color:var(--ink-2); list-style:none; display:flex; align-items:center; gap:8px}
+.more > summary::-webkit-details-marker{display:none}
+.more > summary::before{content:"\203A"; font-size:16px; line-height:1; color:var(--muted);
+  transition:transform .18s ease}
+.more[open] > summary::before{transform:rotate(90deg)}
+.more > summary:hover{color:var(--ink)}
+.more .controls{border:0; border-top:1px solid var(--line); border-radius:0 0 12px 12px; background:transparent}
+
+@media (max-width: 720px){
+  .yearbar{flex-wrap:wrap; gap:10px 12px; position:static}
+  .yb-slide{order:3; flex-basis:100%}
+  .yb-read{order:2; margin-left:auto}
+  .yearbar .yb-geo{order:4; flex-basis:100%; border-left:0; padding-left:0; margin-left:0}
+  .yearbar .yb-geo select{flex:1}
+  .yb-ticks span.tight{display:none}
+  /* the sub-labels repeat what the year bar already says */
+  .views button small{display:none}
+  .views button{padding:9px 14px}
+  /* a legend that takes half the screen is not helping anyone see the map */
+  .legend{gap:4px 8px}
+  .legend .ttl{font-size:12px}
+  .legend .sw{min-width:0}
+  .legend .sw span{font-size:10px}
+  /* The U.S. is about twice as wide as it is tall, so a tall canvas on a
+     narrow screen is mostly empty paper above and below the country. Size it
+     to its shape instead and let the reader zoom if they want detail. */
+  #map{height:auto; aspect-ratio:1.15; min-height:250px; max-height:56vh}
+}
 @media (prefers-reduced-motion: reduce){ *{transition:none!important; animation:none!important} }
 </style>
 
@@ -226,7 +291,7 @@ footer{font-size:12px; color:var(--muted)}
   <header class="top">
     <div>
       <h1>School Outlook Map</h1>
-      <p class="thesis">How many public school students there have been and will be — every U.S. state back to 1899, every county and district through 2055, and South Korea, where the decline started fifty years earlier.</p>
+      <p class="thesis">Where the students were, and where they will be — counted back to 1899, projected to 2055.</p>
     </div>
   </header>
 
@@ -236,18 +301,38 @@ footer{font-size:12px; color:var(--muted)}
   </nav>
 
   <div id="view-us">
-  <div class="controls">
-    <div class="ctl kr-year" style="flex:1; min-width:300px;">
-      <label for="us-year">Year</label>
+  <div class="yearbar" id="yearbar">
+    <label class="yb-lab" for="us-year">Year</label>
+    <div class="yb-slide">
       <input id="us-year" type="range" step="1" aria-describedby="us-yearlab">
-      <b id="us-yearlab"></b>
-      <span class="kr-proj" id="us-projchip" hidden>modelled</span>
+      <div class="yb-ticks" id="us-ticks" aria-hidden="true"></div>
     </div>
-    <p class="note" id="us-yearnote" style="margin:0; flex-basis:100%"></p>
-  </div>
-  <div class="controls">
-    <div class="ctl"><label for="geo">Map by</label>
+    <div class="yb-read"><b id="us-yearlab"></b><span class="kr-proj" id="us-projchip" hidden>modelled</span></div>
+    <div class="ctl yb-geo"><label for="geo">Map by</label>
       <select id="geo"><option value="st">State</option><option value="c">County</option><option value="d">School district</option><option value="s">High school district</option></select></div>
+  </div>
+  <p class="note yb-note" id="us-yearnote"></p>
+  <main class="stage">
+    <section class="mapwrap" aria-label="Map">
+      <div class="legend" id="legend"></div>
+      <div class="canvasbox">
+      <div class="zoomers">
+        <button type="button" id="zin" aria-label="Zoom in">+</button>
+        <button type="button" id="zout" aria-label="Zoom out">−</button>
+        <button type="button" id="zrs" class="rs" aria-label="Reset the view" title="Reset the view">↺</button>
+      </div>
+      <div class="hbox" id="hbox" aria-hidden="true"></div>
+      <canvas id="map" role="img" aria-label="Map of the United States colored by the selected measure. The table below lists the same values."></canvas>
+      <div class="tip" id="tip" hidden></div>
+      </div>
+      <div class="mapfoot"><span id="mapnote"></span><span><button class="ghost" id="reset">Reset view</button></span></div>
+    </section>
+  </main>
+  <section class="card found" id="found" aria-label="What the data shows"></section>
+
+  <details class="more" id="more-settings">
+    <summary>Adjust the forecast &amp; find a place</summary>
+  <div class="controls">
     <div class="ctl" id="hwrap"><span class="lab" id="hlab">Jump to</span>
       <div class="seg" id="horizon" role="group" aria-labelledby="hlab"><button data-h="0" aria-pressed="false">2030</button><button data-h="1" aria-pressed="false">2035</button><button data-h="2" aria-pressed="true">2040</button><button data-h="3" aria-pressed="false" class="far" title="Beyond the 15-year range tested against real outcomes">2045</button><button data-h="4" aria-pressed="false" class="far" title="Beyond the 15-year range tested against real outcomes">2050</button><button data-h="5" aria-pressed="false" class="far" title="Beyond the 15-year range tested against real outcomes">2055</button></div></div>
     <div class="ctl"><label for="scen">Immigration</label>
@@ -261,23 +346,7 @@ footer{font-size:12px; color:var(--muted)}
       <input id="q" type="search" placeholder="County or school district" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="qres">
       <ul id="qres" role="listbox" hidden></ul></div>
   </div>
-
-  <section class="card found" id="found" aria-label="What the data shows"></section>
-
-  <main class="stage">
-    <section class="mapwrap" aria-label="Map">
-      <div class="legend" id="legend"></div>
-      <div class="zoomers">
-        <button type="button" id="zin" aria-label="Zoom in">+</button>
-        <button type="button" id="zout" aria-label="Zoom out">−</button>
-        <button type="button" id="zrs" class="rs" aria-label="Reset the view" title="Reset the view">↺</button>
-      </div>
-      <div class="hbox" id="hbox" aria-hidden="true"></div>
-      <canvas id="map" role="img" aria-label="Map of the United States colored by the selected measure. The table below lists the same values."></canvas>
-      <div class="tip" id="tip" hidden></div>
-      <div class="mapfoot"><span id="mapnote"></span><span><button class="ghost" id="reset">Reset view</button></span></div>
-    </section>
-  </main>
+  </details>
 
   <p class="headline" id="headline"></p>
 
@@ -305,17 +374,14 @@ footer{font-size:12px; color:var(--muted)}
   </div>
 
   <div id="view-kr" hidden>
-    <section class="card found" id="kr-found" aria-label="What happened"></section>
-
-    <div class="controls">
-      <div class="ctl"><span class="lab" id="krlvl">School level</span>
-        <div class="seg" id="kr-levels" role="group" aria-labelledby="krlvl"></div></div>
-      <div class="ctl kr-year" style="flex:1; min-width:280px;">
-        <label for="kr-year">Year</label>
+    <div class="yearbar">
+      <label class="yb-lab" for="kr-year">Year</label>
+      <div class="yb-slide">
         <input id="kr-year" type="range" step="1" aria-describedby="kr-yearlab">
-        <b id="kr-yearlab"></b>
-        <span class="kr-proj" id="kr-projchip" hidden>projected</span>
       </div>
+      <div class="yb-read"><b id="kr-yearlab"></b><span class="kr-proj" id="kr-projchip" hidden>projected</span></div>
+      <div class="ctl yb-geo"><span class="lab" id="krlvl">Level</span>
+        <div class="seg" id="kr-levels" role="group" aria-labelledby="krlvl"></div></div>
     </div>
 
     <main class="kr-stage">
@@ -325,6 +391,8 @@ footer{font-size:12px; color:var(--muted)}
       </section>
       <aside class="panel" id="kr-panel" aria-live="polite"></aside>
     </main>
+
+    <section class="card found" id="kr-found" aria-label="What happened"></section>
 
     <section class="rank">
       <div class="rank-head"><div><h2>Every province, furthest fallen first</h2>
