@@ -226,21 +226,29 @@ footer{font-size:12px; color:var(--muted)}
   <header class="top">
     <div>
       <h1>School Outlook Map</h1>
-      <p class="thesis">How many U.S. public school students there will be through 2055, as births, moving and immigration change.</p>
+      <p class="thesis">How many public school students there have been and will be — every U.S. state back to 1899, every county and district through 2055, and South Korea, where the decline started fifty years earlier.</p>
     </div>
   </header>
 
   <nav class="views" id="views" aria-label="Country">
-    <button type="button" data-view="us" aria-pressed="true">United States<small>counties and districts, to 2055</small></button>
-    <button type="button" data-view="uh" aria-pressed="false">U.S. over time<small>states, 1899–2055</small></button>
+    <button type="button" data-view="us" aria-pressed="true">United States<small>states 1899, counties to 2055</small></button>
     <button type="button" data-view="kr" aria-pressed="false">South Korea<small>provinces, 1965–2050</small></button>
   </nav>
 
   <div id="view-us">
   <div class="controls">
+    <div class="ctl kr-year" style="flex:1; min-width:300px;">
+      <label for="us-year">Year</label>
+      <input id="us-year" type="range" step="1" aria-describedby="us-yearlab">
+      <b id="us-yearlab"></b>
+      <span class="kr-proj" id="us-projchip" hidden>modelled</span>
+    </div>
+    <p class="note" id="us-yearnote" style="margin:0; flex-basis:100%"></p>
+  </div>
+  <div class="controls">
     <div class="ctl"><label for="geo">Map by</label>
-      <select id="geo"><option value="c">County</option><option value="d">School district</option><option value="s">High school district</option></select></div>
-    <div class="ctl"><span class="lab" id="hlab">Year</span>
+      <select id="geo"><option value="st">State</option><option value="c">County</option><option value="d">School district</option><option value="s">High school district</option></select></div>
+    <div class="ctl" id="hwrap"><span class="lab" id="hlab">Jump to</span>
       <div class="seg" id="horizon" role="group" aria-labelledby="hlab"><button data-h="0" aria-pressed="false">2030</button><button data-h="1" aria-pressed="false">2035</button><button data-h="2" aria-pressed="true">2040</button><button data-h="3" aria-pressed="false" class="far" title="Beyond the 15-year range tested against real outcomes">2045</button><button data-h="4" aria-pressed="false" class="far" title="Beyond the 15-year range tested against real outcomes">2050</button><button data-h="5" aria-pressed="false" class="far" title="Beyond the 15-year range tested against real outcomes">2055</button></div></div>
     <div class="ctl"><label for="scen">Immigration</label>
       <select id="scen"><option value="0">Continues at the 2021–25 pace</option><option value="1" selected>Stays at the 2025 level</option><option value="2">Drops to near zero</option></select></div>
@@ -296,35 +304,6 @@ footer{font-size:12px; color:var(--muted)}
   <section class="method" id="method" aria-label="How this works"></section>
   </div>
 
-  <div id="view-uh" hidden>
-    <section class="card found" id="uh-found" aria-label="What happened"></section>
-
-    <div class="controls">
-      <div class="ctl"><span class="lab" id="uhlvl">School level</span>
-        <div class="seg" id="uh-levels" role="group" aria-labelledby="uhlvl"></div></div>
-      <div class="ctl kr-year" style="flex:1; min-width:280px;">
-        <label for="uh-year">Year</label>
-        <input id="uh-year" type="range" step="1" aria-describedby="uh-yearlab">
-        <b id="uh-yearlab"></b>
-        <span class="kr-proj" id="uh-projchip" hidden>projected</span>
-      </div>
-    </div>
-
-    <main class="kr-stage">
-      <section class="mapwrap" aria-label="Map of the United States">
-        <div class="legend" id="uh-legend"></div>
-        <canvas id="uh-map" role="img" aria-label="The United States by state, coloured by how much of its highest enrollment since 1990 each state still has. The table below lists the same values."></canvas>
-      </section>
-      <aside class="panel" id="uh-panel" aria-live="polite"></aside>
-    </main>
-
-    <section class="rank">
-      <div class="rank-head"><div><h2>Every state, furthest fallen first</h2>
-        <p class="note" id="uh-src"></p></div></div>
-      <div class="tablewrap"><table id="uh-tbl"><thead></thead><tbody></tbody></table></div>
-    </section>
-  </div>
-
   <div id="view-kr" hidden>
     <section class="card found" id="kr-found" aria-label="What happened"></section>
 
@@ -367,16 +346,16 @@ footer{font-size:12px; color:var(--muted)}
 <script src="geo_counties.js"></script>
 <script src="geo_districts.js"></script>
 <script src="geo_secondary.js"></script>
+<!-- the long state series is read by app.js as well as the over-time tab,
+     so it has to be defined before app.js runs -->
+<script src="data_ushist.js"></script>
 <script src="app.js"></script>
 <script src="data_korea.js"></script>
 <script src="geo_korea.js"></script>
-<script src="data_ushist.js"></script>
 <script src="overtime.js"></script>
 <script>
   /* The same renderer, twice. Anything that differs between the two countries
      comes out of its data file, not out of here. */
-  window.UH_APP = window.WL_OVERTIME({ data: window.WL_USHIST, geo: window.SOM_GEO_STATES,
-                                       p: 'uh', key: 'STATEFP' });
   window.KR_APP = window.WL_OVERTIME({ data: window.WL_KOREA, geo: window.WL_KOREA_GEO,
                                        p: 'kr', key: 'iso_3166_2', level: 'all' });
 </script>
@@ -386,9 +365,9 @@ footer{font-size:12px; color:var(--muted)}
   (function () {
     const views = document.getElementById('views');
     if (!views) return;
-    const APP = { kr: () => window.KR_APP, uh: () => window.UH_APP };
+    const APP = { kr: () => window.KR_APP };
     function show(v) {
-      ['us', 'uh', 'kr'].forEach((k) => { document.getElementById('view-' + k).hidden = v !== k; });
+      ['us', 'kr'].forEach((k) => { document.getElementById('view-' + k).hidden = v !== k; });
       views.querySelectorAll('[data-view]').forEach((b) => b.setAttribute('aria-pressed', b.dataset.view === v ? 'true' : 'false'));
       const a = APP[v] && APP[v]();
       if (a) a.resize();

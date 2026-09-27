@@ -18,8 +18,82 @@
   CT.rows.forEach((r, i) => { cIdx.set(r[CT.ix.id], i); stName[r[CT.ix.id].slice(0, 2)] = r[CT.ix.st]; });
   DT.rows.forEach((r, i) => dIdx.set(r[DT.ix.id], i));
 
-  const S = { geo: 'c', h: 2, s: 1, f: 1, mo: 'pct', st: '', sel: null, hover: null,
-    minn: 500, dtype: 'reg', shown: 50, sort: null, dir: 1, scope: 'place' };
+  /* The long state series, counted 1899-2024 and modelled to 2055. It is what
+     lets this map show a year rather than only a horizon: counties and
+     districts exist for 2014-2024 and at the model's five-year steps, states
+     for all of it. */
+  const UH = window.WL_USHIST || null;
+  const UHL = UH && UH.levels.k12;
+  const AXIS = UH ? UH.years : YEARS;                  // every year the map can show
+  const HIST_FROM = 2014;                              // county history starts here
+  const COUNTY_YEARS = new Set(YEARS.concat(
+    UH ? UH.years.filter((y) => y >= HIST_FROM && y <= UH.counted) : []));
+  const stIdx = new Map();
+  if (UH) UH.provinces.forEach((p) => stIdx.set(p.iso, p.iso));
+
+  const S = { geo: 'c', y: AXIS.indexOf(YEARS[2]), h: 2, s: 1, f: 1, mo: 'pct', st: '',
+    sel: null, hover: null, minn: 500, dtype: 'reg', shown: 50, sort: null, dir: 1,
+    scope: 'place' };
+  const year = () => AXIS[S.y];
+  /* A counted year is history; the model only speaks from 2030. */
+  const counted = () => UH && year() <= UH.counted;
+  const hasPlaces = (y = year()) => COUNTY_YEARS.has(y);
+
+  /* ---- the historical measure -------------------------------------------
+     Change-from-2024 is meaningless for 1965, so counted years are coloured
+     the way the over-time tab colours them: how much of its own best counted
+     year a state still has. Peaks are computed once, over counted years only,
+     so a modelled figure can never become the yardstick. */
+  const UH_PEAK = {};
+  if (UH) {
+    const ci = AXIS.indexOf(UH.counted);
+    UH.provinces.forEach((p) => {
+      const r = UHL.rows[p.iso]; let bi = -1;
+      for (let i = 0; i <= ci; i++) if (r[i] != null && (bi < 0 || r[i] > r[bi])) bi = i;
+      UH_PEAK[p.iso] = bi < 0 ? null : r[bi];
+    });
+  }
+  const uhVal = (fips, yi = S.y) => (UH && UHL.rows[fips] ? UHL.rows[fips][yi] : null);
+
+  /* Counties and districts carry their own counted run, fall 2014 to 2024, in
+     the `hist` column. Same measure as the states get, over the window that
+     exists for them, and the legend says which window it is. */
+  const HIST_TO = HIST_FROM + 10;
+  const histOf = (g, i) => (fam(g) === 'c' ? val('c', i, 'hist')
+                                           : (DD.rows[i] || [])[DD.ix.hist]) || null;
+  /* A history with a step change in it is not a run of the same quantity.
+     Two counties have one -- Oneida in Idaho and Pecos in Texas, where a
+     statewide virtual district lands in the county it is registered in from
+     2024 but not before -- and measuring 2019 against that peak would say
+     Oneida has lost 90% of its pupils when it has lost none. Such a place is
+     not ranked rather than ranked wrongly. */
+  function consistent(h) {
+    for (let k = 1; k < h.length; k++) {
+      const a2 = h[k - 1], b2 = h[k];
+      if (a2 && b2 && Math.abs(b2 - a2) > 500 && (b2 / a2 > 1.5 || a2 / b2 > 1.5)) return false;
+    }
+    return true;
+  }
+  function placeShare(g, i, y = year()) {
+    const h = histOf(g, i);
+    if (!h || y < HIST_FROM || y > HIST_TO || !consistent(h)) return null;
+    const v = h[y - HIST_FROM];
+    let pk = null;
+    for (const x of h) if (x != null && (pk == null || x > pk)) pk = x;
+    return v == null || !pk ? null : (v / pk) * 100;
+  }
+  const placeVal = (g, i, y = year()) => {
+    const h = histOf(g, i);
+    return h && y >= HIST_FROM && y <= HIST_TO ? h[y - HIST_FROM] : null;
+  };
+  /* True when the map is showing something that was counted rather than
+     modelled -- which is what decides the measure, the legend and whether the
+     scenario controls mean anything. */
+  const pastView = () => !!counted() && (S.geo === 'st' || hasPlaces());
+  function uhShare(fips, yi = S.y) {
+    const v = uhVal(fips, yi), pk = UH_PEAK[fips];
+    return v == null || !pk ? null : (v / pk) * 100;
+  }
 
   // ------------------------------------------------------------------ values
   const T = (g) => (g === 'c' ? CT : DT);
@@ -59,16 +133,31 @@
     COL = { div: ['--neg3', '--neg2', '--neg1', '--mid', '--pos1', '--pos2', '--pos3'].map(g), nodata: g('--nodata'),
       edge: g('--map-edge'), state: g('--map-state'), ink: g('--ink'), surface: g('--surface'),
       drv: { moving: g('--drv-move'), births: g('--drv-birth'), immig: g('--drv-imm'), obs: g('--drv-obs'), grow: g('--mid') } };
+    /* Share of a peak has no zero in the middle of it, so the diverging
+       ramp's near-neutral mid stop is dropped and the six coloured ones are
+       used as a sequential scale -- the same treatment, and the same reason,
+       as the over-time tab. */
+    COL.seq = ['--neg3', '--neg2', '--neg1', '--pos1', '--pos2', '--pos3'].map(g);
   }
   const BINS = { pct: [-25, -15, -5, 5, 15, 25], n: [-10000, -1000, -100, 100, 1000, 10000] };
   function binOf(v, b) { if (v == null || Number.isNaN(v)) return -1; let k = 0; while (k < b.length && v > b[k]) k++; return k; }
   const metric = () => S.mo;
   function valueFor(g, i) {
-    if (i == null) return null; const m = metric();
+    if (i == null) return null;
+    if (g === 'st') return uhShare(i);
+    if (pastView()) return placeShare(g, i);
+    const m = metric();
     return m === 'pct' ? chgPct(g, i) : m === 'n' ? students(g, i) : null;
   }
   function colorFor(g, i) {
-    if (i == null) return COL.nodata; const m = metric();
+    if (i == null) return COL.nodata;
+    if (g === 'st' || pastView()) {
+      const v = g === 'st' ? uhShare(i) : placeShare(g, i);
+      if (v == null) return COL.nodata;
+      const b = UH.bins; let k = 0; while (k < b.length && v >= b[k]) k++;
+      return COL.seq[k];
+    }
+    const m = metric();
     if (m === 'drv') { const r = mainReason(g, i); return r == null ? COL.nodata : COL.drv[r]; }
     const k = binOf(valueFor(g, i), BINS[m]); return k < 0 ? COL.nodata : COL.div[k];
   }
@@ -91,8 +180,11 @@
         }
         p.closePath();
       }
-      const id = f.properties.GEOID; const i = g === 'c' ? cIdx.get(id) : dIdx.get(id);
-      feats.push({ id, st: id.slice(0, 2), p, b, i: i === undefined ? null : i, name: f.properties.NAME });
+      const id = g === 'st' ? f.properties.STATEFP : f.properties.GEOID;
+      const i = g === 'c' ? cIdx.get(id) : g === 'st' ? (stIdx.has(id) ? id : undefined) : dIdx.get(id);
+      feats.push({ id, st: g === 'st' ? id : id.slice(0, 2), p, b,
+                   i: i === undefined ? null : i,
+                   name: g === 'st' ? stName[id] : f.properties.NAME });
       for (let q = 0; q < 2; q++) { if (b[q] < bb[q]) bb[q] = b[q]; if (b[q + 2] > bb[q + 2]) bb[q + 2] = b[q + 2]; }
     }
     const GX = 90, GY = 56, cw = (bb[2] - bb[0]) / GX, ch = (bb[3] - bb[1]) / GY;
@@ -246,6 +338,22 @@
   // ------------------------------------------------------------------ legend, headline
   function legend() {
     const m = metric(), y = YEARS[S.h]; let html = '';
+    if (S.geo === 'st' || pastView()) {
+      /* A counted year is not a change from 2024, so the legend changes with
+         the measure rather than keeping a scale that no longer applies. */
+      const since = S.geo === 'st' ? UH.years[0] : HIST_FROM;
+      const what = S.geo === 'st' ? 'state' : (fam(S.geo) === 'c' ? 'county' : 'district');
+      const b = UH.bins;
+      const lab = [`under ${b[0]}%`]
+        .concat(b.slice(0, -1).map((v, k) => `${v}\u2013${b[k + 1]}`))
+        .concat([`${b[b.length - 1]}% or more`]);
+      $('#legend').innerHTML =
+        `<span class="ttl">Students in ${year()}, as a share of that ${what}\u2019s highest year since ${since}</span>` +
+        '<span class="swatches">' + COL.seq.map((c, k) =>
+          `<span class="sw"><i style="background:${c}"></i><span>${lab[k]}</span></span>`).join('') +
+        `<span class="sw"><i style="background:${COL.nodata}"></i><span>no figure</span></span></span>`;
+      return;
+    }
     if (m === 'drv') {
       html = `<span class="ttl">Biggest reason for decline by ${y}</span>` + ['births', 'moving', 'immig', 'grow'].map((r) =>
         `<span class="cat"><i style="background:${COL.drv[r]}"></i>${REASON[r]}</span>`).join('') +
@@ -267,6 +375,27 @@
   function cornerBox() {
     const el = $('#hbox'); if (!el) return;
     const y = YEARS[S.h];
+    if (pastView()) {
+      /* In a counted year the corner box shows what was counted, not a change
+         to a horizon that is not being displayed. */
+      const yr = year();
+      if (S.sel) {
+        const { g, i } = S.sel;
+        const isSt = g === 'st';
+        const v = isSt ? uhVal(i) : placeVal(g, i);
+        const sh = isSt ? uhShare(i) : placeShare(g, i);
+        const nm = isSt ? (stName[i] || i) : placeName(g, i);
+        el.innerHTML = `<span class="k">${esc(nm)}</span>` +
+          `<span class="v">${v == null ? '\u2014' : nf.format(v)}</span>` +
+          `<span class="s">students, fall ${yr}${sh == null ? '' : ` \u2014 ${sh.toFixed(0)}% of its best`}</span>`;
+        return;
+      }
+      const tot = UHL.total[S.y];
+      el.innerHTML = `<span class="k">United States</span>` +
+        `<span class="v">${tot == null ? '\u2014' : nf.format(tot)}</span>` +
+        `<span class="s">public school students, fall ${yr}</span>`;
+      return;
+    }
     if (S.sel) {
       const { g, i } = S.sel, p = chgPct(g, i);
       el.innerHTML = `<span class="k">${esc(placeName(g, i))}</span><span class="v ${cls(p)}">${fmtPct(p)}</span>` +
@@ -280,8 +409,35 @@
 
   /* What the data shows, computed here rather than written down, so it cannot
      drift away from the numbers underneath it when a setting changes. */
+  /* The counted years get their own summary, computed the same way: the
+     national line, where it sits against its own high, and which states have
+     travelled furthest. Nothing here is written down in advance. */
+  function pastFindings() {
+    const el = $('#found');
+    const y = year(), ci = AXIS.indexOf(UH.counted), tot = UHL.total;
+    let pk = 0; for (let k = 0; k <= ci; k++) if (tot[k] != null && tot[k] > tot[pk]) pk = k;
+    const v = tot[S.y];
+    const sh = UH.provinces.map((q) => ({ en: stName[q.iso] || q.en, s: uhShare(q.iso) }))
+      .filter((x) => x.s != null).sort((a, b) => a.s - b.s);
+    const under = sh.filter((x) => x.s < 90).length;
+    const items = [
+      v == null ? '' : `<b>${nf.format(v)}</b> public school students in fall <b>${y}</b>, ` +
+        `<b>${fmtPct((v / tot[pk] - 1) * 100)}</b> against the country\u2019s high of ` +
+        `${nf.format(tot[pk])} in <b>${AXIS[pk]}</b>.`,
+      sh.length ? `Furthest below its own best: <b>${esc(sh[0].en)}</b> at <b>${sh[0].s.toFixed(0)}%</b>. ` +
+        `Closest to it: <b>${esc(sh[sh.length - 1].en)}</b> at <b>${sh[sh.length - 1].s.toFixed(0)}%</b>.` : '',
+      `<b>${under}</b> of ${sh.length} states are below 90% of their own highest counted year.`,
+      hasPlaces(y) ? `Counties and districts are counted from ${HIST_FROM}, so this year can be opened up.`
+                   : `Counties and districts are counted only from ${HIST_FROM}; before that the map is by state.`,
+    ].filter(Boolean);
+    el.innerHTML = '<h2>What the data shows</h2><ul>' +
+      items.map((x) => `<li>${x}</li>`).join('') + '</ul>' +
+      `<p class="note">${UH.copy.countedNote.replace(/\{counted\}/g, UH.counted).replace(/\{first\}/g, AXIS[0])}</p>`;
+  }
+
   function findings() {
     const el = $('#found'); if (!el) return;
+    if (pastView()) return pastFindings();
     const y = YEARS[S.h];
     let dec = 0, grow = 0, n = 0, lost = 0, gained = 0;
     CT.rows.forEach((r, i) => {
@@ -310,10 +466,24 @@
     cornerBox();
     findings();
     const el = $('#headline');
-    let dec = 0, n = 0; CT.rows.forEach((r, i) => { const p = chgPct('c', i); if (p != null) { n++; if (p < 0) dec++; } });
+    if (pastView()) {
+      /* A counted year has no scenario and no horizon; saying what the country
+         had, and where that sits against its own high, is the whole of it. */
+      const ci = AXIS.indexOf(UH.counted);
+      const tot = UHL.total, y = year(), yi = S.y;
+      let pk = 0; for (let k = 0; k <= ci; k++) if (tot[k] != null && tot[k] > tot[pk]) pk = k;
+      const v = tot[yi];
+      el.innerHTML = v == null ? `U.S. public school enrollment, fall ${y}.`
+        : `U.S. public school students, fall ${y}: <b>${nf.format(v)}</b>. ` +
+          `That is <b>${fmtPct((v / tot[pk] - 1) * 100)}</b> against the ` +
+          `${nf.format(tot[pk])} of ${AXIS[pk]}, the most it has ever counted.`;
+      return;
+    }
+    let dec = 0, n = 0; CT.rows.forEach((r, i2) => { const p = chgPct('c', i2); if (p != null) { n++; if (p < 0) dec++; } });
     const us = (S.f ? M.us_chg_f['S' + S.s + 'f'] : M.us_chg['S' + S.s])[S.h];
     el.innerHTML = `U.S. public K–12 students, fall 2024 → fall ${YEARS[S.h]}: <b>${fmtPct(us)}</b> if immigration ${SCEN[S.s]} and births ${S.f ? 'keep falling' : 'stay at the 2025 rate'}. <b>${nf.format(dec)}</b> of ${nf.format(n)} counties shrink.`;
   }
+
 
   // ------------------------------------------------------------------ panel
   function yScale(lo, hi, top, bot) { return (v) => bot - (v - lo) / (hi - lo || 1) * (bot - top); }
@@ -430,10 +600,50 @@
         ${h > TESTED ? `<li><b>Why project this far?</b> Nearly all parents of ${y}'s school-age children are already born; U.S. mothers' average age at first birth was 27.5 in 2023. Their numbers come from today's population. How many children they have is the uncertain part: ${S.f ? 'this setting continues the 2007–2025 decline of about 1.4% a year.' : "this setting holds each county's 2025 birth rate per woman steady."} <span class="src">Source: <a href="https://www.cdc.gov/nchs/data/nvsr/nvsr74/nvsr74-09.pdf" target="_blank" rel="noopener">NCHS, Trends in Mean Age of Mothers, 2016–2023</a></span></li>` : ''}
       </ol></details>`;
   }
+  /* A state, clicked in the pre-2014 view. There is no forecast for it and no
+     driver decomposition -- the long counted series is the whole story. */
+  function renderStatePanel(P, fips) {
+    const r = UHL.rows[fips] || [], ci = AXIS.indexOf(UH.counted);
+    let pk = -1; for (let k = 0; k <= ci; k++) if (r[k] != null && (pk < 0 || r[k] > r[pk])) pk = k;
+    const v = r[S.y], sh = uhShare(fips);
+    const first = r.findIndex((x) => x != null);
+    P.innerHTML = `<div class="kind">State \u00b7 FIPS ${esc(fips)}</div>` +
+      `<h2>${esc(stName[fips] || fips)}</h2>` +
+      (v == null
+        ? `<p class="note">No figure for ${year()}.` +
+          (first >= 0 ? ` This state's series starts in ${AXIS[first]}.` : '') + '</p>'
+        : `<div class="big"><span class="n">${nf.format(v)}</span>` +
+          `<span class="u">students in ${year()}</span></div>` +
+          (pk >= 0 ? `<p class="note">Its highest counted year was <b>${AXIS[pk]}</b>, at ` +
+            `${nf.format(r[pk])}. This is <b>${sh.toFixed(0)}%</b> of that.</p>` : '')) +
+      `<p class="note">Counties and districts are counted only from ${HIST_FROM}; ` +
+      `move the year forward to open them up.</p>`;
+  }
+
+  /* A county or district in a counted year: what it had, against its own best. */
+  function renderPastPlace(P, g, i) {
+    const h = histOf(g, i) || [], v = placeVal(g, i), sh = placeShare(g, i);
+    let pk = null, pky = null;
+    h.forEach((x, k) => { if (x != null && (pk == null || x > pk)) { pk = x; pky = HIST_FROM + k; } });
+    P.innerHTML = `<div class="kind">${fam(g) === 'c' ? 'County' : 'District'}</div>` +
+      `<h2>${esc(placeName(g, i))}</h2>` +
+      (v == null ? `<p class="note">No figure for ${year()}.</p>`
+        : `<div class="big"><span class="n">${nf.format(v)}</span>` +
+          `<span class="u">students in ${year()}</span></div>` +
+          (sh == null
+            ? `<p class="note">Its counted run has a step change in it \u2014 a statewide district ` +
+              `arriving partway \u2014 so it is not measured against a best year here.</p>`
+            : `<p class="note">Its best year since ${HIST_FROM} was <b>${pky}</b>, at ` +
+              `${nf.format(pk)}. This is <b>${sh.toFixed(0)}%</b> of that.</p>`)) +
+      `<p class="note">Move the year past ${UH.counted} for the forecast, its drivers and the workings.</p>`;
+  }
+
   function renderPanel() {
     cornerBox();                 // the corner follows the selection too
     const P = $('#panel');
+    if (S.sel && S.sel.g === 'st') return renderStatePanel(P, S.sel.i);
     if (!S.sel) { renderUS(P); return; }
+    if (pastView()) return renderPastPlace(P, S.sel.g, S.sel.i);
     const { g, i } = S.sel; const isC = g === 'c'; const y = YEARS[S.h];
     const p = chgPct(g, i), st = students(g, i), err = isC ? val('c', i, 'err') : DD.rows[i][DD.ix.err];
     const kind = isC ? `County · FIPS ${val('c', i, 'id')}` : `${TYPE[val('d', i, 'type')] || 'District'}${LOCALE[String(val('d', i, 'locale'))[0]] ? ' · ' + LOCALE[String(val('d', i, 'locale'))[0]] : ''} · NCES ${val('d', i, 'id')}`;
@@ -465,6 +675,16 @@
   $('#panel').addEventListener('click', (e) => { if (e.target.closest('[data-us]')) { S.sel = null; renderPanel(); renderTable(); requestDraw(); } });
 
   // ------------------------------------------------------------------ table
+  /* A counted year has no forecast to rank by, so the table shows what was
+     counted and how it stands against that place's own best year. */
+  const PAST_COLS = [
+    { k: 'name', t: 'Place', get: (g, i) => placeName(g, i), fmt: (v) => esc(v), txt: true },
+    { k: 'pastn', t: 'Students YEAR', get: (g, i) => placeVal(g, i), fmt: fmtN },
+    { k: 'pastpk', t: 'Its best year', get: (g, i) => { const h = histOf(g, i); if (!h) return null;
+        let pk = null; for (const x of h) if (x != null && (pk == null || x > pk)) pk = x; return pk; }, fmt: fmtN },
+    { k: 'pastpct', t: 'Share of it', get: (g, i) => placeShare(g, i),
+      fmt: (v) => (v == null ? '—' : `<span class="${v < 90 ? 'bad' : ''}">${v.toFixed(0)}%</span>`) },
+  ];
   const COLS = [
     { k: 'name', t: 'Place', get: (g, i) => placeName(g, i), fmt: (v) => esc(v), txt: true },
     { k: 'enr', t: 'Students 2024–25', get: (g, i) => enr(g, i), fmt: fmtN },
@@ -481,7 +701,10 @@
         if (S.geo === 's' ? lay !== 's' : lay === 's') continue; }
       out.push(i);
     }
-    const key = S.sort || (S.mo === 'n' ? 'n' : 'pct'); const col = COLS.find((c) => c.k === key);
+    const past = pastView(); const set = past ? PAST_COLS : COLS;
+    const key = past ? (S.sort && set.some((c) => c.k === S.sort) ? S.sort : 'pastpct')
+                     : (S.sort || (S.mo === 'n' ? 'n' : 'pct'));
+    const col = set.find((c) => c.k === key) || set[0];
     const dir = S.sort ? S.dir : 1;
     out.sort((a, b) => { const va = col.get(g, a), vb = col.get(g, b); if (va == null) return 1; if (vb == null) return -1;
       return (col.txt ? String(va).localeCompare(String(vb)) : va - vb) * dir; });
@@ -539,17 +762,38 @@
     $('#more').hidden = true;
   }
 
+  /* The table that goes with the states view: the same four columns as the
+     place table, read off the long series. */
+  function renderPastStates() {
+    const y = year();
+    const rows = UH.provinces.map((p) => ({ ...p, v: uhVal(p.iso), s: uhShare(p.iso), pk: UH_PEAK[p.iso] }))
+      .filter((r) => r.v != null).sort((a, b) => a.s - b.s);
+    $('#rank-title').textContent = `Furthest below their best, ${y}`;
+    $('#rank-note').textContent = `${rows.length} states, measured against their own highest counted year. `
+      + `Counties and districts are counted only from ${HIST_FROM}.`;
+    $('#typewrap').hidden = true; $('#minnwrap').hidden = true; $('#more').hidden = true;
+    $('#tbl thead').innerHTML = `<tr><th>State</th><th>Students ${y}</th><th>Its best year</th><th>Share of it</th></tr>`;
+    $('#tbl tbody').innerHTML = rows.map((r) =>
+      `<tr><td>${esc(stName[r.iso] || r.en)}</td><td>${fmtN(r.v)}</td><td>${fmtN(r.pk)}</td>` +
+      `<td class="${r.s < 90 ? 'bad' : ''}">${r.s.toFixed(0)}%</td></tr>`).join('');
+  }
+
   function renderTable() {
+    // The States scope and the states map are the same table in a counted year.
+    if (S.geo === 'st' || (S.scope === 'st' && pastView())) return renderPastStates();
     if (S.scope === 'st') return renderStates();
-    const g = fam(S.geo), rows = tableRows(), y = YEARS[S.h];
-    const key = S.sort || (S.mo === 'n' ? 'n' : 'pct');
-    $('#rank-title').textContent = `Most affected by ${y}`;
+    const past = pastView();
+    const g = fam(S.geo), rows = tableRows(), y = past ? year() : YEARS[S.h];
+    const cols = past ? PAST_COLS : COLS;
+    const key = past ? (S.sort && cols.some((c) => c.k === S.sort) ? S.sort : 'pastpct')
+                     : (S.sort || (S.mo === 'n' ? 'n' : 'pct'));
+    $('#rank-title').textContent = past ? `Furthest below their best, ${y}` : `Most affected by ${y}`;
     $('#rank-note').textContent = `${nf.format(rows.length)} ${g === 'c' ? 'counties' : 'districts'}${S.st ? ' in ' + stName[S.st] : ''}. Immigration ${SCEN[S.s]}. Click a column to sort; click a row to see it on the map.`;
     $('#typewrap').hidden = g === 'c';
     $('#minnwrap').hidden = false;
-    $('#tbl thead').innerHTML = '<tr>' + COLS.map((c) => `<th data-k="${c.k}"${c.k === key ? ` aria-sort="${(S.sort ? S.dir : 1) > 0 ? 'ascending' : 'descending'}"` : ''}>${c.t.replace('YEAR', y)}</th>`).join('') + '</tr>';
+    $('#tbl thead').innerHTML = '<tr>' + cols.map((c) => `<th data-k="${c.k}"${c.k === key ? ` aria-sort="${(S.sort ? S.dir : 1) > 0 ? 'ascending' : 'descending'}"` : ''}>${c.t.replace('YEAR', y)}</th>`).join('') + '</tr>';
     $('#tbl tbody').innerHTML = rows.slice(0, S.shown).map((i) => `<tr data-i="${i}"${S.sel && S.sel.g === g && S.sel.i === i ? ' aria-selected="true"' : ''}>` +
-      COLS.map((c) => `<td>${c.fmt(c.get(g, i))}</td>`).join('') + '</tr>').join('');
+      cols.map((c) => `<td>${c.fmt(c.get(g, i))}</td>`).join('') + '</tr>').join('');
     $('#more').hidden = rows.length <= S.shown;
   }
   $('#tbl thead').addEventListener('click', (e) => { const th = e.target.closest('th'); if (!th) return; const k = th.dataset.k;
@@ -563,11 +807,30 @@
     renderTable();
   });
   $('#copy').addEventListener('click', async () => {
-    const g = fam(S.geo), rows = tableRows(), y = YEARS[S.h];
-    const head = ['id', 'place', 'students_2024', `pct_change_${y}`, `students_change_${y}`, 'biggest_reason'];
     const q = (v) => (v == null ? '' : /[",\n]/.test(String(v)) ? `"${String(v).replace(/"/g, '""')}"` : v);
-    const csv = [head.join(',')].concat(rows.map((i) => [val(g, i, 'id'), placeName(g, i), enr(g, i), chgPct(g, i), students(g, i) == null ? '' : Math.round(students(g, i)),
-      REASON[mainReason(g, i)] || ''].map(q).join(','))).join('\n');
+    let head, body, rows;
+    if (S.geo === 'st') {
+      const yr = year();
+      head = ['fips', 'state', `students_${yr}`, 'best_counted_year', 'share_of_best_pct'];
+      rows = UH.provinces;
+      body = rows.map((s) => [s.iso, stName[s.iso] || s.en, uhVal(s.iso), UH_PEAK[s.iso],
+        uhShare(s.iso) == null ? '' : uhShare(s.iso).toFixed(1)].map(q).join(','));
+    } else if (pastView()) {
+      const g = fam(S.geo), yr = year(); rows = tableRows();
+      head = ['id', 'place', `students_${yr}`, `best_year_since_${HIST_FROM}`, 'share_of_best_pct'];
+      body = rows.map((i) => { const h = histOf(g, i) || []; let pk = null;
+        for (const x of h) if (x != null && (pk == null || x > pk)) pk = x;
+        const sh = placeShare(g, i);
+        return [val(g, i, 'id'), placeName(g, i), placeVal(g, i), pk,
+                sh == null ? '' : sh.toFixed(1)].map(q).join(','); });
+    } else {
+      const g = fam(S.geo), y = YEARS[S.h]; rows = tableRows();
+      head = ['id', 'place', 'students_2024', `pct_change_${y}`, `students_change_${y}`, 'biggest_reason'];
+      body = rows.map((i) => [val(g, i, 'id'), placeName(g, i), enr(g, i), chgPct(g, i),
+        students(g, i) == null ? '' : Math.round(students(g, i)),
+        REASON[mainReason(g, i)] || ''].map(q).join(','));
+    }
+    const csv = [head.join(',')].concat(body).join('\n');
     const btn = $('#copy');
     try { await navigator.clipboard.writeText(csv); btn.textContent = `Copied ${nf.format(rows.length)} rows`; }
     catch (err) { const ta = document.createElement('textarea'); ta.value = csv; ta.style.cssText = 'width:100%;height:120px'; btn.after(ta); ta.select(); btn.textContent = 'Select all and copy'; }
@@ -624,11 +887,74 @@
     if (opt.zoom) { if (fam(S.geo) !== g) setGeo(g === 'c' ? 'c' : (val('d', i, 'layer') === 's' ? 's' : 'd'));
       const f = getLayer(S.geo).byI.get(i); if (f) zoomToBox(f.b, 0.3); }
   }
+  /* ---- the year -----------------------------------------------------------
+     One axis across the whole series. Before 2014 only states have figures, so
+     the map falls back to them and the place controls say why rather than
+     silently doing nothing. From 2030 the year IS a model horizon, so S.h is
+     kept in step and every scenario, driver and math-panel path keeps working
+     untouched. */
+  function setYear(i) {
+    S.y = Math.max(0, Math.min(AXIS.length - 1, i));
+    const y = year();
+    const h = YEARS.indexOf(y);
+    if (h >= 0) S.h = h;
+    if (!hasPlaces(y) && S.geo !== 'st') { S.prevGeo = S.geo; S.geo = 'st'; S.sel = null; }
+    else if (hasPlaces(y) && S.geo === 'st') { S.geo = S.prevGeo || 'c'; S.sel = null; }
+    // a selection made in one geography means nothing in another
+    if (S.sel && S.sel.g !== S.geo && !(S.sel.g === fam(S.geo))) S.sel = null;
+    syncYear();
+    refresh();
+  }
+  function syncYear() {
+    const y = year(), sl = $('#us-year');
+    if (!sl) return;
+    sl.max = AXIS.length - 1; sl.value = S.y;
+    sl.setAttribute('aria-valuetext', y + (counted() ? ', counted' : ', modelled'));
+    $('#us-yearlab').textContent = y;
+    const chip = $('#us-projchip');
+    chip.hidden = !!counted();
+    chip.textContent = 'modelled';
+    const sel = $('#geo');
+    if (sel) {
+      sel.value = S.geo;
+      /* State is a choice at any year; counties and districts only exist for
+         the years they were counted, so those options go grey rather than the
+         whole control. */
+      sel.querySelectorAll('option').forEach((o) => {
+        o.disabled = o.value !== 'st' && !hasPlaces(y);
+      });
+      sel.title = hasPlaces(y) ? '' : 'Counties and districts are counted from ' + HIST_FROM;
+    }
+    const note = $('#us-yearnote');
+    if (note) {
+      note.textContent = hasPlaces(y)
+        ? (counted() ? '' : 'Projected from the fall 2024 count.')
+        : 'Counties and districts are counted only from ' + HIST_FROM
+          + ', so ' + y + ' is shown by state.';
+    }
+    const hb = $('#horizon');
+    if (hb) hb.querySelectorAll('[data-h]').forEach((b) =>
+      b.setAttribute('aria-pressed', +b.dataset.h === S.h && !counted() ? 'true' : 'false'));
+    /* A counted year has no scenario, no birth-rate setting and no horizon to
+       jump to. Hiding those beats leaving controls on screen that change
+       nothing about what is being shown. */
+    const past = pastView();
+    ['#hwrap', '#scenwrap', '#fertwrap', '#metricwrap'].forEach((sel) => {
+      const el = $(sel); if (el) el.hidden = past;
+    });
+    ['#scen', '#fert', '#metric-o'].forEach((sel) => {
+      const el = $(sel); if (el && el.closest('.ctl')) el.closest('.ctl').hidden = past;
+    });
+  }
+
   function setGeo(g) { S.geo = g; $('#geo').value = g; S.hover = null; S.shown = 50; getLayer(g); refresh(); }
   function refresh() { readColors(); legend(); headline(); renderTable(); renderPanel(); requestDraw(); }
   $('#geo').addEventListener('change', (e) => setGeo(e.target.value));
-  $('#horizon').addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; S.h = +b.dataset.h;
-    $('#horizon').querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', String(x === b))); refresh(); });
+  /* The horizon buttons are now shortcuts along the year axis, so they and
+     the slider can never disagree about which year is showing. */
+  $('#horizon').addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return;
+    setYear(AXIS.indexOf(YEARS[+b.dataset.h])); });
+  $('#us-year').addEventListener('input', (e) => setYear(+e.target.value));
   $('#scen').addEventListener('change', (e) => { S.s = +e.target.value; refresh(); });
   $('#fert').addEventListener('change', (e) => { S.f = +e.target.value; refresh(); });
   $('#metric-o').addEventListener('change', (e) => { S.mo = e.target.value; S.sort = null; refresh(); });
@@ -670,8 +996,9 @@
   // ------------------------------------------------------------------ boot
   readColors(); buildStates(); renderMethod();
   S.sel = null;   // default panel = national overview
-  refresh(); resize();
+  syncYear(); refresh(); resize();
   window.SOM_APP = { S, M, colorFor, valueFor, chgPct, students, drivers, mainReason, select, setGeo, placeName, getLayer,
     setHorizon: (h) => $('#horizon').querySelectorAll('button')[h].click(), cIdx, dIdx,
+    setYear, year, axis: AXIS, counted, hasPlaces, uhShare,
     view: () => view };   // for verify/browser_check.js: the zoom level
 })();
