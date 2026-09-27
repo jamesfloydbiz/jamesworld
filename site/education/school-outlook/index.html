@@ -108,6 +108,7 @@ select,input[type=search]{font:500 14px var(--sans); color:var(--ink); backgroun
 .kr-year b{font-variant-numeric:tabular-nums; font-size:20px; min-width:3.2em}
 .kr-proj{font:600 10px/1 var(--mono,ui-monospace,monospace); letter-spacing:.12em; text-transform:uppercase;
   padding:4px 7px; border:1px dashed var(--ink-2); border-radius:3px; color:var(--ink-2); white-space:nowrap}
+.kr-proj.is-modelled{border-style:dotted; opacity:.75}
 @media (max-width: 860px){ .kr-stage{grid-template-columns:minmax(0,1fr)} }
 
 /* The map is the page, so it leaves the reading column and runs the width of
@@ -231,8 +232,8 @@ footer{font-size:12px; color:var(--muted)}
 
   <nav class="views" id="views" aria-label="Country">
     <button type="button" data-view="us" aria-pressed="true">United States<small>counties and districts, to 2055</small></button>
-    <button type="button" data-view="uh" aria-pressed="false">U.S. over time<small>states, 1990–2055</small></button>
-    <button type="button" data-view="kr" aria-pressed="false">South Korea<small>provinces, 1965–2041</small></button>
+    <button type="button" data-view="uh" aria-pressed="false">U.S. over time<small>states, 1980–2055</small></button>
+    <button type="button" data-view="kr" aria-pressed="false">South Korea<small>provinces, 1965–2050</small></button>
   </nav>
 
   <div id="view-us">

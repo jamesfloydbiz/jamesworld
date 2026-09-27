@@ -49,6 +49,12 @@ window.WL_OVERTIME = function (cfg) {
   const S = { level: cfg.level || Object.keys(D.levels)[0], yi: LAST, sel: null };
   const hz = () => YEARS.indexOf(lvl().horizon);      // last mapped year for this level
   const isProj = (i = S.yi) => i > CI;
+  /* Three tiers, and the map has to keep them apart: a year that was counted,
+     a year that is arithmetic on children who already exist, and a year that
+     also needs a birth rate. `born_to` is where the second becomes the third;
+     a series whose forward half is modelled throughout simply has no second. */
+  const bornIdx = () => YEARS.indexOf(lvl().born_to != null ? lvl().born_to : lvl().horizon);
+  const tier = (i = S.yi) => (i <= CI ? 'counted' : i <= bornIdx() ? 'born' : 'modelled');
 
   /* ── the series ──────────────────────────────────────────────────────── */
   const lvl = () => D.levels[S.level];
@@ -139,15 +145,16 @@ window.WL_OVERTIME = function (cfg) {
     if (!W) return;
     ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
     ctx.clearRect(0, 0, W, H);
-    const proj = isProj();
+    /* The border says which tier the year belongs to: solid for a count,
+       dashed once it is carried forward, finely dotted once it needs a birth
+       rate that has not happened. */
+    const dash = { counted: [], born: [5, 3], modelled: [1, 2.5] }[tier()];
     feats.forEach((f) => {
       path(f);
       ctx.fillStyle = colorFor(f.iso); ctx.fill();
       ctx.lineWidth = f.iso === S.sel ? 2.4 : 0.7;
       ctx.strokeStyle = f.iso === S.sel ? COL.ink : COL.edge;
-      /* The one visual difference between a count and a carried-forward
-         figure: the border stops being solid. */
-      ctx.setLineDash(proj ? [4, 3] : []);
+      ctx.setLineDash(dash);
       ctx.stroke();
       ctx.setLineDash([]);
     });
@@ -178,7 +185,8 @@ window.WL_OVERTIME = function (cfg) {
     const lab = [`under ${BINS[0]}%`]
       .concat(BINS.slice(0, -1).map((v, i) => `${v}–${BINS[i + 1]}`))
       .concat([`${BINS[BINS.length - 1]}% or more`]);
-    $('#kr-legend').innerHTML = `<span class="ttl">Students in ${YEARS[S.yi]}${isProj() ? ' (projected)' : ''}, as a share of ${esc(TXT.peakOf)}</span>` +
+    const tl = { counted: '', born: ' (projected)', modelled: ' (modelled)' }[tier()];
+    $('#kr-legend').innerHTML = `<span class="ttl">Students in ${YEARS[S.yi]}${tl}, as a share of ${esc(TXT.peakOf)}</span>` +
       '<span class="swatches">' + COL.ramp.map((c, i) =>
         `<span class="sw"><i style="background:${c}"></i><span>${lab[i]}</span></span>`).join('') +
       `<span class="sw"><i style="background:${COL.nodata}"></i><span>${esc(TXT.nodata)}</span></span></span>`;
@@ -210,9 +218,11 @@ window.WL_OVERTIME = function (cfg) {
   /* The one sentence every projected view has to carry. Ages come from the
      data file, so it cannot drift away from what was actually computed. */
   function projLine() {
-    const a = lvl().ages || [];
-    return fill(TXT.projected, { a0: a[0], a1: a[1], year: YEARS[S.yi],
-                                 base: D.projection.base_year, counted: D.counted });
+    const a = lvl().ages || [], P = D.projection;
+    const s = tier() === 'modelled' && TXT.modelled ? TXT.modelled : TXT.projected;
+    return fill(s, { a0: a[0], a1: a[1], year: YEARS[S.yi], base: P.base_year,
+                     counted: D.counted, mothers: P.mothers_counted_to,
+                     cwr: P.cwr, born: lvl().born_to });
   }
 
   /* ── what it did, and what it is set to do: computed, never written down ── */
@@ -285,7 +295,7 @@ window.WL_OVERTIME = function (cfg) {
   function renderTable() {
     const rows = D.provinces.map((p) => ({ ...p, v: at(p.iso), s: share(p.iso), pk: peak(p.iso) }))
       .filter((r) => r.v != null).sort((a, b) => a.s - b.s);
-    $('#kr-tbl thead').innerHTML = `<tr><th style="text-align:left">${esc(TXT.Unit)}</th><th>Students ${YEARS[S.yi]}${isProj() ? ' (proj.)' : ''}</th><th>${esc(TXT.peakCol)}</th><th>${esc(TXT.shareCol)}</th></tr>`;
+    $('#kr-tbl thead').innerHTML = `<tr><th style="text-align:left">${esc(TXT.Unit)}</th><th>Students ${YEARS[S.yi]}${{ counted: '', born: ' (proj.)', modelled: ' (model.)' }[tier()]}</th><th>${esc(TXT.peakCol)}</th><th>${esc(TXT.shareCol)}</th></tr>`;
     $('#kr-tbl tbody').innerHTML = rows.map((r) =>
       `<tr data-iso="${esc(r.iso)}"${r.iso === S.sel ? ' aria-selected="true"' : ''}>` +
       `<td style="text-align:left">${esc(r.en)} <span class="kind">${esc(r.ko)}</span></td>` +
@@ -307,9 +317,13 @@ window.WL_OVERTIME = function (cfg) {
     slider.max = top;
     if (S.yi > top) S.yi = top;
     slider.value = S.yi;
-    slider.setAttribute('aria-valuetext', YEARS[S.yi] + (isProj() ? ', projected' : ', counted'));
+    const tn = tier();
+    slider.setAttribute('aria-valuetext', YEARS[S.yi] + ', ' + tn);
     $('#kr-yearlab').textContent = YEARS[S.yi];
-    $('#kr-projchip').hidden = !isProj();
+    const chip = $('#kr-projchip');
+    chip.hidden = tn === 'counted';
+    chip.textContent = tn === 'modelled' ? 'modelled' : 'projected';
+    chip.classList.toggle('is-modelled', tn === 'modelled');
     legend(); summary(); renderPanel(); renderTable(); draw();
   }
   S.yi = LAST;
@@ -344,5 +358,5 @@ window.WL_OVERTIME = function (cfg) {
   readColors(); refresh(); resize();
   return { S, share, peak, resize, refresh, provinces: D.provinces.length,
            years: YEARS, counted: D.counted, ci: CI, hz, isProj, levels: D.levels,
-           bins: BINS, colorFor };
+           bins: BINS, colorFor, tier, bornIdx };
 };
