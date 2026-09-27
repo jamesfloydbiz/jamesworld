@@ -90,6 +90,28 @@
      modelled -- which is what decides the measure, the legend and whether the
      scenario controls mean anything. */
   const pastView = () => !!counted() && (S.geo === 'st' || hasPlaces());
+  /* How a counted year is coloured. 'n' is how many students are there, which
+     is the question most people are actually asking; 'pk' is how much of its
+     own best year a place still has, which answers a different and narrower
+     one. Share was the only option and read as a riddle -- it asks the reader
+     to hold an invisible reference year, different for every state, in their
+     head. Counts are the default now and share is a choice. */
+  S.pm = 'n';
+  const HEADS = (UH && UH.heads) || [150e3, 400e3, 800e3, 1.6e6];   // five bands, from the data
+  function pastValue(g, i) {
+    return S.pm === 'pk' ? (g === 'st' ? uhShare(i) : placeShare(g, i))
+                         : (g === 'st' ? uhVal(i) : placeVal(g, i));
+  }
+  function pastColor(g, i) {
+    const v = pastValue(g, i);
+    if (v == null) return COL.nodata;
+    if (S.pm === 'pk') {
+      const b = UH.bins; let k = 0; while (k < b.length && v >= b[k]) k++;
+      return COL.seq[k];
+    }
+    let k = 0; while (k < HEADS.length && v >= HEADS[k]) k++;
+    return COL.lvl[k];
+  }
   function uhShare(fips, yi = S.y) {
     const v = uhVal(fips, yi), pk = UH_PEAK[fips];
     return v == null || !pk ? null : (v / pk) * 100;
@@ -138,25 +160,22 @@
        used as a sequential scale -- the same treatment, and the same reason,
        as the over-time tab. */
     COL.seq = ['--neg3', '--neg2', '--neg1', '--pos1', '--pos2', '--pos3'].map(g);
+    /* Counts are sequential -- there is no midpoint that means "no change" --
+       so they get one hue running light to dark instead of a two-ended ramp. */
+    COL.lvl = ['--lv1', '--lv2', '--lv4', '--lv5', '--lv6'].map(g);
   }
   const BINS = { pct: [-25, -15, -5, 5, 15, 25], n: [-10000, -1000, -100, 100, 1000, 10000] };
   function binOf(v, b) { if (v == null || Number.isNaN(v)) return -1; let k = 0; while (k < b.length && v > b[k]) k++; return k; }
   const metric = () => S.mo;
   function valueFor(g, i) {
     if (i == null) return null;
-    if (g === 'st') return uhShare(i);
-    if (pastView()) return placeShare(g, i);
+    if (g === 'st' || pastView()) return pastValue(g, i);
     const m = metric();
     return m === 'pct' ? chgPct(g, i) : m === 'n' ? students(g, i) : null;
   }
   function colorFor(g, i) {
     if (i == null) return COL.nodata;
-    if (g === 'st' || pastView()) {
-      const v = g === 'st' ? uhShare(i) : placeShare(g, i);
-      if (v == null) return COL.nodata;
-      const b = UH.bins; let k = 0; while (k < b.length && v >= b[k]) k++;
-      return COL.seq[k];
-    }
+    if (g === 'st' || pastView()) return pastColor(g, i);
     const m = metric();
     if (m === 'drv') { const r = mainReason(g, i); return r == null ? COL.nodata : COL.drv[r]; }
     const k = binOf(valueFor(g, i), BINS[m]); return k < 0 ? COL.nodata : COL.div[k];
@@ -336,6 +355,11 @@
   canvas.addEventListener('pointercancel', drop2);
 
   // ------------------------------------------------------------------ legend, headline
+  // 400,000 -> "400k", 1,600,000 -> "1.6M". A legend is re-read on every
+  // glance; seven digits is not something to re-read.
+  const short = (v) => (v >= 1e6 ? (v / 1e6).toFixed(v % 1e6 ? 1 : 0) + 'M'
+                                 : Math.round(v / 1e3) + 'k');
+
   function legend() {
     const m = metric(), y = YEARS[S.h]; let html = '';
     if (S.geo === 'st' || pastView()) {
@@ -343,13 +367,19 @@
          the measure rather than keeping a scale that no longer applies. */
       const since = S.geo === 'st' ? UH.years[0] : HIST_FROM;
       const what = S.geo === 'st' ? 'state' : (fam(S.geo) === 'c' ? 'county' : 'district');
+      const share = S.pm === 'pk';
       const b = UH.bins;
-      const lab = [`under ${b[0]}%`]
-        .concat(b.slice(0, -1).map((v, k) => `${v}\u2013${b[k + 1]}`))
-        .concat([`${b[b.length - 1]}% or more`]);
-      $('#legend').innerHTML =
-        `<span class="ttl">Students in ${year()}, as a share of that ${what}\u2019s highest year since ${since}</span>` +
-        '<span class="swatches">' + COL.seq.map((c, k) =>
+      const lab = share
+        ? [`under ${b[0]}%`].concat(b.slice(0, -1).map((v, k) => `${v}\u2013${b[k + 1]}`))
+                            .concat([`${b[b.length - 1]}% or more`])
+        : [`under ${short(HEADS[0])}`]
+            .concat(HEADS.slice(0, -1).map((v, k) => `${short(v)}\u2013${short(HEADS[k + 1])}`))
+            .concat([`${short(HEADS[HEADS.length - 1])} or more`]);
+      const ttl = share
+        ? `Students in ${year()}, as a share of that ${what}\u2019s highest year since ${since}`
+        : `Public school students in ${year()}`;
+      $('#legend').innerHTML = `<span class="ttl">${ttl}</span>` +
+        '<span class="swatches">' + (share ? COL.seq : COL.lvl).map((c, k) =>
           `<span class="sw"><i style="background:${c}"></i><span>${lab[k]}</span></span>`).join('') +
         `<span class="sw"><i style="background:${COL.nodata}"></i><span>no figure</span></span></span>`;
       return;
@@ -702,12 +732,14 @@
       out.push(i);
     }
     const past = pastView(); const set = past ? PAST_COLS : COLS;
-    const key = past ? (S.sort && set.some((c) => c.k === S.sort) ? S.sort : 'pastpct')
+    const key = past ? (S.sort && set.some((c) => c.k === S.sort) ? S.sort
+                       : (S.pm === 'pk' ? 'pastpct' : 'pastn'))
                      : (S.sort || (S.mo === 'n' ? 'n' : 'pct'));
     const col = set.find((c) => c.k === key) || set[0];
     const dir = S.sort ? S.dir : 1;
+    const flip = past && !S.sort && S.pm !== 'pk' ? -1 : 1;   // most students first
     out.sort((a, b) => { const va = col.get(g, a), vb = col.get(g, b); if (va == null) return 1; if (vb == null) return -1;
-      return (col.txt ? String(va).localeCompare(String(vb)) : va - vb) * dir; });
+      return (col.txt ? String(va).localeCompare(String(vb)) : va - vb) * dir * flip; });
     return out;
   }
   /* States, summed from their counties. The map has always let you filter to
@@ -767,8 +799,10 @@
   function renderPastStates() {
     const y = year();
     const rows = UH.provinces.map((p) => ({ ...p, v: uhVal(p.iso), s: uhShare(p.iso), pk: UH_PEAK[p.iso] }))
-      .filter((r) => r.v != null).sort((a, b) => a.s - b.s);
-    $('#rank-title').textContent = `Furthest below their best, ${y}`;
+      .filter((r) => r.v != null)
+      .sort((a, b) => (S.pm === 'pk' ? a.s - b.s : b.v - a.v));
+    $('#rank-title').textContent = S.pm === 'pk'
+      ? `Furthest below their best, ${y}` : `Most students, ${y}`;
     $('#rank-note').textContent = `${rows.length} states, measured against their own highest counted year. `
       + `Counties and districts are counted only from ${HIST_FROM}.`;
     $('#typewrap').hidden = true; $('#minnwrap').hidden = true; $('#more').hidden = true;
@@ -785,9 +819,12 @@
     const past = pastView();
     const g = fam(S.geo), rows = tableRows(), y = past ? year() : YEARS[S.h];
     const cols = past ? PAST_COLS : COLS;
-    const key = past ? (S.sort && cols.some((c) => c.k === S.sort) ? S.sort : 'pastpct')
+    const key = past ? (S.sort && cols.some((c) => c.k === S.sort) ? S.sort
+                       : (S.pm === 'pk' ? 'pastpct' : 'pastn'))
                      : (S.sort || (S.mo === 'n' ? 'n' : 'pct'));
-    $('#rank-title').textContent = past ? `Furthest below their best, ${y}` : `Most affected by ${y}`;
+    $('#rank-title').textContent = past
+      ? (S.pm === 'pk' ? `Furthest below their best, ${y}` : `Most students, ${y}`)
+      : `Most affected by ${y}`;
     $('#rank-note').textContent = `${nf.format(rows.length)} ${g === 'c' ? 'counties' : 'districts'}${S.st ? ' in ' + stName[S.st] : ''}. Immigration ${SCEN[S.s]}. Click a column to sort; click a row to see it on the map.`;
     $('#typewrap').hidden = g === 'c';
     $('#minnwrap').hidden = false;
@@ -964,6 +1001,8 @@
     ['#hwrap', '#scenwrap', '#fertwrap', '#metricwrap'].forEach((sel) => {
       const el = $(sel); if (el) el.hidden = past;
     });
+    // ...and the counted-year measure only means anything in a counted year
+    const pw = $('#pastmwrap'); if (pw) pw.hidden = !past;
     ['#scen', '#fert', '#metric-o'].forEach((sel) => {
       const el = $(sel); if (el && el.closest('.ctl')) el.closest('.ctl').hidden = past;
     });
@@ -977,6 +1016,7 @@
   $('#horizon').addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return;
     setYear(AXIS.indexOf(YEARS[+b.dataset.h])); });
   $('#us-year').addEventListener('input', (e) => setYear(+e.target.value));
+  $('#past-metric').addEventListener('change', (e) => { S.pm = e.target.value; S.sort = null; refresh(); });
   $('#scen').addEventListener('change', (e) => { S.s = +e.target.value; refresh(); });
   $('#fert').addEventListener('change', (e) => { S.f = +e.target.value; refresh(); });
   $('#metric-o').addEventListener('change', (e) => { S.mo = e.target.value; S.sort = null; refresh(); });

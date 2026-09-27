@@ -85,6 +85,7 @@ window.WL_OVERTIME = function (cfg) {
        are used as a sequential scale. Gyeonggi landing on that neutral is what
        made the map look like it had a hole in it. */
     COL = { ramp: ['--neg3', '--neg2', '--neg1', '--pos1', '--pos2', '--pos3'].map(css),
+            lvl: ['--lv1', '--lv2', '--lv4', '--lv5', '--lv6'].map(css),
             nodata: css('--nodata'), edge: css('--map-edge'), ink: css('--ink') };
   }
   /* Share of peak -> bin; the top of the range is the green end. The breaks
@@ -95,7 +96,22 @@ window.WL_OVERTIME = function (cfg) {
      brown -- a legend failing to say anything rather than a map with nothing
      to say. */
   const BINS = D.bins;
+  /* Colour says how many students are there; the panel and the table say what
+     that is against the region's own best year. Share was doing both jobs and
+     did the first one badly: it asks the reader to hold an invisible
+     reference year, different for every region, before the colour means
+     anything. With a fixed count scale the map simply drains as the years
+     pass, which is the decline itself rather than a ratio standing in for it. */
+  const HEADS = D.heads || null;
+  const short = (v) => (v >= 1e6 ? (v / 1e6).toFixed(v % 1e6 ? 1 : 0) + 'M'
+                                 : Math.round(v / 1e3) + 'k');
   function colorFor(iso) {
+    if (HEADS) {
+      const n = at(iso);
+      if (n == null) return COL.nodata;
+      let j = 0; while (j < HEADS.length && n >= HEADS[j]) j++;
+      return COL.lvl[j];
+    }
     const v = share(iso);
     if (v == null) return COL.nodata;
     let k = 0; while (k < BINS.length && v >= BINS[k]) k++;
@@ -182,12 +198,18 @@ window.WL_OVERTIME = function (cfg) {
 
   function legend() {
     /* Generated from the breaks, so the words and the colours cannot disagree. */
-    const lab = [`under ${BINS[0]}%`]
-      .concat(BINS.slice(0, -1).map((v, i) => `${v}–${BINS[i + 1]}`))
-      .concat([`${BINS[BINS.length - 1]}% or more`]);
+    const lab = HEADS
+      ? [`under ${short(HEADS[0])}`]
+          .concat(HEADS.slice(0, -1).map((v, i) => `${short(v)}–${short(HEADS[i + 1])}`))
+          .concat([`${short(HEADS[HEADS.length - 1])} or more`])
+      : [`under ${BINS[0]}%`]
+          .concat(BINS.slice(0, -1).map((v, i) => `${v}–${BINS[i + 1]}`))
+          .concat([`${BINS[BINS.length - 1]}% or more`]);
     const tl = { counted: '', born: ' (projected)', modelled: ' (modelled)' }[tier()];
-    $('#kr-legend').innerHTML = `<span class="ttl">Students in ${YEARS[S.yi]}${tl}, as a share of ${esc(TXT.peakOf)}</span>` +
-      '<span class="swatches">' + COL.ramp.map((c, i) =>
+    const ttl = HEADS ? `Students in ${YEARS[S.yi]}${tl}`
+                      : `Students in ${YEARS[S.yi]}${tl}, as a share of ${esc(TXT.peakOf)}`;
+    $('#kr-legend').innerHTML = `<span class="ttl">${ttl}</span>` +
+      '<span class="swatches">' + (HEADS ? COL.lvl : COL.ramp).map((c, i) =>
         `<span class="sw"><i style="background:${c}"></i><span>${lab[i]}</span></span>`).join('') +
       `<span class="sw"><i style="background:${COL.nodata}"></i><span>${esc(TXT.nodata)}</span></span></span>`;
   }
@@ -294,7 +316,7 @@ window.WL_OVERTIME = function (cfg) {
 
   function renderTable() {
     const rows = D.provinces.map((p) => ({ ...p, v: at(p.iso), s: share(p.iso), pk: peak(p.iso) }))
-      .filter((r) => r.v != null).sort((a, b) => a.s - b.s);
+      .filter((r) => r.v != null).sort((a, b) => (HEADS ? b.v - a.v : a.s - b.s));
     $('#kr-tbl thead').innerHTML = `<tr><th style="text-align:left">${esc(TXT.Unit)}</th><th>Students ${YEARS[S.yi]}${{ counted: '', born: ' (proj.)', modelled: ' (model.)' }[tier()]}</th><th>${esc(TXT.peakCol)}</th><th>${esc(TXT.shareCol)}</th></tr>`;
     $('#kr-tbl tbody').innerHTML = rows.map((r) =>
       `<tr data-iso="${esc(r.iso)}"${r.iso === S.sel ? ' aria-selected="true"' : ''}>` +

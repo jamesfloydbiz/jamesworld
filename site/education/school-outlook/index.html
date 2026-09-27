@@ -22,6 +22,7 @@
   --ink:#131415; --ink-2:#4d4c48; --muted:#6b6963; --axis:#898781;
   --line:#e1e0d9; --line-2:#c9c8bf; --accent:#8a5f00; --accent-fill:#f2b705;
   --neg3:#814720; --neg2:#c08b63; --neg1:#eacab0; --mid:#ece7df; --pos1:#b5dba0; --pos2:#76a864; --pos3:#2e602a;
+  --lv1:#eef2e6; --lv2:#d3e3c4; --lv3:#adcd98; --lv4:#7fae6b; --lv5:#4e8446; --lv6:#265a28;
   --nodata:#d6d5ce; --map-edge:rgba(19,20,21,.16); --map-state:rgba(19,20,21,.62);
   --drv-move:#2a78d6; --drv-birth:#eb6834; --drv-imm:#1baf7a; --drv-obs:#8f8d86;
   --good:#2f6b1f; --bad:#8a4a18;
@@ -35,6 +36,7 @@
     --ink:#f4f4f1; --ink-2:#c3c2b7; --muted:#a3a198; --axis:#8f8d86;
     --line:#2c2c2a; --line-2:#3d3d3a; --accent:#f2b705; --accent-fill:#f2b705;
     --neg3:#f9a870; --neg2:#ae653a; --neg1:#643d20; --mid:#27241f; --pos1:#254e1c; --pos2:#48823b; --pos3:#89cc72;
+    --lv1:#23281f; --lv2:#31452b; --lv3:#456139; --lv4:#5d8449; --lv5:#7cae60; --lv6:#a5d585;
     --nodata:#262625; --map-edge:rgba(255,255,255,.10); --map-state:rgba(255,255,255,.55);
     --drv-move:#3987e5; --drv-birth:#d95926; --drv-imm:#199e70; --drv-obs:#8f8d86;
     --good:#9fd88a; --bad:#d9a066;
@@ -46,6 +48,7 @@
   --ink:#f4f4f1; --ink-2:#c3c2b7; --muted:#a3a198; --axis:#8f8d86;
   --line:#2c2c2a; --line-2:#3d3d3a; --accent:#f2b705; --accent-fill:#f2b705;
   --neg3:#f9a870; --neg2:#ae653a; --neg1:#643d20; --mid:#27241f; --pos1:#254e1c; --pos2:#48823b; --pos3:#89cc72;
+  --lv1:#23281f; --lv2:#31452b; --lv3:#456139; --lv4:#5d8449; --lv5:#7cae60; --lv6:#a5d585;
   --nodata:#262625; --map-edge:rgba(255,255,255,.10); --map-state:rgba(255,255,255,.55);
   --drv-move:#3987e5; --drv-birth:#d95926; --drv-imm:#199e70; --drv-obs:#8f8d86;
   --good:#9fd88a; --bad:#d9a066;
@@ -339,6 +342,11 @@ footer{font-size:12px; color:var(--muted)}
       <select id="scen"><option value="0">Continues at the 2021–25 pace</option><option value="1" selected>Stays at the 2025 level</option><option value="2">Drops to near zero</option></select></div>
     <div class="ctl"><label for="fert">Births</label>
       <select id="fert"><option value="1" selected>Keep falling 1.4% a year</option><option value="0">Stay at the 2025 rate</option></select></div>
+    <div class="ctl" id="pastmwrap"><label for="past-metric">Counted years show</label>
+      <select id="past-metric">
+        <option value="n">How many students</option>
+        <option value="pk">Share of its best year</option>
+      </select></div>
     <div class="ctl"><label for="metric-o">Color by</label>
       <select id="metric-o"><option value="pct">% change in students</option><option value="n">Students gained or lost</option><option value="drv">Biggest reason for decline</option></select></div>
     <div class="ctl"><label for="state">State</label><select id="state"><option value="">All states</option></select></div>
