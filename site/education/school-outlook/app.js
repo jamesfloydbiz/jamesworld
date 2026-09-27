@@ -31,7 +31,7 @@
   const stIdx = new Map();
   if (UH) UH.provinces.forEach((p) => stIdx.set(p.iso, p.iso));
 
-  const S = { geo: 'c', y: AXIS.indexOf(YEARS[2]), h: 2, s: 1, f: 1, mo: 'pct', st: '',
+  const S = { geo: 'c', y: AXIS.indexOf(YEARS[2]), h: 2, s: 1, f: 1, mo: 'lvl', st: '',
     sel: null, hover: null, minn: 500, dtype: 'reg', shown: 50, sort: null, dir: 1,
     scope: 'place' };
   const year = () => AXIS[S.y];
@@ -97,7 +97,16 @@
      to hold an invisible reference year, different for every state, in their
      head. Counts are the default now and share is a choice. */
   S.pm = 'n';
-  const HEADS = (UH && UH.heads) || [150e3, 400e3, 800e3, 1.6e6];   // five bands, from the data
+  /* Student-count bands, five of them, per geography. A state has hundreds of
+     thousands of pupils and the median county has four thousand, so one set of
+     thresholds cannot serve both: the state bands put 98% of counties in a
+     single colour, which is a map that has stopped saying anything. */
+  const HEADS_BY = {
+    st: (UH && UH.heads) || [150e3, 400e3, 800e3, 1.6e6],
+    c: [2e3, 6e3, 15e3, 50e3],
+    d: [400, 1500, 5e3, 20e3],
+  };
+  const heads = (g = S.geo) => HEADS_BY[g === 'st' ? 'st' : fam(g)];
   function pastValue(g, i) {
     return S.pm === 'pk' ? (g === 'st' ? uhShare(i) : placeShare(g, i))
                          : (g === 'st' ? uhVal(i) : placeVal(g, i));
@@ -109,8 +118,21 @@
       const b = UH.bins; let k = 0; while (k < b.length && v >= b[k]) k++;
       return COL.seq[k];
     }
-    let k = 0; while (k < HEADS.length && v >= HEADS[k]) k++;
+    return countColor(v, g);
+  }
+  function countColor(v, g) {
+    const H = heads(g); let k = 0; while (k < H.length && v >= H[k]) k++;
     return COL.lvl[k];
+  }
+  /* How many students a place is projected to have, rather than how much it
+     changes. Dragging the year used to swap the meaning of the colour
+     half-way along -- counts before 2024, percentage change after -- so the
+     reader had to notice and relearn the legend mid-drag. One unit the whole
+     way is the point of having one slider. */
+  function projCount(g, i) {
+    if (g === 'st') return uhVal(i);
+    const e = enr(g, i), p = chgPct(g, i);
+    return e == null || p == null ? null : Math.round(e * (1 + p / 100));
   }
   function uhShare(fips, yi = S.y) {
     const v = uhVal(fips, yi), pk = UH_PEAK[fips];
@@ -171,13 +193,15 @@
     if (i == null) return null;
     if (g === 'st' || pastView()) return pastValue(g, i);
     const m = metric();
-    return m === 'pct' ? chgPct(g, i) : m === 'n' ? students(g, i) : null;
+    return m === 'lvl' ? projCount(g, i)
+         : m === 'pct' ? chgPct(g, i) : m === 'n' ? students(g, i) : null;
   }
   function colorFor(g, i) {
     if (i == null) return COL.nodata;
     if (g === 'st' || pastView()) return pastColor(g, i);
     const m = metric();
     if (m === 'drv') { const r = mainReason(g, i); return r == null ? COL.nodata : COL.drv[r]; }
+    if (m === 'lvl') { const v = projCount(g, i); return v == null ? COL.nodata : countColor(v, g); }
     const k = binOf(valueFor(g, i), BINS[m]); return k < 0 ? COL.nodata : COL.div[k];
   }
 
@@ -357,8 +381,15 @@
   // ------------------------------------------------------------------ legend, headline
   // 400,000 -> "400k", 1,600,000 -> "1.6M". A legend is re-read on every
   // glance; seven digits is not something to re-read.
+  // District bands start at 400 pupils, so rounding everything to thousands
+  // turned the first two into "under 0k" and "0k-2k".
   const short = (v) => (v >= 1e6 ? (v / 1e6).toFixed(v % 1e6 ? 1 : 0) + 'M'
-                                 : Math.round(v / 1e3) + 'k');
+                     : v >= 1e3 ? (v / 1e3).toFixed(v % 1e3 ? 1 : 0) + 'k'
+                     : String(v));
+
+  const bandLabels = (H) => [`under ${short(H[0])}`]
+    .concat(H.slice(0, -1).map((v, k) => `${short(v)}–${short(H[k + 1])}`))
+    .concat([`${short(H[H.length - 1])} or more`]);
 
   function legend() {
     const m = metric(), y = YEARS[S.h]; let html = '';
@@ -372,12 +403,10 @@
       const lab = share
         ? [`under ${b[0]}%`].concat(b.slice(0, -1).map((v, k) => `${v}\u2013${b[k + 1]}`))
                             .concat([`${b[b.length - 1]}% or more`])
-        : [`under ${short(HEADS[0])}`]
-            .concat(HEADS.slice(0, -1).map((v, k) => `${short(v)}\u2013${short(HEADS[k + 1])}`))
-            .concat([`${short(HEADS[HEADS.length - 1])} or more`]);
+        : bandLabels(heads());
       const ttl = share
         ? `Students in ${year()}, as a share of that ${what}\u2019s highest year since ${since}`
-        : `Public school students in ${year()}`;
+        : `${counted() ? 'Public school' : 'Projected public school'} students in ${year()}`;
       $('#legend').innerHTML = `<span class="ttl">${ttl}</span>` +
         '<span class="swatches">' + (share ? COL.seq : COL.lvl).map((c, k) =>
           `<span class="sw"><i style="background:${c}"></i><span>${lab[k]}</span></span>`).join('') +
@@ -389,6 +418,19 @@
         `<span class="cat"><i style="background:${COL.drv[r]}"></i>${REASON[r]}</span>`).join('') +
         `<span class="cat"><i style="background:${COL.nodata}"></i>No forecast</span>`;
     } else {
+      if (m === 'lvl') {
+        /* One unit the whole way along the slider. Dragging the year used to
+           swap what the colour meant half-way -- counts before 2024, then
+           percentage change -- so the reader had to notice and relearn the
+           legend mid-drag. */
+        const lab2 = bandLabels(heads());
+        $('#legend').innerHTML =
+          `<span class="ttl">Projected public school students in ${y}${S.h > TESTED ? ' (beyond tested range)' : ''}</span>` +
+          '<span class="swatches">' + COL.lvl.map((c, k) =>
+            `<span class="sw"><i style="background:${c}"></i><span>${lab2[k]}</span></span>`).join('') +
+          `<span class="sw"><i style="background:${COL.nodata}"></i><span>No forecast</span></span></span>`;
+        return;
+      }
       const lab = { pct: ['≤ −25%', '−25 to −15', '−15 to −5', '−5 to +5', '+5 to +15', '+15 to +25', '≥ +25%'],
         n: ['≤ −10k', '−10k to −1k', '−1k to −100', '±100', '+100 to +1k', '+1k to +10k', '≥ +10k'] }[m];
       const far = S.h > TESTED ? ' (beyond tested range)' : '';
@@ -428,11 +470,33 @@
     }
     if (S.sel) {
       const { g, i } = S.sel, p = chgPct(g, i);
+      if (metric() === 'lvl') {
+        const v = projCount(g, i);
+        el.innerHTML = `<span class="k">${esc(placeName(g, i))}</span>` +
+          `<span class="v">${v == null ? '\u2014' : nf.format(v)}</span>` +
+          `<span class="s">students in ${y}${p == null ? '' : ` \u2014 <b class="${cls(p)}">${fmtPct(p)}</b> on today`}</span>`;
+        return;
+      }
       el.innerHTML = `<span class="k">${esc(placeName(g, i))}</span><span class="v ${cls(p)}">${fmtPct(p)}</span>` +
         `<span class="s">students, fall 2024 \u2192 fall ${y}</span>`;
       return;
     }
     const us = (S.f ? M.us_chg_f['S' + S.s + 'f'] : M.us_chg['S' + S.s])[S.h];
+    if (metric() === 'lvl') {
+      /* A count in a counted year and a percentage in a projected one made
+         the same box mean two different things as the reader dragged. It
+         leads with the figure either way now, with the change beside it. */
+      /* Take the national figure from the same series the counted years use.
+         Deriving it from the county model's own base instead puts a cliff at
+         the seam: 50.8M in 2019 (NCES, includes prekindergarten) against
+         40.3M in 2040 (CCD graded K-12), a step that is definitional rather
+         than real. */
+      const tot = UHL && UHL.total[S.y] != null ? UHL.total[S.y]
+                : Math.round(M.us_enr_2024 * (1 + us / 100));
+      el.innerHTML = `<span class="k">United States</span><span class="v">${nf.format(tot)}</span>` +
+        `<span class="s">public K\u201312 students in ${y} \u2014 <b class="${cls(us)}">${fmtPct(us)}</b> on today</span>`;
+      return;
+    }
     el.innerHTML = `<span class="k">United States</span><span class="v ${cls(us)}">${fmtPct(us)}</span>` +
       `<span class="s">public K\u201312 students by ${y}</span>`;
   }
@@ -717,6 +781,8 @@
   ];
   const COLS = [
     { k: 'name', t: 'Place', get: (g, i) => placeName(g, i), fmt: (v) => esc(v), txt: true },
+    // what the map is coloured by, so the table and the map agree
+    { k: 'lvl', t: 'Students YEAR', get: (g, i) => projCount(g, i), fmt: fmtN },
     { k: 'enr', t: 'Students 2024–25', get: (g, i) => enr(g, i), fmt: fmtN },
     { k: 'pct', t: 'Change by YEAR', get: (g, i) => chgPct(g, i), fmt: (v) => `<span class="${cls(v)}">${fmtPct(v)}</span>` },
     { k: 'n', t: 'Students ±', get: (g, i) => students(g, i), fmt: fmtStu },
@@ -734,10 +800,11 @@
     const past = pastView(); const set = past ? PAST_COLS : COLS;
     const key = past ? (S.sort && set.some((c) => c.k === S.sort) ? S.sort
                        : (S.pm === 'pk' ? 'pastpct' : 'pastn'))
-                     : (S.sort || (S.mo === 'n' ? 'n' : 'pct'));
+                     : (S.sort || (S.mo === 'n' ? 'n' : S.mo === 'lvl' ? 'lvl' : 'pct'));
     const col = set.find((c) => c.k === key) || set[0];
     const dir = S.sort ? S.dir : 1;
-    const flip = past && !S.sort && S.pm !== 'pk' ? -1 : 1;   // most students first
+    // a count reads largest-first; a change reads worst-first
+    const flip = !S.sort && ((past && S.pm !== 'pk') || (!past && S.mo === 'lvl')) ? -1 : 1;
     out.sort((a, b) => { const va = col.get(g, a), vb = col.get(g, b); if (va == null) return 1; if (vb == null) return -1;
       return (col.txt ? String(va).localeCompare(String(vb)) : va - vb) * dir * flip; });
     return out;
@@ -821,7 +888,7 @@
     const cols = past ? PAST_COLS : COLS;
     const key = past ? (S.sort && cols.some((c) => c.k === S.sort) ? S.sort
                        : (S.pm === 'pk' ? 'pastpct' : 'pastn'))
-                     : (S.sort || (S.mo === 'n' ? 'n' : 'pct'));
+                     : (S.sort || (S.mo === 'n' ? 'n' : S.mo === 'lvl' ? 'lvl' : 'pct'));
     $('#rank-title').textContent = past
       ? (S.pm === 'pk' ? `Furthest below their best, ${y}` : `Most students, ${y}`)
       : `Most affected by ${y}`;

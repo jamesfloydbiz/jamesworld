@@ -104,7 +104,8 @@ window.WL_OVERTIME = function (cfg) {
      pass, which is the decline itself rather than a ratio standing in for it. */
   const HEADS = D.heads || null;
   const short = (v) => (v >= 1e6 ? (v / 1e6).toFixed(v % 1e6 ? 1 : 0) + 'M'
-                                 : Math.round(v / 1e3) + 'k');
+                     : v >= 1e3 ? (v / 1e3).toFixed(v % 1e3 ? 1 : 0) + 'k'
+                     : String(v));
   function colorFor(iso) {
     if (HEADS) {
       const n = at(iso);
