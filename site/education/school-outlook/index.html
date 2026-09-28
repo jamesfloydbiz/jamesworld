@@ -85,6 +85,17 @@ select,input[type=search]{font:500 14px var(--sans); color:var(--ink); backgroun
 #qres li[aria-selected="true"],#qres li:hover{background:var(--line)}
 #qres small{color:var(--muted)}
 .found{background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:14px 16px}
+/* The static summary. It is real content, not a fallback, so it is styled to be
+   read rather than hidden behind a media query or a noscript block. */
+.summary{background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:14px 16px; margin-top:14px}
+.summary h2{font-size:15px; margin:0 0 10px}
+.summary .sum-block + .sum-block{margin-top:14px; padding-top:14px; border-top:1px solid var(--line)}
+.summary h3{margin:0 0 4px}
+.summary p{margin:0; color:var(--ink-2); max-width:78ch}
+.summary ul{margin:6px 0 0; padding-left:18px; color:var(--ink-2); max-width:78ch}
+.summary li + li{margin-top:3px}
+.summary b{color:var(--ink); font-variant-numeric:tabular-nums}
+.summary .note{margin-top:12px; font-size:12.5px; color:var(--muted)}
 .found h2{margin:0 0 8px; font-size:15px}
 .found ul{margin:0; padding-left:18px; display:grid; gap:5px; font-size:14px; color:var(--ink-2)}
 .found li b{color:var(--ink); font-variant-numeric:tabular-nums}
@@ -408,6 +419,45 @@ footer{font-size:12px; color:var(--muted)}
       <div class="tablewrap"><table id="kr-tbl"><thead></thead><tbody></tbody></table></div>
     </section>
   </div>
+
+  <!-- Static summary of what the maps say. The maps themselves are a canvas and
+       every figure in them lives in the data files, so with JavaScript off -- or
+       to a crawler, or to anything reading this page rather than driving it --
+       the page otherwise carries controls and no findings. This block is
+       regenerated from the emitted data by pipeline/55_findings.py on every
+       build, so it cannot drift from what the maps draw. Do not edit by hand. -->
+  <section class="summary" id="summary" aria-labelledby="summary-h">
+    <h2 id="summary-h">What these maps show</h2>
+    <!-- BEGIN_FINDINGS -->
+    <div class="sum-block">
+      <h3>United States</h3>
+      <p>Public school enrolment counted from 1899 to 2024, then projected to 2055.
+        It stood at 15,503,110 students in 1899, peaked at 50,796,445 in 2019, and was
+        49,387,403 in 2024.</p>
+      <ul>
+        <li>The projection puts 2055 at <b>43,176,656</b> students, −12.6% against 2024.</li>
+        <li>By 2040, <b>2,952 of 3,139 counties</b> are projected to have
+          fewer students than today; 184 to have more.</li>
+        <li>27 of the 51 states have never since matched the enrolment they
+          reached before 1980.</li>
+      </ul>
+    </div>
+    <div class="sum-block">
+      <h3>South Korea</h3>
+      <p>Students in grades 1&ndash;12, counted from 1965 to 2026, then projected to
+        2050 from children who are already born and, past 2032, from the birth rate
+        the register shows today.</p>
+      <ul>
+        <li>Enrolment peaked at 9,990,902 in 1982. In 2026 it was 4,837,512,
+          −51.6% on that peak.</li>
+        <li>By 2050 the projection puts it at <b>2,495,556</b>, −75.0% on the peak.</li>
+        <li>10 of the 17 provinces are already below half the students they
+          once had.</li>
+      </ul>
+    </div>
+    <p class="note">Counted figures come from the sources listed under each map; the projected ones are this page’s own model, not an official forecast. Every figure here is read from the same data the map draws, so the two cannot disagree.</p>
+    <!-- END_FINDINGS -->
+  </section>
 
   <footer id="foot"></footer>
 </div>

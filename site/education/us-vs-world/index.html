@@ -183,6 +183,14 @@ footer{font-size:12px; color:var(--muted)}
 @media (max-width: 1040px){ .stage{grid-template-columns:minmax(0,1fr)} }
 @media (max-width: 520px){ .age{padding:8px 10px; font-size:13px} .big .n{font-size:26px} }
 @media (prefers-reduced-motion: reduce){ *{transition:none!important} }
+/* The static summary. Real content, not a fallback, so it is styled to be read. */
+.summary{background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:14px 16px; margin-top:14px}
+.summary h2{font-size:15px; margin:0 0 10px}
+.summary p{margin:0; color:var(--ink-2); max-width:78ch}
+.summary ul{margin:6px 0 0; padding-left:18px; color:var(--ink-2); max-width:78ch}
+.summary li + li{margin-top:3px}
+.summary b{color:var(--ink); font-variant-numeric:tabular-nums}
+.summary .note{margin-top:12px; font-size:12.5px; color:var(--muted)}
 </style>
 
 <div class="app">
@@ -257,6 +265,32 @@ footer{font-size:12px; color:var(--muted)}
       <div id="overview"></div>
     </div>
   </details>
+
+  <!-- Static summary of what the map says. The map is a canvas and every score
+       lives in data_world.js, so with JavaScript off -- or to a crawler, or to
+       anything reading this page rather than driving it -- the page otherwise
+       carries controls and no findings. Regenerated from the emitted data by
+       pipeline/55_findings.py on every build. Do not edit by hand. -->
+  <section class="summary" id="summary" aria-labelledby="summary-h">
+    <h2 id="summary-h">What this map shows</h2>
+    <!-- BEGIN_FINDINGS -->
+    <p>16 sets of results from 5 international assessments
+      (ICILS, PIAAC, PIRLS, PISA, TIMSS), covering pupils from grade&nbsp;4 to adults, in up to 91 countries.
+      Countries are ranked by mean score. Because the number of countries differs from test to
+      test, the best and worst showings below are the U.S. placing as a share of the field, not
+      the raw rank.</p>
+    <ul>
+      <li>The United States does best on <b>PISA 2025: science, age 15</b> &mdash; 13th of
+        91.</li>
+      <li>It does worst on <b>PIAAC 2023: numeracy, ages 16-24</b> &mdash; 29th of
+        31.</li>
+      <li>The placing slips with age. On the grade&nbsp;4 tests the U.S. finishes ahead of <b>70%</b> of the countries sitting them; on the tests of 16&ndash;24 year olds, ahead of <b>22%</b>.</li>
+    </ul>
+    <p class="note">A rank is not a verdict: on most of these tests several countries sit within the
+      margin of error of the United States, and the map rings them. Every figure here is read from the
+      same data the map draws, so the two cannot disagree.</p>
+    <!-- END_FINDINGS -->
+  </section>
 
   <section class="method" id="method"></section>
   <footer id="foot"></footer>
