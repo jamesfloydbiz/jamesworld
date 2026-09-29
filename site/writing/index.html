@@ -4566,6 +4566,7 @@ Tickets below</p>
         </ul>
 
         <!-- Poems — handwritten grid merged in from the old /poems/ page -->
+        <p class="page-subtitle" id="poems-subtitle" hidden>stream of thought poetry, straight from the heart</p>
         <div class="poems-grid" id="poems-grid">
 
           <details class="poem-card poem-card--text">
@@ -7882,6 +7883,8 @@ No longer are people so lively</div>
       liControls.hidden = name !== 'posts';
       if (rhShelf) rhShelf.hidden = name !== 'rabbit-holes';
       if (poemsGrid) poemsGrid.hidden = name !== 'poems';
+      var poemsSub = document.getElementById('poems-subtitle');
+      if (poemsSub) poemsSub.hidden = name !== 'poems';
       // CTAs — Substack (subscribe) for Updates/Letters, LinkedIn for posts.
       ctaLetters.hidden = !isSubstack;
       ctaPosts.hidden = name !== 'posts';
