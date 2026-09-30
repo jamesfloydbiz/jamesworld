@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>RA Dashboard · Founders School</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<link rel="stylesheet" href="css/brand.css">
+</head>
+<body>
+<div id="demoflag" class="demo-flag hidden">DEMO MODE — passcode is “demo”. Sign-outs made in another tab of this browser appear here.</div>
+<header class="bar">
+  <div class="brand"><i>FS</i><div>Founders School<small>Student Life · Sign-out board</small></div></div>
+  <div class="who hidden" id="who"><span id="clock"></span><button id="lock">Lock</button></div>
+</header>
+
+<div class="gate" id="gate">
+  <div class="kicker">RA access</div><h2>Enter passcode</h2>
+  <p class="sub">Student locations are private to Student Life.</p>
+  <div id="gateErr"></div>
+  <input class="field" id="pin" type="password" placeholder="Passcode" autocomplete="current-password">
+  <div style="margin-top:12px"><button class="btn" id="unlock">Open board</button></div>
+</div>
+
+<main class="wrap wide hidden" id="board">
+  <div id="demoTools" class="hidden" style="margin-bottom:12px;display:flex;gap:8px"><button class="btn small" id="seed">Load demo activity</button><button class="btn small ghost" id="reset">Reset demo</button></div>
+  <div class="stats" id="stats"></div>
+  <div class="dash">
+    <div id="map"></div>
+    <div>
+      <div class="tabs"><button class="tab sel" data-tab="live">Live</button><button class="tab" data-tab="today">Today</button><button class="tab" data-tab="roster">Roster</button></div>
+      <div id="panel"></div>
+    </div>
+  </div>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="js/config.js"></script>
+<script src="js/api.js"></script>
+<script>
+(function () {
+  const C = FS_CONFIG, API = FS_API, { esc, time, minsLeft, phase, modeLabel } = FS;
+  const $ = (s) => document.querySelector(s);
+  let pin = sessionStorage.getItem('fs_ra_pin') || '', data = { signouts: [], students: [] }, tab = 'live', map, layer;
+  if (API.demo) { $('#demoflag').classList.remove('hidden'); $('#demoTools').classList.remove('hidden'); }
+
+  async function unlock(p) {
+    try { data = await API.dash(p); pin = p; sessionStorage.setItem('fs_ra_pin', p); show(); }
+    catch (e) { pin = ''; sessionStorage.removeItem('fs_ra_pin'); $('#gate').classList.remove('hidden'); $('#gateErr').innerHTML = `<div class="err">${esc(e.message)}</div>`; }
+  }
+  $('#unlock').onclick = () => unlock($('#pin').value);
+  $('#pin').onkeydown = (e) => { if (e.key === 'Enter') unlock($('#pin').value); };
+  $('#lock').onclick = () => { sessionStorage.removeItem('fs_ra_pin'); location.reload(); };
+  $('#seed').onclick = async () => { await API.demoSeed(); draw.fitted = false; poll(); };
+  $('#reset').onclick = async () => { await API.demoReset(); poll(); };
+  if (pin) unlock(pin);
+
+  function show() {
+    $('#gate').classList.add('hidden'); $('#board').classList.remove('hidden'); $('#who').classList.remove('hidden');
+    if (!map) {
+      map = L.map('map').setView([C.campus.lat, C.campus.lng], 13);
+      L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(map);
+      layer = L.layerGroup().addTo(map);
+      L.circleMarker([C.campus.lat, C.campus.lng], { radius: 9, color: '#fff', weight: 3, fillColor: '#0000EF', fillOpacity: 1 }).addTo(map).bindTooltip('Campus');
+      setInterval(poll, C.pollMs);
+    }
+    draw();
+  }
+  async function poll() { if (!pin) return; try { data = await API.dash(pin); draw(); } catch (e) {} }
+
+  const COLORS = { pending: '#9CA3AF', active: '#0E9F6E', soon: '#F59E0B', overdue: '#DC2626' };
+  const LABEL = { pending: 'Waiting on buddy', active: 'Out', soon: 'Due soon', overdue: 'Overdue' };
+  const STATUS_TXT = { returned: 'Returned', declined: 'Declined', expired: 'Expired', cancelled: 'Cancelled' };
+
+  function draw() {
+    const open = data.signouts.filter((r) => r.status === 'pending' || r.status === 'active');
+    const ph = (r) => phase(r);
+    const out = open.filter((r) => r.status === 'active');
+    const cnt = (k) => open.filter((r) => ph(r) === k).length;
+    const students = out.length * 2;
+    $('#stats').innerHTML = `
+      <div class="stat"><b>${students}</b><span>Students out</span></div>
+      <div class="stat"><b>${cnt('pending')}</b><span>Waiting on buddy</span></div>
+      <div class="stat ${cnt('soon') ? 'warn' : ''}"><b>${cnt('soon')}</b><span>Due soon</span></div>
+      <div class="stat ${cnt('overdue') ? 'bad' : ''}"><b>${cnt('overdue')}</b><span>Overdue</span></div>`;
+    document.title = (cnt('overdue') ? `(${cnt('overdue')} overdue) ` : '') + 'RA Dashboard · Founders School';
+    $('#clock').textContent = new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+
+    layer.clearLayers(); const pts = [[C.campus.lat, C.campus.lng]];
+    open.forEach((r) => {
+      const k = ph(r), ll = [r.dest.lat, r.dest.lng]; pts.push(ll);
+      L.polyline([[C.campus.lat, C.campus.lng], ll], { color: COLORS[k], weight: 2, dashArray: '5 6', opacity: .7 }).addTo(layer);
+      L.circleMarker(ll, { radius: 10, color: '#fff', weight: 3, fillColor: COLORS[k], fillOpacity: 1 }).addTo(layer)
+        .bindTooltip(`<b>${esc(r.student.name)} + ${esc(r.buddy.name)}</b><br>${esc(r.dest.name)}${r.due_at ? '<br>Back by ' + time(r.due_at) : ''}`);
+    });
+    if (!draw.fitted && pts.length > 1) { map.fitBounds(pts, { padding: [40, 40], maxZoom: 15 }); draw.fitted = true; }
+
+    const panel = $('#panel');
+    if (tab === 'live') {
+      const order = { overdue: 0, soon: 1, active: 2, pending: 3 };
+      const rows = [...open].sort((a, b) => order[ph(a)] - order[ph(b)]);
+      panel.innerHTML = rows.map(card).join('') || '<div class="empty">Nobody is signed out. 🎉</div>';
+    } else if (tab === 'today') {
+      const cut = new Date(); cut.setHours(0, 0, 0, 0);
+      const rows = data.signouts.filter((r) => new Date(r.created_at) >= cut && !(r.status === 'pending' || r.status === 'active'));
+      panel.innerHTML = rows.map((r) => `<div class="so"><div class="top"><div><h3>${esc(r.student.name)} + ${esc(r.buddy.name)}</h3>
+        <div class="line">${esc(r.dest.name)} · ${esc(r.purpose)}</div></div><span class="badge">${STATUS_TXT[r.status] || r.status}</span></div>
+        <div class="line" style="margin-top:6px">Left ${time(r.created_at)}${r.returned_at ? ' · back ' + time(r.returned_at) : ''}${r.returned_at && r.due_at ? ` (${Math.round((new Date(r.returned_at) - new Date(r.due_at)) / 60000) > 0 ? Math.round((new Date(r.returned_at) - new Date(r.due_at)) / 60000) + ' min late' : 'on time'})` : ''}</div></div>`).join('') || '<div class="empty">Nothing closed out yet today.</div>';
+    } else {
+      panel.innerHTML = `<div class="card" style="margin-bottom:14px"><div class="label" style="margin-top:0">Add student</div>
+        <input class="field" id="nn" placeholder="Full name"><div style="height:8px"></div><input class="field" id="ng" placeholder="Grade (optional)">
+        <div style="margin-top:10px"><button class="btn small" id="add">Add</button></div></div>
+        <div class="card">${data.students.map((s) => `<div class="roster-row"><span>${esc(s.name)} <small style="color:var(--grey);font-weight:500">${esc(s.grade || '')}</small></span><button class="link" data-rm="${s.id}">Remove</button></div>`).join('') || '<div class="empty">No students yet.</div>'}</div>`;
+      $('#add').onclick = async () => { const n = $('#nn').value.trim(); if (!n) return; await API.addStudent(pin, n, $('#ng').value.trim()); poll(); };
+    }
+  }
+  function card(r) {
+    const k = phase(r), left = r.due_at ? minsLeft(r.due_at) : null;
+    return `<div class="so ${k}"><div class="top"><div><h3>${esc(r.student.name)} + ${esc(r.buddy.name)}</h3>
+      <div class="line">${esc(r.dest.name)} · ${esc(r.purpose)} · ${modeLabel[r.mode]}</div></div><span class="badge ${k}">${LABEL[k]}</span></div>
+      <div class="line" style="margin-top:8px">${r.status === 'pending'
+        ? `Asked ${time(r.created_at)} · est. ${r.travel_min * 2 + r.stay_min} min total`
+        : `Left ${time(r.accepted_at)} · back by <b>${time(r.due_at)}</b> · ${left >= 0 ? left + ' min left' : -left + ' min late'}`}</div>
+      <div class="line">${esc(r.dest.address || '')}</div>
+      ${r.status === 'active' ? `<div class="actions"><button class="btn small green" data-back="${r.id}">Mark back</button></div>` : ''}</div>`;
+  }
+
+  document.addEventListener('click', async (e) => {
+    const t = e.target.closest('.tab'); if (t) { tab = t.dataset.tab; document.querySelectorAll('.tab').forEach((x) => x.classList.toggle('sel', x === t)); draw(); return; }
+    const b = e.target.closest('[data-back]'); if (b) { await API.raBack(pin, b.dataset.back); poll(); }
+    const rm = e.target.closest('[data-rm]'); if (rm && confirm('Remove this student from the roster?')) { await API.removeStudent(pin, rm.dataset.rm); poll(); }
+  });
+  setInterval(() => { if (pin && data) draw(); }, 30000);
+})();
+</script>
+</body>
+</html>

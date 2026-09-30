@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>QR Poster · Founders School</title>
+<link rel="stylesheet" href="css/brand.css">
+<style>
+  body{background:#fff;display:grid;place-items:center;min-height:100vh;padding:24px}
+  .poster{width:min(640px,100%);text-align:center}
+  .poster .tag{font-weight:800;letter-spacing:.2em;font-size:13px;color:var(--blue);text-transform:uppercase}
+  .poster h1{font-size:clamp(40px,9vw,64px);margin:10px 0 6px}
+  .poster p{color:var(--grey);font-size:18px;margin-bottom:26px}
+  #qr{display:inline-block;padding:22px;border:6px solid var(--blue);border-radius:28px}
+  .steps{display:flex;justify-content:center;gap:22px;margin-top:26px;font-weight:700;font-size:15px;flex-wrap:wrap}
+  .steps span b{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--blue);color:#fff;margin-right:8px;font-size:13px}
+  .url{margin-top:18px;font-size:13px;color:var(--faint)}
+  .tools{margin-top:30px}.tools input{width:100%;max-width:420px;margin-bottom:8px}
+  @media print{.tools{display:none}}
+</style>
+</head>
+<body>
+<div class="poster">
+  <div class="tag">Founders School</div>
+  <h1>Heading out?<br>Sign out here.</h1>
+  <p>Scan with your phone camera.</p>
+  <div id="qr"></div>
+  <div class="steps"><span><b>1</b>Who you are</span><span><b>2</b>Your buddy</span><span><b>3</b>Where &amp; why</span></div>
+  <div class="url" id="url"></div>
+  <div class="tools"><input class="field" id="base" placeholder="Public URL of the sign-out app"><br><button class="btn small" id="print">Print</button></div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+  const def = location.href.replace(/qr\.html.*$/, '');
+  const inp = document.getElementById('base'); inp.value = def;
+  function draw() {
+    const u = inp.value.trim(); const el = document.getElementById('qr'); el.innerHTML = '';
+    new QRCode(el, { text: u, width: 280, height: 280, colorDark: '#0000EF', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.H });
+    document.getElementById('url').textContent = u;
+  }
+  inp.oninput = draw; draw();
+  document.getElementById('print').onclick = () => print();
+</script>
+</body>
+</html>
