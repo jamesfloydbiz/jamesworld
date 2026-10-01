@@ -60,10 +60,19 @@
   function show() {
     $('#gate').classList.add('hidden'); $('#board').classList.remove('hidden'); $('#who').classList.remove('hidden');
     if (!map) {
-      map = L.map('map').setView([C.campus.lat, C.campus.lng], 13);
+      map = L.map('map').setView([C.house.lat, C.house.lng], 13);
       L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(map);
       layer = L.layerGroup().addTo(map);
-      homeMarker = L.marker([C.campus.lat, C.campus.lng], { icon: homeIcon(0), zIndexOffset: 500 }).addTo(map).bindTooltip('The house');
+      homeMarker = L.marker([C.house.lat, C.house.lng], { icon: homeIcon(0), zIndexOffset: 500 }).addTo(map)
+        .bindTooltip(`<b>${esc(C.house.name)}</b><br>${esc(C.house.address || '')}`);
+      if (C.school) {
+        // Orientation only. Nobody signs out to go to school, so it carries no count and no line.
+        L.marker([C.school.lat, C.school.lng], { zIndexOffset: 450, icon: L.divIcon({ className: '',
+          // 37 Wall St and 180 Maiden Ln are ~450m apart, so at the default zoom the chip
+          // lands under the house pin. Anchor it below its point instead of centred on it.
+          iconSize: [52, 26], iconAnchor: [26, -8], html: '<div class="m-school">School</div>' }) })
+          .addTo(map).bindTooltip(`<b>${esc(C.school.name)}</b><br>${esc(C.school.address || '')}`);
+      }
       setInterval(poll, C.pollMs);
     }
     draw();
@@ -99,7 +108,7 @@
     if (!prof) return null;                       // transit: no honest geometry to draw
     if (!routes.has(r.id)) {
       routes.set(r.id, null);
-      GEO.routeLine(prof, { lat: C.campus.lat, lng: C.campus.lng }, { lat: r.dest.lat, lng: r.dest.lng })
+      GEO.routeLine(prof, { lat: C.house.lat, lng: C.house.lng }, { lat: r.dest.lat, lng: r.dest.lng })
         .then((ln) => { routes.set(r.id, ln); if (data) draw(); })   // one redraw when it lands
         .catch(() => {});
     }
@@ -119,7 +128,7 @@
   function tickMovers() {
     movers.forEach((rec) => {
       const L0 = leg(rec.r); if (!L0) return;
-      const line = routes.get(rec.r.id) || [[C.campus.lat, C.campus.lng], [rec.r.dest.lat, rec.r.dest.lng]];
+      const line = routes.get(rec.r.id) || [[C.house.lat, C.house.lng], [rec.r.dest.lat, rec.r.dest.lng]];
       const at = GEO.pointAt(line, L0.frac); if (!at) return;
       rec.marker.setLatLng(at);
       const away = Math.max(0, Math.round((L0.phase === 'out' ? 1 - L0.frac : L0.frac) * (rec.r.travel_min || 0)));
@@ -161,11 +170,12 @@
     document.title = (cnt('overdue') ? `(${cnt('overdue')} overdue) ` : '') + 'RA Dashboard · Founders School';
     $('#clock').textContent = new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
 
-    layer.clearLayers(); const pts = [[C.campus.lat, C.campus.lng]];
+    layer.clearLayers(); const pts = [[C.house.lat, C.house.lng]];
+    if (C.school) pts.push([C.school.lat, C.school.lng]);
     open.forEach((r) => {
       const k = ph(r), ll = [r.dest.lat, r.dest.lng]; pts.push(ll);
       const path = ensureRoute(r);
-      L.polyline(path || [[C.campus.lat, C.campus.lng], ll],
+      L.polyline(path || [[C.house.lat, C.house.lng], ll],
         { color: COLORS[k], weight: path ? 3 : 2, dashArray: path ? '6 7' : '2 7', opacity: path ? .75 : .5 })
         .addTo(layer)
         .bindTooltip(path ? `${esc(r.student.name.split(' ')[0])} \u2192 ${esc(r.dest.name)}`
@@ -183,7 +193,7 @@
       if (!movers.has(r.id)) {
         const kind = moverKind(r);
         const rec = { kind, r,
-          marker: L.marker([C.campus.lat, C.campus.lng], { zIndexOffset: 400, icon: moverIcon(kind) }).addTo(map) };
+          marker: L.marker([C.house.lat, C.house.lng], { zIndexOffset: 400, icon: moverIcon(kind) }).addTo(map) };
         movers.set(r.id, rec);
         ensureRoute(r);          // shared with the dotted line; straight line until it lands
       }

@@ -4,8 +4,12 @@ window.FS_CONFIG = {
   supabaseUrl: '',   // e.g. https://xxxx.supabase.co
   supabaseKey: '',   // the publishable / anon key (safe to ship; tables are locked by RLS)
 
-  // Approximate: 9 Maiden Lane, Financial District, Manhattan. Nudge lat/lng if the pin is off.
-  campus: { name: '9 Maiden Lane', lat: 40.7093, lng: -74.0088 },
+  // The residence. Every sign-out starts and ends here, and it is the origin for every
+  // travel estimate, so this is the one coordinate worth getting right.
+  house:  { name: 'The house',       address: '37 Wall Street, Manhattan',  lat: 40.706470, lng: -74.010138 },
+  // The school day happens here. It is drawn on the board for orientation -- going to school
+  // is not a sign-out -- so it needs no travel times.
+  school: { name: 'Founders School', address: '180 Maiden Lane, Manhattan', lat: 40.705260, lng: -74.005463 },
 
   // Favourite nearby spots shown as one-tap buttons. Edit freely.
   quickSpots: [

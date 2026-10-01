@@ -12,7 +12,7 @@
   }
 
   async function search(q) {
-    const url = `https://photon.komoot.io/api/?q=${encodeURIComponent(q)}&limit=6&lang=en&lat=${C.campus.lat}&lon=${C.campus.lng}`;
+    const url = `https://photon.komoot.io/api/?q=${encodeURIComponent(q)}&limit=6&lang=en&lat=${C.house.lat}&lon=${C.house.lng}`;
     const r = await fetch(url); if (!r.ok) throw new Error('search failed');
     const j = await r.json();
     return j.features.map((f) => {
@@ -66,7 +66,7 @@
   // One-way estimates in minutes for each mode. Transit + car are adjustments on the routed numbers
   // (no live transit/traffic data on free tier) — the UI labels them as estimates.
   async function estimate(to) {
-    const from = C.campus;
+    const from = C.house;
     const straight = haversineKm(from, to);
     let walk, car, source = 'route';
     try {

@@ -242,7 +242,7 @@
     if (miniMap) { miniMap.remove(); miniMap = null; }
     miniMap = L.map('mini', { zoomControl: false, attributionControl: false, dragging: false, scrollWheelZoom: false, touchZoom: false, doubleClickZoom: false });
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(miniMap);
-    const a = [C.campus.lat, C.campus.lng], b = [d.dest.lat, d.dest.lng];
+    const a = [C.house.lat, C.house.lng], b = [d.dest.lat, d.dest.lng];
     L.circleMarker(a, { radius: 7, color: '#fff', weight: 2, fillColor: '#0000EF', fillOpacity: 1 }).addTo(miniMap);
     L.circleMarker(b, { radius: 7, color: '#fff', weight: 2, fillColor: '#DC2626', fillOpacity: 1 }).addTo(miniMap);
     L.polyline([a, b], { color: '#0000EF', weight: 3, dashArray: '6 6' }).addTo(miniMap);
@@ -273,7 +273,7 @@
       <dl class="meta"><dt>With</dt><dd>${esc(other.name)}</dd><dt>At</dt><dd>${esc(o.dest.name)}<div class="note" style="margin:0">${esc(o.dest.address || '')}</div></dd>
         <dt>For</dt><dd>${esc(o.purpose)}</dd><dt>Getting there</dt><dd>${modeLabel[o.mode]} · ${o.travel_min} min each way</dd></dl>
       <div style="margin-top:22px"><button class="btn green" data-act="back">We're back</button>
-      <p class="note" style="text-align:center">Tap when you're both back on campus. Stay with your buddy the whole time.</p></div>`;
+      <p class="note" style="text-align:center">Tap when you're both back at the house. Stay with your buddy the whole time.</p></div>`;
     tick();
   }
 

@@ -166,3 +166,13 @@ h2{font-size:24px;margin-bottom:6px}
   .m-move::after { animation: none; }
   .leaflet-marker-icon:has(.m-move) { transition: none; }
 }
+
+/* The school. A second fixed place, deliberately quieter than the house: nobody
+   signs out to go there, so it orients the map rather than competing with it. */
+.m-school {
+  min-width: 44px; height: 26px; padding: 0 9px; border-radius: 7px;
+  background: #fff; color: var(--ink, #16161a); border: 2px solid var(--ink, #16161a);
+  box-shadow: 0 2px 8px rgba(0,0,0,.2);
+  display: grid; place-content: center;
+  font: 800 10px/1 'Inter', system-ui, sans-serif; letter-spacing: .1em; text-transform: uppercase;
+}
