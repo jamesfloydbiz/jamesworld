@@ -223,9 +223,6 @@
       ${d.est ? `<div class="est">${['walk', 'transit', 'car'].map((m) => `<button class="tile ${d.mode === m ? 'sel' : ''}" data-m="${m}"><b>${d.est.tiles[m]}</b><small>min · ${m === 'walk' ? 'Walk' : m === 'transit' ? 'Subway/bus' : 'Car'}</small></button>`).join('')}</div>
         <div class="note">Estimates${d.est.source === 'straight-line' ? ' (map service unreachable — rough straight-line guess)' : ' from map routing; subway and car times are approximate'}.</div>`
         : d.estLoading || !d.est ? '<div class="skeleton"></div>' : ''}
-      <div class="label">Getting a ride?</div>
-      <div class="chips">${(C.rideKinds || []).map((k) => `<button class="chip ${d.ride === k.key ? 'sel' : ''}" data-ride="${k.key}">${esc(k.label)}</button>`).join('')}</div>
-      <div class="note">The RA board groups trips by this, so the shuttle run can be seen at a glance.</div>
       <div class="label">Time there</div>
       <div class="stepper"><button data-stay="-">−</button><b>${d.stay} min</b><button data-stay="+">+</button></div>
       ${due ? `<div class="hero" style="margin-top:22px"><p>Expected back by</p><div class="big">${due.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}</div><p>${tm} min there + ${d.stay} there + ${tm} min back</p></div>` : ''}`;
@@ -236,7 +233,6 @@
     app.onclick = (e) => {
       const m = e.target.closest('[data-m]'), s = e.target.closest('[data-stay]');
       if (m) { d.mode = m.dataset.m; viewReview(); }
-      const rk = e.target.closest('[data-ride]'); if (rk) { d.ride = rk.dataset.ride; viewReview(); }
       if (s) { d.stay = Math.min(C.stayMax, Math.max(C.stayMin, d.stay + (s.dataset.stay === '+' ? C.stayStep : -C.stayStep))); viewReview(); }
     };
     if (miniMap) { miniMap.remove(); miniMap = null; }
@@ -252,8 +248,16 @@
   async function send() {
     const d = S.d; if (S.sending) return; S.sending = true; S.err = ''; viewReview();
     try {
+      /* A practice suggests how people usually get there, but the student has just said how
+         THEY are getting there. Without the old picker the two could disagree — someone taking
+         the subway to soccer would still have been filed under the shuttle — so the chosen mode
+         wins, and the practice's ride only survives when the mode agrees it is a vehicle. */
+      const VEHICLES = ['shuttle', 'rideshare', 'parent'];
+      const ride = d.mode === 'walk' ? 'walkOver'
+                 : d.mode === 'transit' ? 'transitPass'
+                 : VEHICLES.includes(d.ride) ? d.ride : 'rideshare';
       await API.create({ studentId: S.me.id, buddyId: d.buddy.id, dest: d.dest, purpose: d.purpose, mode: d.mode,
-                         ride: d.ride, practice: d.practice, travelMin: d.est.tiles[d.mode], stayMin: d.stay });
+                         ride, practice: d.practice, travelMin: d.est.tiles[d.mode], stayMin: d.stay });
       S.flow = false;
     } catch (e) { S.err = e.message; }
     S.sending = false; S.lastJson = ''; await refresh(); if (S.flow) viewReview();
