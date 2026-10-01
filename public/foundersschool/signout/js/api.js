@@ -49,7 +49,7 @@
     const shape = (s, r) => ({
       id: r.id, status: r.status, student: nm(s, r.student_id), buddy: nm(s, r.buddy_id),
       dest: { name: r.dest_name, address: r.dest_address, lat: r.lat, lng: r.lng },
-      purpose: r.purpose, mode: r.mode, travel_min: r.travel, stay_min: r.stay,
+      purpose: r.purpose, mode: r.mode, ride: r.ride || null, practice: r.practice || null, travel_min: r.travel, stay_min: r.stay,
       created_at: r.created_at, accepted_at: r.accepted_at, due_at: r.due_at, returned_at: r.returned_at,
     });
     const involves = (r, id) => r.student_id === id || r.buddy_id === id;
@@ -63,14 +63,17 @@
       // Demo-only helpers: fill the board with realistic activity, or wipe it.
       demoSeed: () => wrap((s) => {
         const id = (first) => s.students.find((t) => t.name.startsWith(first)).id, min = (m) => new Date(Date.now() + m * 60000).toISOString();
-        const mk = (a, b, dest, addr, lat, lng, purpose, mode, travel, stay, status, createdAgo, dueIn, retAgo) => ({
+        const mk = (a, b, dest, addr, lat, lng, purpose, mode, travel, stay, status, createdAgo, dueIn, retAgo, ride, practice) => ({
           id: uid(), student_id: id(a), buddy_id: id(b), dest_name: dest, dest_address: addr, lat, lng, purpose, mode, travel, stay, status,
+          ride: ride || null, practice: practice || null,
           created_at: min(-createdAgo), accepted_at: status === 'pending' ? null : min(-createdAgo + 1),
           due_at: status === 'pending' ? null : min(dueIn), returned_at: retAgo != null ? min(-retAgo) : null });
         s.signouts = [
           mk('Maya', 'Jordan', 'Fulton Center', 'Broadway & Fulton St, Manhattan', 40.7103, -74.0091, 'Food', 'walk', 5, 25, 'active', 12, 28),
           mk('Amara', 'Theo', 'Brookfield Place', '230 Vesey St, Manhattan', 40.7129, -74.0150, 'Errand', 'walk', 9, 15, 'active', 34, 6),
-          mk('Sofia', 'Noah', 'Battery Park', 'Battery Pl, Manhattan', 40.7033, -74.0170, 'Gym', 'walk', 12, 40, 'active', 71, -9),
+          mk('Sofia', 'Noah', 'Swim — Asphalt Green Battery Park', '212 North End Ave, Manhattan', 40.7161, -74.0163, 'Practice', 'walk', 12, 90, 'active', 71, -9, null, 'walkOver', 'Swim — Asphalt Green Battery Park'),
+          mk('Mateo', 'Priya', 'Soccer — Pier 40', '353 West St, Manhattan', 40.7300, -74.0110, 'Practice', 'car', 14, 90, 'active', 40, 64, null, 'rideshare', 'Soccer — Pier 40'),
+          mk('Nia', 'Eli', 'Basketball — Boys & Girls Republic', '888 E 6th St, Manhattan', 40.7236, -73.9780, 'Practice', 'car', 16, 90, 'pending', 3, null, null, 'shuttle', 'Basketball — Boys & Girls Republic'),
           mk('Liam', 'Zara', 'Stone Street', 'Financial District, Manhattan', 40.7040, -74.0106, 'Food', 'walk', 6, 30, 'pending', 2, null),
           mk('Eli', 'Nia', 'Oculus / World Trade Center', '185 Greenwich St, Manhattan', 40.7115, -74.0116, 'Meeting', 'walk', 8, 30, 'returned', 95, -40, 38),
         ];
@@ -90,7 +93,8 @@
             throw new Error(id === d.studentId ? 'You already have an open sign-out.' : `${nm(s, id).name} is already signed out or has a pending request.`);
         }
         const r = { id: uid(), student_id: d.studentId, buddy_id: d.buddyId, dest_name: d.dest.name, dest_address: d.dest.address || '',
-          lat: d.dest.lat, lng: d.dest.lng, purpose: d.purpose, mode: d.mode, travel: d.travelMin, stay: d.stayMin,
+          lat: d.dest.lat, lng: d.dest.lng, purpose: d.purpose, mode: d.mode, ride: d.ride || null, practice: d.practice || null,
+          travel: d.travelMin, stay: d.stayMin,
           status: 'pending', created_at: new Date().toISOString(), accepted_at: null, due_at: null, returned_at: null };
         s.signouts.push(r); return shape(s, r);
       }),
@@ -160,5 +164,6 @@
       return 'active';
     },
     modeLabel: { walk: 'Walking', transit: 'Subway / bus', car: 'Car / rideshare' },
+    rideLabel: { shuttle: 'House shuttle', rideshare: 'Rideshare', transitPass: 'Subway / bus', parent: 'Parent pickup', walkOver: 'Walking' },
   };
 })();

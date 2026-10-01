@@ -29,7 +29,7 @@
   <div class="dash">
     <div id="map"></div>
     <div>
-      <div class="tabs"><button class="tab sel" data-tab="live">Live</button><button class="tab" data-tab="today">Today</button><button class="tab" data-tab="roster">Roster</button></div>
+      <div class="tabs"><button class="tab sel" data-tab="live">Live</button><button class="tab" data-tab="today">Today</button><button class="tab" data-tab="practices">Practices</button><button class="tab" data-tab="roster">Roster</button></div>
       <div id="panel"></div>
     </div>
   </div>
@@ -40,7 +40,7 @@
 <script src="js/api.js"></script>
 <script>
 (function () {
-  const C = FS_CONFIG, API = FS_API, { esc, time, minsLeft, phase, modeLabel } = FS;
+  const C = FS_CONFIG, API = FS_API, { esc, time, minsLeft, phase, modeLabel, rideLabel } = FS;
   const $ = (s) => document.querySelector(s);
   let pin = sessionStorage.getItem('fs_ra_pin') || '', data = { signouts: [], students: [] }, tab = 'live', map, layer;
   if (API.demo) { $('#demoflag').classList.remove('hidden'); $('#demoTools').classList.remove('hidden'); }
@@ -107,6 +107,29 @@
       panel.innerHTML = rows.map((r) => `<div class="so"><div class="top"><div><h3>${esc(r.student.name)} + ${esc(r.buddy.name)}</h3>
         <div class="line">${esc(r.dest.name)} · ${esc(r.purpose)}</div></div><span class="badge">${STATUS_TXT[r.status] || r.status}</span></div>
         <div class="line" style="margin-top:6px">Left ${time(r.created_at)}${r.returned_at ? ' · back ' + time(r.returned_at) : ''}${r.returned_at && r.due_at ? ` (${Math.round((new Date(r.returned_at) - new Date(r.due_at)) / 60000) > 0 ? Math.round((new Date(r.returned_at) - new Date(r.due_at)) / 60000) + ' min late' : 'on time'})` : ''}</div></div>`).join('') || '<div class="empty">Nothing closed out yet today.</div>';
+    } else if (tab === 'practices') {
+      /* Everything heading to a recurring practice, grouped by practice, so the RA can see one
+         shuttle run or rideshare group as a unit instead of reading it out of the live list. */
+      const cut = new Date(); cut.setHours(0, 0, 0, 0);
+      const trips = data.signouts.filter((r) => r.practice && new Date(r.created_at) >= cut);
+      const groups = new Map();
+      trips.forEach((r) => { if (!groups.has(r.practice)) groups.set(r.practice, []); groups.get(r.practice).push(r); });
+      const def = new Map((C.practices || []).map((p) => [p.name, p]));
+      panel.innerHTML = [...groups.entries()].map(([name, rows]) => {
+        const p = def.get(name), byRide = new Map();
+        rows.forEach((r) => { const key = r.ride || r.mode; byRide.set(key, (byRide.get(key) || 0) + 1); });
+        const out = rows.filter((r) => r.status === 'active').length;
+        const waiting = rows.filter((r) => r.status === 'pending').length;
+        const late = rows.filter((r) => phase(r) === 'overdue').length;
+        // "no one active" is not the same as finished -- a trip still waiting on a buddy
+        // has nobody out yet and must not read as done.
+        const badge = late ? `${late} overdue` : out ? 'out' : waiting ? 'waiting on buddy' : 'done';
+        return `<div class="so ${late ? 'overdue' : ''}"><div class="top"><div><h3>${esc(name)}</h3>
+          <div class="line">${p ? esc(p.day) + ' ' + esc(p.time) + ' · ' : ''}${rows.length} student${rows.length === 1 ? '' : 's'}${out ? ' · ' + out + ' out now' : ''}</div></div>
+          <span class="badge ${late ? 'overdue' : ''}">${badge}</span></div>
+          <div class="line" style="margin-top:6px">${[...byRide.entries()].map(([k, n]) => `${n}× ${esc(rideLabel[k] || modeLabel[k] || k)}`).join(' · ')}</div>
+          ${rows.map((r) => `<div class="line">${esc(r.student.name)} + ${esc(r.buddy.name)} — ${r.due_at ? 'back by ' + time(r.due_at) : 'waiting on buddy'}</div>`).join('')}</div>`;
+      }).join('') || '<div class="empty">No practice trips today. Practices are set in <code>js/config.js</code>.</div>';
     } else {
       panel.innerHTML = `<div class="card" style="margin-bottom:14px"><div class="label" style="margin-top:0">Add student</div>
         <input class="field" id="nn" placeholder="Full name"><div style="height:8px"></div><input class="field" id="ng" placeholder="Grade (optional)">
@@ -118,7 +141,7 @@
   function card(r) {
     const k = phase(r), left = r.due_at ? minsLeft(r.due_at) : null;
     return `<div class="so ${k}"><div class="top"><div><h3>${esc(r.student.name)} + ${esc(r.buddy.name)}</h3>
-      <div class="line">${esc(r.dest.name)} · ${esc(r.purpose)} · ${modeLabel[r.mode]}</div></div><span class="badge ${k}">${LABEL[k]}</span></div>
+      <div class="line">${esc(r.dest.name)} · ${esc(r.purpose)} · ${r.ride ? esc(rideLabel[r.ride] || r.ride) : modeLabel[r.mode]}</div></div><span class="badge ${k}">${LABEL[k]}</span></div>
       <div class="line" style="margin-top:8px">${r.status === 'pending'
         ? `Asked ${time(r.created_at)} · est. ${r.travel_min * 2 + r.stay_min} min total`
         : `Left ${time(r.accepted_at)} · back by <b>${time(r.due_at)}</b> · ${left >= 0 ? left + ' min left' : -left + ' min late'}`}</div>

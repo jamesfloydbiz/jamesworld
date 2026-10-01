@@ -16,12 +16,35 @@ window.FS_CONFIG = {
     { name: 'Battery Park', address: 'Battery Pl, Manhattan', lat: 40.7033, lng: -74.0170 },
   ],
 
+  // Recurring practices. These are the things a student goes to every week, so they are
+  // one tap rather than a search, and the RA board can group them. Venues here are the ones
+  // already named in the House Week plan. `ride` is the usual way of getting there, which
+  // only pre-selects — the student can change it.
+  practices: [
+    { name: 'Open gym — Henry Street Settlement', address: '301 Henry St, Manhattan', lat: 40.7138, lng: -73.9830, day: 'Mon', time: '19:00', stay: 120, ride: 'shuttle' },
+    { name: 'Soccer — Pier 40',                   address: '353 West St, Manhattan',  lat: 40.7300, lng: -74.0110, day: 'Tue', time: '18:00', stay: 90,  ride: 'rideshare' },
+    { name: 'Basketball — Boys & Girls Republic', address: '888 E 6th St, Manhattan', lat: 40.7236, lng: -73.9780, day: 'Wed', time: '19:30', stay: 90,  ride: 'shuttle' },
+    { name: 'Group run — Fleet Feet Columbus Circle', address: '103 W 59th St, Manhattan', lat: 40.7681, lng: -73.9819, day: 'Thu', time: '18:30', stay: 75, ride: 'transitPass' },
+    { name: 'Swim — Asphalt Green Battery Park',  address: '212 North End Ave, Manhattan', lat: 40.7161, lng: -74.0163, day: 'Sat', time: '10:00', stay: 90, ride: 'walkOver' },
+  ],
+
+  // How a student is actually getting there. The JD lists "coordinating shuttle rhythms",
+  // so the house shuttle is first; rideshare is one option among several, not the system.
+  rideKinds: [
+    { key: 'shuttle',     label: 'House shuttle' },
+    { key: 'rideshare',   label: 'Rideshare' },
+    { key: 'transitPass', label: 'Subway / bus' },
+    { key: 'parent',      label: 'Parent pickup' },
+    { key: 'walkOver',    label: 'Walking' },
+  ],
+
   purposes: [
     { key: 'Food',        stay: 30 },
     { key: 'Errand',      stay: 20 },
     { key: 'Gym',         stay: 60 },
     { key: 'Meeting',     stay: 45 },
     { key: 'Appointment', stay: 60 },
+    { key: 'Practice',    stay: 90 },
     { key: 'Other',       stay: 30 },
   ],
   stayStep: 5, stayMin: 10, stayMax: 240,

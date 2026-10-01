@@ -8,7 +8,7 @@
     flow: false, step: 0, err: '', sending: false, dismissed: new Set(JSON.parse(localStorage.getItem('fs_dismissed') || '[]')),
     d: blank(),
   };
-  function blank() { return { buddy: null, dest: null, purpose: null, stay: 30, mode: null, est: null, estLoading: false, q: '', results: [], searching: false }; }
+  function blank() { return { buddy: null, dest: null, purpose: null, stay: 30, mode: null, ride: null, practice: null, est: null, estLoading: false, q: '', results: [], searching: false }; }
 
   // Demo mode keeps identity per-tab so two tabs can play student + buddy; real mode remembers the phone.
   const ID = API.demo ? sessionStorage : localStorage;
@@ -118,6 +118,8 @@
         <p class="sub">Search a place or tap a favourite.</p>
         <input class="field" id="q" placeholder="e.g. Joe's Pizza, Bryant Park" value="${esc(d.q)}" autocomplete="off">
         <div class="list" id="results"></div>
+        ${(C.practices || []).length ? `<div class="label">Practices</div>
+        <div class="list">${C.practices.map((p, i) => `<button class="row" data-prac="${i}"><b>${esc(p.name)}</b><span>${esc(p.day)} ${esc(p.time)} · ${esc(p.address)}</span></button>`).join('')}</div>` : ''}
         <div class="label">Nearby favourites</div>
         <div class="list">${C.quickSpots.map((p, i) => `<button class="row" data-spot="${i}"><b>${esc(p.name)}</b><span>${esc(p.address)}</span></button>`).join('')}</div>`;
       wireBack();
@@ -134,7 +136,14 @@
         }, 450);
       };
       app.onclick = (e) => {
-        const r = e.target.closest('[data-res]'), s = e.target.closest('[data-spot]');
+        const r = e.target.closest('[data-res]'), s = e.target.closest('[data-spot]'), pr = e.target.closest('[data-prac]');
+        if (pr) {
+          // A practice already knows what it is and how long it runs, so step 4 is skipped.
+          const p = C.practices[+pr.dataset.prac];
+          d.dest = { name: p.name, address: p.address, lat: p.lat, lng: p.lng };
+          d.practice = p.name; d.purpose = 'Practice'; d.stay = p.stay || 90; d.ride = p.ride || null;
+          d.est = null; S.step = 3; render(); return;
+        }
         const pick = r ? d.results[+r.dataset.res] : s ? C.quickSpots[+s.dataset.spot] : null;
         if (pick) { d.dest = pick; d.est = null; S.step = 2; render(); }
       };
@@ -168,7 +177,7 @@
         <dl class="meta" style="margin-top:0">
           <dt>Buddy</dt><dd>${esc(d.buddy.name)}</dd>
           <dt>Going to</dt><dd>${esc(d.dest.name)}<div class="note" style="margin:0">${esc(d.dest.address || '')}</div></dd>
-          <dt>For</dt><dd>${esc(d.purpose)}</dd>
+          <dt>For</dt><dd>${esc(d.purpose)}${d.practice ? ' · recurring' : ''}</dd>
         </dl>
         <div class="minimap" id="mini"></div>
       </div>
@@ -176,6 +185,9 @@
       ${d.est ? `<div class="est">${['walk', 'transit', 'car'].map((m) => `<button class="tile ${d.mode === m ? 'sel' : ''}" data-m="${m}"><b>${d.est.tiles[m]}</b><small>min · ${m === 'walk' ? 'Walk' : m === 'transit' ? 'Subway/bus' : 'Car'}</small></button>`).join('')}</div>
         <div class="note">Estimates${d.est.source === 'straight-line' ? ' (map service unreachable — rough straight-line guess)' : ' from map routing; subway and car times are approximate'}.</div>`
         : d.estLoading || !d.est ? '<div class="skeleton"></div>' : ''}
+      <div class="label">Getting a ride?</div>
+      <div class="chips">${(C.rideKinds || []).map((k) => `<button class="chip ${d.ride === k.key ? 'sel' : ''}" data-ride="${k.key}">${esc(k.label)}</button>`).join('')}</div>
+      <div class="note">The RA board groups trips by this, so the shuttle run can be seen at a glance.</div>
       <div class="label">Time there</div>
       <div class="stepper"><button data-stay="-">−</button><b>${d.stay} min</b><button data-stay="+">+</button></div>
       ${due ? `<div class="hero" style="margin-top:22px"><p>Expected back by</p><div class="big">${due.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}</div><p>${tm} min there + ${d.stay} there + ${tm} min back</p></div>` : ''}`;
@@ -186,6 +198,7 @@
     app.onclick = (e) => {
       const m = e.target.closest('[data-m]'), s = e.target.closest('[data-stay]');
       if (m) { d.mode = m.dataset.m; viewReview(); }
+      const rk = e.target.closest('[data-ride]'); if (rk) { d.ride = rk.dataset.ride; viewReview(); }
       if (s) { d.stay = Math.min(C.stayMax, Math.max(C.stayMin, d.stay + (s.dataset.stay === '+' ? C.stayStep : -C.stayStep))); viewReview(); }
     };
     if (miniMap) { miniMap.remove(); miniMap = null; }
@@ -201,7 +214,8 @@
   async function send() {
     const d = S.d; if (S.sending) return; S.sending = true; S.err = ''; viewReview();
     try {
-      await API.create({ studentId: S.me.id, buddyId: d.buddy.id, dest: d.dest, purpose: d.purpose, mode: d.mode, travelMin: d.est.tiles[d.mode], stayMin: d.stay });
+      await API.create({ studentId: S.me.id, buddyId: d.buddy.id, dest: d.dest, purpose: d.purpose, mode: d.mode,
+                         ride: d.ride, practice: d.practice, travelMin: d.est.tiles[d.mode], stayMin: d.stay });
       S.flow = false;
     } catch (e) { S.err = e.message; }
     S.sending = false; S.lastJson = ''; await refresh(); if (S.flow) viewReview();
