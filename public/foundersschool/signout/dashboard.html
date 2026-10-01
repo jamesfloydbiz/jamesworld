@@ -87,7 +87,24 @@
     return back >= 1 ? { phase: 'due', frac: 0 } : { phase: 'back', frac: 1 - back };
   }
 
-  const movers = new Map();       // signout id -> { marker, line, kind, r }
+  const movers = new Map();       // signout id -> { marker, kind, r }
+  /* Road geometry per trip, fetched once and shared by the dotted line and the moving dot, so
+     the two can never disagree about the way someone went. A trip on the subway is deliberately
+     NOT routed: we have no timetable data, and drawing it down a car route would assert a path
+     the app does not know. Those stay a straight line, which reads as "direction, not route". */
+  const routes = new Map();       // signout id -> [[lat,lng], ...] | null while in flight
+  const PROFILE = { walk: 'foot', transit: null, shuttle: 'car', rideshare: 'car', parent: 'car' };
+  function ensureRoute(r) {
+    const prof = PROFILE[moverKind(r)];
+    if (!prof) return null;                       // transit: no honest geometry to draw
+    if (!routes.has(r.id)) {
+      routes.set(r.id, null);
+      GEO.routeLine(prof, { lat: C.campus.lat, lng: C.campus.lng }, { lat: r.dest.lat, lng: r.dest.lng })
+        .then((ln) => { routes.set(r.id, ln); if (data) draw(); })   // one redraw when it lands
+        .catch(() => {});
+    }
+    return routes.get(r.id);
+  }
   const GLYPH = { shuttle: '\u{1F690}', rideshare: '\u{1F697}', parent: '\u{1F697}', walk: '\u{1F6B6}', transit: '\u{1F687}' };
   const moverKind = (r) => (r.ride && GLYPH[r.ride] ? r.ride
     : r.ride === 'walkOver' || r.mode === 'walk' ? 'walk'
@@ -102,7 +119,7 @@
   function tickMovers() {
     movers.forEach((rec) => {
       const L0 = leg(rec.r); if (!L0) return;
-      const line = rec.line || [[C.campus.lat, C.campus.lng], [rec.r.dest.lat, rec.r.dest.lng]];
+      const line = routes.get(rec.r.id) || [[C.campus.lat, C.campus.lng], [rec.r.dest.lat, rec.r.dest.lng]];
       const at = GEO.pointAt(line, L0.frac); if (!at) return;
       rec.marker.setLatLng(at);
       const away = Math.max(0, Math.round((L0.phase === 'out' ? 1 - L0.frac : L0.frac) * (rec.r.travel_min || 0)));
@@ -147,7 +164,12 @@
     layer.clearLayers(); const pts = [[C.campus.lat, C.campus.lng]];
     open.forEach((r) => {
       const k = ph(r), ll = [r.dest.lat, r.dest.lng]; pts.push(ll);
-      L.polyline([[C.campus.lat, C.campus.lng], ll], { color: COLORS[k], weight: 2, dashArray: '5 6', opacity: .7 }).addTo(layer);
+      const path = ensureRoute(r);
+      L.polyline(path || [[C.campus.lat, C.campus.lng], ll],
+        { color: COLORS[k], weight: path ? 3 : 2, dashArray: path ? '6 7' : '2 7', opacity: path ? .75 : .5 })
+        .addTo(layer)
+        .bindTooltip(path ? `${esc(r.student.name.split(' ')[0])} \u2192 ${esc(r.dest.name)}`
+                          : `${esc(r.dest.name)} \u00b7 direction only, the subway route is not drawn`);
       L.circleMarker(ll, { radius: 10, color: '#fff', weight: 3, fillColor: COLORS[k], fillOpacity: 1 }).addTo(layer)
         .bindTooltip(`<b>${esc(r.student.name)} + ${esc(r.buddy.name)}</b><br>${esc(r.dest.name)}${r.due_at ? '<br>Back by ' + time(r.due_at) : ''}`);
     });
@@ -160,13 +182,10 @@
       live.add(r.id);
       if (!movers.has(r.id)) {
         const kind = moverKind(r);
-        const rec = { kind, line: null, r,
+        const rec = { kind, r,
           marker: L.marker([C.campus.lat, C.campus.lng], { zIndexOffset: 400, icon: moverIcon(kind) }).addTo(map) };
         movers.set(r.id, rec);
-        // Walkers get the footpath, everyone else the road. Until it lands the dot rides the
-        // straight line, so the board never blocks on the routing service.
-        GEO.routeLine(kind === 'walk' ? 'foot' : 'car', { lat: C.campus.lat, lng: C.campus.lng },
-          { lat: r.dest.lat, lng: r.dest.lng }).then((ln) => { rec.line = ln; }).catch(() => {});
+        ensureRoute(r);          // shared with the dotted line; straight line until it lands
       }
       movers.get(r.id).r = r;                       // refresh the timings on every poll
     });
