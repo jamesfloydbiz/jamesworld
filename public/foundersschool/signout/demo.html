@@ -32,6 +32,23 @@
     border-radius: 12px; overflow: hidden; background: #fff; box-shadow: 0 10px 28px rgba(0,0,0,.10); }
   .d-board iframe { display: block; width: 100%; height: 820px; border: 0; }
   .d-hint { max-width: 1180px; margin: 0 auto 14px; font-size: 13px; color: var(--grey, #6B7280); }
+  /* The landing view. Someone arriving cold should see what this is before being handed
+     two live apps to poke at. */
+  .d-land { max-width: 780px; margin: 0 auto; }
+  .d-land h1 { font-size: clamp(26px, 4.4vw, 38px); line-height: 1.1; margin: 6px 0 12px; letter-spacing: -.02em; }
+  .d-lede { font-size: 17px; line-height: 1.6; color: var(--grey, #4B5563); margin: 0 0 22px; }
+  .d-clip { margin: 0 0 22px; border: 1px solid var(--line, #E5E7EB); border-radius: 12px; overflow: hidden;
+    background: #000; box-shadow: 0 10px 28px rgba(0,0,0,.12); }
+  .d-clip video { display: block; width: 100%; height: auto; }
+  .d-clip figcaption { padding: 10px 14px; font-size: 12.5px; color: var(--grey, #6B7280); background: #fff; }
+  .d-next { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 26px; }
+  .d-go { font: 700 14px/1 inherit; color: #fff; background: var(--blue); border: 2px solid var(--blue);
+    border-radius: 999px; padding: 13px 22px; cursor: pointer; }
+  .d-go.ghost { background: #fff; color: var(--blue); }
+  .d-go:hover { filter: brightness(1.08); }
+  .d-points { margin: 0; padding-left: 20px; color: var(--grey, #4B5563); font-size: 15px; line-height: 1.65; }
+  .d-points li + li { margin-top: 7px; }
+  .d-points b { color: var(--ink, #111); }
   @media (max-width: 760px) { .d-phone iframe { height: 620px; } .d-board iframe { height: 640px; } }
 </style>
 </head>
@@ -40,7 +57,8 @@
 <div class="d-bar">
   <div class="brand"><i>FS</i> Digital Sign-Out <span style="font-weight:500;opacity:.8">— demo</span></div>
   <div class="d-tabs" role="tablist">
-    <button role="tab" id="t-student" aria-selected="true" aria-controls="p-student">Student view</button>
+    <button role="tab" id="t-watch" aria-selected="true" aria-controls="p-watch">Watch</button>
+    <button role="tab" id="t-student" aria-selected="false" aria-controls="p-student">Student view</button>
     <button role="tab" id="t-ra" aria-selected="false" aria-controls="p-ra">RA view</button>
   </div>
 </div>
@@ -50,7 +68,32 @@
 </div>
 
 <div class="d-stage">
-  <div class="d-pane" id="p-student" role="tabpanel" aria-labelledby="t-student">
+  <div class="d-pane" id="p-watch" role="tabpanel" aria-labelledby="t-watch">
+    <div class="d-land">
+      <h1>A sign-out that takes ten seconds</h1>
+      <p class="d-lede">Scan the QR, tap who you are, tap your buddy, say where and why. The buddy accepts,
+        and the RA board shows both of them on a map with a time they are due back. Built for the
+        Head&nbsp;of&nbsp;Student&nbsp;Life role at Founders School.</p>
+      <figure class="d-clip">
+        <video src="media/demo.mp4" poster="media/demo-poster.jpg" controls muted playsinline preload="none"
+               aria-label="Screen recording: two students side by side, one sending a request to their RA, the other starting a sign-out and searching for a destination."></video>
+        <figcaption>Two students at once &mdash; one sends their RA a request, the other signs out. 18 seconds.</figcaption>
+      </figure>
+      <div class="d-next">
+        <button class="d-go" data-go="student">Try the student view &rarr;</button>
+        <button class="d-go ghost" data-go="ra">Open the RA board &rarr;</button>
+      </div>
+      <ul class="d-points">
+        <li><b>Nobody goes alone.</b> A sign-out is a pair, and the buddy has to accept before it starts.</li>
+        <li><b>Headcount first.</b> The board opens on how many are in the house, not on a list of trips.</li>
+        <li><b>Due back, not just gone.</b> Travel each way plus time there gives a time, and the board
+          flags due-soon and overdue against it.</li>
+        <li><b>Students can write in.</b> Requests and feedback go straight to the RA between Town Halls.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="d-pane" id="p-student" role="tabpanel" aria-labelledby="t-student" hidden>
     <p class="d-hint">What a student sees. Pick a name, pick a buddy, choose a practice or search a place —
       or send your RA a request.</p>
     <div class="d-phone"><iframe id="f-student" src="index.html" title="Student view"></iframe></div>
@@ -63,13 +106,14 @@
 </div>
 
 <script>
-  var tabs = { student: document.getElementById('t-student'), ra: document.getElementById('t-ra') };
-  var panes = { student: document.getElementById('p-student'), ra: document.getElementById('p-ra') };
+  var tabs = { watch: document.getElementById('t-watch'), student: document.getElementById('t-student'), ra: document.getElementById('t-ra') };
+  var panes = { watch: document.getElementById('p-watch'), student: document.getElementById('p-student'), ra: document.getElementById('p-ra') };
   function show(which) {
     Object.keys(tabs).forEach(function (k) {
       tabs[k].setAttribute('aria-selected', String(k === which));
       panes[k].hidden = k !== which;
     });
+    if (which !== 'watch' && clip) { try { clip.pause(); } catch (e) {} }
     // Leaflet needs a resize once its container stops being display:none.
     if (which === 'ra') {
       var f = document.getElementById('f-ra');
@@ -77,9 +121,15 @@
     }
     try { history.replaceState(null, '', '#' + which); } catch (e) {}
   }
-  tabs.student.onclick = function () { show('student'); };
-  tabs.ra.onclick = function () { show('ra'); };
+  Object.keys(tabs).forEach(function (k) { tabs[k].onclick = function () { show(k); }; });
+  // the two buttons on the landing view go to the same places as the tabs
+  document.querySelectorAll('[data-go]').forEach(function (b) {
+    b.onclick = function () { show(b.getAttribute('data-go')); window.scrollTo(0, 0); };
+  });
+  // pause the clip when leaving the landing view, so it is not playing behind a live app
+  var clip = document.querySelector('.d-clip video');
   if (location.hash === '#ra') show('ra');
+  else if (location.hash === '#student') show('student');
 </script>
 </body>
 </html>
