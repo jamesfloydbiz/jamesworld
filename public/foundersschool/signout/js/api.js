@@ -38,7 +38,8 @@
 
   /* ---------------- Demo mode ---------------- */
   function demoApi() {
-    const KEY = 'fs_demo_v1';
+    const KEY = 'fs_demo_v2';   // bump when the seeded roster or demo data changes, so
+                                // returning visitors are not pinned to the old store
     const uid = () => (crypto.randomUUID ? crypto.randomUUID() : 'id' + Math.random().toString(36).slice(2) + Date.now());
     const names = ['Maya Chen', 'Jordan Reyes', 'Amara Okafor', 'Theo Bennett', 'Sofia Alvarez', 'Noah Kim', 'Liam Patel',
       'Zara Hussain', 'Eli Goldberg', 'Nia Thompson', 'Mateo Rossi', 'Priya Nair', 'Dante Oyelaran', 'Hana Watanabe',
@@ -84,7 +85,11 @@
         ];
         return { ok: true };
       }),
-      demoReset: () => wrap((s) => { s.signouts = []; return { ok: true }; }),
+      demoReset: () => wrap((s) => {
+        s.signouts = []; s.notes = [];
+        s.students = names.map((n) => ({ id: uid(), name: n, grade: '9th', active: true }));
+        return { ok: true };
+      }),
       roster: () => wrap((s) => {
         expire(s, C.requestTtlMin);
         const busy = []; s.signouts.filter((r) => OPEN.includes(r.status)).forEach((r) => busy.push(r.student_id, r.buddy_id));
