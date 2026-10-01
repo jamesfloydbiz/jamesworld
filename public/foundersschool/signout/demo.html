@@ -119,7 +119,10 @@
       var f = document.getElementById('f-ra');
       try { f.contentWindow.dispatchEvent(new Event('resize')); } catch (e) {}
     }
-    try { history.replaceState(null, '', '#' + which); } catch (e) {}
+    /* Deliberately does NOT write the hash. It used to, which meant clicking "RA view" once
+       turned the address into ...demo.html#ra — so a reload, a restored tab, or a link copied
+       out of the address bar after a click-around all reopened on the board instead of here.
+       An explicit #student or #ra link still works; the bare URL always lands on Watch. */
   }
   Object.keys(tabs).forEach(function (k) { tabs[k].onclick = function () { show(k); }; });
   // the two buttons on the landing view go to the same places as the tabs
@@ -128,8 +131,14 @@
   });
   // pause the clip when leaving the landing view, so it is not playing behind a live app
   var clip = document.querySelector('.d-clip video');
-  if (location.hash === '#ra') show('ra');
-  else if (location.hash === '#student') show('student');
+  function fromHash() {
+    if (location.hash === '#ra') show('ra');
+    else if (location.hash === '#student') show('student');
+    else show('watch');
+  }
+  fromHash();
+  // also handle the hash changing without a reload, which otherwise does nothing at all
+  window.addEventListener('hashchange', fromHash);
 </script>
 </body>
 </html>
