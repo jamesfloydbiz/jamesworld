@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0000EF">
+<title>Sign-Out Demo · Founders School</title>
+<meta name="description" content="A working demo of the Founders School digital sign-out: the student's phone and the RA's board, side by side.">
+<link rel="stylesheet" href="css/brand.css">
+<style>
+  /* Both views are the real pages in frames rather than a reimplementation, so what is
+     demonstrated is the app itself. They share an origin, so they share the demo's
+     localStorage: a sign-out made on the phone shows up on the board at its next poll. */
+  body { margin: 0; background: var(--paper, #F7F8FA); }
+  .d-bar { background: var(--blue); color: #fff; padding: 10px 16px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .d-bar .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; letter-spacing: .02em; }
+  .d-bar .brand i { background: #fff; color: var(--blue); font-style: normal; font-weight: 800;
+    width: 26px; height: 26px; border-radius: 7px; display: grid; place-content: center; font-size: 12px; }
+  .d-tabs { display: flex; gap: 6px; margin-left: auto; }
+  .d-tabs button { font: 700 13px/1 inherit; color: #fff; background: rgba(255,255,255,.16);
+    border: 0; border-radius: 999px; padding: 9px 16px; cursor: pointer; }
+  .d-tabs button[aria-selected="true"] { background: #fff; color: var(--blue); }
+  .d-note { background: #FEF9C3; color: #4a3c00; font-size: 12.5px; padding: 7px 16px; text-align: center; }
+  .d-note b { font-weight: 800; }
+  .d-stage { padding: 18px 16px 28px; }
+  .d-pane[hidden] { display: none; }
+  /* The student view is a phone, so it is shown as one rather than stretched across a desktop. */
+  .d-phone { width: 390px; max-width: 100%; margin: 0 auto; border: 10px solid #111; border-radius: 34px;
+    overflow: hidden; box-shadow: 0 18px 40px rgba(0,0,0,.22); background: #fff; }
+  .d-phone iframe { display: block; width: 100%; height: 720px; border: 0; }
+  .d-board { max-width: 1180px; margin: 0 auto; border: 1px solid var(--line, #E5E7EB);
+    border-radius: 12px; overflow: hidden; background: #fff; box-shadow: 0 10px 28px rgba(0,0,0,.10); }
+  .d-board iframe { display: block; width: 100%; height: 820px; border: 0; }
+  .d-hint { max-width: 1180px; margin: 0 auto 14px; font-size: 13px; color: var(--grey, #6B7280); }
+  @media (max-width: 760px) { .d-phone iframe { height: 620px; } .d-board iframe { height: 640px; } }
+</style>
+</head>
+<body>
+
+<div class="d-bar">
+  <div class="brand"><i>FS</i> Digital Sign-Out <span style="font-weight:500;opacity:.8">— demo</span></div>
+  <div class="d-tabs" role="tablist">
+    <button role="tab" id="t-student" aria-selected="true" aria-controls="p-student">Student view</button>
+    <button role="tab" id="t-ra" aria-selected="false" aria-controls="p-ra">RA view</button>
+  </div>
+</div>
+<div class="d-note">
+  <b>Demo.</b> Nothing is saved anywhere — it lives in this browser only. Both views share it, so a sign-out
+  made on the phone appears on the RA board within a few seconds. RA passcode is <b>demo</b>.
+</div>
+
+<div class="d-stage">
+  <div class="d-pane" id="p-student" role="tabpanel" aria-labelledby="t-student">
+    <p class="d-hint">What a student sees. Pick a name, pick a buddy, choose a practice or search a place —
+      or send your RA a request.</p>
+    <div class="d-phone"><iframe id="f-student" src="index.html" title="Student view"></iframe></div>
+  </div>
+  <div class="d-pane" id="p-ra" role="tabpanel" aria-labelledby="t-ra" hidden>
+    <p class="d-hint">What the RA sees. Headcount first, then the map — dots move in real time.
+      Use <b>Load demo activity</b> to fill the board.</p>
+    <div class="d-board"><iframe id="f-ra" src="dashboard.html" title="RA view"></iframe></div>
+  </div>
+</div>
+
+<script>
+  var tabs = { student: document.getElementById('t-student'), ra: document.getElementById('t-ra') };
+  var panes = { student: document.getElementById('p-student'), ra: document.getElementById('p-ra') };
+  function show(which) {
+    Object.keys(tabs).forEach(function (k) {
+      tabs[k].setAttribute('aria-selected', String(k === which));
+      panes[k].hidden = k !== which;
+    });
+    // Leaflet needs a resize once its container stops being display:none.
+    if (which === 'ra') {
+      var f = document.getElementById('f-ra');
+      try { f.contentWindow.dispatchEvent(new Event('resize')); } catch (e) {}
+    }
+    try { history.replaceState(null, '', '#' + which); } catch (e) {}
+  }
+  tabs.student.onclick = function () { show('student'); };
+  tabs.ra.onclick = function () { show('ra'); };
+  if (location.hash === '#ra') show('ra');
+</script>
+</body>
+</html>

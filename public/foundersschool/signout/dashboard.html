@@ -29,7 +29,7 @@
   <div class="dash">
     <div id="map"></div>
     <div>
-      <div class="tabs"><button class="tab sel" data-tab="live">Live</button><button class="tab" data-tab="today">Today</button><button class="tab" data-tab="practices">Practices</button><button class="tab" data-tab="roster">Roster</button></div>
+      <div class="tabs"><button class="tab sel" data-tab="live">Live</button><button class="tab" data-tab="today">Today</button><button class="tab" data-tab="practices">Practices</button><button class="tab" data-tab="notes">Requests<span id="noteDot"></span></button><button class="tab" data-tab="roster">Roster</button></div>
       <div id="panel"></div>
     </div>
   </div>
@@ -38,9 +38,10 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script src="js/config.js"></script>
 <script src="js/api.js"></script>
+<script src="js/geo.js"></script>
 <script>
 (function () {
-  const C = FS_CONFIG, API = FS_API, { esc, time, minsLeft, phase, modeLabel, rideLabel } = FS;
+  const C = FS_CONFIG, API = FS_API, { esc, time, minsLeft, phase, modeLabel, rideLabel } = FS, GEO = window.FS_GEO;
   const $ = (s) => document.querySelector(s);
   let pin = sessionStorage.getItem('fs_ra_pin') || '', data = { signouts: [], students: [] }, tab = 'live', map, layer;
   if (API.demo) { $('#demoflag').classList.remove('hidden'); $('#demoTools').classList.remove('hidden'); }
@@ -62,13 +63,57 @@
       map = L.map('map').setView([C.campus.lat, C.campus.lng], 13);
       L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(map);
       layer = L.layerGroup().addTo(map);
-      L.circleMarker([C.campus.lat, C.campus.lng], { radius: 9, color: '#fff', weight: 3, fillColor: '#0000EF', fillOpacity: 1 }).addTo(map).bindTooltip('Campus');
+      homeMarker = L.marker([C.campus.lat, C.campus.lng], { icon: homeIcon(0), zIndexOffset: 500 }).addTo(map).bindTooltip('The house');
       setInterval(poll, C.pollMs);
     }
     draw();
   }
   async function poll() { if (!pin) return; try { data = await API.dash(pin); draw(); } catch (e) {} }
 
+  let homeMarker;
+  const homeIcon = (n) => L.divIcon({ className: '', iconSize: [54, 54], iconAnchor: [27, 27],
+    html: `<div class="m-home"><b>${n}</b><span>home</span></div>` });
+
+  /* Where a pair is right now, from the clock rather than from a GPS feed: out along the leg,
+     parked at the destination for the stay, then back along the same leg. SIMULATED -- the app
+     records a trip, it does not track a phone or read a rideshare's position. */
+  function leg(r) {
+    if (r.status !== 'active' || !r.accepted_at) return null;
+    const mins = (Date.now() - new Date(r.accepted_at)) / 60000;
+    const t = r.travel_min || 1;
+    if (mins < t) return { phase: 'out', frac: mins / t };
+    if (mins < t + (r.stay_min || 0)) return { phase: 'there', frac: 1 };
+    const back = (mins - t - (r.stay_min || 0)) / t;
+    return back >= 1 ? { phase: 'due', frac: 0 } : { phase: 'back', frac: 1 - back };
+  }
+
+  const movers = new Map();       // signout id -> { marker, line, kind, r }
+  const GLYPH = { shuttle: '\u{1F690}', rideshare: '\u{1F697}', parent: '\u{1F697}', walk: '\u{1F6B6}', transit: '\u{1F687}' };
+  const moverKind = (r) => (r.ride && GLYPH[r.ride] ? r.ride
+    : r.ride === 'walkOver' || r.mode === 'walk' ? 'walk'
+    : r.ride === 'transitPass' || r.mode === 'transit' ? 'transit'
+    : r.mode === 'car' ? 'rideshare' : 'walk');
+  const moverIcon = (kind) => L.divIcon({ className: '', iconSize: [34, 34], iconAnchor: [17, 17],
+    html: `<div class="m-move ${kind === 'walk' ? 'walk' : 'ride'}">${GLYPH[kind] || GLYPH.walk}</div>` });
+
+  /* Moves every dot a little, twice a second, so a journey reads as motion rather than as a
+     marker that teleports on each poll. Position comes from the clock, which is also why this
+     can run between polls at all. */
+  function tickMovers() {
+    movers.forEach((rec) => {
+      const L0 = leg(rec.r); if (!L0) return;
+      const line = rec.line || [[C.campus.lat, C.campus.lng], [rec.r.dest.lat, rec.r.dest.lng]];
+      const at = GEO.pointAt(line, L0.frac); if (!at) return;
+      rec.marker.setLatLng(at);
+      const away = Math.max(0, Math.round((L0.phase === 'out' ? 1 - L0.frac : L0.frac) * (rec.r.travel_min || 0)));
+      rec.marker.bindTooltip(`<b>${esc(rec.r.student.name.split(' ')[0])} + ${esc(rec.r.buddy.name.split(' ')[0])}</b><br>` +
+        `${esc(rideLabel[rec.kind] || modeLabel[rec.kind] || rec.kind)} \u00b7 ` +
+        `${L0.phase === 'out' ? 'to ' + esc(rec.r.dest.name) : 'heading home'}<br>` +
+        `${away} min ${L0.phase === 'out' ? 'away' : 'from home'} \u00b7 simulated`);
+    });
+  }
+
+  const kindLabel = (k) => ((FS.noteKinds || []).find((x) => x.key === k) || {}).label || k;
   const COLORS = { pending: '#9CA3AF', active: '#0E9F6E', soon: '#F59E0B', overdue: '#DC2626' };
   const LABEL = { pending: 'Waiting on buddy', active: 'Out', soon: 'Due soon', overdue: 'Overdue' };
   const STATUS_TXT = { returned: 'Returned', declined: 'Declined', expired: 'Expired', cancelled: 'Cancelled' };
@@ -79,11 +124,23 @@
     const out = open.filter((r) => r.status === 'active');
     const cnt = (k) => open.filter((r) => ph(r) === k).length;
     const students = out.length * 2;
+    /* Headcount first. "8 students out" does not answer the question an RA actually asks at
+       9pm, which is whether everyone is accounted for -- that needs the roster as the
+       denominator and the house as the other half of the sum. Every trip is a pair, so a
+       sign-out is two students. */
+    const roster = (data.students || []).length;
+    const home = Math.max(0, roster - students);
+    const byPurpose = {};
+    out.forEach((r) => { const k = r.practice ? 'Practice' : (r.purpose || 'Out'); byPurpose[k] = (byPurpose[k] || 0) + 2; });
+    const breakdown = Object.entries(byPurpose).sort((a, b) => b[1] - a[1]).map(([k, n]) => `${n} ${esc(k.toLowerCase())}`).join(' · ');
     $('#stats').innerHTML = `
-      <div class="stat"><b>${students}</b><span>Students out</span></div>
-      <div class="stat"><b>${cnt('pending')}</b><span>Waiting on buddy</span></div>
+      <div class="stat"><b>${home}<small style="font-size:14px;color:var(--grey);font-weight:600"> / ${roster}</small></b><span>At the house</span></div>
+      <div class="stat"><b>${students}</b><span>Out${breakdown ? ' — ' + breakdown : ''}</span></div>
       <div class="stat ${cnt('soon') ? 'warn' : ''}"><b>${cnt('soon')}</b><span>Due soon</span></div>
-      <div class="stat ${cnt('overdue') ? 'bad' : ''}"><b>${cnt('overdue')}</b><span>Overdue</span></div>`;
+      <div class="stat ${cnt('overdue') ? 'bad' : ''}"><b>${cnt('overdue')}</b><span>Overdue${cnt('pending') ? ' · ' + cnt('pending') + ' waiting on a buddy' : ''}</span></div>`;
+    if (homeMarker) homeMarker.setIcon(homeIcon(home));
+    const openNotes = (data.notes || []).filter((n) => !n.done_at).length;
+    const dot = $('#noteDot'); if (dot) dot.textContent = openNotes ? ` ${openNotes}` : '';
     document.title = (cnt('overdue') ? `(${cnt('overdue')} overdue) ` : '') + 'RA Dashboard · Founders School';
     $('#clock').textContent = new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
 
@@ -94,6 +151,30 @@
       L.circleMarker(ll, { radius: 10, color: '#fff', weight: 3, fillColor: COLORS[k], fillOpacity: 1 }).addTo(layer)
         .bindTooltip(`<b>${esc(r.student.name)} + ${esc(r.buddy.name)}</b><br>${esc(r.dest.name)}${r.due_at ? '<br>Back by ' + time(r.due_at) : ''}`);
     });
+    /* Anyone mid-journey is a moving dot. The markers live on the map rather than in `layer`,
+       which draw() clears, so they persist between polls and are animated by their own tick
+       instead of jumping once every four seconds. */
+    const live = new Set();
+    open.filter((r) => r.status === 'active').forEach((r) => {
+      const L0 = leg(r); if (!L0 || L0.phase === 'there' || L0.phase === 'due') return;
+      live.add(r.id);
+      if (!movers.has(r.id)) {
+        const kind = moverKind(r);
+        const rec = { kind, line: null, r,
+          marker: L.marker([C.campus.lat, C.campus.lng], { zIndexOffset: 400, icon: moverIcon(kind) }).addTo(map) };
+        movers.set(r.id, rec);
+        // Walkers get the footpath, everyone else the road. Until it lands the dot rides the
+        // straight line, so the board never blocks on the routing service.
+        GEO.routeLine(kind === 'walk' ? 'foot' : 'car', { lat: C.campus.lat, lng: C.campus.lng },
+          { lat: r.dest.lat, lng: r.dest.lng }).then((ln) => { rec.line = ln; }).catch(() => {});
+      }
+      movers.get(r.id).r = r;                       // refresh the timings on every poll
+    });
+    [...movers.keys()].forEach((id) => {
+      if (!live.has(id)) { map.removeLayer(movers.get(id).marker); movers.delete(id); }
+    });
+    tickMovers();
+
     if (!draw.fitted && pts.length > 1) { map.fitBounds(pts, { padding: [40, 40], maxZoom: 15 }); draw.fitted = true; }
 
     const panel = $('#panel');
@@ -107,6 +188,18 @@
       panel.innerHTML = rows.map((r) => `<div class="so"><div class="top"><div><h3>${esc(r.student.name)} + ${esc(r.buddy.name)}</h3>
         <div class="line">${esc(r.dest.name)} · ${esc(r.purpose)}</div></div><span class="badge">${STATUS_TXT[r.status] || r.status}</span></div>
         <div class="line" style="margin-top:6px">Left ${time(r.created_at)}${r.returned_at ? ' · back ' + time(r.returned_at) : ''}${r.returned_at && r.due_at ? ` (${Math.round((new Date(r.returned_at) - new Date(r.due_at)) / 60000) > 0 ? Math.round((new Date(r.returned_at) - new Date(r.due_at)) / 60000) + ' min late' : 'on time'})` : ''}</div></div>`).join('') || '<div class="empty">Nothing closed out yet today.</div>';
+    } else if (tab === 'notes') {
+      /* The between-Town-Halls channel. Open ones first, because the point of this tab is the
+         things still waiting on the RA, not an archive of what students have ever said. */
+      const notes = data.notes || [];
+      const openN = notes.filter((n) => !n.done_at), doneN = notes.filter((n) => n.done_at);
+      const row = (n) => `<div class="so"><div class="top"><div><h3>${esc(n.from || 'A student')}</h3>
+        <div class="line">${esc(kindLabel(n.kind))} \u00b7 ${time(n.created_at)}</div></div>
+        <span class="badge ${n.done_at ? '' : 'soon'}">${n.done_at ? 'Handled' : 'Open'}</span></div>
+        <div class="line" style="margin-top:8px">${esc(n.text)}</div>
+        ${n.done_at ? '' : `<div class="actions"><button class="btn small green" data-done="${n.id}">Mark handled</button></div>`}</div>`;
+      panel.innerHTML = (openN.map(row).join('') + doneN.map(row).join('')) ||
+        '<div class="empty">No requests yet. Students send these from the sign-out app.</div>';
     } else if (tab === 'practices') {
       /* Everything heading to a recurring practice, grouped by practice, so the RA can see one
          shuttle run or rideshare group as a unit instead of reading it out of the live list. */
@@ -153,8 +246,10 @@
     const t = e.target.closest('.tab'); if (t) { tab = t.dataset.tab; document.querySelectorAll('.tab').forEach((x) => x.classList.toggle('sel', x === t)); draw(); return; }
     const b = e.target.closest('[data-back]'); if (b) { await API.raBack(pin, b.dataset.back); poll(); }
     const rm = e.target.closest('[data-rm]'); if (rm && confirm('Remove this student from the roster?')) { await API.removeStudent(pin, rm.dataset.rm); poll(); }
+    const dn = e.target.closest('[data-done]'); if (dn) { await API.resolveNote(pin, dn.dataset.done); poll(); }
   });
   setInterval(() => { if (pin && data) draw(); }, 30000);
+  setInterval(tickMovers, 500);
 })();
 </script>
 </body>

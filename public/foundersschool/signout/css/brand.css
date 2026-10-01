@@ -123,3 +123,46 @@ h2{font-size:24px;margin-bottom:6px}
 .roster-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--rule);font-size:14px;font-weight:600}
 .pin{width:14px;height:14px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.4)}
 .demo-flag{background:#FEF3C7;color:#92400E;font-size:11px;font-weight:700;text-align:center;padding:6px}
+
+/* ── Map markers on the RA board ──────────────────────────────────────────
+   The house carries the headcount, because "who is in the building" is the
+   question the board exists to answer. Vehicles are placed by elapsed time,
+   not by GPS — their tooltips say "simulated" so the board never overstates
+   what it knows. */
+.m-home {
+  width: 54px; height: 54px; border-radius: 50%;
+  background: var(--blue); color: #fff; border: 3px solid #fff;
+  box-shadow: 0 2px 10px rgba(0,0,0,.28);
+  display: grid; place-content: center; text-align: center; line-height: 1;
+}
+.m-home b { display: block; font-size: 19px; font-weight: 800; }
+.m-home span { display: block; font-size: 9px; letter-spacing: .08em; text-transform: uppercase; opacity: .85; margin-top: 2px; }
+/* A dot in motion. The halo pulses so a moving student reads differently from a
+   parked destination pin at a glance, and the marker itself eases between the
+   positions the tick hands it rather than snapping. */
+.m-move {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: #fff; border: 2px solid var(--blue);
+  box-shadow: 0 2px 8px rgba(0,0,0,.25);
+  display: grid; place-content: center; font-size: 17px;
+  position: relative;
+}
+.m-move.walk { border-color: #0E9F6E; }
+.m-move::after {
+  content: ''; position: absolute; inset: -6px; border-radius: 50%;
+  border: 2px solid var(--blue); opacity: .6;
+  animation: fs-pulse 1.8s ease-out infinite;
+}
+.m-move.walk::after { border-color: #0E9F6E; }
+@keyframes fs-pulse {
+  0%   { transform: scale(.72); opacity: .65; }
+  70%  { transform: scale(1.35); opacity: 0; }
+  100% { transform: scale(1.35); opacity: 0; }
+}
+/* Leaflet positions markers with transform, so easing it smooths the 500ms steps
+   into continuous travel. */
+.leaflet-marker-icon:has(.m-move) { transition: transform .5s linear; }
+@media (prefers-reduced-motion: reduce) {
+  .m-move::after { animation: none; }
+  .leaflet-marker-icon:has(.m-move) { transition: none; }
+}

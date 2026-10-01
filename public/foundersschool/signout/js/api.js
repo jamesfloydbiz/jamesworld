@@ -28,6 +28,9 @@
       cancel: (id, sid) => rpc('fs_cancel', { p_id: id, p_student: sid }),
       dash: (pin) => rpc('fs_dash', { p_pin: pin, p_ttl: C.requestTtlMin }),
       raBack: (pin, id) => rpc('fs_ra_back', { p_pin: pin, p_id: id }),
+      sendNote: (studentId, kind, text) => rpc('fs_note_add', { p_student: studentId, p_kind: kind, p_text: text }),
+      myNotes: (studentId) => rpc('fs_notes_mine', { p_student: studentId }),
+      resolveNote: (pin, id) => rpc('fs_note_done', { p_pin: pin, p_id: id }),
       addStudent: (pin, name, grade) => rpc('fs_ra_add', { p_pin: pin, p_name: name, p_grade: grade || '' }),
       removeStudent: (pin, id) => rpc('fs_ra_remove', { p_pin: pin, p_id: id }),
     };
@@ -38,10 +41,12 @@
     const KEY = 'fs_demo_v1';
     const uid = () => (crypto.randomUUID ? crypto.randomUUID() : 'id' + Math.random().toString(36).slice(2) + Date.now());
     const names = ['Maya Chen', 'Jordan Reyes', 'Amara Okafor', 'Theo Bennett', 'Sofia Alvarez', 'Noah Kim', 'Liam Patel',
-      'Zara Hussain', 'Eli Goldberg', 'Nia Thompson', 'Mateo Rossi', 'Priya Nair'];
+      'Zara Hussain', 'Eli Goldberg', 'Nia Thompson', 'Mateo Rossi', 'Priya Nair', 'Dante Oyelaran', 'Hana Watanabe',
+      'Ruby Castellanos', 'Omar Haddad', 'Sloane Marchetti', 'Kofi Boateng', 'Ingrid Lindqvist', 'Tomas Silva'];
     function load() {
       let s; try { s = JSON.parse(localStorage.getItem(KEY)); } catch (e) {}
-      if (!s) s = { students: names.map((n) => ({ id: uid(), name: n, grade: '9th', active: true })), signouts: [] };
+      if (!s) s = { students: names.map((n) => ({ id: uid(), name: n, grade: '9th', active: true })), signouts: [], notes: [] };
+      if (!s.notes) s.notes = [];
       return s;
     }
     const save = (s) => localStorage.setItem(KEY, JSON.stringify(s));
@@ -72,8 +77,8 @@
           mk('Maya', 'Jordan', 'Fulton Center', 'Broadway & Fulton St, Manhattan', 40.7103, -74.0091, 'Food', 'walk', 5, 25, 'active', 12, 28),
           mk('Amara', 'Theo', 'Brookfield Place', '230 Vesey St, Manhattan', 40.7129, -74.0150, 'Errand', 'walk', 9, 15, 'active', 34, 6),
           mk('Sofia', 'Noah', 'Swim — Asphalt Green Battery Park', '212 North End Ave, Manhattan', 40.7161, -74.0163, 'Practice', 'walk', 12, 90, 'active', 71, -9, null, 'walkOver', 'Swim — Asphalt Green Battery Park'),
-          mk('Mateo', 'Priya', 'Soccer — Pier 40', '353 West St, Manhattan', 40.7300, -74.0110, 'Practice', 'car', 14, 90, 'active', 40, 64, null, 'rideshare', 'Soccer — Pier 40'),
-          mk('Nia', 'Eli', 'Basketball — Boys & Girls Republic', '888 E 6th St, Manhattan', 40.7236, -73.9780, 'Practice', 'car', 16, 90, 'pending', 3, null, null, 'shuttle', 'Basketball — Boys & Girls Republic'),
+          mk('Mateo', 'Priya', 'Soccer — Pier 40', '353 West St, Manhattan', 40.7300, -74.0110, 'Practice', 'car', 14, 90, 'active', 109, 9, null, 'rideshare', 'Soccer — Pier 40'),
+          mk('Nia', 'Eli', 'Basketball — Boys & Girls Republic', '888 E 6th St, Manhattan', 40.7236, -73.9780, 'Practice', 'car', 16, 90, 'active', 6, 117, null, 'shuttle', 'Basketball — Boys & Girls Republic'),
           mk('Liam', 'Zara', 'Stone Street', 'Financial District, Manhattan', 40.7040, -74.0106, 'Food', 'walk', 6, 30, 'pending', 2, null),
           mk('Eli', 'Nia', 'Oculus / World Trade Center', '185 Greenwich St, Manhattan', 40.7115, -74.0116, 'Meeting', 'walk', 8, 30, 'returned', 95, -40, 38),
         ];
@@ -128,12 +133,31 @@
         expire(s, C.requestTtlMin);
         const cut = Date.now() - 24 * 3600000;
         const rows = s.signouts.filter((r) => OPEN.includes(r.status) || new Date(r.created_at).getTime() > cut).map((r) => shape(s, r)).reverse();
-        return { signouts: rows, students: s.students.filter((t) => t.active).map(({ id, name, grade }) => ({ id, name, grade })) };
+        return { signouts: rows, students: s.students.filter((t) => t.active).map(({ id, name, grade }) => ({ id, name, grade })),
+                 notes: [...s.notes].reverse().map((n) => ({ ...n, from: nm(s, n.student_id).name })) };
       }),
       raBack: (pin, id) => wrap((s) => {
         if (pin !== C.demoRaPin) throw new Error('Wrong passcode.');
         const r = s.signouts.find((x) => x.id === id);
         if (r && r.status === 'active') { r.status = 'returned'; r.returned_at = new Date().toISOString(); }
+        return { ok: true };
+      }),
+      /* Requests and feedback from students. The handbook has them writing the house norms at
+         a weekly Town Hall, so this is the between-meetings version of the same thing: anything
+         that should not wait for Sunday, in front of the RA the moment it is written. */
+      sendNote: (studentId, kind, text) => wrap((s) => {
+        const body = String(text || '').trim();
+        if (!body) throw new Error('Write something first.');
+        s.notes.push({ id: uid(), student_id: studentId, kind, text: body.slice(0, 600),
+          created_at: new Date().toISOString(), done_at: null });
+        return { ok: true };
+      }),
+      myNotes: (studentId) => wrap((s) => ({
+        notes: s.notes.filter((n) => n.student_id === studentId).reverse() })),
+      resolveNote: (pin, id) => wrap((s) => {
+        if (pin !== C.demoRaPin) throw new Error('Wrong passcode.');
+        const n = s.notes.find((x) => x.id === id);
+        if (n && !n.done_at) n.done_at = new Date().toISOString();
         return { ok: true };
       }),
       addStudent: (pin, name, grade) => wrap((s) => {
@@ -163,6 +187,12 @@
       if (left <= C.soonMin) return 'soon';
       return 'active';
     },
+    noteKinds: [
+      { key: 'request', label: 'Request' },
+      { key: 'idea',    label: 'Idea for the house' },
+      { key: 'issue',   label: 'Something is wrong' },
+      { key: 'feedback', label: 'Feedback' },
+    ],
     modeLabel: { walk: 'Walking', transit: 'Subway / bus', car: 'Car / rideshare' },
     rideLabel: { shuttle: 'House shuttle', rideshare: 'Rideshare', transitPass: 'Subway / bus', parent: 'Parent pickup', walkOver: 'Walking' },
   };

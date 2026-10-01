@@ -5,6 +5,7 @@
 
   const S = {
     me: null, roster: [], busy: [], mine: { open: null, last: null }, lastJson: '',
+    notes: [], noteOpen: false, noteKind: null, noteText: '',
     flow: false, step: 0, err: '', sending: false, dismissed: new Set(JSON.parse(localStorage.getItem('fs_dismissed') || '[]')),
     d: blank(),
   };
@@ -20,9 +21,9 @@
     try {
       const r = await API.roster(); S.roster = r.students; S.busy = r.busy;
       if (S.me && !S.roster.find((x) => x.id === S.me.id)) { S.me = null; ID.removeItem('fs_me'); }
-      if (S.me) S.mine = await API.mine(S.me.id);
+      if (S.me) { S.mine = await API.mine(S.me.id); S.notes = (await API.myNotes(S.me.id)).notes; }
     } catch (e) { /* offline blip — keep the last screen */ return; }
-    const j = JSON.stringify([S.mine, S.busy, S.roster.length, S.me && S.me.id]);
+    const j = JSON.stringify([S.mine, S.busy, S.roster.length, S.me && S.me.id, S.notes]);
     if (j !== S.lastJson) { S.lastJson = j; render(); }
     else tick();
   }
@@ -36,6 +37,7 @@
     if (S.me) who.innerHTML = `${esc(S.me.name)}<button id="notme">Not you?</button>`;
     dock.classList.add('hidden');
     if (!S.me) return viewIdentity();
+    if (S.noteOpen) return viewNote();
     if (o && (o.student.id === S.me.id || o.status === 'active')) return viewStatus();
     if (S.flow) return viewFlow();
     return viewHome();
@@ -91,8 +93,44 @@
       <div class="kicker">Hey ${esc(S.me.name.split(' ')[0])}</div>
       <h1>Heading out?</h1>
       <p class="sub">Sign out with a buddy so your RA knows where you are and when you'll be back.</p>
-      <button class="btn" id="go">Sign out</button>`;
+      <button class="btn" id="go">Sign out</button>
+      <div class="label">Anything else?</div>
+      <button class="btn ghost" id="note">Request or feedback</button>
+      <p class="note">Goes straight to your RA. Bigger things go to Sunday's Town Hall.</p>
+      ${S.notes && S.notes.length ? `<div class="label">What you have sent</div>
+        <div class="list">${S.notes.slice(0, 5).map((n) => `<div class="row" style="cursor:default"><b>${esc(kindLabel(n.kind))}</b>
+          <span>${esc(n.text)}</span><span class="note" style="margin-top:4px">${n.done_at ? 'Handled' : 'Waiting on your RA'}</span></div>`).join('')}</div>` : ''}`;
     $('#go').onclick = startFlow;
+    $('#note').onclick = () => { S.noteOpen = true; S.err = ''; render(); };
+  }
+
+  const kindLabel = (k) => ((C.noteKinds || window.FS.noteKinds || []).find((x) => x.key === k) || {}).label || k;
+
+  /* Requests and feedback. Deliberately not a sign-out: no buddy, no map, no timer -- it is a
+     message, and making it look like a trip would bury it. */
+  function viewNote() {
+    const kinds = window.FS.noteKinds;
+    app.innerHTML = `${backBtn()}<div class="kicker">Your RA</div><h1>Request or feedback</h1>
+      <p class="sub">Anything you want changed, fixed, or tried. Signed with your name.</p>
+      ${S.err ? `<div class="err">${esc(S.err)}</div>` : ''}
+      <div class="chips">${kinds.map((k) => `<button class="chip ${S.noteKind === k.key ? 'sel' : ''}" data-k="${k.key}">${esc(k.label)}</button>`).join('')}</div>
+      <div class="label">What is it?</div>
+      <textarea class="field" id="ntext" rows="4" placeholder="e.g. Can we add a Thursday climbing session?">${esc(S.noteText || '')}</textarea>`;
+    wireBack();
+    dock.classList.remove('hidden');
+    dockInner.innerHTML = `<button class="btn" id="nsend" ${S.sending ? 'disabled' : ''}>${S.sending ? 'Sending…' : 'Send to my RA'}</button>`;
+    app.onclick = (e) => { const c = e.target.closest('[data-k]'); if (c) { S.noteKind = c.dataset.k; render(); } };
+    $('#ntext').oninput = (e) => { S.noteText = e.target.value; };
+    $('#nsend').onclick = async () => {
+      if (!S.noteKind) { S.err = 'Pick what kind of note this is.'; return render(); }
+      if (!(S.noteText || '').trim()) { S.err = 'Write something first.'; return render(); }
+      S.sending = true; render();
+      try {
+        await API.sendNote(S.me.id, S.noteKind, S.noteText);
+        S.noteOpen = false; S.noteText = ''; S.noteKind = null; S.err = '';
+      } catch (e) { S.err = e.message || 'Could not send that.'; }
+      S.sending = false; await refresh(); render();
+    };
   }
 
   function startFlow() { S.flow = true; S.step = 0; S.err = ''; S.d = blank(); render(); }
@@ -100,7 +138,7 @@
   const STEPS = ['Buddy', 'Where', 'Why', 'Review'];
   function progress() { return `<div class="progress">${STEPS.map((_, i) => `<span class="${i <= S.step ? 'on' : ''}"></span>`).join('')}</div>`; }
   function backBtn() { return `<button class="back" id="stepback">← ${S.step === 0 ? 'Cancel' : 'Back'}</button>`; }
-  function wireBack() { $('#stepback').onclick = () => { if (S.step === 0) { S.flow = false; } else S.step--; render(); }; }
+  function wireBack() { $('#stepback').onclick = () => { if (S.noteOpen) { S.noteOpen = false; S.err = ''; } else if (S.step === 0) { S.flow = false; } else S.step--; render(); }; }
 
   function viewFlow() {
     const d = S.d;
