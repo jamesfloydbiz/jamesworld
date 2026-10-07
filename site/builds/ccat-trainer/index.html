@@ -1487,6 +1487,9 @@ function renderMasteryPanel(){
     }).join('');
     return `<div class="mb-4"><div class="text-xs uppercase tracking-wide text-gray-500 mb-2">${cat}</div>${rows}</div>`;
   }).join('');
+  // 27 subtypes is a very long list to scroll past every time. The headline —
+  // how many are mastered, and the bar — stays visible; the per-subtype rows
+  // fold away.
   return `
     <div class="card p-5 mb-4">
       <div class="flex justify-between items-center mb-1">
@@ -1494,8 +1497,11 @@ function renderMasteryPanel(){
         <span class="pill" style="border-color:var(--acc);color:var(--acc);">${mp.mastered}/${mp.total} mastered</span>
       </div>
       <div class="bar mb-2"><div style="width:${mp.pct}%;background:var(--acc);"></div></div>
-      <div class="text-xs text-gray-500 mb-4">Mastered = ≥${Math.round(MASTERY_ACC*100)}% over your last ${MASTERY_WIN} attempts (min ${MASTERY_MIN}). Practice steers toward your weakest un-mastered subtype and retires the rest to a light maintenance trickle.</div>
-      ${groups}
+      <div class="text-xs text-gray-500 mb-2">Mastered = ≥${Math.round(MASTERY_ACC*100)}% over your last ${MASTERY_WIN} attempts (min ${MASTERY_MIN}). Practice steers toward your weakest un-mastered subtype and retires the rest to a light maintenance trickle.</div>
+      <details>
+        <summary class="text-xs cursor-pointer" style="color:var(--acc);">Show all ${mp.total} subtypes</summary>
+        <div class="mt-3">${groups}</div>
+      </details>
     </div>`;
 }
 
@@ -1605,10 +1611,6 @@ function renderImprovement(){
       </div>
       ${startVsNow()}
       ${PACE.length? `<div class="text-xs text-gray-500 mb-3">Speed: <span class="mono text-white">${(PACE.reduce((a,b)=>a+b,0)/PACE.length).toFixed(1)}s</span>/question over your last ${PACE.length} — the real test gives you ~18s each. ${paceVerdict()}</div>`:''}
-      <div class="card p-4 mb-4">
-        <div class="text-xs text-gray-500 mb-2">Where your time goes — slowest question types first</div>
-        ${slowestTable(3)}
-      </div>
       ${multiDay? `<div class="text-xs text-gray-500 mb-1">Form trend</div>${spark}`:''}
     </div>`;
 }
@@ -1621,7 +1623,21 @@ function renderStats(){
   Object.values(STATS).forEach(x=>boxes[x.box]++);
   const last = HIST[HIST.length-1];
   const bestExam = HIST.reduce((b,e)=>e.score>b?e.score:b, 0);
-  const readiness = Math.min(100, Math.round((bestExam/PASS)*100));
+  /* Projected percentile. Two things decide a CCAT score: how fast you get
+     through it and how often you are right. At p seconds a question you reach
+     900/p of the 50; unreached questions score nothing, because running out of
+     clock is how the test is actually lost. Expected raw = reached × accuracy,
+     then through the same curve the exam result uses. Falls back to your best
+     exam when there is not enough practice data to project from. */
+  const paceAvg = PACE.length ? PACE.reduce((a,b)=>a+b,0)/PACE.length : null;
+  const accNow  = RECENT.length ? RECENT.reduce((a,b)=>a+b,0)/RECENT.length : null;
+  const reach   = paceAvg ? Math.min(EXAM_LEN, EXAM_TIME/paceAvg) : null;
+  const projRaw = (reach!=null && accNow!=null) ? reach*accNow : null;
+  const projPct = projRaw!=null ? percentile(Math.round(projRaw))
+                : bestExam ? percentile(bestExam) : null;
+  const projFrom = projRaw!=null
+    ? `${Math.round(projRaw)}/${EXAM_LEN} projected · ${Math.round(reach)} reached at ${paceAvg.toFixed(1)}s`
+    : bestExam ? `from your best exam, ${bestExam}/${EXAM_LEN}` : 'practise a little and this fills in';
   V.innerHTML = `
     ${modeHead('Stats', 'See what you have mastered, and watch yourself get better over time.')}
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
@@ -1636,13 +1652,20 @@ function renderStats(){
         <div class="text-xs text-gray-500 mt-1">Pass line: ${PASS}</div>
       </div>
       <div class="card p-5">
-        <div class="text-xs text-gray-500">Readiness (vs pass)</div>
-        <div class="text-3xl font-bold mono">${readiness}%</div>
-        <div class="bar mt-2"><div style="width:${readiness}%"></div></div>
+        <div class="text-xs text-gray-500">Projected percentile</div>
+        <div class="text-3xl font-bold mono" style="color:${projPct==null?'var(--fg)':projPct>=85?'var(--acc)':projPct>=70?'var(--warn)':'var(--bad)'};">${projPct==null?'—':projPct+'<span class="text-lg text-gray-500">th</span>'}</div>
+        ${projPct==null?'':`<div class="bar mt-2"><div style="width:${projPct}%;background:${projPct>=85?'var(--acc)':projPct>=70?'var(--warn)':'var(--bad)'};"></div></div>`}
+        <div class="text-xs text-gray-500 mt-1">${projFrom}</div>
       </div>
     </div>
 
     ${renderImprovement()}
+
+    <div class="card p-5 mb-4">
+      <h3 class="font-bold mb-1">Where your time goes</h3>
+      <div class="text-xs text-gray-500 mb-3">Slowest question types first.${PACE.length? ` You average <span class="mono text-white">${(PACE.reduce((a,b)=>a+b,0)/PACE.length).toFixed(1)}s</span> over your last ${PACE.length}; the real test gives you about 18s each. ${paceVerdict()}`:''}</div>
+      ${slowestTable(3)}
+    </div>
 
     <div class="card p-5 mb-4">
       <h3 class="font-bold mb-3">Accuracy by category</h3>
