@@ -65,6 +65,12 @@ def check(path):
         if q.get("d") not in (1,2,3):          problems.append((q["id"], f"difficulty {q.get('d')}"))
         if q.get("c") not in ("Verbal","Numerical","Logic","Spatial"):
                                               problems.append((q["id"], f"category {q.get('c')}"))
+        # nine figures ending in a '?' is a 3x3 matrix. Without layout='grid'
+        # renderVis draws it as one flat row, which hides the rows and columns
+        # that ARE the pattern — the questions become unreadable, not just hard.
+        vis = q.get("vis") or []
+        if len(vis) == 9 and vis[-1] == "QMARK" and q.get("layout") != "grid":
+            problems.append((q["id"], "3x3 matrix without layout='grid' — will draw as a flat row"))
         # an odd-one-out stem lists its own options; editing one and not the
         # other leaves a question that contradicts itself on screen
         if q.get("sub") == "oddoneout":
