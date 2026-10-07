@@ -1258,6 +1258,17 @@ function finishExam(){
   HIST.push(entry); save(LS.history, HIST);
   // credit stats too
   examState.ans.forEach(a=>rec(a.id, a.correct, false, a.secs));
+  // Exam answers now carry their own timing, so they belong in the pace window
+  // too. Accuracy already counted exams — pace did not, which meant the
+  // projected percentile mixed exam accuracy with practice-only speed, and
+  // practice speed is the softer of the two: nothing is pressing you there.
+  examState.ans.forEach(a=>{
+    if(typeof a.secs === 'number' && a.secs > 0 && a.secs <= IDLE_CAP){
+      PACE.push(Math.round(a.secs*10)/10);
+      if(PACE.length > FORM_WIN) PACE.shift();
+    }
+  });
+  save(LS.pace, PACE);
   logProgress();
   render();
   confetti({big: score >= PASS});
