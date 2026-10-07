@@ -56,7 +56,7 @@ def check(path):
             degs = [int(v[6:]) for v in (q.get("vis") or []) if str(v).startswith("ARROW:")]
             step = re.search(r'(\d+)\s*°', q.get("q", ""))
             key = o[q["a"]] if isinstance(q.get("a"), int) and 0 <= q["a"] < len(o) else ""
-            if len(degs) >= 2 and step and str(key).startswith("ARROW:"):
+            if len(degs) >= 1 and step and str(key).startswith("ARROW:"):
                 sign = -1 if re.search(r'COUNTER|ANTICLOCK', q["q"], re.I) else 1
                 want = (degs[-1] + sign * int(step.group(1))) % 360
                 if int(key[6:]) % 360 != want:

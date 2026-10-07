@@ -1695,7 +1695,13 @@ function renderStats(){
           const pct = percentile(e.score);
           return `<div class="flex justify-between items-center text-sm p-3 rounded border" style="border-color:${pass?'rgba(74,222,128,.2)':'rgba(248,113,113,.2)'};">
             <span>${d.toLocaleDateString()} ${d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</span>
-            <span class="mono">${e.score}/${e.total} · ~p${pct} · ${fmtTime(e.dur)}${e.tabBlurs?` · ⚠${e.tabBlurs}`:''}</span>
+            <span class="mono">${e.score}/${e.total} · ~p${pct} · ${fmtTime(e.dur)}${(()=>{
+              // Per-question times only start with exams taken from Oct 2026 on,
+              // but total duration was always stored — so the average is
+              // recoverable for every exam ever taken, including old ones.
+              const avg = e.total ? e.dur/e.total : 0;
+              return avg ? ` · <span style="color:${avg<=18?'var(--acc)':avg<=24?'var(--warn)':'var(--bad)'};">${avg.toFixed(1)}s/q</span>` : '';
+            })()}${e.tabBlurs?` · ⚠${e.tabBlurs}`:''}</span>
           </div>`;
         }).join('')}</div>`}
     </div>
