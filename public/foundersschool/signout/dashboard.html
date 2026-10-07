@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex,nofollow">
 <title>RA Dashboard · Founders School</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
-<link rel="stylesheet" href="css/brand.css?v=8">
+<link rel="stylesheet" href="css/brand.css?v=9">
 </head>
 <body>
 <div id="demoflag" class="demo-flag hidden">DEMO MODE — passcode is “demo”. Demo data, built in the structure of the Life360 API.</div>
@@ -36,11 +36,11 @@
 </main>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
-<script src="js/config.js?v=8"></script>
-<script src="js/api.js?v=8"></script>
-<script src="js/geo.js?v=8"></script>
-<script src="js/calendar.js?v=8"></script>
-<script src="js/life360.js?v=8"></script>
+<script src="js/config.js?v=9"></script>
+<script src="js/api.js?v=9"></script>
+<script src="js/geo.js?v=9"></script>
+<script src="js/calendar.js?v=9"></script>
+<script src="js/life360.js?v=9"></script>
 <script>
 (function () {
   const C = FS_CONFIG, API = FS_API, { esc, time, minsLeft, phase, modeLabel, rideLabel } = FS, GEO = window.FS_GEO;
@@ -182,8 +182,8 @@
     tripColor.set(k, c); return c;
   }
   const groupIcon = (n, label, kind) => L.divIcon({ className: '', iconSize: [58, 30],
-    // 37 Wall St and 180 Maiden Ln are ~450m apart, so at the default zoom a chip centred
-    // on the school lands under the house pin. Anchor it below its point instead.
+    // The flats and 180 Maiden Ln are a few hundred metres apart, so at the default zoom
+    // a chip centred on the school lands under a house pin. Anchor it below its point.
     iconAnchor: kind === 'school' ? [29, -6] : [29, 15],
     html: `<div class="m-grp ${kind || ''} ${n ? '' : 'none'}">${n ? `<b>${n}</b>` : ''}<span>${esc(label)}</span></div>` });
   /* One dot per *journey*, not per student. Thirteen students leaving for the same open gym

@@ -155,7 +155,7 @@
   /* ── The house week ──────────────────────────────────────────────────────
      Handbook section 5, "Daily and weekly rhythm", gives the school-night clock, and
      section 10 gives the slot for each evening. Both are quoted exactly. School runs
-     08:45 to 17:00 at 180 Maiden Lane, a five-minute walk from 37 Wall Street, which is
+     08:45 to 17:00 at 180 Maiden Lane, a few minutes' walk from either flat, which is
      the handbook's own "5:00 to 5:15pm: arrive home and eat a healthy snack". */
   const SCHOOL = { days: [1, 2, 3, 4, 5], start: '08:45', end: '17:00' };
   const EVENING_SLOT = {                                        // handbook section 10
@@ -186,7 +186,7 @@
       add({ title: 'Snack and a word with the RA', start: at(date, '17:10'), end: at(date, '17:25') });
       // "5:15 to 6:15 Practice block. Everyone practices at once, in the common room or
       // the park." Shifted eight minutes later than the handbook's clock because school
-      // now ends at 5pm and 180 Maiden Lane is a five-minute walk from 37 Wall Street.
+      // now ends at 5pm and 180 Maiden Lane is a few minutes' walk from either flat.
       add({ kind: 'practice', title: 'Practice block', start: at(date, '17:25'), end: at(date, d === 1 ? '18:00' : '18:15'),
             note: 'Something you enjoy getting better at, unrelated to your business' });
       add({ title: 'Log the session', start: at(date, d === 1 ? '18:00' : '18:15'), end: at(date, d === 1 ? '18:10' : '18:30') });
@@ -377,7 +377,7 @@
     // Named students split ten and ten; anyone the RA adds later is placed by name, so the
     // two flats stay roughly even without anybody having to pick.
     if (!base.home) base.home = TRIBECA.has(name) ? 'tribeca'
-      : STUDENT[name] ? 'wall' : HOMES[hash(name || '?') % HOMES.length];
+      : STUDENT[name] ? HOMES[0] : HOMES[hash(name || '?') % HOMES.length];
     return base;
   }
   const homeOf = (name) => profile(name).home;

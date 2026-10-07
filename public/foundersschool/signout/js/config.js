@@ -10,7 +10,7 @@ window.FS_CONFIG = {
      15 to 20 boarders, which is the same threshold that makes a second flat sensible.
      `house` stays as the first one: the sign-out flow and the QR poster use it. */
   houses: [
-    { key: 'wall',    name: 'Wall Street flat', short: 'Wall St', address: '37 Wall Street, Manhattan',  lat: 40.706470, lng: -74.010138 },
+    { key: 'exchange', name: 'Exchange Place flat', short: 'Exchange Pl', address: '20 Exchange Place, Manhattan', lat: 40.705850, lng: -74.009050 },
     { key: 'tribeca', name: 'Tribeca flat',     short: 'Tribeca', address: '101 Warren Street, Manhattan', lat: 40.715730, lng: -74.011700 },
   ],
   get house() { return this.houses[0]; },
