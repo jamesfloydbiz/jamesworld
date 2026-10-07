@@ -392,7 +392,30 @@
     const call = d === 0 ? familyCall(name, date) : null;
     if (call) base = base.filter((h) => !(call.start < h.end && h.start < call.end));
 
-    const out = base.concat(own, call ? [call] : []).sort((x, y) => x.start - y.start);
+    return withReturns(base.concat(own, call ? [call] : []).sort((x, y) => x.start - y.start), date);
+  }
+
+  /* People go home between things. Without this a student whose dance class ends at 09:30
+     and whose next scheduled entry is 7pm stayed at the dance studio for nine hours, which
+     made Saturday lunchtime read as nobody at the house and nobody moving -- a frozen map
+     and a headcount that was simply wrong. A gap only counts if there is time to get home,
+     be there a while, and still get to the next thing. */
+  function withReturns(entries, date) {
+    const out = [];
+    for (let i = 0; i < entries.length; i++) {
+      const e = entries[i], nx = entries[i + 1];
+      out.push(e);
+      if (e.place === 'house') continue;
+      const nextStart = nx ? nx.start : at(date, '21:30');
+      const nextPlace = nx ? nx.place : 'house';
+      if (nextPlace === e.place) continue;
+      const back = travel(e.place, 'house').min, onward = travel('house', nextPlace).min;
+      if (minutesBetween(e.end, nextStart) < back + onward + 45) continue;
+      const start = new Date(+e.end + back * 60000);
+      const end = new Date(+nextStart - onward * 60000);
+      if (end <= start) continue;
+      out.push(mk({ title: 'Back at the house', place: 'house', date, start, end }));
+    }
     return out;
   }
 
