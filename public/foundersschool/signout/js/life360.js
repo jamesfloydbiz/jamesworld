@@ -40,19 +40,23 @@
      line for the rest of the session. */
   const legs = new Map();          // 'from>to|profile' -> { line } | { until } while cooling off
   const PROFILE = { walk: 'foot', car: 'car', transit: null };
-  const RETRY_MS = 30000;
+  const RETRY_MS = 120000;   // the free OSRM instance answers 429 under load; back off properly
 
-  function leg(fromKey, toKey, mode) {
+  /* `a` and `b` override the place lookup, for journeys whose endpoints are not places in
+     the table -- a sign-out destination is a one-off, chosen by a student from a search. */
+  function leg(fromKey, toKey, mode, a, b) {
     const prof = PROFILE[mode];
     // No timetable data exists on the free tier, so a subway trip has no honest geometry.
     // Drawing it down a car route would assert a path the app does not know.
     if (!prof) return null;
+    const from = a || CAL.places[fromKey], to = b || CAL.places[toKey];
+    if (!from || !to) return null;
     const key = `${fromKey}>${toKey}|${prof}`;
     const hit = legs.get(key);
     if (hit && hit.line) return hit.line;
     if (hit && hit.until > Date.now()) return null;              // cooling off after a failure
     legs.set(key, { until: Date.now() + RETRY_MS });
-    GEO.routeLine(prof, CAL.places[fromKey], CAL.places[toKey])
+    GEO.routeLine(prof, from, to)
       .then((line) => { legs.set(key, { line }); bump(); })
       .catch(() => { legs.set(key, { until: Date.now() + RETRY_MS }); });
     return null;
@@ -202,10 +206,12 @@
     });
     const n = (k) => (groups.get(k) ? groups.get(k).rows.length : 0);
     const offPlan = [...groups.values()].flatMap((g) => g.rows).concat(transit).filter((r) => r.offPlan);
+    // Boarding is split across two flats, so "at home" is a total with a split behind it.
+    const homes = CAL.homes.map((k) => ({ key: k, place: CAL.places[k], n: n(k) }));
     return {
       at: now, groups, transit, unshared,
-      house: n('house'), school: n('school'), offPlan,
-      out: [...groups.entries()].filter(([k]) => k !== 'house' && k !== 'school')
+      homes, house: homes.reduce((a, h) => a + h.n, 0), school: n('school'), offPlan,
+      out: [...groups.entries()].filter(([k]) => !CAL.isHome(k) && k !== 'school')
         .reduce((a, [, g]) => a + g.rows.length, 0),
       moving: transit.length, unaccounted: unshared.length, roster: roster.length,
     };

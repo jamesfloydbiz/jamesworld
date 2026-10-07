@@ -85,7 +85,10 @@
      tidiness: travel is routed per *place pair*, so twenty students walking home from
      school share one route lookup instead of twenty. */
   const P = {
-    house:     { name: C.house.name,   address: C.house.address,  lat: C.house.lat,  lng: C.house.lng, src: 'doc' },
+    // One entry per residence. `HOMES` is the set of keys, so anything asking "is this
+    // home?" asks once rather than comparing against a literal in nine places.
+    ...Object.fromEntries(C.houses.map((h) => [h.key,
+      { name: h.name, short: h.short, address: h.address, lat: h.lat, lng: h.lng, src: 'doc', home: true }])),
     school:    { name: C.school.name,  address: C.school.address, lat: C.school.lat, lng: C.school.lng, src: 'doc', ride: 'walk' },
     // House Week, "Day by day" — Monday
     henry:     { name: 'Henry Street Settlement',      address: '301 Henry St, Manhattan',        lat: 40.7138, lng: -73.9830, src: 'doc', ride: 'car' },
@@ -117,6 +120,8 @@
     battery:   { name: 'Battery Park',                 address: 'Battery Pl, Manhattan',          lat: 40.7033, lng: -74.0170, src: 'doc', ride: 'walk' },
   };
   Object.keys(P).forEach((k) => { P[k].key = k; });
+  const HOMES = C.houses.map((h) => h.key);
+  const isHome = (k) => P[k] && P[k].home === true;
 
   /* Travel time, straight from distance. Deliberately not a routing call: the schedule has
      to be a pure function of the clock, and awaiting a network round trip per leg would make
@@ -138,7 +143,7 @@
     const km = GEO.haversineKm(a, b) * 1.3;            // streets are not straight lines
     const walkMin = Math.max(3, Math.round((km / SPEED.walk) * 60));
     // The destination decides; coming home is the same way you went.
-    const pref = (toKey === 'house' ? a.ride : b.ride) || 'walk';
+    const pref = (isHome(toKey) ? a.ride : b.ride) || 'walk';
     const mode = pref === 'walk' && walkMin > 25 ? 'car' : pref;
     const out = mode === 'walk'
       ? { mode, min: walkMin, km }
@@ -162,15 +167,15 @@
      two calls at the same instant return different ids, which broke the one property the
      whole design rests on: ask the same question at the same clock, get the same answer. */
   const mk = (o) => {
-    const e = Object.assign({ kind: 'house', place: 'house', src: 'doc', who: 'house' }, o);
+    const e = Object.assign({ kind: 'house', src: 'doc', who: 'house' }, o);
     e.id = 'c' + hash(`${e.start ? +e.start : 0}|${e.title}|${e.place}`).toString(36);
     return e;
   };
 
   /* The parts of the day that are the same for everyone. A student's own activities are
      merged over the top of this, replacing whatever block they collide with. */
-  function houseDay(date) {
-    const d = dow(date), E = [], add = (o) => E.push(mk(Object.assign({ date }, o)));
+  function houseDay(date, home) {
+    const d = dow(date), E = [], add = (o) => E.push(mk(Object.assign({ date, place: home }, o)));
 
     if (SCHOOL.days.includes(d)) {
       add({ kind: 'school', title: 'School day', place: 'school',
@@ -245,7 +250,7 @@
         add({ kind: 'community', title: 'Open mic \u2014 Nuyorican Poets Cafe', place: 'nuyorican',
               start: at(date, '19:00'), end: at(date, '21:30'), consent: 'Tickets, about $10 each',
               note: 'Time set at Town Hall \u2014 the cafe publishes no fixed slot' });
-        add({ kind: 'activity', title: 'Rehearsal in the common room', place: 'house',
+        add({ kind: 'activity', title: 'Rehearsal in the common room',
               start: at(date, '15:00'), end: at(date, '16:30') });
         add({ title: 'Home, headcount, free time', start: at(date, '22:30'), end: at(date, '23:30') });
       } else if (PIECE === 2) {
@@ -257,9 +262,9 @@
         add({ title: 'Home, headcount, free time', start: at(date, '19:00'), end: at(date, '23:00') });
       } else {
         // Hosting. Cheapest of the four and the one students run themselves.
-        add({ kind: 'activity', title: 'Cook and set up for community night', place: 'house',
+        add({ kind: 'activity', title: 'Cook and set up for community night',
               start: at(date, '14:00'), end: at(date, '17:30') });
-        add({ kind: 'community', title: 'Community night at the house', place: 'house',
+        add({ kind: 'community', title: 'Community night at the flat',
               start: at(date, '18:00'), end: at(date, '21:30'),
               note: 'Day students and neighbours invited. Guest hours are set at Town Hall.' });
         add({ title: 'Clear up together', start: at(date, '21:30'), end: at(date, '22:30') });
@@ -320,6 +325,11 @@
                  note: 'Rehearsal for the Nuyorican open mic on the 30th' },
   };
   const a = (spec, extra) => Object.assign({}, spec, extra || {});
+  /* Who lives where. Ten and ten, mixed rather than sorted by activity, so neither flat is
+     "the volleyball flat" -- the handbook pairs roommates on shared interests and different
+     backgrounds, and a split that put all one sport in one place would undo that. */
+  const TRIBECA = new Set(['Jordan Reyes', 'Theo Bennett', 'Noah Kim', 'Zara Hussain', 'Nia Thompson',
+                           'Priya Nair', 'Hana Watanabe', 'Omar Haddad', 'Kofi Boateng', 'Tomas Silva']);
 
   const STUDENT = {
     'Maya Chen':          { skill: 'Guitar',            share: true,  acts: [A.gymHenry, A.ballRep, A.runSat, A.runSun] },
@@ -360,23 +370,30 @@
   ];
   const SKILLS = ['Guitar', 'Sketching', 'Mandarin', 'Bread', 'Chess', 'Songwriting'];
   function profile(name) {
-    if (STUDENT[name]) return STUDENT[name];
-    const h = hash(name || '?');
-    return { skill: SKILLS[h % SKILLS.length], share: true, acts: FALLBACK[h % FALLBACK.length], derived: true };
+    const base = STUDENT[name] || (() => {
+      const h = hash(name || '?');
+      return { skill: SKILLS[h % SKILLS.length], share: true, acts: FALLBACK[h % FALLBACK.length], derived: true };
+    })();
+    // Named students split ten and ten; anyone the RA adds later is placed by name, so the
+    // two flats stay roughly even without anybody having to pick.
+    if (!base.home) base.home = TRIBECA.has(name) ? 'tribeca'
+      : STUDENT[name] ? 'wall' : HOMES[hash(name || '?') % HOMES.length];
+    return base;
   }
+  const homeOf = (name) => profile(name).home;
 
   /* ── A student's day ─────────────────────────────────────────────────────
      House template, then the student's own activities laid over it: anything the student
      is personally doing wins, and the house block it collides with is dropped. */
   function dayFor(name, date) {
-    const pr = profile(name), d = dow(date);
+    const pr = profile(name), d = dow(date), home = pr.home;
     const own = (pr.acts || []).filter((x) => x.d === d).map((x) => mk({
-      kind: x.p === 'house' ? 'evening' : 'activity', title: x.t, place: x.p, date,
+      kind: x.p === 'house' ? 'evening' : 'activity', title: x.t, place: x.p === 'house' ? home : x.p, date,
       start: at(date, x.s), end: at(date, x.e), move: !!x.move, note: x.note || null,
       src: 'invented', who: 'student',
     }));
 
-    let base = houseDay(date);
+    let base = houseDay(date, home);
     // The practice block is where a personal skill goes, so name it rather than leaving
     // it generic -- that is the whole point of the block per handbook section 5.
     base.forEach((e) => { if (e.kind === 'practice') { e.title = `Practice block — ${pr.skill}`; e.src = pr.derived ? 'invented' : 'doc'; } });
@@ -392,7 +409,7 @@
     const call = d === 0 ? familyCall(name, date) : null;
     if (call) base = base.filter((h) => !(call.start < h.end && h.start < call.end));
 
-    return withReturns(base.concat(own, call ? [call] : []).sort((x, y) => x.start - y.start), date);
+    return withReturns(base.concat(own, call ? [call] : []).sort((x, y) => x.start - y.start), date, home);
   }
 
   /* People go home between things. Without this a student whose dance class ends at 09:30
@@ -400,21 +417,21 @@
      made Saturday lunchtime read as nobody at the house and nobody moving -- a frozen map
      and a headcount that was simply wrong. A gap only counts if there is time to get home,
      be there a while, and still get to the next thing. */
-  function withReturns(entries, date) {
+  function withReturns(entries, date, home) {
     const out = [];
     for (let i = 0; i < entries.length; i++) {
       const e = entries[i], nx = entries[i + 1];
       out.push(e);
-      if (e.place === 'house') continue;
+      if (e.place === home) continue;
       const nextStart = nx ? nx.start : at(date, '21:30');
-      const nextPlace = nx ? nx.place : 'house';
+      const nextPlace = nx ? nx.place : home;
       if (nextPlace === e.place) continue;
-      const back = travel(e.place, 'house').min, onward = travel('house', nextPlace).min;
+      const back = travel(e.place, home).min, onward = travel(home, nextPlace).min;
       if (minutesBetween(e.end, nextStart) < back + onward + 45) continue;
       const start = new Date(+e.end + back * 60000);
       const end = new Date(+nextStart - onward * 60000);
       if (end <= start) continue;
-      out.push(mk({ title: 'Back at the house', place: 'house', date, start, end }));
+      out.push(mk({ title: `Back at the ${P[home].short}`, place: home, date, start, end }));
     }
     return out;
   }
@@ -430,7 +447,7 @@
   function familyCall(name, date) {
     const i = slotIndex(name), start = at(date, '13:00');
     const s = new Date(start.getTime() + Math.floor(i / 2) * 20 * 60000);
-    return mk({ kind: 'call', title: 'Family call', place: 'house', date,
+    return mk({ kind: 'call', title: 'Family call', place: homeOf(name), date,
       start: s, end: new Date(s.getTime() + 20 * 60000), src: 'invented', who: 'student',
       note: CALL_PROMPTS.join(' · ') });
   }
@@ -445,8 +462,9 @@
   function locate(name, when) {
     const n = when ? new Date(when) : now();
     const today = dayFor(name, n);
-    // The place a student is at when the schedule says nothing: home.
-    let cur = null, next = null, prevEnd = startOfDay(n), prevPlace = 'house';
+    // The place a student is at when the schedule says nothing: their own flat.
+    const home = homeOf(name);
+    let cur = null, next = null, prevEnd = startOfDay(n), prevPlace = home;
 
     for (const e of today) {
       if (n >= e.start && n < e.end) { cur = e; break; }
@@ -457,7 +475,7 @@
       return { state: 'at', place: P[cur.place], entry: cur, since: cur.start,
                next: today.find((e) => e.start >= cur.end) || null };
     }
-    const toPlace = next ? next.place : 'house';
+    const toPlace = next ? next.place : home;
     if (toPlace !== prevPlace) {
       const t = travel(prevPlace, toPlace);
       // Leave up to twelve minutes early, by student. Deterministic, so the stagger is
@@ -487,13 +505,13 @@
     });
   }
   // Everything the whole house is doing, for the RA's own view of the week.
-  function houseWeek(from) {
+  function houseWeek(from, home) {
     const mon = mondayOf(from || now());
     return Array.from({ length: 7 }, (_, i) => {
       const date = addDays(mon, i);
       return { date, iso: isoDay(date), day: DAY_NAME[dow(date)], short: SHORT[dow(date)],
                slot: EVENING_SLOT[dow(date)],
-               entries: houseDay(date).filter((e) => e.kind === 'community' || e.kind === 'townhall' || e.kind === 'activity') };
+               entries: houseDay(date, home || HOMES[0]).filter((e) => e.kind === 'community' || e.kind === 'townhall' || e.kind === 'activity') };
     });
   }
 
@@ -611,6 +629,7 @@
 
   window.FS_CAL = {
     places: P, travel, profile, names: Object.keys(STUDENT), now, shifted,
+    homes: HOMES, isHome, homeOf,
     dayFor, weekFor, houseWeek, locate, familyCall, callPrompts: CALL_PROMPTS,
     weeklyUpdate, fmtTime, fmtDate,
     eveningSlot: EVENING_SLOT, school: SCHOOL,

@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex,nofollow">
 <title>RA Dashboard · Founders School</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
-<link rel="stylesheet" href="css/brand.css?v=3">
+<link rel="stylesheet" href="css/brand.css?v=8">
 </head>
 <body>
 <div id="demoflag" class="demo-flag hidden">DEMO MODE — passcode is “demo”. Demo data, built in the structure of the Life360 API.</div>
@@ -36,11 +36,11 @@
 </main>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
-<script src="js/config.js?v=3"></script>
-<script src="js/api.js?v=3"></script>
-<script src="js/geo.js?v=3"></script>
-<script src="js/calendar.js?v=3"></script>
-<script src="js/life360.js?v=3"></script>
+<script src="js/config.js?v=8"></script>
+<script src="js/api.js?v=8"></script>
+<script src="js/geo.js?v=8"></script>
+<script src="js/calendar.js?v=8"></script>
+<script src="js/life360.js?v=8"></script>
 <script>
 (function () {
   const C = FS_CONFIG, API = FS_API, { esc, time, minsLeft, phase, modeLabel, rideLabel } = FS, GEO = window.FS_GEO;
@@ -76,8 +76,10 @@
          is cheap to rebuild and a stale count is worse than a flicker. Students in motion
          are NOT in here -- they are persistent markers so they can be animated. */
       groupLayer = L.layerGroup().addTo(map);
-      homeMarker = L.marker([C.house.lat, C.house.lng], { icon: homeIcon(0), zIndexOffset: 500 }).addTo(map)
-        .bindTooltip(`<b>${esc(C.house.name)}</b><br>${esc(C.house.address || '')}`);
+      // One pin per flat, each carrying its own headcount.
+      C.houses.forEach((h) => {
+        homeMarkers[h.key] = L.marker([h.lat, h.lng], { icon: homeIcon(0, h.short), zIndexOffset: 500 }).addTo(map);
+      });
       // The school used to be a static chip for orientation. Now that the board tracks the
       // whole roster it carries a count like anywhere else -- for most of the day it is
       // where the house is, and a board that could not say so would be odd.
@@ -107,9 +109,9 @@
     try { draw(); } catch (e) { console.error('draw failed', e); }
   }
 
-  let homeMarker;
-  const homeIcon = (n) => L.divIcon({ className: '', iconSize: [54, 54], iconAnchor: [27, 27],
-    html: `<div class="m-home"><b>${n}</b><span>home</span></div>` });
+  const homeMarkers = {};
+  const homeIcon = (n, label) => L.divIcon({ className: '', iconSize: [58, 58], iconAnchor: [29, 29],
+    html: `<div class="m-home"><b>${n}</b><span>${esc(label || 'home')}</span></div>` });
 
   /* Where a pair is right now, from the clock rather than from a GPS feed: out along the leg,
      parked at the destination for the stay, then back along the same leg. SIMULATED -- the app
@@ -129,8 +131,9 @@
      would assert a path the app does not know. Those stay a straight line, which reads as
      "direction, not route". */
   const routes = new Map();       // signout id -> { line } | { until } while cooling off
+  const homeOfTrip = (r) => CAL.places[CAL.homeOf(r.student.name)] || CAL.places[CAL.homes[0]];
   const PROFILE = { walk: 'foot', transit: null, shuttle: 'car', rideshare: 'car', parent: 'car' };
-  const ROUTE_RETRY_MS = 30000;
+  const ROUTE_RETRY_MS = 120000;
   function ensureRoute(r) {
     const prof = PROFILE[moverKind(r)];
     if (!prof) return null;                       // transit: no honest geometry to draw
@@ -140,7 +143,7 @@
     // as a straight line for the rest of the session. Cool off, then try again.
     if (hit && hit.until > Date.now()) return null;
     routes.set(r.id, { until: Date.now() + ROUTE_RETRY_MS });
-    GEO.routeLine(prof, { lat: C.house.lat, lng: C.house.lng }, { lat: r.dest.lat, lng: r.dest.lng })
+    GEO.routeLine(prof, homeOfTrip(r), { lat: r.dest.lat, lng: r.dest.lng })
       .then((ln) => { routes.set(r.id, { line: ln }); if (data) draw(); })   // one redraw when it lands
       .catch(() => { routes.set(r.id, { until: Date.now() + ROUTE_RETRY_MS }); });
     return null;
@@ -239,7 +242,8 @@
   function soPos(r) {
     const L0 = leg(r);
     const dest = { key: 'so:' + r.id, name: r.dest.name, address: r.dest.address || '', lat: r.dest.lat, lng: r.dest.lng };
-    const home = { key: 'house', name: C.house.name, address: C.house.address, lat: C.house.lat, lng: C.house.lng };
+    // From the student's own flat, not whichever one happens to be first in the config.
+    const home = CAL.places[CAL.homeOf(r.student.name)] || CAL.places[CAL.homes[0]];
     const entry = { title: `${r.practice || r.purpose} \u00b7 signed out`, kind: 'signout' };
     if (!L0 || L0.phase === 'there' || L0.phase === 'due')
       return { state: 'at', place: dest, entry, since: new Date(r.accepted_at), signout: r };
@@ -263,19 +267,21 @@
     const seen = new Set();
     hc.groups.forEach((g, k) => {
       seen.add(k);
-      if (k === 'house') return;                        // the home pin already carries it
+      if (CAL.isHome(k)) return;                        // each flat's own pin carries it
       const label = k === 'school' ? 'school' : short(g.place.name);
       L.marker([g.place.lat, g.place.lng], { icon: groupIcon(g.rows.length, label, PLACE_KIND[k]), zIndexOffset: 300 })
         .addTo(groupLayer)
-        .bindTooltip(`<b>${esc(g.place.name)}</b><br>${g.rows.length} student${g.rows.length === 1 ? '' : 's'}` +
-          `<br>${esc(g.rows.map((r) => r.first).join(', '))}` +
-          `${g.rows[0] && g.rows[0].at.entry ? '<br>' + esc(g.rows[0].at.entry.title) : ''}`);
+        .bindTooltip(`<b>${esc(g.place.name)}</b><br>${esc(g.place.address || '')}` +
+          `${g.rows[0] && g.rows[0].at.entry ? `<br><i>${esc(g.rows[0].at.entry.title)}</i>` : ''}` +
+          `<br>${g.rows.length} student${g.rows.length === 1 ? '' : 's'}: ${esc(g.rows.map((r) => r.first).join(', '))}`,
+          { className: 'm-tip' });
     });
     // The school is drawn even when empty, because an empty school at 9pm is information.
     if (!seen.has('school')) {
       const pl = CAL.places.school;
       L.marker([pl.lat, pl.lng], { icon: groupIcon(0, 'school', 'school'), zIndexOffset: 280 })
-        .addTo(groupLayer).bindTooltip(`<b>${esc(pl.name)}</b><br>Nobody here right now`);
+        .addTo(groupLayer)
+        .bindTooltip(`<b>${esc(pl.name)}</b><br>${esc(pl.address)}<br>Nobody here right now`, { className: 'm-tip' });
     }
     /* Journeys. Markers live on `map`, not on a cleared layer, so they persist between
        polls and are eased along by their own tick rather than teleporting every four
@@ -297,7 +303,7 @@
       const pair = grp.at.from.key + '>' + grp.at.place.key;
       if (!drawn.has(pair)) {
         drawn.add(pair);
-        const line = L3.leg(grp.at.from.key, grp.at.place.key, grp.at.mode);
+        const line = L3.leg(grp.at.from.key, grp.at.place.key, grp.at.mode, grp.at.from, grp.at.place);
         const path = line || [[grp.at.from.lat, grp.at.from.lng], [grp.at.place.lat, grp.at.place.lng]];
         L.polyline(path, { color: '#fff', weight: line ? 7 : 5, opacity: .8 }).addTo(groupLayer);
         L.polyline(path, { color, weight: line ? 3.5 : 2.5, opacity: .9, dashArray: line ? '7 6' : '2 8' })
@@ -311,6 +317,7 @@
         const mk = L.marker([grp.at.from.lat, grp.at.from.lng],
           { zIndexOffset: 420, icon: moverGroupIcon(kind, grp.rows.length, color) }).addTo(map);
         sticker(mk, short(grp.at.place.name), color, side, dy);
+        mk.bindPopup('', { className: 'm-pop', closeButton: false, offset: [0, -4] });
         trackers.set(k, mk);
       } else {
         const mk = trackers.get(k), sig = kind + '|' + grp.rows.length + '|' + color;
@@ -338,7 +345,7 @@
       const name = grp.rows[0].name;
       const at = grp.at.signout ? soPos(grp.at.signout) : CAL.locate(name, CAL.now());
       if (!at || at.state !== 'transit') return;
-      const line = L3.leg(at.from.key, at.place.key, at.mode);
+      const line = L3.leg(at.from.key, at.place.key, at.mode, at.from, at.place);
       const pt = line ? GEO.pointAt(line, at.frac)
         : [at.from.lat + (at.place.lat - at.from.lat) * at.frac, at.from.lng + (at.place.lng - at.from.lng) * at.frac];
       mk.setLatLng(pt);
@@ -352,6 +359,16 @@
       if (tip) {
         tip.setContent(`${esc(short(at.place.name))}<small>${mins} min \u00b7 ${esc(who)}</small>`);
         openSticker(mk);
+      }
+      /* The sticker is the tooltip, so the full detail -- which flat they left, where they
+         are going, the address, who is with them -- goes in a popup on click. */
+      if (mk.getPopup()) {
+        mk.setPopupContent(`<b>${esc(grp.rows.map((r) => r.name).join(', '))}</b>` +
+          `<br>${esc(at.from.name)} \u2192 <b>${esc(at.place.name)}</b>` +
+          `<br>${esc(at.place.address || '')}` +
+          `<br>${esc(modeLabel[at.mode] || at.mode)} \u00b7 ${mins} min to go` +
+          (at.eta ? ` \u00b7 arrives ${time(at.eta)}` : '') +
+          (at.next ? `<br>${esc(at.next.title)}` : ''));
       }
     });
     declutter();      // half a dozen rects twice a second; the dots never stop moving
@@ -372,10 +389,11 @@
     /* What the "out" number is made of, read off the same grouping the tile counts -- it
        used to come from sign-out purposes, which produced "0 out -- 2 food" the moment the
        two people in question were still walking there. */
-    const breakdown = [...hc.groups.entries()]
-      .filter(([k]) => k !== 'house' && k !== 'school')
-      .sort((a, b) => b[1].rows.length - a[1].rows.length).slice(0, 2)
-      .map(([, g]) => `${g.rows.length} ${esc(short(g.place.name))}`).join(' \u00b7 ');
+    const bits = [...hc.groups.entries()]
+      .filter(([k]) => !CAL.isHome(k) && k !== 'school')
+      .sort((a, b) => b[1].rows.length - a[1].rows.length);
+    const breakdown = bits.slice(0, 1).map(([, g]) => `${g.rows.length} ${esc(short(g.place.name))}`)
+      .concat(bits.length > 1 ? [`+${bits.length - 1} more`] : []).join(' \u00b7 ');
     /* Five numbers that add up to the roster. That is the whole requirement: an RA at 9pm
        is not asking "how many trips are open", they are asking whether everyone is
        accounted for, and a set of tiles that does not sum cannot answer it. The last tile
@@ -384,7 +402,7 @@
        counting them as present. */
     const elsewhere = hc.out, miss = Math.max(0, roster - hc.house - hc.school - elsewhere - hc.moving - hc.unaccounted);
     $('#stats').innerHTML = `
-      <div class="stat"><b>${hc.house}<small style="font-size:14px;color:var(--grey);font-weight:600"> / ${roster}</small></b><span>At the house</span></div>
+      <div class="stat"><b>${hc.house}<small style="font-size:14px;color:var(--grey);font-weight:600"> / ${roster}</small></b><span>At home \u00b7 ${hc.homes.map((h) => `${h.n} ${esc(h.place.short)}`).join(', ')}</span></div>
       <div class="stat"><b>${hc.school}</b><span>At school</span></div>
       <div class="stat"><b>${elsewhere + miss}</b><span>Out${breakdown ? ' \u2014 ' + breakdown : ' at an activity'}</span></div>
       <div class="stat"><b>${hc.moving}</b><span>On the move</span></div>
@@ -393,7 +411,17 @@
       <div class="stat sub"><b>${hc.unaccounted}</b><span>Location not shared</span></div>`;
     drawTrack(hc);
     const pd = $('#planDot'); if (pd) pd.textContent = hc.offPlan.length ? ` ${hc.offPlan.length}` : '';
-    if (homeMarker) homeMarker.setIcon(homeIcon(hc.house));
+    /* Each flat's pin carries its own count, and hovering it says which flat, where it is,
+       and who is in it -- a circle with a number on it is not much use if you have to guess
+       which building it means. */
+    hc.homes.forEach((h) => {
+      const mk = homeMarkers[h.key]; if (!mk) return;
+      mk.setIcon(homeIcon(h.n, h.place.short));
+      const rows = (hc.groups.get(h.key) || { rows: [] }).rows;
+      mk.bindTooltip(`<b>${esc(h.place.name)}</b><br>${esc(h.place.address)}` +
+        `<br>${h.n} of ${hc.roster} student${h.n === 1 ? '' : 's'} in` +
+        (rows.length ? `<br>${esc(rows.map((r) => r.first).join(', '))}` : ''), { className: 'm-tip' });
+    });
     const openNotes = (data.notes || []).filter((n) => !n.done_at).length;
     const dot = $('#noteDot'); if (dot) dot.textContent = openNotes ? ` ${openNotes}` : '';
     document.title = (cnt('overdue') ? `(${cnt('overdue')} overdue) ` : '') + 'RA Dashboard · Founders School';
@@ -404,7 +432,8 @@
     open.forEach((r) => {
       const k = ph(r), ll = [r.dest.lat, r.dest.lng]; pts.push(ll);
       const path = ensureRoute(r);
-      L.polyline(path || [[C.house.lat, C.house.lng], ll],
+      const hm = homeOfTrip(r);
+      L.polyline(path || [[hm.lat, hm.lng], ll],
         { color: COLORS[k], weight: path ? 3 : 2, dashArray: path ? '6 7' : '2 7', opacity: path ? .75 : .5 })
         .addTo(layer)
         .bindTooltip(path ? `${esc(r.student.name.split(' ')[0])} \u2192 ${esc(r.dest.name)}`
@@ -421,10 +450,18 @@
        towards the frame if more than one person is there -- the rest stay reachable by
        zooming out, and their marker tooltip names them. */
     const FAR_KM = 5;
-    const near = (pl, n) => n > 1 || GEO.haversineKm(C.house, pl) < FAR_KM;
+    const near = (pl, n) => n > 1 || C.houses.some((h) => GEO.haversineKm(h, pl) < FAR_KM);
+    C.houses.forEach((h) => pts.push([h.lat, h.lng]));
     hc.groups.forEach((g) => { if (near(g.place, g.rows.length)) pts.push([g.place.lat, g.place.lng]); });
     hc.transit.forEach((r) => { if (near(r.at.place, 1)) pts.push([r.at.place.lat, r.at.place.lng]); });
-    if (!draw.fitted && pts.length > 1) { map.fitBounds(pts, { padding: [40, 40], maxZoom: 15 }); draw.fitted = true; }
+    /* Then sit a step wider than the tightest fit. A crop that exactly contains the dots
+       answers "where are they" but not "where is that", and the second question is the one
+       someone looking at this map for the first time is asking. */
+    if (!draw.fitted && pts.length > 1) {
+      map.fitBounds(pts, { padding: [60, 60], maxZoom: 14 });
+      map.setZoom(Math.max(11, map.getZoom() - 1), { animate: false });
+      draw.fitted = true;
+    }
 
     const panel = $('#panel');
     if (tab === 'live') {

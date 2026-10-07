@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex,nofollow">
 <title>Family view · Founders School</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
-<link rel="stylesheet" href="css/brand.css?v=3">
+<link rel="stylesheet" href="css/brand.css?v=8">
 </head>
 <body>
 <header class="bar">
@@ -32,11 +32,11 @@
 </main>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
-<script src="js/config.js?v=3"></script>
-<script src="js/api.js?v=3"></script>
-<script src="js/geo.js?v=3"></script>
-<script src="js/calendar.js?v=3"></script>
-<script src="js/life360.js?v=3"></script>
+<script src="js/config.js?v=8"></script>
+<script src="js/api.js?v=8"></script>
+<script src="js/geo.js?v=8"></script>
+<script src="js/calendar.js?v=8"></script>
+<script src="js/life360.js?v=8"></script>
 <script>
 /* What a family gets. The handbook (section 12) names "a family-communications tracker
    that shows parents what went out and when" as one of the projects a new RA builds, and
@@ -53,7 +53,7 @@
 (function () {
   const C = FS_CONFIG, API = FS_API, { esc, time } = FS, CAL = window.FS_CAL, L3 = window.FS_L360, GEO = window.FS_GEO;
   const $ = (s) => document.querySelector(s);
-  let names = CAL.names.slice(), kid = null, ptab = 'today', map, marker, path, casing;
+  let names = CAL.names.slice(), kid = null, ptab = 'today', map, marker, path, casing, homePin, pinnedFor;
 
   // The roster can be edited on the RA board, so read it rather than assuming the seed.
   API.roster().then((r) => {
@@ -115,7 +115,7 @@
       return;
     }
     mapEl.style.display = '';
-    const line = at.state === 'transit' ? L3.leg(at.from.key, at.place.key, at.mode) : null;
+    const line = at.state === 'transit' ? L3.leg(at.from.key, at.place.key, at.mode, at.from, at.place) : null;
     const pt = at.state === 'transit'
       ? (line ? GEO.pointAt(line, at.frac)
               : [at.from.lat + (at.place.lat - at.from.lat) * at.frac, at.from.lng + (at.place.lng - at.from.lng) * at.frac])
@@ -124,18 +124,29 @@
     $('#nowHead').textContent = at.state === 'transit'
       ? `${first} is on the way to ${at.place.name}` : `${first} is at ${at.place.name}`;
     $('#nowSub').innerHTML = whereText(at);
-    $('#nowFoot').innerHTML = `Phone ${bat.level}%${bat.charge ? ', charging' : ''}`;
+    $('#nowFoot').innerHTML = `Phone battery ${bat.level}%${bat.charge ? ', charging' : ''}`;
 
     if (!map) {
       map = L.map(mapEl, { zoomControl: false, attributionControl: false }).setView(pt, 14);
       L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
       // Anchored below its point, not centred on it: a student at the house would
       // otherwise be a dot hidden underneath this chip, which is most evenings.
-      L.marker([C.house.lat, C.house.lng], { icon: L.divIcon({ className: '', iconSize: [46, 24], iconAnchor: [23, -10],
-        html: '<div class="m-grp none">home</div>' }) }).addTo(map);
+      const hm = CAL.places[CAL.homeOf(kid)] || CAL.places[CAL.homes[0]];
+      homePin = L.marker([hm.lat, hm.lng], { icon: L.divIcon({ className: '', iconSize: [46, 24], iconAnchor: [23, -10],
+        html: `<div class="m-grp none">${esc(hm.short)}</div>` }) }).addTo(map)
+        .bindTooltip(`<b>${esc(hm.name)}</b><br>${esc(hm.address)}`, { className: 'm-tip' });
       marker = L.circleMarker(pt, { radius: 9, color: '#fff', weight: 3, fillColor: '#1D4ED8', fillOpacity: 1 }).addTo(map);
+      pinnedFor = kid;
     } else {
       marker.setLatLng(pt);
+    }
+    // Switching child can switch flat, so the home pin follows.
+    if (homePin && pinnedFor !== kid) {
+      const hm = CAL.places[CAL.homeOf(kid)] || CAL.places[CAL.homes[0]];
+      homePin.setLatLng([hm.lat, hm.lng]).setIcon(L.divIcon({ className: '', iconSize: [46, 24], iconAnchor: [23, -10],
+        html: `<div class="m-grp none">${esc(hm.short)}</div>` }));
+      homePin.bindTooltip(`<b>${esc(hm.name)}</b><br>${esc(hm.address)}`, { className: 'm-tip' });
+      pinnedFor = kid;
     }
     if (path) { map.removeLayer(path); map.removeLayer(casing); path = casing = null; }
     if (line) {

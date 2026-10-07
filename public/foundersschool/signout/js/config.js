@@ -4,9 +4,16 @@ window.FS_CONFIG = {
   supabaseUrl: '',   // e.g. https://xxxx.supabase.co
   supabaseKey: '',   // the publishable / anon key (safe to ship; tables are locked by RLS)
 
-  // The residence. Every sign-out starts and ends here, and it is the origin for every
-  // travel estimate, so this is the one coordinate worth getting right.
-  house:  { name: 'The house',       address: '37 Wall Street, Manhattan',  lat: 40.706470, lng: -74.010138 },
+  /* The residences. Boarding is split across two apartments, so a student's own flat is
+     where their day starts and ends and the origin for their travel estimates -- these are
+     the coordinates worth getting right. Handbook section 11 puts a second RA in at about
+     15 to 20 boarders, which is the same threshold that makes a second flat sensible.
+     `house` stays as the first one: the sign-out flow and the QR poster use it. */
+  houses: [
+    { key: 'wall',    name: 'Wall Street flat', short: 'Wall St', address: '37 Wall Street, Manhattan',  lat: 40.706470, lng: -74.010138 },
+    { key: 'tribeca', name: 'Tribeca flat',     short: 'Tribeca', address: '101 Warren Street, Manhattan', lat: 40.715730, lng: -74.011700 },
+  ],
+  get house() { return this.houses[0]; },
   // The school day happens here. It is drawn on the board for orientation -- going to school
   // is not a sign-out -- so it needs no travel times.
   school: { name: 'Founders School', address: '180 Maiden Lane, Manhattan', lat: 40.705260, lng: -74.005463 },

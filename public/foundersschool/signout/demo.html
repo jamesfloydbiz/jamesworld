@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#0000EF">
 <title>Sign-Out Demo · Founders School</title>
 <meta name="description" content="A working demo of the Founders School digital sign-out: the student's phone and the RA's board, side by side.">
-<link rel="stylesheet" href="css/brand.css?v=3">
+<link rel="stylesheet" href="css/brand.css?v=8">
 <style>
   /* Both views are the real pages in frames rather than a reimplementation, so what is
      demonstrated is the app itself. They share an origin, so they share the demo's
@@ -41,12 +41,12 @@
     background: #000; box-shadow: 0 10px 28px rgba(0,0,0,.12); }
   .d-clip video { display: block; width: 100%; height: auto; }
   .d-clip.live { background: #fff; }
-  .d-clip.live iframe { display: block; width: 100%; height: 640px; border: 0; }
+  .d-clip.live iframe { display: block; width: 100%; height: 740px; border: 0; }
   .d-sub { display: flex; gap: 6px; margin: 0 0 12px; }
   .d-sub button { font: 700 12.5px/1 inherit; color: var(--blue); background: #fff;
     border: 1.5px solid var(--line, #E5E7EB); border-radius: 999px; padding: 8px 14px; cursor: pointer; }
   .d-sub button[aria-selected="true"] { background: var(--blue); border-color: var(--blue); color: #fff; }
-  @media (max-width: 760px) { .d-clip.live iframe { height: 520px; } }
+  @media (max-width: 760px) { .d-clip.live iframe { height: 620px; } }
   .d-clip figcaption { padding: 10px 14px; font-size: 12.5px; color: var(--grey, #6B7280); background: #fff; }
   .d-next { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 26px; }
   .d-go { font: 700 14px/1 inherit; color: #fff; background: var(--blue); border: 2px solid var(--blue);
@@ -82,20 +82,22 @@
       <p class="d-lede">Where every student is, where they are going, and when they are due back.
         Built for the Head&nbsp;of&nbsp;Student&nbsp;Life role at Founders School.</p>
       <div class="d-sub" role="tablist">
-        <button role="tab" id="s-clip" aria-selected="true">Walkthrough</button>
-        <button role="tab" id="s-board" aria-selected="false">The board, Monday 6:55pm</button>
+        <button role="tab" id="s-board" aria-selected="true">The board, Monday 6:55pm</button>
+        <button role="tab" id="s-clip" aria-selected="false">Walkthrough</button>
       </div>
-      <div id="w-clip">
+      <div id="w-clip" hidden>
         <figure class="d-clip">
           <video src="media/demo.mp4" poster="media/demo-poster.jpg" controls muted playsinline preload="none"
                  aria-label="Screen recording: a student picks a practice, a way of getting there and a time, sends the request to their buddy, and the trip then appears on the RA board with the headcount."></video>
           <figcaption>A student signs out with a buddy, and it lands on the RA board. Playing at 2&times;.</figcaption>
         </figure>
       </div>
-      <div id="w-board" hidden>
+      <div id="w-board">
         <figure class="d-clip live">
           <iframe id="f-peek" title="RA board, Monday evening" loading="lazy"></iframe>
-          <figcaption>Five at the house, five on the way to open gym, eight already there. Live, and moving.</figcaption>
+          <figcaption>Monday evening: some still in, some on the way to open gym, some already there.
+            Each journey has its own colour and a label saying where it is headed.
+            <b>Load demo activity</b> adds sign-out pairs on top.</figcaption>
         </figure>
       </div>
       <div class="d-next">
@@ -174,6 +176,9 @@
     }
   }
   Object.keys(sub).forEach(function (k) { sub[k].onclick = function () { showSub(k); }; });
+  // Open on the live board rather than the video. It also has to run once for the frame to
+  // get a src at all, since the board is only loaded when it is asked for.
+  showSub('board');
   function fromHash() {
     if (location.hash === '#ra') show('ra');
     else if (location.hash === '#student') show('student');

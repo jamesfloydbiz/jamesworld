@@ -280,9 +280,43 @@ h2{font-size:24px;margin-bottom:6px}
    carry an inline display:flex, hence the !important. Tiles tighten so the map is
    visible without scrolling the frame. */
 body.peek .demo-flag, body.peek .bar .who button { display: none; }
-body.peek #demoTools { display: none !important; }
+/* The seed button stays: without a sign-out on the board there are no pairs and no
+   sign-out paths, and that is half of what this view is showing. */
+body.peek #demoTools { margin-bottom: 8px; }
+body.peek #demoTools .btn { padding: 6px 12px; font-size: 12px; }
 body.peek .stats { gap: 8px; }
 body.peek .stat { padding: 10px 12px; }
 body.peek .stat b { font-size: 22px; }
 body.peek .stat span { font-size: 10px; }
-body.peek .wrap { padding-top: 10px; }
+body.peek .wrap { padding: 10px 14px 14px; }
+/* The board's map is sticky so it stays beside a long list while the page scrolls. Inside
+   the landing page's frame there is nothing to scroll past, and the 76px offset just
+   pushed the map below the fold. */
+/* Leaflet forces position:relative inline on its container, so `position: static` here
+   loses -- but the sticky rule's `top: 76px` then applies to a relative element and pushes
+   the map down by that much. Zero the offset instead. */
+body.peek #map { top: 0; height: 380px; min-height: 0; }
+/* One row of tiles in the frame, so the map is above the fold. */
+body.peek .stats { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+
+/* Hover detail. The default Leaflet tooltip is a cramped white box; these carry an
+   address and a list of names, so they need room to breathe and a readable measure. */
+.leaflet-tooltip.m-tip {
+  background: #fff; color: var(--ink, #16161a);
+  border: 1.5px solid var(--rule, #E5E7EB); border-radius: 10px;
+  box-shadow: 0 6px 20px rgba(0,0,0,.18);
+  padding: 9px 12px; max-width: 260px; white-space: normal;
+  font: 500 12.5px/1.5 'Inter', system-ui, sans-serif;
+}
+.leaflet-tooltip.m-tip b { font-weight: 800; font-size: 13px; }
+.leaflet-tooltip.m-tip i { font-style: normal; color: var(--grey, #6B7280); }
+.leaflet-popup.m-pop .leaflet-popup-content-wrapper {
+  border-radius: 10px; box-shadow: 0 8px 24px rgba(0,0,0,.22);
+}
+.leaflet-popup.m-pop .leaflet-popup-content {
+  margin: 10px 13px; font: 500 12.5px/1.55 'Inter', system-ui, sans-serif; max-width: 240px;
+}
+.leaflet-popup.m-pop b { font-weight: 800; }
+/* The house pin carries a flat's name under its count, so it needs a touch more room. */
+.m-home { width: 58px; height: 58px; }
+.m-home span { font-size: 8.5px; letter-spacing: .04em; }
