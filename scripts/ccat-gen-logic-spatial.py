@@ -143,5 +143,120 @@ def relations(d):
                 e=(f"The chain runs {a} → {b} → {c}. The marble is inside all three, "
                    f"but the question asks for the outermost, which is {c}."))
 
-SPATIAL = [arrow_rotate, corner_walk, dots_series, shape_sides, odd_arrow]
+def matrix(d):
+    """A real 3x3: one rule that holds across every row AND down every column.
+
+    That redundancy is the point — it is what lets a solver confirm an answer by
+    two independent routes instead of guessing from the top row. Every flavour
+    below is built so the rule applies in both directions, and the key is
+    computed from the rule rather than chosen, so the grid and the answer cannot
+    disagree. layout='grid' is mandatory: drawn as a flat row the rows and
+    columns vanish and the question becomes unanswerable.
+    """
+    flavour = random.choice(["arrow", "dots", "shape", "corner"])
+
+    if flavour == "arrow":
+        step = random.choice([45, 90]) if d < 3 else random.choice([45, 90, 135])
+        base = random.choice([0, 45, 90, 135, 180, 225, 270, 315])
+        cell = lambda r, c: f"ARROW:{(base + step*(r+c)) % 360}"
+        ans  = cell(2, 2)
+        wrongs = [f"ARROW:{(base + step*4 + k) % 360}" for k in (step, -step, 180, 2*step)]
+        why  = f"Every step turns {step}° clockwise, across each row and down each column."
+
+    elif flavour == "dots":
+        start = random.randint(1, 3)
+        rs, cs = random.randint(1, 2), random.randint(1, 2 if d < 3 else 3)
+        cell = lambda r, c: f"DOTS:{start + rs*r + cs*c}"
+        top  = start + rs*2 + cs*2
+        if top > 15: return None                     # renderer fits 15 dots
+        ans  = cell(2, 2)
+        wrongs = [f"DOTS:{n}" for n in (top+1, top-1, top+cs, max(1, top-cs), top+2, max(1, top-2)) if 1 <= n <= 15]
+        why  = (f"Each step across a row adds {cs}, and each step down a column adds {rs}. "
+                f"The last row runs {start+2*rs}, {start+2*rs+cs}, {top}.")
+
+    elif flavour == "shape":
+        BY_SIDES = {3:"tri", 4:"sq", 5:"pent", 6:"hex", 7:"hept", 8:"oct"}
+        start = random.randint(3, 4)
+        if start + 4 > 8: return None
+        cell = lambda r, c: f"SHAPE:{BY_SIDES[start + r + c]}"
+        ans  = cell(2, 2)
+        wrongs = [f"SHAPE:{BY_SIDES[n]}" for n in (start+3, start+2, start+1) if n in BY_SIDES]
+        wrongs.append("SHAPE:circ")
+        why  = (f"Sides go up by one across each row and down each column: "
+                f"{start}, {start+1}, {start+2} / … / {start+2}, {start+3}, {start+4}.")
+
+    else:
+        cw = random.random() < 0.5
+        order = CORNERS_CW if cw else CORNERS_CW[::-1]
+        i0 = random.randrange(4)
+        cell = lambda r, c: f"CORNER:{order[(i0 + r + c) % 4]}"
+        ans  = cell(2, 2)
+        wrongs = [f"CORNER:{order[(i0+k) % 4]}" for k in (3, 5, 2)] + ["CORNER:C"]
+        why  = (f"Reading across, the shaded corner moves one step "
+                f"{'clockwise' if cw else 'counter-clockwise'} ({' → '.join(order)}), and each row "
+                f"starts one step on from the row above.")
+
+    vis = [cell(r, c) for r in range(3) for c in range(3)][:8] + ["QMARK"]
+    o, a = _opts(ans, [w for w in wrongs if w != ans], n=5)
+    if len(set(o)) != 5: return None
+    return dict(sub="matrix", q="Fill the missing cell.", o=o, a=a, vis=vis,
+                layout="grid", e=f"{why} The missing cell is therefore {ans.split(':')[1]}.")
+
+
+def image_series(d):
+    """Three figures and a '?', one rule. A flat row is correct here — unlike a
+    matrix, a sequence has no columns to lose."""
+    kind = random.choice(["shape", "dots", "arrow"])
+    if kind == "shape":
+        BY_SIDES = {3:"tri", 4:"sq", 5:"pent", 6:"hex", 7:"hept", 8:"oct"}
+        start = random.randint(3, 5)
+        if start + 3 > 8: return None
+        seq = [f"SHAPE:{BY_SIDES[start+i]}" for i in range(3)]
+        ans = f"SHAPE:{BY_SIDES[start+3]}"
+        wrongs = [f"SHAPE:{BY_SIDES[n]}" for n in (start+2, start+1, start) if n in BY_SIDES] + ["SHAPE:circ"]
+        why = f"Each figure gains a side: {start}, {start+1}, {start+2}, then {start+3}."
+    elif kind == "dots":
+        start, stepn = random.randint(1, 3), random.randint(2, 3)
+        ans_n = start + stepn*3
+        if ans_n > 15: return None
+        seq = [f"DOTS:{start+stepn*i}" for i in range(3)]
+        ans = f"DOTS:{ans_n}"
+        wrongs = [f"DOTS:{n}" for n in (ans_n+1, ans_n-1, ans_n+stepn, max(1, ans_n-stepn))]
+        why = f"The count rises by {stepn} each time: {start}, {start+stepn}, {start+2*stepn}, then {ans_n}."
+    else:
+        step = random.choice([45, 90])
+        base = random.choice([0, 45, 90, 180, 270])
+        seq = [f"ARROW:{(base+step*i) % 360}" for i in range(3)]
+        ans = f"ARROW:{(base+step*3) % 360}"
+        wrongs = [f"ARROW:{(base+step*3+k) % 360}" for k in (step, -step, 180, 2*step)]
+        why = f"Each figure turns {step}° clockwise."
+    o, a = _opts(ans, [w for w in wrongs if w != ans], n=5)
+    if len(set(o)) != 5: return None
+    return dict(sub="imageseries", q="Which figure comes next?", o=o, a=a,
+                vis=seq + ["QMARK"], e=why)
+
+
+SPATIAL = [arrow_rotate, corner_walk, dots_series, shape_sides, odd_arrow, matrix, image_series]
 LOGIC2  = [ordering, syllogism, relations]
+
+
+if __name__ == "__main__":
+    import json, sys, collections
+    want = collections.Counter()
+    for spec in sys.argv[1:]:                     # e.g. matrix=30 imageseries=20
+        k, _, n = spec.partition("=")
+        want[k] = int(n or 10)
+    BUILD = {"matrix": matrix, "imageseries": image_series}
+    out, seen = [], set()
+    for name, n in want.items():
+        fn = BUILD[name]
+        tries = 0
+        while sum(1 for o in out if o["sub"] == name) < n and tries < n*400:
+            tries += 1
+            d = 1 + (sum(1 for o in out if o["sub"] == name) * 3) // max(1, n)
+            it = fn(min(3, d))
+            if not it: continue
+            sig = (it["q"], json.dumps(it.get("vis")), json.dumps(sorted(map(str, it["o"]))))
+            if sig in seen: continue
+            seen.add(sig); it["d"] = min(3, d); it["c"] = "Spatial"; out.append(it)
+    json.dump(out, sys.stdout, ensure_ascii=False)
