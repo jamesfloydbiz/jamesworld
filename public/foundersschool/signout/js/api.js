@@ -2,6 +2,12 @@
 (function () {
   const C = window.FS_CONFIG;
   const demo = !C.supabaseUrl;
+  /* One clock. The schedule can be pinned to a demo time (js/config.js `demoClock`), and
+     for a while sign-outs still used the real one -- so a trip and the calendar disagreed
+     about where the same student was, and the board drew them twice in two places. Demo
+     sign-outs are synthetic, so they run on the same clock as everything else.
+     js/calendar.js loads after this file; by the time anything is called it is there. */
+  const NOW = () => (window.FS_CAL ? +window.FS_CAL.now() : Date.now());
   const OPEN = ['pending', 'active'];
 
   /* ---------------- Supabase mode ---------------- */
@@ -38,8 +44,10 @@
 
   /* ---------------- Demo mode ---------------- */
   function demoApi() {
-    const KEY = 'fs_demo_v2';   // bump when the seeded roster or demo data changes, so
-                                // returning visitors are not pinned to the old store
+    const KEY = 'fs_demo_v3';   // bump when the seeded roster or demo data changes, so
+                                // returning visitors are not pinned to the old store.
+                                // v3: sign-outs moved onto the same clock as the schedule,
+                                // so anything stored under the old one is meaningless.
     const uid = () => (crypto.randomUUID ? crypto.randomUUID() : 'id' + Math.random().toString(36).slice(2) + Date.now());
     const names = ['Maya Chen', 'Jordan Reyes', 'Amara Okafor', 'Theo Bennett', 'Sofia Alvarez', 'Noah Kim', 'Liam Patel',
       'Zara Hussain', 'Eli Goldberg', 'Nia Thompson', 'Mateo Rossi', 'Priya Nair', 'Dante Oyelaran', 'Hana Watanabe',
@@ -60,12 +68,12 @@
     });
     const involves = (r, id) => r.student_id === id || r.buddy_id === id;
     function expire(s, ttl) {
-      const cut = Date.now() - ttl * 60000;
+      const cut = NOW() - ttl * 60000;
       s.signouts.forEach((r) => { if (r.status === 'pending' && new Date(r.created_at).getTime() < cut) r.status = 'expired'; });
       // Demo data has to stop rotting. A seeded trip from two days ago stayed "active"
       // forever, so the board reported a rising overdue count and flagged half the house
       // as off-schedule. Anything three hours past due is closed out.
-      const stale = Date.now() - 3 * 3600000;
+      const stale = NOW() - 3 * 3600000;
       s.signouts.forEach((r) => {
         if (r.status === 'active' && r.due_at && new Date(r.due_at).getTime() < stale) {
           r.status = 'returned'; r.returned_at = r.due_at;
@@ -77,7 +85,7 @@
 
       // Demo-only helpers: fill the board with realistic activity, or wipe it.
       demoSeed: () => wrap((s) => {
-        const id = (first) => s.students.find((t) => t.name.startsWith(first)).id, min = (m) => new Date(Date.now() + m * 60000).toISOString();
+        const id = (first) => s.students.find((t) => t.name.startsWith(first)).id, min = (m) => new Date(NOW() + m * 60000).toISOString();
         const mk = (a, b, dest, addr, lat, lng, purpose, mode, travel, stay, status, createdAgo, dueIn, retAgo, ride, practice) => ({
           id: uid(), student_id: id(a), buddy_id: id(b), dest_name: dest, dest_address: addr, lat, lng, purpose, mode, travel, stay, status,
           ride: ride || null, practice: practice || null,
@@ -114,7 +122,7 @@
         const r = { id: uid(), student_id: d.studentId, buddy_id: d.buddyId, dest_name: d.dest.name, dest_address: d.dest.address || '',
           lat: d.dest.lat, lng: d.dest.lng, purpose: d.purpose, mode: d.mode, ride: d.ride || null, practice: d.practice || null,
           travel: d.travelMin, stay: d.stayMin,
-          status: 'pending', created_at: new Date().toISOString(), accepted_at: null, due_at: null, returned_at: null };
+          status: 'pending', created_at: new Date(NOW()).toISOString(), accepted_at: null, due_at: null, returned_at: null };
         s.signouts.push(r); return shape(s, r);
       }),
       mine: (sid) => wrap((s) => {
@@ -128,14 +136,14 @@
         expire(s, C.requestTtlMin);
         const r = s.signouts.find((x) => x.id === id);
         if (!r || r.buddy_id !== sid || r.status !== 'pending') throw new Error('This request is no longer open.');
-        if (accept) { r.status = 'active'; r.accepted_at = new Date().toISOString(); r.due_at = new Date(Date.now() + (2 * r.travel + r.stay) * 60000).toISOString(); }
+        if (accept) { r.status = 'active'; r.accepted_at = new Date(NOW()).toISOString(); r.due_at = new Date(NOW() + (2 * r.travel + r.stay) * 60000).toISOString(); }
         else r.status = 'declined';
         return shape(s, r);
       }),
       back: (id, sid) => wrap((s) => {
         const r = s.signouts.find((x) => x.id === id);
         if (!r || !involves(r, sid) || r.status !== 'active') throw new Error('Nothing to return.');
-        r.status = 'returned'; r.returned_at = new Date().toISOString(); return shape(s, r);
+        r.status = 'returned'; r.returned_at = new Date(NOW()).toISOString(); return shape(s, r);
       }),
       cancel: (id, sid) => wrap((s) => {
         const r = s.signouts.find((x) => x.id === id);
@@ -145,7 +153,7 @@
       dash: (pin) => wrap((s) => {
         if (pin !== C.demoRaPin) throw new Error('Wrong passcode.');
         expire(s, C.requestTtlMin);
-        const cut = Date.now() - 24 * 3600000;
+        const cut = NOW() - 24 * 3600000;
         const rows = s.signouts.filter((r) => OPEN.includes(r.status) || new Date(r.created_at).getTime() > cut).map((r) => shape(s, r)).reverse();
         return { signouts: rows, students: s.students.filter((t) => t.active).map(({ id, name, grade }) => ({ id, name, grade })),
                  notes: [...s.notes].reverse().map((n) => ({ ...n, from: nm(s, n.student_id).name })) };
@@ -153,7 +161,7 @@
       raBack: (pin, id) => wrap((s) => {
         if (pin !== C.demoRaPin) throw new Error('Wrong passcode.');
         const r = s.signouts.find((x) => x.id === id);
-        if (r && r.status === 'active') { r.status = 'returned'; r.returned_at = new Date().toISOString(); }
+        if (r && r.status === 'active') { r.status = 'returned'; r.returned_at = new Date(NOW()).toISOString(); }
         return { ok: true };
       }),
       /* Requests and feedback from students. The handbook has them writing the house norms at
@@ -163,7 +171,7 @@
         const body = String(text || '').trim();
         if (!body) throw new Error('Write something first.');
         s.notes.push({ id: uid(), student_id: studentId, kind, text: body.slice(0, 600),
-          created_at: new Date().toISOString(), done_at: null });
+          created_at: new Date(NOW()).toISOString(), done_at: null });
         return { ok: true };
       }),
       myNotes: (studentId) => wrap((s) => ({
@@ -171,7 +179,7 @@
       resolveNote: (pin, id) => wrap((s) => {
         if (pin !== C.demoRaPin) throw new Error('Wrong passcode.');
         const n = s.notes.find((x) => x.id === id);
-        if (n && !n.done_at) n.done_at = new Date().toISOString();
+        if (n && !n.done_at) n.done_at = new Date(NOW()).toISOString();
         return { ok: true };
       }),
       addStudent: (pin, name, grade) => wrap((s) => {
@@ -191,7 +199,8 @@
   window.FS = {
     esc: (t) => String(t == null ? '' : t).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])),
     time: (iso) => new Date(iso).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }),
-    minsLeft: (iso) => Math.round((new Date(iso).getTime() - Date.now()) / 60000),
+    now: () => (window.FS_CAL ? +window.FS_CAL.now() : Date.now()),
+    minsLeft: (iso) => Math.round((new Date(iso).getTime() - FS.now()) / 60000),
     // status the dashboard/student UI shows: pending | active | soon | overdue | closed
     phase(r) {
       if (r.status === 'pending') return 'pending';

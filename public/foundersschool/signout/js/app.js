@@ -208,7 +208,7 @@
     const d = S.d; ensureEstimate();
     const tm = d.est && d.mode ? d.est.tiles[d.mode] : null;
     const total = tm != null ? tm * 2 + d.stay : null;
-    const due = total != null ? new Date(Date.now() + total * 60000) : null;
+    const due = total != null ? new Date(FS.now() + total * 60000) : null;
     app.innerHTML = `${incomingBanner()}${backBtn()}${progress()}<div class="kicker">Last step</div><h1>Review &amp; send</h1>
       ${S.err ? `<div class="err">${esc(S.err)}</div>` : ''}
       <div class="card">

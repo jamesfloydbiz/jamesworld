@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex,nofollow">
 <title>RA Dashboard · Founders School</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
-<link rel="stylesheet" href="css/brand.css?v=2">
+<link rel="stylesheet" href="css/brand.css?v=3">
 </head>
 <body>
 <div id="demoflag" class="demo-flag hidden">DEMO MODE — passcode is “demo”. Demo data, built in the structure of the Life360 API.</div>
@@ -36,11 +36,11 @@
 </main>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
-<script src="js/config.js?v=2"></script>
-<script src="js/api.js?v=2"></script>
-<script src="js/geo.js?v=2"></script>
-<script src="js/calendar.js?v=2"></script>
-<script src="js/life360.js?v=2"></script>
+<script src="js/config.js?v=3"></script>
+<script src="js/api.js?v=3"></script>
+<script src="js/geo.js?v=3"></script>
+<script src="js/calendar.js?v=3"></script>
+<script src="js/life360.js?v=3"></script>
 <script>
 (function () {
   const C = FS_CONFIG, API = FS_API, { esc, time, minsLeft, phase, modeLabel, rideLabel } = FS, GEO = window.FS_GEO;
@@ -82,11 +82,30 @@
       // whole roster it carries a count like anywhere else -- for most of the day it is
       // where the house is, and a board that could not say so would be odd.
       L3.onLeg(() => { if (pin) draw(); });     // one redraw when a routed leg lands
+      /* Zoom housekeeping. The moving dots ease between the positions their tick hands
+         them, which is right while the map is still and wrong while it is zooming --
+         Leaflet drives that with transforms on the same elements, so without this every
+         dot slides across the screen and lands late. Ticking pauses too, for the same
+         reason. And below zoom 12 the stickers overlap into a stack nobody can read, so
+         they step back to the dots alone. */
+      const el = map.getContainer();
+      map.on('zoomstart movestart', () => el.classList.add('zooming'));
+      map.on('zoomend moveend', () => { el.classList.remove('zooming'); tickTrack(); declutter(); });
       setInterval(poll, C.pollMs);
     }
     draw();
   }
-  async function poll() { if (!pin) return; try { data = await API.dash(pin); draw(); } catch (e) {} }
+  /* A bare catch here hid a render error for an entire session: the board kept polling,
+     the panel kept its last contents, and nothing anywhere said why half the map had
+     stopped appearing. Network failures are expected and stay quiet; anything else is a
+     bug and goes to the console. */
+  async function poll() {
+    if (!pin) return;
+    let next;
+    try { next = await API.dash(pin); } catch (e) { return; }
+    data = next;
+    try { draw(); } catch (e) { console.error('draw failed', e); }
+  }
 
   let homeMarker;
   const homeIcon = (n) => L.divIcon({ className: '', iconSize: [54, 54], iconAnchor: [27, 27],
@@ -97,7 +116,7 @@
      records a trip, it does not track a phone or read a rideshare's position. */
   function leg(r) {
     if (r.status !== 'active' || !r.accepted_at) return null;
-    const mins = (Date.now() - new Date(r.accepted_at)) / 60000;
+    const mins = (CAL.now() - new Date(r.accepted_at)) / 60000;
     const t = r.travel_min || 1;
     if (mins < t) return { phase: 'out', frac: mins / t };
     if (mins < t + (r.stay_min || 0)) return { phase: 'there', frac: 1 };
@@ -105,11 +124,10 @@
     return back >= 1 ? { phase: 'due', frac: 0 } : { phase: 'back', frac: 1 - back };
   }
 
-  const movers = new Map();       // signout id -> { marker, kind, r }
-  /* Road geometry per trip, fetched once and shared by the dotted line and the moving dot, so
-     the two can never disagree about the way someone went. A trip on the subway is deliberately
-     NOT routed: we have no timetable data, and drawing it down a car route would assert a path
-     the app does not know. Those stay a straight line, which reads as "direction, not route". */
+  /* Road geometry for a sign-out's dotted line. A trip on the subway is deliberately NOT
+     routed: there is no timetable data on the free tier, and drawing it down a car route
+     would assert a path the app does not know. Those stay a straight line, which reads as
+     "direction, not route". */
   const routes = new Map();       // signout id -> { line } | { until } while cooling off
   const PROFILE = { walk: 'foot', transit: null, shuttle: 'car', rideshare: 'car', parent: 'car' };
   const ROUTE_RETRY_MS = 30000;
@@ -132,26 +150,6 @@
     : r.ride === 'walkOver' || r.mode === 'walk' ? 'walk'
     : r.ride === 'transitPass' || r.mode === 'transit' ? 'transit'
     : r.mode === 'car' ? 'rideshare' : 'walk');
-  const moverIcon = (kind) => L.divIcon({ className: '', iconSize: [34, 34], iconAnchor: [17, 17],
-    html: `<div class="m-move ${kind === 'walk' ? 'walk' : 'ride'}">${GLYPH[kind] || GLYPH.walk}</div>` });
-
-  /* Moves every dot a little, twice a second, so a journey reads as motion rather than as a
-     marker that teleports on each poll. Position comes from the clock, which is also why this
-     can run between polls at all. */
-  function tickMovers() {
-    movers.forEach((rec) => {
-      const L0 = leg(rec.r); if (!L0) return;
-      const cached = routes.get(rec.r.id);
-      const line = (cached && cached.line) || [[C.house.lat, C.house.lng], [rec.r.dest.lat, rec.r.dest.lng]];
-      const at = GEO.pointAt(line, L0.frac); if (!at) return;
-      rec.marker.setLatLng(at);
-      const away = Math.max(0, Math.round((L0.phase === 'out' ? 1 - L0.frac : L0.frac) * (rec.r.travel_min || 0)));
-      rec.marker.bindTooltip(`<b>${esc(rec.r.student.name.split(' ')[0])} + ${esc(rec.r.buddy.name.split(' ')[0])}</b><br>` +
-        `${esc(rideLabel[rec.kind] || modeLabel[rec.kind] || rec.kind)} \u00b7 ` +
-        `${L0.phase === 'out' ? 'to ' + esc(rec.r.dest.name) : 'heading home'}<br>` +
-        `${away} min ${L0.phase === 'out' ? 'away' : 'from home'}`);
-    });
-  }
 
   /* ── Always-on tracking ──────────────────────────────────────────────────
      Until now the board only knew about trips a student had signed out for, so between
@@ -162,9 +160,24 @@
      published schedule and the clock, not from a phone. `js/life360.js` carries the mock in
      the real API's shape, so pointing this at a live circle changes one function. */
   const PLACE_KIND = { house: 'home', school: 'school' };
-  // Venue names are long ("Open gym -- Henry Street Settlement"); tiles and map chips get
-  // the first couple of words, which is what anyone reads off them anyway.
+  // Venue names are long ("Open gym -- Henry Street Settlement"); tiles, chips and stickers
+  // get the first couple of words, which is what anyone reads off them anyway.
   const short = (name) => String(name).split(/[\u2014,]/)[0].trim().split(/\s+/).slice(0, 2).join(' ').toLowerCase();
+  /* A colour per journey, so no two dots on the move look alike, and a sticker on each one
+     saying where it is going. Colours are claimed when a journey starts and released when
+     it ends, rather than reassigned on every draw -- a dot that changed colour halfway
+     across the map would be worse than no colour at all. Ordered to step around the colour
+     wheel, because they are handed out in order and two adjacent journeys in amber and
+     brown are two journeys nobody can tell apart. */
+  const TRIP_COLORS = ['#E11D48', '#0891B2', '#EA580C', '#7C3AED', '#15803D',
+                       '#DB2777', '#1D4ED8', '#65A30D', '#78350F', '#0F766E'];
+  const tripColor = new Map();                 // journey key -> colour, held for its lifetime
+  function claimColor(k) {
+    if (tripColor.has(k)) return tripColor.get(k);
+    const taken = new Set(tripColor.values());
+    const c = TRIP_COLORS.find((x) => !taken.has(x)) || TRIP_COLORS[tripColor.size % TRIP_COLORS.length];
+    tripColor.set(k, c); return c;
+  }
   const groupIcon = (n, label, kind) => L.divIcon({ className: '', iconSize: [58, 30],
     // 37 Wall St and 180 Maiden Ln are ~450m apart, so at the default zoom a chip centred
     // on the school lands under the house pin. Anchor it below its point instead.
@@ -177,8 +190,49 @@
      start, same position for as long as they are on it. */
   const trackers = new Map();        // leg key -> marker, persistent so it can animate
   const legKey = (at) => `${at.from.key}>${at.place.key}|${at.mode}|${+at.since}`;
-  const moverGroupIcon = (kind, n) => L.divIcon({ className: '', iconSize: [34, 34], iconAnchor: [17, 17],
-    html: `<div class="m-move ${kind === 'walk' ? 'walk' : 'ride'}">${GLYPH[kind] || GLYPH.walk}${n > 1 ? `<i>${n}</i>` : ''}</div>` });
+  const moverGroupIcon = (kind, n, color) => L.divIcon({ className: '', iconSize: [34, 34], iconAnchor: [17, 17],
+    html: `<div class="m-move ${kind === 'walk' ? 'walk' : 'ride'}" style="--c:${color || 'var(--blue)'}">${GLYPH[kind] || GLYPH.walk}${n > 1 ? `<i>${n}</i>` : ''}</div>` });
+  /* The routing sticker: a label pinned beside the dot, in that journey's colour, naming
+     where it is headed. Journeys on one road sit close together, so stickers alternate
+     sides and step down the screen rather than landing on top of each other. */
+  const sticker = (mk, text, color, side, dy) => {
+    const left = side === 'left';
+    mk.bindTooltip(esc(text), { permanent: true, direction: left ? 'left' : 'right',
+      offset: [left ? -14 : 14, dy || 0], className: 'm-sticker', opacity: 1 });
+    mk.__c = color;
+    // Bound after the marker joined the map, so Leaflet's own "open it on add" has already
+    // been and gone. Open it here, and colour the element that creates.
+    openSticker(mk);
+  };
+  /* Leaflet closes a permanent tooltip when its marker's icon is replaced, so anything that
+     calls setIcon drops the sticker on the floor. Reopening is cheap and idempotent, and
+     tickTrack calls it each pass, which also covers a redraw landing mid-animation. */
+  /* Stickers are a fixed pixel size, so zooming out walks them into each other until the
+     labels are an unreadable stack. A zoom threshold would be a guess -- how many collide
+     depends on how many journeys there are and how far apart. Measure instead: keep each
+     sticker that does not overlap one already kept, hide the rest. Zoom in and they come
+     back. */
+  function declutter() {
+    const els = [...trackers.values()]
+      .map((m) => m.getTooltip() && m.getTooltip().getElement()).filter(Boolean);
+    els.forEach((e) => e.classList.remove('hid'));
+    const kept = [];
+    els.forEach((e) => {
+      const r = e.getBoundingClientRect();
+      // A little padding, because the dots are mid-transition when this measures and will
+      // have drifted a few pixels by the time anyone looks.
+      const hits = kept.some((k) => r.left < k.right + 7 && k.left < r.right + 7 &&
+                                     r.top < k.bottom + 7 && k.top < r.bottom + 7);
+      if (hits) e.classList.add('hid'); else kept.push(r);
+    });
+  }
+
+  function openSticker(mk) {
+    if (!mk.getTooltip()) return;
+    if (!mk.isTooltipOpen()) mk.openTooltip(mk.getLatLng());
+    const el = mk.getTooltip().getElement();
+    if (el && mk.__c) el.style.setProperty('--c', mk.__c);
+  }
 
   // A signout, expressed the same way CAL.locate() expresses a scheduled position, so the
   // two can be compared and the real one can win.
@@ -225,30 +279,60 @@
     }
     /* Journeys. Markers live on `map`, not on a cleared layer, so they persist between
        polls and are eased along by their own tick rather than teleporting every four
-       seconds. */
+       seconds. Each one gets its own colour, the route it is on is drawn in that colour,
+       and a sticker on the dot names where it is going. */
     const byLeg = new Map();
     hc.transit.forEach((row) => {
       const k = legKey(row.at);
       if (!byLeg.has(k)) byLeg.set(k, { at: row.at, rows: [] });
       byLeg.get(k).rows.push(row);
     });
-    byLeg.forEach((grp, k) => {
+    const drawn = new Set();
+    let n = 0;
+    [...byLeg.entries()].sort((a, b) => a[0].localeCompare(b[0])).forEach(([k, grp]) => {
+      const color = claimColor(k);
       const kind = grp.at.mode === 'walk' ? 'walk' : grp.at.mode === 'transit' ? 'transit' : 'rideshare';
-      if (!trackers.has(k)) {
-        trackers.set(k, L.marker([grp.at.from.lat, grp.at.from.lng],
-          { zIndexOffset: 420, icon: moverGroupIcon(kind, grp.rows.length) }).addTo(map));
-      } else {
-        trackers.get(k).setIcon(moverGroupIcon(kind, grp.rows.length));
+      // One line per route, however many journeys are strung out along it -- drawing it
+      // once per group would stack four dashed lines on one street.
+      const pair = grp.at.from.key + '>' + grp.at.place.key;
+      if (!drawn.has(pair)) {
+        drawn.add(pair);
+        const line = L3.leg(grp.at.from.key, grp.at.place.key, grp.at.mode);
+        const path = line || [[grp.at.from.lat, grp.at.from.lng], [grp.at.place.lat, grp.at.place.lng]];
+        L.polyline(path, { color: '#fff', weight: line ? 7 : 5, opacity: .8 }).addTo(groupLayer);
+        L.polyline(path, { color, weight: line ? 3.5 : 2.5, opacity: .9, dashArray: line ? '7 6' : '2 8' })
+          .addTo(groupLayer)
+          .bindTooltip(line ? `${esc(grp.at.from.name)} \u2192 ${esc(grp.at.place.name)}`
+                            : `${esc(grp.at.place.name)} \u00b7 direction only, the subway route is not drawn`);
       }
+      const side = n % 2 ? 'left' : 'right', dy = (Math.floor(n / 2) % 3 - 1) * 15;
+      n++;
+      if (!trackers.has(k)) {
+        const mk = L.marker([grp.at.from.lat, grp.at.from.lng],
+          { zIndexOffset: 420, icon: moverGroupIcon(kind, grp.rows.length, color) }).addTo(map);
+        sticker(mk, short(grp.at.place.name), color, side, dy);
+        trackers.set(k, mk);
+      } else {
+        const mk = trackers.get(k), sig = kind + '|' + grp.rows.length + '|' + color;
+        if (mk.__sig !== sig) { mk.__sig = sig; mk.setIcon(moverGroupIcon(kind, grp.rows.length, color)); }
+        openSticker(mk);
+      }
+      trackers.get(k).__sig = kind + '|' + grp.rows.length + '|' + color;
       trackers.get(k).__grp = grp;
     });
-    [...trackers.keys()].forEach((k) => { if (!byLeg.has(k)) { map.removeLayer(trackers.get(k)); trackers.delete(k); } });
+    [...trackers.keys()].forEach((k) => {
+      if (!byLeg.has(k)) { map.removeLayer(trackers.get(k)); trackers.delete(k); tripColor.delete(k); }
+    });
     tickTrack();
+    requestAnimationFrame(declutter);
   }
   /* Positions are a function of the clock, which is why this can run between polls at all:
      it recomputes rather than interpolating towards a value the server sent. */
   function tickTrack() {
     if (!data.students || !data.students.length) return;
+    // Leaflet drives its zoom with transforms on these same elements; nudging them at the
+    // same time makes every dot slide across the screen and land late.
+    if (map && map.getContainer().classList.contains('zooming')) return;
     trackers.forEach((mk) => {
       const grp = mk.__grp; if (!grp) return;
       const name = grp.rows[0].name;
@@ -261,10 +345,16 @@
       const mins = Math.max(0, Math.round((1 - at.frac) * (at.travelMin || CAL.travel(at.from.key, at.place.key).min)));
       const who = grp.rows.length > 3
         ? `${grp.rows.length} students` : grp.rows.map((r) => r.first).join(', ');
-      mk.bindTooltip(`<b>${esc(who)}</b><br>${esc(modeLabel[at.mode] || at.mode)} to ${esc(at.place.name)}` +
-        `<br>${mins} min away` +
-        (grp.rows.length > 3 ? `<br>${esc(grp.rows.map((r) => r.first).join(', '))}` : ''));
+      /* Update the sticker, never rebind it: bindTooltip replaces the permanent tooltip
+         with a fresh one, so calling it twice a second meant the sticker existed for about
+         half a second and was then thrown away for the rest of the session. */
+      const tip = mk.getTooltip();
+      if (tip) {
+        tip.setContent(`${esc(short(at.place.name))}<small>${mins} min \u00b7 ${esc(who)}</small>`);
+        openSticker(mk);
+      }
     });
+    declutter();      // half a dozen rects twice a second; the dots never stop moving
   }
 
   const kindLabel = (k) => ((FS.noteKinds || []).find((x) => x.key === k) || {}).label || k;
@@ -322,27 +412,10 @@
       L.circleMarker(ll, { radius: 10, color: '#fff', weight: 3, fillColor: COLORS[k], fillOpacity: 1 }).addTo(layer)
         .bindTooltip(`<b>${esc(r.student.name)} + ${esc(r.buddy.name)}</b><br>${esc(r.dest.name)}${r.due_at ? '<br>Back by ' + time(r.due_at) : ''}`);
     });
-    /* Anyone mid-journey is a moving dot. The markers live on the map rather than in `layer`,
-       which draw() clears, so they persist between polls and are animated by their own tick
-       instead of jumping once every four seconds. */
-    const live = new Set();
-    open.filter((r) => r.status === 'active').forEach((r) => {
-      const L0 = leg(r); if (!L0 || L0.phase === 'there' || L0.phase === 'due') return;
-      live.add(r.id);
-      if (!movers.has(r.id)) {
-        const kind = moverKind(r);
-        const rec = { kind, r,
-          marker: L.marker([C.house.lat, C.house.lng], { zIndexOffset: 400, icon: moverIcon(kind) }).addTo(map) };
-        movers.set(r.id, rec);
-        ensureRoute(r);          // shared with the dotted line; straight line until it lands
-      }
-      movers.get(r.id).r = r;                       // refresh the timings on every poll
-    });
-    [...movers.keys()].forEach((id) => {
-      if (!live.has(id)) { map.removeLayer(movers.get(id).marker); movers.delete(id); }
-    });
-    tickMovers();
-
+    /* Anyone mid-journey is drawn once, by the tracking layer below -- it already knows
+       about sign-outs, because presence() hands them to it as overrides. Drawing them here
+       as well put the same pair on the map twice, in two places, disagreeing about the
+       time. */
     /* Frame where the house actually is. One student at a climbing gym in Queens used to
        drag the view out until lower Manhattan was a smudge, so a far-off place only counts
        towards the frame if more than one person is there -- the rest stay reachable by
@@ -508,7 +581,7 @@
     const dn = e.target.closest('[data-done]'); if (dn) { await API.resolveNote(pin, dn.dataset.done); poll(); }
   });
   setInterval(() => { if (pin && data) draw(); }, 30000);
-  setInterval(() => { tickMovers(); tickTrack(); }, 500);
+  setInterval(tickTrack, 500);
 })();
 </script>
 </body>

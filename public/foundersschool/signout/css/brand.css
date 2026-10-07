@@ -147,25 +147,50 @@ h2{font-size:24px;margin-bottom:6px}
   display: grid; place-content: center; font-size: 17px;
   position: relative;
 }
-.m-move.walk { border-color: #0E9F6E; }
+.m-move { border-color: var(--c, var(--blue)); }
 .m-move::after {
   content: ''; position: absolute; inset: -6px; border-radius: 50%;
-  border: 2px solid var(--blue); opacity: .6;
+  border: 2px solid var(--c, var(--blue)); opacity: .6;
   animation: fs-pulse 1.8s ease-out infinite;
 }
-.m-move.walk::after { border-color: #0E9F6E; }
 @keyframes fs-pulse {
   0%   { transform: scale(.72); opacity: .65; }
   70%  { transform: scale(1.35); opacity: 0; }
   100% { transform: scale(1.35); opacity: 0; }
 }
 /* Leaflet positions markers with transform, so easing it smooths the 500ms steps
-   into continuous travel. */
+   into continuous travel.
+
+   But Leaflet ALSO drives its zoom animation with transforms on the same elements, and a
+   transition on top of that makes every dot slide across the map and land somewhere wrong
+   for half a second on each zoom. `.zooming` is set for the duration of the animation so
+   the dots move with the map instead of chasing it. */
 .leaflet-marker-icon:has(.m-move) { transition: transform .5s linear; }
+.leaflet-container.zooming .leaflet-marker-icon,
+.leaflet-container.zooming .leaflet-marker-icon:has(.m-move) { transition: none !important; }
+.leaflet-container.zooming .m-move::after { animation: none; }
 @media (prefers-reduced-motion: reduce) {
   .m-move::after { animation: none; }
   .leaflet-marker-icon:has(.m-move) { transition: none; }
 }
+
+/* The routing sticker: a label pinned beside a moving dot, in that trip's colour, naming
+   where it is headed. Sized in pixels and anchored to the marker, so zooming moves it with
+   the map without rescaling or detaching. */
+.leaflet-tooltip.m-sticker {
+  background: var(--c, #374151); color: #fff; border: 0; border-radius: 7px;
+  padding: 3px 8px; box-shadow: 0 2px 8px rgba(0,0,0,.3);
+  font: 800 10.5px/1.25 'Inter', system-ui, sans-serif; letter-spacing: .02em;
+  text-transform: uppercase; white-space: nowrap; pointer-events: none;
+}
+.leaflet-tooltip.m-sticker.leaflet-tooltip-right::before { border-right-color: var(--c, #374151); }
+.leaflet-tooltip.m-sticker.leaflet-tooltip-left::before { border-left-color: var(--c, #374151); }
+.leaflet-tooltip.m-sticker small {
+  display: block; font-size: 9.5px; font-weight: 600; opacity: .85;
+  letter-spacing: 0; text-transform: none; margin-top: 1px;
+}
+/* Hidden when it would land on another sticker; zoom in and it comes back. */
+.leaflet-tooltip.m-sticker.hid { display: none; }
 
 /* The school. A second fixed place, deliberately quieter than the house: nobody
    signs out to go there, so it orients the map rather than competing with it. */
@@ -193,6 +218,8 @@ h2{font-size:24px;margin-bottom:6px}
 .m-grp b { font-size: 15px; letter-spacing: 0; }
 .m-grp span { opacity: .72; }
 .m-grp.school { border-color: var(--blue); color: var(--blue); }
+/* A place that someone is travelling to wears the same colour as the dot on its way. */
+.m-grp[style*="--c"] { border-color: var(--c); color: var(--c); }
 /* An empty place still gets drawn -- an empty school at 9pm is information -- but it
    recedes, so a count of nought never reads as a crowd. */
 .m-grp b:empty, .m-grp:has(b:only-child) { letter-spacing: 0; }
@@ -224,7 +251,7 @@ h2{font-size:24px;margin-bottom:6px}
 .m-move i {
   position: absolute; top: -5px; right: -7px;
   min-width: 17px; height: 17px; padding: 0 4px; border-radius: 9px;
-  background: var(--ink, #16161a); color: #fff; border: 2px solid #fff;
+  background: var(--c, var(--ink, #16161a)); color: #fff; border: 2px solid #fff;
   font: 800 10px/13px 'Inter', system-ui, sans-serif; font-style: normal;
   display: grid; place-content: center;
 }
