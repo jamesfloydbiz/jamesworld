@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex,nofollow">
 <title>RA Dashboard · Founders School</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
-<link rel="stylesheet" href="css/brand.css?v=9">
+<link rel="stylesheet" href="css/brand.css?v=11">
 </head>
 <body>
 <div id="demoflag" class="demo-flag hidden">DEMO MODE — passcode is “demo”. Demo data, built in the structure of the Life360 API.</div>
@@ -36,11 +36,11 @@
 </main>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
-<script src="js/config.js?v=9"></script>
-<script src="js/api.js?v=9"></script>
-<script src="js/geo.js?v=9"></script>
-<script src="js/calendar.js?v=9"></script>
-<script src="js/life360.js?v=9"></script>
+<script src="js/config.js?v=11"></script>
+<script src="js/api.js?v=11"></script>
+<script src="js/geo.js?v=11"></script>
+<script src="js/calendar.js?v=11"></script>
+<script src="js/life360.js?v=11"></script>
 <script>
 (function () {
   const C = FS_CONFIG, API = FS_API, { esc, time, minsLeft, phase, modeLabel, rideLabel } = FS, GEO = window.FS_GEO;
@@ -92,7 +92,11 @@
          they step back to the dots alone. */
       const el = map.getContainer();
       map.on('zoomstart movestart', () => el.classList.add('zooming'));
-      map.on('zoomend moveend', () => { el.classList.remove('zooming'); tickTrack(); declutter(); });
+      map.on('zoomend moveend', () => {
+        el.classList.remove('zooming');
+        trackers.forEach((m) => { m.__px = null; });   // the projection changed
+        tickTrack(); declutter();
+      });
       setInterval(poll, C.pollMs);
     }
     draw();
@@ -218,16 +222,20 @@
   function declutter() {
     const els = [...trackers.values()]
       .map((m) => m.getTooltip() && m.getTooltip().getElement()).filter(Boolean);
-    els.forEach((e) => e.classList.remove('hid'));
+    /* Measure first, then write. Clearing every class and re-adding it lays out twice and
+       makes the labels blink. And a sticker sitting right on the threshold would otherwise
+       flap hidden-shown-hidden twice a second, so a hidden one needs a clearly wider gap
+       before it comes back than it took to go. */
     const kept = [];
-    els.forEach((e) => {
+    const want = els.map((e) => {
       const r = e.getBoundingClientRect();
-      // A little padding, because the dots are mid-transition when this measures and will
-      // have drifted a few pixels by the time anyone looks.
-      const hits = kept.some((k) => r.left < k.right + 7 && k.left < r.right + 7 &&
-                                     r.top < k.bottom + 7 && k.top < r.bottom + 7);
-      if (hits) e.classList.add('hid'); else kept.push(r);
+      const pad = e.classList.contains('hid') ? 16 : 7;
+      const hits = kept.some((k) => r.left < k.right + pad && k.left < r.right + pad &&
+                                     r.top < k.bottom + pad && k.top < r.bottom + pad);
+      if (!hits) kept.push(r);
+      return hits;
     });
+    els.forEach((e, i) => { if (e.classList.contains('hid') !== want[i]) e.classList.toggle('hid', want[i]); });
   }
 
   function openSticker(mk) {
@@ -348,7 +356,13 @@
       const line = L3.leg(at.from.key, at.place.key, at.mode, at.from, at.place);
       const pt = line ? GEO.pointAt(line, at.frac)
         : [at.from.lat + (at.place.lat - at.from.lat) * at.frac, at.from.lng + (at.place.lng - at.from.lng) * at.frac];
-      mk.setLatLng(pt);
+      /* Only move the marker when it would actually land on a different pixel. A student
+         walking covers about a metre between ticks, which at this zoom is a fraction of a
+         pixel -- but every setLatLng drags the tooltip through a full reposition. */
+      const np = map.latLngToLayerPoint(pt), op = mk.__px;
+      if (!op || Math.abs(np.x - op.x) >= 0.75 || Math.abs(np.y - op.y) >= 0.75) {
+        mk.__px = np; mk.setLatLng(pt);
+      }
       const mins = Math.max(0, Math.round((1 - at.frac) * (at.travelMin || CAL.travel(at.from.key, at.place.key).min)));
       const who = grp.rows.length > 3
         ? `${grp.rows.length} students` : grp.rows.map((r) => r.first).join(', ');
@@ -357,7 +371,11 @@
          half a second and was then thrown away for the rest of the session. */
       const tip = mk.getTooltip();
       if (tip) {
-        tip.setContent(`${esc(short(at.place.name))}<small>${mins} min \u00b7 ${esc(who)}</small>`);
+        /* Only rewrite the sticker when its text actually changed. Leaflet's setContent
+           hides and reshows the element to re-measure it, so calling it twice a second
+           made every label strobe -- and the text only changes once a minute anyway. */
+        const txt = `${esc(short(at.place.name))}<small>${mins} min \u00b7 ${esc(who)}</small>`;
+        if (mk.__txt !== txt) { mk.__txt = txt; tip.setContent(txt); }
         openSticker(mk);
       }
       /* The sticker is the tooltip, so the full detail -- which flat they left, where they

@@ -191,6 +191,17 @@ h2{font-size:24px;margin-bottom:6px}
 }
 /* Hidden when it would land on another sticker; zoom in and it comes back. */
 .leaflet-tooltip.m-sticker.hid { display: none; }
+/* Leaflet fades a tooltip in when it opens, and these reopen whenever their marker's icon
+   is swapped -- the fade read as a blink. They are pinned to a moving dot and do not need
+   to announce themselves. */
+.leaflet-tooltip.m-sticker { transition: none !important; }
+/* Leaflet strips and re-adds `leaflet-tooltip-left/right` on every reposition, and those
+   classes carry a 6px margin and the little arrow. Twice a second that is a label that
+   visibly jumps and blinks. Neutralise both so the direction class has no visual effect
+   and the churn becomes invisible. The sticker is already pinned to its dot; it does not
+   need an arrow to say which one it belongs to. */
+.leaflet-tooltip.m-sticker { margin: 0 !important; }
+.leaflet-tooltip.m-sticker::before { display: none !important; }
 
 /* The school. A second fixed place, deliberately quieter than the house: nobody
    signs out to go there, so it orients the map rather than competing with it. */

@@ -32,7 +32,7 @@ window.FS_CONFIG = {
   // already named in the House Week plan. `ride` is the usual way of getting there, which
   // only pre-selects — the student can change it.
   practices: [
-    { name: 'Open gym — Henry Street Settlement', address: '301 Henry St, Manhattan', lat: 40.7138, lng: -73.9830, day: 'Mon', time: '19:00', stay: 120, ride: 'shuttle' },
+    { name: 'Open gym — Life Time Wall Street', address: '1 Wall Street, Manhattan', lat: 40.7075, lng: -74.0113, day: 'Mon', time: '19:00', stay: 120, ride: 'walkOver' },
     { name: 'Soccer — Pier 40',                   address: '353 West St, Manhattan',  lat: 40.7300, lng: -74.0110, day: 'Tue', time: '18:00', stay: 90,  ride: 'rideshare' },
     { name: 'Basketball — Boys & Girls Republic', address: '888 E 6th St, Manhattan', lat: 40.7236, lng: -73.9780, day: 'Wed', time: '19:30', stay: 90,  ride: 'shuttle' },
     { name: 'Group run — Fleet Feet Columbus Circle', address: '103 W 59th St, Manhattan', lat: 40.7681, lng: -73.9819, day: 'Thu', time: '18:30', stay: 75, ride: 'transitPass' },

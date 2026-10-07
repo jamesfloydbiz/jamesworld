@@ -90,7 +90,11 @@
     ...Object.fromEntries(C.houses.map((h) => [h.key,
       { name: h.name, short: h.short, address: h.address, lat: h.lat, lng: h.lng, src: 'doc', home: true }])),
     school:    { name: C.school.name,  address: C.school.address, lat: C.school.lat, lng: C.school.lng, src: 'doc', ride: 'walk' },
-    // House Week, "Day by day" — Monday
+    // Monday's movement night. The House Week sample used Henry Street Settlement, which is
+    // a 25-minute shuttle run each way; Life Time at One Wall Street is a walk from both
+    // flats, which is the difference between an evening out and an evening in transit.
+    lifetime:  { name: 'Life Time One Wall Street',    address: '1 Wall Street, Manhattan',       lat: 40.7075, lng: -74.0113, src: 'invented', ride: 'walk' },
+    // Still here: the House Week names it, and it is one of the sign-out quick picks.
     henry:     { name: 'Henry Street Settlement',      address: '301 Henry St, Manhattan',        lat: 40.7138, lng: -73.9830, src: 'doc', ride: 'car' },
     republic:  { name: 'Boys & Girls Republic',        address: '888 E 6th St, Manhattan',        lat: 40.7236, lng: -73.9780, src: 'doc', ride: 'car' },
     // House Week, Thursday — the free Fleet Feet group run
@@ -187,14 +191,13 @@
       // "5:15 to 6:15 Practice block. Everyone practices at once, in the common room or
       // the park." Shifted eight minutes later than the handbook's clock because school
       // now ends at 5pm and 180 Maiden Lane is a few minutes' walk from either flat.
-      add({ kind: 'practice', title: 'Practice block', start: at(date, '17:25'), end: at(date, d === 1 ? '18:00' : '18:15'),
+      add({ kind: 'practice', title: 'Practice block', start: at(date, '17:25'), end: at(date, '18:15'),
             note: 'Something you enjoy getting better at, unrelated to your business' });
-      add({ title: 'Log the session', start: at(date, d === 1 ? '18:00' : '18:15'), end: at(date, d === 1 ? '18:10' : '18:30') });
-      // Monday's open gym at Henry Street runs 7 to 9pm and is a 25-minute ride away, so
-      // Monday eats early. The House Week sample puts both in the same evening; this is
-      // what that actually costs.
-      const dinS = d === 1 ? '18:10' : '18:30', dinE = d === 1 ? '18:40' : '19:30';
-      add({ kind: 'meal', title: d === 1 ? 'Family dinner — early, open gym is at 7' : 'Family dinner',
+      add({ title: 'Log the session', start: at(date, '18:15'), end: at(date, '18:30') });
+      // Open gym is now a walk rather than a ride across town, so Monday eats at the normal
+      // time and still gets there for seven.
+      const dinS = '18:30', dinE = d === 1 ? '18:45' : '19:30';
+      add({ kind: 'meal', title: d === 1 ? 'Family dinner — short, open gym is at 7' : 'Family dinner',
             start: at(date, dinS), end: at(date, dinE), note: 'Phones in a basket' });
       add({ kind: 'evening', title: EVENING_SLOT[d], start: at(date, '19:30'), end: at(date, '21:00') });
       add({ title: 'Chores and free time', start: at(date, '21:00'), end: at(date, '21:30') });
@@ -303,7 +306,7 @@
     volleyTue: { d: 2, s: '19:30', e: '21:00', t: 'Volleyball — Asphalt Green', p: 'asphalt', move: true },
     volleyThu: { d: 4, s: '18:30', e: '20:00', t: 'Volleyball — Asphalt Green', p: 'asphalt', move: true },
     volleySat: { d: 6, s: '08:00', e: '09:30', t: 'Volleyball match — Asphalt Green', p: 'asphalt', move: true },
-    gymHenry:  { d: 1, s: '19:00', e: '21:00', t: 'Open gym — Henry Street Settlement', p: 'henry', move: true },
+    gymLife:   { d: 1, s: '19:00', e: '21:00', t: 'Open gym — Life Time Wall Street', p: 'lifetime', move: true },
     ballRep:   { d: 3, s: '19:30', e: '21:00', t: 'Basketball — Boys & Girls Republic', p: 'republic', move: true },
     soccer:    { d: 2, s: '19:30', e: '21:00', t: 'Soccer — Pier 40', p: 'pier40', move: true },
     swimSat:   { d: 6, s: '07:30', e: '09:00', t: 'Swim — Asphalt Green', p: 'asphalt', move: true },
@@ -332,26 +335,26 @@
                            'Priya Nair', 'Hana Watanabe', 'Omar Haddad', 'Kofi Boateng', 'Tomas Silva']);
 
   const STUDENT = {
-    'Maya Chen':          { skill: 'Guitar',            share: true,  acts: [A.gymHenry, A.ballRep, A.runSat, A.runSun] },
-    'Jordan Reyes':       { skill: 'Chess',             share: true,  acts: [A.soccer, A.gymHenry, A.swimSat, A.runSun] },
-    'Amara Okafor':       { skill: 'Drawing',           share: true,  acts: [A.danceWed, A.gymHenry, A.danceSat, A.runSun] },
-    'Theo Bennett':       { skill: 'Monologues',        share: true,  acts: [A.actSat, A.gymHenry, A.boxTue, A.runSat, A.runSun] },
+    'Maya Chen':          { skill: 'Guitar',            share: true,  acts: [A.gymLife, A.ballRep, A.runSat, A.runSun] },
+    'Jordan Reyes':       { skill: 'Chess',             share: true,  acts: [A.soccer, A.gymLife, A.swimSat, A.runSun] },
+    'Amara Okafor':       { skill: 'Drawing',           share: true,  acts: [A.danceWed, A.gymLife, A.danceSat, A.runSun] },
+    'Theo Bennett':       { skill: 'Monologues',        share: true,  acts: [A.actSat, A.gymLife, A.boxTue, A.runSat, A.runSun] },
     'Sofia Alvarez':      { skill: 'Piano',             share: true,  acts: [A.volleyTue, A.volleyThu, A.volleySat, A.swimSun] },
-    'Noah Kim':           { skill: 'Korean',            share: true,  acts: [A.ballRep, A.gymHenry, A.swimSat, A.climbSun] },
-    'Liam Patel':         { skill: 'Beatmaking',        share: false, acts: [A.soccer, A.gymHenry, A.runSat, A.runSun] },
+    'Noah Kim':           { skill: 'Korean',            share: true,  acts: [A.ballRep, A.gymLife, A.swimSat, A.climbSun] },
+    'Liam Patel':         { skill: 'Beatmaking',        share: false, acts: [A.soccer, A.gymLife, A.runSat, A.runSun] },
     'Zara Hussain':       { skill: 'Poetry',            share: true,  acts: [A.volleyTue, A.volleyThu, A.volleySat, A.runSun] },
     'Eli Goldberg':       { skill: 'Cello',             share: true,  acts: [A.climbMon, A.ballRep, A.climbSun, A.runSat] },
     'Nia Thompson':       { skill: 'Photography',       share: true,  acts: [A.volleyTue, A.volleyThu, A.volleySat, A.runSun] },
-    'Mateo Rossi':        { skill: 'Cooking',           share: true,  acts: [A.soccer, A.gymHenry, A.runSat, A.swimSun] },
+    'Mateo Rossi':        { skill: 'Cooking',           share: true,  acts: [A.soccer, A.gymLife, A.runSat, A.swimSun] },
     'Priya Nair':         { skill: 'Bharatanatyam',     share: true,  acts: [A.volleyTue, A.volleyThu, A.volleySat, A.swimSun] },
-    'Dante Oyelaran':     { skill: 'Saxophone',         share: true,  acts: [A.boxTue, A.gymHenry, A.boxSat, A.runSun] },
-    'Hana Watanabe':      { skill: 'Ceramics',          share: true,  acts: [A.potteryWed, A.gymHenry, A.swimSat, A.runSun] },
-    'Ruby Castellanos':   { skill: 'Spanish guitar',    share: true,  acts: [A.danceWed, A.gymHenry, A.danceSat, A.runSun] },
+    'Dante Oyelaran':     { skill: 'Saxophone',         share: true,  acts: [A.boxTue, A.gymLife, A.boxSat, A.runSun] },
+    'Hana Watanabe':      { skill: 'Ceramics',          share: true,  acts: [A.potteryWed, A.gymLife, A.swimSat, A.runSun] },
+    'Ruby Castellanos':   { skill: 'Spanish guitar',    share: true,  acts: [A.danceWed, A.gymLife, A.danceSat, A.runSun] },
     'Omar Haddad':        { skill: 'Calligraphy',       share: false, acts: [A.climbMon, A.boxTue, A.climbSun, A.runSat] },
-    'Sloane Marchetti':   { skill: 'Film editing',      share: true,  acts: [A.debateTue, A.gymHenry, A.ballRep, A.runSat, A.runSun] },
+    'Sloane Marchetti':   { skill: 'Film editing',      share: true,  acts: [A.debateTue, A.gymLife, A.ballRep, A.runSat, A.runSun] },
     'Kofi Boateng':       { skill: 'Drums',             share: true,  acts: [A.soccer, A.ballRep, A.boxSat, A.runSun] },
-    'Ingrid Lindqvist':   { skill: 'Swedish folk fiddle', share: true, acts: [A.choirSun, A.gymHenry, A.swimSat, A.boxTue, A.runSunEarly] },
-    'Tomas Silva':        { skill: 'Capoeira',          share: true,  acts: [A.danceWed, A.gymHenry, A.runSat, A.swimSun] },
+    'Ingrid Lindqvist':   { skill: 'Swedish folk fiddle', share: true, acts: [A.choirSun, A.gymLife, A.swimSat, A.boxTue, A.runSunEarly] },
+    'Tomas Silva':        { skill: 'Capoeira',          share: true,  acts: [A.danceWed, A.gymLife, A.runSat, A.swimSun] },
   };
   /* Tuesday is Cook night, and the House Week sample puts the open mic in the common room
      after dinner. Whoever is still in the house gets it -- derived rather than hand-listed,
@@ -365,7 +368,7 @@
      empty week, derive one from their name so they still appear on the board and on the
      map. Deterministic, so it does not change between polls. */
   const FALLBACK = [
-    [A.gymHenry, A.ballRep, A.runSat, A.runSun], [A.soccer, A.boxTue, A.swimSat, A.runSun],
+    [A.gymLife, A.ballRep, A.runSat, A.runSun], [A.soccer, A.boxTue, A.swimSat, A.runSun],
     [A.climbMon, A.danceWed, A.climbSun, A.runSat], [A.volleyTue, A.volleyThu, A.volleySat, A.swimSun],
   ];
   const SKILLS = ['Guitar', 'Sketching', 'Mandarin', 'Bread', 'Chess', 'Songwriting'];
