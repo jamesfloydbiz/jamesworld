@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Family view · Founders School</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<link rel="stylesheet" href="css/brand.css">
+</head>
+<body>
+<header class="bar">
+  <div class="brand"><i>FS</i><div>Founders School<small>Student Life · Family view</small></div></div>
+  <div class="who"><span id="clock"></span></div>
+</header>
+
+<main class="wrap">
+  <div class="card" style="margin-bottom:14px">
+    <div class="label" style="margin-top:0">Your child</div>
+    <select class="field" id="kid"></select>
+    <div class="line" style="margin-top:8px;color:var(--grey)">A family sees one child. The picker is here because this is a demo.</div>
+  </div>
+
+  <div id="now"></div>
+  <div class="tabs" style="margin:16px 0 12px">
+    <button class="tab sel" data-ptab="today">Today</button>
+    <button class="tab" data-ptab="week">The week ahead</button>
+    <button class="tab" data-ptab="note">This week&rsquo;s note</button>
+    <button class="tab" data-ptab="house">House rules</button>
+  </div>
+  <div id="ppanel"></div>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="js/config.js"></script>
+<script src="js/api.js"></script>
+<script src="js/geo.js"></script>
+<script src="js/calendar.js"></script>
+<script src="js/life360.js"></script>
+<script>
+/* What a family gets. The handbook (section 12) names "a family-communications tracker
+   that shows parents what went out and when" as one of the projects a new RA builds, and
+   section 8 promises families "a summary: what happened, what's coming, and the Town Hall
+   log" every week. This is that, with the child's own schedule attached.
+
+   Deliberately NOT the RA board in a different colour. A parent is not doing a headcount;
+   they want to know where their own child is, what is coming, when they speak next, and
+   what they need to pay for or consent to. Everything else is noise to them.
+
+   Its own single-child map, rather than the board's. Reusing the board's would mean
+   lifting 240 lines of grouping, mover and route machinery out of a page that works, and
+   one child needs one marker. */
+(function () {
+  const C = FS_CONFIG, API = FS_API, { esc, time } = FS, CAL = window.FS_CAL, L3 = window.FS_L360, GEO = window.FS_GEO;
+  const $ = (s) => document.querySelector(s);
+  let names = CAL.names.slice(), kid = null, ptab = 'today', map, marker, path, casing;
+
+  // The roster can be edited on the RA board, so read it rather than assuming the seed.
+  API.roster().then((r) => {
+    if (r && r.students && r.students.length) names = r.students.map((s) => s.name);
+    L3.roster = names;
+    const want = new URLSearchParams(location.search).get('kid');
+    kid = names.includes(want) ? want : names[0];
+    $('#kid').innerHTML = names.map((n) => `<option${n === kid ? ' selected' : ''}>${esc(n)}</option>`).join('');
+    start();
+  }).catch(() => { L3.roster = names; kid = names[0]; start(); });
+
+  function start() {
+    $('#kid').onchange = (e) => { kid = e.target.value; render(); };
+    document.addEventListener('click', (e) => {
+      const t = e.target.closest('[data-ptab]'); if (!t) return;
+      ptab = t.dataset.ptab;
+      document.querySelectorAll('[data-ptab]').forEach((x) => x.classList.toggle('sel', x === t));
+      render();
+    });
+    L3.onLeg(render);
+    render();
+    setInterval(render, 15000);
+    // The dot moves between renders, for the same reason the RA board's does.
+    setInterval(() => { if (marker && map) renderNow(); }, 2000);
+  }
+
+  const fmtT = (d) => new Date(d).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+
+  /* Where their child is now. Two things make this honest rather than creepy:
+     it says it is simulated, and a child whose family has not agreed to location sharing
+     has no position at all -- not a stale one, not a blurred one. Handbook section 9. */
+  /* The card is written once and then updated in place. Rebuilding its innerHTML on every
+     tick tore out the map container, so Leaflet silently initialised a fresh map against a
+     fresh element fifteen seconds apart -- a hundred-odd live maps by the time anyone
+     looked, each with its own tile requests. A live view has to update text, not replace
+     the thing the map is mounted on. */
+  function nowShell() {
+    if ($('#nowHead')) return;
+    $('#now').innerHTML = `<div class="card">
+      <div class="kicker">Right now</div>
+      <h2 id="nowHead" style="margin:4px 0 6px"></h2>
+      <div class="line" id="nowSub"></div>
+      <div id="pmap" style="height:220px;border-radius:12px;margin-top:12px"></div>
+      <div class="line" id="nowFoot" style="margin-top:10px;color:var(--grey)"></div></div>`;
+  }
+  function renderNow() {
+    nowShell();
+    const pr = CAL.profile(kid), at = CAL.locate(kid, CAL.now());
+    const first = kid.split(' ')[0];
+    const mapEl = $('#pmap');
+
+    if (!pr.share) {
+      // No position at all -- not a stale one, not a blurred one. Handbook section 9 leaves
+      // location sharing to Town Hall, and this family's has not agreed it.
+      $('#nowHead').textContent = `${first} is on the house schedule`;
+      $('#nowSub').innerHTML = esc(whereText(at));
+      mapEl.style.display = 'none';
+      $('#nowFoot').innerHTML = `Location sharing is off for ${esc(first)}. Town Hall sets this, and it has
+        not been agreed. The house still knows the schedule, and still signs ${esc(first)} in and out.`;
+      return;
+    }
+    mapEl.style.display = '';
+    const line = at.state === 'transit' ? L3.leg(at.from.key, at.place.key, at.mode) : null;
+    const pt = at.state === 'transit'
+      ? (line ? GEO.pointAt(line, at.frac)
+              : [at.from.lat + (at.place.lat - at.from.lat) * at.frac, at.from.lng + (at.place.lng - at.from.lng) * at.frac])
+      : [at.place.lat, at.place.lng];
+    const bat = L3.battery(kid, CAL.now());
+    $('#nowHead').textContent = at.state === 'transit'
+      ? `${first} is on the way to ${at.place.name}` : `${first} is at ${at.place.name}`;
+    $('#nowSub').innerHTML = whereText(at);
+    $('#nowFoot').innerHTML = `Phone ${bat.level}%${bat.charge ? ', charging' : ''} &middot; <b>Simulated.</b>
+      Positions in this demo come from the published schedule and the clock, not from a phone.`;
+
+    if (!map) {
+      map = L.map(mapEl, { zoomControl: false, attributionControl: false }).setView(pt, 14);
+      L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+      // Anchored below its point, not centred on it: a student at the house would
+      // otherwise be a dot hidden underneath this chip, which is most evenings.
+      L.marker([C.house.lat, C.house.lng], { icon: L.divIcon({ className: '', iconSize: [46, 24], iconAnchor: [23, -10],
+        html: '<div class="m-grp none">home</div>' }) }).addTo(map);
+      marker = L.circleMarker(pt, { radius: 9, color: '#fff', weight: 3, fillColor: '#1D4ED8', fillOpacity: 1 }).addTo(map);
+    } else {
+      marker.setLatLng(pt);
+    }
+    if (path) { map.removeLayer(path); map.removeLayer(casing); path = casing = null; }
+    if (line) {
+      // A white casing under the route. Blue dashes alone disappear into OSM's blue water
+      // and orange roads at this size, and this is the one thing on the card a parent is
+      // actually looking at.
+      casing = L.polyline(line, { color: '#fff', weight: 7, opacity: .9 }).addTo(map);
+      path = L.polyline(line, { color: '#1D4ED8', weight: 3.5, opacity: .95, dashArray: '7 6' }).addTo(map);
+    }
+    // Frame the whole journey when there is one, so a parent sees where their child is
+    // going as well as where they are. Otherwise sit on the place.
+    map.invalidateSize();
+    if (line) map.fitBounds(L.polyline(line).getBounds(), { padding: [26, 26], maxZoom: 15, animate: false });
+    else map.setView(pt, 15, { animate: false });
+  }
+  function whereText(a) {
+    if (a.state === 'transit') return `Due there about ${fmtT(a.eta)}. ${CAL.places[a.from.key] ? 'From ' + esc(a.from.name) + '. ' : ''}`
+      + (a.next ? esc(a.next.title) : '');
+    const t = a.entry ? a.entry.title : 'Free time';
+    return a.next ? `${esc(t)} · next: ${esc(a.next.title)} at ${fmtT(a.next.start)}` : esc(t);
+  }
+
+  const KIND = { community: 'House outing', activity: 'Activity', call: 'Family call',
+                 townhall: 'Town Hall', meal: 'Meal', school: 'School', practice: 'Practice block' };
+  const dayRow = (d, showAll) => {
+    const rows = (showAll ? d.entries : d.entries.filter((e) => ['community', 'activity', 'call', 'townhall'].includes(e.kind)));
+    if (!rows.length) return '';
+    return `<div class="so"><div class="top"><div><h3>${esc(d.day)} ${esc(CAL.fmtDate(d.date))}</h3>
+      <div class="line">${esc(d.slot)}</div></div></div>
+      ${rows.map((e) => `<div class="pl-row"><span class="pl-t">${fmtT(e.start)}</span>
+        <span><b>${esc(e.title)}</b>${e.consent ? ` <span class="badge soon">${esc(e.consent)}</span>` : ''}
+        ${e.note ? `<br><small style="color:var(--grey)">${esc(e.note)}</small>` : ''}</span>
+        <span class="pl-k">${esc(KIND[e.kind] || '')}</span></div>`).join('')}</div>`;
+  };
+
+  function render() {
+    if (!kid) return;
+    $('#clock').textContent = CAL.now().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+    renderNow();
+    const first = kid.split(' ')[0];
+    const u = CAL.weeklyUpdate(kid, CAL.now());
+    const panel = $('#ppanel');
+
+    if (ptab === 'today') {
+      const today = CAL.dayFor(kid, CAL.now());
+      const nowT = CAL.now();
+      panel.innerHTML = `<div class="so"><div class="top"><div>
+        <h3>${esc(CAL.dayName[CAL.dow(nowT)])}, ${esc(CAL.fmtDate(nowT))}</h3>
+        <div class="line">${esc(CAL.eveningSlot[CAL.dow(nowT)])}</div></div></div>
+        ${today.map((e) => `<div class="pl-row ${e.end < nowT ? 'past' : e.start <= nowT ? 'live' : ''}">
+          <span class="pl-t">${fmtT(e.start)}</span>
+          <span><b>${esc(e.title)}</b>${e.note ? `<br><small style="color:var(--grey)">${esc(e.note)}</small>` : ''}</span>
+          <span class="pl-k">${esc(CAL.places[e.place] ? CAL.places[e.place].name : '')}</span></div>`).join('')}</div>`;
+    } else if (ptab === 'week') {
+      const wk = CAL.weekFor(kid, CAL.addDays(CAL.now(), 7));
+      panel.innerHTML = `<div class="plan-head">Next week &middot; ${esc(CAL.fmtDate(wk[0].date))} to ${esc(CAL.fmtDate(wk[6].date))}
+        <small>Everything outside the normal school-night rhythm. The full day is on the Today tab.</small></div>`
+        + (wk.map((d) => dayRow(d, false)).join('') || '<div class="empty">Nothing booked yet.</div>')
+        + (u.needs.length ? `<div class="note-out" open><div class="label" style="margin-top:0">Needs you</div>
+            ${u.needs.map((n) => `<div class="line">· <b>${esc(n.day)}</b> ${esc(n.title)} — ${esc(n.consent)}</div>`).join('')}</div>` : '');
+    } else if (ptab === 'note') {
+      panel.innerHTML = `<div class="so"><div class="top"><div>
+        <h3>Your week with ${esc(first)}</h3><div class="line">${esc(u.label)} · sent after Town Hall, ${esc(fmtT(u.sentAt))} Sunday</div></div></div>
+        <div class="label">Highlights</div>${u.highlights.map((h) => `<div class="line">· ${esc(h)}</div>`).join('')}
+        <div class="label">Anecdotes</div>${u.anecdotes.map((h) => `<div class="line">· ${esc(h)}</div>`).join('')}
+        <div class="label">Town Hall log</div>${u.townHall.map((h) => `<div class="line">· ${esc(h)}</div>`).join('')}
+        <div class="label">Coming up</div>
+        ${u.next.map((d) => `<div class="line"><b>${esc(d.short)}</b> ${d.items.map((i) => esc(i.time) + ' ' + esc(i.title)).join(' · ')}</div>`).join('')}
+        </div>
+        ${u.call ? `<div class="so"><div class="top"><div><h3>Your call with ${esc(first)}</h3>
+          <div class="line">${esc(u.call.day)} ${esc(u.call.date)}, ${esc(u.call.time)} to ${esc(u.call.end)}</div></div>
+          <span class="badge">20 minutes</span></div>
+          <div class="line" style="margin-top:8px">What ${esc(first)} will be asked to talk about:</div>
+          ${u.call.prompts.map((p) => `<div class="line">· ${esc(p)}</div>`).join('')}</div>` : ''}`;
+    } else {
+      /* The things a family actually asks about, each quoted from the handbook with its
+         section, because a rule without its reason is the thing the handbook says not to do. */
+      panel.innerHTML = `<div class="so">
+        <div class="top"><div><h3>What the house holds to</h3>
+          <div class="line">From the Student Life Handbook. The students write everything above this line at Town Hall.</div></div></div>
+        ${[
+          ['Lights out 10pm on school nights', 'Later on Friday and Saturday, set at Town Hall within a safety maximum. Section 5.'],
+          ['Sign out and in when leaving', 'A Safety floor rule, so Town Hall cannot vote it away. Nobody goes alone: a sign-out is a pair, and the buddy has to accept. Section 4.'],
+          ['No overnight guests', 'Everyone who lives here gets a say in who is in their home. Section 4.'],
+          ['Medications go through the RA', 'Mixed-up meds are a real medical risk, and every dose given is logged. Section 4.'],
+          ['You hear from us several times a week', 'A note after each outing, a weekly summary with the Town Hall log, and a personal note each month. Anything serious, the same day. Section 8.'],
+          ['Walks and exercise are never taken away', 'No consequence removes movement, meals, sleep, or family calls. Section 6.'],
+          ['One-on-one every week', 'Ten minutes with the RA, somewhere others can see. Section 7.'],
+        ].map(([t, w]) => `<div class="pl-row"><span></span><span><b>${esc(t)}</b><br><small style="color:var(--grey)">${esc(w)}</small></span><span></span></div>`).join('')}
+        </div>
+        <div class="so"><div class="top"><div><h3>If something happens</h3>
+          <div class="line">The escalation ladder, section 8.</div></div></div>
+          <div class="line">Anything at <b>Serious</b> or above and you hear from the RA the same day, by phone, facts first.</div>
+          <div class="line">A student missing past curfew with no contact: head of school inside the hour, 911 past one hour or at any sign of danger.</div>
+          <div class="line" style="margin-top:8px;color:var(--grey)">Founders still has to name who fills each role on the ladder. The handbook tracks that as an open question.</div></div>`;
+    }
+  }
+})();
+</script>
+</body>
+</html>

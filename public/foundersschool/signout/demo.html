@@ -60,11 +60,14 @@
     <button role="tab" id="t-watch" aria-selected="true" aria-controls="p-watch">Watch</button>
     <button role="tab" id="t-student" aria-selected="false" aria-controls="p-student">Student view</button>
     <button role="tab" id="t-ra" aria-selected="false" aria-controls="p-ra">RA view</button>
+    <button role="tab" id="t-parent" aria-selected="false" aria-controls="p-parent">Family view</button>
   </div>
 </div>
 <div class="d-note">
   <b>Demo.</b> Nothing is saved anywhere — it lives in this browser only. Both views share it, so a sign-out
   made on the phone appears on the RA board within a few seconds. RA passcode is <b>demo</b>.
+  Students, families and positions are invented, and positions are simulated from the published
+  schedule and the clock, not from a phone.
 </div>
 
 <div class="d-stage">
@@ -82,6 +85,7 @@
       <div class="d-next">
         <button class="d-go" data-go="student">Try the student view &rarr;</button>
         <button class="d-go ghost" data-go="ra">Open the RA board &rarr;</button>
+        <button class="d-go ghost" data-go="parent">See the family view &rarr;</button>
       </div>
       <ul class="d-points">
         <li><b>Nobody goes alone.</b> A sign-out is a pair, and the buddy has to accept before it starts.</li>
@@ -89,6 +93,9 @@
         <li><b>Due back, not just gone.</b> Travel each way plus time there gives a time, and the board
           flags due-soon and overdue against it.</li>
         <li><b>Students can write in.</b> Requests and feedback go straight to the RA between Town Halls.</li>
+        <li><b>Everyone has a schedule, so everyone has a position.</b> School, the practice block,
+          practices, the Saturday statement piece. The board says who is off it; families see their
+          own child&rsquo;s week, the Sunday call, and the note that goes out after Town Hall.</li>
       </ul>
     </div>
   </div>
@@ -99,26 +106,32 @@
     <div class="d-phone"><iframe id="f-student" src="index.html" title="Student view"></iframe></div>
   </div>
   <div class="d-pane" id="p-ra" role="tabpanel" aria-labelledby="t-ra" hidden>
-    <p class="d-hint">What the RA sees. Headcount first, then the map — dots move in real time.
-      Use <b>Load demo activity</b> to fill the board.</p>
+    <p class="d-hint">What the RA sees. Headcount first, then the map — every student has a position,
+      and journeys move in real time. The <b>Itinerary</b> tab says who is not where their schedule
+      expects. Use <b>Load demo activity</b> to add sign-outs on top.</p>
     <div class="d-board"><iframe id="f-ra" src="dashboard.html" title="RA view"></iframe></div>
+  </div>
+  <div class="d-pane" id="p-parent" role="tabpanel" aria-labelledby="t-parent" hidden>
+    <p class="d-hint">What a family sees: their own child, their week, the call on Sunday, and the
+      note that goes out after Town Hall. Nothing else — a parent is not doing a headcount.</p>
+    <div class="d-phone"><iframe id="f-parent" src="parent.html" title="Family view"></iframe></div>
   </div>
 </div>
 
 <script>
-  var tabs = { watch: document.getElementById('t-watch'), student: document.getElementById('t-student'), ra: document.getElementById('t-ra') };
-  var panes = { watch: document.getElementById('p-watch'), student: document.getElementById('p-student'), ra: document.getElementById('p-ra') };
+  var tabs = { watch: document.getElementById('t-watch'), student: document.getElementById('t-student'), ra: document.getElementById('t-ra'), parent: document.getElementById('t-parent') };
+  var panes = { watch: document.getElementById('p-watch'), student: document.getElementById('p-student'), ra: document.getElementById('p-ra'), parent: document.getElementById('p-parent') };
   function show(which) {
     Object.keys(tabs).forEach(function (k) {
       tabs[k].setAttribute('aria-selected', String(k === which));
       panes[k].hidden = k !== which;
     });
     if (which !== 'watch' && clip) { try { clip.pause(); } catch (e) {} }
-    // Leaflet needs a resize once its container stops being display:none.
-    if (which === 'ra') {
-      var f = document.getElementById('f-ra');
-      try { f.contentWindow.dispatchEvent(new Event('resize')); } catch (e) {}
-    }
+    // Leaflet needs a resize once its container stops being display:none. Both framed
+    // views carry a map, so both need it -- otherwise the map renders as a grey box.
+    var f = which === 'ra' ? document.getElementById('f-ra')
+          : which === 'parent' ? document.getElementById('f-parent') : null;
+    if (f) { try { f.contentWindow.dispatchEvent(new Event('resize')); } catch (e) {} }
     /* Deliberately does NOT write the hash. It used to, which meant clicking "RA view" once
        turned the address into ...demo.html#ra — so a reload, a restored tab, or a link copied
        out of the address bar after a click-around all reopened on the board instead of here.
@@ -134,6 +147,7 @@
   function fromHash() {
     if (location.hash === '#ra') show('ra');
     else if (location.hash === '#student') show('student');
+    else if (location.hash === '#parent') show('parent');
     else show('watch');
   }
   fromHash();

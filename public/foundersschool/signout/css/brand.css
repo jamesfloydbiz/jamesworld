@@ -176,3 +176,75 @@ h2{font-size:24px;margin-bottom:6px}
   display: grid; place-content: center;
   font: 800 10px/1 'Inter', system-ui, sans-serif; letter-spacing: .1em; text-transform: uppercase;
 }
+
+/* ── Tracking ─────────────────────────────────────────────────────────────
+   The board used to show only the trips a student had signed out for, so most
+   of an evening was an empty map. Now every student has a position, derived
+   from the published schedule and the clock. Twenty separate dots at one
+   address is a pile, so a place carries a count and expands on click. */
+.m-grp {
+  min-width: 58px; height: 30px; padding: 0 9px; border-radius: 9px;
+  background: #fff; color: var(--ink, #16161a); border: 2px solid var(--ink, #16161a);
+  box-shadow: 0 2px 8px rgba(0,0,0,.2);
+  display: flex; align-items: center; justify-content: center; gap: 5px;
+  font: 800 10px/1 'Inter', system-ui, sans-serif; letter-spacing: .08em; text-transform: uppercase;
+  white-space: nowrap;
+}
+.m-grp b { font-size: 15px; letter-spacing: 0; }
+.m-grp span { opacity: .72; }
+.m-grp.school { border-color: var(--blue); color: var(--blue); }
+/* An empty place still gets drawn -- an empty school at 9pm is information -- but it
+   recedes, so a count of nought never reads as a crowd. */
+.m-grp b:empty, .m-grp:has(b:only-child) { letter-spacing: 0; }
+.m-grp:has(b) { opacity: 1; }
+
+/* A quieter tile, for a number that is context rather than a headcount. */
+.stat.sub { opacity: .72; }
+.stat.sub b { font-size: 22px; }
+
+/* The Itinerary tab */
+.plan-head {
+  font: 800 14px/1.3 'Inter', system-ui, sans-serif; padding: 2px 0 12px;
+}
+.plan-head small {
+  display: block; margin-top: 4px; font: 500 12px/1.45 inherit; color: var(--grey, #6B7280);
+}
+.note-out {
+  margin-top: 14px; border: 1px solid var(--rule, #E5E7EB); border-radius: 12px;
+  padding: 12px 14px; background: #fff;
+}
+.note-out > summary {
+  cursor: pointer; font-weight: 700; font-size: 13.5px; list-style: none;
+}
+.note-out > summary::marker, .note-out > summary::-webkit-details-marker { display: none; }
+.note-out > summary::before { content: '\25B8 '; color: var(--grey, #6B7280); }
+.note-out[open] > summary::before { content: '\25BE '; }
+/* A journey carrying more than one student. The whole house leaving for the same open
+   gym is one group walking down one street, so it is one dot with a count on it. */
+.m-move i {
+  position: absolute; top: -5px; right: -7px;
+  min-width: 17px; height: 17px; padding: 0 4px; border-radius: 9px;
+  background: var(--ink, #16161a); color: #fff; border: 2px solid #fff;
+  font: 800 10px/13px 'Inter', system-ui, sans-serif; font-style: normal;
+  display: grid; place-content: center;
+}
+/* An empty place still gets drawn, but it recedes: a nought should not read as a crowd. */
+.m-grp.none { opacity: .62; border-style: dashed; }
+
+/* ── Family view ──────────────────────────────────────────────────────────
+   A schedule row: time, what, where. Three columns so a parent can scan down
+   the times rather than reading sentences. */
+.pl-row {
+  display: grid; grid-template-columns: 62px 1fr auto; gap: 10px; align-items: start;
+  padding: 7px 0; border-top: 1px solid var(--rule, #E5E7EB); font-size: 13.5px; line-height: 1.45;
+}
+.pl-row:first-of-type { border-top: 0; }
+.pl-t { font-weight: 700; color: var(--grey, #6B7280); font-variant-numeric: tabular-nums; }
+.pl-k { font-size: 11px; color: var(--grey, #6B7280); text-align: right; max-width: 150px; }
+.pl-row.past { opacity: .45; }
+.pl-row.live { background: #EFF6FF; border-radius: 8px; padding-left: 8px; margin-left: -8px; }
+.pl-row.live .pl-t { color: var(--blue); }
+@media (max-width: 560px) {
+  .pl-row { grid-template-columns: 54px 1fr; }
+  .pl-k { display: none; }
+}

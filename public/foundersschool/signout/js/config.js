@@ -53,6 +53,10 @@ window.FS_CONFIG = {
   ],
   stayStep: 5, stayMin: 10, stayMax: 240,
 
+  // Pin the schedule clock, e.g. '2026-10-19T18:40'. Overridden by ?t= in the URL.
+  // Null means the real clock, which is what a visitor gets.
+  demoClock: null,
+
   requestTtlMin: 10,   // buddy has this long to accept
   soonMin: 10,         // dashboard flags "due soon" under this many minutes
   graceMin: 5,         // minutes after due time before "overdue"
