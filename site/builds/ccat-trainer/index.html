@@ -109,9 +109,10 @@ let RECENT = ls(LS.recent,[]);        // rolling window of the last answers (0/1
 const IDLE_CAP = 180;                 // seconds; past this you were not thinking, you were away
 // Samples recorded before idle time was excluded can be hours long. They are
 // meaningless and would sit in the rolling window for another 40 answers.
-let PACE = ls(LS.pace,[]).filter(v => typeof v === 'number' && v > 0 && v <= IDLE_CAP);
+let PACE = ls(LS.pace,[]).filter(v => typeof v === 'number' && v > 0 && v <= IDLE_CAP).slice(-50);
 let PROGRESS = ls(LS.progress,{});    // one snapshot per calendar day
 const FORM_WIN = 40;                  // "current form" = accuracy over last 40 answers
+const PACE_WIN = 50;                  // pace = your last 50 answers, one exam’s worth
 let SETTINGS = ls(LS.settings,{pomLen:25, pomBreak:5, deepSet:false, confidence:false, sessionCount:0});
 
 // ==================== MASTERY MODEL ====================
@@ -1064,7 +1065,7 @@ function answerPractice(idx){
   // Pace tracking (this session + a rolling window for Stats).
   practiceState.paceSum = (practiceState.paceSum||0) + t;
   if(fast) practiceState.sharp = (practiceState.sharp||0) + 1;
-  PACE.push(Math.round(t*10)/10); if(PACE.length>FORM_WIN) PACE.shift();
+  PACE.push(Math.round(t*10)/10); if(PACE.length>PACE_WIN) PACE.shift();
   save(LS.pace, PACE);
   const wasMastered = isMastered(subKey(q));
   rec(q.id, correct, assisted, t);
@@ -1265,7 +1266,7 @@ function finishExam(){
   examState.ans.forEach(a=>{
     if(typeof a.secs === 'number' && a.secs > 0 && a.secs <= IDLE_CAP){
       PACE.push(Math.round(a.secs*10)/10);
-      if(PACE.length > FORM_WIN) PACE.shift();
+      if(PACE.length > PACE_WIN) PACE.shift();
     }
   });
   save(LS.pace, PACE);
