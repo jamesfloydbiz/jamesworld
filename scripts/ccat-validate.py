@@ -65,6 +65,14 @@ def check(path):
         if q.get("d") not in (1,2,3):          problems.append((q["id"], f"difficulty {q.get('d')}"))
         if q.get("c") not in ("Verbal","Numerical","Logic","Spatial"):
                                               problems.append((q["id"], f"category {q.get('c')}"))
+        # an odd-one-out stem lists its own options; editing one and not the
+        # other leaves a question that contradicts itself on screen
+        if q.get("sub") == "oddoneout":
+            m = re.search(r':\s*(.+?)\s*\??$', q["q"])
+            if m:
+                listed = [x.strip().rstrip('?').strip().lower() for x in m.group(1).split(',')]
+                if len(listed) == len(o) and listed != [str(x).lower() for x in o]:
+                    problems.append((q["id"], "stem list does not match the options"))
         # a stem only counts as duplicated when the drawn content is identical too
         stems[(q["q"].strip().lower(), json.dumps(q.get("vis"), sort_keys=True))].append(q["id"])
     for (stem, _), group in stems.items():
