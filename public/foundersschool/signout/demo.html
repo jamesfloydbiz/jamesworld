@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#0000EF">
 <title>Sign-Out Demo · Founders School</title>
 <meta name="description" content="A working demo of the Founders School digital sign-out: the student's phone and the RA's board, side by side.">
-<link rel="stylesheet" href="css/brand.css">
+<link rel="stylesheet" href="css/brand.css?v=2">
 <style>
   /* Both views are the real pages in frames rather than a reimplementation, so what is
      demonstrated is the app itself. They share an origin, so they share the demo's
@@ -40,6 +40,13 @@
   .d-clip { margin: 0 0 22px; border: 1px solid var(--line, #E5E7EB); border-radius: 12px; overflow: hidden;
     background: #000; box-shadow: 0 10px 28px rgba(0,0,0,.12); }
   .d-clip video { display: block; width: 100%; height: auto; }
+  .d-clip.live { background: #fff; }
+  .d-clip.live iframe { display: block; width: 100%; height: 640px; border: 0; }
+  .d-sub { display: flex; gap: 6px; margin: 0 0 12px; }
+  .d-sub button { font: 700 12.5px/1 inherit; color: var(--blue); background: #fff;
+    border: 1.5px solid var(--line, #E5E7EB); border-radius: 999px; padding: 8px 14px; cursor: pointer; }
+  .d-sub button[aria-selected="true"] { background: var(--blue); border-color: var(--blue); color: #fff; }
+  @media (max-width: 760px) { .d-clip.live iframe { height: 520px; } }
   .d-clip figcaption { padding: 10px 14px; font-size: 12.5px; color: var(--grey, #6B7280); background: #fff; }
   .d-next { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 26px; }
   .d-go { font: 700 14px/1 inherit; color: #fff; background: var(--blue); border: 2px solid var(--blue);
@@ -64,56 +71,59 @@
   </div>
 </div>
 <div class="d-note">
-  <b>Demo.</b> Nothing is saved anywhere — it lives in this browser only. Both views share it, so a sign-out
-  made on the phone appears on the RA board within a few seconds. RA passcode is <b>demo</b>.
-  Students, families and positions are invented, and positions are simulated from the published
-  schedule and the clock, not from a phone.
+  <b>Demo data, built in the structure of the Life360 API.</b> Nothing is saved — it lives in this
+  browser only. RA passcode is <b>demo</b>.
 </div>
 
 <div class="d-stage">
   <div class="d-pane" id="p-watch" role="tabpanel" aria-labelledby="t-watch">
     <div class="d-land">
-      <h1>A sign-out that takes ten seconds</h1>
-      <p class="d-lede">Scan the QR, tap who you are, tap your buddy, say where and why. The buddy accepts,
-        and the RA board shows both of them on a map with a time they are due back. Built for the
-        Head&nbsp;of&nbsp;Student&nbsp;Life role at Founders School.</p>
-      <figure class="d-clip">
-        <video src="media/demo.mp4" poster="media/demo-poster.jpg" controls muted playsinline preload="none"
-               aria-label="Screen recording: a student picks a practice, a way of getting there and a time, sends the request to their buddy, and the trip then appears on the RA board with the headcount."></video>
-        <figcaption>A student signs out with a buddy, and it lands on the RA board. 63 seconds.</figcaption>
-      </figure>
+      <h1>One dashboard for the house</h1>
+      <p class="d-lede">Where every student is, where they are going, and when they are due back.
+        Built for the Head&nbsp;of&nbsp;Student&nbsp;Life role at Founders School.</p>
+      <div class="d-sub" role="tablist">
+        <button role="tab" id="s-clip" aria-selected="true">Walkthrough</button>
+        <button role="tab" id="s-board" aria-selected="false">The board, Monday 6:55pm</button>
+      </div>
+      <div id="w-clip">
+        <figure class="d-clip">
+          <video src="media/demo.mp4" poster="media/demo-poster.jpg" controls muted playsinline preload="none"
+                 aria-label="Screen recording: a student picks a practice, a way of getting there and a time, sends the request to their buddy, and the trip then appears on the RA board with the headcount."></video>
+          <figcaption>A student signs out with a buddy, and it lands on the RA board. Playing at 2&times;.</figcaption>
+        </figure>
+      </div>
+      <div id="w-board" hidden>
+        <figure class="d-clip live">
+          <iframe id="f-peek" title="RA board, Monday evening" loading="lazy"></iframe>
+          <figcaption>Five at the house, five on the way to open gym, eight already there. Live, and moving.</figcaption>
+        </figure>
+      </div>
       <div class="d-next">
-        <button class="d-go" data-go="student">Try the student view &rarr;</button>
-        <button class="d-go ghost" data-go="ra">Open the RA board &rarr;</button>
-        <button class="d-go ghost" data-go="parent">See the family view &rarr;</button>
+        <button class="d-go" data-go="ra">Open the RA board &rarr;</button>
+        <button class="d-go ghost" data-go="student">Student view &rarr;</button>
+        <button class="d-go ghost" data-go="parent">Family view &rarr;</button>
       </div>
       <ul class="d-points">
-        <li><b>Nobody goes alone.</b> A sign-out is a pair, and the buddy has to accept before it starts.</li>
-        <li><b>Headcount first.</b> The board opens on how many are in the house, not on a list of trips.</li>
-        <li><b>Due back, not just gone.</b> Travel each way plus time there gives a time, and the board
-          flags due-soon and overdue against it.</li>
-        <li><b>Students can write in.</b> Requests and feedback go straight to the RA between Town Halls.</li>
-        <li><b>Everyone has a schedule, so everyone has a position.</b> School, the practice block,
-          practices, the Saturday statement piece. The board says who is off it; families see their
-          own child&rsquo;s week, the Sunday call, and the note that goes out after Town Hall.</li>
+        <li><b>Headcount first.</b> Five numbers that add up to the roster.</li>
+        <li><b>Nobody goes alone.</b> A sign-out is a pair, and the buddy has to accept.</li>
+        <li><b>Everyone has a calendar, so everyone has a position.</b> School, workouts, practices,
+          the Saturday outing. The board flags anyone who is off it.</li>
+        <li><b>Families see their own child.</b> Their week, the Sunday call, the note after Town Hall.</li>
       </ul>
     </div>
   </div>
 
   <div class="d-pane" id="p-student" role="tabpanel" aria-labelledby="t-student" hidden>
-    <p class="d-hint">What a student sees. Pick a name, pick a buddy, choose a practice or search a place —
-      or send your RA a request.</p>
+    <p class="d-hint">Pick a name, pick a buddy, choose a practice or search a place.</p>
     <div class="d-phone"><iframe id="f-student" src="index.html" title="Student view"></iframe></div>
   </div>
   <div class="d-pane" id="p-ra" role="tabpanel" aria-labelledby="t-ra" hidden>
-    <p class="d-hint">What the RA sees. Headcount first, then the map — every student has a position,
-      and journeys move in real time. The <b>Itinerary</b> tab says who is not where their schedule
-      expects. Use <b>Load demo activity</b> to add sign-outs on top.</p>
+    <p class="d-hint">Headcount, then the map. <b>Practices</b> and <b>Itinerary</b> run off the
+      calendar; <b>Load demo activity</b> adds sign-outs on top.</p>
     <div class="d-board"><iframe id="f-ra" src="dashboard.html" title="RA view"></iframe></div>
   </div>
   <div class="d-pane" id="p-parent" role="tabpanel" aria-labelledby="t-parent" hidden>
-    <p class="d-hint">What a family sees: their own child, their week, the call on Sunday, and the
-      note that goes out after Town Hall. Nothing else — a parent is not doing a headcount.</p>
+    <p class="d-hint">One child: their week, the Sunday call, and the note after Town Hall.</p>
     <div class="d-phone"><iframe id="f-parent" src="parent.html" title="Family view"></iframe></div>
   </div>
 </div>
@@ -144,6 +154,26 @@
   });
   // pause the clip when leaving the landing view, so it is not playing behind a live app
   var clip = document.querySelector('.d-clip video');
+  if (clip) { clip.playbackRate = 2; clip.addEventListener('play', function () { clip.playbackRate = 2; }); }
+
+  /* Two sub-tabs on the landing view: the walkthrough, and the board itself at a busy
+     moment. The board is framed only once it is asked for -- loading a live map behind a
+     video nobody has clicked costs tiles and route lookups for nothing. */
+  var sub = { clip: document.getElementById('s-clip'), board: document.getElementById('s-board') };
+  var subPane = { clip: document.getElementById('w-clip'), board: document.getElementById('w-board') };
+  function showSub(which) {
+    Object.keys(sub).forEach(function (k) {
+      sub[k].setAttribute('aria-selected', String(k === which));
+      subPane[k].hidden = k !== which;
+    });
+    if (which !== 'clip' && clip) { try { clip.pause(); } catch (e) {} }
+    if (which === 'board') {
+      var pk = document.getElementById('f-peek');
+      if (!pk.src) pk.src = 'dashboard.html?t=Mon%2018%3A55&peek=1';
+      else { try { pk.contentWindow.dispatchEvent(new Event('resize')); } catch (e) {} }
+    }
+  }
+  Object.keys(sub).forEach(function (k) { sub[k].onclick = function () { showSub(k); }; });
   function fromHash() {
     if (location.hash === '#ra') show('ra');
     else if (location.hash === '#student') show('student');

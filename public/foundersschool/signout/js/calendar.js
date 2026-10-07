@@ -23,10 +23,25 @@
      It shifts the SCHEDULE only -- sign-outs keep real timestamps, because those are real
      records with real due times, and quietly reinterpreting them would be a lie. */
   let skew = 0;
+  function resolveClock(spec) {
+    if (!spec || spec === 'now') return 0;
+    // 'Mon 18:55' -- that weekday of the current week. Stays fresh; an absolute date would
+    // have the board stuck in October forever.
+    const rel = /^(Sun|Mon|Tue|Wed|Thu|Fri|Sat)\s+(\d{1,2}):(\d{2})$/.exec(spec);
+    if (rel) {
+      const want = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].indexOf(rel[1]);
+      // The matching weekday of the week we are in, not the next one -- otherwise visiting
+      // on a Tuesday jumps the board six days forward.
+      const d = new Date(); d.setDate(d.getDate() + ((want + 6) % 7) - ((d.getDay() + 6) % 7));
+      d.setHours(+rel[2], +rel[3], 0, 0);
+      return +d - Date.now();
+    }
+    const d = new Date(spec);
+    return isNaN(+d) ? 0 : +d - Date.now();
+  }
   try {
     const q = typeof location !== 'undefined' && new URLSearchParams(location.search).get('t');
-    const base = q || C.demoClock;
-    if (base) { const d = new Date(base); if (!isNaN(+d)) skew = +d - Date.now(); }
+    skew = resolveClock(q || C.demoClock);
   } catch (e) {}
   const now = () => new Date(Date.now() + skew);
   const shifted = () => skew !== 0;
@@ -422,7 +437,10 @@
     const toPlace = next ? next.place : 'house';
     if (toPlace !== prevPlace) {
       const t = travel(prevPlace, toPlace);
-      const leaveBy = next ? new Date(next.start.getTime() - t.min * 60000) : prevEnd;
+      // Leave up to twelve minutes early, by student. Deterministic, so the stagger is
+      // stable between polls, and early rather than late so nobody misses the start.
+      const early = next ? hash(name + '>' + toPlace) % 13 : 0;
+      const leaveBy = next ? new Date(next.start.getTime() - (t.min + early) * 60000) : prevEnd;
       const depart = new Date(Math.max(prevEnd.getTime(), leaveBy.getTime()));
       const arrive = new Date(depart.getTime() + t.min * 60000);
       if (n >= depart && n < arrive) {

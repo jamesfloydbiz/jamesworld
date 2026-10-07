@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex,nofollow">
 <title>Family view · Founders School</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
-<link rel="stylesheet" href="css/brand.css">
+<link rel="stylesheet" href="css/brand.css?v=2">
 </head>
 <body>
 <header class="bar">
@@ -32,11 +32,11 @@
 </main>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
-<script src="js/config.js"></script>
-<script src="js/api.js"></script>
-<script src="js/geo.js"></script>
-<script src="js/calendar.js"></script>
-<script src="js/life360.js"></script>
+<script src="js/config.js?v=2"></script>
+<script src="js/api.js?v=2"></script>
+<script src="js/geo.js?v=2"></script>
+<script src="js/calendar.js?v=2"></script>
+<script src="js/life360.js?v=2"></script>
 <script>
 /* What a family gets. The handbook (section 12) names "a family-communications tracker
    that shows parents what went out and when" as one of the projects a new RA builds, and
@@ -82,9 +82,8 @@
 
   const fmtT = (d) => new Date(d).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
 
-  /* Where their child is now. Two things make this honest rather than creepy:
-     it says it is simulated, and a child whose family has not agreed to location sharing
-     has no position at all -- not a stale one, not a blurred one. Handbook section 9. */
+  /* Where their child is now. A child whose family has not agreed to location sharing has
+     no position at all -- not a stale one, not a blurred one. Handbook section 9. */
   /* The card is written once and then updated in place. Rebuilding its innerHTML on every
      tick tore out the map container, so Leaflet silently initialised a fresh map against a
      fresh element fifteen seconds apart -- a hundred-odd live maps by the time anyone
@@ -111,8 +110,8 @@
       $('#nowHead').textContent = `${first} is on the house schedule`;
       $('#nowSub').innerHTML = esc(whereText(at));
       mapEl.style.display = 'none';
-      $('#nowFoot').innerHTML = `Location sharing is off for ${esc(first)}. Town Hall sets this, and it has
-        not been agreed. The house still knows the schedule, and still signs ${esc(first)} in and out.`;
+      $('#nowFoot').innerHTML = `Location sharing is off for ${esc(first)} \u2014 Town Hall sets that.
+        The house still has the schedule, and still signs ${esc(first)} in and out.`;
       return;
     }
     mapEl.style.display = '';
@@ -125,8 +124,7 @@
     $('#nowHead').textContent = at.state === 'transit'
       ? `${first} is on the way to ${at.place.name}` : `${first} is at ${at.place.name}`;
     $('#nowSub').innerHTML = whereText(at);
-    $('#nowFoot').innerHTML = `Phone ${bat.level}%${bat.charge ? ', charging' : ''} &middot; <b>Simulated.</b>
-      Positions in this demo come from the published schedule and the clock, not from a phone.`;
+    $('#nowFoot').innerHTML = `Phone ${bat.level}%${bat.charge ? ', charging' : ''}`;
 
     if (!map) {
       map = L.map(mapEl, { zoomControl: false, attributionControl: false }).setView(pt, 14);
@@ -194,7 +192,7 @@
     } else if (ptab === 'week') {
       const wk = CAL.weekFor(kid, CAL.addDays(CAL.now(), 7));
       panel.innerHTML = `<div class="plan-head">Next week &middot; ${esc(CAL.fmtDate(wk[0].date))} to ${esc(CAL.fmtDate(wk[6].date))}
-        <small>Everything outside the normal school-night rhythm. The full day is on the Today tab.</small></div>`
+        <small>Everything outside the normal school-night rhythm.</small></div>`
         + (wk.map((d) => dayRow(d, false)).join('') || '<div class="empty">Nothing booked yet.</div>')
         + (u.needs.length ? `<div class="note-out" open><div class="label" style="margin-top:0">Needs you</div>
             ${u.needs.map((n) => `<div class="line">· <b>${esc(n.day)}</b> ${esc(n.title)} — ${esc(n.consent)}</div>`).join('')}</div>` : '');
@@ -217,13 +215,13 @@
          section, because a rule without its reason is the thing the handbook says not to do. */
       panel.innerHTML = `<div class="so">
         <div class="top"><div><h3>What the house holds to</h3>
-          <div class="line">From the Student Life Handbook. The students write everything above this line at Town Hall.</div></div></div>
+          <div class="line">From the Student Life Handbook.</div></div></div>
         ${[
           ['Lights out 10pm on school nights', 'Later on Friday and Saturday, set at Town Hall within a safety maximum. Section 5.'],
           ['Sign out and in when leaving', 'A Safety floor rule, so Town Hall cannot vote it away. Nobody goes alone: a sign-out is a pair, and the buddy has to accept. Section 4.'],
           ['No overnight guests', 'Everyone who lives here gets a say in who is in their home. Section 4.'],
           ['Medications go through the RA', 'Mixed-up meds are a real medical risk, and every dose given is logged. Section 4.'],
-          ['You hear from us several times a week', 'A note after each outing, a weekly summary with the Town Hall log, and a personal note each month. Anything serious, the same day. Section 8.'],
+          ['You hear from us several times a week', 'A note after each outing, a weekly summary with the Town Hall log, a personal note each month. Anything serious, the same day. Section 8.'],
           ['Walks and exercise are never taken away', 'No consequence removes movement, meals, sleep, or family calls. Section 6.'],
           ['One-on-one every week', 'Ten minutes with the RA, somewhere others can see. Section 7.'],
         ].map(([t, w]) => `<div class="pl-row"><span></span><span><b>${esc(t)}</b><br><small style="color:var(--grey)">${esc(w)}</small></span><span></span></div>`).join('')}
@@ -232,7 +230,7 @@
           <div class="line">The escalation ladder, section 8.</div></div></div>
           <div class="line">Anything at <b>Serious</b> or above and you hear from the RA the same day, by phone, facts first.</div>
           <div class="line">A student missing past curfew with no contact: head of school inside the hour, 911 past one hour or at any sign of danger.</div>
-          <div class="line" style="margin-top:8px;color:var(--grey)">Founders still has to name who fills each role on the ladder. The handbook tracks that as an open question.</div></div>`;
+          <div class="line" style="margin-top:8px;color:var(--grey)">Founders still has to name who fills each role on the ladder.</div></div>`;
     }
   }
 })();

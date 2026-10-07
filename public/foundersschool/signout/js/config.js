@@ -53,9 +53,10 @@ window.FS_CONFIG = {
   ],
   stayStep: 5, stayMin: 10, stayMax: 240,
 
-  // Pin the schedule clock, e.g. '2026-10-19T18:40'. Overridden by ?t= in the URL.
-  // Null means the real clock, which is what a visitor gets.
-  demoClock: null,
+  // Pin the schedule clock so the board is always mid-evening rather than whatever time
+  // someone happens to visit. 'Mon 18:55' is that weekday of the current week; an absolute
+  // ISO date works too. Override per-visit with ?t= — ?t=now uses the real clock.
+  demoClock: 'Mon 18:55',
 
   requestTtlMin: 10,   // buddy has this long to accept
   soonMin: 10,         // dashboard flags "due soon" under this many minutes

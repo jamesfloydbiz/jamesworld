@@ -248,3 +248,14 @@ h2{font-size:24px;margin-bottom:6px}
   .pl-row { grid-template-columns: 54px 1fr; }
   .pl-k { display: none; }
 }
+
+/* The board framed on the landing page: a view, not a control panel. The demo tools
+   carry an inline display:flex, hence the !important. Tiles tighten so the map is
+   visible without scrolling the frame. */
+body.peek .demo-flag, body.peek .bar .who button { display: none; }
+body.peek #demoTools { display: none !important; }
+body.peek .stats { gap: 8px; }
+body.peek .stat { padding: 10px 12px; }
+body.peek .stat b { font-size: 22px; }
+body.peek .stat span { font-size: 10px; }
+body.peek .wrap { padding-top: 10px; }

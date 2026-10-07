@@ -6,10 +6,10 @@
 <meta name="robots" content="noindex,nofollow">
 <title>RA Dashboard · Founders School</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
-<link rel="stylesheet" href="css/brand.css">
+<link rel="stylesheet" href="css/brand.css?v=2">
 </head>
 <body>
-<div id="demoflag" class="demo-flag hidden">DEMO MODE — passcode is “demo”. Sign-outs made in another tab of this browser appear here.</div>
+<div id="demoflag" class="demo-flag hidden">DEMO MODE — passcode is “demo”. Demo data, built in the structure of the Life360 API.</div>
 <header class="bar">
   <div class="brand"><i>FS</i><div>Founders School<small>Student Life · Sign-out board</small></div></div>
   <div class="who hidden" id="who"><span id="clock"></span><button id="lock">Lock</button></div>
@@ -36,11 +36,11 @@
 </main>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
-<script src="js/config.js"></script>
-<script src="js/api.js"></script>
-<script src="js/geo.js"></script>
-<script src="js/calendar.js"></script>
-<script src="js/life360.js"></script>
+<script src="js/config.js?v=2"></script>
+<script src="js/api.js?v=2"></script>
+<script src="js/geo.js?v=2"></script>
+<script src="js/calendar.js?v=2"></script>
+<script src="js/life360.js?v=2"></script>
 <script>
 (function () {
   const C = FS_CONFIG, API = FS_API, { esc, time, minsLeft, phase, modeLabel, rideLabel } = FS, GEO = window.FS_GEO;
@@ -58,7 +58,13 @@
   $('#lock').onclick = () => { sessionStorage.removeItem('fs_ra_pin'); location.reload(); };
   $('#seed').onclick = async () => { await API.demoSeed(); draw.fitted = false; poll(); };
   $('#reset').onclick = async () => { await API.demoReset(); poll(); };
-  if (pin) unlock(pin);
+  if (API.demo && new URLSearchParams(location.search).get('peek')) {
+    // The landing page frames the board to show it live. Demo mode only: with Supabase
+    // configured the passcode is the only thing standing between a visitor and twenty
+    // children's locations, and no query string gets to skip it.
+    document.body.classList.add('peek');
+    unlock(C.demoRaPin);
+  } else if (pin) unlock(pin);
 
   function show() {
     $('#gate').classList.add('hidden'); $('#board').classList.remove('hidden'); $('#who').classList.remove('hidden');
@@ -143,7 +149,7 @@
       rec.marker.bindTooltip(`<b>${esc(rec.r.student.name.split(' ')[0])} + ${esc(rec.r.buddy.name.split(' ')[0])}</b><br>` +
         `${esc(rideLabel[rec.kind] || modeLabel[rec.kind] || rec.kind)} \u00b7 ` +
         `${L0.phase === 'out' ? 'to ' + esc(rec.r.dest.name) : 'heading home'}<br>` +
-        `${away} min ${L0.phase === 'out' ? 'away' : 'from home'} \u00b7 simulated`);
+        `${away} min ${L0.phase === 'out' ? 'away' : 'from home'}`);
     });
   }
 
@@ -156,6 +162,9 @@
      published schedule and the clock, not from a phone. `js/life360.js` carries the mock in
      the real API's shape, so pointing this at a live circle changes one function. */
   const PLACE_KIND = { house: 'home', school: 'school' };
+  // Venue names are long ("Open gym -- Henry Street Settlement"); tiles and map chips get
+  // the first couple of words, which is what anyone reads off them anyway.
+  const short = (name) => String(name).split(/[\u2014,]/)[0].trim().split(/\s+/).slice(0, 2).join(' ').toLowerCase();
   const groupIcon = (n, label, kind) => L.divIcon({ className: '', iconSize: [58, 30],
     // 37 Wall St and 180 Maiden Ln are ~450m apart, so at the default zoom a chip centred
     // on the school lands under the house pin. Anchor it below its point instead.
@@ -201,12 +210,12 @@
     hc.groups.forEach((g, k) => {
       seen.add(k);
       if (k === 'house') return;                        // the home pin already carries it
-      const label = k === 'school' ? 'school' : g.place.name.split(/[\u2014,]/)[0].trim().slice(0, 9).toLowerCase();
+      const label = k === 'school' ? 'school' : short(g.place.name);
       L.marker([g.place.lat, g.place.lng], { icon: groupIcon(g.rows.length, label, PLACE_KIND[k]), zIndexOffset: 300 })
         .addTo(groupLayer)
         .bindTooltip(`<b>${esc(g.place.name)}</b><br>${g.rows.length} student${g.rows.length === 1 ? '' : 's'}` +
           `<br>${esc(g.rows.map((r) => r.first).join(', '))}` +
-          `${g.rows[0] && g.rows[0].at.entry ? '<br>' + esc(g.rows[0].at.entry.title) : ''}<br>simulated`);
+          `${g.rows[0] && g.rows[0].at.entry ? '<br>' + esc(g.rows[0].at.entry.title) : ''}`);
     });
     // The school is drawn even when empty, because an empty school at 9pm is information.
     if (!seen.has('school')) {
@@ -253,7 +262,7 @@
       const who = grp.rows.length > 3
         ? `${grp.rows.length} students` : grp.rows.map((r) => r.first).join(', ');
       mk.bindTooltip(`<b>${esc(who)}</b><br>${esc(modeLabel[at.mode] || at.mode)} to ${esc(at.place.name)}` +
-        `<br>${mins} min away \u00b7 simulated` +
+        `<br>${mins} min away` +
         (grp.rows.length > 3 ? `<br>${esc(grp.rows.map((r) => r.first).join(', '))}` : ''));
     });
   }
@@ -276,7 +285,7 @@
     const breakdown = [...hc.groups.entries()]
       .filter(([k]) => k !== 'house' && k !== 'school')
       .sort((a, b) => b[1].rows.length - a[1].rows.length).slice(0, 2)
-      .map(([, g]) => `${g.rows.length} ${esc(g.place.name.split(/[\u2014,]/)[0].trim().toLowerCase())}`).join(' \u00b7 ');
+      .map(([, g]) => `${g.rows.length} ${esc(short(g.place.name))}`).join(' \u00b7 ');
     /* Five numbers that add up to the roster. That is the whole requirement: an RA at 9pm
        is not asking "how many trips are open", they are asking whether everyone is
        accounted for, and a set of tiles that does not sum cannot answer it. The last tile
@@ -334,8 +343,14 @@
     });
     tickMovers();
 
-    hc.groups.forEach((g) => pts.push([g.place.lat, g.place.lng]));
-    hc.transit.forEach((r) => pts.push([r.at.place.lat, r.at.place.lng]));
+    /* Frame where the house actually is. One student at a climbing gym in Queens used to
+       drag the view out until lower Manhattan was a smudge, so a far-off place only counts
+       towards the frame if more than one person is there -- the rest stay reachable by
+       zooming out, and their marker tooltip names them. */
+    const FAR_KM = 5;
+    const near = (pl, n) => n > 1 || GEO.haversineKm(C.house, pl) < FAR_KM;
+    hc.groups.forEach((g) => { if (near(g.place, g.rows.length)) pts.push([g.place.lat, g.place.lng]); });
+    hc.transit.forEach((r) => { if (near(r.at.place, 1)) pts.push([r.at.place.lat, r.at.place.lng]); });
     if (!draw.fitted && pts.length > 1) { map.fitBounds(pts, { padding: [40, 40], maxZoom: 15 }); draw.fitted = true; }
 
     const panel = $('#panel');
@@ -362,28 +377,69 @@
       panel.innerHTML = (openN.map(row).join('') + doneN.map(row).join('')) ||
         '<div class="empty">No requests yet. Students send these from the sign-out app.</div>';
     } else if (tab === 'practices') {
-      /* Everything heading to a recurring practice, grouped by practice, so the RA can see one
-         shuttle run or rideshare group as a unit instead of reading it out of the live list. */
-      const cut = new Date(); cut.setHours(0, 0, 0, 0);
-      const trips = data.signouts.filter((r) => r.practice && new Date(r.created_at) >= cut);
+      /* Everything the house is going to today, grouped by where. Built from the schedule
+         rather than from sign-outs, which is why this used to read "no practice trips
+         today" on a Monday with twelve students heading to open gym -- nobody signs out
+         for something already on the calendar. */
+      const today = CAL.now();
       const groups = new Map();
-      trips.forEach((r) => { if (!groups.has(r.practice)) groups.set(r.practice, []); groups.get(r.practice).push(r); });
-      const def = new Map((C.practices || []).map((p) => [p.name, p]));
-      panel.innerHTML = [...groups.entries()].map(([name, rows]) => {
-        const p = def.get(name), byRide = new Map();
-        rows.forEach((r) => { const key = r.ride || r.mode; byRide.set(key, (byRide.get(key) || 0) + 1); });
-        const out = rows.filter((r) => r.status === 'active').length;
-        const waiting = rows.filter((r) => r.status === 'pending').length;
+      (data.students || []).forEach((st) => {
+        CAL.dayFor(st.name, today)
+          .filter((e) => (e.kind === 'activity' || e.kind === 'community') && e.place !== 'house')
+          .forEach((e) => {
+            const k = e.title;
+            if (!groups.has(k)) groups.set(k, { e, place: CAL.places[e.place], rows: [] });
+            groups.get(k).rows.push(st.name);
+          });
+      });
+      // Practice sign-outs sit alongside: those are trips somebody asked for, not scheduled.
+      const cut = CAL.startOfDay(today);
+      const trips = data.signouts.filter((r) => r.practice && new Date(r.created_at) >= cut);
+      const byPractice = new Map();
+      trips.forEach((r) => { if (!byPractice.has(r.practice)) byPractice.set(r.practice, []); byPractice.get(r.practice).push(r); });
+
+      const now = +CAL.now();
+      /* Position per student, from the same source the headcount uses -- so a student who
+         signed out to get food does not also count as present at open gym. */
+      const posOf = new Map();
+      hc.groups.forEach((g) => g.rows.forEach((r) => posOf.set(r.name, r.at)));
+      hc.transit.forEach((r) => posOf.set(r.name, r.at));
+      hc.unshared.forEach((r) => posOf.set(r.name, r.at));
+      const card = (g) => {
+        const t = CAL.travel('house', g.e.place);
+        // Live status for the group: who has left, who is on the way, who has arrived.
+        let home = 0, moving = 0, there = 0, back = 0;
+        g.rows.forEach((n) => {
+          const at = posOf.get(n) || CAL.locate(n, now);
+          if (at.state === 'transit') moving++;
+          else if (at.place.key === g.e.place) there++;
+          else if (now >= +g.e.end) back++;
+          else home++;
+        });
+        const state = [there && `${there} there`, moving && `${moving} on the way`,
+                       home && `${home} not left yet`, back && `${back} back`].filter(Boolean).join(' \u00b7 ');
+        const done = now >= +g.e.end;
+        return `<div class="so"><div class="top"><div><h3>${esc(g.e.title)}</h3>
+          <div class="line">${FS.time(g.e.start)}\u2013${FS.time(g.e.end)} \u00b7 ${esc(g.place.address || g.place.name)}</div></div>
+          <span class="badge ${there || moving ? 'soon' : ''}">${done ? 'done' : there || moving ? 'out' : 'later'}</span></div>
+          <div class="line" style="margin-top:6px">${g.rows.length} student${g.rows.length === 1 ? '' : 's'} \u00b7
+            ${esc(modeLabel[t.mode] || t.mode)}, about ${t.min} min each way</div>
+          <div class="line">${esc(state || 'not started')}</div>
+          <div class="line" style="margin-top:6px;color:var(--grey)">${esc(g.rows.map((n) => n.split(' ')[0]).join(', '))}</div></div>`;
+      };
+      const sched = [...groups.values()].sort((a, b) => a.e.start - b.e.start).map(card).join('');
+      const signedOut = [...byPractice.entries()].map(([name, rows]) => {
         const late = rows.filter((r) => phase(r) === 'overdue').length;
-        // "no one active" is not the same as finished -- a trip still waiting on a buddy
-        // has nobody out yet and must not read as done.
-        const badge = late ? `${late} overdue` : out ? 'out' : waiting ? 'waiting on buddy' : 'done';
+        const byRide = new Map();
+        rows.forEach((r) => { const k = r.ride || r.mode; byRide.set(k, (byRide.get(k) || 0) + 1); });
         return `<div class="so ${late ? 'overdue' : ''}"><div class="top"><div><h3>${esc(name)}</h3>
-          <div class="line">${p ? esc(p.day) + ' ' + esc(p.time) + ' · ' : ''}${rows.length} student${rows.length === 1 ? '' : 's'}${out ? ' · ' + out + ' out now' : ''}</div></div>
-          <span class="badge ${late ? 'overdue' : ''}">${badge}</span></div>
-          <div class="line" style="margin-top:6px">${[...byRide.entries()].map(([k, n]) => `${n}× ${esc(rideLabel[k] || modeLabel[k] || k)}`).join(' · ')}</div>
-          ${rows.map((r) => `<div class="line">${esc(r.student.name)} + ${esc(r.buddy.name)} — ${r.due_at ? 'back by ' + time(r.due_at) : 'waiting on buddy'}</div>`).join('')}</div>`;
-      }).join('') || '<div class="empty">No practice trips today. Practices are set in <code>js/config.js</code>.</div>';
+          <div class="line">signed out \u00b7 ${rows.length} trip${rows.length === 1 ? '' : 's'}</div></div>
+          <span class="badge ${late ? 'overdue' : ''}">${late ? late + ' overdue' : 'signed out'}</span></div>
+          <div class="line" style="margin-top:6px">${[...byRide.entries()].map(([k, n]) => `${n}\u00d7 ${esc(rideLabel[k] || modeLabel[k] || k)}`).join(' \u00b7 ')}</div>
+          ${rows.map((r) => `<div class="line">${esc(r.student.name)} + ${esc(r.buddy.name)} \u2014 ${r.due_at ? 'back by ' + time(r.due_at) : 'waiting on a buddy'}</div>`).join('')}</div>`;
+      }).join('');
+      panel.innerHTML = `<div class="plan-head">${esc(CAL.dayName[CAL.dow(today)])} \u00b7 ${esc(CAL.eveningSlot[CAL.dow(today)])}</div>`
+        + (sched + signedOut || '<div class="empty">Nothing on today.</div>');
     } else if (tab === 'itinerary') {
       /* Where every student is meant to be, and whether they are. The board already said
          who signed out; this says who did not and still went somewhere, which is the thing
@@ -418,13 +474,13 @@
       const u = CAL.weeklyUpdate((data.students[0] || {}).name || CAL.names[0], CAL.now());
       panel.innerHTML =
         `<div class="plan-head">${CAL.dayName[CAL.dow(CAL.now())]}, ${CAL.fmtDate(CAL.now())} \u00b7 ${esc(CAL.eveningSlot[CAL.dow(CAL.now())])}
-           <small>Positions are simulated from the published schedule, not from a phone.${CAL.shifted() ? ' Clock is set to ' + esc(CAL.now().toLocaleString()) + ' by <code>?t=</code>.' : ''}</small></div>` +
+           <small>${CAL.shifted() ? 'Demo clock: ' + esc(CAL.now().toLocaleString()) : ''}</small></div>` +
         rows.map(line).join('') +
         `<details class="note-out"><summary>The note that went out to families \u2014 ${esc(u.label)}</summary>
           <div class="line" style="margin-top:8px"><b>Sent</b> ${esc(u.sentAt.toLocaleString([], { weekday: 'short', hour: 'numeric', minute: '2-digit' }))}, after Town Hall.</div>
           <div class="label">Town Hall log</div>${u.townHall.map((t) => `<div class="line">\u00b7 ${esc(t)}</div>`).join('')}
           <div class="label">Coming up that needs a parent</div>${u.needs.map((n) => `<div class="line">\u00b7 ${esc(n.day)}: ${esc(n.title)} \u2014 ${esc(n.consent)}</div>`).join('') || '<div class="line">Nothing this week.</div>'}
-          <div class="line" style="margin-top:10px">Each family gets their own child\u2019s highlights, week ahead and anecdotes. See the <b>Parent view</b>.</div>
+          <div class="line" style="margin-top:10px">Each family also gets their own child\u2019s highlights, week ahead and anecdotes.</div>
         </details>`;
     } else {
       panel.innerHTML = `<div class="card" style="margin-bottom:14px"><div class="label" style="margin-top:0">Add student</div>

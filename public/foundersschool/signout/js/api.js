@@ -62,6 +62,15 @@
     function expire(s, ttl) {
       const cut = Date.now() - ttl * 60000;
       s.signouts.forEach((r) => { if (r.status === 'pending' && new Date(r.created_at).getTime() < cut) r.status = 'expired'; });
+      // Demo data has to stop rotting. A seeded trip from two days ago stayed "active"
+      // forever, so the board reported a rising overdue count and flagged half the house
+      // as off-schedule. Anything three hours past due is closed out.
+      const stale = Date.now() - 3 * 3600000;
+      s.signouts.forEach((r) => {
+        if (r.status === 'active' && r.due_at && new Date(r.due_at).getTime() < stale) {
+          r.status = 'returned'; r.returned_at = r.due_at;
+        }
+      });
     }
     const wrap = async (f) => { const s = load(); const out = f(s); save(s); return out; };
     return {
