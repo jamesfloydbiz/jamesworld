@@ -447,7 +447,24 @@ function tok(t){
   }
   if(t.startsWith('DOTS:')){
     const n = +t.slice(5);
-    let dots=''; for(let i=0;i<n;i++){const cx=8+(i%3)*12, cy=8+Math.floor(i/3)*12; dots+=`<circle cx="${cx}" cy="${cy}" r="3" fill="#eaeaea"/>`;}
+    // Spacing has to fit the largest count the bank uses (15) at ONE scale. The
+    // old layout hard-coded 3 columns at 12px from y=8, so the tenth dot landed
+    // at y=44 -- outside the 40x40 viewBox and simply invisible. Every count
+    // from 9 to 15 drew as the same nine dots, which made four questions
+    // unanswerable (603, 1037, 1038, 1042): their options differed only in
+    // counts above nine. The scale must stay the same for every count, or dot
+    // SIZE becomes a cue and you could answer without counting.
+    const COLS = 3, STEP = 8, R = 2.3;
+    const rows = Math.max(1, Math.ceil(n / COLS));
+    const y0 = 20 - (rows - 1) * STEP / 2;
+    let dots = '';
+    for (let r = 0; r < rows; r++) {
+      const inRow = Math.min(COLS, n - r * COLS);
+      const x0 = 20 - (inRow - 1) * STEP / 2;        // centre short rows too
+      for (let k = 0; k < inRow; k++) {
+        dots += `<circle cx="${x0 + k * STEP}" cy="${y0 + r * STEP}" r="${R}" fill="#eaeaea"/>`;
+      }
+    }
     return `<svg viewBox="0 0 40 40" class="w-14 h-14">${dots}</svg>`;
   }
   if(t.startsWith('SHAPE:')){

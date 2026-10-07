@@ -82,7 +82,7 @@ def odd_arrow(d):
     random.shuffle(figs)
     ans  = figs.index(f"ARROW:{odd}")
     return dict(sub="oddfigure", q="Which arrow is DIFFERENT?", o=figs, a=ans, vis=None,
-                e=f"Three arrows point the same way ({base}°); one points {odd}°.")
+                e=f"Four arrows point the same way ({base}°); one points {odd}°.")
 
 # ── Logic ─────────────────────────────────────────────────────────────
 def ordering(d):
