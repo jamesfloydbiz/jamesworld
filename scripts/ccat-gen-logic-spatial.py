@@ -12,7 +12,7 @@ CORNERS_CW  = ["TL","TR","BR","BL"]
 SHAPES      = ["tri","sq","pent","hex"]
 SIDES       = {"tri":3,"sq":4,"pent":5,"hex":6,"circ":0}
 
-def _opts(ans, wrongs, n=4):
+def _opts(ans, wrongs, n=5):
     seen, out = {ans}, []
     for w in wrongs:
         if w not in seen: seen.add(w); out.append(w)
@@ -36,13 +36,17 @@ def arrow_rotate(d):
 
 def corner_walk(d):
     cw = random.random() < 0.5
+    hop = random.choice([1, 2])
     order = CORNERS_CW if cw else CORNERS_CW[::-1]
     i0 = random.randrange(4)
-    seq = [order[(i0+i) % 4] for i in range(3)]
-    ans = order[(i0+3) % 4]
-    wrongs = [order[(i0+2)%4], order[(i0+4)%4], order[(i0+1)%4]]
-    o,a = _opts(f"CORNER:{ans}", [f"CORNER:{w}" for w in wrongs])
-    return dict(sub="corner", q=f"The shaded corner moves {'CLOCKWISE' if cw else 'COUNTER-CLOCKWISE'}. Next?",
+    seq = [order[(i0+hop*i) % 4] for i in range(3)]
+    ans = order[(i0+hop*3) % 4]
+    # Build distractors from what the answer ISN'T. Deriving them by offset put
+    # the answer among its own distractors once the hop could be 2, which left
+    # the item with four options instead of five.
+    wrongs = [f"CORNER:{c}" for c in CORNERS_CW if c != ans] + ["CORNER:C"]
+    o,a = _opts(f"CORNER:{ans}", wrongs)
+    return dict(sub="corner", q=f"The shaded corner moves {hop} place{'' if hop==1 else 's'} {'CLOCKWISE' if cw else 'COUNTER-CLOCKWISE'} each step. Next?",
                 o=o, a=a, vis=[f"CORNER:{v}" for v in seq]+["QMARK"],
                 e=f"{'Clockwise' if cw else 'Counter-clockwise'} order is {' → '.join(order)}. After {seq[-1]} comes {ans}.")
 
@@ -55,12 +59,15 @@ def dots_series(d):
     else:
         start=random.choice([1,2]); seq=[start*(2**i) for i in range(3)]; ans=start*8
         e=f"The count doubles each frame. {seq[-1]} × 2 = {ans}."
-    if ans>9 or ans<2: return dots_series(1)
-    # Distractors must be three DISTINCT counts the renderer can actually draw
-    # (1..9). Filtering after the fact left some questions with two options.
-    wrongs=[w for w in (ans+1, ans-1, ans+2, ans-2, ans+3, ans-3) if 1<=w<=9 and w!=ans]
-    if len(wrongs)<3: return dots_series(1)
-    o,a=_opts(f"DOTS:{ans}", [f"DOTS:{w}" for w in wrongs])
+    if ans>15 or ans<2: return dots_series(1)
+    # Distractors must be four DISTINCT counts the renderer can actually draw.
+    # The ceiling was 9 because the old renderer silently dropped anything past
+    # it; it draws up to 15 now, so the range opens up.
+    wrongs=[w for w in (ans+1, ans-1, ans+2, ans-2, ans+3, ans-3) if 1<=w<=15 and w!=ans]
+    if len(wrongs)<4: return dots_series(1)
+    # The stem asks HOW MANY, so the answers are counts. Offering figures here
+    # would be asking "which figure comes next", which is what imageseries does.
+    o,a=_opts(str(ans), [str(w) for w in wrongs])
     return dict(sub="count", q="How many dots come next?", o=o, a=a,
                 vis=[f"DOTS:{v}" for v in seq]+["QMARK"], e=e)
 
@@ -236,7 +243,164 @@ def image_series(d):
                 vis=seq + ["QMARK"], e=why)
 
 
-SPATIAL = [arrow_rotate, corner_walk, dots_series, shape_sides, odd_arrow, matrix, image_series]
+from fractions import Fraction
+
+# ── Numerical ─────────────────────────────────────────────────────────
+def fraction_cmp(d):
+    """Pick the biggest or smallest of five fractions. Derived by comparing the
+    actual values, so the key cannot drift from the options the way a hand-typed
+    one can. Values are kept distinct — two equal fractions in a ranking question
+    is the defect question 1050 had."""
+    pool, seen = [], set()
+    tries = 0
+    while len(pool) < 5 and tries < 400:
+        tries += 1
+        den = random.randint(2, 13 if d > 1 else 8)
+        num = random.randint(1, den - 1)
+        f = Fraction(num, den)
+        if f in seen: continue
+        seen.add(f); pool.append((f, f"{num}/{den}"))
+    if len(pool) < 5: return None
+    want_max = random.random() < 0.5
+    tgt = max(pool)[0] if want_max else min(pool)[0]
+    if sum(1 for f, _ in pool if f == tgt) != 1: return None
+    ans = next(s for f, s in pool if f == tgt)
+    o = [s for _, s in pool]; random.shuffle(o)
+    word = "LARGEST" if want_max else "SMALLEST"
+    stem = random.choice([f"Which of these fractions is the {word}?",
+                          f"Which fraction has the {word.lower()} value?",
+                          f"Of these five fractions, which is {word.lower()}?"])
+    order = sorted(pool, reverse=want_max)
+    return dict(c="Numerical", sub="fraction",
+                q=stem, o=o, a=o.index(ans),
+                e=(f"As decimals: " + ", ".join(f"{s} = {float(f):.3f}" for f, s in order[:3])
+                   + f" … so {ans} is the {word.lower()}."))
+
+
+def graph_table(d):
+    """Read a small table. The question is derived from the numbers, so the key
+    is whatever the table actually says."""
+    MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"]
+    n = 4 if d < 3 else 5
+    labels = MONTHS[:n]
+    vals = random.sample(range(20, 95, 5), n)
+    cell = ("<td style='padding:4px 14px;border:1px solid #333;text-align:center;"
+            "font-weight:600;'>{}</td>")
+    row2 = ("<td style='padding:4px 14px;border:1px solid #333;text-align:center;'>{}</td>")
+    table = ("<table style='margin:10px auto;border-collapse:collapse;font-size:0.95rem;'><tr>"
+             + "".join(cell.format(m) for m in labels) + "</tr><tr>"
+             + "".join(row2.format(v) for v in vals) + "</tr></table>")
+    kind = random.choice(["max", "min", "diff", "total"])
+    if kind in ("max", "min"):
+        pick = max(vals) if kind == "max" else min(vals)
+        ans = labels[vals.index(pick)]
+        o = labels[:] + ["Tie"]; random.shuffle(o); o = o[:5]
+        if ans not in o: o[0] = ans
+        e = f"{ans} at {pick} is the {'highest' if kind=='max' else 'lowest'}."
+    elif kind == "diff":
+        hi, lo = max(vals), min(vals)
+        ans = f"${hi-lo}k"
+        wrongs = [f"${hi+lo}k", f"${hi}k", f"${lo}k", f"${hi-lo+5}k"]
+        o, i = _opts(ans, wrongs, n=5)
+        return dict(c="Numerical", sub="graph", q=f"Sales ($k):{table}Difference between the highest and lowest month?",
+                    o=o, a=i, e=f"Highest {hi}, lowest {lo}, so the gap is {hi-lo}.")
+    else:
+        tot = sum(vals); ans = f"${tot}k"
+        o, i = _opts(ans, [f"${tot+5}k", f"${tot-5}k", f"${tot+10}k", f"${max(vals)}k"], n=5)
+        return dict(c="Numerical", sub="graph", q=f"Sales ($k):{table}What is the total across all months?",
+                    o=o, a=i, e=f"{' + '.join(map(str, vals))} = {tot}.")
+    if len(set(o)) != 5: return None
+    word = "HIGHEST" if kind == "max" else "LOWEST"
+    return dict(c="Numerical", sub="graph", q=f"Sales ($k):{table}Which month was {word}?",
+                o=o, a=o.index(ans), e=e)
+
+
+# ── more Spatial ──────────────────────────────────────────────────────
+def mirror_arrow(d):
+    """A real reflection rather than a sentence about one. A left-right mirror
+    maps an angle to (360 - angle), so arrows at 0 and 180 are their own
+    reflection — those are excluded, since the question would have no change to
+    see."""
+    vertical = random.random() < 0.5          # vertical mirror = left-right swap
+    angles = [45, 90, 135, 225, 270, 315] if vertical else [45, 90, 135, 180, 225, 315]
+    start = random.choice(angles)
+    ans = (360 - start) % 360 if vertical else (180 - start) % 360
+    if ans == start: return None               # nothing to see in a self-reflection
+    wrongs = [(start + 180) % 360, start, (ans + 45) % 360, (ans - 45) % 360,
+              (360 - start) % 360 if not vertical else (180 - start) % 360]
+    o, a = _opts(f"ARROW:{ans}", [f"ARROW:{w}" for w in wrongs if w != ans], n=5)
+    if len(set(o)) != 5: return None
+    axis = "left-right" if vertical else "top-bottom"
+    keeps, swaps = ("up and down", "left and right") if vertical else ("left and right", "up and down")
+    return dict(c="Spatial", sub="mirror", q=f"What does this arrow look like in a {axis} mirror?",
+                o=o, a=a, vis=[f"ARROW:{start}", "QMARK"],
+                e=(f"A {axis} mirror leaves {keeps} alone and swaps {swaps}, "
+                   f"so {start}° reflects to {ans}°."))
+
+
+def odd_figure(d):
+    """Four alike, one different — across arrows, corners, dots or shapes, so the
+    subtype is not just arrows."""
+    kind = random.choice(["arrow", "corner", "dots", "shape"])
+    if kind == "arrow":
+        base = random.choice([0, 45, 90, 135, 180, 225, 270, 315])
+        odd = (base + random.choice([45, 90, 135, 180])) % 360
+        same, diff = f"ARROW:{base}", f"ARROW:{odd}"
+        why = f"Four arrows point the same way ({base}°); one points {odd}°."
+    elif kind == "corner":
+        a_, b_ = random.sample(CORNERS_CW, 2)
+        same, diff = f"CORNER:{a_}", f"CORNER:{b_}"
+        why = f"Four squares are shaded {a_}; one is shaded {b_}."
+    elif kind == "dots":
+        n1 = random.randint(2, 9); n2 = n1 + random.choice([-1, 1, 2])
+        if not 1 <= n2 <= 15: return None
+        same, diff = f"DOTS:{n1}", f"DOTS:{n2}"
+        why = f"Four figures show {n1} dots; one shows {n2}."
+    else:
+        s1, s2 = random.sample(["tri", "sq", "pent", "hex", "hept", "oct"], 2)
+        same, diff = f"SHAPE:{s1}", f"SHAPE:{s2}"
+        why = f"Four figures are the same shape; one is not."
+    if same == diff: return None
+    pos = random.randrange(5)
+    o = [same]*5; o[pos] = diff
+    stem = random.choice(["Which figure is DIFFERENT?",
+                          "Four of these match. Which is the odd one?",
+                          "Which one does NOT belong with the others?"])
+    return dict(c="Spatial", sub="oddfigure", q=stem, o=o, a=pos, e=why)
+
+
+# ── more Logic ────────────────────────────────────────────────────────
+def deduction(d):
+    """Modus tollens, or day-of-week arithmetic. Both have one derivable answer."""
+    DAYS = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]
+    if random.random() < 0.5:
+        base = random.randrange(7); k = random.randint(2, 5)
+        ans = DAYS[(base + k + 1) % 7]
+        wrongs = [DAYS[(base + k) % 7], DAYS[(base + k + 2) % 7],
+                  DAYS[(base + k - 1) % 7], DAYS[(base + k + 3) % 7]]
+        o, a = _opts(ans, [w for w in wrongs if w != ans], n=5)
+        if len(set(o)) != 5: return None
+        return dict(c="Logic", sub="deduction",
+                    q=f"If today is {k} days after {DAYS[base]}, what is tomorrow?", o=o, a=a,
+                    e=(f"{k} days after {DAYS[base]} is {DAYS[(base+k)%7]}; "
+                       f"tomorrow is {ans}."))
+    PAIRS = [("it rains","the match is cancelled"), ("the alarm sounds","the door locks"),
+             ("the pump fails","the tank overflows"), ("she is late","the meeting is delayed"),
+             ("the power cuts","the lights go out")]
+    p_, q_ = random.choice(PAIRS)
+    ans = f"{p_[0].upper()+p_[1:]} did not happen"
+    wrongs = [f"{p_[0].upper()+p_[1:]} happened", "Cannot be determined",
+              f"{q_[0].upper()+q_[1:]} anyway", "Both happened"]
+    o, a = _opts(ans, wrongs, n=5)
+    if len(set(o)) != 5: return None
+    return dict(c="Logic", sub="deduction",
+                q=f"If {p_}, {q_}. But {q_} did NOT happen. Therefore:", o=o, a=a,
+                e=(f"The rule says {p_} forces {q_}. {q_[0].upper()+q_[1:]} did not happen, "
+                   f"so {p_} cannot have happened either."))
+
+
+SPATIAL = [arrow_rotate, corner_walk, dots_series, shape_sides, odd_arrow, matrix, image_series,
+           mirror_arrow, odd_figure]
 LOGIC2  = [ordering, syllogism, relations]
 
 
@@ -246,7 +410,9 @@ if __name__ == "__main__":
     for spec in sys.argv[1:]:                     # e.g. matrix=30 imageseries=20
         k, _, n = spec.partition("=")
         want[k] = int(n or 10)
-    BUILD = {"matrix": matrix, "imageseries": image_series}
+    BUILD = {"matrix": matrix, "imageseries": image_series, "fraction": fraction_cmp,
+             "graph": graph_table, "mirror": mirror_arrow, "oddfigure": odd_figure,
+             "deduction": deduction, "corner": corner_walk, "count": dots_series}
     out, seen = [], set()
     for name, n in want.items():
         fn = BUILD[name]
@@ -258,5 +424,5 @@ if __name__ == "__main__":
             if not it: continue
             sig = (it["q"], json.dumps(it.get("vis")), json.dumps(sorted(map(str, it["o"]))))
             if sig in seen: continue
-            seen.add(sig); it["d"] = min(3, d); it["c"] = "Spatial"; out.append(it)
+            seen.add(sig); it["d"] = min(3, d); it.setdefault("c", "Spatial"); out.append(it)
     json.dump(out, sys.stdout, ensure_ascii=False)

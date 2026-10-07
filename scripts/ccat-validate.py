@@ -83,9 +83,14 @@ def check(path):
                 stray = [str(x) for x in o if str(x).strip().lower() not in listed]
                 if stray:
                     problems.append((q["id"], f"options not named in the stem: {stray}"))
-        # a stem only counts as duplicated when the drawn content is identical too
-        stems[(q["q"].strip().lower(), json.dumps(q.get("vis"), sort_keys=True))].append(q["id"])
-    for (stem, _), group in stems.items():
+        # A stem only counts as duplicated when the drawn content AND the choices
+        # match too. Keying on stem+figure alone called every "Which of these
+        # fractions is the SMALLEST?" a copy of the first one, though each asks
+        # about a different five fractions.
+        stems[(q["q"].strip().lower(),
+               json.dumps(q.get("vis"), sort_keys=True),
+               json.dumps(sorted(map(str, o))))].append(q["id"])
+    for _key, group in stems.items():
         if len(group) > 1: problems.append((tuple(group), "same stem and same figure"))
     return qs, problems
 
