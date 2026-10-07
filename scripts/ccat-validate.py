@@ -73,12 +73,16 @@ def check(path):
             problems.append((q["id"], "3x3 matrix without layout='grid' — will draw as a flat row"))
         # an odd-one-out stem lists its own options; editing one and not the
         # other leaves a question that contradicts itself on screen
-        if q.get("sub") == "oddoneout":
-            m = re.search(r':\s*(.+?)\s*\??$', q["q"])
+        if q.get("sub") in ("oddoneout", "oddfigure") and ":" in q["q"]:
+            m = re.search(r'(?:out|belong)\s*(?:\(.*?\))?\s*:\s*(.+?)\s*\??$', q["q"], re.I)
             if m:
-                listed = [x.strip().rstrip('?').strip().lower() for x in m.group(1).split(',')]
-                if len(listed) == len(o) and listed != [str(x).lower() for x in o]:
-                    problems.append((q["id"], "stem list does not match the options"))
+                listed = {x.strip().rstrip('?').strip().lower() for x in m.group(1).split(',')}
+                # every option must be something the stem actually offered. This
+                # used to require equal counts, so a 4-item stem with 5 options —
+                # where one choice was never shown — went unnoticed in 12 items.
+                stray = [str(x) for x in o if str(x).strip().lower() not in listed]
+                if stray:
+                    problems.append((q["id"], f"options not named in the stem: {stray}"))
         # a stem only counts as duplicated when the drawn content is identical too
         stems[(q["q"].strip().lower(), json.dumps(q.get("vis"), sort_keys=True))].append(q["id"])
     for (stem, _), group in stems.items():
