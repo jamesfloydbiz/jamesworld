@@ -913,7 +913,7 @@ const STRATEGY_SUB = {
   attention:"Compare one character at a time; the difference is usually a single swapped digit or letter.",
   graph:"Find only the row/column the question asks about; ignore the rest of the table.",
   imageseries:"Spot the one thing that changes each step — count, sides, or rotation — then apply it once more.",
-  matrix:"Look across each row AND down each column; the missing cell must fit both rules.",
+  matrix:"Don't pick a direction — find the rule that works in BOTH. Read across the top row and ask what changes from cell to cell, then check whether the same change happens going down the left column. If it does, that is the rule; if it only works one way, keep looking. Then reach the missing cell twice — once along its row, once down its column. Both routes must give the same answer, and that agreement is how you know you are right rather than guessing.",
 };
 const STRATEGY_CAT = {
   Numerical:"Estimate first to kill obviously-wrong options, then compute.",
