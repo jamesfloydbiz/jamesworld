@@ -306,7 +306,7 @@
     volleyTue: { d: 2, s: '19:30', e: '21:00', t: 'Volleyball — Asphalt Green', p: 'asphalt', move: true },
     volleyThu: { d: 4, s: '18:30', e: '20:00', t: 'Volleyball — Asphalt Green', p: 'asphalt', move: true },
     volleySat: { d: 6, s: '08:00', e: '09:30', t: 'Volleyball match — Asphalt Green', p: 'asphalt', move: true },
-    gymLife:   { d: 1, s: '19:00', e: '21:00', t: 'Open gym — Life Time Wall Street', p: 'lifetime', move: true },
+    gymLife:   { d: 1, s: '19:00', e: '21:00', t: 'Open gym — Life Time One Wall Street', p: 'lifetime', move: true },
     ballRep:   { d: 3, s: '19:30', e: '21:00', t: 'Basketball — Boys & Girls Republic', p: 'republic', move: true },
     soccer:    { d: 2, s: '19:30', e: '21:00', t: 'Soccer — Pier 40', p: 'pier40', move: true },
     swimSat:   { d: 6, s: '07:30', e: '09:00', t: 'Swim — Asphalt Green', p: 'asphalt', move: true },

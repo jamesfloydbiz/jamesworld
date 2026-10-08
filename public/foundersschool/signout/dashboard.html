@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex,nofollow">
 <title>RA Dashboard · Founders School</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
-<link rel="stylesheet" href="css/brand.css?v=11">
+<link rel="stylesheet" href="css/brand.css?v=14">
 </head>
 <body>
 <div id="demoflag" class="demo-flag hidden">DEMO MODE — passcode is “demo”. Demo data, built in the structure of the Life360 API.</div>
@@ -36,11 +36,11 @@
 </main>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
-<script src="js/config.js?v=11"></script>
-<script src="js/api.js?v=11"></script>
-<script src="js/geo.js?v=11"></script>
-<script src="js/calendar.js?v=11"></script>
-<script src="js/life360.js?v=11"></script>
+<script src="js/config.js?v=14"></script>
+<script src="js/api.js?v=14"></script>
+<script src="js/geo.js?v=14"></script>
+<script src="js/calendar.js?v=14"></script>
+<script src="js/life360.js?v=14"></script>
 <script>
 (function () {
   const C = FS_CONFIG, API = FS_API, { esc, time, minsLeft, phase, modeLabel, rideLabel } = FS, GEO = window.FS_GEO;
@@ -599,12 +599,36 @@
           ${r.offPlan ? `<div class="line" style="margin-top:6px">Schedule says: <b>${placed(r.planned)}</b></div>` : ''}
           ${nx && r.shared ? `<div class="line" style="margin-top:6px">Next: ${esc(nx.title)} at ${time(nx.start)}</div>` : ''}</div>`;
       };
+      /* The Sunday family calls, as a running order. Each student's own row already shows
+         their call when it is the next thing they do, but on a Tuesday that tells the RA
+         nothing -- and the calls are the one part of the week that has to be staggered by
+         hand if anything moves. Two students at a time, in different rooms. */
+      const sun = CAL.addDays(CAL.mondayOf(CAL.now()), 6);
+      const slots = new Map();
+      (data.students || []).forEach((st) => {
+        const c = CAL.familyCall(st.name, sun), k = +c.start;
+        if (!slots.has(k)) slots.set(k, { start: c.start, end: c.end, who: [], flats: new Set() });
+        slots.get(k).who.push(st.name);
+        slots.get(k).flats.add((CAL.places[CAL.homeOf(st.name)] || {}).short || '');
+      });
+      const callRows = [...slots.values()].sort((a, b) => a.start - b.start).map((sl) =>
+        `<div class="pl-row"><span class="pl-t">${time(sl.start)}</span>
+          <span>${esc(sl.who.join(', '))}</span>
+          <span class="pl-k">${esc([...sl.flats].filter(Boolean).join(' \u00b7 '))}</span></div>`).join('');
+      const isSunday = CAL.dow(CAL.now()) === 0;
+
       const u = CAL.weeklyUpdate((data.students[0] || {}).name || CAL.names[0], CAL.now());
       panel.innerHTML =
         `<div class="plan-head">${CAL.dayName[CAL.dow(CAL.now())]}, ${CAL.fmtDate(CAL.now())} \u00b7 ${esc(CAL.eveningSlot[CAL.dow(CAL.now())])}
            <small>${CAL.shifted() ? 'Demo clock: ' + esc(CAL.now().toLocaleString()) : ''}</small></div>` +
         rows.map(line).join('') +
-        `<details class="note-out"><summary>The note that went out to families \u2014 ${esc(u.label)}</summary>
+        `<details class="note-out"${isSunday ? ' open' : ''}>
+          <summary>Family calls \u2014 ${esc(CAL.dayName[0])} ${esc(CAL.fmtDate(sun))} \u00b7 ${slots.size} slot${slots.size === 1 ? '' : 's'}, 20 minutes each</summary>
+          ${callRows || '<div class="line">Nobody on the roster.</div>'}
+          <div class="line" style="margin-top:8px;color:var(--grey)">Two at a time, in separate rooms.
+            Prompts: ${esc(CAL.callPrompts.join(' \u00b7 '))}</div>
+        </details>
+        <details class="note-out"><summary>The note that went out to families \u2014 ${esc(u.label)}</summary>
           <div class="line" style="margin-top:8px"><b>Sent</b> ${esc(u.sentAt.toLocaleString([], { weekday: 'short', hour: 'numeric', minute: '2-digit' }))}, after Town Hall.</div>
           <div class="label">Town Hall log</div>${u.townHall.map((t) => `<div class="line">\u00b7 ${esc(t)}</div>`).join('')}
           <div class="label">Coming up that needs a parent</div>${u.needs.map((n) => `<div class="line">\u00b7 ${esc(n.day)}: ${esc(n.title)} \u2014 ${esc(n.consent)}</div>`).join('') || '<div class="line">Nothing this week.</div>'}
