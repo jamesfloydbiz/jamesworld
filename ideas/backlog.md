@@ -6,15 +6,12 @@ section. Delete a line when it ships.
 
 ## Waiting on a trigger
 
-- **Make `/alpha` public — once the Founders School pitch is done.**
-  James's call, Aug 24 2026: the Alpha page should stop being unlisted and get a
-  card on `/projects`. Three edits:
-  1. `site/alpha/index.html:9` — drop `<meta name="robots" content="noindex, nofollow">`
-     (and the same line in `site/alpha/workshop/index.html:9`)
-  2. `scripts/routes.config.mjs` — add `{ path: '/alpha', priority: 0.7, changefreq: 'monthly' }`
-  3. `site/projects/index.html` — hand-add an `<article class="card">` to the grid;
-     cards on that page are written by hand, there is no array
-  Then request indexing in Search Console, same as `/references` and `/blueprints`.
+- ~~**Make `/alpha` public**~~ — done Oct 8 2026, on James's call once the Founders
+  School process reached a second-round interview. noindex dropped from
+  `site/alpha/workshop/index.html` (the main page had already lost it),
+  `/alpha/workshop` added to `routes.config.mjs`, and a card added to
+  `site/projects/index.html`. **Still to do: request indexing in Search Console**
+  for `/alpha` and `/alpha/workshop`, same as `/references` and `/blueprints`.
   Leave `/foundersschool` and `/builds/tpc/` unlisted — those are live pitch material.
 
 ## Site

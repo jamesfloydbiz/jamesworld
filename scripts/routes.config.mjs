@@ -30,6 +30,7 @@ export const ROUTES = [
   { path: '/writing', priority: 0.8, changefreq: 'daily' },
   { path: '/builds/paradigm-shifts', priority: 0.7, changefreq: 'monthly' },
   { path: '/alpha', priority: 0.7, changefreq: 'monthly' },
+  { path: '/alpha/workshop', priority: 0.6, changefreq: 'monthly' },
   { path: '/foundersschool', priority: 0.7, changefreq: 'monthly' },
   { path: '/education', priority: 0.8, changefreq: 'monthly' },
   { path: '/education/us-vs-world', priority: 0.8, changefreq: 'monthly' },
