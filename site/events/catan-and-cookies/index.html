@@ -4,17 +4,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Catan and Cookies — James Floyd</title>
-  <meta name="description" content="Catan and Cookies — Thursday, October 1, 2026, 7:00 PM in New York City. I bake the cookies and buy the Catan, you bring cool people. Anyone is welcome. RSVP on Partiful.">
+  <meta name="description" content="Catan and Cookies — October 1, 2026, New York City. I baked the cookies and bought Catan, everyone brought cool people. One board, two trays, and a room of people who mostly had not met.">
   <link rel="canonical" href="https://jamesfloyds.world/events/catan-and-cookies/">
   <meta property="og:type" content="article">
   <meta property="og:title" content="Catan and Cookies">
-  <meta property="og:description" content="I bake the cookies and buy the Catan, you bring cool people. Thursday, October 1, 7:00 PM. Anyone is welcome.">
-  <meta property="og:image" content="https://jamesfloyds.world/events/catan-and-cookies/poster.png">
+  <meta property="og:description" content="I baked the cookies and bought Catan, everyone brought cool people. One board, two trays, and a room of people who mostly had not met.">
+  <meta property="og:image" content="https://jamesfloyds.world/events/catan-and-cookies/photos/4671.jpg">
   <meta property="og:url" content="https://jamesfloyds.world/events/catan-and-cookies/">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Catan and Cookies">
-  <meta name="twitter:description" content="I bake the cookies and buy the Catan, you bring cool people. Anyone is welcome.">
-  <meta name="twitter:image" content="https://jamesfloyds.world/events/catan-and-cookies/poster.png">
+  <meta name="twitter:description" content="I baked the cookies and bought Catan, everyone brought cool people. One board, two trays, and a room of people who mostly had not met.">
+  <meta name="twitter:image" content="https://jamesfloyds.world/events/catan-and-cookies/photos/4671.jpg">
   <link rel="icon" href="/favicon.ico" sizes="any">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -34,7 +34,7 @@
     "location": { "@type": "Place", "name": "New York City",
       "address": { "@type": "PostalAddress", "addressLocality": "New York", "addressRegion": "NY", "addressCountry": "US" } },
     "image": "https://jamesfloyds.world/events/catan-and-cookies/poster.png",
-    "description": "I bake the cookies and buy the Catan, you bring cool people. Anyone is welcome.",
+    "description": "I baked the cookies and bought Catan, everyone brought cool people. One board, two trays, and a room of people who mostly had not met.",
     "organizer": { "@type": "Person", "name": "James Floyd", "url": "https://jamesfloyds.world" },
     "url": "https://partiful.com/e/OcjeqiJUDAXMkmdlvVHz",
     "isAccessibleForFree": true
@@ -102,6 +102,21 @@
     }
     .cc-rsvp:hover { background: var(--cc-ink); color: var(--cc-bg); }
     .cc-rsvp__note { font-size: .92rem; color: var(--cc-mute); margin: 14px 0 0; font-style: italic; }
+
+    /* The night itself. Two photos and a six-second clip, same border and radius as
+       everything else on the page. */
+    .cc-recap { margin: 52px 0 0; }
+    .cc-recap__h {
+      font-family: 'Space Mono', monospace; font-size: .72rem; letter-spacing: .2em;
+      text-transform: uppercase; color: var(--cc-mute); margin: 0 0 18px;
+    }
+    .cc-shots { display: grid; gap: 14px; grid-template-columns: 1fr; margin: 0; }
+    @media (min-width: 680px) { .cc-shots { grid-template-columns: 1fr 1fr; } }
+    .cc-shots figure { margin: 0; border: 1px solid var(--cc-line); border-radius: 4px; overflow: hidden; }
+    .cc-shots img, .cc-shots video { width: 100%; height: 100%; object-fit: cover; aspect-ratio: 4 / 3; }
+    @media (min-width: 680px) { .cc-shots .wide { grid-column: 1 / -1; } }
+    .cc-shots .wide video { aspect-ratio: 16 / 9; }
+    .cc-recap__cap { font-size: .92rem; color: var(--cc-mute); margin: 16px 0 0; font-style: italic; }
   </style>
 </head>
 <body>
@@ -118,7 +133,8 @@
       </figure>
       <p class="cc-eyebrow">October 1, 2026 · New York City</p>
       <h1 class="cc-title">Catan and Cookies</h1>
-      <p class="cc-lede">Here&rsquo;s the deal: I bake you cookies and buy Catan, you bring cool people. Anyone is welcome.</p>
+      <p class="cc-lede">The deal was: I bake the cookies and buy Catan, you bring cool people. That is
+         roughly what happened &mdash; one board, two trays, and a room of people who mostly had not met.</p>
     </section>
 
     <div class="cc-facts">
@@ -131,7 +147,7 @@
         <span class="cc-facts__v">New York City &mdash; address on the invite</span>
       </div>
       <div>
-        <span class="cc-facts__k">Bring</span>
+        <span class="cc-facts__k">Brought</span>
         <span class="cc-facts__v">Cool people</span>
       </div>
       <div>
@@ -140,8 +156,29 @@
       </div>
     </div>
 
-    <a class="cc-rsvp" href="https://partiful.com/e/OcjeqiJUDAXMkmdlvVHz" target="_blank" rel="noopener noreferrer">RSVP on Partiful →</a>
-    <p class="cc-rsvp__note">20 spots. Partiful has the live count and the address.</p>
+    <section class="cc-recap">
+      <p class="cc-recap__h">The night</p>
+      <div class="cc-shots">
+        <figure>
+          <img src="/events/catan-and-cookies/photos/4671.jpg" loading="lazy" decoding="async"
+               alt="Six people sitting on a rug around a Catan board, cookies and drinks on a low table behind them.">
+        </figure>
+        <figure>
+          <img src="/events/catan-and-cookies/photos/4669.jpg" loading="lazy" decoding="async"
+               alt="Two plates of chocolate chip cookies on a coffee table, with people setting up around it.">
+        </figure>
+        <figure class="wide">
+          <video src="/events/catan-and-cookies/photos/clip.mp4"
+                 poster="/events/catan-and-cookies/photos/clip-poster.jpg"
+                 controls muted playsinline preload="none"
+                 aria-label="Six seconds of the game in progress, cookie in hand."></video>
+        </figure>
+      </div>
+      <p class="cc-recap__cap">Six seconds of it, and two trays&rsquo; worth of evidence.</p>
+    </section>
+
+    <a class="cc-rsvp" href="/events/" style="margin-top:44px">See the other events &rarr;</a>
+    <p class="cc-rsvp__note">This one is done. The next one goes up on the events page.</p>
 
   </div>
 

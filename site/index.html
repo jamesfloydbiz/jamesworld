@@ -176,10 +176,29 @@
        copy does not read as "brighter" so much as "slightly less grey" — here they go to
        full white, and the underline does the rest of the work on hover. Scoped to the
        letter so every other page keeps the softer 85%. */
+    /* #fff is the ceiling for colour, so the rest of the "pop" has to come from weight,
+       a faint glow and a stronger underline. Lora ships a 500, which at this size reads
+       as deliberate rather than bold. */
     .home__letter .prose-link,
-    .home__letter .hovercard { color: var(--fg); }
-    .home__letter .prose-link { text-decoration-color: hsl(0 0% 100% / 0.45); }
-    .home__letter .prose-link:hover { text-decoration-color: hsl(0 0% 100% / 0.9); }
+    .home__letter .hovercard {
+      color: var(--fg);
+      font-weight: 500;
+      text-shadow: 0 0 16px hsl(0 0% 100% / 0.30);
+    }
+    .home__letter .prose-link { text-decoration-color: hsl(0 0% 100% / 0.6); }
+    .home__letter .prose-link:hover {
+      text-decoration-color: var(--fg);
+      text-shadow: 0 0 22px hsl(0 0% 100% / 0.5);
+    }
+    /* The signature is the same idea, one notch up. It carries .hovercard too, and that
+       rule's specificity was quietly overriding its 700 down to 500 — hence the repeat. */
+    .home__letter .home__sig {
+      font-weight: 700;
+      text-shadow: 0 0 18px hsl(0 0% 100% / 0.38);
+    }
+    @media (prefers-reduced-transparency: reduce) {
+      .home__letter .prose-link, .home__letter .hovercard, .home__sig { text-shadow: none; }
+    }
   </style>
 </head>
 <body>
