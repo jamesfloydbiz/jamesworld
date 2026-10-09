@@ -170,6 +170,16 @@
       margin-bottom: 24px;
       cursor: default;
     }
+
+    /* The letter sits at 55% white, and the only things in it you are meant to act on are
+       the links and my name. Site-wide those are 85%, which against this much dimmer body
+       copy does not read as "brighter" so much as "slightly less grey" — here they go to
+       full white, and the underline does the rest of the work on hover. Scoped to the
+       letter so every other page keeps the softer 85%. */
+    .home__letter .prose-link,
+    .home__letter .hovercard { color: var(--fg); }
+    .home__letter .prose-link { text-decoration-color: hsl(0 0% 100% / 0.45); }
+    .home__letter .prose-link:hover { text-decoration-color: hsl(0 0% 100% / 0.9); }
   </style>
 </head>
 <body>
@@ -191,7 +201,7 @@
 
         <p>
           My name is
-          <span class="hovercard" style="color: var(--fg-85);">
+          <span class="hovercard">
             James Floyd
             <span class="hovercard__pop">
               <img src="/pictures/james-profile.jpeg" alt="James Floyd">
