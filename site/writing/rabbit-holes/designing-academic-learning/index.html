@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How to Design Academic Learning for Kids (Based on Science) — Rabbit Hole — James Floyd</title>
+  <meta name="description" content="A friend asked how to homeschool his daughters. These are the terms, the evidence, and the steps.">
+  <link rel="canonical" href="https://jamesfloyds.world/writing/rabbit-holes/designing-academic-learning/">
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="How to Design Academic Learning for Kids (Based on Science)">
+  <meta property="og:description" content="A friend asked how to homeschool his daughters. These are the terms, the evidence, and the steps.">
+  <meta property="og:url" content="https://jamesfloyds.world/writing/rabbit-holes/designing-academic-learning/">
+
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=DM+Mono:wght@300;400&family=Lora:ital,wght@0,400;0,500;1,400&family=Space+Mono:wght@400;700&display=swap">
+  <link rel="stylesheet" href="/css/site.css">
+
+  <style>
+    .rh-shell {
+      display: grid;
+      grid-template-columns: 220px minmax(0, 720px);
+      gap: 56px;
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 0 clamp(16px, 4vw, 24px);
+    }
+
+    /* Timeline (left column, sticky) */
+    .rh-timeline {
+      position: sticky;
+      top: 96px;
+      align-self: start;
+      max-height: calc(100vh - 120px);
+      max-height: calc(100dvh - 120px);
+      overflow-y: auto;
+      padding-right: 8px;
+      scrollbar-width: thin;
+    }
+    .rh-timeline__list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      position: relative;
+    }
+    .rh-timeline__list::before {
+      content: '';
+      position: absolute;
+      left: 4px;
+      top: 6px;
+      bottom: 6px;
+      width: 1px;
+      background: var(--fg-15);
+    }
+    .rh-timeline__item {
+      position: relative;
+      padding: 0 0 12px 22px;
+    }
+    .rh-timeline__item::before {
+      content: '';
+      position: absolute;
+      left: 1px;
+      top: 6px;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--bg, #000);
+      border: 1px solid var(--fg-35);
+      box-sizing: border-box;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    /* The dot for the section you are in. Sage, like everything else on the
+       page you can act on, and the one saturated thing in the left column. */
+    .rh-timeline__item.is-active::before {
+      background: var(--green);
+      border-color: var(--green);
+    }
+    .rh-timeline__link {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--fg-45);
+      text-decoration: none;
+      line-height: 1.5;
+      transition: color 0.2s;
+    }
+    .rh-timeline__link:hover { color: var(--fg-80); }
+    .rh-timeline__item.is-active .rh-timeline__link { color: var(--fg); }
+    .rh-timeline__name { display: block; }
+    .rh-timeline__date {
+      display: block;
+      font-size: 0.62rem;
+      letter-spacing: 0.05em;
+      color: var(--brown-45);
+      text-transform: none;
+      margin-top: 2px;
+    }
+    .rh-timeline__item.is-active .rh-timeline__date { color: var(--brown); }
+
+    /* Article (right column) */
+    .rh-article { max-width: 680px; min-width: 0; }
+    .rh-article__masthead {
+      margin-bottom: 48px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--fg-15);
+    }
+    .rh-article__eyebrow {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--brown);
+      margin-bottom: 12px;
+    }
+    .rh-article__title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 700;
+      font-size: clamp(2rem, 5vw, 3rem);
+      line-height: 1.15;
+      margin: 0 0 12px 0;
+      color: var(--fg);
+    }
+    .rh-article__subtitle {
+      font-family: 'Lora', Georgia, serif;
+      font-style: italic;
+      font-size: 1.05rem;
+      line-height: 1.5;
+      color: var(--fg-70);
+      margin: 0 0 8px 0;
+    }
+    .rh-article__meta {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--brown-70);
+    }
+
+    .rh-section { margin-bottom: 40px; scroll-margin-top: 96px; }
+    .rh-section h2 {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--fg-80);
+      margin: 0 0 20px 0;
+      padding-top: 16px;
+      border-top: 1px solid var(--fg-15);
+    }
+    /* A heading that goes somewhere says so, quietly — the arrow is the tell,
+       since an underline on a heading this small reads as a mistake. */
+    .rh-section__to { color: inherit; text-decoration: none; border-bottom: 1px solid var(--green-30); }
+    .rh-section__to::after { content: ' →'; }
+    .rh-section__to:hover, .rh-section__to:focus-visible {
+      color: var(--green); border-bottom-color: var(--green); }
+    .rh-section__date {
+      display: inline-block;
+      margin-left: 10px;
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      color: var(--brown);
+      text-transform: none;
+      font-weight: normal;
+    }
+    .rh-section p {
+      font-family: 'Lora', Georgia, serif;
+      font-size: 1.02rem;
+      line-height: 1.8;
+      color: var(--fg-80);
+      margin: 0 0 1rem 0;
+    }
+    .rh-quote {
+      margin: 1.8rem 0;
+      padding: 0 0 0 20px;
+      border-left: 2px solid var(--brown-45);
+      font-family: 'Lora', Georgia, serif;
+      font-size: 1.18rem;
+      line-height: 1.65;
+      font-style: italic;
+      color: var(--fg);
+    }
+    /* Footnote markers. Small, dim, and out of the way — the prose has to read
+       without them, and a reader who wants the receipt clicks through. */
+    .rh-fn { font-size: 0.62em; line-height: 0; vertical-align: super; margin-left: 1px; }
+    .rh-fn a { color: var(--fg-40); text-decoration: none; }
+    .rh-fn a:hover { color: var(--green); }
+
+    /* Sources, collapsed. Seventy-odd citations under an essay is a wall, so it
+       stays shut until asked for. */
+    .rh-sources { border: 1px solid var(--fg-12); border-radius: 10px; margin: 2.4rem 0 0;
+      background: hsl(0 0% 3%); }
+    .rh-sources > summary { list-style: none; cursor: pointer; display: flex; flex-wrap: wrap;
+      align-items: baseline; gap: 12px; padding: 16px 18px; min-height: 44px;
+      box-sizing: border-box; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+    .rh-sources > summary::-webkit-details-marker { display: none; }
+    .rh-sources > summary:focus-visible { outline: 2px solid var(--fg-40); outline-offset: 2px; border-radius: 10px; }
+    .rh-sources__k { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--fg-70); }
+    .rh-sources__n { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--fg-40); }
+    .rh-sources[open] > summary .rh-sources__n::after { content: ''; }
+    .rh-sources__list { margin: 0; padding: 0 18px 20px 44px; }
+    .rh-sources__list li { font-family: var(--font-serif); font-size: 0.88rem; line-height: 1.65;
+      color: var(--fg-60); margin-bottom: 12px; overflow-wrap: anywhere; }
+    .rh-sources__list li:target { color: var(--fg-85); }
+    .rh-sources__list li strong { color: var(--fg-85); }
+    .rh-src__link { color: var(--fg-50); text-decoration: none; border-bottom: 1px solid var(--fg-20); }
+    .rh-src__link:hover { color: var(--fg-85); border-bottom-color: var(--fg-50); }
+
+    .rh-tablewrap { overflow-x: auto; margin: 1.4rem 0; -webkit-overflow-scrolling: touch; }
+    .rh-table {
+      border-collapse: collapse;
+      width: 100%;
+      min-width: 420px;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      line-height: 1.55;
+    }
+    .rh-table th {
+      text-align: left;
+      font-weight: 600;
+      color: var(--fg-55);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 0.66rem;
+      padding: 0 14px 8px 0;
+      border-bottom: 1px solid var(--fg-15);
+      white-space: nowrap;
+    }
+    .rh-table td {
+      padding: 10px 14px 10px 0;
+      border-bottom: 1px solid var(--fg-15);
+      color: var(--fg-80);
+      vertical-align: top;
+    }
+    .rh-table tr:last-child td { border-bottom: 0; }
+    .rh-table td:first-child { color: var(--fg); font-weight: 600; white-space: nowrap; }
+
+    .rh-figure {
+      margin: 1.6rem 0;
+    }
+    .rh-figure img {
+      display: block;
+      /* natural size, never upscaled — these are 1914 halftones and the
+         portrait is only 312px wide, so width:100% blew it up to 680 and
+         turned it to mush. max-width still shrinks them on a phone. */
+      max-width: 100%;
+      height: auto;
+      margin: 0 auto;
+      border-radius: 3px;
+      border: 1px solid var(--fg-15);
+      /* these are 1914 halftones — a warm, slightly lifted rendering suits
+         them better than pinning them to a pure-black page */
+      filter: sepia(0.12) contrast(1.02);
+    }
+    .rh-figure figcaption {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      line-height: 1.6;
+      letter-spacing: 0.02em;
+      color: var(--brown-70);
+      margin-top: 10px;
+    }
+    .rh-section .rh-list {
+      font-family: 'Lora', Georgia, serif;
+      font-size: 1rem;
+      line-height: 1.75;
+      color: var(--fg-80);
+      padding-left: 20px;
+      margin: 0 0 1rem 0;
+    }
+    .rh-section .rh-list li { margin-bottom: 6px; }
+
+    .rh-back {
+      display: inline-block;
+      margin: 48px 0 24px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--fg-55);
+      text-decoration: none;
+    }
+    .rh-back:hover { color: var(--fg); }
+    .rh-back--top {
+      margin: 0 0 24px 0;
+      grid-column: 1 / -1;
+    }
+
+    /* Mobile: timeline collapses to a horizontal chip row above the article */
+    @media (max-width: 900px) {
+      .rh-shell {
+        /* minmax(0, 1fr), not 1fr. A bare 1fr is minmax(AUTO, 1fr), and an
+           auto minimum refuses to shrink below its content — so the table's
+           420px min-width grew this column to 420 inside a 320px phone and
+           an ancestor quietly clipped the right-hand column off. */
+        grid-template-columns: minmax(0, 1fr);
+        gap: 24px;
+      }
+      .rh-timeline {
+        position: static;
+        max-height: none;
+        overflow-x: auto;
+        overflow-y: visible;
+        padding-right: 0;
+        padding-bottom: 8px;
+        border-bottom: 1px solid var(--fg-15);
+        white-space: nowrap;
+      }
+      .rh-timeline__list { display: inline-flex; gap: 4px; }
+      .rh-timeline__list::before { display: none; }
+      .rh-timeline__item {
+        display: inline-block;
+        padding: 6px 10px;
+        border: 1px solid var(--fg-15);
+        border-radius: 999px;
+        flex-shrink: 0;
+      }
+      .rh-timeline__item::before { display: none; }
+      .rh-timeline__item.is-active {
+        background: var(--fg-10, rgba(255,255,255,0.08));
+        border-color: var(--fg-35);
+      }
+      .rh-timeline__link { font-size: 0.68rem; }
+      .rh-timeline__date { display: none; }
+      .rh-article__title { font-size: 1.75rem; }
+      .rh-section__date { display: block; margin-left: 0; margin-top: 4px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="site-header anim-slide-dn">
+    <a href="/" class="site-header__logo" aria-label="Return to home"><img src="/logo.svg" alt="JF"></a>
+    <button class="site-header__menu-btn" id="menu-btn" aria-expanded="false" aria-controls="site-nav">Menu</button>
+  </header>
+
+  <nav class="site-nav" id="site-nav" aria-label="Main navigation">
+    <ul class="site-nav__list">
+      <li class="site-nav__item"><a href="/sonder/" class="site-nav__link">Sonder Series</a></li>
+      <li class="site-nav__item"><a href="/portfolio/" class="site-nav__link">Portfolio</a></li>
+      <li class="site-nav__item" data-has-sub>
+        <a href="/projects/" class="site-nav__link">Projects</a>
+        <div class="site-nav__sub">
+          <a href="/portfolio/" class="site-nav__sub-link">Portfolio</a>
+          <a href="/resume/" class="site-nav__sub-link">Resume</a>
+          <a href="/references/" class="site-nav__sub-link">References</a>
+        </div>
+      </li>
+      <li class="site-nav__item" data-has-sub>
+        <a href="/content/" class="site-nav__link">Content</a>
+        <div class="site-nav__sub">
+          <a href="/writing/" class="site-nav__sub-link">Writing</a>
+          <a href="/poems/" class="site-nav__sub-link">Poems</a>
+          <a href="/pictures/" class="site-nav__sub-link">Memories</a>
+        </div>
+      </li>
+      <li class="site-nav__item"><a href="/network/" class="site-nav__link">Network</a></li>
+      <li class="site-nav__item"><a href="/blueprints/" class="site-nav__link">Blueprints</a></li>
+      <li class="site-nav__item" style="margin-top:24px;"><a href="/" class="site-nav__back">Back to Gallery</a></li>
+    </ul>
+    <button class="site-nav__close" id="nav-close">Close</button>
+  </nav>
+
+  <main class="page">
+    <div class="rh-shell anim-fade-up" style="animation-delay:0.3s">
+
+      <a href="/writing/#rabbit-holes" class="rh-back rh-back--top">← Back to Writing</a>
+
+      <aside class="rh-timeline" aria-label="Essay timeline">
+        <ol class="rh-timeline__list">
+        <li class="rh-timeline__item is-active" data-section="a-call-with-caleb">
+          <a class="rh-timeline__link" href="#a-call-with-caleb">
+            <span class="rh-timeline__name">A call with Caleb</span>
+            <span class="rh-timeline__date">homeschooling two daughters</span>
+          </a>
+        </li>
+        <li class="rh-timeline__item" data-section="the-terms">
+          <a class="rh-timeline__link" href="#the-terms">
+            <span class="rh-timeline__name">The terms</span>
+            <span class="rh-timeline__date">seven of them</span>
+          </a>
+        </li>
+        <li class="rh-timeline__item" data-section="designing-the-curriculum">
+          <a class="rh-timeline__link" href="#designing-the-curriculum">
+            <span class="rh-timeline__name">Designing the curriculum</span>
+            <span class="rh-timeline__date">start from the result</span>
+          </a>
+        </li>
+        <li class="rh-timeline__item" data-section="spiral-or-mastery">
+          <a class="rh-timeline__link" href="#spiral-or-mastery">
+            <span class="rh-timeline__name">Spiral or mastery</span>
+            <span class="rh-timeline__date">a mile wide, an inch deep</span>
+          </a>
+        </li>
+        <li class="rh-timeline__item" data-section="designing-the-instruction">
+          <a class="rh-timeline__link" href="#designing-the-instruction">
+            <span class="rh-timeline__name">Designing the instruction</span>
+            <span class="rh-timeline__date">EDGE, working memory, 80&ndash;85%</span>
+          </a>
+        </li>
+        <li class="rh-timeline__item" data-section="the-steps">
+          <a class="rh-timeline__link" href="#the-steps">
+            <span class="rh-timeline__name">The steps</span>
+            <span class="rh-timeline__date">eight of them</span>
+          </a>
+        </li>
+        <li class="rh-timeline__item" data-section="structuring-a-lesson">
+          <a class="rh-timeline__link" href="#structuring-a-lesson">
+            <span class="rh-timeline__name">Structuring a lesson</span>
+            <span class="rh-timeline__date">worked examples, faded guidance</span>
+          </a>
+        </li>
+        <li class="rh-timeline__item" data-section="the-five-parts-of-counting">
+          <a class="rh-timeline__link" href="#the-five-parts-of-counting">
+            <span class="rh-timeline__name">The five parts of counting</span>
+            <span class="rh-timeline__date">footnote 9, in full</span>
+          </a>
+        </li>
+        <li class="rh-timeline__item" data-section="sources">
+          <a class="rh-timeline__link" href="#sources">
+            <span class="rh-timeline__name">Sources</span>
+            <span class="rh-timeline__date">30 references</span>
+          </a>
+        </li>
+        </ol>
+      </aside>
+
+      <article class="rh-article">
+        <header class="rh-article__masthead">
+          <span class="rh-article__eyebrow">Rabbit Hole &middot; ~12 min</span>
+          <h1 class="rh-article__title">How to Design Academic Learning for Kids (Based on Science)</h1>
+          <p class="rh-article__subtitle">A friend asked how to homeschool his daughters. These are the terms, the evidence, and the steps.</p>
+          <p class="rh-article__meta">by James Floyd</p>
+        </header>
+
+        <div id="rh-readable">
+        <section id="a-call-with-caleb" class="rh-section">
+          <h2>A call with Caleb <span class="rh-section__date">homeschooling two daughters</span></h2>
+          <p>Recently I was on the phone with a good friend named Caleb Guilliams. He and his wife April are looking at homeschooling their daughters, and given my dive into the education space he was asking my perspective on curriculum and instructional design for their daughters.</p>
+          <p>While I&rsquo;ve learned about learning, motivation science, and generally the education space, curriculum design and instructional design are phrases that don&rsquo;t come with any clear understanding in my head. So in the interest of giving an educated answer to Caleb, while educating myself, I&rsquo;ll start with defining those terms.</p>
+          <p>Curriculum design is WHAT gets taught and WHEN it gets taught, or in other words the scope and sequence. For example learning multiplication tables in the third grade. Instructional design is HOW it gets taught. Pieces like how information is presented and practiced, and how the students are given feedback.</p>
+        </section>
+        <section id="the-terms" class="rh-section">
+          <h2>The terms <span class="rh-section__date">seven of them</span></h2>
+          <p>Some other important terms to know for this essay are prerequisite structure, formative vs summative assessments, knowledge space, mastery, spacing, and transfer.</p>
+          <p>Prerequisite structure is a map of what skills are required before moving on to compound skills.<sup class="rh-fn"><a href="#src-1">1</a></sup></p>
+          <p>Formative Assessment tests whether or not you can use the information i.e. applying it while Summative Assessment tests whether or not you know the information.<sup class="rh-fn"><a href="#src-2">2</a></sup><sup class="rh-fn"><a href="#src-3">3</a></sup></p>
+          <p>A knowledge space is a concept like math, english language, bowling theory, or physics.<sup class="rh-fn"><a href="#src-4">4</a></sup></p>
+          <p>Mastery is defined scientifically as command over a certain subject over a period of time. Typically above 90% correct answers over three different tests.<sup class="rh-fn"><a href="#src-5">5</a></sup></p>
+          <p>Spacing is the setting of distance between practice based on studies showing that the harder it is to recall (a.k.a. retrieve) a thing the more that action of recalling it improves the neuropathway to that information (the more it improves the learning of that info).<sup class="rh-fn"><a href="#src-6">6</a></sup></p>
+          <p>There are two parts of Transfer. Near transfer is applying knowledge in the same structure and shape that you learned it, and far transfer is applying it to situations or structures outside of where you learned it.<sup class="rh-fn"><a href="#src-7">7</a></sup> I.e. Learning multiplication in the context of baseball, but then applying the same math to farming.</p>
+        </section>
+        <section id="designing-the-curriculum" class="rh-section">
+          <h2>Designing the curriculum <span class="rh-section__date">start from the result</span></h2>
+          <p>There are some best practices when designing curriculum that are as follows. The first, as detailed by Wiggins and another is Backwards design, starting from the desired result.<sup class="rh-fn"><a href="#src-8">8</a></sup> This means defining in observable, measurable terms what it means to have learned the lesson.</p>
+          <p>The second is mapping the prerequisite structures. Once you know what the desired lesson of the unit is, also known as the scope, you can work backwards by breaking each fact or skill the student needs to learn, into an order that completes the lesson. Let&rsquo;s take for example addition: The student must know their numbers (A set of 5 skills)<sup class="rh-fn"><a href="#src-9">9</a></sup>, and they must know the operation of addition.</p>
+        </section>
+        <section id="spiral-or-mastery" class="rh-section">
+          <h2>Spiral or mastery <span class="rh-section__date">a mile wide, an inch deep</span></h2>
+          <p>From there come some concepts that have been studied, but still have some debate. One is sequencing. In 1960 Bruner proposed a spiral curriculum that revisits topics once a year and moves kids forward through the units of a grade level by time.<sup class="rh-fn"><a href="#src-10">10</a></sup> On the other hand, learning science studies from Bloom and others have shown that learning progression gated by mastery is more effective for learning.<sup class="rh-fn"><a href="#src-11">11</a></sup><sup class="rh-fn"><a href="#src-12">12</a></sup><sup class="rh-fn"><a href="#src-13">13</a></sup><sup class="rh-fn"><a href="#src-14">14</a></sup> The debate is around whether or not moving students forward only on mastery is possible in a public school system. If you&rsquo;re designing curriculum for a more flexible system like homeschooling or private schools I find it undeniable that mastery sequencing is more effective in teaching students, and honestly weak minded to consider something else even for public schools.</p>
+          <p>In a TIMSS study Schmidt said that the American math and science system is a mile wide and an inch deep for this reason, which was a quotable phrase that traveled far since that analysis.<sup class="rh-fn"><a href="#src-15">15</a></sup> Said differently, topics were touched, but only reappeared years later without the reps to accumulate into neural pathways.</p>
+          <p>Another concept like this is that content is not the enemy of thinking. Hirsch and Willingham argue that critical thinking comes once domain knowledge is established and therefore kids learning to think is less useful than them learning a space.<sup class="rh-fn"><a href="#src-16">16</a></sup><sup class="rh-fn"><a href="#src-17">17</a></sup> Also there is evidence to support that the current school learning model is not helping to improve critical thinking anyway.</p>
+        </section>
+        <section id="designing-the-instruction" class="rh-section">
+          <h2>Designing the instruction <span class="rh-section__date">EDGE, working memory, 80&ndash;85%</span></h2>
+          <p>After it is defined and mapped out what will be taught and when, then one can move onto designing how the teaching will be delivered.</p>
+          <p>For best practices in instructional design the best proven one is explicit instruction.<sup class="rh-fn"><a href="#src-18">18</a></sup><sup class="rh-fn"><a href="#src-19">19</a></sup> Which I like to explain with the EDGE method.</p>
+          <p>Explain the skill first, then Do the skill in front of them, then Guide them through an example problem, and as they learn it give them less guidance, and less scaffolding until they are Enabled to do it independently.<sup class="rh-fn"><a href="#src-20">20</a></sup></p>
+          <p>The biggest binding constraint for instructional design is working memory. While adult brains can hold ~5 chunks of information in their working memory, young students hold less.<sup class="rh-fn"><a href="#src-21">21</a></sup><sup class="rh-fn"><a href="#src-22">22</a></sup> This means that if there is lots of information in a question, multiple parts to the problem, or other such structural defects the students are not set up to learn well.<sup class="rh-fn"><a href="#src-23">23</a></sup> To combat this a worked example is typically the best way to move them from not knowing how to do the problem to doing it independently (similar to the EDGE method).</p>
+          <p>Another best practice in instructional design is keeping kids in the Zone of Proximal Development. Which Vygotsky<sup class="rh-fn"><a href="#src-24">24</a></sup> defined as &lsquo;too hard to do alone, but possible with guidance&rsquo; essentially. To give it a number, In a separate study Rosenshine<sup class="rh-fn"><a href="#src-18">18</a></sup> defined a similar concept as 80% correct answers that kept up engagement while maintaining learning quality and retention from watching students and Wilson defined it as 85% correct answers is the mathematically fastest percentage for learning based on training AI models.<sup class="rh-fn"><a href="#src-25">25</a></sup> So upon looking at the data of both engagement and learning we&rsquo;ll say this Goldilocks zone is between 80 and 85% correct answers.</p>
+          <p>Another practice supported by science is practice done by retrieving rather than reviewing. Low stakes quizzing and testing is a significantly more effective way of improving the pathways to the information in their brain than simply re-consuming something they&rsquo;ve already done.<sup class="rh-fn"><a href="#src-26">26</a></sup></p>
+          <p>One of the instructors most critical tasks is giving feedback. In fact, Kluger and DeNisi&rsquo;s meta analysis shows that over &#8531; of feedback given in schools reduces performance.<sup class="rh-fn"><a href="#src-27">27</a></sup> So effective instructional design looks at the motivation science and considers practices like focusing feedback on the task rather than the person.</p>
+        </section>
+        <section id="the-steps" class="rh-section">
+          <h2>The steps <span class="rh-section__date">eight of them</span></h2>
+          <p>Now, while this explains what these concepts are, it does not explain the steps to build a curriculum and design the instruction around it. So while the above concepts and more are important to doing the following steps well, here are the steps:</p>
+          <h3>1. Decide &lsquo;placement&rsquo; if creating a school.</h3>
+          <p>I suggest doing this by knowledge space and checking mastery. Also check laws in your area of what is required in terms of what knowledge spaces need to be taught.</p>
+          <p>You can do this testing by testing downward from where you would guess the child is. Most programs also offer placement tests if you&rsquo;d like to use them.</p>
+          <p>In terms of checking laws I&rsquo;d look to your state department of education site. Also HSLDA keeps a 50-state summary of homeschool requirements, those are faster to read than the statutes.</p>
+          <h3>2. Define what you want the kid to learn.</h3>
+          <p>I.e. What knowledge spaces, math, english language, physics, entrepreneurship, painting, art history, bowling, whatever it is you would like. Just make a list with</p>
+          <h3>3. Find the legal standards for that knowledge space.</h3>
+          <p>Where you live has laws governing what kids must learn by certain times. Finding these, regardless of how out-dated, is necessary legally, but keep in mind they will rarely be actionable, or based on science. (see common core)<sup class="rh-fn"><a href="#src-28">28</a></sup><sup class="rh-fn"><a href="#src-29">29</a></sup></p>
+          <h3>4. Translate each standard, however they are written, into observable actions that you can measure.</h3>
+          <p>I.e. Has learned multiplication of numbers &rarr; can complete multiplication tables from 0-13 in under 3 minutes from memory. This is for the law, not the design.</p>
+          <h3>5. Build the knowledge graph of the knowledge space up from first principles and their definitions (&ldquo;standards&rdquo; are a weak proxy for this) or take/buy one from a company that has already put one together.</h3>
+          <p>DEFINITION: Knowledge graph is a map of each concept, what observable action demonstrates mastery, and the prerequisites between concepts. Arranged as nodes (the concept, an actionable way to measure it, and the content to teach it).</p>
+          <p>Where to look if you do not want to build one yourself:</p>
+          <ul><li>Achieve the Core&rsquo;s Coherence Map. K-8 Common Core math as a dependency graph with prerequisite arrows. Free, public domain.</li><li>Math Academy. Proprietary and far finer, thousands of nodes. Justin Skycak&rsquo;s <em>The Math Academy Way</em> is free online and explains the pedagogy &mdash; graph construction, mastery gating, spaced review &mdash; in more detail than anyone else has published.</li><li>ALEKS. Proprietary, built on knowledge space theory, now McGraw-Hill.</li><li>Clements &amp; Sarama&rsquo;s learning trajectories. Early math only, free at learningtrajectories.org, built from observing children and tested in a randomized trial.</li></ul>
+          <p>Nothing public exists for reading, writing, science or history.</p>
+          <p>If you don&rsquo;t have the time to build this yourself, you can proxy this with standards offered in different curriculums you can find online or through community groups.</p>
+          <h3>6. Find engaging, interesting activities used to anchor concepts and guide your units of learning.</h3>
+          <p>I.e. Competing with other kids on races to fill out multiplication tables of 3 x 1-13</p>
+          <p>Write these down in a list as you&rsquo;re going through your analysis and translation of standards</p>
+          <p>By the end of your work on the knowledge graph you should have a clear list of What you are going to teach, and a fun list of activities to potentially teach most, if not all, of the concepts</p>
+          <p>If you are looking for lesson ideas many of the published curriculum products and programs offer content to teach it.</p>
+          <h3>7. Organize</h3>
+          <p>There are patterns, order, and relationships in everything you&rsquo;ve written out. Group related topics together. Enough related topics and you have a unit.</p>
+          <p>Typically the hierarchy is Course &gt; Units &gt; Nodes &gt; Observable Actions &gt; Lessons &gt; Content</p>
+          <p>I.e. addition and subtraction are similar, so we learn those together.</p>
+          <h3>8. Fill in the lessons with content</h3>
+          <ul><li>Lecture notes, lecture stories, lecture videos &mdash; I.e. How to download information into the students brain</li><li>Instructional resource &mdash; visuals, puzzles, formative assessments</li><li>Resources for practicing</li></ul>
+          <p>Again if you are looking for lesson ideas many of the published curriculum products and programs offer content to teach it.</p>
+        </section>
+        <section id="structuring-a-lesson" class="rh-section">
+          <h2>Structuring a lesson <span class="rh-section__date">worked examples, faded guidance</span></h2>
+          <p>Once you are done with the curriculum design then comes the instructional design.</p>
+          <p>How it&rsquo;s presented, How they practice it, How it&rsquo;s measured</p>
+          <p>Once you have written the lesson/activity/content (Steps 6-8 in the above curriculum design method) that teaches for each node&rsquo;s near transfer in varied environments and contexts you can now structure it as the following science based structure.</p>
+          <p>Using a worked example with faded guidance (i.e. EDGE method)</p>
+          <p><strong>Great Lesson Examples:</strong></p>
+          <ul><li>Review previous lesson &mdash; spaced retrieval<sup class="rh-fn"><a href="#src-6">6</a></sup><sup class="rh-fn"><a href="#src-26">26</a></sup></li><li>Check for their understanding &mdash; mastery</li><li>IF hit mastery then proceed to next lesson</li><li>IF do not hit mastery go back and practice/re-learn earlier concepts</li></ul>
+          <p><strong>NEXT LESSON</strong></p>
+          <ul><li>Motivating problem &mdash; A problem they cannot solve, or is better solved by the new skill</li><li>Explicit Instruction &mdash; State explicitly what the concept is and how to do it</li><li>Knowledge transfer with content in small steps &mdash; Do this in small chunks and check for comprehension</li><li>Worked Examples with releasing guidance &mdash; Do an example in front of them (that they wouldn&rsquo;t be able to do because they haven&rsquo;t built the skill. Then slowly loop them in to doing more and more of the work as you go through more examples)</li><li>Motivation science + Many checks for comprehension and engagement through questions</li></ul>
+          <p>One other note here is the science of feedback, especially Butler&rsquo;s work on grades suggests that just giving feedback on the process a student took to complete a task and how close their work was to demonstrating mastery achieves better performance than giving a student a grade.<sup class="rh-fn"><a href="#src-30">30</a></sup></p>
+          <p>So I suggest no old school grades, and instead a % of the correct process to get to the answer.</p>
+        </section>
+        <section id="the-five-parts-of-counting" class="rh-section">
+          <h2>The five parts of counting <span class="rh-section__date">footnote 9, in full</span></h2>
+          <p>I.e. counting &rarr; there are 5 parts to counting</p>
+          <ul><li><strong>One-to-one</strong> &mdash; each object gets exactly one number word, no skips, no doubles.</li><li><strong>Stable order</strong> &mdash; the words come in the same sequence every time.</li><li><strong>Cardinal</strong> &mdash; the last word you said is how many there are.</li><li><strong>Abstraction</strong> &mdash; this works on anything, including things you can&rsquo;t touch.</li><li><strong>Order irrelevance</strong> &mdash; count them in any order, same total.</li></ul>
+        </section>
+        <section id="sources" class="rh-section">
+          <details class="rh-sources">
+            <summary><span class="rh-sources__k">Sources</span><span class="rh-sources__n">30 references &mdash; tap to open</span></summary>
+            <ol class="rh-sources__list">
+<li id="src-1" value="1">Gagné, R. M. (1965). <em>The Conditions of Learning.</em> Holt, Rinehart and Winston.</li>
+            <li id="src-2" value="2">Scriven, M. (1967). The methodology of evaluation. In <em>Perspectives of Curriculum Evaluation.</em> Rand McNally.</li>
+            <li id="src-3" value="3">Black, P., &amp; Wiliam, D. (1998). Assessment and Classroom Learning. <em>Assessment in Education,</em> 5(1), 7&ndash;74.</li>
+            <li id="src-4" value="4">Doignon, J.-P., &amp; Falmagne, J.-C. (1985). Spaces for the assessment of knowledge. <em>International Journal of Man-Machine Studies,</em> 23, 175&ndash;196.</li>
+            <li id="src-5" value="5">Bloom, B. S. (1968). Learning for Mastery. <em>Evaluation Comment,</em> 1(2).</li>
+            <li id="src-6" value="6">Cepeda, N. J., Vul, E., Rohrer, D., Wixted, J. T., &amp; Pashler, H. (2008). Spacing Effects in Learning. <em>Psychological Science,</em> 19(11), 1095&ndash;1102.</li>
+            <li id="src-7" value="7">Thorndike, E. L., &amp; Woodworth, R. S. (1901). The influence of improvement in one mental function upon the efficiency of other functions. <em>Psychological Review,</em> 8.</li>
+            <li id="src-8" value="8">Wiggins, G., &amp; McTighe, J. (1998). <em>Understanding by Design.</em> ASCD.</li>
+            <li id="src-9" value="9">Gelman, R., &amp; Gallistel, C. R. (1978). <em>The Child&rsquo;s Understanding of Number.</em> Harvard University Press.</li>
+            <li id="src-10" value="10">Bruner, J. S. (1960). <em>The Process of Education.</em> Harvard University Press.</li>
+            <li id="src-11" value="11">Bloom, B. S. (1984). The 2 Sigma Problem. <em>Educational Researcher,</em> 13(6), 4&ndash;16.</li>
+            <li id="src-12" value="12">Kulik, C-L. C., Kulik, J. A., &amp; Bangert-Drowns, R. L. (1990). Effectiveness of Mastery Learning Programs: A Meta-Analysis. <em>Review of Educational Research,</em> 60(2), 265&ndash;299.</li>
+            <li id="src-13" value="13">Slavin, R. E. (1987). Mastery Learning Reconsidered. <em>Review of Educational Research,</em> 57(2), 175&ndash;213.</li>
+            <li id="src-14" value="14">von Hippel, P. T. (2024). Two-Sigma Tutoring: Separating Science Fiction from Science Fact. <em>Education Next,</em> 24(2), 22&ndash;31.</li>
+            <li id="src-15" value="15">Schmidt, W. H., McKnight, C. C., &amp; Raizen, S. A. (1997). <em>A Splintered Vision.</em> Kluwer.</li>
+            <li id="src-16" value="16">Hirsch, E. D. (2016). <em>Why Knowledge Matters.</em> Harvard Education Press.</li>
+            <li id="src-17" value="17">Willingham, D. T. (2009). <em>Why Don&rsquo;t Students Like School?</em> Jossey-Bass.</li>
+            <li id="src-18" value="18">Rosenshine, B. (2012). Principles of Instruction. <em>American Educator,</em> 36(1), 12&ndash;39.</li>
+            <li id="src-19" value="19">Kirschner, P. A., Sweller, J., &amp; Clark, R. E. (2006). Why Minimal Guidance During Instruction Does Not Work. <em>Educational Psychologist,</em> 41(2), 75&ndash;86.</li>
+            <li id="src-20" value="20">Pearson, P. D., &amp; Gallagher, M. C. (1983). The instruction of reading comprehension. <em>Contemporary Educational Psychology,</em> 8(3), 317&ndash;344.</li>
+            <li id="src-21" value="21">Cowan, N. (2001). The magical number 4 in short-term memory. <em>Behavioral and Brain Sciences,</em> 24(1), 87&ndash;114.</li>
+            <li id="src-22" value="22">Miller, G. A. (1956). The Magical Number Seven, Plus or Minus Two. <em>Psychological Review,</em> 63(2), 81&ndash;97.</li>
+            <li id="src-23" value="23">Sweller, J. (1988). Cognitive load during problem solving. <em>Cognitive Science,</em> 12(2), 257&ndash;285.</li>
+            <li id="src-24" value="24">Vygotsky, L. S. (1978). <em>Mind in Society.</em> Harvard University Press.</li>
+            <li id="src-25" value="25">Wilson, R. C., Shenhav, A., Straccia, M., &amp; Cohen, J. D. (2019). The Eighty Five Percent Rule for optimal learning. <em>Nature Communications,</em> 10, 4646.</li>
+            <li id="src-26" value="26">Roediger, H. L., &amp; Karpicke, J. D. (2006). Test-Enhanced Learning. <em>Psychological Science,</em> 17(3), 249&ndash;255.</li>
+            <li id="src-27" value="27">Kluger, A. N., &amp; DeNisi, A. (1996). The Effects of Feedback Interventions on Performance. <em>Psychological Bulletin,</em> 119(2), 254&ndash;284.</li>
+            <li id="src-28" value="28">CCSSO &amp; NGA, Common Core State Standards Initiative, &ldquo;Development Process,&rdquo; thecorestandards.org.</li>
+            <li id="src-29" value="29">Stotsky, S. (2014). Testimony, Georgia House Study Committee on the Federal Government&rsquo;s Role in Education.</li>
+            <li id="src-30" value="30">Butler, R. (1988). Enhancing and undermining intrinsic motivation. <em>British Journal of Educational Psychology,</em> 58(1), 1&ndash;14.</li>
+            </ol>
+          </details>
+        </section>
+        </div>
+
+        <a href="/writing/#rabbit-holes" class="rh-back">← Back to Writing</a>
+      </article>
+
+    </div>
+  </main>
+
+  <script>
+    // ── Nav (menu open/close), copy of the pattern used across the site
+    (function() {
+      var btn = document.getElementById('menu-btn');
+      var nav = document.getElementById('site-nav');
+      var close = document.getElementById('nav-close');
+      if (btn && nav) {
+        btn.addEventListener('click', function() {
+          var open = nav.classList.toggle('is-open');
+          btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+      }
+      if (close && nav) {
+        close.addEventListener('click', function() {
+          nav.classList.remove('is-open');
+          btn && btn.setAttribute('aria-expanded', 'false');
+        });
+      }
+    })();
+
+    // ── Timeline highlight: mark the section whose heading has most recently
+    //    crossed a "read line" 30% down from the top of the viewport. Simple
+    //    scroll listener beats IntersectionObserver here because a long
+    //    section keeps intersecting even after the reader has moved past.
+    (function() {
+      var sections = Array.from(document.querySelectorAll('.rh-section'));
+      var itemMap = new Map();
+      document.querySelectorAll('.rh-timeline__item').forEach(function(it) {
+        itemMap.set(it.dataset.section, it);
+      });
+      if (!sections.length || !itemMap.size) return;
+
+      var lastActive = null;
+      function update() {
+        var readLine = window.innerHeight * 0.3;
+        var active = sections[0];
+        for (var i = 0; i < sections.length; i++) {
+          if (sections[i].getBoundingClientRect().top <= readLine) active = sections[i];
+          else break;
+        }
+        if (active === lastActive) return;
+        lastActive = active;
+        itemMap.forEach(function(it) { it.classList.remove('is-active'); });
+        var el = itemMap.get(active.id);
+        if (el) {
+          el.classList.add('is-active');
+          // On mobile the timeline is a horizontal chip strip at the top of the
+          // page. Keep the active chip centered by scrolling ONLY the strip
+          // horizontally — never el.scrollIntoView(), which also scrolls the
+          // window vertically and yanks the reader back up to the top.
+          if (window.innerWidth <= 900) {
+            var strip = el.closest('.rh-timeline');
+            if (strip && strip.scrollWidth > strip.clientWidth) {
+              strip.scrollTo({
+                left: el.offsetLeft - strip.clientWidth / 2 + el.offsetWidth / 2,
+                behavior: 'smooth'
+              });
+            }
+          }
+        }
+      }
+      var ticking = false;
+      window.addEventListener('scroll', function() {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(function() { update(); ticking = false; });
+      }, { passive: true });
+      update();
+    })();
+  </script>
+</body>
+</html>
