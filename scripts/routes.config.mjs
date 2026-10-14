@@ -25,6 +25,8 @@ export const ROUTES = [
   { path: '/projects', priority: 0.9, changefreq: 'weekly' },
   { path: '/portfolio', priority: 0.8, changefreq: 'monthly' },
   { path: '/projects/tech-builds', priority: 0.8, changefreq: 'weekly' },
+  { path: '/library', priority: 0.8, changefreq: 'weekly' },
+  { path: '/builds/course-builder', priority: 0.7, changefreq: 'monthly' },
   { path: '/36-questions', priority: 0.6, changefreq: 'monthly' },
   { path: '/mentor-mindset', priority: 0.8, changefreq: 'monthly' },
   { path: '/writing', priority: 0.8, changefreq: 'daily' },
