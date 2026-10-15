@@ -37,6 +37,13 @@ const MAPS = [
     desc: 'How many public school students every U.S. county and school district will have through 2055, as births, moving and immigration change.',
     titleTag: '<title>School Outlook Map</title>',
   },
+  {
+    slug: 'frontier',
+    src: join(homedir(), 'Projects/education-frontier-map/build'),
+    title: 'The Education Frontier',
+    desc: 'New schools, AI tutors, reading tools and new tests on one world map, with the studies behind them and 50 voices on where they agree.',
+    titleTag: '<title>The Education Frontier</title>',
+  },
 ];
 
 const only = process.argv[2];
@@ -115,7 +122,7 @@ for (const m of MAPS) {
     'the title', `<title>${m.title} — James Floyd</title>`
   );
 
-  // Both dashboards open their body with <div class="app"> and a header.
+  // Every dashboard opens its body with <div class="app"> and a header.
   swap(
     '<div class="app">\n  <header',
     `<div class="app">
