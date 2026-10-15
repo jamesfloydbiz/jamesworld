@@ -47,6 +47,7 @@ export const ROUTES = [
   { path: '/writing/rabbit-holes/montessori-findings', priority: 0.6, changefreq: 'monthly' },
   { path: '/events', priority: 0.7, changefreq: 'monthly' },
   // Upcoming, so it is worth crawling more often than the recaps until it passes.
+  { path: '/events/laser-tag', priority: 0.5, changefreq: 'monthly' },
   { path: '/events/catan-and-cookies', priority: 0.6, changefreq: 'weekly' },
   { path: '/events/games-night', priority: 0.6, changefreq: 'monthly' },
   { path: '/events/rooftop-function', priority: 0.6, changefreq: 'monthly' },
