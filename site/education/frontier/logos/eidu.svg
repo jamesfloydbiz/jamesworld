@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="32px" height="32px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>favicon-32x32</title>
+    <g id="favicon-32x32" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Group" fill="#003223" fill-rule="nonzero">
+            <g id="Group" transform="translate(2.000000, 2.000000)">
+                <path d="M0,13.998 C0,21.7181 6.20686,27.996 13.8321,27.996 L27.996,27.996 L27.996,23.9266 L13.8321,23.9266 C9.13447,23.9266 5.19938,20.5328 4.27487,16.0288 L27.996,16.0288 L27.996,11.9594 L4.27487,11.9594 C5.19938,7.45534 9.13447,4.06152 13.8321,4.06152 L27.996,4.06152 L27.996,0 L13.8321,0 C6.20686,0 0,6.28192 0,13.998 Z" id="Path"></path>
+            </g>
+        </g>
+    </g>
+</svg>

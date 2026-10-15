@@ -41,7 +41,7 @@ const MAPS = [
     slug: 'frontier',
     src: join(homedir(), 'Projects/education-frontier-map/build'),
     title: 'The Education Frontier',
-    desc: 'New schools, AI tutors, reading tools and new tests on one world map, with the studies behind them and 50 voices on where they agree.',
+    desc: 'New school models, education tools, studies and voices on a world map.', // James to rewrite
     titleTag: '<title>The Education Frontier</title>',
   },
 ];

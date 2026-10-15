@@ -112,7 +112,7 @@
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, H);
     ctx.save(); ctx.translate(tx, ty); ctx.scale(k, -k);
-    ctx.fillStyle = 'hsl(0 0% 11%)'; ctx.lineWidth = 0.6 / k; ctx.strokeStyle = 'hsl(0 0% 22%)';
+    ctx.fillStyle = 'hsl(0 0% 14%)'; ctx.lineWidth = 0.6 / k; ctx.strokeStyle = 'hsl(0 0% 24%)';
     for (const p of shapes) { ctx.fill(p); ctx.stroke(p); }
     ctx.restore();
 
@@ -154,7 +154,7 @@
       ctx.restore(); return;
     }
     ctx.beginPath(); ctx.arc(d.px, d.py, r, 0, 7);
-    ctx.fillStyle = '#f4f1ea'; ctx.fill();
+    ctx.fillStyle = d.dark ? '#111' : '#f4f1ea'; ctx.fill();
     ctx.lineWidth = hot ? 3 : 2; ctx.strokeStyle = hot ? '#fff' : L.color; ctx.stroke();
     if (d.status === 'closed' || d.status === 'struggling') { ctx.setLineDash([3, 3]); ctx.strokeStyle = 'hsl(0 60% 60%)'; ctx.stroke(); ctx.setLineDash([]); }
     ctx.beginPath(); ctx.arc(d.px, d.py, r - 2, 0, 7); ctx.clip();
@@ -182,7 +182,7 @@
   const esc = (s) => String(s == null ? '' : s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
   let drag = null, moved = false;
-  cv.addEventListener('pointerdown', (e) => { drag = { x: e.clientX, y: e.clientY, tx, ty }; moved = false; cv.setPointerCapture(e.pointerId); });
+  cv.addEventListener('pointerdown', (e) => { cv.dataset.zoomed = '1'; drag = { x: e.clientX, y: e.clientY, tx, ty }; moved = false; cv.setPointerCapture(e.pointerId); });
   cv.addEventListener('pointermove', (e) => {
     const r = cv.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
     if (drag) {
@@ -204,7 +204,7 @@
     }
     drag = null;
   });
-  cv.addEventListener('pointerleave', () => { S.hover = null; showTip(null); draw(); });
+  cv.addEventListener('pointerleave', () => { delete cv.dataset.zoomed; S.hover = null; showTip(null); draw(); });
   function zoomAt(x, y, f) {
     const nk = Math.max(k0 * 0.9, Math.min(k0 * 60, k * f)); f = nk / k;
     tx = x - (x - tx) * f; ty = y - (y - ty) * f; k = nk; draw();
@@ -293,7 +293,16 @@
   // ── boot ────────────────────────────────────────────────────────────────────
   function boot() { fit(); home(); renderCats(); draw();
     const id = location.hash.slice(1), d = id && ITEMS.find((x) => x.id === id); if (d) { k = k0 * 4; select(d); focus(d); } }
-  window.addEventListener('resize', () => { const c = { x: (W / 2 - tx) / k, y: (ty - H / 2) / k }, rel = k / k0; fit(); k = k0 * rel; tx = W / 2 - k * c.x; ty = H / 2 + k * c.y; draw(); });
+  // Watch the canvas itself, not the window: the page can load while its pane is hidden (0×0), and a zoom
+  // computed then is 0. When the map first gets a real size, start from the home view.
+  function onResize() {
+    const ok = W > 0 && H > 0 && isFinite(k) && k > 0 && isFinite(k0) && k0 > 0;
+    const c = ok ? { x: (W / 2 - tx) / k, y: (ty - H / 2) / k } : null, rel = ok ? k / k0 : 1;
+    fit(); if (!(W > 0 && H > 0)) return;
+    if (!c) { home(); if (S.sel) focus(S.sel); } else { k = k0 * rel; tx = W / 2 - k * c.x; ty = H / 2 + k * c.y; }
+    draw();
+  }
+  if (window.ResizeObserver) new ResizeObserver(onResize).observe(cv); else window.addEventListener('resize', onResize);
   boot(); if (document.fonts && document.fonts.ready) document.fonts.ready.then(draw);
   window.addEventListener('hashchange', () => { const d = ITEMS.find((x) => x.id === location.hash.slice(1)); if (!d || d === S.sel) return;
     S.layers.add(d.layer); const b = document.querySelector(`[data-layer="${d.layer}"]`); if (b) b.classList.add('on'); S.cat = 'all'; renderCats();
