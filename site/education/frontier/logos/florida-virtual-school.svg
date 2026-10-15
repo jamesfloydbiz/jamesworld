@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.com/svgjs" width="100" height="100"><svg version="1.1" id="SvgjsSvg1001" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 100 100" style="enable-background:new 0 0 100 100;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:#F6BF41;}
+	.st1{fill:#0076BB;}
+</style>
+<g id="SvgjsG1000">
+	<g>
+		<g>
+			<path class="st0" d="M50,0C30.8,0,15.1,15.6,15.1,34.9c0,10.3,10,27.7,18.4,40.6c0.1,0.1,0.2,0.2,0.4,0.2H34
+				c0.2,0,0.4-0.2,0.4-0.4c0.5-4.5,3.8-7.9,7.7-7.9s7.2,3.4,7.7,7.9c0,0.2,0.2,0.4,0.4,0.4h0.1c0.2,0,0.4-0.2,0.4-0.4
+				c0.5-4.5,3.8-7.9,7.7-7.9s6.9,3.1,7.7,7.3c0,0.2,0.2,0.3,0.3,0.3c0.2,0,0.3,0,0.4-0.2c11.9-18.4,18-31.8,18-40
+				C84.9,15.6,69.2,0,50,0 M50,49.3c-8.6,0-15.6-7-15.6-15.6s7-15.6,15.6-15.6s15.6,7,15.6,15.6S58.6,49.3,50,49.3"></path>
+			<path class="st1" d="M40.2,85.9L49,99.5c0.5,0.7,1.5,0.7,1.9,0l8.8-13.6c0.5-0.8-0.1-1.8-1-1.8H41.2
+				C40.3,84.1,39.7,85.1,40.2,85.9"></path>
+		</g>
+	</g>
+</g>
+</svg><style>@media (prefers-color-scheme: light) { :root { filter: none; } }
+@media (prefers-color-scheme: dark) { :root { filter: none; } }
+</style></svg>

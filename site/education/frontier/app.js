@@ -44,9 +44,10 @@
   const layerOf = Object.fromEntries(LAYERS.map((l) => [l.key, l]));
 
   // ── state ───────────────────────────────────────────────────────────────────
-  const S = { layers: new Set(LAYERS.map((l) => l.key)), cat: 'all', sel: null, hover: null, q: '' };
+  const S = { layers: new Set(LAYERS.map((l) => l.key)), cat: 'all', age: 'all', sel: null, hover: null, q: '' };
   let W = 0, H = 0, dpr = 1, k = 1, tx = 0, ty = 0, k0 = 1;
   const visible = () => ITEMS.filter((d) => S.layers.has(d.layer) && (S.cat === 'all' || d.category === S.cat) &&
+    (S.age === 'all' || d.layer === 'study' || d.layer === 'voice' || (S.age === 'inc') === !!d.inc) &&
     (!S.q || (d.name + ' ' + (d.city || '') + ' ' + d.category).toLowerCase().includes(S.q)));
 
   function fit() {
@@ -252,6 +253,7 @@
     cf.value = S.cat;
   }
   cf.addEventListener('change', () => { S.cat = cf.value; draw(); });
+  $('#age').addEventListener('change', (e) => { S.age = e.target.value; draw(); });
   $('#q').addEventListener('input', (e) => { S.q = e.target.value.trim().toLowerCase(); draw(); });
 
   // put a pin in the part of the map the panel leaves open (left of it on wide screens, above it on phones)
