@@ -19,6 +19,15 @@
  },
  {
   "kind": "fact",
+  "name": "Multiverse",
+  "text": "Funding: $70M at $2.1B valuation, led by Schroders Capital (May 2026)",
+  "date": "2026-05",
+  "self_reported": false,
+  "href": "/education/frontier/#multiverse",
+  "source": "https://dealroom.co/news/128958-multiverse-raises-70m-at-2-1b-valuation-to-build-europes-ai-adoption-lay/"
+ },
+ {
+  "kind": "fact",
   "name": "Sinai.ai",
   "text": "Funding: $1.45M pre-seed led by KAUST Innovation Ventures and DisrupTech (Apr 2026)",
   "date": "2026-04",
@@ -55,6 +64,15 @@
  },
  {
   "kind": "fact",
+  "name": "Preply",
+  "text": "Valuation: $150M Series D led by WestCap at $1.2B valuation (Jan 2026)",
+  "date": "2026-01",
+  "self_reported": false,
+  "href": "/education/frontier/#preply",
+  "source": "https://www.kyivpost.com/post/68518"
+ },
+ {
+  "kind": "fact",
   "name": "Alpha School",
   "text": "Growth: 27 new campuses opened for 2026-27",
   "date": "2026",
@@ -70,6 +88,15 @@
   "self_reported": false,
   "href": "/education/frontier/#paloma-learning",
   "source": "https://www.innolope.com/pulse/funding/6a21e4e1ad395cc135adc283"
+ },
+ {
+  "kind": "fact",
+  "name": "Pace AI",
+  "text": "Federal grant: $1M IES SBIR Phase II (2025-2027) to Linguistic Inc. (Pace AI)",
+  "date": "2025-09",
+  "self_reported": false,
+  "href": "/education/frontier/#pace-ai",
+  "source": "https://ies.ed.gov/use-work/awards/personalized-and-context-relevant-english-lessons-ai-pace-ai-advance-adult-learners-integrated"
  },
  {
   "kind": "fact",
