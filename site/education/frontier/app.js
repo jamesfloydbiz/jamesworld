@@ -239,10 +239,33 @@
   }));
 
   // ── filters ─────────────────────────────────────────────────────────────────
+  // ── tabs: Companies (schools + tools) · Studies · Voices · Notes (private build only) ─
+  const TABS = { companies: ['school', 'tech'], studies: ['study'], voices: ['voice'], notes: [] };
+  const tabOf = (layer) => Object.keys(TABS).find((t) => TABS[t].includes(layer)) || 'companies';
+  S.tab = 'companies';
   const lf = $('#layers');
-  lf.innerHTML = LAYERS.map((l) => `<button class="chip on" data-layer="${l.key}" style="--c:${l.color}"><i></i>${esc(l.label)} <em>${ITEMS.filter((d) => d.layer === l.key).length}</em></button>`).join('');
+  function renderChips() {   // the layer chips only matter where a tab holds more than one layer
+    const ls = LAYERS.filter((l) => TABS[S.tab].includes(l.key));
+    lf.innerHTML = ls.length > 1 ? ls.map((l) => `<button class="chip${S.layers.has(l.key) ? ' on' : ''}" data-layer="${l.key}" style="--c:${l.color}"><i></i>${esc(l.label)} <em>${ITEMS.filter((d) => d.layer === l.key).length}</em></button>`).join('') : '';
+    lf.hidden = ls.length < 2;
+  }
   lf.addEventListener('click', (e) => { const b = e.target.closest('[data-layer]'); if (!b) return; const key = b.dataset.layer;
-    if (S.layers.has(key) && S.layers.size > 1) S.layers.delete(key); else S.layers.add(key); b.classList.toggle('on', S.layers.has(key)); renderCats(); draw(); });
+    if (S.layers.has(key) && S.layers.size > 1) S.layers.delete(key); else S.layers.add(key); renderChips(); renderCats(); draw(); });
+  function setTab(t, keepView) {
+    if (!TABS[t]) return;
+    S.tab = t; S.layers = new Set(TABS[t]); S.cat = 'all';
+    document.querySelectorAll('.tab').forEach((b) => { const on = b.dataset.tab === t; b.classList.toggle('on', on); b.setAttribute('aria-selected', on ? 'true' : 'false'); });
+    document.querySelectorAll('section[data-tab]').forEach((sec) => sec.classList.toggle('on', sec.dataset.tab === t));
+    const mapTab = t !== 'notes';
+    $('#controls').hidden = !mapTab; $('#mapblock').hidden = !mapTab;
+    $('#age').hidden = t !== 'companies';
+    if (S.sel && tabOf(S.sel.layer) !== t) select(null);
+    renderChips(); renderCats();
+    if (mapTab) { if (!W) onResize(); if (!keepView) { home(); } draw(); }
+  }
+  document.querySelectorAll('.tab').forEach((b) => b.addEventListener('click', () => {
+    setTab(b.dataset.tab); if (history.replaceState) history.replaceState(null, '', '#' + b.dataset.tab);
+  }));
   const cf = $('#cats');
   function renderCats() {
     const groups = LAYERS.filter((l) => S.layers.has(l.key)).map((l) => [l, [...new Set(ITEMS.filter((d) => d.layer === l.key).map((d) => d.category))].sort()]);
@@ -287,14 +310,16 @@
   // card list → map
   document.querySelectorAll('[data-show]').forEach((a) => a.addEventListener('click', (e) => {
     e.preventDefault(); const d = ITEMS.find((x) => x.id === a.dataset.show); if (!d) return;
-    S.layers.add(d.layer); document.querySelector(`[data-layer="${d.layer}"]`).classList.add('on'); S.cat = 'all'; renderCats();
+    if (tabOf(d.layer) !== S.tab) setTab(tabOf(d.layer), true);
     $('#mapwrap').scrollIntoView({ behavior: 'smooth', block: 'start' });
     k = Math.max(k, k0 * 4); select(d); focus(d);
   }));
 
   // ── boot ────────────────────────────────────────────────────────────────────
-  function boot() { fit(); home(); renderCats(); draw();
-    const id = location.hash.slice(1), d = id && ITEMS.find((x) => x.id === id); if (d) { k = k0 * 4; select(d); focus(d); } }
+  function boot() { fit(); home();
+    const id = location.hash.slice(1), d = id && ITEMS.find((x) => x.id === id);
+    setTab(d ? tabOf(d.layer) : (TABS[id] ? id : (document.getElementById(id) && document.getElementById(id).closest('[data-tab]') ? document.getElementById(id).closest('[data-tab]').dataset.tab : 'companies')));
+    if (d) { k = k0 * 4; select(d); focus(d); } }
   // Watch the canvas itself, not the window: the page can load while its pane is hidden (0×0), and a zoom
   // computed then is 0. When the map first gets a real size, start from the home view.
   function onResize() {
@@ -306,8 +331,10 @@
   }
   if (window.ResizeObserver) new ResizeObserver(onResize).observe(cv); else window.addEventListener('resize', onResize);
   boot(); if (document.fonts && document.fonts.ready) document.fonts.ready.then(draw);
-  window.addEventListener('hashchange', () => { const d = ITEMS.find((x) => x.id === location.hash.slice(1)); if (!d || d === S.sel) return;
-    S.layers.add(d.layer); const b = document.querySelector(`[data-layer="${d.layer}"]`); if (b) b.classList.add('on'); S.cat = 'all'; renderCats();
+  window.addEventListener('hashchange', () => { const id = location.hash.slice(1);
+    if (TABS[id]) { setTab(id); return; }
+    const d = ITEMS.find((x) => x.id === id); if (!d || d === S.sel) return;
+    if (tabOf(d.layer) !== S.tab) setTab(tabOf(d.layer), true);
     $('#mapwrap').scrollIntoView({ behavior: 'smooth', block: 'start' }); k = Math.max(k, k0 * 4); select(d); focus(d); });
   window.__FM = { proj, ITEMS };
 })();
