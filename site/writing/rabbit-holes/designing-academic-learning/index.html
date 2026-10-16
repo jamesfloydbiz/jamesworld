@@ -273,10 +273,13 @@
       font-size: 1rem;
       line-height: 1.75;
       color: var(--fg-80);
-      padding-left: 20px;
+      list-style: disc;
+      padding-left: 22px;
       margin: 0 0 1rem 0;
     }
-    .rh-section .rh-list li { margin-bottom: 6px; }
+    .rh-section .rh-list--num { list-style: decimal; }
+    .rh-section .rh-list li { margin-bottom: 6px; padding-left: 4px; }
+    .rh-section .rh-list li::marker { color: var(--fg-45, #888); }
 
     .rh-back {
       display: inline-block;
@@ -489,7 +492,7 @@
           <h3>5. Build the knowledge graph of the knowledge space up from first principles and their definitions (&ldquo;standards&rdquo; are a weak proxy for this) or take/buy one from a company that has already put one together.</h3>
           <p>DEFINITION: Knowledge graph is a map of each concept, what observable action demonstrates mastery, and the prerequisites between concepts. Arranged as nodes (the concept, an actionable way to measure it, and the content to teach it).</p>
           <p>Where to look if you do not want to build one yourself:</p>
-          <ul><li>Achieve the Core&rsquo;s Coherence Map. K-8 Common Core math as a dependency graph with prerequisite arrows. Free, public domain.</li><li>Math Academy. Proprietary and far finer, thousands of nodes. Justin Skycak&rsquo;s <em>The Math Academy Way</em> is free online and explains the pedagogy &mdash; graph construction, mastery gating, spaced review &mdash; in more detail than anyone else has published.</li><li>ALEKS. Proprietary, built on knowledge space theory, now McGraw-Hill.</li><li>Clements &amp; Sarama&rsquo;s learning trajectories. Early math only, free at learningtrajectories.org, built from observing children and tested in a randomized trial.</li></ul>
+          <ul class="rh-list"><li>Achieve the Core&rsquo;s Coherence Map. K-8 Common Core math as a dependency graph with prerequisite arrows. Free, public domain.</li><li>Math Academy. Proprietary and far finer, thousands of nodes. Justin Skycak&rsquo;s <em>The Math Academy Way</em> is free online and explains the pedagogy &mdash; graph construction, mastery gating, spaced review &mdash; in more detail than anyone else has published.</li><li>ALEKS. Proprietary, built on knowledge space theory, now McGraw-Hill.</li><li>Clements &amp; Sarama&rsquo;s learning trajectories. Early math only, free at learningtrajectories.org, built from observing children and tested in a randomized trial.</li></ul>
           <p>Nothing public exists for reading, writing, science or history.</p>
           <p>If you don&rsquo;t have the time to build this yourself, you can proxy this with standards offered in different curriculums you can find online or through community groups.</p>
           <h3>6. Find engaging, interesting activities used to anchor concepts and guide your units of learning.</h3>
@@ -502,7 +505,7 @@
           <p>Typically the hierarchy is Course &gt; Units &gt; Nodes &gt; Observable Actions &gt; Lessons &gt; Content.</p>
           <p>I.e. addition and subtraction are similar, so we learn those together.</p>
           <h3>8. Fill in the lessons with content</h3>
-          <ul><li>Lecture notes, lecture stories, lecture videos &mdash; I.e. How to download information into the student&rsquo;s brain</li><li>Instructional resource &mdash; visuals, puzzles, formative assessments</li><li>Resources for practicing</li></ul>
+          <ul class="rh-list"><li>Lecture notes, lecture stories, lecture videos &mdash; I.e. How to download information into the student&rsquo;s brain</li><li>Instructional resource &mdash; visuals, puzzles, formative assessments</li><li>Resources for practicing</li></ul>
           <p>Again if you are looking for lesson ideas many of the published curriculum products and programs offer content to teach it.</p>
         </section>
         <section id="structuring-a-lesson" class="rh-section">
@@ -511,10 +514,10 @@
           <p>How it&rsquo;s presented, how they practice it, how it&rsquo;s measured.</p>
           <p>Once you have written the lesson/activity/content (Steps 6-8 in the above curriculum design method) that teaches for each node&rsquo;s near transfer in varied environments and contexts you can now structure it as the following science-based structure.</p>
           <p>Using a worked example with faded guidance (i.e. EDGE method)</p>
-          <p><strong>Great Lesson Examples:</strong></p>
-          <ul><li>Review previous lesson &mdash; spaced retrieval<sup class="rh-fn"><a href="#src-6">6</a></sup><sup class="rh-fn"><a href="#src-26">26</a></sup></li><li>Check for their understanding &mdash; mastery</li><li>IF hit mastery then proceed to next lesson</li><li>IF do not hit mastery go back and practice/re-learn earlier concepts</li></ul>
+          <p><strong>Great Lesson Structure Template:</strong></p>
+          <ol class="rh-list rh-list--num"><li>Review previous lesson &mdash; spaced retrieval<sup class="rh-fn"><a href="#src-6">6</a></sup><sup class="rh-fn"><a href="#src-26">26</a></sup></li><li>Check for their understanding &mdash; mastery</li><li>IF hit mastery then proceed to next lesson</li><li>IF do not hit mastery go back and practice/re-learn earlier concepts</li></ol>
           <p><strong>NEXT LESSON</strong></p>
-          <ul><li>Motivating problem &mdash; A problem they cannot solve, or is better solved by the new skill</li><li>Explicit Instruction &mdash; State explicitly what the concept is and how to do it</li><li>Knowledge transfer with content in small steps &mdash; Do this in small chunks and check for comprehension</li><li>Worked Examples with releasing guidance &mdash; Do an example in front of them (that they wouldn&rsquo;t be able to do because they haven&rsquo;t built the skill). Then slowly loop them in to doing more and more of the work as you go through more examples.</li><li>Motivation science + many checks for comprehension and engagement through questions</li></ul>
+          <ol class="rh-list rh-list--num" start="5"><li>Motivating problem &mdash; A problem they cannot solve, or is better solved by the new skill</li><li>Explicit Instruction &mdash; State explicitly what the concept is and how to do it</li><li>Knowledge transfer with content in small steps &mdash; Do this in small chunks and check for comprehension</li><li>Worked Examples with releasing guidance &mdash; Do an example in front of them (that they wouldn&rsquo;t be able to do because they haven&rsquo;t built the skill). Then slowly loop them in to doing more and more of the work as you go through more examples.</li><li>Motivation science + many checks for comprehension and engagement through questions</li></ol>
           <p>One other note here is the science of feedback, especially Butler&rsquo;s work on grades, which suggests that just giving feedback on the process a student took to complete a task and how close their work was to demonstrating mastery achieves better performance than giving a student a grade.<sup class="rh-fn"><a href="#src-30">30</a></sup></p>
           <p>So I suggest no old-school grades, and instead a % of the correct process to get to the answer.</p>
         </section>
