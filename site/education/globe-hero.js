@@ -18,7 +18,7 @@
   }
   var pins = G.pins.map(function (p) { var la = p[0] * D, lo = p[1] * D; return [Math.cos(la) * Math.sin(lo), Math.sin(la), Math.cos(la) * Math.cos(lo), p[2], Math.random() * 6.28]; });
   // kind: 0 school, 1 tool, 2 study, 3 voice
-  var PIN = ['hsl(152 70% 62%)', 'hsl(30 70% 60%)', 'hsl(200 50% 72%)', 'hsl(330 35% 72%)'];
+  var PIN = ['hsl(118 30% 62%)', 'hsl(28 60% 54%)', 'hsl(40 45% 72%)', 'hsl(12 40% 62%)'];   // schools, tools, studies, voices
 
   function size() {
     var r = cv.getBoundingClientRect(); W = r.width; H = r.height; dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -36,12 +36,12 @@
 
     // atmosphere and body
     var g = ctx.createRadialGradient(cx, cy, R * 0.92, cx, cy, R * 1.22);
-    g.addColorStop(0, 'hsl(152 70% 40% / 0.55)'); g.addColorStop(0.35, 'hsl(152 70% 30% / 0.18)'); g.addColorStop(1, 'hsl(152 70% 20% / 0)');
+    g.addColorStop(0, 'hsl(28 45% 34% / 0.5)'); g.addColorStop(0.35, 'hsl(140 35% 18% / 0.22)'); g.addColorStop(1, 'hsl(140 35% 12% / 0)');
     ctx.fillStyle = g; ctx.beginPath(); ctx.arc(cx, cy, R * 1.22, 0, 7); ctx.fill();
     var b = ctx.createRadialGradient(cx - R * 0.25, cy - R * 0.45, R * 0.1, cx, cy, R);
-    b.addColorStop(0, 'hsl(152 45% 12%)'); b.addColorStop(1, 'hsl(160 60% 3%)');
+    b.addColorStop(0, 'hsl(140 30% 10%)'); b.addColorStop(1, 'hsl(26 35% 3%)');
     ctx.fillStyle = b; ctx.beginPath(); ctx.arc(cx, cy, R, 0, 7); ctx.fill();
-    ctx.strokeStyle = 'hsl(152 70% 55% / 0.55)'; ctx.lineWidth = 1.5; ctx.stroke();
+    ctx.strokeStyle = 'hsl(30 45% 46% / 0.6)'; ctx.lineWidth = 1.5; ctx.stroke();
 
     // land dots: rotate about the poles (lon), then tilt toward the viewer
     var ds = Math.max(1.2, R / 260);
@@ -51,7 +51,7 @@
       if (z <= 0.02) continue;
       var px = cx + R * x, py = cy - R * y2;
       if (py > H + 4 || py < -4) continue;
-      ctx.fillStyle = 'hsl(152 ' + (45 + 25 * z | 0) + '% ' + (26 + 34 * z | 0) + '% / ' + (0.35 + 0.65 * z).toFixed(2) + ')';
+      ctx.fillStyle = 'hsl(132 ' + (22 + 18 * z | 0) + '% ' + (20 + 30 * z | 0) + '% / ' + (0.35 + 0.65 * z).toFixed(2) + ')';
       ctx.fillRect(px - ds / 2, py - ds / 2, ds, ds);
     }
     // pins, pulsing

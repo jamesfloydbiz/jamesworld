@@ -25,12 +25,13 @@
 
   <style>
     /* /education only: broadcast look — black, chrome, a globe rising from the bottom, darker green + brown */
-    :root { --eg: hsl(152 45% 26%); --eg-glow: hsl(152 60% 42%); --eg-hi: hsl(152 55% 62%);
-            --eb: hsl(28 50% 36%); --eb-hi: hsl(30 55% 58%); }
-    body { background: #000; }
+    :root { --eg: hsl(140 40% 15%); --eg-glow: hsl(138 34% 26%); --eg-hi: hsl(125 22% 60%);
+            --eb: hsl(24 48% 18%); --eb-mid: hsl(26 45% 30%); --eb-hi: hsl(30 38% 56%); }
+    html { scroll-behavior: smooth; } body { background: #000; }
+    #dashboards { scroll-margin-top: 64px; }
     .ed-hero { position: relative; overflow: hidden; margin: calc(-1 * var(--nav-h, 48px)) 0 0; padding: calc(var(--nav-h, 48px) + 40px) 0 0;
       min-height: min(92vh, 860px); display: flex; flex-direction: column; isolation: isolate;
-      background: radial-gradient(120% 70% at 50% 108%, hsl(152 60% 14% / .95) 0%, hsl(152 70% 6% / .9) 38%, #000 70%); }
+      background: radial-gradient(120% 70% at 50% 108%, hsl(24 45% 13% / .95) 0%, hsl(140 38% 7% / .92) 36%, #000 72%); }
     .ed-hero::after { content: ""; position: absolute; inset: 0; z-index: 2; pointer-events: none;
       background: repeating-linear-gradient(to bottom, hsl(0 0% 0% / .0) 0 3px, hsl(0 0% 0% / .35) 3px 4px); mix-blend-mode: multiply; }
     #globe { position: absolute; left: 0; right: 0; bottom: 0; width: 100%; height: 100%; z-index: 1; cursor: grab; touch-action: pan-y; }
@@ -43,12 +44,12 @@
     .ed-title { font-family: 'Michroma', 'Playfair Display', sans-serif; font-weight: 400; font-size: clamp(1.9rem, 7.6vw, 6.4rem); line-height: .95;
       letter-spacing: -.02em; margin: 0; text-transform: uppercase;
       background: linear-gradient(180deg, #fff 0%, #e9eef2 38%, #8e9aa6 52%, #dfe6ec 66%, #6f7c88 100%); -webkit-background-clip: text; background-clip: text; color: transparent;
-      filter: drop-shadow(0 2px 0 hsl(0 0% 0% / .6)) drop-shadow(0 0 24px hsl(152 60% 40% / .25)); }
+      filter: drop-shadow(0 2px 0 hsl(0 0% 0% / .6)) drop-shadow(0 0 24px hsl(28 45% 35% / .3)); }
     .ed-sub { font-family: 'Michroma', sans-serif; font-size: clamp(.8rem, 2.2vw, 1.15rem); letter-spacing: .08em; text-transform: uppercase; color: #fff; margin: 14px 0 0; }
     .ed-lede { font-family: 'Lora', Georgia, serif; font-size: 1.02rem; line-height: 1.7; color: hsl(0 0% 100% / .72); margin: 18px 0 0; max-width: 56ch; }
     .ed-hero__cta { display: inline-block; margin-top: 24px; font-family: 'Michroma', sans-serif; font-size: .78rem; letter-spacing: .1em; text-transform: uppercase;
-      color: #fff; text-decoration: none; padding: 14px 22px; border-radius: 6px; border: 1px solid hsl(152 60% 50% / .55);
-      background: linear-gradient(180deg, var(--eg-glow) 0%, var(--eg) 100%); box-shadow: 0 0 24px hsl(152 60% 35% / .35), inset 0 1px 0 hsl(0 0% 100% / .25); }
+      color: #f3ece2; text-decoration: none; padding: 14px 22px; border-radius: 6px; border: 1px solid hsl(28 40% 42% / .8);
+      background: linear-gradient(180deg, var(--eg-glow) 0%, var(--eg) 100%); box-shadow: 0 0 24px hsl(140 40% 14% / .5), inset 0 1px 0 hsl(40 40% 90% / .18); }
     .ed-hero__cta:hover { filter: brightness(1.15); }
     .ed-hero__spacer { flex: 1; min-height: 34vh; }
 
@@ -62,11 +63,11 @@
     @media (max-width: 640px) { .ed-note, .ed-credit { font-size: .52rem; right: 16px; } .ed-credit { bottom: 92px; right: auto; left: 16px; } }
 
     /* ticker */
-    .ed-ticker { position: relative; z-index: 4; display: flex; align-items: stretch; border-top: 1px solid hsl(152 60% 40% / .45);
-      border-bottom: 1px solid hsl(30 50% 45% / .45); background: linear-gradient(180deg, hsl(152 40% 7% / .92), hsl(0 0% 2% / .96)); }
+    .ed-ticker { position: relative; z-index: 4; display: flex; align-items: stretch; border-top: 1px solid hsl(138 30% 28% / .6);
+      border-bottom: 1px solid hsl(26 45% 30% / .7); background: linear-gradient(180deg, hsl(26 30% 7% / .94), hsl(140 25% 3% / .97)); }
     .ed-ticker__tag { flex: none; display: flex; align-items: center; gap: 8px; padding: 0 16px; font-family: 'Michroma', sans-serif; font-size: .66rem;
-      letter-spacing: .12em; color: #000; background: linear-gradient(180deg, var(--eb-hi), var(--eb)); }
-    .ed-ticker__tag i { width: 7px; height: 7px; border-radius: 50%; background: #000; animation: pulse 1.4s ease-in-out infinite; }
+      letter-spacing: .12em; color: #f3ece2; background: linear-gradient(180deg, var(--eb-mid), var(--eb)); }
+    .ed-ticker__tag i { width: 7px; height: 7px; border-radius: 50%; background: var(--eb-hi); animation: pulse 1.4s ease-in-out infinite; }
     @keyframes pulse { 50% { opacity: .25; } }
     .ed-ticker__vp { overflow: hidden; flex: 1; mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent); }
     .ed-ticker__track { display: flex; width: max-content; animation: tick var(--dur, 160s) linear infinite; }
@@ -84,9 +85,9 @@
     .ed-shell { max-width: 1100px; margin: 0 auto; padding: 56px clamp(16px, 4vw, 32px) 0; }
     .ed-grid { display: grid; gap: 18px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
     .ed-card { position: relative; display: flex; flex-direction: column; gap: 10px; padding: 26px; border-radius: 10px; text-decoration: none; color: inherit;
-      background: linear-gradient(180deg, hsl(220 10% 9%), hsl(220 10% 4%)); border: 1px solid hsl(0 0% 100% / .1);
+      background: linear-gradient(180deg, hsl(28 14% 9%), hsl(30 12% 4%)); border: 1px solid hsl(30 30% 60% / .14);
       box-shadow: inset 0 1px 0 hsl(0 0% 100% / .08); transition: border-color .2s, box-shadow .2s, transform .2s; }
-    .ed-card:hover, .ed-card:focus-visible { border-color: hsl(152 60% 45% / .6); box-shadow: 0 0 0 1px hsl(152 60% 45% / .25), 0 0 30px hsl(152 60% 30% / .25), inset 0 1px 0 hsl(0 0% 100% / .1); transform: translateY(-2px); }
+    .ed-card:hover, .ed-card:focus-visible { border-color: hsl(28 40% 40% / .7); box-shadow: 0 0 0 1px hsl(28 40% 40% / .25), 0 0 30px hsl(140 40% 14% / .45), inset 0 1px 0 hsl(0 0% 100% / .1); transform: translateY(-2px); }
     .ed-card:focus-visible { outline: 1px solid var(--eg-hi); outline-offset: 3px; }
     .ed-card__kicker { font-family: var(--font-mono); font-size: .68rem; letter-spacing: .18em; text-transform: uppercase; color: var(--eb-hi); }
     .ed-card__title { font-family: 'Michroma', sans-serif; font-weight: 400; font-size: 1.12rem; line-height: 1.3; margin: 0; color: #fff; text-transform: uppercase; letter-spacing: .02em; }
@@ -95,7 +96,7 @@
       color: hsl(0 0% 100% / .46); font-variant-numeric: tabular-nums; }
     .ed-card__facts b { color: var(--eg-hi); font-weight: 400; }
     .ed-card__cta { margin-top: auto; padding-top: 8px; font-family: 'Michroma', sans-serif; font-size: .66rem; letter-spacing: .12em; text-transform: uppercase; color: var(--eg-hi); }
-    .ed-foot { margin: 48px 0 64px; padding-top: 22px; border-top: 1px solid hsl(30 50% 45% / .25); font-family: var(--font-mono); font-size: .74rem; line-height: 1.7; color: hsl(0 0% 100% / .46); }
+    .ed-foot { margin: 48px 0 64px; padding-top: 22px; border-top: 1px solid hsl(26 40% 30% / .5); font-family: var(--font-mono); font-size: .74rem; line-height: 1.7; color: hsl(0 0% 100% / .46); }
     .ed-foot a { color: var(--eg-hi); text-decoration: none; } .ed-foot a:hover { color: #fff; }
     @media (max-width: 640px) { .ed-hero { min-height: 88vh; } .ed-hero__spacer { min-height: 40vh; } }
   </style>
@@ -144,10 +145,8 @@
         <span class="ed-eyebrow">Dashboards</span>
         <h1 class="ed-title">Education</h1>
         <p class="ed-sub">James' Education Dashboards</p>
-        <p class="ed-lede">Tools for looking at education the way it actually performs, rather than the
-        way it is talked about. Each one is built from official data, and every claim that isn't a
-        number is tied to the source it came from.</p>
-        <a class="ed-hero__cta" href="/education/frontier/">Open the frontier map</a>
+        <p class="ed-lede">Innovation is done at the frontier. These dashboards synthesize data and opinions from around the world to paint a picture of what is happening in education.</p>
+        <a class="ed-hero__cta" href="#dashboards">See dashboards</a>
       </div>
       <div class="ed-hero__spacer"></div>
       <p class="ed-note">
@@ -166,7 +165,7 @@ Updated twice a week · Last update Oct 16, 2026
       </div>
     </section>
 
-    <div class="ed-shell">
+    <div class="ed-shell" id="dashboards">
       <div class="ed-grid">
 
         <a class="ed-card" href="/education/frontier/">
