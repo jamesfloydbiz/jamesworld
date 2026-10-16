@@ -165,13 +165,12 @@ if (!only || only === 'frontier') {
     // replace with a function, not a string: the items contain "$2.1B", and "$2" in a replacement string is a backreference
     else { writeFileSync(page, html.replace(re, (_, a, z) => `${a}\n${block}\n${z}`)); console.log(`✓ /education ticker — ${items.length} items`); }
   }
-  // the bottom-right note: schedule, last update, counts — all from the build's stats.json
+  // the bottom-left line: schedule and last update, from the build's stats.json
   const stats = join(homedir(), 'Projects/education-frontier-map/build/stats.json');
   if (existsSync(stats) && existsSync(page)) {
     const st = JSON.parse(readFileSync(stats, 'utf8'));
     const d = new Date(st.updated + 'T12:00:00Z').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
-    const note = `<span class="ed-note__k">Updated twice a week</span><span class="ed-note__v">Last update · ${d}</span>` +
-      `<span class="ed-note__row"><span><b>${st.schools + st.tools}</b>companies</span><span><b>${st.studies}</b>studies</span><span><b>${st.voices}</b>voices</span><span><b>${st.countries}</b>countries</span></span>`;
+    const note = `Updated twice a week · Last update ${d}`;
     const html = readFileSync(page, 'utf8'), re2 = /(<!-- BEGIN_NOTE[^>]*-->)[\s\S]*?(<!-- END_NOTE -->)/;
     if (re2.test(html)) { writeFileSync(page, html.replace(re2, (_, a, z) => `${a}\n${note}\n${z}`)); console.log(`✓ /education note — updated ${d}`); }
   }

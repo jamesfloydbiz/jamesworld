@@ -45,7 +45,6 @@
       background: linear-gradient(180deg, #fff 0%, #e9eef2 38%, #8e9aa6 52%, #dfe6ec 66%, #6f7c88 100%); -webkit-background-clip: text; background-clip: text; color: transparent;
       filter: drop-shadow(0 2px 0 hsl(0 0% 0% / .6)) drop-shadow(0 0 24px hsl(152 60% 40% / .25)); }
     .ed-sub { font-family: 'Michroma', sans-serif; font-size: clamp(.8rem, 2.2vw, 1.15rem); letter-spacing: .08em; text-transform: uppercase; color: #fff; margin: 14px 0 0; }
-    .ed-sub span { color: var(--eb-hi); }
     .ed-lede { font-family: 'Lora', Georgia, serif; font-size: 1.02rem; line-height: 1.7; color: hsl(0 0% 100% / .72); margin: 18px 0 0; max-width: 56ch; }
     .ed-hero__cta { display: inline-block; margin-top: 24px; font-family: 'Michroma', sans-serif; font-size: .78rem; letter-spacing: .1em; text-transform: uppercase;
       color: #fff; text-decoration: none; padding: 14px 22px; border-radius: 6px; border: 1px solid hsl(152 60% 50% / .55);
@@ -53,17 +52,14 @@
     .ed-hero__cta:hover { filter: brightness(1.15); }
     .ed-hero__spacer { flex: 1; min-height: 34vh; }
 
-    /* bottom-right note, after TBPN's "Find TBPN" box */
-    .ed-note { position: absolute; z-index: 4; right: clamp(16px, 4vw, 32px); bottom: 64px; min-width: 220px; padding: 14px 16px 12px; border-radius: 10px;
-      background: linear-gradient(180deg, hsl(220 12% 12% / .86), hsl(220 12% 5% / .9)); border: 1px solid hsl(0 0% 100% / .14);
-      box-shadow: inset 0 1px 0 hsl(0 0% 100% / .12), 0 10px 40px hsl(0 0% 0% / .6); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
-    .ed-note__k { display: block; font-family: 'Michroma', sans-serif; font-size: .72rem; letter-spacing: .06em; text-transform: uppercase; color: #fff; }
-    .ed-note__v { display: block; margin-top: 4px; font-family: 'Michroma', sans-serif; font-size: .66rem; letter-spacing: .06em; text-transform: uppercase; color: hsl(215 15% 62%); }
-    .ed-note__row { display: flex; gap: 6px; margin-top: 10px; }
-    .ed-note__row span { flex: 1; text-align: center; padding: 7px 4px 6px; border-radius: 6px; font-family: var(--font-mono); font-size: .62rem; letter-spacing: .04em; color: #111;
-      background: linear-gradient(180deg, #f2f4f6, #b9c2ca); box-shadow: inset 0 1px 0 #fff; }
-    .ed-note__row b { display: block; font-family: 'Michroma', sans-serif; font-weight: 400; font-size: .82rem; color: #000; }
-    @media (max-width: 640px) { .ed-note { left: 16px; right: 16px; bottom: 58px; min-width: 0; } }
+    /* two small lines above the ticker: when it updates (left), design credit (right) */
+    .ed-note, .ed-credit { position: absolute; z-index: 4; bottom: 54px; font-family: 'Michroma', sans-serif; font-weight: 400;
+      font-size: .6rem; letter-spacing: .14em; text-transform: uppercase; color: hsl(0 0% 100% / .5); }
+    .ed-note { left: clamp(16px, 4vw, 32px); }
+    .ed-credit { right: clamp(16px, 4vw, 32px); text-transform: none; letter-spacing: .04em; color: hsl(0 0% 100% / .42); }
+    .ed-credit a { color: inherit; text-decoration: none; border-bottom: 1px solid hsl(0 0% 100% / .2); }
+    .ed-credit a:hover { color: #fff; }
+    @media (max-width: 640px) { .ed-note, .ed-credit { font-size: .52rem; right: 16px; } .ed-credit { bottom: 92px; right: auto; left: 16px; } }
 
     /* ticker */
     .ed-ticker { position: relative; z-index: 4; display: flex; align-items: stretch; border-top: 1px solid hsl(152 60% 40% / .45);
@@ -147,18 +143,19 @@
         <a href="/projects/" class="ed-back">← Back to Projects</a>
         <span class="ed-eyebrow">Dashboards</span>
         <h1 class="ed-title">Education</h1>
-        <p class="ed-sub">James' Education Dashboards <span>·</span> <span>Live map</span></p>
+        <p class="ed-sub">James' Education Dashboards</p>
         <p class="ed-lede">Tools for looking at education the way it actually performs, rather than the
         way it is talked about. Each one is built from official data, and every claim that isn't a
         number is tied to the source it came from.</p>
         <a class="ed-hero__cta" href="/education/frontier/">Open the frontier map</a>
       </div>
       <div class="ed-hero__spacer"></div>
-      <aside class="ed-note" aria-label="About the map">
+      <p class="ed-note">
 <!-- BEGIN_NOTE (written by scripts/sync-education-map.mjs from the frontier build's stats.json) -->
-<span class="ed-note__k">Updated twice a week</span><span class="ed-note__v">Last update · Oct 16, 2026</span><span class="ed-note__row"><span><b>399</b>companies</span><span><b>60</b>studies</span><span><b>50</b>voices</span><span><b>69</b>countries</span></span>
+Updated twice a week · Last update Oct 16, 2026
 <!-- END_NOTE -->
-      </aside>
+      </p>
+      <p class="ed-credit">design credit to <a href="https://www.tbpn.com/" target="_blank" rel="noopener">tbpn's</a> sexy site</p>
       <div class="ed-ticker" role="region" aria-label="Latest from the frontier map">
         <span class="ed-ticker__tag"><i></i>LATEST</span>
         <div class="ed-ticker__vp" tabindex="0">
