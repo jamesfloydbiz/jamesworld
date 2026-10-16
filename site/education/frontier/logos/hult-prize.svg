@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Capa_1" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 265.91 170">
+  <!-- Generator: Adobe Illustrator 30.6.0, SVG Export Plug-In . SVG Version: 2.1.4 Build 109)  -->
+  <defs>
+    <style>
+      .st0 {
+        fill: url(#Degradado_sin_nombre_11);
+      }
+
+      .st1 {
+        fill: #150007;
+      }
+    </style>
+    <linearGradient id="Degradado_sin_nombre_11" data-name="Degradado sin nombre 11" x1="179.73" y1="189.07" x2="179.73" y2="-5.82" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fb0000"/>
+      <stop offset=".03" stop-color="#fb040e"/>
+      <stop offset=".1" stop-color="#fc1135"/>
+      <stop offset=".19" stop-color="#fd2572"/>
+      <stop offset=".25" stop-color="#ff329b"/>
+      <stop offset=".32" stop-color="#fa319a"/>
+      <stop offset=".4" stop-color="#ec3099"/>
+      <stop offset=".49" stop-color="#d52e97"/>
+      <stop offset=".59" stop-color="#b42b94"/>
+      <stop offset=".68" stop-color="#8b2890"/>
+      <stop offset=".69" stop-color="#8a2890"/>
+      <stop offset=".96" stop-color="#292563"/>
+    </linearGradient>
+  </defs>
+  <path class="st0" d="M265.91,0c-88.24,24.81-93.55,107.77-93.55,153.6v16.4h-78.8V0h172.35Z"/>
+  <path class="st1" d="M0,0c88.24,24.81,93.55,107.77,93.55,153.6,0,5.67,0,11.14,0,16.4H0V0Z"/>
+</svg>
