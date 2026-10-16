@@ -20,137 +20,76 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lora:ital,wght@0,400;0,500;1,400&family=DM+Mono:wght@300;400&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lora:ital,wght@0,400;0,500;1,400&family=DM+Mono:wght@300;400&family=Michroma&display=swap">
   <link rel="stylesheet" href="/css/site.css">
 
   <style>
-    .ed-shell { max-width: 760px; margin: 0 auto; padding: 0 clamp(16px, 4vw, 24px); }
+    /* /education only: broadcast look — black, chrome, a globe rising from the bottom, darker green + brown */
+    :root { --eg: hsl(152 45% 26%); --eg-glow: hsl(152 60% 42%); --eg-hi: hsl(152 55% 62%);
+            --eb: hsl(28 50% 36%); --eb-hi: hsl(30 55% 58%); }
+    body { background: #000; }
+    .ed-hero { position: relative; overflow: hidden; margin: calc(-1 * var(--nav-h, 48px)) 0 0; padding: calc(var(--nav-h, 48px) + 40px) 0 0;
+      min-height: min(92vh, 860px); display: flex; flex-direction: column; isolation: isolate;
+      background: radial-gradient(120% 70% at 50% 108%, hsl(152 60% 14% / .95) 0%, hsl(152 70% 6% / .9) 38%, #000 70%); }
+    .ed-hero::after { content: ""; position: absolute; inset: 0; z-index: 2; pointer-events: none;
+      background: repeating-linear-gradient(to bottom, hsl(0 0% 0% / .0) 0 3px, hsl(0 0% 0% / .35) 3px 4px); mix-blend-mode: multiply; }
+    #globe { position: absolute; left: 0; right: 0; bottom: 0; width: 100%; height: 100%; z-index: 1; cursor: grab; touch-action: pan-y; }
+    .ed-hero__in { position: relative; z-index: 3; max-width: 1100px; margin: 0 auto; width: 100%; padding: 0 clamp(16px, 4vw, 32px); pointer-events: none; }
+    .ed-hero__in a, .ed-hero__in button { pointer-events: auto; }
+    .ed-back { display: inline-block; font-family: var(--font-mono); font-size: .72rem; letter-spacing: .15em; text-transform: uppercase;
+      color: var(--eb-hi); text-decoration: none; margin-bottom: 28px; }
+    .ed-back:hover { color: #fff; }
+    .ed-eyebrow { display: block; font-family: var(--font-mono); font-size: .74rem; letter-spacing: .3em; text-transform: uppercase; color: var(--eb-hi); margin-bottom: 14px; }
+    .ed-title { font-family: 'Michroma', 'Playfair Display', sans-serif; font-weight: 400; font-size: clamp(1.9rem, 7.6vw, 6.4rem); line-height: .95;
+      letter-spacing: -.02em; margin: 0; text-transform: uppercase;
+      background: linear-gradient(180deg, #fff 0%, #e9eef2 38%, #8e9aa6 52%, #dfe6ec 66%, #6f7c88 100%); -webkit-background-clip: text; background-clip: text; color: transparent;
+      filter: drop-shadow(0 2px 0 hsl(0 0% 0% / .6)) drop-shadow(0 0 24px hsl(152 60% 40% / .25)); }
+    .ed-sub { font-family: 'Michroma', sans-serif; font-size: clamp(.8rem, 2.2vw, 1.15rem); letter-spacing: .08em; text-transform: uppercase; color: #fff; margin: 14px 0 0; }
+    .ed-sub span { color: var(--eb-hi); }
+    .ed-lede { font-family: 'Lora', Georgia, serif; font-size: 1.02rem; line-height: 1.7; color: hsl(0 0% 100% / .72); margin: 18px 0 0; max-width: 56ch; }
+    .ed-hero__cta { display: inline-block; margin-top: 24px; font-family: 'Michroma', sans-serif; font-size: .78rem; letter-spacing: .1em; text-transform: uppercase;
+      color: #fff; text-decoration: none; padding: 14px 22px; border-radius: 6px; border: 1px solid hsl(152 60% 50% / .55);
+      background: linear-gradient(180deg, var(--eg-glow) 0%, var(--eg) 100%); box-shadow: 0 0 24px hsl(152 60% 35% / .35), inset 0 1px 0 hsl(0 0% 100% / .25); }
+    .ed-hero__cta:hover { filter: brightness(1.15); }
+    .ed-hero__spacer { flex: 1; min-height: 34vh; }
 
-    .ed-masthead {
-      margin-bottom: 40px;
-      padding-bottom: 24px;
-      border-bottom: 1px solid var(--fg-15);
-    }
-    .ed-eyebrow {
-      display: block;
-      font-family: var(--font-mono);
-      font-size: 0.72rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--brown);
-      margin-bottom: 12px;
-    }
-    .ed-title {
-      font-family: 'Playfair Display', Georgia, serif;
-      font-weight: 700;
-      font-size: clamp(2rem, 5vw, 3rem);
-      line-height: 1.15;
-      margin: 0 0 12px 0;
-      color: var(--fg);
-      text-wrap: balance;
-    }
-    .ed-lede {
-      font-family: 'Lora', Georgia, serif;
-      font-size: 1.05rem;
-      line-height: 1.7;
-      color: var(--fg-70);
-      margin: 0;
-      max-width: 58ch;
-    }
+    /* ticker */
+    .ed-ticker { position: relative; z-index: 4; display: flex; align-items: stretch; border-top: 1px solid hsl(152 60% 40% / .45);
+      border-bottom: 1px solid hsl(30 50% 45% / .45); background: linear-gradient(180deg, hsl(152 40% 7% / .92), hsl(0 0% 2% / .96)); }
+    .ed-ticker__tag { flex: none; display: flex; align-items: center; gap: 8px; padding: 0 16px; font-family: 'Michroma', sans-serif; font-size: .66rem;
+      letter-spacing: .12em; color: #000; background: linear-gradient(180deg, var(--eb-hi), var(--eb)); }
+    .ed-ticker__tag i { width: 7px; height: 7px; border-radius: 50%; background: #000; animation: pulse 1.4s ease-in-out infinite; }
+    @keyframes pulse { 50% { opacity: .25; } }
+    .ed-ticker__vp { overflow: hidden; flex: 1; mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent); }
+    .ed-ticker__track { display: flex; width: max-content; animation: tick var(--dur, 160s) linear infinite; }
+    .ed-ticker:hover .ed-ticker__track, .ed-ticker:focus-within .ed-ticker__track { animation-play-state: paused; }
+    @keyframes tick { to { transform: translateX(-50%); } }
+    .ed-ticker ul { display: flex; list-style: none; margin: 0; padding: 0; }
+    .ed-ticker li { white-space: nowrap; padding: 12px 22px; font-family: var(--font-mono); font-size: .74rem; color: hsl(0 0% 100% / .82); border-right: 1px solid hsl(0 0% 100% / .08); }
+    .ed-ticker li a { color: inherit; text-decoration: none; } .ed-ticker li a:hover { color: #fff; }
+    .ed-ticker li b { font-weight: 400; color: var(--eg-hi); text-transform: uppercase; letter-spacing: .06em; margin-right: 8px; }
+    .ed-ticker li.k-study b { color: var(--eb-hi); }
+    .ed-ticker li em { font-style: normal; color: hsl(0 0% 100% / .42); margin-left: 8px; }
+    @media (prefers-reduced-motion: reduce) { .ed-ticker__track { animation: none; } .ed-ticker__vp { overflow-x: auto; } }
 
-    /* One card today, a grid the moment there are two. */
-    .ed-grid { display: grid; gap: 20px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
-
-    .ed-card {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      padding: 26px;
-      border: 1px solid var(--fg-15);
-      border-radius: 4px;
-      text-decoration: none;
-      color: inherit;
-      transition: border-color 0.2s, background 0.2s;
-    }
-    .ed-card:hover, .ed-card:focus-visible {
-      border-color: var(--green-30);
-      background: var(--green-12);
-    }
-    .ed-card:focus-visible { outline: 1px solid var(--green); outline-offset: 3px; }
-
-    .ed-card__kicker {
-      font-family: var(--font-mono);
-      font-size: 0.7rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--brown);
-    }
-    .ed-card__title {
-      font-family: 'Playfair Display', Georgia, serif;
-      font-weight: 700;
-      font-size: 1.5rem;
-      line-height: 1.2;
-      margin: 0;
-      color: var(--fg);
-    }
-    .ed-card__blurb {
-      font-family: 'Lora', Georgia, serif;
-      font-size: 0.95rem;
-      line-height: 1.6;
-      color: var(--fg-70);
-      margin: 0;
-    }
-
-    /* What it is built from, in its own units — the tests, the countries, the
-       quotes — because that is the whole claim the dashboard makes. */
-    .ed-card__facts {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px 18px;
-      margin-top: 4px;
-      font-family: var(--font-mono);
-      font-size: 0.7rem;
-      letter-spacing: 0.06em;
-      color: var(--fg-45);
-      font-variant-numeric: tabular-nums;
-    }
-    .ed-card__facts b { color: var(--fg-70); font-weight: 400; }
-
-    .ed-card__cta {
-      margin-top: 6px;
-      font-family: var(--font-mono);
-      font-size: 0.72rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--green-70);
-      transition: color 0.2s;
-    }
-    .ed-card:hover .ed-card__cta, .ed-card:focus-visible .ed-card__cta { color: var(--green); }
-
-    .ed-foot {
-      margin-top: 48px;
-      padding-top: 22px;
-      border-top: 1px solid var(--brown-15);
-      font-family: var(--font-mono);
-      font-size: 0.74rem;
-      line-height: 1.7;
-      color: var(--fg-45);
-    }
-    .ed-foot a { color: var(--green-70); text-decoration: none; }
-    .ed-foot a:hover { color: var(--green); }
-
-    .ed-back {
-      display: inline-block;
-      font-family: var(--font-mono);
-      font-size: 0.72rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--green-70);
-      text-decoration: none;
-      margin-bottom: 40px;
-      transition: color 0.2s;
-    }
-    .ed-back:hover { color: var(--green); }
+    /* dashboards */
+    .ed-shell { max-width: 1100px; margin: 0 auto; padding: 56px clamp(16px, 4vw, 32px) 0; }
+    .ed-grid { display: grid; gap: 18px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+    .ed-card { position: relative; display: flex; flex-direction: column; gap: 10px; padding: 26px; border-radius: 10px; text-decoration: none; color: inherit;
+      background: linear-gradient(180deg, hsl(220 10% 9%), hsl(220 10% 4%)); border: 1px solid hsl(0 0% 100% / .1);
+      box-shadow: inset 0 1px 0 hsl(0 0% 100% / .08); transition: border-color .2s, box-shadow .2s, transform .2s; }
+    .ed-card:hover, .ed-card:focus-visible { border-color: hsl(152 60% 45% / .6); box-shadow: 0 0 0 1px hsl(152 60% 45% / .25), 0 0 30px hsl(152 60% 30% / .25), inset 0 1px 0 hsl(0 0% 100% / .1); transform: translateY(-2px); }
+    .ed-card:focus-visible { outline: 1px solid var(--eg-hi); outline-offset: 3px; }
+    .ed-card__kicker { font-family: var(--font-mono); font-size: .68rem; letter-spacing: .18em; text-transform: uppercase; color: var(--eb-hi); }
+    .ed-card__title { font-family: 'Michroma', sans-serif; font-weight: 400; font-size: 1.12rem; line-height: 1.3; margin: 0; color: #fff; text-transform: uppercase; letter-spacing: .02em; }
+    .ed-card__blurb { font-family: 'Lora', Georgia, serif; font-size: .95rem; line-height: 1.6; color: hsl(0 0% 100% / .7); margin: 0; }
+    .ed-card__facts { display: flex; flex-wrap: wrap; gap: 6px 18px; margin-top: 4px; font-family: var(--font-mono); font-size: .7rem; letter-spacing: .06em;
+      color: hsl(0 0% 100% / .46); font-variant-numeric: tabular-nums; }
+    .ed-card__facts b { color: var(--eg-hi); font-weight: 400; }
+    .ed-card__cta { margin-top: auto; padding-top: 8px; font-family: 'Michroma', sans-serif; font-size: .66rem; letter-spacing: .12em; text-transform: uppercase; color: var(--eg-hi); }
+    .ed-foot { margin: 48px 0 64px; padding-top: 22px; border-top: 1px solid hsl(30 50% 45% / .25); font-family: var(--font-mono); font-size: .74rem; line-height: 1.7; color: hsl(0 0% 100% / .46); }
+    .ed-foot a { color: var(--eg-hi); text-decoration: none; } .ed-foot a:hover { color: #fff; }
+    @media (max-width: 640px) { .ed-hero { min-height: 88vh; } .ed-hero__spacer { min-height: 40vh; } }
   </style>
 </head>
 <body>
@@ -189,19 +128,31 @@
     <button class="site-nav__close" id="nav-close">Close</button>
   </nav>
 
-  <main class="page">
-    <div class="ed-shell anim-fade-up" style="animation-delay:0.3s">
-
-      <a href="/projects/" class="ed-back">← Back to Projects</a>
-
-      <header class="ed-masthead">
+  <main class="page" style="padding-top:0">
+    <section class="ed-hero" aria-label="Education dashboards">
+      <canvas id="globe" aria-hidden="true"></canvas>
+      <div class="ed-hero__in anim-fade-up" style="animation-delay:0.2s">
+        <a href="/projects/" class="ed-back">← Back to Projects</a>
         <span class="ed-eyebrow">Dashboards</span>
-        <h1 class="ed-title">James' Education Dashboards</h1>
+        <h1 class="ed-title">Education</h1>
+        <p class="ed-sub">James' Education Dashboards <span>·</span> <span>Live map</span></p>
         <p class="ed-lede">Tools for looking at education the way it actually performs, rather than the
         way it is talked about. Each one is built from official data, and every claim that isn't a
         number is tied to the source it came from.</p>
-      </header>
+        <a class="ed-hero__cta" href="/education/frontier/">Open the frontier map</a>
+      </div>
+      <div class="ed-hero__spacer"></div>
+      <div class="ed-ticker" role="region" aria-label="Latest from the frontier map">
+        <span class="ed-ticker__tag"><i></i>LATEST</span>
+        <div class="ed-ticker__vp" tabindex="0">
+<!-- BEGIN_TICKER (written by scripts/sync-education-map.mjs from the frontier build's news.json; do not edit by hand) -->
+<div class="ed-ticker__track" style="--dur:238s"><ul><li class="k-fact"><a href="/education/frontier/#forge-prep"><b>Forge Prep</b>Opened: Fall 2026 with grades 5-8; 9th grade added 2027<em>2026-10</em></a></li><li class="k-fact"><a href="/education/frontier/#masters-union"><b>Masters' Union</b>Status: Haryana assembly passed bill for Masters' Union University (Sep 2026)<em>2026-09</em></a></li><li class="k-fact"><a href="/education/frontier/#stepful"><b>Stepful</b>Series C: $55 million led by Oak HC/FT, June 2026<em>2026-06</em></a></li><li class="k-fact"><a href="/education/frontier/#multiverse"><b>Multiverse</b>Funding: $70M at <!-- END_TICKER -->.1B valuation, led by Schroders Capital (May 2026)<em>2026-05</em></a></li><li class="k-fact"><a href="/education/frontier/#sinai-ai"><b>Sinai.ai</b>Funding: <!-- BEGIN_TICKER (written by scripts/sync-education-map.mjs from the frontier build's news.json; do not edit by hand) -->.45M pre-seed led by KAUST Innovation Ventures and DisrupTech (Apr 2026)<em>2026-04</em></a></li><li class="k-fact"><a href="/education/frontier/#subject"><b>Subject</b>Funding: <!-- END_TICKER -->8M round led by Vistara Growth (Feb 2026)<em>2026-02</em></a></li><li class="k-fact"><a href="/education/frontier/#quizlet"><b>Quizlet</b>Acquisition: Bought Coconote, an AI app that turns lectures into study materials (Feb 2026)<em>2026-02</em></a></li><li class="k-fact"><a href="/education/frontier/#sparkli"><b>Sparkli</b>Funding: $5M pre-seed led by Founderful (Jan 2026)<em>2026-01</em></a></li><li class="k-fact"><a href="/education/frontier/#preply"><b>Preply</b>Valuation: <!-- BEGIN_TICKER (written by scripts/sync-education-map.mjs from the frontier build's news.json; do not edit by hand) -->50M Series D led by WestCap at <!-- BEGIN_TICKER (written by scripts/sync-education-map.mjs from the frontier build's news.json; do not edit by hand) -->.2B valuation (Jan 2026)<em>2026-01</em></a></li><li class="k-fact"><a href="/education/frontier/#alpha-school"><b>Alpha School</b>Growth: 27 new campuses opened for 2026-27<em>2026</em></a></li><li class="k-fact"><a href="/education/frontier/#paloma-learning"><b>Paloma Learning</b>Funding: $8.83M reported on SEC Form D (filed Jun 3, 2026)<em>2026</em></a></li><li class="k-fact"><a href="/education/frontier/#pace-ai"><b>Pace AI</b>Federal grant: <!-- BEGIN_TICKER (written by scripts/sync-education-map.mjs from the frontier build's news.json; do not edit by hand) -->M IES SBIR Phase II (2025-2027) to Linguistic Inc. (Pace AI)<em>2025-09</em></a></li><li class="k-fact"><a href="/education/frontier/#success-academy"><b>Success Academy Charter Schools</b>Expansion: $50M gift from Ken Griffin; first Miami schools open 2027-28<em>2025-09</em></a></li><li class="k-study"><a href="/education/frontier/#stanford-scale-ai-k12-review-2026"><b>New study</b>Fesler, Martinez, Agnew &amp; Loeb (Stanford SCALE AI Hub for Education) (2026), The Evidence Base on AI in K-12: A 2026 Review<em>2026</em></a></li><li class="k-study"><a href="/education/frontier/#khanmigo-tennessee-two-year"><b>New study</b>Oreopoulos &amp; Low (2026), NBER Working Paper 35620<em>2026</em></a></li><li class="k-study"><a href="/education/frontier/#university-ai-tutor-lowers-grades"><b>New study</b>Liu, Sweet, Chen et al. (2026), EdWorkingPaper 26-1598<em>2026</em></a></li><li class="k-study"><a href="/education/frontier/#sierra-leone-gemini-guided-learning"><b>New study</b>Google DeepMind &amp; Fab AI (2026), Google DeepMind technical report<em>2026</em></a></li><li class="k-study"><a href="/education/frontier/#england-phonics-screening-check"><b>New study</b>Department for Education (2026), Explore Education Statistics<em>2026</em></a></li><li class="k-study"><a href="/education/frontier/#toronto-belonging-mindset-null"><b>New study</b>Alam, Oreopoulos &amp; Petronijevic (2026), NBER Working Paper 35230<em>2026</em></a></li><li class="k-study"><a href="/education/frontier/#us-phone-pouch-bans"><b>New study</b>Allcott, Baron, Dee, Duckworth, Gentzkow &amp; Jacob (2026), NBER Working Paper 35132<em>2026</em></a></li><li class="k-study"><a href="/education/frontier/#norway-smartphone-ban"><b>New study</b>Abrahamsson (2026), Journal of Human Resources<em>2026</em></a></li><li class="k-study"><a href="/education/frontier/#chile-ai-assistant-guidance"><b>New study</b>Gallegos (2026), IZA Discussion Paper 18513<em>2026</em></a></li><li class="k-study"><a href="/education/frontier/#kestin-harvard-ai-physics-tutor"><b>New study</b>Kestin, Miller, Klales, Milbourne &amp; Ponti (2025), Scientific Reports<em>2025</em></a></li><li class="k-study"><a href="/education/frontier/#world-bank-nigeria-copilot"><b>New study</b>De Simone, Tiberti, Barron Rodriguez et al. (2025), World Bank Policy Research Working Paper 11125<em>2025</em></a></li><li class="k-study"><a href="/education/frontier/#bastani-genai-harms-learning"><b>New study</b>Bastani, Bastani, Sungu, Ge, Kabakcı &amp; Mariman (2025), PNAS<em>2025</em></a></li><li class="k-study"><a href="/education/frontier/#mit-your-brain-on-chatgpt"><b>New study</b>Kosmyna et al. (2025), arXiv 2506.08872 (preprint)<em>2025</em></a></li><li class="k-study"><a href="/education/frontier/#eedi-learnlm-uk-rct"><b>New study</b>LearnLM Team (Google) &amp; Eedi (2025), arXiv 2512.23633 (preprint)<em>2025</em></a></li><li class="k-study"><a href="/education/frontier/#mindspark-rajasthan-scale"><b>New study</b>Muralidharan &amp; Singh (2025), NBER Working Paper 34205<em>2025</em></a></li><li class="k-study"><a href="/education/frontier/#alpha-school-map-growth"><b>New study</b>Alpha School (2025), School-published MAP results (self-reported)<em>2025</em></a></li><li class="k-study"><a href="/education/frontier/#naep-2024-national"><b>New study</b>NCES (2025), Nation's Report Card<em>2025</em></a></li><li class="k-study"><a href="/education/frontier/#naep-2024-grade-12"><b>New study</b>NCES (2025), Nation's Report Card<em>2025</em></a></li><li class="k-study"><a href="/education/frontier/#mississippi-naep-2024"><b>New study</b>NCES; Urban Institute adjustment (2025), Nation's Report Card / Urban Institute<em>2025</em></a></li><li class="k-study"><a href="/education/frontier/#montessori-national-lottery-rct"><b>New study</b>Lillard, Loeb, Berg, Escueta, Manship, Hauser &amp; Daggett (2025), PNAS<em>2025</em></a></li><li class="k-study"><a href="/education/frontier/#smart-schools-england-phones"><b>New study</b>Goodyear, Randhawa, Adab, Al-Janabi et al. (2025), Lancet Regional Health - Europe<em>2025</em></a></li></ul><ul aria-hidden="true"><li class="k-fact"><a href="/education/frontier/#forge-prep"><b>Forge Prep</b>Opened: Fall 2026 with grades 5-8; 9th grade added 2027<em>2026-10</em></a></li><li class="k-fact"><a href="/education/frontier/#masters-union"><b>Masters' Union</b>Status: Haryana assembly passed bill for Masters' Union University (Sep 2026)<em>2026-09</em></a></li><li class="k-fact"><a href="/education/frontier/#stepful"><b>Stepful</b>Series C: $55 million led by Oak HC/FT, June 2026<em>2026-06</em></a></li><li class="k-fact"><a href="/education/frontier/#multiverse"><b>Multiverse</b>Funding: $70M at <!-- END_TICKER -->.1B valuation, led by Schroders Capital (May 2026)<em>2026-05</em></a></li><li class="k-fact"><a href="/education/frontier/#sinai-ai"><b>Sinai.ai</b>Funding: <!-- BEGIN_TICKER (written by scripts/sync-education-map.mjs from the frontier build's news.json; do not edit by hand) -->.45M pre-seed led by KAUST Innovation Ventures and DisrupTech (Apr 2026)<em>2026-04</em></a></li><li class="k-fact"><a href="/education/frontier/#subject"><b>Subject</b>Funding: <!-- END_TICKER -->8M round led by Vistara Growth (Feb 2026)<em>2026-02</em></a></li><li class="k-fact"><a href="/education/frontier/#quizlet"><b>Quizlet</b>Acquisition: Bought Coconote, an AI app that turns lectures into study materials (Feb 2026)<em>2026-02</em></a></li><li class="k-fact"><a href="/education/frontier/#sparkli"><b>Sparkli</b>Funding: $5M pre-seed led by Founderful (Jan 2026)<em>2026-01</em></a></li><li class="k-fact"><a href="/education/frontier/#preply"><b>Preply</b>Valuation: <!-- BEGIN_TICKER (written by scripts/sync-education-map.mjs from the frontier build's news.json; do not edit by hand) -->50M Series D led by WestCap at <!-- BEGIN_TICKER (written by scripts/sync-education-map.mjs from the frontier build's news.json; do not edit by hand) -->.2B valuation (Jan 2026)<em>2026-01</em></a></li><li class="k-fact"><a href="/education/frontier/#alpha-school"><b>Alpha School</b>Growth: 27 new campuses opened for 2026-27<em>2026</em></a></li><li class="k-fact"><a href="/education/frontier/#paloma-learning"><b>Paloma Learning</b>Funding: $8.83M reported on SEC Form D (filed Jun 3, 2026)<em>2026</em></a></li><li class="k-fact"><a href="/education/frontier/#pace-ai"><b>Pace AI</b>Federal grant: <!-- BEGIN_TICKER (written by scripts/sync-education-map.mjs from the frontier build's news.json; do not edit by hand) -->M IES SBIR Phase II (2025-2027) to Linguistic Inc. (Pace AI)<em>2025-09</em></a></li><li class="k-fact"><a href="/education/frontier/#success-academy"><b>Success Academy Charter Schools</b>Expansion: $50M gift from Ken Griffin; first Miami schools open 2027-28<em>2025-09</em></a></li><li class="k-study"><a href="/education/frontier/#stanford-scale-ai-k12-review-2026"><b>New study</b>Fesler, Martinez, Agnew &amp; Loeb (Stanford SCALE AI Hub for Education) (2026), The Evidence Base on AI in K-12: A 2026 Review<em>2026</em></a></li><li class="k-study"><a href="/education/frontier/#khanmigo-tennessee-two-year"><b>New study</b>Oreopoulos &amp; Low (2026), NBER Working Paper 35620<em>2026</em></a></li><li class="k-study"><a href="/education/frontier/#university-ai-tutor-lowers-grades"><b>New study</b>Liu, Sweet, Chen et al. (2026), EdWorkingPaper 26-1598<em>2026</em></a></li><li class="k-study"><a href="/education/frontier/#sierra-leone-gemini-guided-learning"><b>New study</b>Google DeepMind &amp; Fab AI (2026), Google DeepMind technical report<em>2026</em></a></li><li class="k-study"><a href="/education/frontier/#england-phonics-screening-check"><b>New study</b>Department for Education (2026), Explore Education Statistics<em>2026</em></a></li><li class="k-study"><a href="/education/frontier/#toronto-belonging-mindset-null"><b>New study</b>Alam, Oreopoulos &amp; Petronijevic (2026), NBER Working Paper 35230<em>2026</em></a></li><li class="k-study"><a href="/education/frontier/#us-phone-pouch-bans"><b>New study</b>Allcott, Baron, Dee, Duckworth, Gentzkow &amp; Jacob (2026), NBER Working Paper 35132<em>2026</em></a></li><li class="k-study"><a href="/education/frontier/#norway-smartphone-ban"><b>New study</b>Abrahamsson (2026), Journal of Human Resources<em>2026</em></a></li><li class="k-study"><a href="/education/frontier/#chile-ai-assistant-guidance"><b>New study</b>Gallegos (2026), IZA Discussion Paper 18513<em>2026</em></a></li><li class="k-study"><a href="/education/frontier/#kestin-harvard-ai-physics-tutor"><b>New study</b>Kestin, Miller, Klales, Milbourne &amp; Ponti (2025), Scientific Reports<em>2025</em></a></li><li class="k-study"><a href="/education/frontier/#world-bank-nigeria-copilot"><b>New study</b>De Simone, Tiberti, Barron Rodriguez et al. (2025), World Bank Policy Research Working Paper 11125<em>2025</em></a></li><li class="k-study"><a href="/education/frontier/#bastani-genai-harms-learning"><b>New study</b>Bastani, Bastani, Sungu, Ge, Kabakcı &amp; Mariman (2025), PNAS<em>2025</em></a></li><li class="k-study"><a href="/education/frontier/#mit-your-brain-on-chatgpt"><b>New study</b>Kosmyna et al. (2025), arXiv 2506.08872 (preprint)<em>2025</em></a></li><li class="k-study"><a href="/education/frontier/#eedi-learnlm-uk-rct"><b>New study</b>LearnLM Team (Google) &amp; Eedi (2025), arXiv 2512.23633 (preprint)<em>2025</em></a></li><li class="k-study"><a href="/education/frontier/#mindspark-rajasthan-scale"><b>New study</b>Muralidharan &amp; Singh (2025), NBER Working Paper 34205<em>2025</em></a></li><li class="k-study"><a href="/education/frontier/#alpha-school-map-growth"><b>New study</b>Alpha School (2025), School-published MAP results (self-reported)<em>2025</em></a></li><li class="k-study"><a href="/education/frontier/#naep-2024-national"><b>New study</b>NCES (2025), Nation's Report Card<em>2025</em></a></li><li class="k-study"><a href="/education/frontier/#naep-2024-grade-12"><b>New study</b>NCES (2025), Nation's Report Card<em>2025</em></a></li><li class="k-study"><a href="/education/frontier/#mississippi-naep-2024"><b>New study</b>NCES; Urban Institute adjustment (2025), Nation's Report Card / Urban Institute<em>2025</em></a></li><li class="k-study"><a href="/education/frontier/#montessori-national-lottery-rct"><b>New study</b>Lillard, Loeb, Berg, Escueta, Manship, Hauser &amp; Daggett (2025), PNAS<em>2025</em></a></li><li class="k-study"><a href="/education/frontier/#smart-schools-england-phones"><b>New study</b>Goodyear, Randhawa, Adab, Al-Janabi et al. (2025), Lancet Regional Health - Europe<em>2025</em></a></li></ul></div>
+<!-- END_TICKER -->
+        </div>
+      </div>
+    </section>
 
+    <div class="ed-shell">
       <div class="ed-grid">
 
         <a class="ed-card" href="/education/frontier/">
@@ -275,5 +226,7 @@
     })();
   </script>
 
+  <script src="/education/frontier/globe.js" defer></script>
+  <script src="/education/globe-hero.js" defer></script>
 </body>
 </html>

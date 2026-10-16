@@ -146,3 +146,22 @@ for (const m of MAPS) {
 }
 
 if (!ran) { console.error('  ! nothing synced'); process.exit(1); }
+
+/* ── bake the /education ticker from the frontier build's news.json ─────────
+   Static HTML between markers, like the /writing/ bake scripts: the items are
+   readable with JS off and nothing is fetched at runtime. The list is written
+   twice so the CSS marquee can loop without a jump. */
+if (!only || only === 'frontier') {
+  const news = join(homedir(), 'Projects/education-frontier-map/build/news.json');
+  const page = join(ROOT, 'site/education/index.html');
+  if (existsSync(news) && existsSync(page)) {
+    const esc = (t) => String(t ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    const items = JSON.parse(readFileSync(news, 'utf8'));
+    const li = items.map((n) => `<li class="k-${esc(n.kind)}"><a href="${esc(n.href || '/education/frontier/')}"><b>${esc(n.kind === 'study' ? 'New study' : n.name)}</b>${esc(n.text)}${n.date ? `<em>${esc(n.date)}</em>` : ''}</a></li>`).join('');
+    const block = `<div class="ed-ticker__track" style="--dur:${Math.max(60, items.length * 7)}s"><ul>${li}</ul><ul aria-hidden="true">${li}</ul></div>`;
+    const html = readFileSync(page, 'utf8');
+    const re = /(<!-- BEGIN_TICKER[^>]*-->)[\s\S]*?(<!-- END_TICKER -->)/;
+    if (!re.test(html)) console.error('  ! /education has no ticker markers — skipped');
+    else { writeFileSync(page, html.replace(re, `$1\n${block}\n$2`)); console.log(`✓ /education ticker — ${items.length} items`); }
+  }
+}

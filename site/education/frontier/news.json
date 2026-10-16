@@ -1,0 +1,287 @@
+[
+ {
+  "kind": "fact",
+  "name": "Forge Prep",
+  "text": "Opened: Fall 2026 with grades 5-8; 9th grade added 2027",
+  "date": "2026-10",
+  "self_reported": false,
+  "href": "/education/frontier/#forge-prep",
+  "source": "https://forgeprep.org/"
+ },
+ {
+  "kind": "fact",
+  "name": "Masters' Union",
+  "text": "Status: Haryana assembly passed bill for Masters' Union University (Sep 2026)",
+  "date": "2026-09",
+  "self_reported": false,
+  "href": "/education/frontier/#masters-union",
+  "source": "https://en.wikipedia.org/wiki/Masters%27_Union"
+ },
+ {
+  "kind": "fact",
+  "name": "Stepful",
+  "text": "Series C: $55 million led by Oak HC/FT, June 2026",
+  "date": "2026-06",
+  "self_reported": false,
+  "href": "/education/frontier/#stepful",
+  "source": "https://pulse2.com/stepful-55-million-series-c-raised-to-expand-ai-powered-healthcare-workforce-training-platform/amp/"
+ },
+ {
+  "kind": "fact",
+  "name": "Multiverse",
+  "text": "Funding: $70M at $2.1B valuation, led by Schroders Capital (May 2026)",
+  "date": "2026-05",
+  "self_reported": false,
+  "href": "/education/frontier/#multiverse",
+  "source": "https://dealroom.co/news/128958-multiverse-raises-70m-at-2-1b-valuation-to-build-europes-ai-adoption-lay/"
+ },
+ {
+  "kind": "fact",
+  "name": "Sinai.ai",
+  "text": "Funding: $1.45M pre-seed led by KAUST Innovation Ventures and DisrupTech (Apr 2026)",
+  "date": "2026-04",
+  "self_reported": false,
+  "href": "/education/frontier/#sinai-ai",
+  "source": "https://www.wamda.com/en/2026/04/egypts-sinaiai-raises-1-45-million-pre-seed-build-interactive-ai-native-books"
+ },
+ {
+  "kind": "fact",
+  "name": "Subject",
+  "text": "Funding: $28M round led by Vistara Growth (Feb 2026)",
+  "date": "2026-02",
+  "self_reported": false,
+  "href": "/education/frontier/#subject",
+  "source": "https://www.builtinla.com/articles/subject-raises-28m-funding-20260225"
+ },
+ {
+  "kind": "fact",
+  "name": "Quizlet",
+  "text": "Acquisition: Bought Coconote, an AI app that turns lectures into study materials (Feb 2026)",
+  "date": "2026-02",
+  "self_reported": false,
+  "href": "/education/frontier/#quizlet",
+  "source": "https://en.wikipedia.org/wiki/Quizlet"
+ },
+ {
+  "kind": "fact",
+  "name": "Sparkli",
+  "text": "Funding: $5M pre-seed led by Founderful (Jan 2026)",
+  "date": "2026-01",
+  "self_reported": false,
+  "href": "/education/frontier/#sparkli",
+  "source": "https://www.trendingtopics.eu/sparkli-former-google-trio-raises-5-million-for-child-friendly-ai-learning-platform/"
+ },
+ {
+  "kind": "fact",
+  "name": "Preply",
+  "text": "Valuation: $150M Series D led by WestCap at $1.2B valuation (Jan 2026)",
+  "date": "2026-01",
+  "self_reported": false,
+  "href": "/education/frontier/#preply",
+  "source": "https://www.kyivpost.com/post/68518"
+ },
+ {
+  "kind": "fact",
+  "name": "Alpha School",
+  "text": "Growth: 27 new campuses opened for 2026-27",
+  "date": "2026",
+  "self_reported": true,
+  "href": "/education/frontier/#alpha-school",
+  "source": "https://pr.davisjournal.com/article/Alpha-School-Expands-to-27-New-Communities-Nationwide-With-Campuses-Opening-This-Fall/6a734d459ca6f9e041dc8452"
+ },
+ {
+  "kind": "fact",
+  "name": "Paloma Learning",
+  "text": "Funding: $8.83M reported on SEC Form D (filed Jun 3, 2026)",
+  "date": "2026",
+  "self_reported": false,
+  "href": "/education/frontier/#paloma-learning",
+  "source": "https://www.innolope.com/pulse/funding/6a21e4e1ad395cc135adc283"
+ },
+ {
+  "kind": "fact",
+  "name": "Pace AI",
+  "text": "Federal grant: $1M IES SBIR Phase II (2025-2027) to Linguistic Inc. (Pace AI)",
+  "date": "2025-09",
+  "self_reported": false,
+  "href": "/education/frontier/#pace-ai",
+  "source": "https://ies.ed.gov/use-work/awards/personalized-and-context-relevant-english-lessons-ai-pace-ai-advance-adult-learners-integrated"
+ },
+ {
+  "kind": "fact",
+  "name": "Success Academy Charter Schools",
+  "text": "Expansion: $50M gift from Ken Griffin; first Miami schools open 2027-28",
+  "date": "2025-09",
+  "self_reported": false,
+  "href": "/education/frontier/#success-academy",
+  "source": "https://www.wlrn.org/education/2025-09-25/major-new-york-city-based-charter-school-network-to-expand-in-miami-desantis-cheers-the-move"
+ },
+ {
+  "kind": "study",
+  "name": "Study",
+  "text": "Fesler, Martinez, Agnew & Loeb (Stanford SCALE AI Hub for Education) (2026), The Evidence Base on AI in K-12: A 2026 Review",
+  "date": "2026",
+  "href": "/education/frontier/#stanford-scale-ai-k12-review-2026",
+  "source": "https://scale.stanford.edu/sites/default/files/The%20Evidence%20Base%20on%20AI%20in%20K-12%20Report.pdf"
+ },
+ {
+  "kind": "study",
+  "name": "Study",
+  "text": "Oreopoulos & Low (2026), NBER Working Paper 35620",
+  "date": "2026",
+  "href": "/education/frontier/#khanmigo-tennessee-two-year",
+  "source": "https://www.nber.org/papers/w35620"
+ },
+ {
+  "kind": "study",
+  "name": "Study",
+  "text": "Liu, Sweet, Chen et al. (2026), EdWorkingPaper 26-1598",
+  "date": "2026",
+  "href": "/education/frontier/#university-ai-tutor-lowers-grades",
+  "source": "https://edworkingpapers.com/ai26-1598"
+ },
+ {
+  "kind": "study",
+  "name": "Study",
+  "text": "Google DeepMind & Fab AI (2026), Google DeepMind technical report",
+  "date": "2026",
+  "href": "/education/frontier/#sierra-leone-gemini-guided-learning",
+  "source": "https://deepmind.google/blog/measuring-the-impact-of-learning-with-ai-in-sierra-leone-and-beyond/"
+ },
+ {
+  "kind": "study",
+  "name": "Study",
+  "text": "Department for Education (2026), Explore Education Statistics",
+  "date": "2026",
+  "href": "/education/frontier/#england-phonics-screening-check",
+  "source": "https://explore-education-statistics.service.gov.uk/find-statistics/phonics-screening-check-attainment/2025-26"
+ },
+ {
+  "kind": "study",
+  "name": "Study",
+  "text": "Alam, Oreopoulos & Petronijevic (2026), NBER Working Paper 35230",
+  "date": "2026",
+  "href": "/education/frontier/#toronto-belonging-mindset-null",
+  "source": "https://www.nber.org/papers/w35230"
+ },
+ {
+  "kind": "study",
+  "name": "Study",
+  "text": "Allcott, Baron, Dee, Duckworth, Gentzkow & Jacob (2026), NBER Working Paper 35132",
+  "date": "2026",
+  "href": "/education/frontier/#us-phone-pouch-bans",
+  "source": "https://www.nber.org/papers/w35132"
+ },
+ {
+  "kind": "study",
+  "name": "Study",
+  "text": "Abrahamsson (2026), Journal of Human Resources",
+  "date": "2026",
+  "href": "/education/frontier/#norway-smartphone-ban",
+  "source": "https://jhr.uwpress.org/node/16076"
+ },
+ {
+  "kind": "study",
+  "name": "Study",
+  "text": "Gallegos (2026), IZA Discussion Paper 18513",
+  "date": "2026",
+  "href": "/education/frontier/#chile-ai-assistant-guidance",
+  "source": "https://docs.iza.org/dp18513.pdf"
+ },
+ {
+  "kind": "study",
+  "name": "Study",
+  "text": "Kestin, Miller, Klales, Milbourne & Ponti (2025), Scientific Reports",
+  "date": "2025",
+  "href": "/education/frontier/#kestin-harvard-ai-physics-tutor",
+  "source": "https://doi.org/10.1038/s41598-025-97652-6"
+ },
+ {
+  "kind": "study",
+  "name": "Study",
+  "text": "De Simone, Tiberti, Barron Rodriguez et al. (2025), World Bank Policy Research Working Paper 11125",
+  "date": "2025",
+  "href": "/education/frontier/#world-bank-nigeria-copilot",
+  "source": "https://openknowledge.worldbank.org/entities/publication/15e1ff08-15ae-4f7a-b2a8-d146e6c113ee/full"
+ },
+ {
+  "kind": "study",
+  "name": "Study",
+  "text": "Bastani, Bastani, Sungu, Ge, Kabakcı & Mariman (2025), PNAS",
+  "date": "2025",
+  "href": "/education/frontier/#bastani-genai-harms-learning",
+  "source": "https://doi.org/10.1073/pnas.2422633122"
+ },
+ {
+  "kind": "study",
+  "name": "Study",
+  "text": "Kosmyna et al. (2025), arXiv 2506.08872 (preprint)",
+  "date": "2025",
+  "href": "/education/frontier/#mit-your-brain-on-chatgpt",
+  "source": "https://arxiv.org/abs/2506.08872"
+ },
+ {
+  "kind": "study",
+  "name": "Study",
+  "text": "LearnLM Team (Google) & Eedi (2025), arXiv 2512.23633 (preprint)",
+  "date": "2025",
+  "href": "/education/frontier/#eedi-learnlm-uk-rct",
+  "source": "https://arxiv.org/abs/2512.23633"
+ },
+ {
+  "kind": "study",
+  "name": "Study",
+  "text": "Muralidharan & Singh (2025), NBER Working Paper 34205",
+  "date": "2025",
+  "href": "/education/frontier/#mindspark-rajasthan-scale",
+  "source": "https://www.povertyactionlab.org/node/8138364"
+ },
+ {
+  "kind": "study",
+  "name": "Study",
+  "text": "Alpha School (2025), School-published MAP results (self-reported)",
+  "date": "2025",
+  "href": "/education/frontier/#alpha-school-map-growth",
+  "source": "https://www.the74million.org/article/what-public-schools-and-parents-can-learn-from-a-40000-a-year-private-school/"
+ },
+ {
+  "kind": "study",
+  "name": "Study",
+  "text": "NCES (2025), Nation's Report Card",
+  "date": "2025",
+  "href": "/education/frontier/#naep-2024-national",
+  "source": "https://www.nationsreportcard.gov/reports/mathematics/2024/g4_8/supporting-files/summary-of-results.pdf"
+ },
+ {
+  "kind": "study",
+  "name": "Study",
+  "text": "NCES (2025), Nation's Report Card",
+  "date": "2025",
+  "href": "/education/frontier/#naep-2024-grade-12",
+  "source": "https://www.chalkbeat.org/2025/09/09/naep-scores-12th-grade-math-reading-declines"
+ },
+ {
+  "kind": "study",
+  "name": "Study",
+  "text": "NCES; Urban Institute adjustment (2025), Nation's Report Card / Urban Institute",
+  "date": "2025",
+  "href": "/education/frontier/#mississippi-naep-2024",
+  "source": "https://www.mississippifirst.org/contextualizing-mississippis-2024-naep-scores/"
+ },
+ {
+  "kind": "study",
+  "name": "Study",
+  "text": "Lillard, Loeb, Berg, Escueta, Manship, Hauser & Daggett (2025), PNAS",
+  "date": "2025",
+  "href": "/education/frontier/#montessori-national-lottery-rct",
+  "source": "https://doi.org/10.1073/pnas.2506130122"
+ },
+ {
+  "kind": "study",
+  "name": "Study",
+  "text": "Goodyear, Randhawa, Adab, Al-Janabi et al. (2025), Lancet Regional Health - Europe",
+  "date": "2025",
+  "href": "/education/frontier/#smart-schools-england-phones",
+  "source": "https://doi.org/10.1016/j.lanepe.2025.101211"
+ }
+]
