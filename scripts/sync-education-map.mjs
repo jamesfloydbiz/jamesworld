@@ -17,6 +17,7 @@ import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync, statSy
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { homedir } from 'node:os';
+import { execSync } from 'node:child_process';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const SITE = 'https://jamesfloyds.world';
@@ -49,6 +50,31 @@ const MAPS = [
 const only = process.argv[2];
 let ran = 0;
 
+/* ── keep the scheduled task's additions ───────────────────────────────────
+   A cloud scheduled task ("Education news update", Wed + Sun) adds items to
+   site/education/frontier/news.json and pushes them to main. The frontier
+   build on this Mac never sees them, so copying the build over site/ would
+   erase them. Two guards:
+   1. Refuse to run while this checkout is behind origin/main, so the task's
+      latest items are on disk before anything is copied.
+   2. Merge: any item already in site/ that the build lacks is kept. */
+const FRONTIER_SITE = join(ROOT, 'site/education/frontier');
+const newsKey = (n) => `${n.kind}|${n.name}|${n.text}`.toLowerCase();
+let savedNews = [], savedUpdated = '';
+if (!only || only === 'frontier') {
+  try {
+    execSync('git fetch -q origin main', { cwd: ROOT, stdio: 'ignore' });
+    const behind = Number(execSync('git rev-list --count HEAD..origin/main', { cwd: ROOT }).toString().trim());
+    if (behind > 0) {
+      console.error(`  ! this checkout is ${behind} commit(s) behind origin/main (the scheduled task may have added news).`);
+      console.error('    Run `git pull` first, then run this script again. Nothing was changed.');
+      process.exit(1);
+    }
+  } catch { console.error('  ! could not reach GitHub to check for new items; merging with what is on disk'); }
+  try { savedNews = JSON.parse(readFileSync(join(FRONTIER_SITE, 'news.json'), 'utf8')); } catch {}
+  try { savedUpdated = JSON.parse(readFileSync(join(FRONTIER_SITE, 'stats.json'), 'utf8')).updated || ''; } catch {}
+}
+
 for (const m of MAPS) {
   if (only && only !== m.slug) continue;
   const dest = join(ROOT, 'site/education', m.slug);
@@ -70,6 +96,17 @@ for (const m of MAPS) {
     }
   };
   walk(m.src, dest);
+
+  /* frontier: put back the items the scheduled task added (see top of file) */
+  if (m.slug === 'frontier' && savedNews.length) {
+    const built = JSON.parse(readFileSync(join(dest, 'news.json'), 'utf8'));
+    const have = new Set(built.map(newsKey));
+    const kept = savedNews.filter((n) => !have.has(newsKey(n)));
+    writeFileSync(join(dest, 'news.json'), JSON.stringify([...kept, ...built], null, 1) + '\n');
+    if (kept.length) console.log(`    kept ${kept.length} news item(s) added by the scheduled task`);
+    const st = JSON.parse(readFileSync(join(dest, 'stats.json'), 'utf8'));
+    if (savedUpdated > (st.updated || '')) { st.updated = savedUpdated; writeFileSync(join(dest, 'stats.json'), JSON.stringify(st)); }
+  }
 
   /* A rename over there -- korea.js became overtime.js -- leaves the old file
      sitting in site/ forever, shipped and unreferenced, because copying never
@@ -152,7 +189,7 @@ if (!ran) { console.error('  ! nothing synced'); process.exit(1); }
    readable with JS off and nothing is fetched at runtime. The list is written
    twice so the CSS marquee can loop without a jump. */
 if (!only || only === 'frontier') {
-  const news = join(homedir(), 'Projects/education-frontier-map/build/news.json');
+  const news = join(FRONTIER_SITE, 'news.json'); // merged copy (build + scheduled-task items)
   const page = join(ROOT, 'site/education/index.html');
   if (existsSync(news) && existsSync(page)) {
     const esc = (t) => String(t ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -166,7 +203,7 @@ if (!only || only === 'frontier') {
     else { writeFileSync(page, html.replace(re, (_, a, z) => `${a}\n${block}\n${z}`)); console.log(`✓ /education ticker — ${items.length} items`); }
   }
   // the bottom-left line: schedule and last update, from the build's stats.json
-  const stats = join(homedir(), 'Projects/education-frontier-map/build/stats.json');
+  const stats = join(FRONTIER_SITE, 'stats.json');
   if (existsSync(stats) && existsSync(page)) {
     const st = JSON.parse(readFileSync(stats, 'utf8'));
     const d = new Date(st.updated + 'T12:00:00Z').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
