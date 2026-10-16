@@ -30,7 +30,7 @@
   function frame(t) {
     if (!visible) { requestAnimationFrame(frame); return; }   // off screen: skip the drawing
     if (!W) size();
-    if (visible && !drag) lon0 += spin;
+    if (visible && !drag) lon0 -= spin;   // land drifts left to right
     var c = Math.cos(-lon0 * D), s = Math.sin(-lon0 * D), ct = Math.cos(tilt), st = Math.sin(tilt);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, W, H);
 

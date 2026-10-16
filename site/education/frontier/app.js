@@ -315,6 +315,13 @@
     k = Math.max(k, k0 * 4); select(d); focus(d);
   }));
 
+  // collapse / expand every category in one section
+  document.querySelectorAll('[data-fold]').forEach((b) => b.addEventListener('click', () => {
+    b.closest('section').querySelectorAll('details.group').forEach((g) => { g.open = b.dataset.fold === 'open'; });
+  }));
+  // a card opened from the map lives inside a category: make sure that category is open when we jump to it
+  document.addEventListener('click', (e) => { const a = e.target.closest('a[href^="#c-"]'); if (!a) return; const el = document.getElementById(a.getAttribute('href').slice(1)); const g = el && el.closest('details'); if (g) g.open = true; });
+
   // ── boot ────────────────────────────────────────────────────────────────────
   function boot() { fit(); home();
     const id = location.hash.slice(1), d = id && ITEMS.find((x) => x.id === id);
