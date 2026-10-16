@@ -21,6 +21,9 @@ import { execSync } from 'node:child_process';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const SITE = 'https://jamesfloyds.world';
+// Where the frontier map's repo is checked out (github.com/jamesfloydbiz/education-frontier-map). On this Mac it is
+// ~/Projects/education-frontier-map; a cloud task that clones it elsewhere sets FRONTIER_DIR.
+const FRONTIER_DIR = process.env.FRONTIER_DIR || join(homedir(), 'Projects/education-frontier-map');
 
 const MAPS = [
   {
@@ -40,7 +43,7 @@ const MAPS = [
   },
   {
     slug: 'frontier',
-    src: join(homedir(), 'Projects/education-frontier-map/build'),
+    src: join(FRONTIER_DIR, 'build'),
     title: 'The Education Frontier',
     desc: 'New school models, education tools, studies and voices on a world map.', // James to rewrite
     titleTag: '<title>The Education Frontier</title>',
