@@ -82,10 +82,7 @@
     }
 
     /* ── About ──────────────────────────────────────────────── */
-    .ep-about { display: grid; grid-template-columns: 1fr; gap: 28px; align-items: start; margin: 40px 0 0; }
-    @media (min-width: 780px) { .ep-about { grid-template-columns: 240px 1fr; gap: 40px; } }
-    .ep-about__portrait { border: 1px solid var(--pf-border-med); overflow: hidden; }
-    .ep-about__portrait img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; object-position: 50% 30%; }
+    .ep-about { margin: 40px 0 0; max-width: 46rem; }
     .ep-about__lede {
       font-family: 'Playfair Display', serif; font-style: italic;
       font-size: clamp(1.2rem, 3vw, 1.75rem); line-height: 1.45; margin-bottom: 18px;
@@ -284,9 +281,6 @@
 
     <!-- ═══ ABOUT ═══ -->
     <section class="ep-about" aria-label="About James">
-      <figure class="ep-about__portrait">
-        <img src="/pictures/james-formal.jpeg" alt="James Floyd" width="400" height="500" loading="eager">
-      </figure>
       <div>
         <p class="ep-about__lede">&ldquo;I learn my theory from books and solutions from fires.&rdquo;</p>
         <p class="ep-about__p">Some people go to Stanford University, Google, or Goldman Sachs. I put out business and event fires. And I like it.</p>
