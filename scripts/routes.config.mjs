@@ -24,6 +24,7 @@ export const ROUTES = [
   { path: '/sonder/report', priority: 0.7, changefreq: 'monthly' },
   { path: '/projects', priority: 0.9, changefreq: 'weekly' },
   { path: '/portfolio', priority: 0.8, changefreq: 'monthly' },
+  { path: '/portfolio/events', priority: 0.8, changefreq: 'monthly' },
   { path: '/projects/tech-builds', priority: 0.8, changefreq: 'weekly' },
   { path: '/36-questions', priority: 0.6, changefreq: 'monthly' },
   { path: '/mentor-mindset', priority: 0.8, changefreq: 'monthly' },
