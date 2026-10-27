@@ -230,10 +230,6 @@
     @media (min-width: 880px) {
       /* Opened cards break out of their half of the layout. */
       .ep-chapter.is-open .ep-chapter__inner { width: 100%; margin-left: 0; }
-      /* Short entries read top-to-bottom, so they keep the narrow card. */
-      .ep-chapter.is-open:has(.ep-node--single) .ep-chapter__inner { width: 42%; margin-left: 0; }
-      .ep-chapter--right.is-open:has(.ep-node--single) .ep-chapter__inner { margin-left: 58%; }
-      .ep-node--single[open] > .ep-node__body { columns: auto; }
       /* Multi-column rather than grid: grid rows take the height of their
          tallest cell, which wasted most of what the extra width bought. */
       .ep-node[open] > .ep-node__body { columns: 3 290px; column-gap: 34px; }
@@ -317,6 +313,13 @@
     .ep-chapter--now { padding-top: 34px; }
     .ep-chapter--now .ep-node { border-color: var(--pf-fg); }
     .ep-chapter--now .ep-node__when { color: var(--pf-fg); }
+    .ep-now__logos {
+      display: flex; align-items: center; gap: 34px; flex-wrap: wrap; margin: 22px 0 4px;
+    }
+    .ep-now__logos img {
+      max-height: 34px; max-width: 150px; width: auto; height: auto;
+      mix-blend-mode: multiply;
+    }
 
     /* Growing-up chapter reads quieter than the working chapters. */
     .ep-chapter--soft .ep-node { border-style: dashed; }
@@ -383,6 +386,14 @@
         <div class="ep-skill">
           <p class="ep-skill__n">Event production</p>
           <p class="ep-skill__w">Jets and Capital &middot; Montero</p>
+        </div>
+        <div class="ep-skill">
+          <p class="ep-skill__n">Creative direction</p>
+          <p class="ep-skill__w">Andrew&rsquo;s Mixers &middot; Montero</p>
+        </div>
+        <div class="ep-skill">
+          <p class="ep-skill__n">Design consulting</p>
+          <p class="ep-skill__w">Fibe &middot; Jets and Capital</p>
         </div>
         <div class="ep-skill">
           <p class="ep-skill__n">Vendor management</p>
@@ -961,34 +972,7 @@
         </div>
       </section>
 
-      <!-- 9. FIBE -->
-      <section class="ep-chapter">
-        <div class="ep-chapter__inner">
-          <details class="ep-node ep-node--single">
-            <summary>
-              <div class="ep-node__head">
-                <p class="ep-node__when">Sep 2026 &mdash; present</p>
-                <h2 class="ep-node__title">Outlier Summit Operations</h2>
-                <p class="ep-node__where">Fibe &middot; Contract &middot; New York, NY &middot; Hybrid</p>
-                <p class="ep-node__more"><span>Read</span></p>
-              </div>
-            </summary>
-            <div class="ep-node__body">
-              <p class="ep-lead">&lsquo;James can you find Internet for 400 people to code at the same time?&rsquo;</p>
-              <ul class="ep-ul">
-                <li>and 1500-2000 branded water bottles.</li>
-                <li>and tents and heaters.</li>
-                <li>and figure out a TV, mics, and talk to this AV guy?</li>
-                <li>and maybe some executive protection?</li>
-              </ul>
-              <blockquote class="ep-pull">Yes.</blockquote>
-              <a class="ep-src" href="https://www.linkedin.com/in/jamesfloydl/" target="_blank" rel="noopener noreferrer">LinkedIn &rarr;</a>
-            </div>
-          </details>
-        </div>
-      </section>
-
-      <!-- 10. NOW -->
+      <!-- 9. NOW -->
       <section class="ep-chapter ep-chapter--now">
         <div class="ep-chapter__inner">
           <details class="ep-node" id="now" open>
@@ -1001,7 +985,11 @@
               </div>
             </summary>
             <div class="ep-node__body">
-              <p class="ep-lead">Based in NYC. Taking on select event contracts.</p>
+              <p class="ep-lead">Based in NYC, consulting and taking on select event contracts.</p>
+              <div class="ep-now__logos">
+                <img src="/logos/fibe.svg" alt="fibe" loading="lazy" decoding="async">
+                <img src="/logos/jets-trim.png" alt="Jets and Capital" loading="lazy" decoding="async">
+              </div>
               <p class="ep-p" style="margin-top:18px;">
                 <a class="ep-src" style="margin:0 18px 0 0;" href="https://www.linkedin.com/in/jamesfloydl/" target="_blank" rel="noopener noreferrer">LinkedIn &rarr;</a>
                 <a class="ep-src" style="margin:0 18px 0 0;" href="mailto:jamesfloydbiz@gmail.com">Email &rarr;</a>
