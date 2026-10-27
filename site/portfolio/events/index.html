@@ -132,7 +132,7 @@
     .ep-tl__dot { fill: var(--pf-bg); stroke: var(--pf-fg); stroke-width: 1; opacity: .55; }
     .ep-tl__line--draw { transition: stroke-dashoffset .1s linear; }
 
-    .ep-chapter { position: relative; z-index: 1; padding: 30px 0; }
+    .ep-chapter { position: relative; z-index: 1; padding: 11px 0; }
     .ep-chapter__inner { width: 100%; }
     @media (max-width: 879px) { .ep-tl { padding-left: 30px; } }
     @media (min-width: 880px) {
@@ -151,7 +151,7 @@
     .ep-node > summary::-webkit-details-marker { display: none; }
     .ep-node > summary:focus-visible { outline: 2px solid var(--pf-green); outline-offset: 2px; }
 
-    .ep-covers { display: grid; gap: 1px; background: var(--pf-border-med); }
+    .ep-covers { display: grid; gap: 2px; background: var(--pf-border-med); }
     .ep-covers--2 { grid-template-columns: 1fr 1fr; }
     .ep-covers--3 { grid-template-columns: 1.6fr 1fr; grid-template-rows: 1fr 1fr; }
     .ep-covers--3 > :first-child { grid-row: span 2; }
@@ -189,6 +189,41 @@
 
     .ep-node__body { padding: 0 18px 22px; border-top: 1px solid var(--pf-border); margin-top: 0; }
     .ep-node__body > *:first-child { margin-top: 18px; }
+    @media (min-width: 880px) {
+      /* Opened cards break out of their half of the layout. */
+      .ep-chapter.is-open .ep-chapter__inner { width: 100%; margin-left: 0; }
+      /* Multi-column rather than grid: grid rows take the height of their
+         tallest cell, which wasted most of what the extra width bought. */
+      .ep-node[open] > .ep-node__body { columns: 3 290px; column-gap: 34px; }
+      /* The framing, the numbers, the pictures and any loose paragraph stay
+         full-bleed; the field-note blocks are what flow into columns. */
+      .ep-node[open] > .ep-node__body > .ep-lead,
+      .ep-node[open] > .ep-node__body > .ep-stats,
+      .ep-node[open] > .ep-node__body > .ep-p,
+      .ep-node[open] > .ep-node__body > .ep-gal { column-span: all; }
+      /* A field-note block may run across a column boundary -- some hold four
+         stories and would otherwise claim a whole column to themselves. The
+         individual story is the unit that must not be split. */
+      .ep-node[open] > .ep-node__body > .ep-fn { margin-top: 0; margin-bottom: 20px; }
+      .ep-node[open] .ep-story,
+      .ep-node[open] > .ep-node__body > .ep-ol,
+      .ep-node[open] > .ep-node__body > .ep-ul,
+      .ep-node[open] .ep-pull { break-inside: avoid; }
+      .ep-node[open] .ep-fn__h { break-after: avoid; }
+      /* An open card's covers get more room, so run them in a strip. */
+      .ep-node[open] .ep-covers--3 { grid-template-columns: repeat(3, 1fr); grid-template-rows: none; }
+      .ep-node[open] .ep-covers--3 > :first-child { grid-row: auto; }
+      .ep-node[open] .ep-covers--3 > :first-child img { aspect-ratio: 4 / 3; }
+    }
+
+    /* Confirmed-photo strip inside an open card. */
+    .ep-gal { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 2px; margin: 4px 0 18px; }
+    .ep-gal figure { margin: 0; overflow: hidden; background: #e7e0d5; }
+    .ep-gal img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; filter: sepia(.08) contrast(1.02); }
+    .ep-gal figcaption {
+      font-family: 'DM Mono', monospace; font-size: 8px; letter-spacing: .12em;
+      text-transform: uppercase; color: var(--pf-muted); padding: 5px 2px 0;
+    }
     .ep-p { font-size: 15.5px; line-height: 1.78; color: var(--pf-body); margin-bottom: 14px; }
     .ep-p:last-child { margin-bottom: 0; }
     .ep-p strong, .ep-ul strong, .ep-ol strong { font-weight: 500; color: var(--pf-fg); }
@@ -232,6 +267,14 @@
       font-family: 'DM Mono', monospace; font-size: 8.5px; letter-spacing: .14em;
       text-transform: uppercase; color: var(--pf-muted); margin-top: 5px; line-height: 1.5;
     }
+
+    /* Now is the destination: centred, full width, heavier rule. */
+    @media (min-width: 880px) {
+      .ep-chapter--now .ep-chapter__inner { width: 60%; margin-left: 20%; }
+    }
+    .ep-chapter--now { padding-top: 34px; }
+    .ep-chapter--now .ep-node { border-color: var(--pf-fg); }
+    .ep-chapter--now .ep-node__when { color: var(--pf-fg); }
 
     /* Growing-up chapter reads quieter than the working chapters. */
     .ep-chapter--soft .ep-node { border-style: dashed; }
@@ -365,7 +408,7 @@
             <summary>
               <div class="ep-covers ep-covers--3">
                 <figure><img src="/pictures/IMG_1977.jpg" alt="James as a boy in a suit, fixing his bow tie" loading="lazy" decoding="async"></figure>
-                <figure><img src="/pictures/IMG_9451.png" alt="Three boys with race bibs at a turkey trot" loading="lazy" decoding="async"></figure>
+                <figure><img src="/pictures/IMG_1978.jpg" alt="James in high school" loading="lazy" decoding="async"></figure>
                 <figure><img src="/pictures/IMG_0610.jpg" alt="Three boys outside on a court" loading="lazy" decoding="async"></figure>
               </div>
               <div class="ep-node__head">
@@ -412,11 +455,6 @@
         <div class="ep-chapter__inner">
           <details class="ep-node">
             <summary>
-              <div class="ep-covers ep-covers--3">
-                <figure><img src="/pictures/IMG_2610.jpeg" alt="A dark ballroom with a lit stage and a standing crowd" loading="lazy" decoding="async"></figure>
-                <figure><img src="/linkedin/media/2026-02-08_a-1200-lbs-stage-was-set-up_1.jpg" alt="A black stage and rows of chairs in an empty hall before doors" loading="lazy" decoding="async"></figure>
-                <figure><img src="/pictures/75140DD1-DBC5-4F23-82B7-EA44DCC2780A.jpg" alt="James and others dressed for an evening event" loading="lazy" decoding="async"></figure>
-              </div>
               <div class="ep-node__head">
                 <p class="ep-node__when">May 2023 &ndash; Dec 2024</p>
                 <h2 class="ep-node__title">The Seattle galas</h2>
@@ -461,10 +499,6 @@
         <div class="ep-chapter__inner">
           <details class="ep-node">
             <summary>
-              <div class="ep-covers ep-covers--2">
-                <figure><img src="/pictures/IMG_0647.jpg" alt="A hotel ballroom full of people in front of a lit stage" loading="lazy" decoding="async"></figure>
-                <figure><img src="/pictures/IMG_7136.jpeg" alt="A group gathered in a room between sessions" loading="lazy" decoding="async"></figure>
-              </div>
               <div class="ep-node__head">
                 <p class="ep-node__when">Nov 2023 &ndash; Oct 2024</p>
                 <h2 class="ep-node__title">Keiretsu Forum</h2>
@@ -517,9 +551,8 @@
         <div class="ep-chapter__inner">
           <details class="ep-node">
             <summary>
-              <div class="ep-covers ep-covers--2">
-                <figure><img src="/linkedin/media/2026-01-09_i-think-most-event-producers-miss-out_1.jpg" alt="A podcast studio lit and set up for recording" loading="lazy" decoding="async"></figure>
-                <figure><img src="/linkedin/media/2026-01-21_caleb-guilliams-put-peoples-faces-on-socks_1.jpg" alt="Socks printed with guests' faces, sealed in a pack" loading="lazy" decoding="async"></figure>
+              <div class="ep-covers">
+                <figure><img src="/linkedin/media/2026-01-21_caleb-guilliams-put-peoples-faces-on-socks_1.jpg" alt="Socks printed with guests&rsquo; faces, sealed in a pack" loading="lazy" decoding="async"></figure>
               </div>
               <div class="ep-node__head">
                 <p class="ep-node__when">Nov 2024 &ndash; Dec 2025</p>
@@ -565,9 +598,9 @@
           <details class="ep-node">
             <summary>
               <div class="ep-covers ep-covers--3">
-                <figure><img src="/pictures/IMG_1978_Original.jpg" alt="Private jets on the tarmac at dusk with guests walking between them" loading="lazy" decoding="async"></figure>
-                <figure><img src="/linkedin/media/2025-02-16_in-some-rooms-you-can-tell-that_3.jpg" alt="The Jets and Capital step-and-repeat with sponsor logos" loading="lazy" decoding="async"></figure>
-                <figure><img src="/linkedin/media/2025-02-16_in-some-rooms-you-can-tell-that_2.jpg" alt="A warm, crowded room of guests at a Jets and Capital night" loading="lazy" decoding="async"></figure>
+                <figure><img src="/pictures/IMG_1978_Original.jpg" alt="Private jets on the tarmac with guests walking between them, Miami, 2 May 2025" loading="lazy" decoding="async"></figure>
+                <figure><img src="/pictures/Jets_&amp;_Capital_Miami_BTS_Day_0-58.jpeg" alt="Guests gathered before the gold curtain, Miami, 2 May 2025" loading="lazy" decoding="async"></figure>
+                <figure><img src="/pictures/IMG_2610.jpeg" alt="The room on the last night, Miami, 4 May 2025" loading="lazy" decoding="async"></figure>
               </div>
               <div class="ep-node__head">
                 <p class="ep-node__when">Sep 2023 volunteer &middot; Jan 2025 &ndash; Feb 2026 producer</p>
@@ -588,9 +621,19 @@
 
               <p class="ep-p">Ran or supported event production at high-profile venues including Trump Doral Miami, Caesars Palace, The Intrepid Aircraft Carrier, and private jet hangars.</p>
 
+              <div class="ep-gal">
+                <figure><img src="/pictures/IMG_7136.jpeg" alt="A room of guests in Salt Lake City" loading="lazy" decoding="async"><figcaption>Salt Lake City &middot; 30 Jan 2025</figcaption></figure>
+                <figure><img src="/pictures/IMG_2001_Original.jpg" alt="The team in the hangar before doors" loading="lazy" decoding="async"><figcaption>Miami &middot; 2 May 2025</figcaption></figure>
+                <figure><img src="/pictures/Jets_&amp;_Capital_Miami_BTS_Day_0-83.jpeg" alt="The ballroom laid out before guests arrive" loading="lazy" decoding="async"><figcaption>Miami &middot; 2 May 2025</figcaption></figure>
+                <figure><img src="/pictures/IMG_2158_Original.jpg" alt="Guests in the hangar beside a jet" loading="lazy" decoding="async"><figcaption>Miami &middot; 3 May 2025</figcaption></figure>
+                <figure><img src="/pictures/IMG_0647.jpg" alt="The room filled in front of the stage" loading="lazy" decoding="async"><figcaption>Miami &middot; 3 May 2025</figcaption></figure>
+                <figure><img src="/pictures/IMG_2488.jpeg" alt="Food trucks and guests outside" loading="lazy" decoding="async"><figcaption>Miami &middot; 4 May 2025</figcaption></figure>
+              </div>
+
               <div class="ep-fn">
                 <p class="ep-fn__h">The run of show</p>
                 <ul class="ep-ul">
+                  <li><strong>Jan 2025 &mdash; Salt Lake City.</strong></li>
                   <li><strong>Feb 2025 &mdash; Vegas.</strong> <a class="ep-src" style="margin:0;" href="https://www.instagram.com/p/DFl_5BnJl7c/" target="_blank" rel="noopener noreferrer">Instagram &rarr;</a></li>
                   <li><strong>May 2025 &mdash; Miami,</strong> Trump Doral. <a class="ep-src" style="margin:0;" href="https://www.instagram.com/p/DJqNwQ4s49j/" target="_blank" rel="noopener noreferrer">Instagram &rarr;</a></li>
                   <li><strong>Oct 2025 &mdash; New York,</strong> The Intrepid Aircraft Carrier. <a class="ep-src" style="margin:0;" href="https://www.instagram.com/p/DPU8V_YjHKh/" target="_blank" rel="noopener noreferrer">Instagram &rarr;</a></li>
@@ -667,9 +710,8 @@
         <div class="ep-chapter__inner">
           <details class="ep-node">
             <summary>
-              <div class="ep-covers ep-covers--2">
+              <div class="ep-covers">
                 <figure><img src="/linkedin/media/2026-03-11_because-im-a-nerd-i-research-every_1.jpg" alt="The illustrated SXSW 2026 mural" loading="lazy" decoding="async"></figure>
-                <figure><img src="/linkedin/media/2026-03-13_sxsw-stats-update_1.jpg" alt="A packed hall of people during SXSW" loading="lazy" decoding="async"></figure>
               </div>
               <div class="ep-node__head">
                 <p class="ep-node__when">March 2026</p>
@@ -723,9 +765,6 @@
         <div class="ep-chapter__inner">
           <details class="ep-node">
             <summary>
-              <div class="ep-covers">
-                <figure><img src="/linkedin/media/2026-04-17_yesterday-dulcinea-looked-at-me-with-wide_1.jpg" alt="The QLC group outside during event prep in Kansas City" loading="lazy" decoding="async"></figure>
-              </div>
               <div class="ep-node__head">
                 <p class="ep-node__when">April 2026</p>
                 <h2 class="ep-node__title">The QLC Summit</h2>
@@ -777,6 +816,32 @@
               <p class="ep-p">None of it was mine. Not my event, not my liability. Nobody asked me do solve most of those. I did it anyway. 2pm to midnight. When I walked out, people were still on the sidewalk talking and smiling. None the wiser.</p>
               <blockquote class="ep-pull">Some people go to Stanford University, Google, or Goldman Sachs. I put out business and event fires. And I like it.</blockquote>
               <a class="ep-src" href="https://www.linkedin.com/feed/update/urn%3Ali%3AugcPost%3A7469135081882939392" target="_blank" rel="noopener noreferrer">Post &rarr;</a>
+            </div>
+          </details>
+        </div>
+      </section>
+
+      <!-- 9. NOW -->
+      <section class="ep-chapter ep-chapter--now">
+        <div class="ep-chapter__inner">
+          <details class="ep-node" id="now" open>
+            <summary>
+              <div class="ep-node__head">
+                <p class="ep-node__when">Now</p>
+                <h2 class="ep-node__title">New York</h2>
+                <p class="ep-node__where">2026 &mdash; present</p>
+                <p class="ep-node__more"><span>Read</span></p>
+              </div>
+            </summary>
+            <div class="ep-node__body">
+              <p class="ep-lead">Moving to NYC, looking to do more events in-person. If you&rsquo;re building any let&rsquo;s talk.</p>
+              <p class="ep-p">This city is a hub of communities. The density of events, the spaces, the people building these experiences &mdash; it&rsquo;s all here. If the answer exists, it&rsquo;s likely somewhere in these streets.</p>
+              <p class="ep-p">If you need someone who thinks about these details for your NYC events &mdash; I&rsquo;m your guy.</p>
+              <p class="ep-p" style="margin-top:18px;">
+                <a class="ep-src" style="margin:0 18px 0 0;" href="https://www.linkedin.com/in/jamesfloydl/" target="_blank" rel="noopener noreferrer">LinkedIn &rarr;</a>
+                <a class="ep-src" style="margin:0 18px 0 0;" href="mailto:jamesfloydbiz@gmail.com">Email &rarr;</a>
+                <a class="ep-src" style="margin:0;" href="/events/">Events James throws &rarr;</a>
+              </p>
             </div>
           </details>
         </div>
@@ -964,7 +1029,15 @@
     window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', build);
     // Opening a card changes the timeline height, so re-measure.
-    tl.addEventListener('toggle', function () { setTimeout(build, 0); }, true);
+    tl.addEventListener('toggle', function (e) {
+      var ch = e.target.closest && e.target.closest('.ep-chapter');
+      if (ch) ch.classList.toggle('is-open', e.target.open);
+      setTimeout(build, 0);
+    }, true);
+    // The Now card ships open, so reflect that before the first measure.
+    tl.querySelectorAll('.ep-node[open]').forEach(function (n) {
+      var ch = n.closest('.ep-chapter'); if (ch) ch.classList.add('is-open');
+    });
     window.addEventListener('load', build);
     if (window.ResizeObserver) new ResizeObserver(build).observe(tl);
   })();
