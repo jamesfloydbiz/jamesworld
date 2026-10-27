@@ -4,17 +4,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Events &amp; Production — James Floyd</title>
-  <meta name="description" content="James Floyd's event planning and production portfolio — Jets and Capital, BetterWealth, Keiretsu Forum, Montero Productions, and Andrew Yeung's mixers. Hangars, carriers, Art Basel, F1, SXSW, and the Super Bowl.">
+  <meta name="description" content="James Floyd's event planning and production work, as a timeline — from a high school club in Davis to Seattle galas, Keiretsu Forum, BetterWealth, Jets and Capital hangars, and Andrew Yeung's rooms.">
   <link rel="canonical" href="https://jamesfloyds.world/portfolio/events/">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://jamesfloyds.world/portfolio/events/">
   <meta property="og:title" content="Events &amp; Production — James Floyd">
   <meta property="og:description" content="I put out business and event fires. And I like it.">
-  <meta property="og:image" content="https://jamesfloyds.world/pictures/Jets_&amp;_Capital_Miami_BTS_Day_0-58.jpeg">
+  <meta property="og:image" content="https://jamesfloyds.world/pictures/IMG_1978_Original.jpg">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Events &amp; Production — James Floyd">
   <meta name="twitter:description" content="I put out business and event fires. And I like it.">
-  <meta name="twitter:image" content="https://jamesfloyds.world/pictures/Jets_&amp;_Capital_Miami_BTS_Day_0-58.jpeg">
+  <meta name="twitter:image" content="https://jamesfloyds.world/pictures/IMG_1978_Original.jpg">
   <link rel="icon" href="/favicon.ico" sizes="any">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -22,8 +22,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=DM+Mono:wght@300;400&display=swap">
 
   <style>
-    /* Same newspaper palette and type as /portfolio/, so this reads as a
-       section of the same paper rather than a separate site. */
+    /* Same palette and type as /portfolio/, so this reads as the same paper. */
     :root {
       --pf-bg: #f5f0e8;
       --pf-fg: #1a1a1a;
@@ -40,6 +39,7 @@
       background: var(--pf-bg); color: var(--pf-fg);
       font-family: 'EB Garamond', Georgia, serif;
       min-height: 100vh; min-height: 100dvh; position: relative;
+      overflow-x: hidden;
     }
     body::before {
       content: ''; pointer-events: none; position: fixed; inset: 0; z-index: 60; opacity: .04;
@@ -62,168 +62,206 @@
     }
     .ep-nav__back:hover { color: var(--pf-fg); }
 
-    .ep-main { max-width: 1120px; margin: 0 auto; padding: 72px 20px 100px; }
-    .ep-section { padding: 48px 0; }
+    .ep-main { max-width: 1120px; margin: 0 auto; padding: 72px 20px 90px; }
     .ep-rule { height: 1px; background: var(--pf-border-med); }
     .ep-rule--med { height: 3px; background: var(--pf-fg); }
-
     .ep-label {
       font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: .3em;
-      text-transform: uppercase; color: var(--pf-muted); margin-bottom: 22px;
+      text-transform: uppercase; color: var(--pf-muted);
     }
-    .ep-h1 {
-      font-family: 'Playfair Display', serif; font-weight: 900;
-      font-size: clamp(2.6rem, 9vw, 5.2rem); line-height: .95;
-      letter-spacing: -.02em; text-transform: uppercase; text-align: center;
-    }
+
+    /* ── Masthead ───────────────────────────────────────────── */
     .ep-dateline {
       font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: .3em;
       text-transform: uppercase; color: var(--pf-muted); text-align: center;
     }
-    .ep-h2 {
-      font-family: 'Playfair Display', serif; font-weight: 700;
-      font-size: 1.35rem; line-height: 1.25; margin-bottom: 10px;
-    }
-    .ep-h3 {
-      font-family: 'Playfair Display', serif; font-weight: 700;
-      font-size: 1.05rem; line-height: 1.3; margin-bottom: 8px;
-    }
-    .ep-kicker {
-      font-family: 'DM Mono', monospace; font-size: 9.5px; letter-spacing: .22em;
-      text-transform: uppercase; color: var(--pf-green); margin-bottom: 10px;
-    }
-    .ep-p { font-size: 15.5px; line-height: 1.8; color: var(--pf-body); margin-bottom: 14px; }
-    .ep-p:last-child { margin-bottom: 0; }
-
-    /* Lede: his own line, set as the drop-quote under the masthead. */
-    .ep-lede {
-      font-family: 'Playfair Display', serif; font-style: italic;
-      font-size: clamp(1.15rem, 3.2vw, 1.6rem); line-height: 1.5;
-      text-align: center; max-width: 40rem; margin: 0 auto;
-    }
-    .ep-lede__attr {
-      font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: .25em;
-      text-transform: uppercase; color: var(--pf-muted); text-align: center; margin-top: 16px;
-    }
-    .ep-lede__attr a { color: var(--pf-brown); text-decoration: none; }
-    .ep-lede__attr a:hover { text-decoration: underline; }
-
-    .ep-hero { border: 1px solid var(--pf-border-med); }
-
-    /* Numbers */
-    .ep-nums {
-      display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px;
-    }
-    @media (min-width: 640px) { .ep-nums { grid-template-columns: repeat(3, 1fr); } }
-    @media (min-width: 940px) { .ep-nums { grid-template-columns: repeat(5, 1fr); } }
-    .ep-num { background: var(--pf-bg); padding: 20px 16px; box-shadow: 0 0 0 1px var(--pf-border-med); }
-    .ep-num__v {
+    .ep-h1 {
       font-family: 'Playfair Display', serif; font-weight: 900;
-      font-size: clamp(1.3rem, 3.4vw, 1.9rem); line-height: 1.05; margin-bottom: 8px;
+      font-size: clamp(2.5rem, 9vw, 5rem); line-height: .95;
+      letter-spacing: -.02em; text-transform: uppercase; text-align: center;
     }
-    .ep-num__k {
-      font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: .14em;
+
+    /* ── About ──────────────────────────────────────────────── */
+    .ep-about { display: grid; grid-template-columns: 1fr; gap: 28px; align-items: start; margin: 40px 0 0; }
+    @media (min-width: 780px) { .ep-about { grid-template-columns: 240px 1fr; gap: 40px; } }
+    .ep-about__portrait { border: 1px solid var(--pf-border-med); overflow: hidden; }
+    .ep-about__portrait img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; object-position: 50% 30%; }
+    .ep-about__lede {
+      font-family: 'Playfair Display', serif; font-style: italic;
+      font-size: clamp(1.2rem, 3vw, 1.75rem); line-height: 1.45; margin-bottom: 18px;
+    }
+    .ep-about__p { font-size: 16px; line-height: 1.8; color: var(--pf-body); margin-bottom: 14px; }
+    .ep-about__src {
+      display: inline-block; font-family: 'DM Mono', monospace; font-size: 9.5px;
+      letter-spacing: .18em; text-transform: uppercase; color: var(--pf-brown); text-decoration: none;
+    }
+    .ep-about__src:hover { text-decoration: underline; }
+
+    /* Reference cards — horizontal scroll rail, no JS. */
+    .ep-refs { margin-top: 44px; }
+    .ep-refs__rail {
+      display: grid; grid-auto-flow: column; grid-auto-columns: minmax(260px, 300px);
+      gap: 1px; overflow-x: auto; padding-bottom: 10px;
+      scroll-snap-type: x mandatory; scrollbar-width: thin;
+    }
+    .ep-ref {
+      scroll-snap-align: start; background: var(--pf-bg);
+      box-shadow: 0 0 0 1px var(--pf-border-med); padding: 20px 20px 18px;
+      display: flex; flex-direction: column;
+    }
+    .ep-ref__q { font-size: 15px; line-height: 1.65; color: var(--pf-fg); flex: 1; margin-bottom: 14px; }
+    .ep-ref__who {
+      font-family: 'Playfair Display', serif; font-weight: 700; font-size: .95rem; margin-bottom: 3px;
+    }
+    .ep-ref__role {
+      font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: .12em;
       text-transform: uppercase; color: var(--pf-muted); line-height: 1.6;
     }
-
-    /* Role / volunteer cards */
-    .ep-grid2 { display: grid; grid-template-columns: 1fr; gap: 36px; }
-    @media (min-width: 760px) { .ep-grid2 { grid-template-columns: 1fr 1fr; gap: 44px; } }
-    .ep-grid3 { display: grid; grid-template-columns: 1fr; gap: 36px; }
-    @media (min-width: 760px) { .ep-grid3 { grid-template-columns: repeat(3, 1fr); gap: 32px; } }
-
-    .ep-card { border-top: 2px solid var(--pf-fg); padding-top: 16px; }
-    .ep-card__meta {
-      font-family: 'DM Mono', monospace; font-size: 9.5px; letter-spacing: .16em;
-      text-transform: uppercase; color: var(--pf-muted); margin-bottom: 12px;
-    }
-    .ep-ul { list-style: disc; padding-left: 20px; }
-    .ep-ul li { font-size: 15px; line-height: 1.7; color: var(--pf-body); margin-bottom: 9px; }
-    .ep-ul li::marker { color: var(--pf-muted); }
-    .ep-ol { list-style: decimal; padding-left: 22px; }
-    .ep-ol li { font-size: 15px; line-height: 1.7; color: var(--pf-body); margin-bottom: 9px; }
-    .ep-ol li::marker { color: var(--pf-green); font-family: 'DM Mono', monospace; font-size: 12px; }
-    .ep-ul strong, .ep-ol strong, .ep-p strong { font-weight: 500; color: var(--pf-fg); }
-
-    /* Run of show table */
-    .ep-table { width: 100%; border-collapse: collapse; }
-    .ep-table th {
+    .ep-refs__hint {
       font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: .2em;
-      text-transform: uppercase; color: var(--pf-muted); text-align: left;
-      padding: 0 14px 10px 0; border-bottom: 2px solid var(--pf-fg); font-weight: 400;
-    }
-    .ep-table td {
-      padding: 14px 14px 14px 0; border-bottom: 1px solid var(--pf-border);
-      font-size: 15px; line-height: 1.5; color: var(--pf-body); vertical-align: top;
-    }
-    .ep-table td.ep-td--when {
-      font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: .06em;
-      color: var(--pf-muted); white-space: nowrap;
-    }
-    .ep-table td.ep-td--what { color: var(--pf-fg); font-size: 16px; }
-    .ep-table a { color: var(--pf-brown); text-decoration: none; font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: .14em; text-transform: uppercase; white-space: nowrap; }
-    .ep-table a:hover { text-decoration: underline; }
-    .ep-table__wrap { overflow-x: auto; }
-
-    /* Field stories */
-    .ep-story { border-top: 1px solid var(--pf-border-med); padding-top: 26px; margin-top: 34px; }
-    .ep-story:first-of-type { border-top: 0; margin-top: 0; padding-top: 0; }
-    @media (min-width: 820px) {
-      .ep-story--img { display: grid; grid-template-columns: 1fr 300px; gap: 34px; align-items: start; }
-    }
-    .ep-story__fig { border: 1px solid var(--pf-border-med); }
-    .ep-story__fig img { filter: sepia(.06) contrast(1.01); }
-    .ep-src {
-      display: inline-block; font-family: 'DM Mono', monospace; font-size: 9.5px;
-      letter-spacing: .18em; text-transform: uppercase; color: var(--pf-brown);
-      text-decoration: none; margin-top: 12px;
-    }
-    .ep-src:hover { text-decoration: underline; }
-
-    /* Pull quote */
-    .ep-pull {
-      font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.15rem;
-      line-height: 1.55; color: var(--pf-fg); border-left: 2px solid var(--pf-green);
-      padding-left: 20px; margin: 20px 0;
+      text-transform: uppercase; color: var(--pf-muted); margin-top: 12px;
     }
 
-    /* Dispatch cards */
-    .ep-dispatches { display: grid; grid-template-columns: 1fr; gap: 1px; }
-    @media (min-width: 620px) { .ep-dispatches { grid-template-columns: 1fr 1fr; } }
-    @media (min-width: 940px) { .ep-dispatches { grid-template-columns: repeat(3, 1fr); } }
-    .ep-dispatch {
-      background: var(--pf-bg); padding: 22px 20px; text-decoration: none;
-      display: block; transition: background .2s;
-      box-shadow: 0 0 0 1px var(--pf-border-med);
+    /* ── Timeline ───────────────────────────────────────────── */
+    .ep-tl { position: relative; margin-top: 24px; }
+    /* The winding path. preserveAspectRatio="none" stretches the viewBox to the
+       timeline's real height; non-scaling-stroke keeps the line hairline-thin
+       no matter how far it is stretched. */
+    .ep-tl__svg {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      pointer-events: none; z-index: 0;
     }
-    .ep-dispatch:hover { background: #efe8de; }
-    .ep-dispatch__when {
-      font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: .2em;
-      text-transform: uppercase; color: var(--pf-muted); margin-bottom: 10px;
+    .ep-tl__line { fill: none; stroke: var(--pf-fg); stroke-width: 1; opacity: .45; }
+    .ep-tl__dot { fill: var(--pf-bg); stroke: var(--pf-fg); stroke-width: 1; opacity: .55; }
+    .ep-tl__line--draw { transition: stroke-dashoffset .1s linear; }
+
+    .ep-chapter { position: relative; z-index: 1; padding: 30px 0; }
+    .ep-chapter__inner { width: 100%; }
+    @media (max-width: 879px) { .ep-tl { padding-left: 30px; } }
+    @media (min-width: 880px) {
+      .ep-chapter__inner { width: 42%; }
+      .ep-chapter--right .ep-chapter__inner { margin-left: 58%; }
     }
-    .ep-dispatch__what {
-      font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.05rem;
-      line-height: 1.3; color: var(--pf-fg); margin-bottom: 10px;
+
+    .ep-node {
+      border: 1px solid var(--pf-border-med); background: var(--pf-bg);
+      transition: box-shadow .25s, transform .25s;
     }
-    .ep-dispatch__go {
-      font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: .18em;
+    .ep-node[open] { box-shadow: 0 2px 0 0 var(--pf-fg); }
+    .ep-node > summary {
+      list-style: none; cursor: pointer; display: block; padding: 0;
+    }
+    .ep-node > summary::-webkit-details-marker { display: none; }
+    .ep-node > summary:focus-visible { outline: 2px solid var(--pf-green); outline-offset: 2px; }
+
+    .ep-covers { display: grid; gap: 1px; background: var(--pf-border-med); }
+    .ep-covers--2 { grid-template-columns: 1fr 1fr; }
+    .ep-covers--3 { grid-template-columns: 1.6fr 1fr; grid-template-rows: 1fr 1fr; }
+    .ep-covers--3 > :first-child { grid-row: span 2; }
+    .ep-covers figure { margin: 0; overflow: hidden; background: #e7e0d5; }
+    .ep-covers img {
+      width: 100%; height: 100%; object-fit: cover; aspect-ratio: 4 / 3;
+      filter: sepia(.08) contrast(1.02); transition: transform .5s ease, filter .4s;
+    }
+    .ep-covers--3 > :first-child img { aspect-ratio: 4 / 5; }
+    .ep-covers--3 > :not(:first-child) img { aspect-ratio: 4 / 3; }
+    .ep-node > summary:hover .ep-covers img { transform: scale(1.03); filter: sepia(0) contrast(1.04); }
+
+    .ep-node__head { padding: 16px 18px 18px; }
+    .ep-node__when {
+      font-family: 'DM Mono', monospace; font-size: 9.5px; letter-spacing: .2em;
+      text-transform: uppercase; color: var(--pf-green); margin-bottom: 8px;
+    }
+    .ep-node__title {
+      font-family: 'Playfair Display', serif; font-weight: 900;
+      font-size: clamp(1.25rem, 2.6vw, 1.7rem); line-height: 1.15; letter-spacing: -.01em;
+    }
+    .ep-node__where {
+      font-family: 'DM Mono', monospace; font-size: 9.5px; letter-spacing: .14em;
+      text-transform: uppercase; color: var(--pf-muted); margin-top: 8px;
+    }
+    .ep-node__more {
+      display: inline-flex; align-items: center; gap: 7px; margin-top: 14px;
+      font-family: 'DM Mono', monospace; font-size: 9.5px; letter-spacing: .2em;
       text-transform: uppercase; color: var(--pf-brown);
     }
+    .ep-node__more::after { content: '+'; font-size: 13px; line-height: 1; }
+    .ep-node[open] .ep-node__more::after { content: '–'; }
+    .ep-node[open] .ep-node__more span::after { content: ' less'; }
+    .ep-node:not([open]) .ep-node__more span::after { content: ' more'; }
 
-    /* Explore */
-    .ep-explore { display: grid; grid-template-columns: 1fr; gap: 1px; background: var(--pf-border-med); border: 1px solid var(--pf-border-med); }
+    .ep-node__body { padding: 0 18px 22px; border-top: 1px solid var(--pf-border); margin-top: 0; }
+    .ep-node__body > *:first-child { margin-top: 18px; }
+    .ep-p { font-size: 15.5px; line-height: 1.78; color: var(--pf-body); margin-bottom: 14px; }
+    .ep-p:last-child { margin-bottom: 0; }
+    .ep-p strong, .ep-ul strong, .ep-ol strong { font-weight: 500; color: var(--pf-fg); }
+    .ep-lead { font-size: 16.5px; line-height: 1.7; color: var(--pf-fg); margin-bottom: 16px; }
+
+    .ep-fn {
+      border-top: 1px solid var(--pf-border); margin-top: 20px; padding-top: 16px;
+    }
+    .ep-fn__h {
+      font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: .25em;
+      text-transform: uppercase; color: var(--pf-muted); margin-bottom: 12px;
+    }
+    .ep-story { margin-bottom: 22px; }
+    .ep-story:last-child { margin-bottom: 0; }
+    .ep-story__h {
+      font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.05rem;
+      line-height: 1.3; margin-bottom: 8px;
+    }
+    .ep-ul { list-style: disc; padding-left: 19px; margin-bottom: 14px; }
+    .ep-ol { list-style: decimal; padding-left: 21px; margin-bottom: 14px; }
+    .ep-ul li, .ep-ol li { font-size: 15px; line-height: 1.7; color: var(--pf-body); margin-bottom: 7px; }
+    .ep-ul li::marker { color: var(--pf-muted); }
+    .ep-ol li::marker { color: var(--pf-green); font-family: 'DM Mono', monospace; font-size: 11.5px; }
+    .ep-pull {
+      font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.1rem;
+      line-height: 1.55; color: var(--pf-fg); border-left: 2px solid var(--pf-green);
+      padding-left: 18px; margin: 16px 0;
+    }
+    .ep-src {
+      display: inline-block; font-family: 'DM Mono', monospace; font-size: 9px;
+      letter-spacing: .18em; text-transform: uppercase; color: var(--pf-brown);
+      text-decoration: none; margin-top: 4px;
+    }
+    .ep-src:hover { text-decoration: underline; }
+    .ep-stats {
+      display: flex; flex-wrap: wrap; gap: 10px 26px; margin: 4px 0 18px;
+      padding: 14px 0; border-top: 1px solid var(--pf-border); border-bottom: 1px solid var(--pf-border);
+    }
+    .ep-stat__v { font-family: 'Playfair Display', serif; font-weight: 900; font-size: 1.15rem; line-height: 1; }
+    .ep-stat__k {
+      font-family: 'DM Mono', monospace; font-size: 8.5px; letter-spacing: .14em;
+      text-transform: uppercase; color: var(--pf-muted); margin-top: 5px; line-height: 1.5;
+    }
+
+    /* Growing-up chapter reads quieter than the working chapters. */
+    .ep-chapter--soft .ep-node { border-style: dashed; }
+    .ep-chapter--soft .ep-node__when { color: var(--pf-muted); }
+
+    /* ── Explore / footer ───────────────────────────────────── */
+    .ep-explore { display: grid; grid-template-columns: 1fr; gap: 1px; margin-top: 10px; }
     @media (min-width: 620px) { .ep-explore { grid-template-columns: 1fr 1fr; } }
     @media (min-width: 940px) { .ep-explore { grid-template-columns: repeat(3, 1fr); } }
-    .ep-explore__item { background: var(--pf-bg); padding: 20px; text-decoration: none; display: block; }
+    .ep-explore__item {
+      background: var(--pf-bg); padding: 20px; text-decoration: none; display: block;
+      box-shadow: 0 0 0 1px var(--pf-border-med);
+    }
     .ep-explore__item:hover { background: #efe8de; }
     .ep-explore__label { display: block; font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1rem; margin-bottom: 6px; }
     .ep-explore__desc { display: block; font-size: 14px; line-height: 1.6; color: var(--pf-body); }
-
     .ep-footer {
       display: flex; align-items: center; justify-content: space-between;
       padding: 28px 20px; border-top: 1px solid var(--pf-border-med);
       font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: .25em;
       text-transform: uppercase; color: var(--pf-muted); max-width: 1120px; margin: 0 auto;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .ep-covers img, .ep-node { transition: none; }
+      .ep-tl__line--draw { transition: none; }
     }
   </style>
 </head>
@@ -236,333 +274,536 @@
 
   <main class="ep-main">
 
-    <!-- MASTHEAD -->
-    <section class="ep-section" style="padding-top:28px;padding-bottom:0;">
+    <!-- ═══ MASTHEAD ═══ -->
+    <header>
       <p class="ep-dateline">The Times of James &middot; Special Edition</p>
       <div class="ep-rule ep-rule--med" style="margin:16px 0;"></div>
       <h1 class="ep-h1">Events &amp; Production</h1>
-      <div class="ep-rule" style="margin:20px 0 36px;"></div>
+      <div class="ep-rule" style="margin:20px 0 0;"></div>
+    </header>
 
-      <blockquote class="ep-lede">
-        &ldquo;I learn my theory from books and solutions from fires.&rdquo;
-      </blockquote>
-      <p class="ep-lede__attr">
-        James Floyd &middot;
-        <a href="https://www.linkedin.com/feed/update/urn%3Ali%3AugcPost%3A7469135081882939392" target="_blank" rel="noopener noreferrer">I worked Andrew Yeung&rsquo;s Extravaganza</a>
-      </p>
-
-      <figure class="ep-hero" style="margin-top:36px;">
-        <img src="/pictures/Jets_&amp;_Capital_Miami_BTS_Day_0-58.jpeg" alt="James Floyd at Jets and Capital Miami" loading="eager">
+    <!-- ═══ ABOUT ═══ -->
+    <section class="ep-about" aria-label="About James">
+      <figure class="ep-about__portrait">
+        <img src="/pictures/james-formal.jpeg" alt="James Floyd" width="400" height="500" loading="eager">
       </figure>
-    </section>
-
-    <!-- BY THE NUMBERS -->
-    <section class="ep-section">
-      <p class="ep-label">&sect; By the Numbers</p>
-      <div class="ep-nums">
-        <div class="ep-num"><p class="ep-num__v">~103</p><p class="ep-num__k">Days at events<br>in 2025</p></div>
-        <div class="ep-num"><p class="ep-num__v">$400B&ndash;$2T+</p><p class="ep-num__k">Cumulative AUM<br>in the room</p></div>
-        <div class="ep-num"><p class="ep-num__v">~2,000</p><p class="ep-num__k">Family offices &amp; qualified individuals, run-of-show</p></div>
-        <div class="ep-num"><p class="ep-num__v">900+</p><p class="ep-num__k">Attendees &mdash; teams led<br>in event operations</p></div>
-        <div class="ep-num"><p class="ep-num__v">5</p><p class="ep-num__k">Cities &mdash; SLC, Vegas,<br>Miami, NY, SF</p></div>
-        <div class="ep-num"><p class="ep-num__v">500</p><p class="ep-num__k">Guests re-contacted<br>in 24 hours</p></div>
-        <div class="ep-num"><p class="ep-num__v">2,000</p><p class="ep-num__k">Showed up to the<br>secret garden party</p></div>
-        <div class="ep-num"><p class="ep-num__v">1,200 lbs</p><p class="ep-num__k">Stage moved<br>with kids&rsquo; toys</p></div>
-        <div class="ep-num"><p class="ep-num__v">2&times;</p><p class="ep-num__k">Investment interest, virtual&nbsp;&rarr;&nbsp;in&nbsp;person</p></div>
-        <div class="ep-num"><p class="ep-num__v">1 of 14</p><p class="ep-num__k">Selected from Andrew<br>Yeung&rsquo;s audience</p></div>
+      <div>
+        <p class="ep-about__lede">&ldquo;I learn my theory from books and solutions from fires.&rdquo;</p>
+        <p class="ep-about__p">Some people go to Stanford University, Google, or Goldman Sachs. I put out business and event fires. And I like it.</p>
+        <p class="ep-about__p">Most problems have simple solutions. Zip ties, cardboard, tape, a nail. 2 things make them solvable: 1. Audacity. 2. Relentless execution.</p>
+        <p class="ep-about__p">Great events are a result of the attendees, and their experience. Don&rsquo;t get lost in the sauce.</p>
+        <a class="ep-about__src" href="https://www.linkedin.com/in/jamesfloydl/" target="_blank" rel="noopener noreferrer">LinkedIn &rarr;</a>
       </div>
     </section>
 
-    <div class="ep-rule"></div>
-
-    <!-- THE ROLES -->
-    <section class="ep-section">
-      <p class="ep-label">&sect; The Roles</p>
-
-      <div class="ep-grid2">
-        <div class="ep-card">
-          <p class="ep-kicker">Jets and Capital</p>
-          <h2 class="ep-h2">Event Producer &amp; Operations</h2>
-          <p class="ep-card__meta">Jan 2025 &ndash; Feb 2026</p>
-          <ul class="ep-ul">
-            <li>Private jet-hangar parties for family offices. Also dinners, yachts, and resorts.</li>
-            <li>Ran events across <strong>SLC, Vegas, Miami, NY, and SF.</strong></li>
-            <li>Ran or supported event production at high-profile venues including Trump Doral Miami, Caesars Palace, The Intrepid Aircraft Carrier, and private jet hangars.</li>
-            <li>Delivered event quality that resulted in cumulative AUM in the room of <strong>$400B to $2+ trillion</strong>.</li>
-          </ul>
-        </div>
-
-        <div class="ep-card">
-          <p class="ep-kicker">BetterWealth</p>
-          <h2 class="ep-h2">Chief of Staff</h2>
-          <p class="ep-card__meta">Nov 2024 &ndash; Dec 2025 &middot; Nashville Metro</p>
-          <ul class="ep-ul">
-            <li>Brought ideas into reality and solved problems before and as they happened.</li>
-            <li>Covered Marketing, Operations, <strong>Event and Content Production</strong>, Administration, Partnerships, and Strategy.</li>
-            <li>Built a podcast studio and equipment setup &rarr; <strong>100k+</strong> views.</li>
-            <li>Automated content production with AI agents &rarr; <strong>100k+</strong> views and <strong>30 hrs/week</strong> saved.</li>
-          </ul>
-        </div>
-
-        <div class="ep-card">
-          <p class="ep-kicker">Keiretsu Forum</p>
-          <h2 class="ep-h2">Event Production and Operations</h2>
-          <p class="ep-card__meta">Jun 2024 &ndash; Oct 2024</p>
-          <ul class="ep-ul">
-            <li>Managed and ensured the run-of-show for a gathering of ~<strong>2,000 family offices and qualified individuals</strong> &mdash; assuring the program is kept to, and solving problems for the stakeholders.</li>
-            <li>Traveled to establish in-person (hybrid) events in place of solely virtual events. This transition <strong>more than doubled investment interest</strong>.</li>
-          </ul>
-        </div>
-
-        <div class="ep-card">
-          <p class="ep-kicker">Keiretsu Forum NW &middot; Keiretsu Capital &middot; NW Angel Fund</p>
-          <h2 class="ep-h2">Chief of Staff</h2>
-          <p class="ep-card__meta">Nov 2023 &ndash; Jun 2024 &middot; Seattle, WA</p>
-          <ul class="ep-ul">
-            <li>Key member of a <strong>23-person team</strong> facilitating <strong>$100M+/year</strong> in funding into startups and organizing hybrid events with ~2,000 registrants.</li>
-            <li>Led teams in event operations &rarr; <strong>900+</strong> attendees.</li>
-            <li>Analyzed and facilitated <strong>hundreds</strong> of startup pitches.</li>
-            <li>Supported the world&rsquo;s largest, most active angel investor community &mdash; <strong>$1B+</strong> angel investments into <strong>2,400+</strong> companies.</li>
-          </ul>
-        </div>
+    <section class="ep-refs" aria-label="References">
+      <p class="ep-label" style="margin-bottom:16px;">&sect; What people who were in the room say</p>
+      <div class="ep-refs__rail">
+        <blockquote class="ep-ref">
+          <p class="ep-ref__q">&ldquo;james &mdash; you were the mvp&rdquo;</p>
+          <p class="ep-ref__who">Andrew Yeung</p>
+          <p class="ep-ref__role">Gathering extraordinary people &amp; angel investing &middot; x-Google, Meta<br>SXSW Secret Garden Party</p>
+        </blockquote>
+        <blockquote class="ep-ref">
+          <p class="ep-ref__q">&ldquo;James killed it!! If anyone wants to learn how to stand out in a volunteer crowd, reach out to James Floyd.&rdquo;</p>
+          <p class="ep-ref__who">Vitoria Okuyama</p>
+          <p class="ep-ref__role">Ex pro tennis player &middot; Ex IB @ Citi<br>SXSW Secret Garden Party</p>
+        </blockquote>
+        <blockquote class="ep-ref">
+          <p class="ep-ref__q">&ldquo;James, you are a superstar. Your hard work and willingness to go above and beyond will take you a LONG WAY.&rdquo;</p>
+          <p class="ep-ref__who">Danielle Raskin</p>
+          <p class="ep-ref__role">Curating experiences, community &amp; connection<br>SXSW Secret Garden Party</p>
+        </blockquote>
+        <blockquote class="ep-ref">
+          <p class="ep-ref__q">&ldquo;James Floyd is your guy. The best by a wide margin at driving the intersection between function, execution, and relationship.&rdquo;</p>
+          <p class="ep-ref__who">Jarom Christensen</p>
+          <p class="ep-ref__role">Family Office Advisor &middot; Investor Relations at Jets &amp; Capital</p>
+        </blockquote>
+        <blockquote class="ep-ref">
+          <p class="ep-ref__q">&ldquo;I&rsquo;ve got to know James Floyd over the past year and can vouch for his talent, creativity, work ethic, and connecting skills plus many more.&rdquo;</p>
+          <p class="ep-ref__who">Austin Moss</p>
+          <p class="ep-ref__role">Met through Jets and Capital</p>
+        </blockquote>
+        <blockquote class="ep-ref">
+          <p class="ep-ref__q">&ldquo;James really is the best. He knows the space so well, always provides unique insights and perspectives, and knows how to curate advice based on the individuality of the project at hand.&rdquo;</p>
+          <p class="ep-ref__who">Vanessa Rothmeyer</p>
+          <p class="ep-ref__role">Yogi and Creator &middot; On an event James helped build</p>
+        </blockquote>
+        <blockquote class="ep-ref">
+          <p class="ep-ref__q">&ldquo;Thank you for being the person who says yes and figures it out.&rdquo;</p>
+          <p class="ep-ref__who">Lauren Sawyer</p>
+          <p class="ep-ref__role">Community Builder &middot; Events @ Duel<br>On a house show thrown on her rooftop</p>
+        </blockquote>
+        <blockquote class="ep-ref">
+          <p class="ep-ref__q">&ldquo;James you have been a major blessing to me and to the team and I know I&rsquo;m not the only one who shares that.&rdquo;</p>
+          <p class="ep-ref__who">Caleb Guilliams</p>
+          <p class="ep-ref__role">Founder, BetterWealth &middot; Dec 2025</p>
+        </blockquote>
+        <blockquote class="ep-ref">
+          <p class="ep-ref__q">&ldquo;I was like &mdash; this kid is different. This kid is special.&rdquo;</p>
+          <p class="ep-ref__who">Dom Rufran</p>
+          <p class="ep-ref__role">President of BetterWealth &middot; Ex-NFL Player</p>
+        </blockquote>
+        <blockquote class="ep-ref">
+          <p class="ep-ref__q">&ldquo;One of the coolest dudes in existence, cool to watch and learn from you and your pursuit of growth.&rdquo;</p>
+          <p class="ep-ref__who">Lauren Hansen</p>
+          <p class="ep-ref__role">Worked together at Jets and Capital</p>
+        </blockquote>
       </div>
+      <p class="ep-refs__hint">Scroll &rarr; &middot; <a href="/references/" style="color:var(--pf-brown);text-decoration:none;">All references</a></p>
     </section>
 
-    <div class="ep-rule"></div>
+    <div class="ep-rule" style="margin:48px 0 0;"></div>
 
-    <!-- THE RUN OF SHOW -->
-    <section class="ep-section">
-      <p class="ep-label">&sect; The Run of Show</p>
-      <div class="ep-table__wrap">
-        <table class="ep-table">
-          <thead>
-            <tr><th>When</th><th>What</th><th>Where</th><th>Dispatch</th></tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td class="ep-td--when">Feb 2025</td>
-              <td class="ep-td--what">Jets and Capital Vegas</td>
-              <td>Las Vegas, NV</td>
-              <td><a href="https://www.instagram.com/p/DFl_5BnJl7c/" target="_blank" rel="noopener noreferrer">Instagram &rarr;</a></td>
-            </tr>
-            <tr>
-              <td class="ep-td--when">May 2025</td>
-              <td class="ep-td--what">Jets and Capital Miami</td>
-              <td>Trump Doral, Miami, FL</td>
-              <td><a href="https://www.instagram.com/p/DJqNwQ4s49j/" target="_blank" rel="noopener noreferrer">Instagram &rarr;</a></td>
-            </tr>
-            <tr>
-              <td class="ep-td--when">Oct 2025</td>
-              <td class="ep-td--what">Jets and Capital NYC</td>
-              <td>The Intrepid Aircraft Carrier, New York, NY</td>
-              <td><a href="https://www.instagram.com/p/DPU8V_YjHKh/" target="_blank" rel="noopener noreferrer">Instagram &rarr;</a></td>
-            </tr>
-            <tr>
-              <td class="ep-td--when">Nov 2025</td>
-              <td class="ep-td--what">Jets and Capital F1 Vegas</td>
-              <td>Las Vegas Grand Prix, NV</td>
-              <td><a href="https://www.instagram.com/p/DRcUv9JkYyQ/" target="_blank" rel="noopener noreferrer">Instagram &rarr;</a></td>
-            </tr>
-            <tr>
-              <td class="ep-td--when">Dec 2025</td>
-              <td class="ep-td--what">Miami Art Basel</td>
-              <td>Miami Beach, FL</td>
-              <td><a href="https://www.instagram.com/p/DSRlfWjDttO/" target="_blank" rel="noopener noreferrer">Instagram &rarr;</a></td>
-            </tr>
-            <tr>
-              <td class="ep-td--when">Feb 2026</td>
-              <td class="ep-td--what">Jets and Capital Super Bowl</td>
-              <td>San Francisco Bay Area, CA</td>
-              <td><a href="https://www.instagram.com/p/DU4qihciS_b/" target="_blank" rel="noopener noreferrer">Instagram &rarr;</a></td>
-            </tr>
-            <tr>
-              <td class="ep-td--when">Mar 2026</td>
-              <td class="ep-td--what">Andrew Yeung SXSW tech party</td>
-              <td>Austin, TX</td>
-              <td><a href="https://www.instagram.com/p/DWFnvZGDPaZ/" target="_blank" rel="noopener noreferrer">Instagram &rarr;</a></td>
-            </tr>
-            <tr>
-              <td class="ep-td--when">Apr 2026</td>
-              <td class="ep-td--what">QLC Summit with the Ewing Marion Kauffman Foundation</td>
-              <td>Kansas City, MO</td>
-              <td><a href="https://www.linkedin.com/feed/update/urn%3Ali%3AugcPost%3A7450935807592407040" target="_blank" rel="noopener noreferrer">LinkedIn &rarr;</a></td>
-            </tr>
-            <tr>
-              <td class="ep-td--when">Jun 2026</td>
-              <td class="ep-td--what">Andrew Yeung&rsquo;s Extravaganza</td>
-              <td>New York, NY</td>
-              <td><a href="https://www.linkedin.com/feed/update/urn%3Ali%3AugcPost%3A7469135081882939392" target="_blank" rel="noopener noreferrer">LinkedIn &rarr;</a></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
+    <!-- ═══ TIMELINE ═══ -->
+    <p class="ep-label" style="margin:40px 0 0;">&sect; The Timeline</p>
 
-    <div class="ep-rule"></div>
+    <div class="ep-tl" id="ep-tl">
+      <svg class="ep-tl__svg" id="ep-tl-svg" viewBox="0 0 1000 1000" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+        <path id="ep-tl-line" class="ep-tl__line ep-tl__line--draw" d=""></path>
+        <g id="ep-tl-dots"></g>
+      </svg>
 
-    <!-- THE LIFE INSURANCE SUMMIT -->
-    <section class="ep-section">
-      <p class="ep-label">&sect; The Life Insurance Summit &middot; BetterWealth</p>
+      <!-- 1. GROWING UP -->
+      <section class="ep-chapter ep-chapter--soft">
+        <div class="ep-chapter__inner">
+          <details class="ep-node" id="growing-up">
+            <summary>
+              <div class="ep-covers ep-covers--3">
+                <figure><img src="/pictures/IMG_1977.jpg" alt="James as a boy in a suit, fixing his bow tie" loading="lazy" decoding="async"></figure>
+                <figure><img src="/pictures/IMG_9451.png" alt="Three boys with race bibs at a turkey trot" loading="lazy" decoding="async"></figure>
+                <figure><img src="/pictures/IMG_0610.jpg" alt="Three boys outside on a court" loading="lazy" decoding="async"></figure>
+              </div>
+              <div class="ep-node__head">
+                <p class="ep-node__when">2012 &ndash; 2020</p>
+                <h2 class="ep-node__title">Growing up</h2>
+                <p class="ep-node__where">Davis, California</p>
+                <p class="ep-node__more"><span>Read</span></p>
+              </div>
+            </summary>
+            <div class="ep-node__body">
+              <p class="ep-lead">Before any of it was a job, it was a club, a camp, and a troop.</p>
 
-      <div class="ep-story ep-story--img">
-        <div>
-          <h2 class="ep-h2">Caleb Guilliams put people&rsquo;s faces on socks and it grew his business.</h2>
-          <p class="ep-p">Every year BetterWealth puts on The Life Insurance Summit, a TED style conference of the most influential people in the industry.</p>
-          <p class="ep-p">They knew that great events are made great not only because of what happens at the event, but also what happens before and after.</p>
-          <p class="ep-p">So guests took home socks with their faces on them. $20ish for long-term repeated impressions and gratitude.</p>
-          <p class="ep-p">This is a great example of doing the follow-up of an experience well. No one had ever received that gift before.</p>
-          <blockquote class="ep-pull">An event is made great by the number of pieces of it that the guest has never seen before.</blockquote>
-          <p class="ep-p">Shoutout Mariah Wood for being the systems person that makes it happen.</p>
-          <a class="ep-src" href="https://www.linkedin.com/feed/update/urn%3Ali%3Ashare%3A7419778919316221952" target="_blank" rel="noopener noreferrer">Post &rarr;</a>
+              <div class="ep-fn">
+                <p class="ep-fn__h">Friendship Day &middot; Davis Senior High School</p>
+                <p class="ep-p">Helped run a 37-year-old club called Friendship Day. Voted best to bring home to parents AND most likely to win The Bachelor. Ran a 5-minute mile. Got the principal in trouble. Moved GPA from 2.8 to 4.0.</p>
+              </div>
+
+              <div class="ep-fn">
+                <p class="ep-fn__h">Camp Kesem at UC Davis &middot; 2012 &ndash; 2020</p>
+                <p class="ep-p">Camp for children of parents affected by cancer. I organized events, and lead campers in said events. We did anything from rock climbing to facilitating difficult conversations about realities of life.</p>
+              </div>
+
+              <div class="ep-fn">
+                <p class="ep-fn__h">Boy Scouts of America &middot; 2013 &ndash; 2019</p>
+                <p class="ep-p">A service organization designed to establish positive values and skills in young men across the world. Within this organization I was a leader and a experienced scout that learned skills ranging from survival to organization of events.</p>
+              </div>
+
+              <div class="ep-fn">
+                <p class="ep-fn__h">Merge Ministries &middot; 2016 &ndash; 2020</p>
+                <p class="ep-p">A construction oriented series of mission trips with intentions of serving those we were visiting. We served them through building and maintaining buildings where we travelled, we also worked with children to facilitate connections between them.</p>
+              </div>
+
+              <div class="ep-fn">
+                <p class="ep-fn__h">Grandma&rsquo;s Daycare &middot; 2012 &ndash; 2016</p>
+                <p class="ep-p">First long-term job &mdash; helping with kids ages 0&ndash;5. Learned to motivate, excite, and keep kids happy while doing basic math, letters, and languages exercises.</p>
+              </div>
+            </div>
+          </details>
         </div>
-        <figure class="ep-story__fig">
-          <img src="/linkedin/media/2026-01-21_caleb-guilliams-put-peoples-faces-on-socks_1.jpg" alt="The Life Insurance Summit" loading="lazy" decoding="async">
-        </figure>
-      </div>
-    </section>
+      </section>
 
-    <div class="ep-rule"></div>
+      <!-- 2. SEATTLE GALAS -->
+      <section class="ep-chapter ep-chapter--right">
+        <div class="ep-chapter__inner">
+          <details class="ep-node">
+            <summary>
+              <div class="ep-covers ep-covers--3">
+                <figure><img src="/pictures/IMG_2610.jpeg" alt="A dark ballroom with a lit stage and a standing crowd" loading="lazy" decoding="async"></figure>
+                <figure><img src="/linkedin/media/2026-02-08_a-1200-lbs-stage-was-set-up_1.jpg" alt="A black stage and rows of chairs in an empty hall before doors" loading="lazy" decoding="async"></figure>
+                <figure><img src="/pictures/75140DD1-DBC5-4F23-82B7-EA44DCC2780A.jpg" alt="James and others dressed for an evening event" loading="lazy" decoding="async"></figure>
+              </div>
+              <div class="ep-node__head">
+                <p class="ep-node__when">May 2023 &ndash; Dec 2024</p>
+                <h2 class="ep-node__title">The Seattle galas</h2>
+                <p class="ep-node__where">Montero Productions &middot; Seattle, WA</p>
+                <p class="ep-node__more"><span>Read</span></p>
+              </div>
+            </summary>
+            <div class="ep-node__body">
+              <p class="ep-lead">Gala and special event operations. It started with a stage in the wrong place and turned into a year of working the room at other people&rsquo;s biggest nights.</p>
 
-    <!-- FIELD STORIES -->
-    <section class="ep-section">
-      <p class="ep-label">&sect; From the Field</p>
+              <p class="ep-p">Worked events with the <strong>Seattle Seahawks, Seattle Sounders, KJ Wright&rsquo;s Wright Way Foundation, the Jacob Green Foundation, Climate Pledge Arena, the Champions of Change Foundation,</strong> and an Oscar-winning singer, among others.</p>
 
-      <div class="ep-story ep-story--img">
-        <div>
-          <p class="ep-kicker">Jets and Capital &middot; Vegas</p>
-          <h2 class="ep-h2">Trump flew into Vegas and killed our Friday event.</h2>
-          <p class="ep-p">(Cause it was in a hanger) 24 hours to pivot. 500 guests to call.</p>
-          <p class="ep-p">I wrote a cold calling script, shared it with the Jets and Capital Events team, and we started dialing. The pitch: Trump is coming, we&rsquo;re pushing the event back a day. Here&rsquo;s how this is good for you! Two events, one the day you expected and the hanger event a day later!</p>
-          <p class="ep-p">Meanwhile, the rest of the team was designing a whole new experience for VIPs and guests, for the next day.</p>
-          <p class="ep-p">By noon I was picking people up from the airport, while making calls and logging them at stoplights. By 7pm that night we had booked two venues, and ordered the supplies we needed. By 8pm every guest had been contacted.</p>
-          <blockquote class="ep-pull">There is a way EVERYTHING can be spun into a positive. For this? &lsquo;Double the fun&rsquo; was my motto.</blockquote>
-          <a class="ep-src" href="https://www.linkedin.com/feed/update/urn%3Ali%3Ashare%3A7423131897448374273" target="_blank" rel="noopener noreferrer">Post &rarr;</a>
+              <div class="ep-fn">
+                <p class="ep-fn__h">Field notes</p>
+
+                <div class="ep-story">
+                  <h3 class="ep-story__h">A 1200 lbs stage was set up wrong, and KJ Wright was about to go on. So I moved it with kid&rsquo;s toys.</h3>
+                  <p class="ep-p">His Wright Way foundation launch was in a few hours, but the stage was wrong. It was set up in the middle of the room like a boxing ring. It could ruin the whole flow of the room.</p>
+                  <p class="ep-p">I stroll in on this scene: the event designers and producers gathered around, discussing what to do. The problem was, the vendor couldn&rsquo;t come back and move it, and the stage was ~1200 pounds.</p>
+                  <p class="ep-p">&lsquo;Good news! We are in a boys and girls club!&rsquo; I exclaimed. In my head I knew there were kids toys with wheels, in a closet, not far from where we were.</p>
+                  <p class="ep-p">I grabbed them, and when they weren&rsquo;t looking I dove under the stage, and put each support leg on a scooter, and&hellip; success! Later that night I changed a soap dispenser with a pen and scissors.</p>
+                  <ol class="ep-ol">
+                    <li>If you&rsquo;re convicted, send it.</li>
+                    <li>Design intent does not apply to utility.</li>
+                  </ol>
+                  <a class="ep-src" href="https://www.linkedin.com/feed/update/urn%3Ali%3Ashare%3A7426303054871711744" target="_blank" rel="noopener noreferrer">Post &rarr;</a>
+                </div>
+
+                <div class="ep-story">
+                  <h3 class="ep-story__h">Invited to the gala as a guest. Worked the room instead.</h3>
+                  <p class="ep-p">After calling to get a suit delivered to me at work, I prepared to enjoy the night. And I did, but not as a guest. I found a way to provide value wherever I could, I was a doorman, a greeter, I changed a soap dispenser with a ballpoint pen and scissors, and put smiles on many faces.</p>
+                  <p class="ep-p">Now, I look to beat that story and provide as much value as I can to causes worth helping.</p>
+                </div>
+              </div>
+            </div>
+          </details>
         </div>
-        <figure class="ep-story__fig">
-          <img src="/linkedin/media/2026-01-30_trump-flew-into-vegas-and-killed-our_1.jpg" alt="Calling guests from a closet during the Vegas pivot" loading="lazy" decoding="async">
-        </figure>
-      </div>
+      </section>
 
-      <div class="ep-story ep-story--img">
-        <div>
-          <p class="ep-kicker">Jets and Capital &middot; First day as a volunteer</p>
-          <h2 class="ep-h2">On our first day, we raided the gas stations.</h2>
-          <p class="ep-p">I showed up to my first Jets and Capital Events as a volunteer. We were in the calm before the storm, but I could not stand around.</p>
-          <p class="ep-p">It was hot, the air hung in the hanger, people were starting to arrive for the VIP lunch, and I mozied my way around looking for work. I checked if the security and check-in people needed water, then I went to the bar.</p>
-          <p class="ep-p">As I got to know the bar staff, I realized, they had no ice. Nobody knew. They had expected to be brought 20 bags of ice. Miscommunication. 500 people were coming in an hour, and they&rsquo;d cook in that hanger without cold drinks.</p>
-          <p class="ep-p">I found ALEX (who I&rsquo;d met that day), gave him a credit card, and said something like &lsquo;raid the gas stations&rsquo;. A minute later, ALEX came through with bags and bags of ice, the drinks flowed and the people smiled.</p>
-          <ol class="ep-ol">
-            <li>The &lsquo;wall-flowers&rsquo; bear fruit. Talk to the invisible people (security, bartenders, etc)</li>
-            <li>Surround yourself with quality.</li>
-            <li>Movement and momentum win.</li>
-          </ol>
-          <a class="ep-src" href="https://www.linkedin.com/feed/update/urn%3Ali%3Ashare%3A7428954748181102592" target="_blank" rel="noopener noreferrer">Post &rarr;</a>
+      <!-- 3. KEIRETSU -->
+      <section class="ep-chapter">
+        <div class="ep-chapter__inner">
+          <details class="ep-node">
+            <summary>
+              <div class="ep-covers ep-covers--2">
+                <figure><img src="/pictures/IMG_0647.jpg" alt="A hotel ballroom full of people in front of a lit stage" loading="lazy" decoding="async"></figure>
+                <figure><img src="/pictures/IMG_7136.jpeg" alt="A group gathered in a room between sessions" loading="lazy" decoding="async"></figure>
+              </div>
+              <div class="ep-node__head">
+                <p class="ep-node__when">Nov 2023 &ndash; Oct 2024</p>
+                <h2 class="ep-node__title">Keiretsu Forum</h2>
+                <p class="ep-node__where">Chief of Staff, then Event Production &middot; Seattle, WA</p>
+                <p class="ep-node__more"><span>Read</span></p>
+              </div>
+            </summary>
+            <div class="ep-node__body">
+              <p class="ep-lead">The world&rsquo;s largest and most active angel investor community. I was a James-of-All-Trades, and then I ran the room.</p>
+
+              <div class="ep-stats">
+                <div><p class="ep-stat__v">~2,000</p><p class="ep-stat__k">Family offices &amp;<br>qualified individuals</p></div>
+                <div><p class="ep-stat__v">900+</p><p class="ep-stat__k">Attendees &mdash; teams<br>led in event ops</p></div>
+                <div><p class="ep-stat__v">2&times;</p><p class="ep-stat__k">Investment interest,<br>virtual &rarr; in person</p></div>
+                <div><p class="ep-stat__v">$100M+</p><p class="ep-stat__k">Per year into<br>startups, 23-person team</p></div>
+              </div>
+
+              <div class="ep-fn">
+                <p class="ep-fn__h">Event Production and Operations &middot; Jun 2024 &ndash; Oct 2024</p>
+                <ul class="ep-ul">
+                  <li>Managed and ensured the run-of-show for a gathering of ~2,000 family offices and qualified individuals &mdash; assuring the program is kept to, and solving problems for the stakeholders.</li>
+                  <li>Traveling to establish in-person (hybrid events) in the place of solely virtual events. This transition more than doubled investment interest.</li>
+                </ul>
+              </div>
+
+              <div class="ep-fn">
+                <p class="ep-fn__h">Chief of Staff &middot; Nov 2023 &ndash; Jun 2024</p>
+                <ul class="ep-ul">
+                  <li>Was a key part of a 23 person team facilitating $100M+/year in funding into startups, and organizing hybrid events with close to 2,000 registrants.</li>
+                  <li>Led teams in event operations (900+ Attendees)</li>
+                  <li>Analyzed 100+ startup pitches</li>
+                  <li>Learned and Facilitated Due Diligence</li>
+                  <li>Built websites (WordPress, Wix, Squarespace)</li>
+                </ul>
+                <p class="ep-p">Keiretsu Forum is the largest and most active Angel investor community in the world with $1B+ of Angel investments into 2,400+ companies. Keiretsu Capital is the exclusive fund partner of Keiretsu forum and has close to $50M AUM. NW Angel is a new venture of the McDonalds starting with a $10M Fund.</p>
+              </div>
+
+              <div class="ep-fn">
+                <p class="ep-fn__h">What it taught me</p>
+                <p class="ep-p">&lsquo;Junior Year&rsquo;: Worked at an angel group, did events, gained 20 pounds (And a lot of googling finance terms) &mdash; learned that nobody is special.</p>
+                <a class="ep-src" href="https://www.linkedin.com/feed/update/urn%3Ali%3Ashare%3A7437553271508094976" target="_blank" rel="noopener noreferrer">Post &rarr;</a>
+              </div>
+            </div>
+          </details>
         </div>
-        <figure class="ep-story__fig">
-          <img src="/linkedin/media/2026-02-16_on-our-first-day-we-raided-the_1.jpg" alt="The hangar before guests arrived" loading="lazy" decoding="async">
-        </figure>
-      </div>
+      </section>
 
-      <div class="ep-story ep-story--img">
-        <div>
-          <p class="ep-kicker">Montero Productions &middot; Wright Way Foundation launch</p>
-          <h2 class="ep-h2">A 1200 lbs stage was set up wrong, and KJ Wright was about to go on. So I moved it with kid&rsquo;s toys.</h2>
-          <p class="ep-p">His Wright Way foundation launch was in a few hours, but the stage was wrong. It was set up in the middle of the room like a boxing ring. It could ruin the whole flow of the room.</p>
-          <p class="ep-p">I stroll in on this scene: the event designers and producers gathered around, discussing what to do. The problem was, the vendor couldn&rsquo;t come back and move it, and the stage was ~1200 pounds.</p>
-          <p class="ep-p">&lsquo;Good news! We are in a boys and girls club!&rsquo; I exclaimed. In my head I knew there were kids toys with wheels, in a closet, not far from where we were.</p>
-          <p class="ep-p">I grabbed them, and when they weren&rsquo;t looking I dove under the stage, and put each support leg on a scooter, and&hellip; success! Later that night I changed a soap dispenser with a pen and scissors.</p>
-          <ol class="ep-ol">
-            <li>If you&rsquo;re convicted, send it.</li>
-            <li>Design intent does not apply to utility.</li>
-          </ol>
-          <a class="ep-src" href="https://www.linkedin.com/feed/update/urn%3Ali%3Ashare%3A7426303054871711744" target="_blank" rel="noopener noreferrer">Post &rarr;</a>
+      <!-- 4. BETTERWEALTH -->
+      <section class="ep-chapter ep-chapter--right">
+        <div class="ep-chapter__inner">
+          <details class="ep-node">
+            <summary>
+              <div class="ep-covers ep-covers--2">
+                <figure><img src="/linkedin/media/2026-01-09_i-think-most-event-producers-miss-out_1.jpg" alt="A podcast studio lit and set up for recording" loading="lazy" decoding="async"></figure>
+                <figure><img src="/linkedin/media/2026-01-21_caleb-guilliams-put-peoples-faces-on-socks_1.jpg" alt="Socks printed with guests' faces, sealed in a pack" loading="lazy" decoding="async"></figure>
+              </div>
+              <div class="ep-node__head">
+                <p class="ep-node__when">Nov 2024 &ndash; Dec 2025</p>
+                <h2 class="ep-node__title">BetterWealth</h2>
+                <p class="ep-node__where">Chief of Staff &middot; Nashville, TN</p>
+                <p class="ep-node__more"><span>Read</span></p>
+              </div>
+            </summary>
+            <div class="ep-node__body">
+              <p class="ep-lead">My job was to bring ideas into reality, and solve problems before and as they happen. Marketing, Operations, Event and Content Production, Administration, Partnerships, and Strategy.</p>
+
+              <div class="ep-stats">
+                <div><p class="ep-stat__v">100k+</p><p class="ep-stat__k">Views from a podcast<br>studio I built</p></div>
+                <div><p class="ep-stat__v">30 hrs/wk</p><p class="ep-stat__k">Saved by automating<br>content production</p></div>
+                <div><p class="ep-stat__v">Bottom 30% &rarr; top 1%</p><p class="ep-stat__k">Website, technically</p></div>
+              </div>
+
+              <div class="ep-fn">
+                <p class="ep-fn__h">The Life Insurance Summit</p>
+                <h3 class="ep-story__h">Caleb Guilliams put people&rsquo;s faces on socks and it grew his business.</h3>
+                <p class="ep-p">Every year BetterWealth puts on The Life Insurance Summit, a TED style conference of the most influential people in the industry.</p>
+                <p class="ep-p">They knew that great events are made great not only because of what happens at the event, but also what happens before and after.</p>
+                <p class="ep-p">So guests took home socks with their faces on them. $20ish for long-term repeated impressions and gratitude. This is a great example of doing the follow-up of an experience well. No one had ever received that gift before.</p>
+                <blockquote class="ep-pull">An event is made great by the number of pieces of it that the guest has never seen before.</blockquote>
+                <p class="ep-p">Shoutout Mariah Wood for being the systems person that makes it happen.</p>
+                <a class="ep-src" href="https://www.linkedin.com/feed/update/urn%3Ali%3Ashare%3A7419778919316221952" target="_blank" rel="noopener noreferrer">Post &rarr;</a>
+              </div>
+
+              <div class="ep-fn">
+                <p class="ep-fn__h">The content most producers leave on the floor</p>
+                <p class="ep-p">Sure they have photographers and videographers, people snap pictures or videos with their phones, but that&rsquo;s peanuts.</p>
+                <p class="ep-p">How you design the event can get you thousands if not millions of views and tags more, plus be a huge GIVE to your attendees. Set up a quick podcast studio, at the event, have there be a podcast sponsor even. Make sure they know who to tag in their posts with QR codes etc to your content.</p>
+                <a class="ep-src" href="https://www.linkedin.com/feed/update/urn%3Ali%3Ashare%3A7415508586237521920" target="_blank" rel="noopener noreferrer">Post &rarr;</a>
+              </div>
+            </div>
+          </details>
         </div>
-        <figure class="ep-story__fig">
-          <img src="/linkedin/media/2026-02-08_a-1200-lbs-stage-was-set-up_1.jpg" alt="The Wright Way Foundation launch" loading="lazy" decoding="async">
-        </figure>
-      </div>
+      </section>
 
-      <div class="ep-story ep-story--img">
-        <div>
-          <p class="ep-kicker">Andrew Yeung&rsquo;s Extravaganza &middot; New York</p>
-          <h2 class="ep-h2">I worked Andrew Yeung&rsquo;s Extravaganza. 7 people asked me why I was there.</h2>
-          <p class="ep-p">So let me explain. When I say &ldquo;working,&rdquo; I mean:</p>
-          <ul class="ep-ul">
-            <li>Raiding two Staples on a Citi bike to get name tags (James &gt; Prime Delivery)</li>
-            <li>Ziptie-ing things to fences so they don&rsquo;t fall on guests</li>
-            <li>Lighting the stairs so nobody dies in the dark</li>
-            <li>Taping down floor vinyl so nobody trips</li>
-            <li>Noticing the staff were wiped, and running them cold water</li>
-            <li>Being the best dressed janitor in the building</li>
-            <li>Guarding Bricks with my life</li>
-          </ul>
-          <p class="ep-p">People asked &mdash; Why are you stooping to pick things off the floor? Are you here to network? What do you get out of this?</p>
-          <p class="ep-p">Here&rsquo;s the honest answer. I learn my theory from books and solutions from fires. Dark stairs that could crush someone tipsy and distracted. Staff are tired, so I get them cups of water. No name tags, and colored name tags are Andrew&rsquo;s brand. Each one a fire.</p>
-          <p class="ep-p">None of it was mine. Not my event, not my liability. Nobody asked me do solve most of those. I did it anyway. 2pm to midnight. When I walked out, people were still on the sidewalk talking and smiling. None the wiser.</p>
-          <blockquote class="ep-pull">Some people go to Stanford University, Google, or Goldman Sachs. I put out business and event fires. And I like it.</blockquote>
-          <a class="ep-src" href="https://www.linkedin.com/feed/update/urn%3Ali%3AugcPost%3A7469135081882939392" target="_blank" rel="noopener noreferrer">Post &rarr;</a>
+      <!-- 5. JETS AND CAPITAL -->
+      <section class="ep-chapter">
+        <div class="ep-chapter__inner">
+          <details class="ep-node">
+            <summary>
+              <div class="ep-covers ep-covers--3">
+                <figure><img src="/pictures/IMG_1978_Original.jpg" alt="Private jets on the tarmac at dusk with guests walking between them" loading="lazy" decoding="async"></figure>
+                <figure><img src="/linkedin/media/2025-02-16_in-some-rooms-you-can-tell-that_3.jpg" alt="The Jets and Capital step-and-repeat with sponsor logos" loading="lazy" decoding="async"></figure>
+                <figure><img src="/linkedin/media/2025-02-16_in-some-rooms-you-can-tell-that_2.jpg" alt="A warm, crowded room of guests at a Jets and Capital night" loading="lazy" decoding="async"></figure>
+              </div>
+              <div class="ep-node__head">
+                <p class="ep-node__when">Sep 2023 volunteer &middot; Jan 2025 &ndash; Feb 2026 producer</p>
+                <h2 class="ep-node__title">Jets and Capital</h2>
+                <p class="ep-node__where">SLC &middot; Vegas &middot; Miami &middot; New York &middot; San Francisco</p>
+                <p class="ep-node__more"><span>Read</span></p>
+              </div>
+            </summary>
+            <div class="ep-node__body">
+              <p class="ep-lead">Private jet-hangar parties for family offices. Also dinners, yachts, and resorts. I flew across the country to produce Jets and Capital Events for free after a cold email, and stayed two and a half years.</p>
+
+              <div class="ep-stats">
+                <div><p class="ep-stat__v">$400B&ndash;$2T+</p><p class="ep-stat__k">Cumulative AUM<br>in the room</p></div>
+                <div><p class="ep-stat__v">5</p><p class="ep-stat__k">Cities</p></div>
+                <div><p class="ep-stat__v">~103</p><p class="ep-stat__k">Days at events<br>in 2025</p></div>
+                <div><p class="ep-stat__v">500</p><p class="ep-stat__k">Guests re-contacted<br>in 24 hours</p></div>
+              </div>
+
+              <p class="ep-p">Ran or supported event production at high-profile venues including Trump Doral Miami, Caesars Palace, The Intrepid Aircraft Carrier, and private jet hangars.</p>
+
+              <div class="ep-fn">
+                <p class="ep-fn__h">The run of show</p>
+                <ul class="ep-ul">
+                  <li><strong>Feb 2025 &mdash; Vegas.</strong> <a class="ep-src" style="margin:0;" href="https://www.instagram.com/p/DFl_5BnJl7c/" target="_blank" rel="noopener noreferrer">Instagram &rarr;</a></li>
+                  <li><strong>May 2025 &mdash; Miami,</strong> Trump Doral. <a class="ep-src" style="margin:0;" href="https://www.instagram.com/p/DJqNwQ4s49j/" target="_blank" rel="noopener noreferrer">Instagram &rarr;</a></li>
+                  <li><strong>Oct 2025 &mdash; New York,</strong> The Intrepid Aircraft Carrier. <a class="ep-src" style="margin:0;" href="https://www.instagram.com/p/DPU8V_YjHKh/" target="_blank" rel="noopener noreferrer">Instagram &rarr;</a></li>
+                  <li><strong>Nov 2025 &mdash; F1, Las Vegas.</strong> <a class="ep-src" style="margin:0;" href="https://www.instagram.com/p/DRcUv9JkYyQ/" target="_blank" rel="noopener noreferrer">Instagram &rarr;</a></li>
+                  <li><strong>Dec 2025 &mdash; Art Basel, Miami.</strong> <a class="ep-src" style="margin:0;" href="https://www.instagram.com/p/DSRlfWjDttO/" target="_blank" rel="noopener noreferrer">Instagram &rarr;</a></li>
+                  <li><strong>Feb 2026 &mdash; Super Bowl, San Francisco.</strong> <a class="ep-src" style="margin:0;" href="https://www.instagram.com/p/DU4qihciS_b/" target="_blank" rel="noopener noreferrer">Instagram &rarr;</a></li>
+                </ul>
+              </div>
+
+              <div class="ep-fn">
+                <p class="ep-fn__h">Field notes</p>
+
+                <div class="ep-story">
+                  <h3 class="ep-story__h">On our first day, we raided the gas stations.</h3>
+                  <p class="ep-p">I showed up to my first Jets and Capital Events as a volunteer. We were in the calm before the storm, but I could not stand around.</p>
+                  <p class="ep-p">It was hot, the air hung in the hanger, people were starting to arrive for the VIP lunch, and I mozied my way around looking for work. I checked if the security and check-in people needed water, then I went to the bar.</p>
+                  <p class="ep-p">As I got to know the bar staff, I realized, they had no ice. Nobody knew. They had expected to be brought 20 bags of ice. Miscommunication. 500 people were coming in an hour, and they&rsquo;d cook in that hanger without cold drinks.</p>
+                  <p class="ep-p">I found ALEX (who I&rsquo;d met that day), gave him a credit card, and said something like &lsquo;raid the gas stations&rsquo;. A minute later, ALEX came through with bags and bags of ice, the drinks flowed and the people smiled.</p>
+                  <ol class="ep-ol">
+                    <li>The &lsquo;wall-flowers&rsquo; bear fruit. Talk to the invisible people (security, bartenders, etc)</li>
+                    <li>Surround yourself with quality.</li>
+                    <li>Movement and momentum win.</li>
+                  </ol>
+                  <a class="ep-src" href="https://www.linkedin.com/feed/update/urn%3Ali%3Ashare%3A7428954748181102592" target="_blank" rel="noopener noreferrer">Post &rarr;</a>
+                </div>
+
+                <div class="ep-story">
+                  <h3 class="ep-story__h">Trump flew into Vegas and killed our Friday event.</h3>
+                  <p class="ep-p">(Cause it was in a hanger) 24 hours to pivot. 500 guests to call.</p>
+                  <p class="ep-p">I wrote a cold calling script, shared it with the Jets and Capital Events team, and we started dialing. The pitch: Trump is coming, we&rsquo;re pushing the event back a day. Here&rsquo;s how this is good for you! Two events, one the day you expected and the hanger event a day later!</p>
+                  <p class="ep-p">By noon I was picking people up from the airport, while making calls and logging them at stoplights. By 7pm that night we had booked two venues, and ordered the supplies we needed. By 8pm every guest had been contacted.</p>
+                  <blockquote class="ep-pull">There is a way EVERYTHING can be spun into a positive. For this? &lsquo;Double the fun&rsquo; was my motto.</blockquote>
+                  <a class="ep-src" href="https://www.linkedin.com/feed/update/urn%3Ali%3Ashare%3A7423131897448374273" target="_blank" rel="noopener noreferrer">Post &rarr;</a>
+                </div>
+
+                <div class="ep-story">
+                  <h3 class="ep-story__h">I stood in a lobby for 30 minutes guessing who was lost.</h3>
+                  <p class="ep-p">We hosted a private dinner in SF before the Super Bowl. The venue? An awesome restaurant on the 4th floor of a confusing building. Multiple entrances, parking garages, elevators and stairs everywhere.</p>
+                  <p class="ep-p">While the team set up, I went to the lobby. My job: spot lost people as they arrived. Tens of thousands of street sales reps trained me for this. I learned to read body language fast. Who&rsquo;s looking around, who&rsquo;s passing through (ear buds), who wants help (open eyes), who wants to be left alone (squinting).</p>
+                  <p class="ep-p">Most walked into our dinner calm instead of annoyed. Greeted instead of frustrated.</p>
+                  <blockquote class="ep-pull">The experience starts before anyone enters the room. Anticipate friction. Remove it before people feel it. That&rsquo;s how you create magic.</blockquote>
+                  <a class="ep-src" href="https://www.linkedin.com/feed/update/urn%3Ali%3Ashare%3A7428652811489554432" target="_blank" rel="noopener noreferrer">Post &rarr;</a>
+                </div>
+
+                <div class="ep-story">
+                  <h3 class="ep-story__h">Alicia Long sent me this picture. I went and found her.</h3>
+                  <p class="ep-p">I flew to Vegas for F1 on a whim. No ticket to the race. But then Alicia texted me a photo from somewhere across the track, watching from a suite.</p>
+                  <p class="ep-p">I power walked toward where the picture came from (cause angles), using Maps 3D to figure out which hotel. Found it. Walked up to the doorman. &ldquo;Hey, I&rsquo;ve got a handwritten note for a friend. She sent me this picture from a suite around here.&rdquo; He leaned in, working with me.</p>
+                  <p class="ep-p">Back to the lobby. Checked my bag, and shared the quest. They pointed me to a special elevator with event staff. With my suit, the note, and a dream, I told them I was here to deliver something to an awesome human being. My energy was undeniable. Walked past private security. Found Alicia.</p>
+                  <blockquote class="ep-pull">The idea was so crazy there was no downside. Anything going right was a win.</blockquote>
+                  <a class="ep-src" href="https://www.linkedin.com/feed/update/urn%3Ali%3Ashare%3A7428942518987284480" target="_blank" rel="noopener noreferrer">Post &rarr;</a>
+                </div>
+              </div>
+
+              <div class="ep-fn">
+                <p class="ep-fn__h">In 2025 I spent ~103 days at events, here&rsquo;s where some failed</p>
+                <ol class="ep-ol">
+                  <li><strong>Focusing on the place.</strong> People make the place. People leave yachts, hotels, and everywhere else early if they don&rsquo;t enjoy it.</li>
+                  <li><strong>Facilitating business first.</strong> Relationships build business, facilitate relationships first.</li>
+                  <li><strong>Focusing on the day of the event.</strong> If the before and after are neglected the event is low leverage.</li>
+                  <li><strong>Playing status/money games.</strong> Good character attracts good character.</li>
+                  <li><strong>Being the same.</strong> Same money but higher ROI if you are more creative than normal black stage, lanyards, and folding chairs.</li>
+                  <li><strong>Not partnering.</strong> The more people who are incentivized to help your events, the bigger the win and number of wins.</li>
+                </ol>
+                <a class="ep-src" href="https://www.linkedin.com/feed/update/urn%3Ali%3Ashare%3A7418090234703142912" target="_blank" rel="noopener noreferrer">Post &rarr;</a>
+              </div>
+            </div>
+          </details>
         </div>
-        <figure class="ep-story__fig">
-          <img src="/linkedin/media/2026-06-06_i-worked-andrew-yeungs-extravaganza_1.jpg" alt="Working Andrew Yeung's Extravaganza" loading="lazy" decoding="async">
-        </figure>
-      </div>
+      </section>
 
-      <div class="ep-story">
-        <p class="ep-kicker">Andrew&rsquo;s Mixers &middot; SXSW secret garden party</p>
-        <h2 class="ep-h2">Volunteering is better than networking.</h2>
-        <p class="ep-p">Andrew Yeung&rsquo;s secret garden party proved that again. 2000 people showed up. I was the guy with the zip ties.</p>
-        <p class="ep-p">No zip ties? Asked a stranger who worked there. He hooked me up. Signs falling over? Zip ties. Trash everywhere? Made trays out of cardboard and zip ties. The Hustle flags needed fixing? You guessed it. At a dinner later, I opened a locked door with a nail.</p>
-        <p class="ep-p">Most problems have simple solutions. Zip ties, cardboard, tape, a nail. 2 things make them solvable: 1. Audacity. 2. Relentless execution.</p>
-        <blockquote class="ep-pull">Showing up to help is one of the best ways to give. And when you give first, good things tend to follow.</blockquote>
-        <a class="ep-src" href="https://www.linkedin.com/feed/update/urn%3Ali%3AugcPost%3A7440441841042415616" target="_blank" rel="noopener noreferrer">Post &rarr;</a>
-      </div>
+      <!-- 6. ANDREW'S MIXERS / SXSW -->
+      <section class="ep-chapter ep-chapter--right">
+        <div class="ep-chapter__inner">
+          <details class="ep-node">
+            <summary>
+              <div class="ep-covers ep-covers--2">
+                <figure><img src="/linkedin/media/2026-03-11_because-im-a-nerd-i-research-every_1.jpg" alt="The illustrated SXSW 2026 mural" loading="lazy" decoding="async"></figure>
+                <figure><img src="/linkedin/media/2026-03-13_sxsw-stats-update_1.jpg" alt="A packed hall of people during SXSW" loading="lazy" decoding="async"></figure>
+              </div>
+              <div class="ep-node__head">
+                <p class="ep-node__when">March 2026</p>
+                <h2 class="ep-node__title">The secret garden party</h2>
+                <p class="ep-node__where">Andrew&rsquo;s Mixers &middot; A-Team, 1 of 14 &middot; SXSW, Austin</p>
+                <p class="ep-node__more"><span>Read</span></p>
+              </div>
+            </summary>
+            <div class="ep-node__body">
+              <p class="ep-lead">1 of 14 people selected from Andrew Yeung&rsquo;s audience. 2000 people showed up. I was the guy with the zip ties.</p>
 
-      <div class="ep-story">
-        <p class="ep-kicker">Jets and Capital &middot; Private dinner before the Super Bowl, SF</p>
-        <h2 class="ep-h2">I stood in a lobby for 30 minutes guessing who was lost.</h2>
-        <p class="ep-p">We hosted a private dinner in SF before the Super Bowl. The venue? An awesome restaurant on the 4th floor of a confusing building. Multiple entrances, parking garages, elevators and stairs everywhere.</p>
-        <p class="ep-p">While the team set up, I went to the lobby. My job: spot lost people as they arrived.</p>
-        <p class="ep-p">Tens of thousands of street sales reps trained me for this. I learned to read body language fast. Who&rsquo;s looking around, who&rsquo;s passing through (ear buds), who wants help (open eyes), who wants to be left alone (squinting).</p>
-        <p class="ep-p">Some were relieved: &ldquo;Yes! I&rsquo;ve been wandering forever.&rdquo; Some wanted a different event, the elevator, or a bathroom. (Know your building.) Some were offended I asked. But most walked into our dinner calm instead of annoyed. Greeted instead of frustrated.</p>
-        <blockquote class="ep-pull">The experience starts before anyone enters the room. Anticipate friction. Remove it before people feel it. That&rsquo;s how you create magic.</blockquote>
-        <a class="ep-src" href="https://www.linkedin.com/feed/update/urn%3Ali%3Ashare%3A7428652811489554432" target="_blank" rel="noopener noreferrer">Post &rarr;</a>
-      </div>
+              <div class="ep-fn">
+                <p class="ep-fn__h">Volunteering is better than networking.</p>
+                <p class="ep-p">No zip ties? Asked a stranger who worked there. He hooked me up. Signs falling over? Zip ties. Trash everywhere? Made trays out of cardboard and zip ties. The Hustle flags needed fixing? You guessed it. At a dinner later, I opened a locked door with a nail.</p>
+                <p class="ep-p">Most problems have simple solutions. Zip ties, cardboard, tape, a nail. 2 things make them solvable: 1. Audacity. 2. Relentless execution.</p>
+                <blockquote class="ep-pull">Showing up to help is one of the best ways to give. And when you give first, good things tend to follow.</blockquote>
+                <a class="ep-src" href="https://www.linkedin.com/feed/update/urn%3Ali%3AugcPost%3A7440441841042415616" target="_blank" rel="noopener noreferrer">Post &rarr;</a>
+              </div>
 
-      <div class="ep-story ep-story--img">
-        <div>
-          <p class="ep-kicker">QLC Summit &middot; Kansas City</p>
-          <h2 class="ep-h2">Yesterday, Dulcinea looked at me with wide eyes and said, &ldquo;this is surreal.&rdquo;</h2>
-          <p class="ep-p">6 months ago, we were strangers on Zoom. Now our group is in Kansas City throwing an event with the Ewing Marion Kauffman Foundation, the mayor, athletes, and creators from across the country.</p>
-          <p class="ep-p">We have merch. Journals. The news is already writing about us. But what makes me want to say &ldquo;look mom I made it&rdquo;?</p>
-          <p class="ep-p">This is about getting young people productively through their Quarter Life Crisis. Life is not about the status games or rat race for our generation. It&rsquo;s about deep meaning.</p>
-          <a class="ep-src" href="https://www.linkedin.com/feed/update/urn%3Ali%3AugcPost%3A7450935807592407040" target="_blank" rel="noopener noreferrer">Post &rarr;</a>
+              <div class="ep-fn">
+                <p class="ep-fn__h">What I actually did</p>
+                <ul class="ep-ul">
+                  <li>Organized volunteers on arrival</li>
+                  <li>Built relationships with venue staff</li>
+                  <li>Solved directional set up by getting zip ties from venue staff. Then used same zip ties to put up sponsor flags, and create a waiter tray to collect garbage.</li>
+                  <li>Facilitated a better exit flow by training a volunteer on security protocol.</li>
+                  <li>Used AirPod as comms to hear what&rsquo;s app group notifications</li>
+                  <li>Was recognized by Andrew and his team including the event planner for my agency and ability.</li>
+                </ul>
+              </div>
+
+              <div class="ep-fn">
+                <p class="ep-fn__h">SXSW stats update</p>
+                <ul class="ep-ul">
+                  <li>found 3 people in the wild using find my iphone</li>
+                  <li>6 internet strangers met in person</li>
+                  <li>6 events</li>
+                  <li>1 Billionaire met</li>
+                  <li>Smiles created gotta be 100+</li>
+                  <li>Hours of sleep 2? Maybe?</li>
+                </ul>
+                <a class="ep-src" href="https://www.linkedin.com/feed/update/urn%3Ali%3AugcPost%3A7438355004551237632" target="_blank" rel="noopener noreferrer">Post &rarr;</a>
+              </div>
+            </div>
+          </details>
         </div>
-        <figure class="ep-story__fig">
-          <img src="/linkedin/media/2026-04-17_yesterday-dulcinea-looked-at-me-with-wide_1.jpg" alt="The QLC group in event prep in Kansas City" loading="lazy" decoding="async">
-        </figure>
-      </div>
+      </section>
 
-      <div class="ep-story">
-        <p class="ep-kicker">F1 &middot; Las Vegas</p>
-        <h2 class="ep-h2">Alicia Long sent me this picture. I went and found her.</h2>
-        <p class="ep-p">I flew to Vegas for F1 on a whim. Everyone was in town, my phone was blowing up. No ticket to the race. But then Alicia texted me a photo from somewhere across the track, watching from a suite.</p>
-        <p class="ep-p">I power walked toward where the picture came from (cause angles), using Maps 3D to figure out which hotel. Found it. Walked up to the doorman. &ldquo;Hey, I&rsquo;ve got a handwritten note for a friend. She sent me this picture from a suite around here. The bar? A different suite?&rdquo; He leaned in, working with me.</p>
-        <p class="ep-p">Tried the bar. No dice. Now I knew it had to be a suite. Back to the lobby. Checked my bag, and shared the quest. They pointed me to a special elevator with event staff. With my suit, the note, and a dream, I told them I was here to deliver something to an awesome human being. My energy was undeniable.</p>
-        <p class="ep-p">Walked past private security. Found Alicia. (Surprise!) I was turning to leave when she invited me to stay and meet some incredible people.</p>
-        <blockquote class="ep-pull">The idea was so crazy there was no downside. Anything going right was a win.</blockquote>
-        <a class="ep-src" href="https://www.linkedin.com/feed/update/urn%3Ali%3Ashare%3A7428942518987284480" target="_blank" rel="noopener noreferrer">Post &rarr;</a>
-      </div>
-    </section>
+      <!-- 7. QLC SUMMIT -->
+      <section class="ep-chapter">
+        <div class="ep-chapter__inner">
+          <details class="ep-node">
+            <summary>
+              <div class="ep-covers">
+                <figure><img src="/linkedin/media/2026-04-17_yesterday-dulcinea-looked-at-me-with-wide_1.jpg" alt="The QLC group outside during event prep in Kansas City" loading="lazy" decoding="async"></figure>
+              </div>
+              <div class="ep-node__head">
+                <p class="ep-node__when">April 2026</p>
+                <h2 class="ep-node__title">The QLC Summit</h2>
+                <p class="ep-node__where">With the Ewing Marion Kauffman Foundation &middot; Kansas City, MO</p>
+                <p class="ep-node__more"><span>Read</span></p>
+              </div>
+            </summary>
+            <div class="ep-node__body">
+              <p class="ep-lead">Yesterday, Dulcinea looked at me with wide eyes and said, &ldquo;this is surreal.&rdquo; 6 months ago, we were strangers on Zoom.</p>
+              <p class="ep-p">Now our group is in Kansas City throwing an event with the Ewing Marion Kauffman Foundation, the mayor, athletes, and creators from across the country.</p>
+              <p class="ep-p">We have merch. Journals. The news is already writing about us. But what makes me want to say &ldquo;look mom I made it&rdquo;?</p>
+              <p class="ep-p">This is about getting young people productively through their Quarter Life Crisis. Life is not about the status games or rat race for our generation. It&rsquo;s about deep meaning.</p>
+              <a class="ep-src" href="https://www.linkedin.com/feed/update/urn%3Ali%3AugcPost%3A7450935807592407040" target="_blank" rel="noopener noreferrer">Post &rarr;</a>
+            </div>
+          </details>
+        </div>
+      </section>
 
-    <div class="ep-rule"></div>
+      <!-- 8. EXTRAVAGANZA -->
+      <section class="ep-chapter ep-chapter--right">
+        <div class="ep-chapter__inner">
+          <details class="ep-node">
+            <summary>
+              <div class="ep-covers ep-covers--2">
+                <figure><img src="/linkedin/media/2026-06-06_i-worked-andrew-yeungs-extravaganza_1.jpg" alt="Four frames from the Extravaganza: name tags, a Citi bike run, a box, and the fix" loading="lazy" decoding="async"></figure>
+                <figure><img src="/linkedin/media/2026-06-06_i-worked-andrew-yeungs-extravaganza_2.jpg" alt="Four frames: the dark stairs before and after lighting them" loading="lazy" decoding="async"></figure>
+              </div>
+              <div class="ep-node__head">
+                <p class="ep-node__when">June 2026</p>
+                <h2 class="ep-node__title">Andrew Yeung&rsquo;s Extravaganza</h2>
+                <p class="ep-node__where">New York, NY &middot; 2pm to midnight</p>
+                <p class="ep-node__more"><span>Read</span></p>
+              </div>
+            </summary>
+            <div class="ep-node__body">
+              <p class="ep-lead">I worked Andrew Yeung&rsquo;s Extravaganza. 7 people asked me why I was there.</p>
+              <p class="ep-p">So let me explain. When I say &ldquo;working,&rdquo; I mean:</p>
+              <ul class="ep-ul">
+                <li>Raiding two Staples on a Citi bike to get name tags (James &gt; Prime Delivery)</li>
+                <li>Ziptie-ing things to fences so they don&rsquo;t fall on guests</li>
+                <li>Lighting the stairs so nobody dies in the dark</li>
+                <li>Taping down floor vinyl so nobody trips</li>
+                <li>Noticing the staff were wiped, and running them cold water</li>
+                <li>Being the best dressed janitor in the building</li>
+                <li>Guarding Bricks with my life</li>
+              </ul>
+              <p class="ep-p">People asked &mdash; Why are you stooping to pick things off the floor? Are you here to network? What do you get out of this?</p>
+              <p class="ep-p">Here&rsquo;s the honest answer. I learn my theory from books and solutions from fires. Dark stairs that could crush someone tipsy and distracted. Staff are tired, so I get them cups of water. No name tags, and colored name tags are Andrew&rsquo;s brand. Each one a fire.</p>
+              <p class="ep-p">None of it was mine. Not my event, not my liability. Nobody asked me do solve most of those. I did it anyway. 2pm to midnight. When I walked out, people were still on the sidewalk talking and smiling. None the wiser.</p>
+              <blockquote class="ep-pull">Some people go to Stanford University, Google, or Goldman Sachs. I put out business and event fires. And I like it.</blockquote>
+              <a class="ep-src" href="https://www.linkedin.com/feed/update/urn%3Ali%3AugcPost%3A7469135081882939392" target="_blank" rel="noopener noreferrer">Post &rarr;</a>
+            </div>
+          </details>
+        </div>
+      </section>
 
-    <!-- THE PLAYBOOK -->
-    <section class="ep-section">
-      <p class="ep-label">&sect; The Playbook</p>
+    </div>
 
-      <div class="ep-grid2">
-        <div class="ep-card">
-          <h2 class="ep-h2">11 things I do at events that nobody taught me</h2>
+    <div class="ep-rule" style="margin:20px 0 0;"></div>
+
+    <!-- ═══ THE PLAYBOOK ═══ -->
+    <section style="padding:48px 0;">
+      <p class="ep-label" style="margin-bottom:24px;">&sect; The Playbook</p>
+      <details class="ep-node" style="max-width:720px;">
+        <summary>
+          <div class="ep-node__head">
+            <p class="ep-node__when">Carried into every room</p>
+            <h2 class="ep-node__title">11 things I do at events that nobody taught me</h2>
+            <p class="ep-node__more"><span>Read</span></p>
+          </div>
+        </summary>
+        <div class="ep-node__body">
           <ol class="ep-ol">
             <li>Wear something weird (shoes, pin, hat) &mdash; gives people a reason to talk to you</li>
             <li>Black on black. You can be a guest, staff, or security depending on the moment.</li>
@@ -577,196 +818,48 @@
             <li>Be a greeter, first impressions are important + you get to meet everyone</li>
           </ol>
           <a class="ep-src" href="https://www.linkedin.com/feed/update/urn%3Ali%3Ashare%3A7424586673394544640" target="_blank" rel="noopener noreferrer">Post &rarr;</a>
-        </div>
 
-        <div class="ep-card">
-          <h2 class="ep-h2">In 2025 I spent ~103 days at events, here&rsquo;s where some failed</h2>
-          <ol class="ep-ol">
-            <li><strong>Focusing on the place.</strong> The lesson: People make the place. People leave yachts, hotels, and everywhere else early if they don&rsquo;t enjoy it.</li>
-            <li><strong>Facilitating business first.</strong> The lesson: Relationships build business, facilitate relationships first.</li>
-            <li><strong>Focusing on the day of the event.</strong> The lesson: Podcast set ups, follow ups, etc both help before the event and after to deliver the value promised. If the before and after are neglected the event is low leverage.</li>
-            <li><strong>Playing status/money games.</strong> The lesson: Good character attracts good character.</li>
-            <li><strong>Being the same.</strong> The lesson: Same money but higher ROI if you are more creative than normal black stage, lanyards, and folding chairs.</li>
-            <li><strong>Not partnering.</strong> The lesson: The more people who are incentivized to help your events, the bigger the win and number of wins.</li>
-          </ol>
-          <blockquote class="ep-pull">Great events are a result of the attendees, and their experience. Don&rsquo;t get lost in the sauce.</blockquote>
-          <a class="ep-src" href="https://www.linkedin.com/feed/update/urn%3Ali%3Ashare%3A7418090234703142912" target="_blank" rel="noopener noreferrer">Post &rarr;</a>
-        </div>
-      </div>
+          <div class="ep-fn">
+            <p class="ep-fn__h">Event marketing</p>
+            <ul class="ep-ul">
+              <li><strong>Environment</strong> &mdash; venue (want to brag about)</li>
+              <li><strong>Activity</strong> &mdash; engaging (5 senses)</li>
+              <li><strong>People</strong> &mdash; relevant</li>
+            </ul>
+            <p class="ep-p">Adjust these for MICE / 7 deadly sins.</p>
+            <a class="ep-src" href="https://www.instagram.com/p/DSRlfWjDttO/" target="_blank" rel="noopener noreferrer">Notes &rarr;</a>
+          </div>
 
-      <div class="ep-grid3" style="margin-top:48px;">
-        <div class="ep-card">
-          <h3 class="ep-h3">Event marketing</h3>
-          <ul class="ep-ul">
-            <li><strong>Environment</strong> &mdash; venue (want to brag about)</li>
-            <li><strong>Activity</strong> &mdash; engaging (5 senses)</li>
-            <li><strong>People</strong> &mdash; relevant</li>
-          </ul>
-          <p class="ep-p" style="margin-top:12px;">Adjust these for MICE / 7 deadly sins.</p>
-          <a class="ep-src" href="https://www.instagram.com/p/DSRlfWjDttO/" target="_blank" rel="noopener noreferrer">Notes, Art Basel &rarr;</a>
-        </div>
+          <div class="ep-fn">
+            <p class="ep-fn__h">Booths are boring</p>
+            <p class="ep-p">The race is not over when sponsors have sent their money, in fact that shouldn&rsquo;t be what it&rsquo;s about at all. To me, it&rsquo;s about encouraging and building a culture of interactiveness and giving.</p>
+            <p class="ep-p">Sponsors could provide headshots, podcasts, interactive booths like massages, IVs, haircuts. So force booths to be experiential.</p>
+            <blockquote class="ep-pull">Change the rules, out with the tables in with the memories.</blockquote>
+            <a class="ep-src" href="https://www.linkedin.com/feed/update/urn%3Ali%3Ashare%3A7419781123657932800" target="_blank" rel="noopener noreferrer">Post &rarr;</a>
+          </div>
 
-        <div class="ep-card">
-          <h3 class="ep-h3">Booths are boring</h3>
-          <p class="ep-p">The race is not over when sponsors have sent their money, in fact that shouldn&rsquo;t be what it&rsquo;s about at all. To me, it&rsquo;s about encouraging and building a culture of interactiveness and giving.</p>
-          <p class="ep-p">Sponsors could provide headshots, podcasts, interactive booths like massages, IVs, haircuts. So force booths to be experiential.</p>
-          <blockquote class="ep-pull">Change the rules, out with the tables in with the memories.</blockquote>
-          <a class="ep-src" href="https://www.linkedin.com/feed/update/urn%3Ali%3Ashare%3A7419781123657932800" target="_blank" rel="noopener noreferrer">Post &rarr;</a>
+          <div class="ep-fn">
+            <p class="ep-fn__h">The infrastructure progression</p>
+            <p class="ep-p">Over the last year I&rsquo;ve compulsively collected a list of 110 community businesses. I&rsquo;ve also been reading obsessively &mdash; Unreasonable Hospitality, The Art of Gathering, Make No Small Plans. I kept reading and I kept seeing the same pattern.</p>
+            <blockquote class="ep-pull">Audience/Network &rarr; Community &rarr; Events &rarr; Physical Place &rarr; ?</blockquote>
+            <p class="ep-p">What I don&rsquo;t know is what comes after physical place. There&rsquo;s a question mark there that keeps showing up for me. That&rsquo;s part of why I moved to NYC.</p>
+            <a class="ep-src" href="https://www.linkedin.com/feed/update/urn%3Ali%3AugcPost%3A7448869248736641024" target="_blank" rel="noopener noreferrer">Post &rarr;</a>
+          </div>
         </div>
-
-        <div class="ep-card">
-          <h3 class="ep-h3">The content most producers leave on the floor</h3>
-          <p class="ep-p">Sure they have photographers and videographers, people snap pictures or videos with their phones, but that&rsquo;s peanuts.</p>
-          <p class="ep-p">How you design the event can get you thousands if not millions of views and tags more, plus be a huge GIVE to your attendees. Set up a quick podcast studio, at the event, have there be a podcast sponsor even. Make sure they know who to tag in their posts with QR codes etc to your content.</p>
-          <a class="ep-src" href="https://www.linkedin.com/feed/update/urn%3Ali%3Ashare%3A7415508586237521920" target="_blank" rel="noopener noreferrer">Post &rarr;</a>
-        </div>
-      </div>
-
-      <div class="ep-grid2" style="margin-top:48px;">
-        <div class="ep-card">
-          <h3 class="ep-h3">The infrastructure progression</h3>
-          <p class="ep-p">Over the last year I&rsquo;ve compulsively collected a list of 110 community businesses. I&rsquo;ve also been reading obsessively &mdash; Unreasonable Hospitality, The Art of Gathering, Make No Small Plans. I kept reading and I kept seeing the same pattern.</p>
-          <blockquote class="ep-pull">Audience/Network &rarr; Community &rarr; Events &rarr; Physical Place &rarr; ?</blockquote>
-          <p class="ep-p">What I don&rsquo;t know is what comes after physical place. Some start funds, or franchise, probably others make products. There&rsquo;s a question mark there that keeps showing up for me. That&rsquo;s part of why I moved to NYC.</p>
-          <a class="ep-src" href="https://www.linkedin.com/feed/update/urn%3Ali%3AugcPost%3A7448869248736641024" target="_blank" rel="noopener noreferrer">Post &rarr;</a>
-        </div>
-
-        <div class="ep-card">
-          <h3 class="ep-h3">Audacity &gt; Marketing Theory</h3>
-          <ol class="ep-ol">
-            <li>Post every time someone buys, tagging them</li>
-            <li>Give awards to strangers</li>
-            <li>Dress up as your product and run a race (double win!)</li>
-            <li>Give the freemium version of your service to people on the sidewalk</li>
-            <li>Piggyback where the eyes are &mdash; Superbowl, SXSW, Sundays at church</li>
-            <li>Surprise your top customers with gifts</li>
-            <li>Give everything you teach away for free, then charge for an experience</li>
-            <li>Start an online beef</li>
-            <li>Advertise your flaws</li>
-          </ol>
-          <a class="ep-src" href="https://www.linkedin.com/feed/update/urn%3Ali%3Ashare%3A7437553745489661952" target="_blank" rel="noopener noreferrer">Post &rarr;</a>
-        </div>
-      </div>
+      </details>
     </section>
 
     <div class="ep-rule"></div>
 
-    <!-- THE VOLUNTEER TRACK -->
-    <section class="ep-section">
-      <p class="ep-label">&sect; The Volunteer Track</p>
-
-      <div class="ep-grid3">
-        <div class="ep-card">
-          <p class="ep-kicker">Montero Productions</p>
-          <h3 class="ep-h3">Gala &amp; Special Event Operations</h3>
-          <p class="ep-card__meta">May 2023 &ndash; Dec 2024</p>
-          <p class="ep-p">Worked events with the <strong>Seattle Seahawks, Seattle Sounders, KJ Wright&rsquo;s Wright Way Foundation, the Jacob Green Foundation, Climate Pledge Arena, the Champions of Change Foundation,</strong> and an Oscar-winning singer, among others.</p>
-          <p class="ep-p">After calling to get a suit delivered to me at work, I prepared to enjoy the night. And I did, but not as a guest. I found a way to provide value wherever I could, I was a doorman, a greeter, I changed a soap dispenser with a ballpoint pen and scissors, and put smiles on many faces.</p>
-        </div>
-
-        <div class="ep-card">
-          <p class="ep-kicker">Andrew&rsquo;s Mixers</p>
-          <h3 class="ep-h3">A-Team Volunteer</h3>
-          <p class="ep-card__meta">Mar 2026 &middot; 1 of 14 selected</p>
-          <ul class="ep-ul">
-            <li>Organized volunteers on arrival</li>
-            <li>Built relationships with venue staff</li>
-            <li>Solved directional set up by getting zip ties from venue staff. Then used same zip ties to put up sponsor flags, and create a waiter tray to collect garbage.</li>
-            <li>Facilitated a better exit flow by training a volunteer on security protocol.</li>
-            <li>Used AirPod as comms to hear what&rsquo;s app group notifications</li>
-            <li>Was recognized by Andrew and his team including the event planner for my agency and ability.</li>
-          </ul>
-        </div>
-
-        <div class="ep-card">
-          <p class="ep-kicker">Jets and Capital Events</p>
-          <h3 class="ep-h3">Event Ops</h3>
-          <p class="ep-card__meta">Sep 2023 &ndash; Feb 2025</p>
-          <p class="ep-p">Jets, supercars, and connecting high-level humans &mdash; before the freelance role solidified.</p>
-          <blockquote class="ep-pull">James Floyd flew across the country to produce Jets and Capital Events for free after a cold email.</blockquote>
-          <a class="ep-src" href="https://www.linkedin.com/feed/update/urn%3Ali%3AugcPost%3A7426855877237977089" target="_blank" rel="noopener noreferrer">Post &rarr;</a>
-        </div>
-      </div>
-
-      <div class="ep-grid3" style="margin-top:44px;">
-        <div class="ep-card">
-          <p class="ep-kicker">Camp Kesem at UC Davis</p>
-          <h3 class="ep-h3">Camp Counselor &amp; Camper</h3>
-          <p class="ep-card__meta">Jan 2012 &ndash; Dec 2020</p>
-          <p class="ep-p">Camp for children of parents affected by cancer. I organized events, and lead campers in said events. We did anything from rock climbing to facilitating difficult conversations about realities of life.</p>
-        </div>
-
-        <div class="ep-card">
-          <p class="ep-kicker">Boy Scouts of America</p>
-          <h3 class="ep-h3">Leader</h3>
-          <p class="ep-card__meta">Jan 2013 &ndash; Jan 2019</p>
-          <p class="ep-p">A service organization designed to establish positive values and skills in young men across the world. Within this organization I was a leader and a experienced scout that learned skills ranging from survival to organization of events.</p>
-        </div>
-
-        <div class="ep-card">
-          <p class="ep-kicker">Merge Ministries</p>
-          <h3 class="ep-h3">Mission Team Member</h3>
-          <p class="ep-card__meta">Apr 2016 &ndash; Apr 2020</p>
-          <p class="ep-p">A construction oriented series of mission trips with intentions of serving those we were visiting. We served them through building and maintaining buildings where we travelled, we also worked with children to facilitate connections between them.</p>
-        </div>
-      </div>
-    </section>
-
-    <div class="ep-rule"></div>
-
-    <!-- DISPATCHES -->
-    <section class="ep-section">
-      <p class="ep-label">&sect; Dispatches</p>
-      <div class="ep-dispatches">
-        <a class="ep-dispatch" href="https://www.instagram.com/p/DWFnvZGDPaZ/" target="_blank" rel="noopener noreferrer">
-          <p class="ep-dispatch__when">Posted March 19, 2026</p>
-          <p class="ep-dispatch__what">Andrew Yeung SXSW tech party</p>
-          <p class="ep-dispatch__go">Instagram &rarr;</p>
-        </a>
-        <a class="ep-dispatch" href="https://www.instagram.com/p/DU4qihciS_b/" target="_blank" rel="noopener noreferrer">
-          <p class="ep-dispatch__when">Posted February 17, 2026</p>
-          <p class="ep-dispatch__what">Jets and Capital Super Bowl, SF</p>
-          <p class="ep-dispatch__go">Instagram &rarr;</p>
-        </a>
-        <a class="ep-dispatch" href="https://www.instagram.com/p/DSRlfWjDttO/" target="_blank" rel="noopener noreferrer">
-          <p class="ep-dispatch__when">Posted December 14, 2025</p>
-          <p class="ep-dispatch__what">Miami Art Basel</p>
-          <p class="ep-dispatch__go">Instagram &rarr;</p>
-        </a>
-        <a class="ep-dispatch" href="https://www.instagram.com/p/DRcUv9JkYyQ/" target="_blank" rel="noopener noreferrer">
-          <p class="ep-dispatch__when">Posted November 24, 2025</p>
-          <p class="ep-dispatch__what">Jets and Capital F1 Vegas</p>
-          <p class="ep-dispatch__go">Instagram &rarr;</p>
-        </a>
-        <a class="ep-dispatch" href="https://www.instagram.com/p/DPU8V_YjHKh/" target="_blank" rel="noopener noreferrer">
-          <p class="ep-dispatch__when">Posted October 2, 2025</p>
-          <p class="ep-dispatch__what">Jets and Capital NYC, on the Intrepid</p>
-          <p class="ep-dispatch__go">Instagram &rarr;</p>
-        </a>
-        <a class="ep-dispatch" href="https://www.instagram.com/p/DJqNwQ4s49j/" target="_blank" rel="noopener noreferrer">
-          <p class="ep-dispatch__when">Posted May 14, 2025</p>
-          <p class="ep-dispatch__what">Jets and Capital Miami</p>
-          <p class="ep-dispatch__go">Instagram &rarr;</p>
-        </a>
-        <a class="ep-dispatch" href="https://www.instagram.com/p/DFl_5BnJl7c/" target="_blank" rel="noopener noreferrer">
-          <p class="ep-dispatch__when">Posted February 2, 2025</p>
-          <p class="ep-dispatch__what">Jets and Capital Vegas</p>
-          <p class="ep-dispatch__go">Instagram &rarr;</p>
-        </a>
-      </div>
-    </section>
-
-    <div class="ep-rule"></div>
-
-    <!-- EXPLORE -->
-    <section class="ep-section">
-      <p class="ep-label">&sect; Explore</p>
+    <!-- ═══ EXPLORE ═══ -->
+    <section style="padding:48px 0 0;">
+      <p class="ep-label" style="margin-bottom:20px;">&sect; Explore</p>
       <div class="ep-explore">
         <a class="ep-explore__item" href="/portfolio/"><span class="ep-explore__label">Portfolio &rarr;</span><span class="ep-explore__desc">The full narrative &mdash; where it started, how it unfolded.</span></a>
         <a class="ep-explore__item" href="/resume/"><span class="ep-explore__label">Resume &rarr;</span><span class="ep-explore__desc">The traditional view &mdash; roles, timelines, outcomes.</span></a>
         <a class="ep-explore__item" href="/events/"><span class="ep-explore__label">Events &rarr;</span><span class="ep-explore__desc">The ones James throws himself.</span></a>
-        <a class="ep-explore__item" href="/writing/"><span class="ep-explore__label">Writing &rarr;</span><span class="ep-explore__desc">The posts these stories came from.</span></a>
         <a class="ep-explore__item" href="/references/"><span class="ep-explore__label">References &rarr;</span><span class="ep-explore__desc">What others have said about James.</span></a>
+        <a class="ep-explore__item" href="/writing/"><span class="ep-explore__label">Writing &rarr;</span><span class="ep-explore__desc">The posts these stories came from.</span></a>
         <a class="ep-explore__item" href="/network/"><span class="ep-explore__label">Network &rarr;</span><span class="ep-explore__desc">The values that made the path, and how to get in touch.</span></a>
       </div>
     </section>
@@ -778,6 +871,110 @@
     <span>Connecting &mdash; Creating &mdash; Living</span>
     <img src="/images/JF_logo_transparent-2.png" alt="JF" style="width:18px;height:18px;">
   </footer>
+
+  <script>
+  (function () {
+    var tl   = document.getElementById('ep-tl');
+    var svg  = document.getElementById('ep-tl-svg');
+    var line = document.getElementById('ep-tl-line');
+    var dots = document.getElementById('ep-tl-dots');
+    if (!tl || !svg || !line) return;
+
+    var NS = 'http://www.w3.org/2000/svg';
+    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var len = 0;
+
+    // The viewBox is set to the timeline's real pixel size, so one user unit is
+    // one CSS pixel. That keeps stroke-width, getTotalLength() and the dash
+    // pattern all in the same units -- which is what the draw-on-scroll needs.
+    function build() {
+      var chapters = tl.querySelectorAll('.ep-chapter');
+      if (!chapters.length) return;
+
+      var W = tl.clientWidth || 1;
+      var H = tl.offsetHeight || 1;
+      var wide = window.innerWidth >= 880;
+      var tlTop = tl.getBoundingClientRect().top + window.scrollY;
+
+      // On wide screens the cards sit at 0-42% and 58-100%, leaving a lane down
+      // the middle for the line to wind through. Narrow screens get a 30px
+      // gutter on the left instead.
+      var mid  = wide ? W * 0.50 : 14;
+      var left = wide ? W * 0.43 : 14;
+      var right= wide ? W * 0.57 : 14;
+
+      var pts = [[mid, 0]];
+      var anchors = [];
+      for (var i = 0; i < chapters.length; i++) {
+        var r = chapters[i].getBoundingClientRect();
+        var y = (r.top + window.scrollY - tlTop) + r.height / 2;
+        var x = chapters[i].classList.contains('ep-chapter--right') ? right : left;
+        pts.push([x, y]);
+        anchors.push([x, y]);
+      }
+      pts.push([mid, H]);
+
+      // Smooth the anchors into a cubic spline with vertical handles, so the
+      // curve leans toward each card without ever doubling back.
+      var d = 'M' + pts[0][0].toFixed(1) + ' ' + pts[0][1].toFixed(1);
+      for (var j = 1; j < pts.length; j++) {
+        var p0 = pts[j - 1], p1 = pts[j];
+        var dy = (p1[1] - p0[1]) * 0.42;
+        d += ' C' + p0[0].toFixed(1) + ' ' + (p0[1] + dy).toFixed(1) +
+             ',' + p1[0].toFixed(1) + ' ' + (p1[1] - dy).toFixed(1) +
+             ',' + p1[0].toFixed(1) + ' ' + p1[1].toFixed(1);
+      }
+
+      svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+      line.setAttribute('d', d);
+
+      if (dots) {
+        while (dots.firstChild) dots.removeChild(dots.firstChild);
+        for (var k = 0; k < anchors.length; k++) {
+          var c = document.createElementNS(NS, 'circle');
+          c.setAttribute('class', 'ep-tl__dot');
+          c.setAttribute('cx', anchors[k][0].toFixed(1));
+          c.setAttribute('cy', anchors[k][1].toFixed(1));
+          c.setAttribute('r', '4');
+          dots.appendChild(c);
+        }
+      }
+
+      if (reduced) {
+        line.style.strokeDasharray = 'none';
+        line.style.strokeDashoffset = '0';
+        return;
+      }
+      len = line.getTotalLength();
+      line.style.strokeDasharray = len + ' ' + len;
+      progress();
+    }
+
+    function progress() {
+      if (reduced || !len) return;
+      var r = tl.getBoundingClientRect();
+      // 0 when the timeline's top crosses two-thirds down the viewport,
+      // 1 when its bottom does.
+      var p = (window.innerHeight * 0.66 - r.top) / (r.height || 1);
+      p = Math.max(0, Math.min(1, p));
+      line.style.strokeDashoffset = (len * (1 - p)).toFixed(1);
+    }
+
+    var raf = null;
+    function onScroll() {
+      if (raf) return;
+      raf = requestAnimationFrame(function () { raf = null; progress(); });
+    }
+
+    build();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', build);
+    // Opening a card changes the timeline height, so re-measure.
+    tl.addEventListener('toggle', function () { setTimeout(build, 0); }, true);
+    window.addEventListener('load', build);
+    if (window.ResizeObserver) new ResizeObserver(build).observe(tl);
+  })();
+  </script>
 
 </body>
 </html>
