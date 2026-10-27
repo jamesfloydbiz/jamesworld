@@ -222,20 +222,36 @@
     .pf-logos-inner {
       display: flex;
       align-items: center;
-      gap: 48px;
+      gap: 56px;
       white-space: nowrap;
       animation: logosScroll 40s linear infinite;
     }
     .pf-logos-inner img {
-      height: 40px;
+      max-height: 54px;
+      max-width: 230px;
       width: auto;
+      height: auto;
       flex-shrink: 0;
-      filter: grayscale(1);
-      opacity: 0.7;
+      opacity: 1;
+      /* multiply drops the white boxes some of these ship with straight into
+         the paper; the logos themselves keep their own colour. */
       mix-blend-mode: multiply;
-      transition: opacity 0.3s;
+      transition: transform 0.3s;
     }
-    .pf-logos-inner img:hover { opacity: 1; }
+    .pf-logos-inner img:hover { transform: scale(1.06); }
+    /* Brands with no published mark run as a wordmark instead. */
+    .pf-logos-inner .pf-logo-word {
+      flex-shrink: 0;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 700;
+      font-size: 1.5rem;
+      letter-spacing: -0.01em;
+      color: var(--pf-fg);
+      line-height: 1;
+      white-space: nowrap;
+      transition: transform 0.3s;
+    }
+    .pf-logos-inner .pf-logo-word:hover { transform: scale(1.06); }
 
     /* Masthead */
     .pf-masthead-h1 {
@@ -539,35 +555,29 @@
     </section>
     <div class="pf-logos-bar">
       <div class="pf-logos-inner">
-        <img src="/logos/loeb_nyc.png" alt="Loeb NYC" loading="lazy">
-        <img src="/logos/blue_devil.png" alt="Blue Devil" loading="lazy">
-        <img src="/logos/jacob_green.png" alt="Jacob Green Charity Golf" loading="lazy">
-        <img src="/logos/jets.png" alt="Jets & Capital" loading="lazy">
-        <img src="/logos/keiretsu.png" alt="Keiretsu Forum" loading="lazy">
-        <img src="/logos/betterwealth.png" alt="BetterWealth" loading="lazy">
-        <img src="/logos/champions.jpg" alt="Champions of Change" loading="lazy">
-        <img src="/logos/sounders_fc.png" alt="Seattle Sounders" loading="lazy">
-        <img src="/logos/seahawks.png" alt="Seahawks" loading="lazy">
+        <img src="/logos/loeb_nyc-trim.png" alt="Loeb NYC" loading="lazy">
+        <img src="/logos/jets-trim.png" alt="Jets &amp; Capital" loading="lazy">
+        <img src="/logos/betterwealth-trim.png" alt="BetterWealth" loading="lazy">
+        <img src="/logos/fibe.svg" alt="fibe" loading="lazy">
+        <span class="pf-logo-word">andrew&rsquo;s mixers</span>
+        <img src="/logos/jacob_green-trim.png" alt="Jacob Green Charity Golf" loading="lazy">
+        <img src="/logos/champions-trim.png" alt="Champions of Change" loading="lazy">
         <!-- Duplicate rows for seamless loop -->
-        <img src="/logos/loeb_nyc.png" alt="Loeb NYC" loading="lazy">
-        <img src="/logos/blue_devil.png" alt="Blue Devil" loading="lazy">
-        <img src="/logos/jacob_green.png" alt="Jacob Green Charity Golf" loading="lazy">
-        <img src="/logos/jets.png" alt="Jets & Capital" loading="lazy">
-        <img src="/logos/keiretsu.png" alt="Keiretsu Forum" loading="lazy">
-        <img src="/logos/betterwealth.png" alt="BetterWealth" loading="lazy">
-        <img src="/logos/champions.jpg" alt="Champions of Change" loading="lazy">
-        <img src="/logos/sounders_fc.png" alt="Seattle Sounders" loading="lazy">
-        <img src="/logos/seahawks.png" alt="Seahawks" loading="lazy">
+        <img src="/logos/loeb_nyc-trim.png" alt="Loeb NYC" loading="lazy">
+        <img src="/logos/jets-trim.png" alt="Jets &amp; Capital" loading="lazy">
+        <img src="/logos/betterwealth-trim.png" alt="BetterWealth" loading="lazy">
+        <img src="/logos/fibe.svg" alt="fibe" loading="lazy">
+        <span class="pf-logo-word">andrew&rsquo;s mixers</span>
+        <img src="/logos/jacob_green-trim.png" alt="Jacob Green Charity Golf" loading="lazy">
+        <img src="/logos/champions-trim.png" alt="Champions of Change" loading="lazy">
         <!-- Third row -->
-        <img src="/logos/loeb_nyc.png" alt="Loeb NYC" loading="lazy">
-        <img src="/logos/blue_devil.png" alt="Blue Devil" loading="lazy">
-        <img src="/logos/jacob_green.png" alt="Jacob Green Charity Golf" loading="lazy">
-        <img src="/logos/jets.png" alt="Jets & Capital" loading="lazy">
-        <img src="/logos/keiretsu.png" alt="Keiretsu Forum" loading="lazy">
-        <img src="/logos/betterwealth.png" alt="BetterWealth" loading="lazy">
-        <img src="/logos/champions.jpg" alt="Champions of Change" loading="lazy">
-        <img src="/logos/sounders_fc.png" alt="Seattle Sounders" loading="lazy">
-        <img src="/logos/seahawks.png" alt="Seahawks" loading="lazy">
+        <img src="/logos/loeb_nyc-trim.png" alt="Loeb NYC" loading="lazy">
+        <img src="/logos/jets-trim.png" alt="Jets &amp; Capital" loading="lazy">
+        <img src="/logos/betterwealth-trim.png" alt="BetterWealth" loading="lazy">
+        <img src="/logos/fibe.svg" alt="fibe" loading="lazy">
+        <span class="pf-logo-word">andrew&rsquo;s mixers</span>
+        <img src="/logos/jacob_green-trim.png" alt="Jacob Green Charity Golf" loading="lazy">
+        <img src="/logos/champions-trim.png" alt="Champions of Change" loading="lazy">
       </div>
     </div>
 
