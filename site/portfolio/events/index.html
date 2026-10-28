@@ -115,13 +115,25 @@
     /* Skills — a scan-in-five-seconds rail, same no-JS pattern as the refs. */
     .ep-skills { margin-top: 40px; }
     .ep-skills__rail {
-      display: grid; grid-auto-flow: column; grid-auto-columns: minmax(172px, 200px);
-      gap: 1px; overflow-x: auto; padding-bottom: 10px;
-      scroll-snap-type: x proximity; scrollbar-width: thin;
+      overflow: hidden;
+      -webkit-mask-image: linear-gradient(to right, transparent 0, #000 40px, #000 calc(100% - 40px), transparent 100%);
+      mask-image: linear-gradient(to right, transparent 0, #000 40px, #000 calc(100% - 40px), transparent 100%);
     }
+    /* One set of cards, duplicated, translated by exactly one set -- so the
+       loop is seamless. The 1px margin stands in for a gap so the maths is exact. */
+    .ep-skills__track {
+      display: flex; align-items: stretch; width: max-content;
+      animation: epSkillsScroll 70s linear infinite;
+    }
+    .ep-skills__rail:hover .ep-skills__track { animation-play-state: paused; }
     .ep-skill {
-      scroll-snap-align: start; background: var(--pf-bg);
+      flex: 0 0 186px; margin-right: 1px; background: var(--pf-bg);
       box-shadow: 0 0 0 1px var(--pf-border-med); padding: 14px 15px 13px;
+    }
+    @keyframes epSkillsScroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+    @media (prefers-reduced-motion: reduce) {
+      .ep-skills__track { animation: none; }
+      .ep-skills__rail { overflow-x: auto; scrollbar-width: thin; }
     }
     .ep-skill__n {
       font-family: 'Playfair Display', serif; font-weight: 700; font-size: .95rem;
@@ -230,6 +242,9 @@
     @media (min-width: 880px) {
       /* Opened cards break out of their half of the layout. */
       .ep-chapter.is-open .ep-chapter__inner { width: 100%; margin-left: 0; }
+      /* The Now card ships open and is short -- it keeps its centred width. */
+      .ep-chapter--now.is-open .ep-chapter__inner { width: 60%; margin-left: 20%; }
+      .ep-chapter--now .ep-node[open] > .ep-node__body { columns: auto; }
       /* Multi-column rather than grid: grid rows take the height of their
          tallest cell, which wasted most of what the extra width bought. */
       .ep-node[open] > .ep-node__body { columns: 3 290px; column-gap: 34px; }
@@ -383,64 +398,121 @@
     <section class="ep-skills" aria-label="Skills">
       <p class="ep-label" style="margin-bottom:16px;">&sect; Skills</p>
       <div class="ep-skills__rail">
-        <div class="ep-skill">
-          <p class="ep-skill__n">Event production</p>
-          <p class="ep-skill__w">Jets and Capital &middot; Montero</p>
-        </div>
-        <div class="ep-skill">
-          <p class="ep-skill__n">Creative direction</p>
-          <p class="ep-skill__w">Andrew&rsquo;s Mixers &middot; Montero</p>
-        </div>
-        <div class="ep-skill">
-          <p class="ep-skill__n">Design consulting</p>
-          <p class="ep-skill__w">Fibe &middot; Jets and Capital</p>
-        </div>
-        <div class="ep-skill">
-          <p class="ep-skill__n">Vendor management</p>
-          <p class="ep-skill__w">Fibe &middot; Montero</p>
-        </div>
-        <div class="ep-skill">
-          <p class="ep-skill__n">Procurement &amp; sourcing</p>
-          <p class="ep-skill__w">Fibe &middot; Extravaganza</p>
-        </div>
-        <div class="ep-skill">
-          <p class="ep-skill__n">AV, stage &amp; mics</p>
-          <p class="ep-skill__w">Fibe &middot; QLC Summit</p>
-        </div>
-        <div class="ep-skill">
-          <p class="ep-skill__n">Run of show</p>
-          <p class="ep-skill__w">Jets and Capital &middot; Keiretsu</p>
-        </div>
-        <div class="ep-skill">
-          <p class="ep-skill__n">Volunteer &amp; staff management</p>
-          <p class="ep-skill__w">Andrew&rsquo;s Mixers &middot; Montero</p>
-        </div>
-        <div class="ep-skill">
-          <p class="ep-skill__n">Site build &amp; safety</p>
-          <p class="ep-skill__w">Extravaganza &middot; Jets and Capital</p>
-        </div>
-        <div class="ep-skill">
-          <p class="ep-skill__n">Event connectivity &amp; IT</p>
-          <p class="ep-skill__w">Fibe</p>
-        </div>
-        <div class="ep-skill">
-          <p class="ep-skill__n">Executive protection</p>
-          <p class="ep-skill__w">Fibe</p>
-        </div>
-        <div class="ep-skill">
-          <p class="ep-skill__n">Multi-city event travel</p>
-          <p class="ep-skill__w">Jets and Capital</p>
-        </div>
-        <div class="ep-skill">
-          <p class="ep-skill__n">Gala &amp; paddle raise</p>
-          <p class="ep-skill__w">Montero Productions</p>
-        </div>
-        <div class="ep-skill">
-          <p class="ep-skill__n">Guest &amp; staff hospitality</p>
-          <p class="ep-skill__w">Every room</p>
+        <div class="ep-skills__track">
+          <div class="ep-skill">
+            <p class="ep-skill__n">Event production</p>
+            <p class="ep-skill__w">Jets and Capital &middot; Montero</p>
+          </div>
+          <div class="ep-skill">
+            <p class="ep-skill__n">Creative direction</p>
+            <p class="ep-skill__w">Andrew&rsquo;s Mixers &middot; Montero</p>
+          </div>
+          <div class="ep-skill">
+            <p class="ep-skill__n">Design consulting</p>
+            <p class="ep-skill__w">Fibe &middot; Jets and Capital</p>
+          </div>
+          <div class="ep-skill">
+            <p class="ep-skill__n">Vendor management</p>
+            <p class="ep-skill__w">Fibe &middot; Montero</p>
+          </div>
+          <div class="ep-skill">
+            <p class="ep-skill__n">Procurement &amp; sourcing</p>
+            <p class="ep-skill__w">Fibe &middot; Extravaganza</p>
+          </div>
+          <div class="ep-skill">
+            <p class="ep-skill__n">AV, stage &amp; mics</p>
+            <p class="ep-skill__w">Fibe &middot; QLC Summit</p>
+          </div>
+          <div class="ep-skill">
+            <p class="ep-skill__n">Run of show</p>
+            <p class="ep-skill__w">Jets and Capital &middot; Keiretsu</p>
+          </div>
+          <div class="ep-skill">
+            <p class="ep-skill__n">Volunteer &amp; staff management</p>
+            <p class="ep-skill__w">Andrew&rsquo;s Mixers &middot; Montero</p>
+          </div>
+          <div class="ep-skill">
+            <p class="ep-skill__n">Site build &amp; safety</p>
+            <p class="ep-skill__w">Extravaganza &middot; Jets and Capital</p>
+          </div>
+          <div class="ep-skill">
+            <p class="ep-skill__n">Event connectivity &amp; IT</p>
+            <p class="ep-skill__w">Fibe</p>
+          </div>
+          <div class="ep-skill">
+            <p class="ep-skill__n">Executive protection</p>
+            <p class="ep-skill__w">Fibe</p>
+          </div>
+          <div class="ep-skill">
+            <p class="ep-skill__n">Multi-city event travel</p>
+            <p class="ep-skill__w">Jets and Capital</p>
+          </div>
+          <div class="ep-skill">
+            <p class="ep-skill__n">Gala &amp; paddle raise</p>
+            <p class="ep-skill__w">Montero Productions</p>
+          </div>
+          <div class="ep-skill">
+            <p class="ep-skill__n">Guest &amp; staff hospitality</p>
+            <p class="ep-skill__w">Every room</p>
+          </div>
+          <div class="ep-skill" aria-hidden="true">
+            <p class="ep-skill__n">Event production</p>
+            <p class="ep-skill__w">Jets and Capital &middot; Montero</p>
+          </div>
+          <div class="ep-skill" aria-hidden="true">
+            <p class="ep-skill__n">Creative direction</p>
+            <p class="ep-skill__w">Andrew&rsquo;s Mixers &middot; Montero</p>
+          </div>
+          <div class="ep-skill" aria-hidden="true">
+            <p class="ep-skill__n">Design consulting</p>
+            <p class="ep-skill__w">Fibe &middot; Jets and Capital</p>
+          </div>
+          <div class="ep-skill" aria-hidden="true">
+            <p class="ep-skill__n">Vendor management</p>
+            <p class="ep-skill__w">Fibe &middot; Montero</p>
+          </div>
+          <div class="ep-skill" aria-hidden="true">
+            <p class="ep-skill__n">Procurement &amp; sourcing</p>
+            <p class="ep-skill__w">Fibe &middot; Extravaganza</p>
+          </div>
+          <div class="ep-skill" aria-hidden="true">
+            <p class="ep-skill__n">AV, stage &amp; mics</p>
+            <p class="ep-skill__w">Fibe &middot; QLC Summit</p>
+          </div>
+          <div class="ep-skill" aria-hidden="true">
+            <p class="ep-skill__n">Run of show</p>
+            <p class="ep-skill__w">Jets and Capital &middot; Keiretsu</p>
+          </div>
+          <div class="ep-skill" aria-hidden="true">
+            <p class="ep-skill__n">Volunteer &amp; staff management</p>
+            <p class="ep-skill__w">Andrew&rsquo;s Mixers &middot; Montero</p>
+          </div>
+          <div class="ep-skill" aria-hidden="true">
+            <p class="ep-skill__n">Site build &amp; safety</p>
+            <p class="ep-skill__w">Extravaganza &middot; Jets and Capital</p>
+          </div>
+          <div class="ep-skill" aria-hidden="true">
+            <p class="ep-skill__n">Event connectivity &amp; IT</p>
+            <p class="ep-skill__w">Fibe</p>
+          </div>
+          <div class="ep-skill" aria-hidden="true">
+            <p class="ep-skill__n">Executive protection</p>
+            <p class="ep-skill__w">Fibe</p>
+          </div>
+          <div class="ep-skill" aria-hidden="true">
+            <p class="ep-skill__n">Multi-city event travel</p>
+            <p class="ep-skill__w">Jets and Capital</p>
+          </div>
+          <div class="ep-skill" aria-hidden="true">
+            <p class="ep-skill__n">Gala &amp; paddle raise</p>
+            <p class="ep-skill__w">Montero Productions</p>
+          </div>
+          <div class="ep-skill" aria-hidden="true">
+            <p class="ep-skill__n">Guest &amp; staff hospitality</p>
+            <p class="ep-skill__w">Every room</p>
+          </div>
         </div>
       </div>
-      <p class="ep-refs__hint">Scroll &rarr;</p>
     </section>
 
     <section class="ep-refs" aria-label="References">
