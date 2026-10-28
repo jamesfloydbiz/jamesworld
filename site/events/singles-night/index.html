@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>First Date On Us — James Floyd</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Lora:ital,wght@0,400;0,500;1,400&family=DM+Mono:wght@300;400&display=swap">
+  <link rel="stylesheet" href="/css/site.css">
+  <style>
+    .lock { max-width: 24rem; margin-top: 2rem; }
+    .lock label {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--fg-55);
+      margin-bottom: 8px;
+    }
+    .lock__row { display: flex; gap: 8px; }
+    .lock input {
+      flex: 1;
+      background: transparent;
+      color: var(--fg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 10px 12px;
+      font: inherit;
+    }
+    .lock input:focus { outline: none; border-color: var(--fg-70); }
+    .lock button {
+      background: var(--fg);
+      color: var(--bg);
+      border: 0;
+      border-radius: 4px;
+      padding: 10px 16px;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+    .lock__error { color: var(--fg-70); font-size: 0.9rem; min-height: 1.4em; margin-top: 8px; }
+    .flyer { width: 100%; max-width: 30rem; border-radius: 4px; display: block; margin: 2rem 0; }
+    .plan-links { list-style: none; padding: 0; margin: 1rem 0 0; display: grid; gap: 10px; }
+    .plan-links a {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--fg-85);
+    }
+  </style>
+</head>
+<body>
+
+  <header class="site-header anim-slide-dn">
+    <a href="/" class="site-header__logo" aria-label="Return to home"><img src="/logo.svg" alt="JF"></a>
+    <button class="site-header__menu-btn" id="menu-btn" aria-expanded="false" aria-controls="site-nav">Menu</button>
+  </header>
+
+  <nav class="site-nav" id="site-nav" aria-label="Main navigation">
+    <ul class="site-nav__list">
+      <li class="site-nav__item"><a href="/sonder/" class="site-nav__link">Sonder Series</a></li>
+      <li class="site-nav__item"><a href="/portfolio/" class="site-nav__link">Portfolio</a></li>
+      <li class="site-nav__item" data-has-sub>
+        <a href="/projects/" class="site-nav__link">Projects</a>
+        <div class="site-nav__sub">
+          <a href="/portfolio/" class="site-nav__sub-link">Portfolio</a>
+          <a href="/resume/" class="site-nav__sub-link">Resume</a>
+          <a href="/references/" class="site-nav__sub-link">References</a>
+          <a href="/projects/tech-builds/" class="site-nav__sub-link">Tech Builds</a>
+          <a href="/education/" class="site-nav__sub-link">Education Dashboards</a>
+        </div>
+      </li>
+      <li class="site-nav__item" data-has-sub>
+        <a href="/content/" class="site-nav__link">Content</a>
+        <div class="site-nav__sub">
+          <a href="/writing/" class="site-nav__sub-link">Writing</a>
+          <a href="/writing/#poems" class="site-nav__sub-link">Poems</a>
+          <a href="/pictures/" class="site-nav__sub-link">Memories</a>
+        </div>
+      </li>
+      <li class="site-nav__item"><a href="/network/" class="site-nav__link">Network</a></li>
+      <li class="site-nav__item"><a href="/blueprints/" class="site-nav__link">Blueprints</a></li>
+      <li class="site-nav__item" style="margin-top:24px;"><a href="/" class="site-nav__back">Back to Gallery</a></li>
+    </ul>
+    <button class="site-nav__close" id="nav-close">Close</button>
+  </nav>
+
+  <main class="page">
+    <div class="page-content anim-fade-up" style="animation-delay:0.6s;">
+
+      <a href="/events/" class="text-link" style="font-size:0.75rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--fg-55);">← Events</a>
+
+      <div id="locked">
+        <h1 class="page-title" style="margin-top:0.5rem;">First Date On Us</h1>
+        <form class="lock" id="lock">
+          <label for="pw">Password</label>
+          <div class="lock__row">
+            <input id="pw" type="password" autocomplete="current-password" required>
+            <button type="submit">Unlock</button>
+          </div>
+          <p class="lock__error" id="lock-error" role="alert"></p>
+        </form>
+      </div>
+
+    </div>
+  </main>
+
+  <script src="/js/site.js"></script>
+  <script>
+    // The page body is AES-GCM encrypted at build time (tools/build.js in the
+    // cohabs-singles-night repo). Only the ciphertext ships; the password derives the key.
+    const SEALED = {"iterations":600000,"salt":"YwPIKwHypRirtyk/Ry7O8A==","iv":"2oMBoPdP8zIgZRNy","data":"/d/JJP8BpFLBpO7W6eA5sJCzOhMgSjDF4xO4e+WeZ8BuDzrnSvcCJjmAphFT0xuWlyxJOXWSVi++zDJ63qdznEr7IRjLPdMHZrDZZCp4RukHfMC2C4QK49kllRnGJZJkqrFlM4OqjzaGDHgieC/Y0f1QjcblaL1sirAEvNb3KY/RuNonF2pASMm3Bd8+K/6G5TKe+B2cq0nfBRhu9qrIWN3uxjptYgAZJzSz1zd1uCu+ajjfLCUwrUxgDWJ94B40uo6pPk+Pi6lUSqawYIBRwIWwSpvXb8HYU7GOxOve5hGe3Tn4c+K0zk6vdXL4wjiCdaBhVCGvSRMd2Vk6yFjjZHVslW2+z/AMBS+IzKjnQr7FYFT0l82usHfi+8C2uXYowC3ueDZT9mRDUw7pePFWxrFhKVZ7tgjA/NDTQXCbKeoUtmpI80mpr+ncgzFJRCtk0PN/NDIodFmnFJKMQ4ugYZBruJLf5pGPBfXYAR5xuAUrUIN+YSh0NYf9qWmi3+WRqMdSc7q8gT/rhJpCmk9IXbqMxES3XFLprR6vM9oXvnwUSTQYsP48kSIPYZoOAc4zOoPbYcdrvrxmivnOG51/W9dsDct6S7Kh9SfpargAla81fJsipYVA0WMCAl+kHhXZFfR7qWGVAhB74uAcv4AYadfbp1614/GyoBuTqSaZ0Ykze9x5EH3D80oVHyKgiVnmRmTVPZEcxuBgTxwAucTD0WyC3c38MfJ+aseUFSm0UwqmAR3Vw8zlhYDYzJtzsAMHxQUhJbG+GmnAJZDw8yIqurM/F+F6r40uJll9zGMXoSNrfYzuIbqNxmqLO9EqwugnjSotOct91OHsmTMdXB7xAg=="};
+    const b64 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+    async function open(pw) {
+      const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(pw), 'PBKDF2', false, ['deriveKey']);
+      const key = await crypto.subtle.deriveKey(
+        { name: 'PBKDF2', salt: b64(SEALED.salt), iterations: SEALED.iterations, hash: 'SHA-256' },
+        base, { name: 'AES-GCM', length: 256 }, false, ['decrypt']);
+      const plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: b64(SEALED.iv) }, key, b64(SEALED.data));
+      return new TextDecoder().decode(plain);
+    }
+    async function unlock(pw, remember) {
+      const html = await open(pw);
+      document.getElementById('locked').innerHTML = html;
+      if (remember) { try { sessionStorage.setItem('fdou', pw); } catch (e) {} }
+    }
+    document.getElementById('lock').addEventListener('submit', async e => {
+      e.preventDefault();
+      const err = document.getElementById('lock-error');
+      err.textContent = '';
+      try { await unlock(document.getElementById('pw').value, true); }
+      catch (e) { err.textContent = 'Wrong password.'; }
+    });
+    try { const saved = sessionStorage.getItem('fdou'); if (saved) unlock(saved, false).catch(() => {}); } catch (e) {}
+  </script>
+</body>
+</html>
