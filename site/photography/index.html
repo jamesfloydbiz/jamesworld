@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Photography — James Floyd</title>
+  <meta name="description" content="Photographs by James Floyd. Shot on a Sony a6000, New York.">
+  <link rel="canonical" href="https://jamesfloyds.world/photography/">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://jamesfloyds.world/photography/">
+  <meta property="og:title" content="Photography — James Floyd">
+  <meta property="og:description" content="Photographs by James Floyd. Shot on a Sony a6000, New York.">
+  <meta property="og:image" content="https://jamesfloyds.world/photography/full/siren-nights.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Photography — James Floyd">
+  <meta name="twitter:description" content="Photographs by James Floyd. Shot on a Sony a6000, New York.">
+  <meta name="twitter:image" content="https://jamesfloyds.world/photography/full/siren-nights.jpg">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&amp;family=EB+Garamond:ital,wght@0,400;0,500;1,400&amp;family=DM+Mono:wght@300;400&amp;family=Lora:ital,wght@0,400;0,500;1,400&amp;family=Space+Mono:wght@400;700&amp;display=swap">
+  <link rel="stylesheet" href="/css/site.css">
+
+  <style>
+    /* Scoped to this page. The site's own .photo-frame greyscales its images and
+       puts a 2px white border round them -- right for the Memories wall, wrong
+       for work that was graded in colour, so the gallery here is its own thing. */
+    .ph-grid { columns: 1; column-gap: 14px; }
+    @media (min-width: 560px)  { .ph-grid { columns: 2; } }
+    @media (min-width: 900px)  { .ph-grid { columns: 3; } }
+    @media (min-width: 1360px) { .ph-grid { columns: 4; } }
+
+    .ph-item { break-inside: avoid; margin: 0 0 14px; }
+    .ph-btn {
+      display: block; width: 100%; padding: 0; border: 0; background: none;
+      cursor: zoom-in; line-height: 0;
+    }
+    .ph-btn img {
+      width: 100%; height: auto; display: block;
+      background: var(--secondary-bg);
+      transition: opacity .25s ease;
+    }
+    .ph-btn:hover img, .ph-btn:focus-visible img { opacity: .72; }
+    .ph-btn:focus-visible { outline: 2px solid var(--green); outline-offset: 3px; }
+    .ph-cap {
+      font-family: var(--font-mono); font-size: .68rem; letter-spacing: .1em;
+      text-transform: uppercase; color: var(--fg-55); margin: 8px 2px 0;
+    }
+
+    /* Lightbox. A native <dialog> so Esc and the top layer come for free. */
+    #ph-lb[open] {
+      position: fixed; inset: 0; width: 100vw; max-width: 100vw;
+      height: 100vh; max-height: 100vh; margin: 0; padding: 0;
+      border: 0; border-radius: 0; background: #000;
+      display: flex; align-items: center; justify-content: center;
+    }
+    #ph-lb::backdrop { background: #000; }
+    #ph-lb img { max-width: 100vw; max-height: 100vh; width: auto; height: auto; display: block; }
+    .ph-lb__bar {
+      position: fixed; left: 0; right: 0; bottom: 0; z-index: 2;
+      display: flex; align-items: center; justify-content: space-between; gap: 16px;
+      padding: 14px 18px; background: linear-gradient(to top, hsl(0 0% 0% / .85), transparent);
+      font-family: var(--font-mono); font-size: .7rem; letter-spacing: .12em;
+      text-transform: uppercase; color: var(--fg-70); pointer-events: none;
+    }
+    .ph-lb__bar button { pointer-events: auto; }
+    .ph-nav {
+      background: none; border: 1px solid var(--fg-25); color: var(--fg-70);
+      font: inherit; letter-spacing: .12em; padding: 7px 14px; cursor: pointer;
+      transition: color .2s, border-color .2s;
+    }
+    .ph-nav:hover { color: var(--fg); border-color: var(--fg-45); }
+    .ph-lb__mid { flex: 1; text-align: center; }
+    @media (prefers-reduced-motion: reduce) { .ph-btn img { transition: none; } }
+  </style>
+</head>
+<body>
+
+  <header class="site-header anim-slide-dn">
+    <a href="/" class="site-header__logo" aria-label="Return to home"><img src="/logo.svg" alt="JF"></a>
+    <button class="site-header__menu-btn" id="menu-btn" aria-expanded="false" aria-controls="site-nav">Menu</button>
+  </header>
+
+  <nav class="site-nav" id="site-nav" aria-label="Main navigation">
+    <ul class="site-nav__list">
+      <li class="site-nav__item"><a href="/sonder/" class="site-nav__link">Sonder Series</a></li>
+      <li class="site-nav__item"><a href="/portfolio/" class="site-nav__link">Portfolio</a></li>
+      <li class="site-nav__item" data-has-sub>
+        <a href="/projects/" class="site-nav__link">Projects</a>
+        <div class="site-nav__sub">
+          <a href="/portfolio/" class="site-nav__sub-link">Portfolio</a>
+          <a href="/resume/" class="site-nav__sub-link">Resume</a>
+          <a href="/references/" class="site-nav__sub-link">References</a>
+          <a href="/projects/tech-builds/" class="site-nav__sub-link">Tech Builds</a>
+          <a href="/education/" class="site-nav__sub-link">Education Dashboards</a>
+        </div>
+      </li>
+      <li class="site-nav__item" data-has-sub>
+        <a href="/content/" class="site-nav__link">Content</a>
+        <div class="site-nav__sub">
+          <a href="/writing/" class="site-nav__sub-link">Writing</a>
+          <a href="/writing/#poems" class="site-nav__sub-link">Poems</a>
+          <a href="/photography/" class="site-nav__sub-link">Photography</a>
+          <a href="/pictures/" class="site-nav__sub-link">Memories</a>
+        </div>
+      </li>
+      <li class="site-nav__item"><a href="/network/" class="site-nav__link">Network</a></li>
+      <li class="site-nav__item"><a href="/blueprints/" class="site-nav__link">Blueprints</a></li>
+      <li class="site-nav__item" style="margin-top:24px;"><a href="/" class="site-nav__back">Back to Gallery</a></li>
+    </ul>
+    <button class="site-nav__close" id="nav-close">Close</button>
+  </nav>
+
+  <main class="page">
+    <div class="page-content anim-fade-up" style="animation-delay:0.4s; max-width: 92rem;">
+
+      <div style="display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap; margin-bottom:1rem;">
+        <h1 class="page-title" style="margin-bottom:0;">PHOTOGRAPHY</h1>
+        <span class="tag">76 frames</span>
+      </div>
+
+      <!-- blurb: James to write -->
+
+      <div class="divider"></div>
+
+      <div class="ph-grid">
+        <figure class="ph-item">
+          <button class="ph-btn" type="button" data-i="0" aria-label="Open Siren Nights">
+            <img src="/photography/thumb/siren-nights.jpg" width="900" height="600" alt="" loading="eager" decoding="async">
+          </button>
+          <figcaption class="ph-cap">Siren Nights</figcaption>
+        </figure>
+        <figure class="ph-item">
+          <button class="ph-btn" type="button" data-i="1" aria-label="Open Deli Grocery Oct 9, 2026">
+            <img src="/photography/thumb/deli-grocery-oct-9-2026.jpg" width="900" height="764" alt="" loading="eager" decoding="async">
+          </button>
+          <figcaption class="ph-cap">Deli Grocery Oct 9, 2026</figcaption>
+        </figure>
+        <figure class="ph-item">
+          <button class="ph-btn" type="button" data-i="2" aria-label="Open Photograph 3 of 76">
+            <img src="/photography/thumb/dsc09621.jpg" width="900" height="600" alt="" loading="eager" decoding="async">
+          </button>
+        </figure>
+        <figure class="ph-item">
+          <button class="ph-btn" type="button" data-i="3" aria-label="Open Photograph 4 of 76">
+            <img src="/photography/thumb/dsc09623.jpg" width="900" height="601" alt="" loading="eager" decoding="async">
+          </button>
+        </figure>
+        <figure class="ph-item">
+          <button class="ph-btn" type="button" data-i="4" aria-label="Open Photograph 5 of 76">
+            <img src="/photography/thumb/dsc09649.jpg" width="900" height="601" alt="" loading="eager" decoding="async">
+          </button>
+        </figure>
+        <figure class="ph-item">
+          <button class="ph-btn" type="button" data-i="5" aria-label="Open Photograph 6 of 76">
+            <img src="/photography/thumb/dsc09776.jpg" width="601" height="900" alt="" loading="eager" decoding="async">
+          </button>
+        </figure>
+        <figure class="ph-item">
+          <button class="ph-btn" type="button" data-i="6" aria-label="Open Photograph 7 of 76">
+            <img src="/photography/thumb/dsc09847.jpg" width="497" height="900" alt="" loading="eager" decoding="async">
+          </button>
+        </figure>
+        <figure class="ph-item">
+          <button class="ph-btn" type="button" data-i="7" aria-label="Open Photograph 8 of 76">
+            <img src="/photography/thumb/dsc09849.jpg" width="601" height="900" alt="" loading="eager" decoding="async">
+          </button>
+        </figure>
+        <figure class="ph-item">
+          <button class="ph-btn" type="button" data-i="8" aria-label="Open Photograph 9 of 76">
+            <img src="/photography/thumb/dsc09850.jpg" width="562" height="900" alt="" loading="lazy" decoding="async">
+          </button>
+        </figure>
+        <figure class="ph-item">
+          <button class="ph-btn" type="button" data-i="9" aria-label="Open Photograph 10 of 76">
+            <img src="/photography/thumb/dsc00052.jpg" width="900" height="601" alt="" loading="lazy" decoding="async">
+          </button>
+        </figure>
+        <figure class="ph-item">
+          <button class="ph-btn" type="button" data-i="10" aria-label="Open Photograph 11 of 76">
+            <img src="/photography/thumb/dsc00066.jpg" width="900" height="601" alt="" loading="lazy" decoding="async">
+          </button>
+        </figure>
+        <figure class="ph-item">
+          <button class="ph-btn" type="button" data-i="11" aria-label="Open Photograph 12 of 76">
+            <img src="/photography/thumb/dsc00069.jpg" width="900" height="601" alt="" loading="lazy" decoding="async">
+          </button>
+        </figure>
+        <figure class="ph-item">
+          <button class="ph-btn" type="button" data-i="12" aria-label="Open Photograph 13 of 76">
+            <img src="/photography/thumb/dsc00084.jpg" width="900" height="601" alt="" loading="lazy" decoding="async">
+          </button>
+        </figure>
+        <figure class="ph-item">
+          <button class="ph-btn" type="button" data-i="13" aria-label="Open Photograph 14 of 76">
+            <img src="/photography/thumb/dsc00089.jpg" width="900" height="601" alt="" loading="lazy" decoding="async">
+          </button>
+        </figure>
+        <figure class="ph-item">
+          <button class="ph-btn" type="button" data-i="14" aria-label="Open Photograph 15 of 76">
+            <img src="/photography/thumb/dsc00093.jpg" width="900" height="601" alt="" loading="lazy" decoding="async">
+          </button>
+        </figure>
+        <figure class="ph-item">
+          <button class="ph-btn" type="button" data-i="15" aria-label="Open Photograph 16 of 76">
+            <img src="/photography/thumb/dsc00095.jpg" width="900" height="375" alt="" loading="lazy" decoding="async">
+          </button>
+        </figure>
+        <figure class="ph-item">
+          <button class="ph-btn" type="button" data-i="16" aria-label="Open Photograph 17 of 76">
+            <img src="/photography/thumb/dsc00096.jpg" width="900" height="405" alt="" loading="lazy" decoding="async">
+          </button>
+        </figure>
+        <figure class="ph-item">
+          <button class="ph-btn" type="button" data-i="17" aria-label="Open Photograph 18 of 76">
+            <img src="/photography/thumb/dsc00096-01.jpg" width="900" height="405" alt="" loading="lazy" decoding="async">
+          </button>
+        </figure>
+        <figure class="ph-item">
+          <button class="ph-btn" type="button" data-i="18" aria-label="Open Photograph 19 of 76">
+            <img src="/photography/thumb/dsc00115.jpg" width="900" height="787" alt="" loading="lazy" decoding="async">
+          </button>
+        </figure>
+        <figure class="ph-item">
+          <button class="ph-btn" type="button" data-i="19" aria-label="Open Photograph 20 of 76">
+            <img src="/photography/thumb/dsc00123.jpg" width="900" height="687" alt="" loading="lazy" decoding="async">
+          </button>
+        </figure>
+        <figure class="ph-item">
+          <button class="ph-btn" type="button" data-i="20" aria-label="Open Photograph 21 of 76">
+            <img src="/photography/thumb/dsc00124.jpg" width="900" height="601" alt="" loading="lazy" decoding="async">
+          </button>
+        </figure>
+        <figure class="ph-item">
+          <button class="ph-btn" type="button" data-i="21" aria-label="Open Photograph 22 of 76">
+            <img src="/photography/thumb/dsc00125.jpg" width="900" height="630" alt="" loading="lazy" decoding="async">
+          </button>
+        </figure>
+        <figure class="ph-item">
+          <button class="ph-btn" type="button" data-i="22" aria-label="Open Photograph 23 of 76">
+            <img src="/photography/thumb/dsc00128.jpg" width="900" height="601" alt="" loading="lazy" decoding="async">
+          </button>
+        </figure>
+        <figure class="ph-item">
+          <button class="ph-btn" type="button" data-i="23" aria-label="Open Photograph 24 of 76">
+            <img src="/photography/thumb/dsc00135.jpg" width="900" height="601" alt="" loading="lazy" decoding="async">
+          </button>
+        </figure>
+        <figure class="ph-item">
+          <button class="ph-btn" type="button" data-i="24" aria-label="Open Photograph 25 of 76">
+            <img src="/photography/thumb/dsc00138.jpg" width="900" height="601" alt="" loading="lazy" decoding="async">
+          </button>
+        </figure>
+        <figure class="ph-item">
+          <button class="ph-btn" type="button" data-i="25" aria-label="Open Photograph 26 of 76">
+            <img src="/photography/thumb/dsc00156.jpg" width="900" height="601" alt="" loading="lazy" decoding="async">
+          </button>
+        </figure>
+        <figure class="ph-item">
+          <button class="ph-btn" type="button" data-i="26" aria-label="Open Photograph 27 of 76">
+            <img src="/photography/thumb/dsc00170.jpg" width="900" height="601" alt="" loading="lazy" decoding="async">
+          </button>
+        </figure>
+        <figure class="ph-item">
+          <button class="ph-btn" type="button" data-i="27" aria-label="Open Photograph 28 of 76">
+            <img src="/photography/thumb/dsc00171.jpg" width="900" height="601" alt="" loading="lazy" decoding="async">
+          </button>
+        </figure>
+        <figure class="ph-item">
+          <button class="ph-btn" type="button" data-i="28" aria-label="Open Photograph 29 of 76">
+            <img src="/photography/thumb/dsc00174.jpg" width="900" height="601" alt="" loading="lazy" decoding="async">
+          </button>
+        </figure>
+        <figure class="ph-item">
+          <button class="ph-btn" type="button" data-i="29" aria-label="Open Photograph 30 of 76">
+            <img src="/photography/thumb/dsc00187.jpg" width="900" height="601" alt="" loading="lazy" decoding="async">
+          </button>
+        </figure>
+        <figure class="ph-item">
+          <button class="ph-btn" type="button" data-i="30" aria-label="Open Photograph 31 of 76">
+            <img src="/photography/thumb/dsc00191.jpg" width="601" height="900" alt="" loading="lazy" decoding="async">
+          </button>
+        </figure>
+        <figure class="ph-item">
+          <button class="ph-btn" type="button" data-i="31" aria-label="Open Photograph 32 of 76">
+            <img src="/photography/thumb/dsc00194.jpg" width="900" height="601" alt="" loading="lazy" decoding="async">
+          </button>
+        </figure>
+        <figure class="ph-item">
+          <button class="ph-btn" type="button" data-i="32" aria-label="Open Photograph 33 of 76">
+            <img src="/photography/thumb/dsc00198.jpg" width="900" height="601" alt="" loading="lazy" decoding="async">
+          </button>
+        </figure>
+        <figure class="ph-item">
+          <button class="ph-btn" type="button" data-i="33" aria-label="Open Photograph 34 of 76">
+            <img src="/photography/thumb/dsc00204.jpg" width="545" height="900" alt="" loading="lazy" decoding="async">
+          </button>
+        </figure>
+        <figure class="ph-item">
+          <button class="ph-btn" type="button" data-i="34" aria-label="Open Photograph 35 of 76">
+            <img src="/photography/thumb/dsc00208.jpg" width="900" height="601" alt="" loading="lazy" decoding="async">
+          </button>
+        </figure>
+        <figure class="ph-item">
+          <button class="ph-btn" type="button" data-i="35" aria-label="Open Photograph 36 of 76">
+            <img src="/photography/thumb/dsc00254.jpg" width="900" height="601" alt="" loading="lazy" decoding="async">
+          </button>
+        </figure>
+        <figure class="ph-item">
+          <button class="ph-btn" type="button" data-i="36" aria-label="Open Photograph 37 of 76">
+            <img src="/photography/thumb/dsc00281.jpg" width="900" height="601" alt="" loading="lazy" decoding="async">
+          </button>
+        </figure>
+        <figure class="ph-item">
+          <button class="ph-btn" type="button" data-i="37" aria-label="Open Photograph 38 of 76">
+            <img src="/photography/thumb/dsc00337.jpg" width="900" height="601" alt="" loading="lazy" decoding="async">
+          </button>
+        </figure>
+        <figure class="ph-item">
+          <button class="ph-btn" type="button" data-i="38" aria-label="Open Photograph 39 of 76">
+            <img src="/photography/thumb/dsc00340.jpg" width="900" height="601" alt="" loading="lazy" decoding="async">
+          </button>
+        </figure>
+        <figure class="ph-item">
+          <button class="ph-btn" type="button" data-i="39" aria-label="Open Photograph 40 of 76">
+            <img src="/photography/thumb/dsc00344.jpg" width="900" height="601" alt="" loading="lazy" decoding="async">
+          </button>
+        </figure>
+        <figure class="ph-item">
+          <button class="ph-btn" type="button" data-i="40" aria-label="Open Photograph 41 of 76">
+            <img src="/photography/thumb/dsc00345.jpg" width="900" height="601" alt="" loading="lazy" decoding="async">
+          </button>
+        </figure>
+        <figure class="ph-item">
+          <button class="ph-btn" type="button" data-i="41" aria-label="Open Photograph 42 of 76">
+            <img src="/photography/thumb/dsc00350.jpg" width="900" height="601" alt="" loading="lazy" decoding="async">
+          </button>
+        </figure>
+        <figure class="ph-item">
+          <button class="ph-btn" type="button" data-i="42" aria-label="Open Photograph 43 of 76">
+            <img src="/photography/thumb/dsc00351.jpg" width="900" height="601" alt="" loading="lazy" decoding="async">
+          </button>
+        </figure>
+        <figure class="ph-item">
+          <button class="ph-btn" type="button" data-i="43" aria-label="Open Photograph 44 of 76">
+            <img src="/photography/thumb/dsc00355.jpg" width="900" height="750" alt="" loading="lazy" decoding="async">
+          </button>
+        </figure>
+        <figure class="ph-item">
+          <button class="ph-btn" type="button" data-i="44" aria-label="Open Photograph 45 of 76">
+            <img src="/photography/thumb/dsc00356.jpg" width="797" height="900" alt="" loading="lazy" decoding="async">
+          </button>
+        </figure>
+        <figure class="ph-item">
+          <button class="ph-btn" type="button" data-i="45" aria-label="Open Photograph 46 of 76">
+            <img src="/photography/thumb/dsc00362.jpg" width="900" height="601" alt="" loading="lazy" decoding="async">
+          </button>
+        </figure>
+        <figure class="ph-item">
+          <button class="ph-btn" type="button" data-i="46" aria-label="Open Photograph 47 of 76">
+            <img src="/photography/thumb/dsc00364.jpg" width="900" height="601" alt="" loading="lazy" decoding="async">
+          </button>
+        </figure>
+        <figure class="ph-item">
+          <button class="ph-btn" type="button" data-i="47" aria-label="Open Photograph 48 of 76">
+            <img src="/photography/thumb/dsc00365.jpg" width="900" height="601" alt="" loading="lazy" decoding="async">
+          </button>
+        </figure>
+        <figure class="ph-item">
+          <button class="ph-btn" type="button" data-i="48" aria-label="Open Photograph 49 of 76">
+            <img src="/photography/thumb/dsc00367.jpg" width="900" height="522" alt="" loading="lazy" decoding="async">
+          </button>
+        </figure>
+        <figure class="ph-item">
+          <button class="ph-btn" type="button" data-i="49" aria-label="Open Photograph 50 of 76">
+            <img src="/photography/thumb/dsc00369.jpg" width="900" height="601" alt="" loading="lazy" decoding="async">
+          </button>
+        </figure>
+        <figure class="ph-item">
+          <button class="ph-btn" type="button" data-i="50" aria-label="Open Photograph 51 of 76">
+            <img src="/photography/thumb/dsc00370.jpg" width="601" height="900" alt="" loading="lazy" decoding="async">
+          </button>
+        </figure>
+        <figure class="ph-item">
+          <button class="ph-btn" type="button" data-i="51" aria-label="Open Photograph 52 of 76">
+            <img src="/photography/thumb/dsc00376.jpg" width="601" height="900" alt="" loading="lazy" decoding="async">
+          </button>
+        </figure>
+        <figure class="ph-item">
+          <button class="ph-btn" type="button" data-i="52" aria-label="Open Photograph 53 of 76">
+            <img src="/photography/thumb/dsc00390.jpg" width="900" height="601" alt="" loading="lazy" decoding="async">
+          </button>
+        </figure>
+        <figure class="ph-item">
+          <button class="ph-btn" type="button" data-i="53" aria-label="Open Photograph 54 of 76">
+            <img src="/photography/thumb/dsc00391.jpg" width="900" height="601" alt="" loading="lazy" decoding="async">
+          </button>
+        </figure>
+        <figure class="ph-item">
+          <button class="ph-btn" type="button" data-i="54" aria-label="Open Photograph 55 of 76">
+            <img src="/photography/thumb/dsc00401.jpg" width="900" height="680" alt="" loading="lazy" decoding="async">
+          </button>
+        </figure>
+        <figure class="ph-item">
+          <button class="ph-btn" type="button" data-i="55" aria-label="Open Photograph 56 of 76">
+            <img src="/photography/thumb/dsc00403.jpg" width="900" height="601" alt="" loading="lazy" decoding="async">
+          </button>
+        </figure>
+        <figure class="ph-item">
+          <button class="ph-btn" type="button" data-i="56" aria-label="Open Photograph 57 of 76">
+            <img src="/photography/thumb/dsc00404.jpg" width="900" height="601" alt="" loading="lazy" decoding="async">
+          </button>
+        </figure>
+        <figure class="ph-item">
+          <button class="ph-btn" type="button" data-i="57" aria-label="Open Photograph 58 of 76">
+            <img src="/photography/thumb/dsc00411.jpg" width="858" height="900" alt="" loading="lazy" decoding="async">
+          </button>
+        </figure>
+        <figure class="ph-item">
+          <button class="ph-btn" type="button" data-i="58" aria-label="Open Photograph 59 of 76">
+            <img src="/photography/thumb/dsc00423.jpg" width="900" height="601" alt="" loading="lazy" decoding="async">
+          </button>
+        </figure>
+        <figure class="ph-item">
+          <button class="ph-btn" type="button" data-i="59" aria-label="Open Photograph 60 of 76">
+            <img src="/photography/thumb/dsc00424.jpg" width="900" height="601" alt="" loading="lazy" decoding="async">
+          </button>
+        </figure>
+        <figure class="ph-item">
+          <button class="ph-btn" type="button" data-i="60" aria-label="Open Photograph 61 of 76">
+            <img src="/photography/thumb/dsc00430.jpg" width="601" height="900" alt="" loading="lazy" decoding="async">
+          </button>
+        </figure>
+        <figure class="ph-item">
+          <button class="ph-btn" type="button" data-i="61" aria-label="Open Photograph 62 of 76">
+            <img src="/photography/thumb/dsc00432.jpg" width="601" height="900" alt="" loading="lazy" decoding="async">
+          </button>
+        </figure>
+        <figure class="ph-item">
+          <button class="ph-btn" type="button" data-i="62" aria-label="Open Photograph 63 of 76">
+            <img src="/photography/thumb/dsc00460.jpg" width="900" height="601" alt="" loading="lazy" decoding="async">
+          </button>
+        </figure>
+        <figure class="ph-item">
+          <button class="ph-btn" type="button" data-i="63" aria-label="Open Photograph 64 of 76">
+            <img src="/photography/thumb/dsc00478.jpg" width="900" height="569" alt="" loading="lazy" decoding="async">
+          </button>
+        </figure>
+        <figure class="ph-item">
+          <button class="ph-btn" type="button" data-i="64" aria-label="Open Photograph 65 of 76">
+            <img src="/photography/thumb/dsc00535.jpg" width="900" height="601" alt="" loading="lazy" decoding="async">
+          </button>
+        </figure>
+        <figure class="ph-item">
+          <button class="ph-btn" type="button" data-i="65" aria-label="Open Photograph 66 of 76">
+            <img src="/photography/thumb/dsc00537.jpg" width="900" height="601" alt="" loading="lazy" decoding="async">
+          </button>
+        </figure>
+        <figure class="ph-item">
+          <button class="ph-btn" type="button" data-i="66" aria-label="Open Photograph 67 of 76">
+            <img src="/photography/thumb/dsc00558.jpg" width="900" height="601" alt="" loading="lazy" decoding="async">
+          </button>
+        </figure>
+        <figure class="ph-item">
+          <button class="ph-btn" type="button" data-i="67" aria-label="Open Photograph 68 of 76">
+            <img src="/photography/thumb/dsc00565.jpg" width="900" height="601" alt="" loading="lazy" decoding="async">
+          </button>
+        </figure>
+        <figure class="ph-item">
+          <button class="ph-btn" type="button" data-i="68" aria-label="Open Photograph 69 of 76">
+            <img src="/photography/thumb/dsc00641.jpg" width="900" height="601" alt="" loading="lazy" decoding="async">
+          </button>
+        </figure>
+        <figure class="ph-item">
+          <button class="ph-btn" type="button" data-i="69" aria-label="Open Photograph 70 of 76">
+            <img src="/photography/thumb/dsc00715.jpg" width="601" height="900" alt="" loading="lazy" decoding="async">
+          </button>
+        </figure>
+        <figure class="ph-item">
+          <button class="ph-btn" type="button" data-i="70" aria-label="Open Photograph 71 of 76">
+            <img src="/photography/thumb/dsc00734.jpg" width="900" height="601" alt="" loading="lazy" decoding="async">
+          </button>
+        </figure>
+        <figure class="ph-item">
+          <button class="ph-btn" type="button" data-i="71" aria-label="Open Photograph 72 of 76">
+            <img src="/photography/thumb/dsc00737.jpg" width="900" height="601" alt="" loading="lazy" decoding="async">
+          </button>
+        </figure>
+        <figure class="ph-item">
+          <button class="ph-btn" type="button" data-i="72" aria-label="Open Photograph 73 of 76">
+            <img src="/photography/thumb/dsc00739.jpg" width="900" height="833" alt="" loading="lazy" decoding="async">
+          </button>
+        </figure>
+        <figure class="ph-item">
+          <button class="ph-btn" type="button" data-i="73" aria-label="Open Photograph 74 of 76">
+            <img src="/photography/thumb/dsc00740.jpg" width="900" height="601" alt="" loading="lazy" decoding="async">
+          </button>
+        </figure>
+        <figure class="ph-item">
+          <button class="ph-btn" type="button" data-i="74" aria-label="Open Photograph 75 of 76">
+            <img src="/photography/thumb/dsc00744.jpg" width="900" height="670" alt="" loading="lazy" decoding="async">
+          </button>
+        </figure>
+        <figure class="ph-item">
+          <button class="ph-btn" type="button" data-i="75" aria-label="Open Photograph 76 of 76">
+            <img src="/photography/thumb/dsc00746.jpg" width="900" height="601" alt="" loading="lazy" decoding="async">
+          </button>
+        </figure>
+      </div>
+
+    </div>
+  </main>
+
+  <dialog id="ph-lb" aria-label="Photograph viewer">
+    <img id="ph-lb-img" src="" alt="">
+    <div class="ph-lb__bar">
+      <button class="ph-nav" type="button" id="ph-prev" aria-label="Previous photograph">&larr; Prev</button>
+      <span class="ph-lb__mid" id="ph-lb-meta"></span>
+      <button class="ph-nav" type="button" id="ph-next" aria-label="Next photograph">Next &rarr;</button>
+      <button class="ph-nav" type="button" id="ph-close" aria-label="Close viewer">Close</button>
+    </div>
+  </dialog>
+
+  <script src="/js/site.js"></script>
+  <script>
+  (function () {
+    var slugs = ["siren-nights","deli-grocery-oct-9-2026","dsc09621","dsc09623","dsc09649","dsc09776","dsc09847","dsc09849","dsc09850","dsc00052","dsc00066","dsc00069","dsc00084","dsc00089","dsc00093","dsc00095","dsc00096","dsc00096-01","dsc00115","dsc00123","dsc00124","dsc00125","dsc00128","dsc00135","dsc00138","dsc00156","dsc00170","dsc00171","dsc00174","dsc00187","dsc00191","dsc00194","dsc00198","dsc00204","dsc00208","dsc00254","dsc00281","dsc00337","dsc00340","dsc00344","dsc00345","dsc00350","dsc00351","dsc00355","dsc00356","dsc00362","dsc00364","dsc00365","dsc00367","dsc00369","dsc00370","dsc00376","dsc00390","dsc00391","dsc00401","dsc00403","dsc00404","dsc00411","dsc00423","dsc00424","dsc00430","dsc00432","dsc00460","dsc00478","dsc00535","dsc00537","dsc00558","dsc00565","dsc00641","dsc00715","dsc00734","dsc00737","dsc00739","dsc00740","dsc00744","dsc00746"];
+    var caps  = ["Siren Nights","Deli Grocery Oct 9, 2026","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","",""];
+    var lb    = document.getElementById('ph-lb');
+    var img   = document.getElementById('ph-lb-img');
+    var meta  = document.getElementById('ph-lb-meta');
+    var i     = 0;
+
+    function show(n) {
+      i = (n + slugs.length) % slugs.length;
+      img.src = '/photography/full/' + slugs[i] + '.jpg';
+      img.alt = caps[i] || ('Photograph ' + (i + 1) + ' of ' + slugs.length);
+      meta.textContent = caps[i] ? caps[i] : (i + 1) + ' / ' + slugs.length;
+      // Warm the neighbours so Prev/Next do not flash.
+      [i + 1, i - 1].forEach(function (k) {
+        var s = slugs[(k + slugs.length) % slugs.length];
+        new Image().src = '/photography/full/' + s + '.jpg';
+      });
+    }
+
+    document.querySelectorAll('.ph-btn').forEach(function (b) {
+      b.addEventListener('click', function () {
+        show(parseInt(b.dataset.i, 10));
+        if (lb.showModal) lb.showModal(); else lb.setAttribute('open', '');
+      });
+    });
+
+    document.getElementById('ph-prev').addEventListener('click', function () { show(i - 1); });
+    document.getElementById('ph-next').addEventListener('click', function () { show(i + 1); });
+    document.getElementById('ph-close').addEventListener('click', function () { lb.close(); });
+
+    // Clicking the photo itself steps forward; clicking the letterboxed black
+    // around it closes -- the behaviour people expect from a lightbox.
+    lb.addEventListener('click', function (e) {
+      if (e.target === img) show(i + 1);
+      else if (e.target === lb) lb.close();
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (!lb.open) return;
+      if (e.key === 'ArrowRight') { e.preventDefault(); show(i + 1); }
+      if (e.key === 'ArrowLeft')  { e.preventDefault(); show(i - 1); }
+    });
+  })();
+  </script>
+</body>
+</html>
