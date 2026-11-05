@@ -544,8 +544,11 @@
         var host=document.getElementById('sondermap-host');
         if(!el){return;}
         var map=L.map(el,{scrollWheelZoom:false}).setView([40.72,-73.96],11);
-        var tiles=L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{
-          attribution:'&copy; OpenStreetMap, &copy; CARTO', subdomains:'abcd', maxZoom:18
+        // Esri's World Light Gray Canvas. CARTO's free basemap started
+        // returning tiles stamped "API KEY REQUIRED" in late 2026; this one
+        // needs no key. Light Gray tops out at zoom 16.
+        var tiles=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',{
+          attribution:'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ', maxZoom:16
         });
         // Only mark the host as ready (which hides the fallback) once a tile
         // actually loads. If the CDN is down, the fallback stays visible.
