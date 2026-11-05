@@ -1,6 +1,60 @@
 [
  {
   "kind": "fact",
+  "name": "Google for Education",
+  "text": "Policy: K-12 student Search now requires opting in to Google AI tools; Gemini and Search off by default (Nov 2026)",
+  "date": "2026-11",
+  "self_reported": false,
+  "href": "https://techcrunch.com/2026/11/04/google-faces-backlash-for-plan-that-would-turn-off-search-for-schools-that-restrict-ai/",
+  "source": "https://techcrunch.com/2026/11/04/google-faces-backlash-for-plan-that-would-turn-off-search-for-schools-that-restrict-ai/"
+ },
+ {
+  "kind": "fact",
+  "name": "Federal Scholarship Tax Credit",
+  "text": "Status: 31 states have signaled they will opt in; program launches Jan 1, 2027 (Oct 2026)",
+  "date": "2026-10",
+  "self_reported": false,
+  "href": "https://ballotpedia.org/State_participation_in_the_federal_K-12_education_tax_credit_program",
+  "source": "https://ballotpedia.org/State_participation_in_the_federal_K-12_education_tax_credit_program"
+ },
+ {
+  "kind": "fact",
+  "name": "Alpha School",
+  "text": "Report: NYT, citing internal documents, found fewer than half of K-8 students met the \"2x Learning\" benchmark last school year (Oct 2026)",
+  "date": "2026-10",
+  "self_reported": false,
+  "href": "/education/frontier/#alpha-school",
+  "source": "https://www.techtimes.com/articles/329464/20261026/ai-private-school-chain-alpha-school-not-meeting-its-academic-goals-says-report.htm"
+ },
+ {
+  "kind": "fact",
+  "name": "IXL Learning",
+  "text": "Acquisition: Bought NoRedInk, a writing platform for middle and high school students (Oct 2026)",
+  "date": "2026-10",
+  "self_reported": false,
+  "href": "/education/frontier/#ixl",
+  "source": "https://pulse2.com/ixl-learning-acquires-noredink-to-expand-digital-writing-instruction-platform/"
+ },
+ {
+  "kind": "study",
+  "name": "Study",
+  "text": "Lohner & Weng (2026), EdWorkingPaper 26-1623",
+  "date": "2026",
+  "self_reported": false,
+  "href": "https://edworkingpapers.com/ai26-1623",
+  "source": "https://edworkingpapers.com/ai26-1623"
+ },
+ {
+  "kind": "study",
+  "name": "Study",
+  "text": "Moreira, Puller & Umosen (2026), NBER Working Paper 35915",
+  "date": "2026",
+  "self_reported": false,
+  "href": "https://www.nber.org/papers/w35915",
+  "source": "https://www.nber.org/papers/w35915"
+ },
+ {
+  "kind": "fact",
   "name": "Forge Prep",
   "text": "Opened: Fall 2026 with grades 5-8; 9th grade added 2027",
   "date": "2026-10",
