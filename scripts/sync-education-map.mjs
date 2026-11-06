@@ -213,5 +213,11 @@ if (!only || only === 'frontier') {
     const note = `Updated twice a week · Last update ${d}`;
     const html = readFileSync(page, 'utf8'), re2 = /(<!-- BEGIN_NOTE[^>]*-->)[\s\S]*?(<!-- END_NOTE -->)/;
     if (re2.test(html)) { writeFileSync(page, html.replace(re2, (_, a, z) => `${a}\n${note}\n${z}`)); console.log(`✓ /education note — updated ${d}`); }
+    // the four counts on the frontier card. They were hand-written once and
+    // drifted five schools and two studies behind the data before anyone noticed.
+    const counts = ['schools', 'tools', 'studies', 'voices']
+      .map(k => `<span><b>${st[k]}</b> ${k}</span>`).join('');
+    const h2 = readFileSync(page, 'utf8'), re3 = /(<!-- BEGIN_COUNTS[^>]*-->)[\s\S]*?(<!-- END_COUNTS -->)/;
+    if (re3.test(h2)) { writeFileSync(page, h2.replace(re3, (_, a, z) => `${a}\n${counts}\n${z}`)); console.log(`✓ /education counts — ${st.schools} schools, ${st.tools} tools, ${st.studies} studies, ${st.voices} voices`); }
   }
 }
