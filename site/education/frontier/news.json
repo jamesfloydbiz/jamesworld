@@ -1,6 +1,78 @@
 [
  {
   "kind": "fact",
+  "name": "McGraw Hill",
+  "text": "Partnership: K-12 core curriculum made available to districts inside Anthropic's Claude for Teachers via an MCP connector (Nov 2026)",
+  "date": "2026-11",
+  "self_reported": true,
+  "href": "/education/frontier/#mcgraw-hill",
+  "source": "https://finance.yahoo.com/technology/ai/articles/mcgraw-hill-integrates-trusted-k-121900210.html"
+ },
+ {
+  "kind": "fact",
+  "name": "Pathfinder",
+  "text": "Funding: $12M Series A led by Portage Ventures for an education savings account spending card and app (Nov 2026)",
+  "date": "2026-11",
+  "self_reported": true,
+  "href": "https://www.globenewswire.com/news-release/2026/11/04/3395249/0/en/multimedia-update-pathfinder-raises-12-million-series-a-to-simplify-how-families-use-education-savings-account-funds.html",
+  "source": "https://www.globenewswire.com/news-release/2026/11/04/3395249/0/en/multimedia-update-pathfinder-raises-12-million-series-a-to-simplify-how-families-use-education-savings-account-funds.html"
+ },
+ {
+  "kind": "fact",
+  "name": "Colorado",
+  "text": "Policy: Voters approved Proposition NN, letting the state keep TABOR refunds for K-12 schools, about $500M next year (Nov 2026)",
+  "date": "2026-11",
+  "self_reported": false,
+  "href": "https://www.chalkbeat.org/colorado/2026/11/03/colorado-proposition-nn-2026-election-night-results/",
+  "source": "https://www.chalkbeat.org/colorado/2026/11/03/colorado-proposition-nn-2026-election-night-results/"
+ },
+ {
+  "kind": "fact",
+  "name": "Indianapolis Public Education Corporation",
+  "text": "Funding: Voters approved a ~$95M-a-year school tax, about half shared with ~60 charter schools (Nov 2026)",
+  "date": "2026-11",
+  "self_reported": false,
+  "href": "https://www.chalkbeat.org/indiana/2026/11/03/indianapolis-tax-measure-for-ips-and-charter-schools-live-election-results/",
+  "source": "https://www.chalkbeat.org/indiana/2026/11/03/indianapolis-tax-measure-for-ips-and-charter-schools-live-election-results/"
+ },
+ {
+  "kind": "study",
+  "name": "Study",
+  "text": "Dee & Pyne (2026), EdWorkingPaper 26-1624",
+  "date": "2026",
+  "self_reported": false,
+  "href": "https://edworkingpapers.com/ai26-1624",
+  "source": "https://edworkingpapers.com/ai26-1624"
+ },
+ {
+  "kind": "study",
+  "name": "Study",
+  "text": "Nomi, DeChane & Podgursky (2026), EdWorkingPaper 25-1300",
+  "date": "2026",
+  "self_reported": false,
+  "href": "https://edworkingpapers.com/ai25-1300",
+  "source": "https://edworkingpapers.com/ai25-1300"
+ },
+ {
+  "kind": "study",
+  "name": "Study",
+  "text": "LearnLM Team (Google) & Eedi (2026), Google technical report (AEARCTR-0018079)",
+  "date": "2026",
+  "self_reported": false,
+  "href": "https://services.google.com/fh/files/misc/learnlm_oct26.pdf",
+  "source": "https://services.google.com/fh/files/misc/learnlm_oct26.pdf"
+ },
+ {
+  "kind": "study",
+  "name": "Study",
+  "text": "Goldhaber, Xu & Daly (2026), CALDER Working Paper 347-1026",
+  "date": "2026",
+  "self_reported": false,
+  "href": "https://caldercenter.org/publications/can-recognition-improve-results-first-look-massachusetts-student-achievement-award",
+  "source": "https://caldercenter.org/publications/can-recognition-improve-results-first-look-massachusetts-student-achievement-award"
+ },
+ {
+  "kind": "fact",
   "name": "Google for Education",
   "text": "Policy: K-12 student Search now requires opting in to Google AI tools; Gemini and Search off by default (Nov 2026)",
   "date": "2026-11",
