@@ -199,7 +199,28 @@
     @media (prefers-reduced-transparency: reduce) {
       .home__letter .prose-link, .home__letter .hovercard, .home__sig { text-shadow: none; }
     }
+
+    /* The letter types itself in, top to bottom. Every character is laid out
+       before the first one appears and then switched on, because .home__content
+       centres the letter vertically — growing it a character at a time would
+       walk the whole block up the screen. */
+    .js-type .home__letter { opacity: 0; }
+    .js-type .home__letter.is-typing { opacity: 1; }
+    .home__letter .t { visibility: hidden; }
+    .home__letter .t.on { visibility: visible; }
+    /* The caret is a box-shadow, so it has no width and shifts nothing. */
+    .home__letter .t.at { box-shadow: 1px 0 0 hsl(0 0% 100% / 0.7); }
+    @media (prefers-reduced-motion: reduce) {
+      .js-type .home__letter { opacity: 1; }
+      .home__letter .t { visibility: visible; }
+      .home__letter .t.at { box-shadow: none; }
+    }
   </style>
+  <script>
+    /* Set here, not in the stylesheet, so a browser without JavaScript never
+       hides the letter it is not going to type. */
+    document.documentElement.className += ' js-type';
+  </script>
 </head>
 <body>
   <div class="home">
@@ -220,12 +241,9 @@
 
         <p>
           My name is
-          <span class="hovercard">
-            James Floyd
-            <span class="hovercard__pop">
+          <span class="hovercard">James Floyd<span class="hovercard__pop">
               <img src="/pictures/james-profile.jpeg" alt="James Floyd">
-            </span>
-          </span>.
+          </span></span>.
           I was born in Yolo County, California, but now live in New York City.
         </p>
 
@@ -313,6 +331,76 @@
     </div>
 
   </div>
+
+  <script>
+    // Types the letter in, one character at a time, top to bottom.
+    (function () {
+      var letter = document.querySelector('.home__letter');
+      if (!letter) return;
+
+      // One span per character. Whitespace runs get a span too, so the browser
+      // still collapses them the way it would in plain text, but they start
+      // visible — there is nothing to watch appear, and waiting on them would
+      // spend most of the animation typing blanks.
+      var walk = document.createTreeWalker(letter, NodeFilter.SHOW_TEXT, {
+        acceptNode: function (n) {
+          // The hovercard popups hold an image and no text, and they have their
+          // own visibility rule. Leave them alone.
+          return n.parentElement.closest('.hovercard__pop')
+            ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT;
+        }
+      });
+      var nodes = [], n;
+      while ((n = walk.nextNode())) nodes.push(n);
+
+      var queue = [];
+      nodes.forEach(function (node) {
+        var parts = node.nodeValue.match(/\s+|\S/g);
+        if (!parts) return;
+        var frag = document.createDocumentFragment();
+        parts.forEach(function (part) {
+          var s = document.createElement('span');
+          s.textContent = part;
+          if (/\s/.test(part)) { s.className = 't on'; }
+          else { s.className = 't'; queue.push(s); }
+          frag.appendChild(s);
+        });
+        node.parentNode.replaceChild(frag, node);
+      });
+
+      letter.classList.add('is-typing');
+
+      function finish() {
+        for (var i = 0; i < queue.length; i++) queue[i].className = 't on';
+      }
+      if (!queue.length || matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        finish();
+        return;
+      }
+
+      // Driven off the clock rather than off frames, so a slow frame costs no
+      // characters. 724 characters at this rate is about two and a half
+      // seconds: quick, but still slow enough to read as typing.
+      // Time is accumulated frame to frame, with a cap, rather than measured
+      // from a start stamp: a tab in the background gets no frames at all, and
+      // the gap would otherwise cash in as the whole letter at once the moment
+      // someone switched to it.
+      var CPS = 290, shown = 0, caret = null, last = null, run = 0;
+      function tick(now) {
+        run += Math.min(now - (last === null ? now : last), 100);
+        last = now;
+        var want = Math.min(queue.length, Math.round(run / 1000 * CPS));
+        while (shown < want) queue[shown++].className = 't on';
+        if (caret) caret.classList.remove('at');
+        if (shown < queue.length) {
+          caret = queue[shown - 1] || null;
+          if (caret) caret.classList.add('at');
+          requestAnimationFrame(tick);
+        }
+      }
+      requestAnimationFrame(tick);
+    })();
+  </script>
 
   <!-- GoatCounter: pageview counts only. No cookies, nothing stored per visitor.
        Guarded on the hostname so local previews and builds stay out of the stats. -->
