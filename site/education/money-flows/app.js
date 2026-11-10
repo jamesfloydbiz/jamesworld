@@ -102,7 +102,7 @@
   const CTRL = F.controllers;
 
   /* ---------- state ---------- */
-  const S = { step: 0, area: 'US', hidePub: false, lens: 'pay', model: null, layout: null, orient: 'h', W: 800, H: 600, colors: {}, visible: [] };
+  const S = { step: 0, area: 'US', hidePub: false, lens: 'pay', ctrlSel: null, model: null, layout: null, orient: 'h', W: 800, H: 600, colors: {}, visible: [] };
   const lastStep = F.steps.length - 1;
 
   function visibleLinks() {
@@ -118,6 +118,7 @@
   // what to highlight as new in this step
   function newSet(links) {
     const st = F.steps[S.step] || {};
+    if (S.ctrlSel) return new Set(links.filter((l) => l.ctrl === S.ctrlSel).map((l) => l.id));
     if (S.step === lastStep || st.zoom) return new Set();
     if (st.focus && st.lens) return new Set(links.filter((l) => st.focus.includes(l.s) || st.focus.includes(l.t)).map((l) => l.id));
     if (st.lens) return new Set();
@@ -170,20 +171,21 @@
       let o = n.c + (n.len - n.out * k) / 2; n.outs.forEach((l) => { l._c0 = o + l.v * k / 2; o += l.v * k; });
       let p = n.c + (n.len - n.in * k) / 2; n.ins.forEach((l) => { l._c1 = p + l.v * k / 2; p += l.v * k; });
     });
-    // labels: two lines each; push apart within a column so none overlap, with a leader line when moved
+    // labels: two lines each, pushed apart within a column so none overlap (leader line when moved).
+    // If a column is too crowded for two lines, its labels drop to one line.
+    let o;
     if (!vert) {
-      const LH = 30, top = headRoom, bottom = H - 4;
+      const top = headRoom + 2, bottom = H - 2;
       cols.forEach((c) => {
         const inCol = ids.filter((id) => N[id].col === c).map((id) => ({ id, want: N[id].c + N[id].len / 2 }));
         inCol.sort((a, b) => a.want - b.want);
-        let y = top;
-        inCol.forEach((o) => { o.y = Math.max(o.want, y + LH / 2); y = o.y + LH / 2; });
-        let over = (inCol.length ? inCol[inCol.length - 1].y + LH / 2 : 0) - bottom;
-        for (let i = inCol.length - 1; i >= 0 && over > 0; i--) {
-          const nextTop = i < inCol.length - 1 ? inCol[i + 1].y - LH : bottom - LH / 2;
-          const ny = Math.min(inCol[i].y, nextTop); over -= (inCol[i].y - ny); inCol[i].y = ny;
-        }
-        inCol.forEach((o) => { N[o.id].ly = o.y; });
+        const one = inCol.length * 31 > bottom - top;
+        const LH = one ? 17 : 31;
+        const lo = top + LH / 2, hi = bottom - LH / 2;
+        inCol.forEach((o, i) => { o.y = Math.max(o.want, lo, i ? inCol[i - 1].y + LH : lo); });
+        for (let i = inCol.length - 1; i >= 0; i--) { o = inCol[i]; o.y = Math.min(o.y, i === inCol.length - 1 ? hi : inCol[i + 1].y - LH); }
+        for (let i = 0; i < inCol.length; i++) { o = inCol[i]; o.y = Math.max(o.y, i ? inCol[i - 1].y + LH : lo); }
+        inCol.forEach((o) => { N[o.id].ly = o.y; N[o.id].one = one; });
       });
     }
     const L = {};
@@ -274,7 +276,7 @@
     Object.keys(els.links).forEach((id) => { if (!ids.has(id)) next.L[id] = Object.assign({}, geom.L[id], { w: 0, gone: true }); });
     Object.keys(lay.N).forEach((id) => {
       const n = lay.N[id];
-      next.N[id] = { a: n.a, c: n.c, len: n.len, ly: n.ly };
+      next.N[id] = { a: n.a, c: n.c, len: n.len, ly: n.ly, one: n.one };
       if (!els.nodes[id]) {
         const g = document.createElementNS(SVGNS, 'g'); g.setAttribute('class', 'node');
         const ln = document.createElementNS(SVGNS, 'path'); ln.setAttribute('class', 'leader');
@@ -316,7 +318,7 @@
     });
     Object.keys(to.N).forEach((id) => {
       const a = from.N[id] || to.N[id], b = to.N[id];
-      const n = { a: lerp(a.a, b.a, t), c: lerp(a.c, b.c, t), len: lerp(a.len, b.len, t), ly: b.ly == null ? null : lerp(a.ly == null ? b.ly : a.ly, b.ly, t) };
+      const n = { a: lerp(a.a, b.a, t), c: lerp(a.c, b.c, t), len: lerp(a.len, b.len, t), ly: b.ly == null ? null : lerp(a.ly == null ? b.ly : a.ly, b.ly, t), one: b.one };
       cur.N[id] = n; placeNode(id, n, b.gone);
     });
     geom = cur;
@@ -351,8 +353,8 @@
     }
     const x = n.a + T + 7, mid = n.c + n.len / 2, y = n.ly == null ? mid : n.ly;
     t.setAttribute('x', x + (Math.abs(y - mid) > 3 ? 12 : 0));
-    t.setAttribute('y', y - 3);
-    amt.setAttribute('x', t.getAttribute('x')); amt.setAttribute('dy', '1.2em');
+    if (n.one) { t.setAttribute('y', y + 4); amt.textContent = ' ' + fmt(v); }
+    else { t.setAttribute('y', y - 3); amt.setAttribute('x', t.getAttribute('x')); amt.setAttribute('dy', '1.2em'); }
     t.append(name, amt);
     if (Math.abs(y - mid) > 3) ln.setAttribute('d', `M${n.a + T + 1},${mid}L${x + 2},${mid}L${x + 9},${y}`);
   }
@@ -400,13 +402,15 @@
 
   /* ---------- hover, tooltip, detail ---------- */
   const tip = $('#tip');
-  const whoHTML = (k) => (k && CTRL[k] ? `<span class="who"><i style="background:${S.colors['k-' + k]}"></i>Decided by ${esc(CTRL[k].label)}</span>` : '');
+  const whoHTML = (k, btn) => (k && CTRL[k] ? (btn
+      ? `<button type="button" class="who whobtn" data-ctrl="${k}"><i style="background:${S.colors['k-' + k]}"></i>Decided by ${esc(CTRL[k].label)} · show all</button>`
+      : `<span class="who"><i style="background:${S.colors['k-' + k]}"></i>Decided by ${esc(CTRL[k].label)}</span>`) : '');
   function linkHTML(l, big) {
     const a = NODES[l.s].label, b = NODES[l.t].label;
     return `<b>${esc(a)} → ${esc(b)}${l.label ? ' (' + esc(l.label) + ')' : ''}</b>
       <div class="amt">${fmt(l.v)} a year</div>
       ${l.low != null ? `<div class="meta">Range ${fmtRange(l)}</div>` : ''}
-      ${whoHTML(l.ctrl)}
+      ${whoHTML(l.ctrl, big)}
       <p>${esc(l.why)}</p>
       ${big && l.ctrl ? `<div class="decides"><h4>Who decides</h4><p>${esc(CTRL[l.ctrl].desc)}</p>${NODES[l.t].decides ? `<p>${esc(NODES[l.t].decides)}</p>` : ''}</div>` : ''}
       <div class="meta">${esc(l.year)} · ${CONF[l.conf] || ''}${big && l.src ? ` · <a href="${esc(l.src)}" target="_blank" rel="noopener">source</a>` : ''}</div>`;
@@ -445,13 +449,33 @@
     else if (what.node) { if (!S.layout.N[what.node]) return; html = nodeHTML(what.node, true); }
     d.innerHTML = `<button type="button" class="close" aria-label="Close">×</button>` + html;
     d.querySelector('.close').addEventListener('click', () => { d.hidden = true; });
+    d.querySelectorAll('.whobtn').forEach((b) => b.addEventListener('click', () => selectCtrl(b.dataset.ctrl)));
     d.hidden = false; tip.hidden = true;
     if (S.orient === 'v') d.scrollIntoView({ block: 'nearest', behavior: reduceMotion.matches ? 'auto' : 'smooth' });
+  }
+
+  /* ---------- one decider at a time ---------- */
+  function ctrlHTML(k) {
+    const own = S.visible.filter((l) => l.ctrl === k);
+    const total = own.filter((l) => !own.some((x) => x.t === l.s)).reduce((s, l) => s + l.v, 0);
+    return `<b><span class="who" style="font-size:.95rem"><i style="background:${S.colors['k-' + k]}"></i>${esc(CTRL[k].label)}</span></b>
+      <div class="amt">${fmt(total)} a year</div><p>${esc(CTRL[k].desc)}</p>
+      <div class="meta">${own.length} band${own.length === 1 ? '' : 's'} on screen. Click a band for details, or the decider again to clear.</div>`;
+  }
+  function selectCtrl(k) {
+    S.ctrlSel = S.ctrlSel === k || !CTRL[k] ? null : k;
+    S.lens = 'ctrl'; syncLens(); render(true);
+    const d = $('#detail');
+    if (!S.ctrlSel) { d.hidden = true; return; }
+    d.innerHTML = `<button type="button" class="close" aria-label="Close">×</button>` + ctrlHTML(S.ctrlSel);
+    d.querySelector('.close').addEventListener('click', () => selectCtrl(null));
+    d.hidden = false; tip.hidden = true;
   }
 
   /* ---------- story ---------- */
   function updateStep(animate) {
     const st = F.steps[S.step];
+    S.ctrlSel = null;
     if (S.step !== lastStep) S.lens = st.lens || 'pay';
     $('#stepcount').textContent = `Step ${S.step + 1} of ${F.steps.length}`;
     $('#steptitle').textContent = st.title;
@@ -477,10 +501,13 @@
     const fresh = links.filter((l) => S.fresh.has(l.id) && NODES[l.s].col <= NODES[l.t].col).sort((a, b) => b.v - a.v);
     if (!fresh.length) { box.innerHTML = ''; return; }
     const shown = fresh.slice(0, 5);
-    box.innerHTML = `<span class="chips__lbl">${F.steps[S.step].lens ? 'Highlighted' : 'New this step'}</span>` + shown.map((l) =>
+    const lbl = S.ctrlSel ? 'Decided by ' + CTRL[S.ctrlSel].label : (F.steps[S.step].lens ? 'Highlighted' : 'New this step');
+    box.innerHTML = `<span class="chips__lbl">${esc(lbl)}</span>` + shown.map((l) =>
       `<button type="button" class="chip" data-id="${esc(l.id)}"><i style="background:${linkColor(l)}"></i>${esc(NODES[l.s].label)} → ${esc(l.label || NODES[l.t].label)} ${fmt(l.v)}</button>`).join('') +
-      (fresh.length > shown.length ? `<span class="chip" style="cursor:default">+${fresh.length - shown.length} more</span>` : '');
-    box.querySelectorAll('button.chip').forEach((b) => b.addEventListener('click', () => select({ link: b.dataset.id })));
+      (fresh.length > shown.length ? `<span class="chip" style="cursor:default">+${fresh.length - shown.length} more</span>` : '') +
+      (S.ctrlSel ? `<button type="button" class="chip clear" id="clearctrl">Clear ×</button>` : '');
+    if (S.ctrlSel) $('#clearctrl').addEventListener('click', () => selectCtrl(null));
+    box.querySelectorAll('button.chip[data-id]').forEach((b) => b.addEventListener('click', () => select({ link: b.dataset.id })));
   }
   function updateTotal(links) {
     const hasIn = new Set(links.map((l) => l.t));
@@ -489,9 +516,10 @@
   }
   function renderLegend() {
     let items;
-    if (S.lens === 'ctrl') items = Object.entries(CTRL).map(([k, m]) => `<span><i style="background:var(--k-${k})"></i>${esc(m.label)}</span>`).join('');
+    if (S.lens === 'ctrl') items = Object.entries(CTRL).map(([k, m]) => `<button type="button" class="lg" data-ctrl="${k}" aria-pressed="${S.ctrlSel === k}" title="Show only what ${esc(m.label)} decide"><i style="background:var(--k-${k})"></i>${esc(m.label)}</button>`).join('');
     else items = Object.entries(F.groups).map(([g, m]) => `<span><i style="background:var(--c-${g})"></i>${esc(m.label)}</span>`).join('');
     $('#legend').innerHTML = items + `<span><i class="est"></i>Estimate</span>`;
+    $('#legend').querySelectorAll('button.lg').forEach((b) => b.addEventListener('click', () => selectCtrl(b.dataset.ctrl)));
   }
   function renderStateBar() {
     const bar = $('#statebar');
@@ -538,7 +566,14 @@
         'Give to private schools, charter networks, nonprofits and PTAs according to their own priorities. A few large foundations set much of the agenda.']
     ];
     $('#buyertable').innerHTML = `<thead><tr><th>Who decides</th><th>Controls each year</th><th>How many</th><th>How they decide or buy</th></tr></thead><tbody>` +
-      rows.map(([k, v, n, how]) => `<tr><td><span class="who"><i style="background:var(--k-${k})"></i><b>${esc(CTRL[k].label)}</b></span></td><td class="num">${fmt(v)}</td><td>${esc(n)}</td><td>${esc(how)}</td></tr>`).join('') + '</tbody>';
+      rows.map(([k, v, n, how]) => `<tr><td><button type="button" class="who whobtn" data-ctrl="${k}" title="Show on the chart"><i style="background:var(--k-${k})"></i><b>${esc(CTRL[k].label)}</b></button></td><td class="num">${fmt(v)}</td><td>${esc(n)}</td><td>${esc(how)}</td></tr>`).join('') + '</tbody>';
+  }
+  function wireBuyerTable() {
+    document.querySelectorAll('#buyertable .whobtn').forEach((b) => b.addEventListener('click', () => {
+      if (S.step !== lastStep) { S.step = lastStep; updateStep(false); }
+      selectCtrl(b.dataset.ctrl); if (S.ctrlSel !== b.dataset.ctrl) selectCtrl(b.dataset.ctrl);
+      document.querySelector('.stagecard').scrollIntoView({ block: 'start', behavior: reduceMotion.matches ? 'auto' : 'smooth' });
+    }));
   }
   function renderStocks() {
     $('#stocks').innerHTML = F.stocks.map((s, i) => `<div class="card stock"><div class="tank${i ? ' debt' : ''}" aria-hidden="true"><i></i></div>
@@ -547,21 +582,21 @@
 
   /* ---------- boot ---------- */
   function init() {
-    readColors(); size(); renderStocks(); renderBuyers();
+    readColors(); size(); renderStocks(); renderBuyers(); wireBuyerTable();
     $('#dots').innerHTML = F.steps.map((s, i) => `<button type="button" title="${esc(s.title)}" aria-label="Step ${i + 1}: ${esc(s.title)}">${i + 1}</button>`).join('');
     [...$('#dots').children].forEach((b, i) => b.addEventListener('click', () => go(i)));
     $('#prev').addEventListener('click', () => go(S.step - 1));
     $('#next').addEventListener('click', () => go(S.step + 1));
     $('#skip').addEventListener('click', () => go(lastStep));
     $('#hidepub').addEventListener('change', (e) => { S.hidePub = e.target.checked; render(true); });
-    document.querySelectorAll('#lens button').forEach((b) => b.addEventListener('click', () => { S.lens = b.dataset.lens; syncLens(); render(false); }));
+    document.querySelectorAll('#lens button').forEach((b) => b.addEventListener('click', () => { S.lens = b.dataset.lens; if (S.lens !== 'ctrl') S.ctrlSel = null; syncLens(); render(false); }));
     const sel = $('#statesel');
     sel.innerHTML = Object.keys(ST.states).map((c) => `<option value="${c}">${esc(STATE_NAMES[c] || c)}</option>`).join('');
     sel.addEventListener('change', () => { showView('flow'); showArea(sel.value); });
     document.addEventListener('keydown', (e) => {
       if (e.target.closest('input,select,textarea') || $('#view-flow').hidden) return;
       if (e.key === 'ArrowRight') go(S.step + 1); else if (e.key === 'ArrowLeft') go(S.step - 1);
-      else if (e.key === 'Escape') $('#detail').hidden = true;
+      else if (e.key === 'Escape') { if (S.ctrlSel) selectCtrl(null); else $('#detail').hidden = true; }
     });
     // the caption's height changes from step to step, so watch the plot itself rather than the window
     let rt, lastBox = '';

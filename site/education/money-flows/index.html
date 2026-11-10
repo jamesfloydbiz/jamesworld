@@ -76,6 +76,13 @@ select{font:400 .8rem var(--mono); color:var(--ink); background:hsl(0 0% 0% / .6
 .legend{display:flex; flex-wrap:wrap; gap:4px 14px; font:400 .7rem var(--mono); color:var(--ink-2)}
 .legend span{display:inline-flex; align-items:center; gap:6px}
 .legend i{width:11px; height:11px; border-radius:2px; display:inline-block}
+.legend button.lg{appearance:none; display:inline-flex; align-items:center; gap:6px; font:inherit; color:inherit; background:transparent; border:1px solid transparent; border-radius:999px; padding:2px 8px; cursor:pointer}
+.legend button.lg:hover{border-color:var(--edge-hi); color:#fff}
+.legend button.lg[aria-pressed="true"]{border-color:#fff; color:#fff; background:hsl(0 0% 100% / .08)}
+.whobtn{appearance:none; background:transparent; border:1px solid var(--edge); border-radius:999px; padding:3px 9px; cursor:pointer; color:#fff; font:400 .7rem var(--mono); display:inline-flex; align-items:center; gap:6px}
+.whobtn:hover{border-color:#fff}
+#buyertable .whobtn{font-size:.72rem; text-align:left}
+.chip.clear{color:var(--eb-hi)}
 .legend i.est{background:repeating-linear-gradient(135deg, var(--muted) 0 2px, transparent 2px 4px); border:1px solid var(--muted)}
 .plot{position:relative; flex:1 1 auto; min-height:0; margin:0 10px; overflow:hidden}
 #sankey{display:block; width:100%; height:100%; overflow:visible}
