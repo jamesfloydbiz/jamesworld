@@ -346,7 +346,14 @@
         acceptNode: function (n) {
           // The hovercard popups hold an image and no text, and they have their
           // own visibility rule. Leave them alone.
-          return n.parentElement.closest('.hovercard__pop')
+          //
+          // The page links and the name in the opening line are left out of the
+          // queue too, so they are on the page before the first character is
+          // typed: the links are the way off this page, and the name is who the
+          // letter is from. Text a walker never reaches is never split into
+          // spans, so it is simply visible.
+          var el = n.parentElement;
+          return el.closest('.hovercard__pop') || el.closest('.prose-link') || el.closest('span.hovercard')
             ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT;
         }
       });
@@ -379,8 +386,9 @@
       }
 
       // Driven off the clock rather than off frames, so a slow frame costs no
-      // characters. 724 characters at this rate is about two and a half
-      // seconds: quick, but still slow enough to read as typing.
+      // characters. The 646 characters left in the queue once the links and the
+      // name are taken out come in at about two and a quarter seconds at this
+      // rate: quick, but still slow enough to read as typing.
       // Time is accumulated frame to frame, with a cap, rather than measured
       // from a start stamp: a tab in the background gets no frames at all, and
       // the gap would otherwise cash in as the whole letter at once the moment
