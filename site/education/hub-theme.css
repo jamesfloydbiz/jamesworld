@@ -220,11 +220,53 @@ html.hub-theme .ghost {
   border-color: var(--hub-hair-2); color: hsl(0 0% 100% / .72); border-radius: 6px;
 }
 html.hub-theme .ghost:hover { color: #fff; border-color: var(--eb-hi); }
-html.hub-theme :is(details.fold, details.more) > summary {
-  font-family: var(--hub-display); font-weight: 400; font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; color: #fff;
+/* Every fold on the page -- the dashboards' own (US vs World's .fold, School
+   Outlook's "Adjust the forecast") and the ones hub-theme.js wraps around the
+   secondary sections (.hub-fold) -- shares one row: Michroma, one line, +/-. */
+html.hub-theme :is(details.fold, details.more, details.hub-fold) > summary {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 14px 16px; list-style: none; cursor: pointer; min-width: 0;
+  font-family: var(--hub-display); font-weight: 400; font-size: .7rem; line-height: 1.3; letter-spacing: .1em;
+  text-transform: uppercase; color: #fff;
 }
-html.hub-theme :is(details.fold, details.more) > summary:hover { color: var(--eg-hi); }
-html.hub-theme details.fold > summary::after, html.hub-theme details.more > summary::before { color: var(--eb-hi); }
+html.hub-theme :is(details.fold, details.more, details.hub-fold) > summary::-webkit-details-marker { display: none; }
+html.hub-theme :is(details.fold, details.hub-fold) > summary > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+html.hub-theme :is(details.fold, details.more, details.hub-fold) > summary:hover { color: var(--eg-hi); }
+html.hub-theme details.more > summary::before { content: none; }
+html.hub-theme :is(details.fold, details.more, details.hub-fold) > summary::after {
+  content: "+"; flex: none; font-family: var(--hub-mono); font-size: 1rem; line-height: 1; color: var(--eb-hi);
+}
+html.hub-theme :is(details.fold, details.more, details.hub-fold)[open] > summary::after { content: "\2212"; }
+html.hub-theme :is(details.fold, details.more, details.hub-fold) > summary:focus-visible { outline: 2px solid var(--eg-hi); outline-offset: -2px; border-radius: 10px; }
+
+/* one rhythm for a stack of folds: the page's own gap, nothing extra */
+html.hub-theme details.fold, html.hub-theme details.fold + details.fold { margin-top: 0; }
+
+/* the folds hub-theme.js adds: the fold is the card, the section inside it sheds its own */
+html.hub-theme details.hub-fold {
+  min-width: 0; background: var(--hub-card); border: 1px solid var(--hub-hair); border-radius: 10px;
+  box-shadow: inset 0 1px 0 hsl(0 0% 100% / .06);
+}
+html.hub-theme details.hub-fold > [data-hub-folded] {
+  display: block; margin: 0; padding: 0 16px 16px; background: none; border: 0; border-radius: 0; box-shadow: none; max-width: none;
+}
+html.hub-theme details.hub-fold > [data-hub-folded].method { display: grid; }
+html.hub-theme details.hub-fold > [data-hub-folded].card { display: flex; }
+/* the section's own title now lives in the summary row: keep it in the HTML, out of sight */
+html.hub-theme details.hub-fold > [data-hub-folded] > h2:first-child,
+html.hub-theme details.hub-fold > [data-hub-folded] > div:first-child > h2:first-child {
+  position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
+}
+/* US vs World: the long note beside "Reset view" folds in place, inside the map card */
+html.hub-us-vs-world .mapfoot details.hub-fold { flex: 1 1 260px; background: none; border: 0; box-shadow: none; }
+html.hub-us-vs-world .mapfoot details.hub-fold > summary { padding: 6px 0; font-size: .62rem; color: hsl(0 0% 100% / .72); justify-content: flex-start; }
+html.hub-us-vs-world .mapfoot details.hub-fold > [data-hub-folded] { padding: 2px 0 6px; }
+/* Frontier: the map's reading notes */
+html.hub-frontier details.hub-fold { margin-top: 10px; }
+html.hub-frontier details.hub-fold > [data-hub-folded] { margin: 0; font-size: .72rem; }
+@media (max-width: 720px) {
+  html.hub-theme :is(details.fold, details.more, details.hub-fold) > summary { font-size: .62rem; letter-spacing: .07em; padding: 13px 14px; }
+}
 
 /* Frontier: tabs and chips already speak DM Mono; bring the "on" states to hub green */
 html.hub-frontier .tab.on { border-bottom-color: var(--eg-hi); }

@@ -12,7 +12,9 @@
  *      tuned for a dark ground, and its canvas code (which reads colours off
  *      <html>) picks up the overridden tokens;
  *   2. right after the dashboard's own <style>, the hub fonts and the
- *      stylesheet, so equal-specificity rules resolve in the theme's favour.
+ *      stylesheet, so equal-specificity rules resolve in the theme's favour;
+ *   3. after the stylesheet, site/education/hub-theme.js (deferred), which
+ *      folds the secondary sections into <details>.
  *
  * Idempotent, like the other patches in the sync: each step has a `done` marker
  * and is skipped once applied, and a missing anchor throws rather than writing a
@@ -55,6 +57,14 @@ export function applyHubTheme(html, slug) {
   swap('</style>', `</style>
 <link rel="stylesheet" href="${FONTS}">
 <link rel="stylesheet" href="/education/hub-theme.css">`, 'the stylesheet', 'href="/education/hub-theme.css"');
+
+  /* 3. the script that folds the secondary sections (site/education/hub-theme.js).
+     Deferred, so it runs after the dashboard's own scripts have rendered. A
+     separate step rather than part of 2, so pages themed before it existed
+     still get it. */
+  swap('<link rel="stylesheet" href="/education/hub-theme.css">',
+    `<link rel="stylesheet" href="/education/hub-theme.css">
+<script src="/education/hub-theme.js" defer></script>`, 'the theme stylesheet link', 'src="/education/hub-theme.js"');
 
   return html;
 }
