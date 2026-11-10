@@ -5,253 +5,302 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Follow the Money in US Schools — James Floyd</title>
 <link rel="canonical" href="https://jamesfloyds.world/education/money-flows/">
-<meta name="description" content="An animated flowchart of the roughly one trillion dollars a year in US pre-K and K-12 education: federal, state and local taxes, school choice programs, family spending, 529 accounts and donations, and why each dollar moves.">
+<meta name="description" content="An animated flowchart of the roughly one trillion dollars a year in US pre-K and K-12 education: who pays, who decides, where it lands and why each dollar moves.">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Follow the Money in US Schools">
-<meta property="og:description" content="Where every dollar in US pre-K and K-12 education comes from, where it goes, and why it moves.">
+<meta property="og:description" content="Who pays for American pre-K and K-12, who decides where it goes, and why each dollar moves.">
 <meta property="og:url" content="https://jamesfloyds.world/education/money-flows/">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Follow the Money in US Schools">
-<meta name="twitter:description" content="Where every dollar in US pre-K and K-12 education comes from, where it goes, and why it moves.">
+<meta name="twitter:description" content="Who pays for American pre-K and K-12, who decides where it goes, and why each dollar moves.">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Michroma&family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=DM+Mono:wght@300;400;500&display=swap">
 <style>
+/* Broadcast look from /education: black ground, chrome display type, dark green + brown chrome.
+   One dark theme by design (the hub is dark only). The chart fills the window; the story sits on the chart card. */
 :root{
-  color-scheme: light;
-  --ground:#f4f5f3; --surface:#fcfcfb; --raise:#ffffff;
-  --ink:#121416; --ink-2:#4a4c4d; --muted:#686a69; --axis:#8a8c89;
-  --line:#dfe1dd; --line-2:#c6c9c4; --accent:#f2b705; --accent-ink:#7a5600;
-  --c-fed:#2a78d6; --c-state:#eb6834; --c-local:#1baf7a; --c-family:#eda100; --c-gift:#e87ba4;
-  --c-pub:#5b5e60; --c-priv:#8d9093; --map-lo:#eef1ee; --link-op:.42;
-  --sans:"Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --mono:"IBM Plex Mono", ui-monospace, Menlo, monospace;
-}
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
-    color-scheme: dark;
-    --ground:#0e0f10; --surface:#18191a; --raise:#202223;
-    --ink:#f3f4f2; --ink-2:#c4c6c2; --muted:#a2a5a0; --axis:#8a8c89;
-    --line:#2b2d2e; --line-2:#3c3e3f; --accent:#f2b705; --accent-ink:#f2b705;
-    --c-fed:#3987e5; --c-state:#d95926; --c-local:#199e70; --c-family:#c98500; --c-gift:#d55181;
-    --c-pub:#b4b7b3; --c-priv:#7d807c; --map-lo:#26282a; --link-op:.6;
-  }
-}
-:root[data-theme="dark"]{
   color-scheme: dark;
-  --ground:#0e0f10; --surface:#18191a; --raise:#202223;
-  --ink:#f3f4f2; --ink-2:#c4c6c2; --muted:#a2a5a0; --axis:#8a8c89;
-  --line:#2b2d2e; --line-2:#3c3e3f; --accent:#f2b705; --accent-ink:#f2b705;
+  --ground:#000; --card-hi:hsl(28 14% 9%); --card-lo:hsl(30 12% 4%); --raise:hsl(30 10% 11%);
+  --edge:hsl(30 30% 60% / .14); --edge-hi:hsl(28 40% 40% / .7);
+  --ink:#f3ece2; --ink-2:hsl(0 0% 100% / .74); --muted:hsl(0 0% 100% / .5); --faint:hsl(0 0% 100% / .1);
+  --eg:hsl(140 40% 15%); --eg-glow:hsl(138 34% 26%); --eg-hi:hsl(125 22% 60%);
+  --eb:hsl(24 48% 18%); --eb-mid:hsl(26 45% 30%); --eb-hi:hsl(30 38% 56%);
+  /* data: who paid */
   --c-fed:#3987e5; --c-state:#d95926; --c-local:#199e70; --c-family:#c98500; --c-gift:#d55181;
-  --c-pub:#b4b7b3; --c-priv:#7d807c; --map-lo:#26282a; --link-op:.6;
+  /* data: who decides (same hues where the payer and decider coincide) */
+  --k-congress:#3987e5; --k-legislature:#d95926; --k-localBoard:#199e70; --k-district:#9085e9; --k-parents:#c98500; --k-donors:#d55181;
+  --c-pub:#c9c2b8; --c-priv:#8a837a; --map-lo:#1d1b19; --link-op:.5;
+  --display:'Michroma', 'Helvetica Neue', Arial, sans-serif;
+  --serif:'Lora', Georgia, 'Times New Roman', serif;
+  --mono:'DM Mono', ui-monospace, Menlo, monospace;
 }
 *{box-sizing:border-box}
 html,body{margin:0}
 [hidden]{display:none!important}
-body{background:var(--ground); color:var(--ink); font-family:var(--sans); font-size:14px; line-height:1.45; overflow-x:hidden}
-.app{max-width:1440px; margin:0 auto; padding-inline:clamp(16px,2.4vw,32px); padding-block:18px 48px; display:flex; flex-direction:column; gap:14px}
-.home-link{display:inline-block; margin:0 0 4px; font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); text-decoration:none}
-.home-link:hover,.home-link:focus-visible{color:var(--ink)}
-h1,h2,h3{margin:0; text-wrap:balance}
-h1{font-size:clamp(22px,2.6vw,30px); font-weight:800; letter-spacing:-.02em}
-h2{font-size:19px; font-weight:700; letter-spacing:-.01em}
-h3{font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:var(--ink-2)}
-a{color:inherit; text-decoration-color:var(--line-2); text-underline-offset:2px}
-a:hover{text-decoration-color:var(--ink)}
-:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
-.thesis{margin:6px 0 0; color:var(--ink-2); max-width:72ch}
-.note{font-size:12px; color:var(--muted); margin:0}
-.card{background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:14px; min-width:0}
+body{background:var(--ground); color:var(--ink); font-family:var(--serif); font-size:15px; line-height:1.5; overflow-x:hidden}
+body::before{content:""; position:fixed; inset:0; z-index:-1; pointer-events:none;
+  background:radial-gradient(110% 60% at 50% 105%, hsl(24 45% 13% / .7) 0%, hsl(140 38% 7% / .55) 40%, #000 75%)}
+a{color:var(--eg-hi); text-underline-offset:2px; text-decoration-color:hsl(125 22% 60% / .4)}
+a:hover{color:#fff}
+:focus-visible{outline:1px solid var(--eg-hi); outline-offset:3px}
+.wrap{max-width:1680px; margin:0 auto; padding-inline:clamp(16px,2.4vw,32px)}
 
-.views{display:flex; gap:6px; flex-wrap:wrap}
-.views button{appearance:none; cursor:pointer; font:inherit; font-weight:600; font-size:13px; padding:9px 15px; border-radius:999px; border:1px solid var(--line); background:var(--surface); color:var(--ink-2)}
-.views button:hover{border-color:var(--line-2); color:var(--ink)}
-.views button[aria-pressed="true"]{background:var(--ink); border-color:var(--ink); color:var(--ground)}
-.views button small{display:block; font-weight:400; font-size:10.5px; font-family:var(--mono); letter-spacing:.04em; opacity:.72; margin-top:1px}
+/* top */
+.top{display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:space-between; gap:12px 24px; padding-block:18px 14px}
+.top__in{min-width:0}
+.ed-back{display:inline-block; font-family:var(--mono); font-size:.72rem; letter-spacing:.15em; text-transform:uppercase; color:var(--eb-hi); text-decoration:none; margin-bottom:12px}
+.ed-back:hover{color:#fff}
+.eyebrow{display:block; font-family:var(--mono); font-size:.7rem; letter-spacing:.3em; text-transform:uppercase; color:var(--eb-hi); margin-bottom:8px}
+h1{font-family:var(--display); font-weight:400; font-size:clamp(1.5rem,4.2vw,3.1rem); line-height:1; letter-spacing:-.01em; margin:0; text-transform:uppercase;
+  background:linear-gradient(180deg,#fff 0%,#e9eef2 38%,#8e9aa6 52%,#dfe6ec 66%,#6f7c88 100%); -webkit-background-clip:text; background-clip:text; color:transparent;
+  filter:drop-shadow(0 2px 0 hsl(0 0% 0% / .6)) drop-shadow(0 0 20px hsl(28 45% 35% / .3)); text-wrap:balance}
+.lede{font-size:1rem; line-height:1.6; color:var(--ink-2); margin:10px 0 0; max-width:62ch}
+.controls{display:flex; flex-wrap:wrap; gap:10px; align-items:center}
+.seg{display:inline-flex; border:1px solid var(--edge); border-radius:6px; overflow:hidden; background:hsl(0 0% 0% / .5)}
+.seg button{appearance:none; border:0; background:transparent; color:var(--muted); font:400 .62rem var(--display); letter-spacing:.1em; text-transform:uppercase; padding:10px 14px; cursor:pointer}
+.seg button + button{border-left:1px solid var(--edge)}
+.seg button[aria-pressed="true"]{color:#f3ece2; background:linear-gradient(180deg,var(--eg-glow),var(--eg)); box-shadow:inset 0 1px 0 hsl(40 40% 90% / .15)}
+.seg button:hover{color:#fff}
+select{font:400 .8rem var(--mono); color:var(--ink); background:hsl(0 0% 0% / .6); border:1px solid var(--edge); border-radius:6px; padding:8px 10px}
+.chk{display:inline-flex; gap:6px; align-items:center; font:400 .72rem var(--mono); letter-spacing:.04em; color:var(--ink-2); cursor:pointer}
 
-/* Flow view: the story panel beside the chart, stacked on narrow screens. */
-.stage{display:grid; grid-template-columns:320px minmax(0,1fr); gap:14px; align-items:start}
-@media (max-width: 900px){ .stage{grid-template-columns:minmax(0,1fr)} }
-.story{display:flex; flex-direction:column; gap:10px; position:sticky; top:12px}
-@media (max-width: 900px){ .story{position:static} }
-.story .count{font-family:var(--mono); font-size:11px; letter-spacing:.08em; color:var(--muted); text-transform:uppercase}
-.story h2{font-size:18px}
-.story p{margin:0; color:var(--ink-2)}
-.story .nav{display:flex; gap:8px; flex-wrap:wrap; margin-top:4px}
-.btn{appearance:none; cursor:pointer; font:600 13px var(--sans); padding:8px 14px; border-radius:8px; border:1px solid var(--line-2); background:var(--raise); color:var(--ink)}
-.btn:hover{border-color:var(--ink)}
-.btn[disabled]{opacity:.4; cursor:default}
-.btn.primary{background:var(--ink); color:var(--ground); border-color:var(--ink)}
-.btn.link{background:transparent; border-color:transparent; color:var(--ink-2); text-decoration:underline; text-decoration-color:var(--line-2); padding-inline:4px}
-.dots{display:flex; gap:4px; flex-wrap:wrap}
-.dots button{width:22px; height:22px; border-radius:50%; border:1px solid var(--line-2); background:transparent; cursor:pointer; padding:0; font:500 10px var(--mono); color:var(--muted)}
-.dots button[aria-current="step"]{background:var(--ink); color:var(--ground); border-color:var(--ink)}
-.opts{display:flex; gap:12px; flex-wrap:wrap; align-items:center; font-size:13px; color:var(--ink-2)}
-.opts label{display:inline-flex; gap:6px; align-items:center; cursor:pointer}
-.opts select{font:inherit; padding:5px 8px; border-radius:6px; border:1px solid var(--line-2); background:var(--raise); color:var(--ink)}
-
-.chart{position:relative; padding:10px}
-.chart .head{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; align-items:baseline; margin:0 4px 6px}
-.total{font-size:14px; color:var(--ink-2); margin:0}
-.total b{color:var(--ink); font-variant-numeric:tabular-nums}
-.legend{display:flex; flex-wrap:wrap; gap:4px 14px; font-size:12px; color:var(--ink-2)}
+/* chart card: fills the window */
+.card{background:linear-gradient(180deg,var(--card-hi),var(--card-lo)); border:1px solid var(--edge); border-radius:10px; box-shadow:inset 0 1px 0 hsl(0 0% 100% / .07)}
+.stagecard{display:flex; flex-direction:column; height:max(640px, calc(100svh - 16px)); margin-bottom:28px; position:relative; overflow:hidden; scroll-margin-top:8px}
+.stagecard__head{display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:8px 18px; padding:12px 16px 4px}
+.total{margin:0; font:400 .78rem var(--mono); color:var(--ink-2); letter-spacing:.04em}
+.total b{font-weight:500; color:#fff; font-variant-numeric:tabular-nums}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; font:400 .7rem var(--mono); color:var(--ink-2)}
 .legend span{display:inline-flex; align-items:center; gap:6px}
-.legend i{width:12px; height:12px; border-radius:3px; display:inline-block}
-.legend i.est{background:repeating-linear-gradient(135deg, var(--axis) 0 3px, transparent 3px 6px); border:1px solid var(--axis)}
-.plot{position:relative; width:100%}
-#sankey{display:block; width:100%; overflow:visible}
-#particles{position:absolute; inset:0; pointer-events:none}
-#sankey .link{fill:none; stroke-opacity:var(--link-op); transition:stroke-opacity .2s}
-#sankey .link.est{stroke-opacity:calc(var(--link-op) * .65)}
-#sankey .link:hover,#sankey .link.hi{stroke-opacity:.72}
-#sankey.dim .link{stroke-opacity:.08}
-#sankey.dim .link.hi{stroke-opacity:.75}
-#sankey .node rect{rx:2px}
+.legend i{width:11px; height:11px; border-radius:2px; display:inline-block}
+.legend i.est{background:repeating-linear-gradient(135deg, var(--muted) 0 2px, transparent 2px 4px); border:1px solid var(--muted)}
+.plot{position:relative; flex:1 1 auto; min-height:0; margin:0 10px; overflow:hidden}
+#sankey{display:block; width:100%; height:100%; overflow:visible}
+#particles{position:absolute; left:0; top:0; pointer-events:none}
+#sankey .link{fill:none; stroke-opacity:var(--link-op); transition:stroke-opacity .35s}
+#sankey .link.est{stroke-opacity:calc(var(--link-op) * .7)}
+#sankey.stepping .link{stroke-opacity:.13}
+#sankey.stepping .link.new{stroke-opacity:.8}
+#sankey .glow{fill:none; stroke:#fff; stroke-opacity:0; pointer-events:none; transition:stroke-opacity .35s}
+#sankey.stepping .glow.new{stroke-opacity:.5}
+#sankey.dim .link{stroke-opacity:.07}
+#sankey.dim .link.hi{stroke-opacity:.85}
 #sankey .node{cursor:pointer}
-#sankey .node.focus rect{stroke:var(--ink); stroke-width:2px}
-#sankey text{font:500 12px var(--sans); fill:var(--ink); paint-order:stroke; stroke:var(--surface); stroke-width:3px; stroke-linejoin:round}
-#sankey text .amt{font:500 11px var(--mono); fill:var(--ink-2)}
-#sankey .colhead{font:600 10.5px var(--mono); letter-spacing:.08em; fill:var(--muted); text-transform:uppercase}
-.statebar{display:flex; gap:10px; flex-wrap:wrap; align-items:center; padding:8px 12px; margin:0 4px 8px; border-radius:8px; background:var(--raise); border:1px solid var(--line); font-size:13px; color:var(--ink-2)}
-.statebar b{color:var(--ink)}
+#sankey .node rect{rx:1.5px}
+#sankey .node.new rect,#sankey .node.focus rect{stroke:#fff; stroke-width:1.5px}
+#sankey text{font:500 12.5px var(--serif); fill:var(--ink); paint-order:stroke; stroke:#0b0a09; stroke-width:3.5px; stroke-linejoin:round}
+#sankey .node.old text{fill:hsl(0 0% 100% / .55)}
+#sankey .node.new text,#sankey .node.focus text{fill:#fff; font-weight:600}
+#sankey text .amt{font:400 11px var(--mono); fill:var(--ink-2)}
+#sankey .leader{stroke:hsl(0 0% 100% / .3); stroke-width:1; fill:none}
+#sankey .colhead{font:400 9.5px var(--display); letter-spacing:.14em; fill:var(--eb-hi); text-transform:uppercase; stroke:none}
 
-.tip{position:absolute; z-index:5; max-width:320px; pointer-events:none; background:var(--raise); border:1px solid var(--line-2); border-radius:8px; padding:10px 12px; box-shadow:0 6px 24px rgba(0,0,0,.18); font-size:12.5px; color:var(--ink-2)}
-.tip b{color:var(--ink)}
-.tip .amt{font:600 15px var(--sans); color:var(--ink); font-variant-numeric:tabular-nums}
-.tip .meta{font:500 10.5px var(--mono); color:var(--muted); letter-spacing:.04em; margin-top:4px}
-.tip p{margin:4px 0 0}
+/* story caption on the card */
+.caption{border-top:1px solid hsl(26 40% 30% / .5); background:linear-gradient(180deg, hsl(26 30% 7% / .96), hsl(140 25% 3% / .98)); padding:14px 18px 14px;
+  display:grid; grid-template-columns:minmax(0,1fr) auto; gap:10px 24px; align-items:start}
+.caption__count{font:400 .62rem var(--display); letter-spacing:.14em; text-transform:uppercase; color:var(--eb-hi)}
+.caption h2{font:400 1.02rem var(--display); text-transform:uppercase; letter-spacing:.03em; margin:4px 0 6px; color:#fff; text-wrap:balance}
+.caption p{margin:0; color:var(--ink-2); max-width:120ch; font-size:.93rem; line-height:1.55}
+.chips{display:flex; flex-wrap:wrap; gap:6px; margin-top:10px}
+.chip{display:inline-flex; gap:6px; align-items:center; font:400 .72rem var(--mono); color:#fff; padding:4px 9px; border-radius:999px; border:1px solid hsl(0 0% 100% / .22); background:hsl(0 0% 100% / .05); cursor:pointer}
+.chip i{width:8px; height:8px; border-radius:50%}
+.chip:hover{border-color:#fff}
+.chips__lbl{font:400 .62rem var(--display); letter-spacing:.12em; text-transform:uppercase; color:var(--eg-hi); align-self:center; margin-right:4px}
+.nav{display:flex; flex-direction:column; gap:10px; align-items:flex-end}
+.nav__btns{display:flex; gap:8px}
+.btn{appearance:none; cursor:pointer; font:400 .66rem var(--display); letter-spacing:.1em; text-transform:uppercase; padding:11px 16px; border-radius:6px;
+  border:1px solid var(--edge); background:hsl(0 0% 0% / .4); color:var(--ink)}
+.btn:hover{border-color:var(--edge-hi); color:#fff}
+.btn[disabled]{opacity:.35; cursor:default}
+.btn.primary{border-color:hsl(28 40% 42% / .8); background:linear-gradient(180deg,var(--eg-glow),var(--eg)); box-shadow:0 0 22px hsl(140 40% 14% / .5), inset 0 1px 0 hsl(40 40% 90% / .18); color:#f3ece2}
+.btn.link{border-color:transparent; background:transparent; color:var(--muted); padding-inline:6px}
+.dots{display:flex; gap:4px; flex-wrap:wrap; justify-content:flex-end}
+.dots button{width:20px; height:20px; border-radius:50%; border:1px solid var(--edge); background:transparent; cursor:pointer; padding:0; font:400 9px var(--mono); color:var(--muted)}
+.dots button[aria-current="step"]{background:var(--eb-hi); color:#000; border-color:var(--eb-hi)}
+.statebar{display:flex; gap:10px; flex-wrap:wrap; align-items:center; padding:8px 12px; margin:6px 16px 0; border-radius:6px; background:hsl(0 0% 100% / .04); border:1px solid var(--edge); font:400 .78rem var(--mono); color:var(--ink-2)}
+.statebar b{color:#fff; font-weight:500}
 
-.detail{display:flex; flex-direction:column; gap:6px}
-.detail p{margin:0; color:var(--ink-2)}
-.detail .amt{font:700 20px var(--sans); color:var(--ink); font-variant-numeric:tabular-nums}
-.detail .meta{font:500 11px var(--mono); color:var(--muted)}
-.badge{display:inline-block; font:600 10px var(--mono); letter-spacing:.06em; text-transform:uppercase; padding:2px 6px; border-radius:4px; border:1px solid var(--line-2); color:var(--ink-2)}
+/* tooltip and the click-through detail panel */
+.tip{position:absolute; z-index:6; max-width:340px; pointer-events:none; background:hsl(30 12% 6% / .97); border:1px solid var(--edge-hi); border-radius:8px; padding:10px 12px; box-shadow:0 10px 30px #000; font-size:.88rem; color:var(--ink-2)}
+.tip b{color:#fff; font-weight:600}
+.amt{font:500 1.05rem var(--mono); color:#fff; font-variant-numeric:tabular-nums}
+.meta{font:400 .68rem var(--mono); color:var(--muted); letter-spacing:.04em; margin-top:5px}
+.tip p,.detail p{margin:5px 0 0}
+.who{display:inline-flex; align-items:center; gap:6px; margin-top:6px; font:400 .7rem var(--mono); color:#fff}
+.who i{width:9px; height:9px; border-radius:50%}
+.detail{position:absolute; z-index:5; right:18px; top:56px; width:min(360px, calc(100% - 36px)); max-height:calc(100% - 80px); overflow:auto;
+  background:hsl(30 12% 6% / .97); border:1px solid var(--edge-hi); border-radius:8px; padding:14px 16px; box-shadow:0 10px 30px #000; color:var(--ink-2); font-size:.92rem}
+.detail .close{position:absolute; top:6px; right:8px; background:none; border:0; color:var(--muted); font:400 1.1rem var(--mono); cursor:pointer}
+.detail .decides{margin-top:10px; padding-top:10px; border-top:1px solid var(--edge)}
+.detail .decides h4{margin:0 0 4px; font:400 .6rem var(--display); letter-spacing:.12em; text-transform:uppercase; color:var(--eg-hi)}
 
-.stocks{display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr)); gap:14px}
-.stock{display:flex; gap:14px; align-items:flex-start}
-.stock .tank{flex:none; width:44px; height:56px; border:2px solid var(--line-2); border-radius:6px 6px 10px 10px; position:relative; overflow:hidden}
-.stock .tank i{position:absolute; left:0; right:0; bottom:0; height:78%; background:var(--c-family); opacity:.55}
-.stock .tank.debt i{background:var(--c-pub)}
-.stock .v{font:700 20px var(--sans); color:var(--ink)}
-.stock p{margin:2px 0 0; color:var(--ink-2); font-size:13px}
+@media (max-width: 760px){
+  .stagecard{height:auto}
+  .plot{flex:none}
+  .caption{grid-template-columns:minmax(0,1fr); order:-1}
+  .caption{border-top:0; border-bottom:1px solid hsl(26 40% 30% / .5)}
+  .nav{align-items:flex-start} .dots{justify-content:flex-start}
+  .plot{height:820px}
+  .detail{position:static; width:auto; margin:10px 12px; max-height:none}
+}
 
-/* Map view */
-.mapstage{display:grid; grid-template-columns:minmax(0,1fr) 340px; gap:14px; align-items:start}
-@media (max-width: 900px){ .mapstage{grid-template-columns:minmax(0,1fr)} }
-#map{width:100%; aspect-ratio:1.6/1; display:block; cursor:pointer; touch-action:manipulation}
+/* map view */
+.mapcard{display:grid; grid-template-columns:minmax(0,1fr) 340px; gap:0; min-height:max(560px, calc(100svh - 24px)); margin-bottom:28px; overflow:hidden}
+.mapcard__map{padding:14px 16px; position:relative; min-width:0; display:flex; flex-direction:column; gap:8px}
+.mapcard__side{border-left:1px solid var(--edge); padding:18px; background:hsl(0 0% 0% / .25)}
+@media (max-width: 900px){ .mapcard{grid-template-columns:minmax(0,1fr)} .mapcard__side{border-left:0; border-top:1px solid var(--edge)} }
+#map{width:100%; max-width:100%; aspect-ratio:1.6/1; display:block; cursor:pointer; touch-action:manipulation}
 .layers{display:flex; gap:6px; flex-wrap:wrap}
-.layers button{appearance:none; cursor:pointer; font:600 12.5px var(--sans); padding:6px 12px; border-radius:999px; border:1px solid var(--line-2); background:transparent; color:var(--ink-2)}
-.layers button[aria-pressed="true"]{background:var(--raise); color:var(--ink); border-color:var(--ink)}
-.maplegend{display:flex; flex-wrap:wrap; gap:4px 12px; font-size:12px; color:var(--ink-2); margin-top:8px}
+.layers button{appearance:none; cursor:pointer; font:400 .58rem var(--display); letter-spacing:.1em; text-transform:uppercase; padding:8px 11px; border-radius:999px; border:1px solid var(--edge); background:transparent; color:var(--muted)}
+.layers button[aria-pressed="true"]{color:#fff; border-color:var(--eb-hi); background:hsl(30 38% 56% / .12)}
+.maplegend{display:flex; flex-wrap:wrap; gap:4px 12px; font:400 .7rem var(--mono); color:var(--ink-2)}
 .maplegend span{display:inline-flex; align-items:center; gap:6px}
-.maplegend i{width:14px; height:12px; border-radius:2px; display:inline-block; border:1px solid var(--line)}
-.stateinfo dl{display:grid; grid-template-columns:auto auto; gap:4px 12px; margin:8px 0}
-.stateinfo dt{color:var(--ink-2)} .stateinfo dd{margin:0; text-align:right; font-variant-numeric:tabular-nums; color:var(--ink); font-weight:600}
+.maplegend i{width:14px; height:11px; border-radius:2px; display:inline-block; border:1px solid var(--edge)}
+.maplegend .note{color:var(--muted)}
+.stateinfo h2{font:400 1.05rem var(--display); text-transform:uppercase; margin:0 0 4px; color:#fff}
+.stateinfo .note{font:400 .72rem var(--mono); color:var(--muted); margin:0}
+.stateinfo dl{display:grid; grid-template-columns:auto auto; gap:6px 12px; margin:12px 0 16px; font-size:.9rem}
+.stateinfo dt{color:var(--ink-2)} .stateinfo dd{margin:0; text-align:right; font:400 .82rem var(--mono); color:#fff; font-variant-numeric:tabular-nums}
 
-/* Table and method */
-details.fold{background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:12px 14px}
-details.fold summary{cursor:pointer; font-weight:700}
-.tablewrap{overflow-x:auto; margin-top:10px}
-table{border-collapse:collapse; width:100%; font-size:12.5px}
-th,td{text-align:left; padding:6px 8px; border-bottom:1px solid var(--line); vertical-align:top}
-th{font:600 10.5px var(--mono); letter-spacing:.06em; text-transform:uppercase; color:var(--muted)}
-td.num{text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap}
+/* below the fold */
+.sec{margin:0 0 28px}
+.sec__h{font:400 .66rem var(--display); letter-spacing:.16em; text-transform:uppercase; color:var(--eb-hi); margin:0 0 12px}
+.sec__lede{margin:-4px 0 14px; color:var(--ink-2); max-width:78ch}
+.tablewrap{overflow-x:auto}
+table{border-collapse:collapse; width:100%; font-size:.88rem}
+th,td{text-align:left; padding:9px 10px; border-bottom:1px solid var(--faint); vertical-align:top}
+th{font:400 .6rem var(--display); letter-spacing:.1em; text-transform:uppercase; color:var(--muted)}
+td{color:var(--ink-2)} td b{color:#fff; font-weight:600}
+td.num{text-align:right; font:400 .82rem var(--mono); color:#fff; white-space:nowrap; font-variant-numeric:tabular-nums}
+td .who{margin:0}
+.buyers{padding:6px 14px 10px}
+details.fold{padding:12px 16px}
+details.fold summary{cursor:pointer; font:400 .66rem var(--display); letter-spacing:.14em; text-transform:uppercase; color:var(--eb-hi)}
+.stocks{display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr)); gap:14px}
+.stock{display:flex; gap:16px; align-items:flex-start; padding:18px}
+.stock .tank{flex:none; width:42px; height:56px; border:1px solid hsl(0 0% 100% / .3); border-radius:5px 5px 9px 9px; position:relative; overflow:hidden}
+.stock .tank i{position:absolute; left:0; right:0; bottom:0; height:78%; background:linear-gradient(180deg,var(--c-family),hsl(38 100% 22%))}
+.stock .tank.debt i{background:linear-gradient(180deg,#8a837a,#3a3631)}
+.stock .v{font:400 1.3rem var(--display); color:#fff}
+.stock b{color:#fff; font-weight:600}
+.stock p{margin:4px 0 0; color:var(--ink-2); font-size:.9rem}
+.stock .note{font:400 .7rem var(--mono); color:var(--muted)}
 .method{display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr)); gap:14px}
+.method .card{padding:18px 20px}
 .method p,.method li{color:var(--ink-2); max-width:72ch}
-.method p{margin:6px 0 0}
-.method ul{margin:6px 0 0; padding-left:18px}
-.method li + li{margin-top:4px}
-footer{font-size:12px; color:var(--muted)}
+.method p{margin:8px 0 0}
+.method ul{margin:8px 0 0; padding-left:18px}
+.method li + li{margin-top:5px}
+.method .note{font:400 .72rem var(--mono); color:var(--muted)}
+footer{margin:10px 0 48px; padding-top:20px; border-top:1px solid hsl(26 40% 30% / .5); font:400 .74rem var(--mono); line-height:1.7; color:var(--muted)}
+@media (prefers-reduced-motion: reduce){ #sankey .link, #sankey .glow{transition:none} }
 </style>
 </head>
 <body>
-<div class="app">
-  <a class="home-link" href="/education/">← James' Education Dashboards</a>
-  <header>
-    <h1>Follow the Money in US Schools</h1>
-    <p class="thesis">Where the roughly one trillion dollars a year for American pre-K and K-12 education comes from, who moves it, where it lands and why. Band width is dollars per year. Dashed bands are estimates.</p>
+<div class="wrap">
+  <header class="top">
+    <div class="top__in">
+      <a class="ed-back" href="/education/">← James' Education Dashboards</a>
+      <span class="eyebrow">Dashboards · Money</span>
+      <h1>Follow the Money</h1>
+      <p class="lede">About a trillion dollars a year pays for American pre-K and K-12. Follow it from the people who pay, through the people who decide, to what it buys. Band width is dollars per year; dashed bands are estimates.</p>
+    </div>
+    <div class="controls">
+      <div class="seg" id="views" role="group" aria-label="View">
+        <button type="button" data-view="flow" aria-pressed="true">Flowchart</button>
+        <button type="button" data-view="map" aria-pressed="false">By state</button>
+      </div>
+      <div class="seg" id="lens" role="group" aria-label="Color bands by">
+        <button type="button" data-lens="pay" aria-pressed="true">Who paid</button>
+        <button type="button" data-lens="ctrl" aria-pressed="false">Who decides</button>
+      </div>
+      <select id="statesel" aria-label="Choose an area"></select>
+      <label class="chk" id="hidepubwrap"><input type="checkbox" id="hidepub"> Hide public school money</label>
+    </div>
   </header>
 
-  <nav class="views" id="views" aria-label="View">
-    <button type="button" data-view="flow" aria-pressed="true">Follow the money<small>the whole country, step by step</small></button>
-    <button type="button" data-view="map" aria-pressed="false">By state<small>public school money in each state</small></button>
-  </nav>
-
   <div id="view-flow">
-    <div class="stage">
-      <aside class="card story" aria-live="polite">
-        <span class="count" id="stepcount"></span>
-        <h2 id="steptitle"></h2>
-        <p id="steptext"></p>
-        <div class="nav">
-          <button type="button" class="btn" id="prev">← Back</button>
-          <button type="button" class="btn primary" id="next">Next →</button>
-          <button type="button" class="btn link" id="skip">Skip to explore</button>
-        </div>
-        <div class="dots" id="dots" aria-label="Steps"></div>
-        <div class="opts" id="opts">
-          <label><input type="checkbox" id="hidepub"> Hide public school money</label>
-          <label>Area <select id="statesel" aria-label="Choose an area"></select></label>
-        </div>
+    <section class="card stagecard" aria-label="Flowchart of education money">
+      <div class="stagecard__head">
+        <p class="total" id="total"></p>
+        <div class="legend" id="legend"></div>
+      </div>
+      <div class="statebar" id="statebar" hidden></div>
+      <div class="plot" id="plot">
+        <svg id="sankey" role="img" aria-labelledby="steptitle"></svg>
+        <canvas id="particles" aria-hidden="true"></canvas>
+        <div class="tip" id="tip" hidden></div>
         <div class="detail" id="detail" hidden></div>
-      </aside>
-
-      <section class="card chart" aria-label="Flowchart of education money">
-        <div class="statebar" id="statebar" hidden></div>
-        <div class="head">
-          <p class="total" id="total"></p>
-          <div class="legend" id="legend"></div>
+      </div>
+      <div class="caption" aria-live="polite">
+        <div>
+          <span class="caption__count" id="stepcount"></span>
+          <h2 id="steptitle"></h2>
+          <p id="steptext"></p>
+          <div class="chips" id="chips"></div>
         </div>
-        <div class="plot" id="plot">
-          <svg id="sankey" role="img" aria-labelledby="steptitle"></svg>
-          <canvas id="particles" aria-hidden="true"></canvas>
-          <div class="tip" id="tip" hidden></div>
+        <div class="nav">
+          <div class="nav__btns">
+            <button type="button" class="btn" id="prev">← Back</button>
+            <button type="button" class="btn primary" id="next">Next →</button>
+          </div>
+          <button type="button" class="btn link" id="skip">Skip to explore</button>
+          <div class="dots" id="dots" aria-label="Steps"></div>
         </div>
-      </section>
-    </div>
+      </div>
+    </section>
   </div>
 
   <div id="view-map" hidden>
-    <div class="mapstage">
-      <section class="card" aria-label="US map">
+    <section class="card mapcard" aria-label="US map">
+      <div class="mapcard__map">
         <div class="layers" id="layers" role="group" aria-label="Map layer"></div>
         <canvas id="map"></canvas>
         <div class="maplegend" id="maplegend"></div>
         <div class="tip" id="maptip" hidden></div>
-      </section>
-      <aside class="card stateinfo" id="stateinfo">
+      </div>
+      <aside class="mapcard__side stateinfo" id="stateinfo">
         <h2>Pick a state</h2>
-        <p class="note">Click or tap a state to see where its public school money comes from. Then open it as a flowchart.</p>
+        <p class="note">Click or tap a state to see where its public school money comes from and how many districts buy with it. Then open it as a flowchart.</p>
       </aside>
-    </div>
+    </section>
   </div>
 
-  <section aria-labelledby="stocks-h">
-    <h3 id="stocks-h" style="margin:4px 0 10px">Money that sits still</h3>
+  <section class="sec" aria-labelledby="buyers-h">
+    <h2 class="sec__h" id="buyers-h">Who controls the money</h2>
+    <p class="sec__lede">Each row is a group that decides where money goes: how much it controls each year, how many of them there are, and how they decide or buy.</p>
+    <div class="card buyers"><div class="tablewrap"><table id="buyertable"></table></div></div>
+  </section>
+
+  <section class="sec" aria-labelledby="stocks-h">
+    <h2 class="sec__h" id="stocks-h">Money that sits still</h2>
     <div class="stocks" id="stocks"></div>
   </section>
 
-  <details class="fold" id="tablefold">
-    <summary>All flows as a table</summary>
-    <div class="tablewrap"><table id="flowtable"></table></div>
-  </details>
+  <section class="sec">
+    <details class="card fold" id="tablefold">
+      <summary>All flows as a table</summary>
+      <div class="tablewrap"><table id="flowtable"></table></div>
+    </details>
+  </section>
 
-  <section class="method" id="method">
+  <section class="sec method" id="method">
     <div class="card">
-      <h3>How to read it</h3>
-      <p>Each band is money moving in one year. Its width is the dollar amount, so a band twice as wide carries twice the money. Colors follow who first paid: blue federal, orange state, green local, yellow families, pink donors. Gray boxes are where the money lands.</p>
+      <h2 class="sec__h">How to read it</h2>
+      <p>Each band is money moving in one year, and its width is the dollar amount. With <b>Who paid</b>, a band takes the color of whoever first paid it: blue federal, orange state, green local, gold families, pink donors. With <b>Who decides</b>, it takes the color of whoever controls how much moves along it.</p>
       <p>Each dollar is drawn once, at the point it leaves the person or government that pays it. School choice money is shown as state money, because states pay for it, even when it ends up as private school tuition. Gifts to scholarship groups that are repaid as state tax credits are left out of donations for the same reason.</p>
       <p>Years do not all match. Public school money is FY2024, the latest full Census count. Choice programs and 529s are 2025-26. Some donation figures rest on older studies. Every band says its year.</p>
     </div>
     <div class="card">
-      <h3>Sources</h3>
+      <h2 class="sec__h">Sources</h2>
       <ul>
-        <li>Public school revenue and spending, national and by state: U.S. Census Bureau, <a href="https://www.census.gov/data/tables/2024/econ/school-finances/secondary-education-finance.html">2024 Annual Survey of School System Finances</a>.</li>
-        <li>School choice programs: <a href="https://www.edchoice.org/2026-edchoice-spending-share-rankings/">EdChoice spending share rankings</a> and state program reports.</li>
+        <li>Public school revenue and spending, national, by state and by district: U.S. Census Bureau, <a href="https://www.census.gov/data/tables/2024/econ/school-finances/secondary-education-finance.html">2024 Annual Survey of School System Finances</a>.</li>
+        <li>School choice programs: <a href="https://www.edchoice.org/2026-edchoice-spending-share-rankings/">EdChoice spending share rankings</a> and The ABCs of School Choice 2026.</li>
         <li>Federal tax-credit opt-in status: <a href="https://www.edchoice.org/federal-tax-credit-for-scholarships/">EdChoice's state map</a> (November 2026), with New York and New Mexico added from news reports. Tracked also by <a href="https://ballotpedia.org/State_participation_in_the_federal_K-12_education_tax_credit_program">Ballotpedia</a>.</li>
-        <li>Private school, preschool and day care spending: Bureau of Economic Analysis <a href="https://apps.bea.gov/national/Release/TXT/NipaDataA.txt">personal consumption data</a> (lines for elementary and secondary schools, and day care and nursery schools), 2025.</li>
+        <li>Private school, preschool and day care spending: Bureau of Economic Analysis <a href="https://apps.bea.gov/national/Release/TXT/NipaDataA.txt">personal consumption data</a>, 2025.</li>
         <li>Pre-K: <a href="https://nieer.org/yearbook/2025/national-profile">NIEER State of Preschool 2025</a>; Head Start appropriations as reported by First Five Years Fund.</li>
         <li>529 accounts: ISS Market Intelligence, as reported by <a href="https://www.planadviser.com/in-q2-529-and-able-accounts-maintain-growth/">PLANADVISER</a>. Yearly K-12 withdrawals are not published anywhere and are estimated.</li>
         <li>Donations: Giving USA, Candid foundation data, NAIS, and studies of PTA and school foundation revenue.</li>

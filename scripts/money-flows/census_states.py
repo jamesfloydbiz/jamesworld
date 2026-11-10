@@ -3,9 +3,11 @@
 Annual Survey of School System Finances summary tables.
 
 Usage:
+  curl -o /tmp/elsec24t.xlsx \
+    https://www2.census.gov/programs-surveys/school-finances/tables/2024/secondary-education-finance/elsec24t.xlsx
   curl -o /tmp/elsec24_sumtables.xlsx \
     https://www2.census.gov/programs-surveys/school-finances/tables/2024/secondary-education-finance/elsec24_sumtables.xlsx
-  python3 scripts/money-flows/census_states.py /tmp/elsec24_sumtables.xlsx
+  python3 scripts/money-flows/census_states.py /tmp/elsec24_sumtables.xlsx /tmp/elsec24t.xlsx
 
 Needs openpyxl (pip install openpyxl). All dollar values in the output are
 thousands of dollars, exactly as Census publishes them; per-pupil values are dollars.
@@ -69,7 +71,37 @@ def rows_by_area(ws):
     return out
 
 
-def main(path):
+FIPS = {"01": "AL", "02": "AK", "04": "AZ", "05": "AR", "06": "CA", "08": "CO", "09": "CT", "10": "DE",
+        "11": "DC", "12": "FL", "13": "GA", "15": "HI", "16": "ID", "17": "IL", "18": "IN", "19": "IA",
+        "20": "KS", "21": "KY", "22": "LA", "23": "ME", "24": "MD", "25": "MA", "26": "MI", "27": "MN",
+        "28": "MS", "29": "MO", "30": "MT", "31": "NE", "32": "NV", "33": "NH", "34": "NJ", "35": "NM",
+        "36": "NY", "37": "NC", "38": "ND", "39": "OH", "40": "OK", "41": "OR", "42": "PA", "44": "RI",
+        "45": "SC", "46": "SD", "47": "TN", "48": "TX", "49": "UT", "50": "VT", "51": "VA", "53": "WA",
+        "54": "WV", "55": "WI", "56": "WY"}
+
+
+def buyers(path):
+    """How concentrated the buying is: school systems with students, and the share of day-to-day
+    spending held by the largest ones, for the country and each state (Census district file)."""
+    wb = openpyxl.load_workbook(path, read_only=True, data_only=True)
+    it = wb.worksheets[0].iter_rows(values_only=True)
+    h = next(it); ix = {k: i for i, k in enumerate(h)}
+    n = lambda v: v if isinstance(v, (int, float)) else 0
+    rows = [(r[ix["FIPST"]], r[ix["NAME"]].strip().title(), n(r[ix["ENROLL"]]), n(r[ix["TCURSPND"]])) for r in it if r[0]]
+    def summ(rs, tops):
+        rs = sorted(rs, key=lambda r: -r[3]); tot = sum(r[3] for r in rs) or 1
+        out = {"systems": sum(1 for r in rs if r[2] > 0), "small": sum(1 for r in rs if 0 < r[2] < 1000),
+               "top": [{"name": r[1], "share": round(r[3] / tot, 4), "cur": round(r[3])} for r in rs[:3]]}
+        for k in tops:
+            out[f"top{k}"] = round(sum(r[3] for r in rs[:k]) / tot, 4)
+        return out
+    res = {"US": summ(rows, [10, 100, 1000])}
+    for f, code in FIPS.items():
+        res[code] = summ([r for r in rows if r[0] == f], [1, 10])
+    return res
+
+
+def main(path, dpath=None):
     wb = openpyxl.load_workbook(path, read_only=True, data_only=True)
     tables = {t: rows_by_area(wb[t]) for t in {f[0] for f in FIELDS}}
     data = {}
@@ -93,6 +125,9 @@ def main(path):
     us = data["US"]
     assert us["rev"] == 994922042, us["rev"]
     assert abs(us["fed"] + us["state"] + us["local"] - us["rev"]) < 10
+    if dpath:
+        for code, b in buyers(dpath).items():
+            data[code]["buyers"] = b
     payload = {
         "year": "FY2024",
         "units": "thousand dollars (ppcs and enroll are dollars and students)",
@@ -109,4 +144,4 @@ def main(path):
 
 
 if __name__ == "__main__":
-    main(sys.argv[1] if len(sys.argv) > 1 else "elsec24_sumtables.xlsx")
+    main(sys.argv[1] if len(sys.argv) > 1 else "elsec24_sumtables.xlsx", sys.argv[2] if len(sys.argv) > 2 else None)

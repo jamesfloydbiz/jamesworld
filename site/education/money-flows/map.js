@@ -39,8 +39,8 @@
   function readColors() {
     const cs = getComputedStyle(document.documentElement);
     ['fed', 'state', 'local', 'pub'].forEach((g) => { colors[g] = cs.getPropertyValue('--c-' + g).trim(); });
-    colors.lo = cs.getPropertyValue('--map-lo').trim(); colors.line = cs.getPropertyValue('--surface').trim();
-    colors.ink = cs.getPropertyValue('--ink').trim(); colors.none = cs.getPropertyValue('--line').trim();
+    colors.lo = cs.getPropertyValue('--map-lo').trim(); colors.line = '#000000';
+    colors.ink = '#ffffff'; colors.none = '#2a2724';
   }
   function hex(h) { h = h.replace('#', ''); return [0, 2, 4].map((i) => parseInt(h.slice(i, i + 2), 16)); }
   function mix(a, b, t) { const A = hex(a), B = hex(b); return 'rgb(' + A.map((x, i) => Math.round(x + (B[i] - x) * t)).join(',') + ')'; }
@@ -106,7 +106,9 @@
       `<span class="note">${layer.note}</span>`;
   }
   function at(e) {
-    const r = canvas.getBoundingClientRect(); const x = e.clientX - r.left, y = e.clientY - r.top;
+    // isPointInPath tests in canvas pixels, which are CSS pixels times the device pixel ratio
+    const r = canvas.getBoundingClientRect(), dpr = canvas.width / r.width;
+    const x = (e.clientX - r.left) * dpr, y = (e.clientY - r.top) * dpr;
     const s = shapes.find((s) => ctx.isPointInPath(s.path, x, y, 'evenodd')); return s ? s.code : null;
   }
   function info(code) {
@@ -122,10 +124,15 @@
         <dt>Property tax</dt><dd>${B(r.locProperty)}</dd>
         <dt>Students</dt><dd>${(r.enroll || 0).toLocaleString('en-US')}</dd>
         <dt>Spent per student</dt><dd>${dollars(r.ppcs)}</dd>
+        <dt>Paid to staff</dt><dd>${B((r.salaries || 0) + (r.benefits || 0))}</dd>
+        <dt>Bought from outside</dt><dd>${B((r.current || 0) - (r.salaries || 0) - (r.benefits || 0))}</dd>
+        <dt>School systems</dt><dd>${r.buyers ? r.buyers.systems.toLocaleString('en-US') : '—'}</dd>
+        <dt>Largest system's share</dt><dd>${r.buyers && r.buyers.top[0] ? pct(r.buyers.top[0].share) : '—'}</dd>
         <dt>School choice money</dt><dd>${c.choiceUSD ? fmt(c.choiceUSD / 1e9) + (c.year ? ' (' + c.year + ')' : '') : 'none counted'}</dd>
         <dt>Federal tax credit</dt><dd>${o ? o[0] : '—'}</dd>
       </dl>
-      <button type="button" class="btn primary" id="openflow">See ${NAMES[code]} as a flowchart →</button>`;
+      ${r.buyers && r.buyers.top[0] ? `<p class="note">Largest: ${r.buyers.top[0].name}</p>` : ''}
+      <button type="button" class="btn primary" id="openflow" style="margin-top:12px">See ${NAMES[code]} as a flowchart →</button>`;
     $('#openflow').addEventListener('click', () => APP.showArea(code));
   }
   function showTip(e, code) {
