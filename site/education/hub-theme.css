@@ -1,0 +1,263 @@
+/* ──────────────────────────────────────────────────────────────────────────
+   /education hub theme for the dashboards
+   The Education Frontier, US vs World, School Outlook (Enrollment Maps).
+
+   Those pages are built in other repos and copied in by
+   scripts/sync-education-map.mjs, which links this file and puts
+   class="hub-theme hub-<slug>" data-theme="dark" on <html>
+   (scripts/education-hub-theme.mjs). Edit the look HERE, never in the copies.
+
+   Everything is scoped under html.hub-theme, so the file is inert anywhere
+   else. The approach: force each dashboard's own dark palette (data-theme),
+   then override its neutral tokens -- ground, surfaces, ink, hairlines, fonts --
+   with the hub's (see the <style> in site/education/index.html). Data
+   encodings (map ramps, rank colours, series colours, the U.S. gold) are the
+   dashboards' own dark variants and are left alone: the canvas code reads
+   them off <html>, and they were tuned for a dark ground already.
+   ────────────────────────────────────────────────────────────────────────── */
+
+/* ── tokens ──────────────────────────────────────────────────────────────── */
+html.hub-theme {
+  --eg: hsl(140 40% 15%); --eg-glow: hsl(138 34% 26%); --eg-hi: hsl(125 22% 60%);
+  --eb: hsl(24 48% 18%); --eb-mid: hsl(26 45% 30%); --eb-hi: hsl(30 38% 56%);
+  --hub-card: linear-gradient(180deg, hsl(28 14% 9%), hsl(30 12% 4%));
+  --hub-hair: hsl(30 30% 60% / .14);
+  --hub-hair-2: hsl(30 30% 60% / .28);
+  --hub-rule: hsl(26 40% 30% / .5);
+  --hub-display: 'Michroma', 'Playfair Display', sans-serif;
+  --hub-serif: 'Lora', Georgia, serif;
+  --hub-mono: 'DM Mono', 'Space Mono', monospace;
+  --hub-chrome: linear-gradient(180deg, #fff 0%, #e9eef2 38%, #8e9aa6 52%, #dfe6ec 66%, #6f7c88 100%);
+  --hub-cta: linear-gradient(180deg, var(--eg-glow) 0%, var(--eg) 100%);
+  --hub-cta-edge: hsl(28 40% 42% / .8);
+  --hub-cta-shadow: 0 0 18px hsl(140 40% 14% / .5), inset 0 1px 0 hsl(40 40% 90% / .18);
+}
+
+/* US vs World + School Outlook share one token vocabulary. Specificity (0,2,1)
+   beats their :root[data-theme="dark"] and dark media-query blocks (0,2,0). */
+html:root.hub-theme {
+  color-scheme: dark;
+  --ground: #000;
+  --surface: hsl(29 13% 6%);
+  --raise: hsl(28 14% 10%);
+  --ink: #fff;
+  --ink-2: hsl(32 10% 78%);
+  --muted: hsl(30 7% 62%);
+  --axis: hsl(30 6% 54%);
+  --line: var(--hub-hair);
+  --line-2: var(--hub-hair-2);
+  --accent: var(--eg-hi);        /* US vs World: focus ring only */
+  --accent-ink: var(--eb-hi);    /* US vs World: citation marks, fold hover */
+  --sans: var(--hub-serif);
+  --mono: var(--hub-mono);
+}
+
+/* The Frontier has its own (already dark, already Lora/DM Mono) vocabulary. */
+html:root.hub-frontier {
+  --green: var(--eg-hi); --green-70: hsl(125 22% 60% / .85); --green-12: hsl(125 22% 60% / .12);
+  --brown: var(--eb-hi); --brown-15: hsl(30 38% 56% / .15);
+}
+
+/* ── ground: black, with the hub's green/brown glow and scanlines up top ─── */
+html.hub-theme { background: #000; -webkit-font-smoothing: antialiased; }
+html.hub-theme body { background: transparent; color: var(--ink); }
+html.hub-theme:not(.hub-frontier) body { font-size: 15px; line-height: 1.55; }
+html.hub-theme body::before {
+  content: ""; position: absolute; z-index: -1; left: 0; right: 0; top: 0; height: 720px; pointer-events: none;
+  background:
+    repeating-linear-gradient(to bottom, hsl(0 0% 0% / 0) 0 3px, hsl(0 0% 0% / .32) 3px 4px),
+    radial-gradient(70% 90% at 12% -10%, hsl(140 38% 9% / .9) 0%, transparent 62%),
+    radial-gradient(60% 80% at 92% -10%, hsl(24 45% 12% / .75) 0%, transparent 60%);
+  -webkit-mask-image: linear-gradient(#000 35%, transparent);
+          mask-image: linear-gradient(#000 35%, transparent);
+}
+html.hub-theme ::selection { background: var(--eg); color: #fff; }
+html.hub-theme :focus-visible { outline: 2px solid var(--eg-hi); outline-offset: 2px; }
+
+/* ── the top: back link, eyebrow, Michroma chrome title, Lora lede ───────── */
+html.hub-theme .home-link {
+  display: inline-block; align-self: flex-start; margin: 14px 0 22px;
+  font-family: var(--hub-mono); font-size: .72rem; letter-spacing: .15em; text-transform: uppercase;
+  color: var(--eb-hi); text-decoration: none;
+}
+html.hub-theme .home-link:hover, html.hub-theme .home-link:focus-visible { color: #fff; }
+
+/* Two of the three builds have no eyebrow of their own. */
+html.hub-theme:not(.hub-frontier) .app > header::before {
+  content: "Education dashboard"; display: block; flex: 0 0 100%; margin: 0 0 14px;
+  font-family: var(--hub-mono); font-size: .74rem; letter-spacing: .3em; text-transform: uppercase; color: var(--eb-hi);
+}
+html.hub-theme .app > header .eyebrow {
+  font-size: .74rem; letter-spacing: .3em; color: var(--eb-hi);
+}
+html.hub-theme .app > header h1 {
+  font-family: var(--hub-display); font-weight: 400; text-transform: uppercase;
+  font-size: clamp(1.5rem, 4.4vw, 3.5rem); line-height: 1.04; letter-spacing: -.01em;
+  background: var(--hub-chrome); -webkit-background-clip: text; background-clip: text; color: transparent;
+  filter: drop-shadow(0 2px 0 hsl(0 0% 0% / .6)) drop-shadow(0 0 24px hsl(28 45% 35% / .3));
+}
+html.hub-frontier .app > header h1 { margin: 14px 0 16px; }
+html.hub-theme .app > header .thesis {
+  margin-top: 16px; max-width: 62ch;
+  font-family: var(--hub-serif); font-size: 1.02rem; line-height: 1.7; color: hsl(0 0% 100% / .72);
+}
+html.hub-theme .app > header .note { font-family: var(--hub-mono); font-size: .7rem; letter-spacing: .04em; margin-top: 8px; }
+html.hub-frontier header.mast { border-bottom-color: var(--hub-rule); }
+html.hub-frontier .stats { color: hsl(0 0% 100% / .5); letter-spacing: .06em; }
+html.hub-frontier .stats b { color: var(--eg-hi); }
+
+/* ── headings ────────────────────────────────────────────────────────────── */
+html.hub-theme:not(.hub-frontier) .app h2 {
+  font-family: var(--hub-display); font-weight: 400; text-transform: uppercase;
+  font-size: 1rem; line-height: 1.35; letter-spacing: .02em; color: #fff;
+}
+html.hub-theme:not(.hub-frontier) .app .panel h2 { font-size: 1.2rem; }
+html.hub-theme:not(.hub-frontier) .app h3 {
+  font-family: var(--hub-mono); font-weight: 400; font-size: .7rem; letter-spacing: .18em; color: var(--eb-hi);
+}
+html.hub-theme.hub-us-vs-world .app .theme h3 {
+  font-family: var(--hub-display); font-size: .78rem; line-height: 1.45; letter-spacing: .04em; text-transform: uppercase; color: #fff;
+}
+html.hub-us-vs-world .cmp h4 { font-family: var(--hub-mono); font-weight: 400; letter-spacing: .14em; color: var(--muted); }
+html.hub-frontier section.block > h2 {
+  font-family: var(--hub-display); font-weight: 400; text-transform: uppercase;
+  font-size: clamp(1.2rem, 3vw, 1.7rem); line-height: 1.25; letter-spacing: .01em;
+}
+html.hub-frontier .card h3 {
+  font-family: var(--hub-display); font-weight: 400; text-transform: uppercase;
+  font-size: .92rem; line-height: 1.35; letter-spacing: .02em; color: #fff;
+}
+html.hub-frontier .prose h3 { font-family: var(--hub-display); font-weight: 400; text-transform: uppercase; font-size: 1rem; letter-spacing: .02em; }
+html.hub-frontier .kicker { letter-spacing: .18em; color: var(--eb-hi); }
+
+/* ── cards: the hub's warm-black gradient and hairline ───────────────────── */
+html.hub-theme:not(.hub-frontier) :is(.card, .summary, .found, .panel, .rank, .mapwrap, details.fold, details.more, .ut figure) {
+  background: var(--hub-card); border: 1px solid var(--hub-hair); border-radius: 10px;
+  box-shadow: inset 0 1px 0 hsl(0 0% 100% / .06);
+}
+html.hub-theme .summary h2 { margin-bottom: 12px; }
+/* Lora's tabular figures also space out its punctuation, so the bold runs in
+   prose drop them; the tables keep them. */
+html.hub-theme :is(.summary, .found, .headline, .stand) b { color: #fff; font-weight: 600; font-variant-numeric: lining-nums; }
+html.hub-theme .yearbar { border-color: var(--hub-hair); }
+html.hub-theme .hbox {
+  background: var(--hub-card); border-color: var(--hub-hair-2);
+  box-shadow: 0 6px 22px hsl(0 0% 0% / .5), inset 0 1px 0 hsl(0 0% 100% / .06);
+}
+html.hub-theme .hbox .k { color: var(--eb-hi); letter-spacing: .16em; }
+html.hub-theme .tip { background: hsl(30 12% 6% / .97); border-color: var(--hub-hair-2); color: #fff; box-shadow: 0 6px 18px hsl(0 0% 0% / .6); }
+
+html.hub-frontier .grid .card {
+  padding: 20px 20px 18px; border: 1px solid var(--hub-hair); border-radius: 10px;
+  background: var(--hub-card); box-shadow: inset 0 1px 0 hsl(0 0% 100% / .06);
+}
+html.hub-frontier .grid { gap: 18px; }
+html.hub-frontier .group { border-top-color: var(--hub-hair); }
+html.hub-frontier #mapwrap { border-color: var(--hub-hair-2); border-radius: 10px; }
+html.hub-frontier #panel { background: hsl(30 12% 5% / .97); border-color: var(--hub-hair-2); border-radius: 10px; }
+html.hub-frontier #panel .card { background: none; border: 0; padding: 0; box-shadow: none; }
+html.hub-frontier .tabs { border-bottom-color: var(--hub-hair-2); }
+
+/* big figures in the broadcast display face */
+html.hub-theme :is(.big .n, .hbox .v, .yb-read b, .kr-year b) {
+  font-family: var(--hub-display); font-weight: 400; letter-spacing: -.01em;
+}
+html.hub-theme .big .n { font-size: 28px; }
+html.hub-theme .hbox .v { font-size: 22px; }
+@media (max-width: 720px) { html.hub-theme .hbox .v { font-size: 15px; letter-spacing: -.03em; } }
+html.hub-theme .yb-read b { font-size: 22px; }
+
+/* ── controls ────────────────────────────────────────────────────────────── */
+/* the view switch: the hub's CTA when on, a hub card when off */
+html.hub-theme .views button {
+  font-family: var(--hub-display); font-weight: 400; font-size: .72rem; letter-spacing: .1em; text-transform: uppercase;
+  padding: 12px 18px; border-radius: 6px; border: 1px solid var(--hub-hair-2);
+  background: var(--hub-card); color: hsl(0 0% 100% / .7);
+}
+html.hub-theme .views button small {
+  font-family: var(--hub-mono); text-transform: none; letter-spacing: .04em; font-size: 10.5px; margin-top: 4px;
+}
+html.hub-theme .views button:hover { color: #fff; border-color: hsl(28 40% 40% / .7); }
+html.hub-theme :is(.views button, .age, .seg button, .goto)[aria-pressed="true"] {
+  background: var(--hub-cta); border-color: var(--hub-cta-edge); color: #f3ece2; box-shadow: var(--hub-cta-shadow);
+}
+html.hub-theme :is(.views button, .age)[aria-pressed="true"] small { color: hsl(40 30% 90% / .75); }
+
+/* US vs World: age cards and subject pills */
+html.hub-theme .age {
+  font-family: var(--hub-display); font-weight: 400; font-size: .74rem; letter-spacing: .06em; text-transform: uppercase;
+  border-radius: 6px; border-color: var(--hub-hair-2); background: var(--hub-card); color: hsl(0 0% 100% / .72); gap: 4px;
+}
+html.hub-theme .age small { font-family: var(--hub-mono); font-weight: 400; text-transform: none; letter-spacing: .04em; color: var(--muted); }
+html.hub-theme .age:hover { color: #fff; border-color: hsl(28 40% 40% / .7); }
+html.hub-theme .subj {
+  font-family: var(--hub-mono); font-weight: 400; font-size: .76rem; letter-spacing: .04em;
+  border-color: var(--hub-hair-2); color: hsl(0 0% 100% / .66);
+}
+html.hub-theme .subj:hover { color: #fff; border-color: hsl(0 0% 100% / .4); }
+html.hub-theme .subj[aria-pressed="true"] { background: hsl(140 40% 15% / .55); border-color: var(--eg-hi); color: #fff; }
+
+/* School Outlook: segmented buttons, labels, selects */
+html.hub-theme .seg { border-color: var(--hub-hair-2); border-radius: 6px; }
+html.hub-theme .seg button { font-family: var(--hub-mono); font-weight: 400; background: hsl(30 12% 6%); color: hsl(0 0% 100% / .7); }
+html.hub-theme .seg button + button { border-left-color: var(--hub-hair-2); }
+html.hub-theme .seg button:hover { color: #fff; }
+html.hub-theme :is(.ctl > label, .ctl > .lab, .yearbar .yb-lab, .yearbar .yb-geo > label) {
+  font-family: var(--hub-mono); font-weight: 400; letter-spacing: .16em; color: var(--eb-hi);
+}
+html.hub-theme :is(select, input[type=search]) {
+  font-family: var(--hub-mono); font-weight: 400; font-size: 13px;
+  background: hsl(30 12% 5%); color: #fff; border: 1px solid var(--hub-hair-2); border-radius: 6px;
+}
+html.hub-theme input[type=range] { accent-color: var(--eb-hi); }
+html.hub-theme .kr-proj { font-family: var(--hub-mono); color: var(--eb-hi); border-color: var(--eb-hi); }
+html.hub-theme .zoomers button { background: hsl(30 12% 6%); border-color: var(--hub-hair-2); }
+html.hub-theme .zoomers button:hover { border-color: var(--eb-hi); }
+
+/* quiet buttons and folds */
+html.hub-theme .ghost {
+  font-family: var(--hub-mono); font-weight: 400; font-size: .72rem; letter-spacing: .06em;
+  border-color: var(--hub-hair-2); color: hsl(0 0% 100% / .72); border-radius: 6px;
+}
+html.hub-theme .ghost:hover { color: #fff; border-color: var(--eb-hi); }
+html.hub-theme :is(details.fold, details.more) > summary {
+  font-family: var(--hub-display); font-weight: 400; font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; color: #fff;
+}
+html.hub-theme :is(details.fold, details.more) > summary:hover { color: var(--eg-hi); }
+html.hub-theme details.fold > summary::after, html.hub-theme details.more > summary::before { color: var(--eb-hi); }
+
+/* Frontier: tabs and chips already speak DM Mono; bring the "on" states to hub green */
+html.hub-frontier .tab.on { border-bottom-color: var(--eg-hi); }
+html.hub-frontier .tag.on { background: var(--eg); border-color: var(--eg-hi); color: #fff; }
+html.hub-frontier :is(#age, #cats, #q) { background: hsl(30 12% 5%); border-color: var(--hub-hair-2); border-radius: 6px; }
+html.hub-frontier .zoom button { background: hsl(30 12% 6%); border-color: var(--hub-hair-2); }
+
+/* ── small print: legends, tables, notes, footers ────────────────────────── */
+html.hub-theme :is(.legend, .mapfoot) { font-family: var(--hub-mono); font-size: 11.5px; letter-spacing: .02em; }
+html.hub-theme .legend .ttl { font-weight: 400; color: #fff; }
+html.hub-theme:not(.hub-frontier) th { font-family: var(--hub-mono); font-weight: 400; font-size: 10.5px; letter-spacing: .12em; }
+html.hub-theme:not(.hub-frontier) th[aria-sort] { color: var(--eg-hi); }
+/* figures in DM Mono so columns line up; the place names stay in Lora */
+html.hub-theme:not(.hub-frontier) td { font-family: var(--hub-mono); font-size: 12.5px; }
+html.hub-theme:not(.hub-frontier) td:first-child { font-family: var(--hub-serif); font-size: 13.5px; font-variant-numeric: lining-nums; }
+html.hub-theme:not(.hub-frontier) :is(svg.chart text, .kv span, .scen, .tip) { font-variant-numeric: lining-nums; }
+html.hub-theme .cite { color: var(--eb-hi); }
+html.hub-theme .srcs { font-family: var(--hub-mono); font-size: 11.5px; }
+html.hub-theme .app > footer, html.hub-frontier footer.foot {
+  margin-top: 34px; padding-top: 22px; border-top: 1px solid var(--hub-rule);
+  font-family: var(--hub-mono); font-size: .74rem; line-height: 1.7; color: hsl(0 0% 100% / .5);
+}
+html.hub-frontier footer.foot { margin: 80px 0 60px; }
+html.hub-theme .app > footer a, html.hub-frontier footer.foot a { color: var(--eg-hi); text-decoration: none; }
+html.hub-theme .app > footer a:hover, html.hub-frontier footer.foot a:hover { color: #fff; }
+
+/* ── phones: keep the map near the top ───────────────────────────────────── */
+@media (max-width: 720px) {
+  html.hub-theme .home-link { margin: 4px 0 14px; }
+  html.hub-theme:not(.hub-frontier) .app > header::before { margin-bottom: 10px; font-size: .68rem; letter-spacing: .24em; }
+  html.hub-theme .app > header .thesis { margin-top: 10px; font-size: .95rem; line-height: 1.6; }
+  html.hub-theme .views { flex-wrap: nowrap; }
+  html.hub-theme .views button { flex: 0 1 auto; min-width: 0; font-size: .6rem; letter-spacing: .05em; padding: 11px 12px; }
+  html.hub-theme .age { font-size: .66rem; padding: 8px 10px; }
+  html.hub-theme .views button small { font-size: 10px; }
+}

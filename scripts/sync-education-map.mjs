@@ -18,6 +18,7 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { homedir } from 'node:os';
 import { execSync } from 'node:child_process';
+import { applyHubTheme } from './education-hub-theme.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const SITE = 'https://jamesfloyds.world';
@@ -179,6 +180,11 @@ for (const m of MAPS) {
 .home-link:hover,.home-link:focus-visible{color:var(--ink);}`,
     'the stylesheet', '.home-link{display:inline-block'
   );
+
+  /* The hub's look: scope + dark theme on <html>, then the hub fonts and
+     site/education/hub-theme.css after the dashboard's own <style>. One shared
+     stylesheet in this repo, so the dashboards' repos stay untouched. */
+  html = applyHubTheme(html, m.slug);
 
   writeFileSync(page, html);
   console.log(`✓ ${m.slug} — ${copied} files, ${(bytes / 1e6).toFixed(1)}MB, from ${m.src}`);
