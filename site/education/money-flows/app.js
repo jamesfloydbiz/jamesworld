@@ -500,7 +500,7 @@
     const box = $('#chips');
     const fresh = links.filter((l) => S.fresh.has(l.id) && NODES[l.s].col <= NODES[l.t].col).sort((a, b) => b.v - a.v);
     if (!fresh.length) { box.innerHTML = ''; return; }
-    const shown = fresh.slice(0, 5);
+    const shown = fresh.slice(0, 3);
     const lbl = S.ctrlSel ? 'Decided by ' + CTRL[S.ctrlSel].label : (F.steps[S.step].lens ? 'Highlighted' : 'New this step');
     box.innerHTML = `<span class="chips__lbl">${esc(lbl)}</span>` + shown.map((l) =>
       `<button type="button" class="chip" data-id="${esc(l.id)}"><i style="background:${linkColor(l)}"></i>${esc(NODES[l.s].label)} → ${esc(l.label || NODES[l.t].label)} ${fmt(l.v)}</button>`).join('') +

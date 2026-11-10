@@ -184,8 +184,17 @@ td{color:var(--ink-2)} td b{color:#fff; font-weight:600}
 td.num{text-align:right; font:400 .82rem var(--mono); color:#fff; white-space:nowrap; font-variant-numeric:tabular-nums}
 td .who{margin:0}
 .buyers{padding:6px 14px 10px}
-details.fold{padding:12px 16px}
-details.fold summary{cursor:pointer; font:400 .66rem var(--display); letter-spacing:.14em; text-transform:uppercase; color:var(--eb-hi)}
+.folds{display:flex; flex-direction:column; gap:8px; margin:0 0 24px}
+details.fold{padding:0}
+details.fold summary{cursor:pointer; list-style:none; display:flex; justify-content:space-between; align-items:center; gap:12px; padding:14px 18px;
+  font:400 .66rem var(--display); letter-spacing:.14em; text-transform:uppercase; color:var(--eb-hi)}
+details.fold summary::-webkit-details-marker{display:none}
+details.fold summary::after{content:"+"; font:300 1.1rem var(--mono); color:var(--muted); letter-spacing:0}
+details.fold[open] summary::after{content:"−"}
+details.fold summary:hover{color:#fff}
+details.fold > :not(summary){margin-inline:18px}
+details.fold > :last-child{margin-bottom:16px}
+details.fold .stocks{margin-inline:12px}
 .stocks{display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr)); gap:14px}
 .stock{display:flex; gap:16px; align-items:flex-start; padding:18px}
 .stock .tank{flex:none; width:42px; height:56px; border:1px solid hsl(0 0% 100% / .3); border-radius:5px 5px 9px 9px; position:relative; overflow:hidden}
@@ -195,14 +204,12 @@ details.fold summary{cursor:pointer; font:400 .66rem var(--display); letter-spac
 .stock b{color:#fff; font-weight:600}
 .stock p{margin:4px 0 0; color:var(--ink-2); font-size:.9rem}
 .stock .note{font:400 .7rem var(--mono); color:var(--muted)}
-.method{display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr)); gap:14px}
-.method .card{padding:18px 20px}
 .method p,.method li{color:var(--ink-2); max-width:72ch}
 .method p{margin:8px 0 0}
 .method ul{margin:8px 0 0; padding-left:18px}
 .method li + li{margin-top:5px}
 .method .note{font:400 .72rem var(--mono); color:var(--muted)}
-footer{margin:10px 0 48px; padding-top:20px; border-top:1px solid hsl(26 40% 30% / .5); font:400 .74rem var(--mono); line-height:1.7; color:var(--muted)}
+footer{margin:0 0 48px; padding-top:16px; border-top:1px solid hsl(26 40% 30% / .5); font:400 .74rem var(--mono); line-height:1.7; color:var(--muted)}
 @media (prefers-reduced-motion: reduce){ #sankey .link, #sankey .glow{transition:none} }
 </style>
 </head>
@@ -276,33 +283,28 @@ footer{margin:10px 0 48px; padding-top:20px; border-top:1px solid hsl(26 40% 30%
     </section>
   </div>
 
-  <section class="sec" aria-labelledby="buyers-h">
-    <h2 class="sec__h" id="buyers-h">Who controls the money</h2>
-    <p class="sec__lede">Each row is a group that decides where money goes: how much it controls each year, how many of them there are, and how they decide or buy.</p>
-    <div class="card buyers"><div class="tablewrap"><table id="buyertable"></table></div></div>
-  </section>
-
-  <section class="sec" aria-labelledby="stocks-h">
-    <h2 class="sec__h" id="stocks-h">Money that sits still</h2>
-    <div class="stocks" id="stocks"></div>
-  </section>
-
-  <section class="sec">
+  <div class="folds">
+    <details class="card fold" id="fold-buyers">
+      <summary>Who controls the money</summary>
+      <p class="sec__lede">Each row is a group that decides where money goes: how much it controls each year, how many of them there are, and how they decide or buy. Click a name to light up its bands on the chart.</p>
+      <div class="tablewrap"><table id="buyertable"></table></div>
+    </details>
+    <details class="card fold" id="fold-stocks">
+      <summary>Money that sits still</summary>
+      <div class="stocks" id="stocks"></div>
+    </details>
     <details class="card fold" id="tablefold">
       <summary>All flows as a table</summary>
       <div class="tablewrap"><table id="flowtable"></table></div>
     </details>
-  </section>
-
-  <section class="sec method" id="method">
-    <div class="card">
-      <h2 class="sec__h">How to read it</h2>
+    <details class="card fold method" id="method">
+      <summary>How to read it</summary>
       <p>Each band is money moving in one year, and its width is the dollar amount. With <b>Who paid</b>, a band takes the color of whoever first paid it: blue federal, orange state, green local, gold families, pink donors. With <b>Who decides</b>, it takes the color of whoever controls how much moves along it.</p>
       <p>Each dollar is drawn once, at the point it leaves the person or government that pays it. School choice money is shown as state money, because states pay for it, even when it ends up as private school tuition. Gifts to scholarship groups that are repaid as state tax credits are left out of donations for the same reason.</p>
       <p>Years do not all match. Public school money is FY2024, the latest full Census count. Choice programs and 529s are 2025-26. Some donation figures rest on older studies. Every band says its year.</p>
-    </div>
-    <div class="card">
-      <h2 class="sec__h">Sources</h2>
+    </details>
+    <details class="card fold method">
+      <summary>Sources</summary>
       <ul>
         <li>Public school revenue and spending, national, by state and by district: U.S. Census Bureau, <a href="https://www.census.gov/data/tables/2024/econ/school-finances/secondary-education-finance.html">2024 Annual Survey of School System Finances</a>.</li>
         <li>School choice programs: <a href="https://www.edchoice.org/2026-edchoice-spending-share-rankings/">EdChoice spending share rankings</a> and The ABCs of School Choice 2026.</li>
@@ -313,8 +315,8 @@ footer{margin:10px 0 48px; padding-top:20px; border-top:1px solid hsl(26 40% 30%
         <li>Donations: Giving USA, Candid foundation data, NAIS, and studies of PTA and school foundation revenue.</li>
       </ul>
       <p class="note" id="updated"></p>
-    </div>
-  </section>
+    </details>
+  </div>
 
   <footer>Spot something wrong? Tell me on <a href="https://www.linkedin.com/in/jamesfloydl/" target="_blank" rel="noopener">LinkedIn</a> or <a href="https://x.com/jamesfloydswrld" target="_blank" rel="noopener">X</a> and I'll fix it.</footer>
 </div>
