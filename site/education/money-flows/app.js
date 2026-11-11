@@ -9,7 +9,8 @@
   const $ = (s) => document.querySelector(s);
   const SVGNS = 'http://www.w3.org/2000/svg';
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-  const COLHEAD = ['Who pays', 'Who moves it', 'Who receives it', 'What it buys'];
+  const COLHEAD_DEFAULT = ['Who pays', 'Who moves it', 'Who receives it', 'What it buys'];
+  let SEC = null; // the sector on screen (F.sectors[key])
   const STATE_NAMES = {
     US: 'United States', AL: 'Alabama', AK: 'Alaska', AZ: 'Arizona', AR: 'Arkansas', CA: 'California',
     CO: 'Colorado', CT: 'Connecticut', DE: 'Delaware', DC: 'District of Columbia', FL: 'Florida',
@@ -80,10 +81,11 @@
     else if (gap < 0) add('drawdown', 'districts', -gap, 4, 'district', 'Spending above this year\'s revenue, covered by reserves and borrowing.');
     return out;
   }
-  function buildModel(code) {
-    let links = censusLinks(code);
-    if (code === 'US') links = links.concat(F.national.map((l) => Object.assign({}, l)));
-    else {
+  function buildModel(code, sec) {
+    sec = sec || SEC;
+    let links = sec.census ? censusLinks(code) : [];
+    if (code === 'US' || !sec.census) links = links.concat(sec.links.map((l) => Object.assign({}, l)));
+    if (code !== 'US' && sec.stateChoice) {
       const c = CH.states && CH.states[code];
       if (c && c.choiceUSD) {
         const v = c.choiceUSD / 1e9, src = (CH.source || {}).choice || '';
@@ -102,11 +104,11 @@
   const CTRL = F.controllers;
 
   /* ---------- state ---------- */
-  const S = { step: 0, area: 'US', hidePub: false, lens: 'pay', ctrlSel: null, model: null, layout: null, orient: 'h', W: 800, H: 600, colors: {}, visible: [] };
-  const lastStep = F.steps.length - 1;
+  const S = { step: 0, sector: null, area: 'US', hidePub: false, lens: 'pay', ctrlSel: null, model: null, layout: null, orient: 'h', W: 800, H: 600, colors: {}, visible: [] };
+  let lastStep = 0;
 
   function visibleLinks() {
-    const st = F.steps[S.step] || {};
+    const st = SEC.steps[S.step] || {};
     const explore = S.step === lastStep;
     const zoom = st.zoom || (explore && S.hidePub);
     return S.model.links.filter((l) => {
@@ -117,7 +119,7 @@
   }
   // what to highlight as new in this step
   function newSet(links) {
-    const st = F.steps[S.step] || {};
+    const st = SEC.steps[S.step] || {};
     if (S.ctrlSel) return new Set(links.filter((l) => l.ctrl === S.ctrlSel).map((l) => l.id));
     if (S.step === lastStep || st.zoom) return new Set();
     if (st.focus && st.lens) return new Set(links.filter((l) => st.focus.includes(l.s) || st.focus.includes(l.t)).map((l) => l.id));
@@ -241,7 +243,7 @@
     const links = visibleLinks();
     const lay = layout(links); S.layout = lay; S.visible = links;
     const fresh = newSet(links); S.fresh = fresh;
-    const st = F.steps[S.step] || {};
+    const st = SEC.steps[S.step] || {};
     const focus = new Set(st.focus || []);
     const freshNodes = new Set(); links.forEach((l) => { if (fresh.has(l.id)) { freshNodes.add(l.s); freshNodes.add(l.t); } });
     svg.classList.toggle('stepping', fresh.size > 0);
@@ -249,7 +251,7 @@
     if (S.orient === 'h') {
       lay.cols.forEach((c) => {
         const t = document.createElementNS(SVGNS, 'text'); t.setAttribute('class', 'colhead');
-        t.setAttribute('x', lay.colA[c]); t.setAttribute('y', 11); t.textContent = COLHEAD[c]; gHead.append(t);
+        t.setAttribute('x', lay.colA[c]); t.setAttribute('y', 11); t.textContent = (SEC.colhead || COLHEAD_DEFAULT)[c]; gHead.append(t);
       });
     }
     const next = { L: {}, N: {} };
@@ -474,10 +476,10 @@
 
   /* ---------- story ---------- */
   function updateStep(animate) {
-    const st = F.steps[S.step];
+    const st = SEC.steps[S.step];
     S.ctrlSel = null;
     if (S.step !== lastStep) S.lens = st.lens || 'pay';
-    $('#stepcount').textContent = `Step ${S.step + 1} of ${F.steps.length}`;
+    $('#stepcount').textContent = `Step ${S.step + 1} of ${SEC.steps.length}`;
     $('#steptitle').textContent = st.title;
     $('#steptext').textContent = st.text;
     $('#prev').disabled = S.step === 0; $('#next').disabled = S.step === lastStep;
@@ -501,7 +503,7 @@
     const fresh = links.filter((l) => S.fresh.has(l.id) && NODES[l.s].col <= NODES[l.t].col).sort((a, b) => b.v - a.v);
     if (!fresh.length) { box.innerHTML = ''; return; }
     const shown = fresh.slice(0, 3);
-    const lbl = S.ctrlSel ? 'Decided by ' + CTRL[S.ctrlSel].label : (F.steps[S.step].lens ? 'Highlighted' : 'New this step');
+    const lbl = S.ctrlSel ? 'Decided by ' + CTRL[S.ctrlSel].label : (SEC.steps[S.step].lens ? 'Highlighted' : 'New this step');
     box.innerHTML = `<span class="chips__lbl">${esc(lbl)}</span>` + shown.map((l) =>
       `<button type="button" class="chip" data-id="${esc(l.id)}"><i style="background:${linkColor(l)}"></i>${esc(NODES[l.s].label)} → ${esc(l.label || NODES[l.t].label)} ${fmt(l.v)}</button>`).join('') +
       (fresh.length > shown.length ? `<span class="chip" style="cursor:default">+${fresh.length - shown.length} more</span>` : '') +
@@ -536,8 +538,34 @@
     $('#statesel').value = S.area;
     renderStateBar();
     if (S.area !== 'US') S.step = lastStep;
-    if (history.replaceState) history.replaceState(null, '', S.area === 'US' ? location.pathname : '#' + S.area);
+    if (history.replaceState) history.replaceState(null, '', S.area !== 'US' ? '#' + S.area : (S.sector !== Object.keys(F.sectors)[0] ? '#' + S.sector : location.pathname));
     updateStep(!(opts && opts.instant));
+  }
+
+  /* ---------- sectors ---------- */
+  function sectorTotal(k) {
+    const m = buildModel('US', F.sectors[k]); const hasIn = new Set(m.links.map((l) => l.t));
+    return m.links.filter((l) => !hasIn.has(l.s)).reduce((s, l) => s + l.v, 0);
+  }
+  function renderSectorTabs() {
+    const keys = Object.keys(F.sectors), tot = {}; keys.forEach((k) => { tot[k] = sectorTotal(k); });
+    const max = Math.max(...keys.map((k) => tot[k]));
+    $('#sectors').innerHTML = keys.map((k) => `<button type="button" role="tab" data-sector="${k}" aria-selected="${k === S.sector}">
+      <span class="sec-name">${esc(F.sectors[k].label)}</span><span class="sec-amt">${F.sectors[k].approx ? '~' : ''}${fmt(tot[k])}</span>
+      <i class="sec-bar" style="width:${Math.max(2, tot[k] / max * 100)}%"></i></button>`).join('');
+    $('#sectors').querySelectorAll('button').forEach((b) => b.addEventListener('click', () => setSector(b.dataset.sector)));
+  }
+  function setSector(k, opts) {
+    S.sector = F.sectors[k] ? k : Object.keys(F.sectors)[0]; SEC = F.sectors[S.sector];
+    lastStep = SEC.steps.length - 1; S.step = 0; S.ctrlSel = null; S.hidePub = false; $('#hidepub').checked = false;
+    $('#sectors').querySelectorAll('button').forEach((b) => b.setAttribute('aria-selected', b.dataset.sector === S.sector ? 'true' : 'false'));
+    $('#dots').innerHTML = SEC.steps.map((st, i) => `<button type="button" title="${esc(st.title)}" aria-label="Step ${i + 1}: ${esc(st.title)}">${i + 1}</button>`).join('');
+    [...$('#dots').children].forEach((b, i) => b.addEventListener('click', () => go(i)));
+    $('#statesel').disabled = !SEC.census; if (!SEC.census) $('#statesel').value = 'US';
+    $('#hidepubwrap').style.visibility = SEC.census ? '' : 'hidden';
+    $('#sectorlede').textContent = SEC.blurb || '';
+    clearDrawing(); renderStocks(); renderBuyers(); wireBuyerTable();
+    showArea(SEC.census ? S.area : 'US', opts);
   }
 
   /* ---------- tables ---------- */
@@ -549,6 +577,7 @@
     $('#flowtable').innerHTML = `<thead><tr><th>From</th><th>To</th><th>Per year</th><th>Range</th><th>Who decides</th><th>Year</th><th>Type</th><th>Why it moves</th><th>Source</th></tr></thead><tbody>${rows}</tbody>`;
   }
   function renderBuyers() {
+    if (!SEC.census) return renderBuyersGeneric();
     const m = buildModel('US'), r = ST.states.US, b = r.buyers, B = (x) => (x || 0) / 1e6;
     const sum = (k) => m.links.filter((l) => l.ctrl === k && (NODES[l.s].col === 0 || (k === 'parents' && l.s === 'choice'))).reduce((s, l) => s + l.v, 0);
     const rows = [
@@ -560,13 +589,17 @@
         'Boards or councils set property tax rates within state caps. Voters approve bonds and tax increases at the ballot box.'],
       ['district', B(r.exp), `${b.systems.toLocaleString('en-US')} school systems; ${b.small.toLocaleString('en-US')} have fewer than 1,000 students`,
         `The board approves the budget; the superintendent and central office hire and buy. ${fmt(B(r.salaries) + B(r.benefits))} goes to staff pay and benefits under salary schedules and contracts. ${fmt(B(r.current) - B(r.salaries) - B(r.benefits))} buys goods and services and ${fmt(B(r.capital))} buys buildings and equipment, through bids, cooperative contracts and small purchases by principals. The largest 100 systems hold ${pct(b.top100)} of day-to-day spending, the largest 1,000 hold ${pct(b.top1000)}; New York City alone spends ${fmt(b.top[0].cur / 1e6)}.`],
-      ['parents', sum('parents'), 'Millions of households, deciding one child at a time',
-        'Pay directly for private school, preschool and day care, tutoring, homeschool materials and supplies, and draw on 529 savings. In choice states they also pick where about $10.6 billion of state money goes, through ESA platforms, vouchers and scholarship groups.'],
-      ['donors', sum('donors'), 'Foundations, alumni, parents and church members',
-        'Give to private schools, charter networks, nonprofits and PTAs according to their own priorities. A few large foundations set much of the agenda.']
-    ];
+    ].concat((SEC.buyers || []).map((x) => [x.ctrl, sum(x.ctrl), x.count, x.how]));
     $('#buyertable').innerHTML = `<thead><tr><th>Who decides</th><th>Controls each year</th><th>How many</th><th>How they decide or buy</th></tr></thead><tbody>` +
       rows.map(([k, v, n, how]) => `<tr><td><button type="button" class="who whobtn" data-ctrl="${k}" title="Show on the chart"><i style="background:var(--k-${k})"></i><b>${esc(CTRL[k].label)}</b></button></td><td class="num">${fmt(v)}</td><td>${esc(n)}</td><td>${esc(how)}</td></tr>`).join('') + '</tbody>';
+  }
+  function renderBuyersGeneric() {
+    const m = buildModel('US'), rows = [];
+    (SEC.buyers || []).forEach((x) => {
+      const v = m.links.filter((l) => l.ctrl === x.ctrl && !m.links.some((y) => y.t === l.s && y.ctrl === x.ctrl)).reduce((s, l) => s + l.v, 0);
+      rows.push(`<tr><td><button type="button" class="who whobtn" data-ctrl="${x.ctrl}" title="Show on the chart"><i style="background:var(--k-${x.ctrl})"></i><b>${esc(CTRL[x.ctrl].label)}</b></button></td><td class="num">${fmt(v)}</td><td>${esc(x.count)}</td><td>${esc(x.how)}</td></tr>`);
+    });
+    $('#buyertable').innerHTML = `<thead><tr><th>Who decides</th><th>Controls each year</th><th>How many</th><th>How they decide or buy</th></tr></thead><tbody>${rows.join('')}</tbody>`;
   }
   function wireBuyerTable() {
     document.querySelectorAll('#buyertable .whobtn').forEach((b) => b.addEventListener('click', () => {
@@ -576,15 +609,14 @@
     }));
   }
   function renderStocks() {
-    $('#stocks').innerHTML = F.stocks.map((s, i) => `<div class="card stock"><div class="tank${i ? ' debt' : ''}" aria-hidden="true"><i></i></div>
+    $('#fold-stocks').hidden = !(SEC.stocks && SEC.stocks.length);
+    $('#stocks').innerHTML = (SEC.stocks || []).map((s, i) => `<div class="card stock"><div class="tank${i ? ' debt' : ''}" aria-hidden="true"><i></i></div>
       <div><div class="v">${fmt(s.v)}</div><b>${esc(s.label)}</b> <span class="note">${esc(s.date)}</span><p>${esc(s.note)} <a href="${esc(s.src)}" target="_blank" rel="noopener">Source</a></p></div></div>`).join('');
   }
 
   /* ---------- boot ---------- */
   function init() {
-    readColors(); size(); renderStocks(); renderBuyers(); wireBuyerTable();
-    $('#dots').innerHTML = F.steps.map((s, i) => `<button type="button" title="${esc(s.title)}" aria-label="Step ${i + 1}: ${esc(s.title)}">${i + 1}</button>`).join('');
-    [...$('#dots').children].forEach((b, i) => b.addEventListener('click', () => go(i)));
+    readColors(); size(); SEC = F.sectors[Object.keys(F.sectors)[0]];
     $('#prev').addEventListener('click', () => go(S.step - 1));
     $('#next').addEventListener('click', () => go(S.step + 1));
     $('#skip').addEventListener('click', () => go(lastStep));
@@ -592,7 +624,7 @@
     document.querySelectorAll('#lens button').forEach((b) => b.addEventListener('click', () => { S.lens = b.dataset.lens; if (S.lens !== 'ctrl') S.ctrlSel = null; syncLens(); render(false); }));
     const sel = $('#statesel');
     sel.innerHTML = Object.keys(ST.states).map((c) => `<option value="${c}">${esc(STATE_NAMES[c] || c)}</option>`).join('');
-    sel.addEventListener('change', () => { showView('flow'); showArea(sel.value); });
+    sel.addEventListener('change', () => { showView('flow'); if (!SEC.census) setSector(Object.keys(F.sectors)[0]); showArea(sel.value); });
     document.addEventListener('keydown', (e) => {
       if (e.target.closest('input,select,textarea') || $('#view-flow').hidden) return;
       if (e.key === 'ArrowRight') go(S.step + 1); else if (e.key === 'ArrowLeft') go(S.step - 1);
@@ -605,8 +637,10 @@
       const o = S.orient; size(); if (o !== S.orient) clearDrawing(); render(false); }, 60); };
     if (window.ResizeObserver) new ResizeObserver(onResize).observe($('#plot')); else window.addEventListener('resize', onResize);
     document.querySelectorAll('#views button').forEach((b) => b.addEventListener('click', () => showView(b.dataset.view)));
-    const m = /^#([A-Z]{2})$/.exec(location.hash);
-    showArea(m ? m[1] : 'US', { instant: true });
+    renderSectorTabs();
+    const m = /^#([A-Z]{2})$/.exec(location.hash), ms = /^#([a-z]+)$/.exec(location.hash);
+    if (m) S.area = m[1];
+    setSector(ms && F.sectors[ms[1]] ? ms[1] : Object.keys(F.sectors)[0], { instant: true });
     requestAnimationFrame(frame);
     $('#updated').textContent = `Public school figures: Census ${ST.year}. Page data last checked ${CH.asOf || 'November 2026'}.`;
   }
@@ -617,6 +651,6 @@
     if (v === 'flow') { size(); render(false); } else if (window.EMF_MAP) window.EMF_MAP.show();
   }
 
-  window.EMF_APP = { showArea: (c) => { showView('flow'); showArea(c); window.scrollTo({ top: 0, behavior: 'smooth' }); }, fmt, STATE_NAMES };
+  window.EMF_APP = { showArea: (c) => { showView('flow'); if (!SEC.census) setSector(Object.keys(F.sectors)[0]); showArea(c); window.scrollTo({ top: 0, behavior: 'smooth' }); }, fmt, STATE_NAMES };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
 })();

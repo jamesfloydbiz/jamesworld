@@ -209,3 +209,18 @@ window.EMF_FLOWS = {
       text: "Hover or tap any band to see the amount, who decides, the year, why it moves and where the number comes from. Dashed bands are estimates. Switch between who paid and who decides above the chart, or pick a state." }
   ]
 };
+
+/* Interim: one tab holding the whole picture, until the per-sector tabs
+   (traditional public, charter, private, homeschool) are filled in. */
+window.EMF_FLOWS.sectors = {
+  all: {
+    label: "All schools", census: true, stateChoice: true,
+    links: window.EMF_FLOWS.national, steps: window.EMF_FLOWS.steps, stocks: window.EMF_FLOWS.stocks,
+    buyers: [
+      { ctrl: "parents", count: "Millions of households, deciding one child at a time",
+        how: "Pay directly for private school, preschool and day care, tutoring, homeschool materials and supplies, and draw on 529 savings. In choice states they also pick where about $10.6 billion of state money goes." },
+      { ctrl: "donors", count: "Foundations, alumni, parents and church members",
+        how: "Give to private schools, charter networks, nonprofits and PTAs according to their own priorities." }
+    ]
+  }
+};
