@@ -156,17 +156,23 @@
       const t = c / 3;
       colA[c] = vert ? 20 + t * (alongLen - nodeT - 20) : t * (alongLen - nodeT - rightPad);
     });
-    let k = Infinity;
+    // Every box gets a slot at least as tall as its two-line label, so small boxes at the
+    // bottom of a column don't crowd. Band widths stay proportional to dollars; only spacing grows.
+    const minSlot = vert ? 0 : 30;
+    const colsIds = {}; cols.forEach((c) => { colsIds[c] = ids.filter((id) => N[id].col === c); });
+    const fits = (kk) => cols.every((c) => colsIds[c].reduce((s, id) => s + Math.max(N[id].v * kk, minSlot), 0) + gap * (colsIds[c].length - 1) <= acrossLen);
+    let hiK = Infinity;
+    cols.forEach((c) => { hiK = Math.min(hiK, (acrossLen - gap * (colsIds[c].length - 1)) / colsIds[c].reduce((s, id) => s + N[id].v, 0)); });
+    let loK = 0, k = hiK;
+    if (!fits(hiK)) { for (let i = 0; i < 40; i++) { const m = (loK + hiK) / 2; if (fits(m)) loK = m; else hiK = m; } k = loK; }
     cols.forEach((c) => {
-      const inCol = ids.filter((id) => N[id].col === c);
-      const sum = inCol.reduce((s, id) => s + N[id].v, 0);
-      k = Math.min(k, (acrossLen - gap * (inCol.length - 1)) / sum);
-    });
-    cols.forEach((c) => {
-      const inCol = ids.filter((id) => N[id].col === c);
-      const used = inCol.reduce((s, id) => s + N[id].v * k, 0) + gap * (inCol.length - 1);
+      const inCol = colsIds[c];
+      const used = inCol.reduce((s, id) => s + Math.max(N[id].v * k, minSlot), 0) + gap * (inCol.length - 1);
       let cpos = (vert ? 0 : headRoom) + (acrossLen - used) / 2;
-      inCol.forEach((id) => { N[id].a = colA[c]; N[id].c = cpos; N[id].len = N[id].v * k; cpos += N[id].len + gap; });
+      inCol.forEach((id) => {
+        const len = N[id].v * k, slot = Math.max(len, minSlot);
+        N[id].a = colA[c]; N[id].c = cpos + (slot - len) / 2; N[id].len = len; cpos += slot + gap;
+      });
     });
     ids.forEach((id) => {
       const n = N[id];
