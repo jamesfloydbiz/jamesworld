@@ -46,7 +46,7 @@ body::before{content:""; position:fixed; inset:0; z-index:-1; pointer-events:non
 a{color:var(--eg-hi); text-underline-offset:2px; text-decoration-color:hsl(125 22% 60% / .4)}
 a:hover{color:#fff}
 :focus-visible{outline:1px solid var(--eg-hi); outline-offset:3px}
-.wrap{max-width:1680px; margin:0 auto; padding-inline:clamp(16px,2.4vw,32px)}
+.wrap{max-width:1440px; margin:0 auto; padding-inline:clamp(16px,2.4vw,32px)}
 
 /* top */
 .top{display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:space-between; gap:12px 24px; padding-block:18px 14px}
@@ -65,6 +65,9 @@ h1{font-family:var(--display); font-weight:400; font-size:clamp(1.5rem,4.2vw,3.1
 .seg button[aria-pressed="true"]{color:#f3ece2; background:linear-gradient(180deg,var(--eg-glow),var(--eg)); box-shadow:inset 0 1px 0 hsl(40 40% 90% / .15)}
 .seg button:hover{color:#fff}
 select{font:400 .8rem var(--mono); color:var(--ink); background:hsl(0 0% 0% / .6); border:1px solid var(--edge); border-radius:6px; padding:8px 10px}
+.hl{display:inline-flex; align-items:center; gap:8px; font:400 .58rem var(--display); letter-spacing:.12em; text-transform:uppercase; color:var(--eb-hi)}
+.hl select{text-transform:none; letter-spacing:0}
+.hl select.on{border-color:#fff; color:#fff}
 .chk{display:inline-flex; gap:6px; align-items:center; font:400 .72rem var(--mono); letter-spacing:.04em; color:var(--ink-2); cursor:pointer}
 
 /* sector tabs: one per kind of school, with a bar for its size */
@@ -245,6 +248,7 @@ footer{margin:0 0 48px; padding-top:16px; border-top:1px solid hsl(26 40% 30% / 
         <button type="button" data-lens="pay" aria-pressed="true">Who paid</button>
         <button type="button" data-lens="ctrl" aria-pressed="false">Who decides</button>
       </div>
+      <label class="hl" for="ctrlsel"><span>Highlight</span><select id="ctrlsel" aria-label="Highlight who decides"></select></label>
       <select id="statesel" aria-label="Choose an area"></select>
       <label class="chk" id="hidepubwrap"><input type="checkbox" id="hidepub"> Hide public school money</label>
     </div>

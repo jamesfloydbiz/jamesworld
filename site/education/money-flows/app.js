@@ -299,7 +299,7 @@
 
     tween = { from: JSON.parse(JSON.stringify(geom)), to: next, t0: performance.now(), dur: animate && !reduceMotion.matches ? 800 : 0 };
     stepTween(performance.now());
-    updateTotal(links); renderLegend(); renderChips(links); renderTable();
+    updateTotal(links); renderLegend(); renderChips(links); renderTable(); syncCtrlSel();
   }
 
   const lerp = (a, b, t) => a + (b - a) * t;
@@ -464,8 +464,17 @@
       <div class="amt">${fmt(total)} a year</div><p>${esc(CTRL[k].desc)}</p>
       <div class="meta">${own.length} band${own.length === 1 ? '' : 's'} on screen. Click a band for details, or the decider again to clear.</div>`;
   }
-  function selectCtrl(k) {
-    S.ctrlSel = S.ctrlSel === k || !CTRL[k] ? null : k;
+  function syncCtrlSel() {
+    const sel = $('#ctrlsel'); if (!sel || !S.model) return;
+    const present = Object.keys(CTRL).filter((k) => S.model.links.some((l) => l.ctrl === k));
+    const opts = '<option value="">Everyone</option>' + present.map((k) => `<option value="${k}">${esc(CTRL[k].label)}</option>`).join('');
+    if (sel.dataset.opts !== opts) { sel.innerHTML = opts; sel.dataset.opts = opts; }
+    sel.value = S.ctrlSel || ''; sel.classList.toggle('on', !!S.ctrlSel);
+  }
+  function selectCtrl(k, force) {
+    const want = !CTRL[k] || (S.ctrlSel === k && !force) ? null : k;
+    if (want && S.step !== lastStep) { S.step = lastStep; updateStep(false); } // show every band, then highlight
+    S.ctrlSel = want;
     S.lens = 'ctrl'; syncLens(); render(true);
     const d = $('#detail');
     if (!S.ctrlSel) { d.hidden = true; return; }
@@ -604,7 +613,7 @@
   function wireBuyerTable() {
     document.querySelectorAll('#buyertable .whobtn').forEach((b) => b.addEventListener('click', () => {
       if (S.step !== lastStep) { S.step = lastStep; updateStep(false); }
-      selectCtrl(b.dataset.ctrl); if (S.ctrlSel !== b.dataset.ctrl) selectCtrl(b.dataset.ctrl);
+      selectCtrl(b.dataset.ctrl, true);
       document.querySelector('.stagecard').scrollIntoView({ block: 'start', behavior: reduceMotion.matches ? 'auto' : 'smooth' });
     }));
   }
@@ -637,6 +646,7 @@
       const o = S.orient; size(); if (o !== S.orient) clearDrawing(); render(false); }, 60); };
     if (window.ResizeObserver) new ResizeObserver(onResize).observe($('#plot')); else window.addEventListener('resize', onResize);
     document.querySelectorAll('#views button').forEach((b) => b.addEventListener('click', () => showView(b.dataset.view)));
+    $('#ctrlsel').addEventListener('change', (e) => { if ($('#view-flow').hidden) showView('flow'); selectCtrl(e.target.value || null, true); });
     renderSectorTabs();
     const m = /^#([A-Z]{2})$/.exec(location.hash), ms = /^#([a-z]+)$/.exec(location.hash);
     if (m) S.area = m[1];
