@@ -161,9 +161,11 @@
     const cols = [...new Set(ids.map((id) => N[id].col))].sort();
     const alongLen = vert ? H - 40 : W;
     const acrossLen = vert ? W : H - headRoom - 6;
-    const rightPad = vert ? 0 : Math.min(240, Math.max(160, W * 0.15));
     // columns spread over the deepest column in this tab, so smaller tabs use the full width
     const maxCol = Math.max(1, ...S.model.links.map((l) => NODES[l.t].col));
+    // room for the last column's labels, sized to the longest one (12.5px serif is about 6.6px a character)
+    const lastLabels = [...new Set(S.model.links.map((l) => l.t))].filter((id) => NODES[id].col === maxCol).map((id) => NODES[id].label.length);
+    const rightPad = vert ? 0 : Math.min(320, Math.max(150, Math.max(0, ...lastLabels) * 6.6 + 30));
     const colA = {};
     cols.forEach((c, i) => {
       // columns keep the same place in every step, so new bands grow into empty space instead of moving everything
