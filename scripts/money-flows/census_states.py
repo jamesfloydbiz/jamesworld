@@ -7,7 +7,9 @@ Usage:
     https://www2.census.gov/programs-surveys/school-finances/tables/2024/secondary-education-finance/elsec24t.xlsx
   curl -o /tmp/elsec24_sumtables.xlsx \
     https://www2.census.gov/programs-surveys/school-finances/tables/2024/secondary-education-finance/elsec24_sumtables.xlsx
-  python3 scripts/money-flows/census_states.py /tmp/elsec24_sumtables.xlsx /tmp/elsec24t.xlsx
+  curl -o /tmp/elsec24.xlsx \
+    https://www2.census.gov/programs-surveys/school-finances/tables/2024/secondary-education-finance/elsec24.xlsx
+  python3 scripts/money-flows/census_states.py /tmp/elsec24_sumtables.xlsx /tmp/elsec24t.xlsx /tmp/elsec24.xlsx
 
 Needs openpyxl (pip install openpyxl). All dollar values in the output are
 thousands of dollars, exactly as Census publishes them; per-pupil values are dollars.
@@ -101,7 +103,28 @@ def buyers(path):
     return res
 
 
-def main(path, dpath=None):
+def payments(path):
+    """District payments to charter schools (V92) and to private schools (V91), summed by state
+    from the Census full district file (elsec24.xlsx). Thousands of dollars. Both sit inside
+    current spending, so the flowchart shows them as uses of district money."""
+    wb = openpyxl.load_workbook(path, read_only=True, data_only=True)
+    it = wb.worksheets[0].iter_rows(values_only=True)
+    h = next(it); ix = {k: i for i, k in enumerate(h)}
+    n = lambda v: v if isinstance(v, (int, float)) else 0
+    out = {"US": {"toCharter": 0, "toPrivate": 0}}
+    for r in it:
+        if not r[0]:
+            continue
+        code = FIPS.get(str(r[ix["FIPST"]]).zfill(2))
+        if not code:
+            continue
+        o = out.setdefault(code, {"toCharter": 0, "toPrivate": 0})
+        for key, col in (("toCharter", "V92"), ("toPrivate", "V91")):
+            o[key] += n(r[ix[col]]); out["US"][key] += n(r[ix[col]])
+    return out
+
+
+def main(path, dpath=None, fpath=None):
     wb = openpyxl.load_workbook(path, read_only=True, data_only=True)
     tables = {t: rows_by_area(wb[t]) for t in {f[0] for f in FIELDS}}
     data = {}
@@ -128,6 +151,9 @@ def main(path, dpath=None):
     if dpath:
         for code, b in buyers(dpath).items():
             data[code]["buyers"] = b
+    if fpath:
+        for code, p in payments(fpath).items():
+            data[code].update({k: round(v) for k, v in p.items()})
     payload = {
         "year": "FY2024",
         "units": "thousand dollars (ppcs and enroll are dollars and students)",
@@ -144,4 +170,5 @@ def main(path, dpath=None):
 
 
 if __name__ == "__main__":
-    main(sys.argv[1] if len(sys.argv) > 1 else "elsec24_sumtables.xlsx", sys.argv[2] if len(sys.argv) > 2 else None)
+    a = sys.argv[1:] + [None, None, None]
+    main(a[0] or "elsec24_sumtables.xlsx", a[1], a[2])

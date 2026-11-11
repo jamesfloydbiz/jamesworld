@@ -70,10 +70,12 @@
     add('idea', 'districts', B(r.fedSpecEd), 3, 'congress', 'Pays part of the extra cost of educating students with disabilities.');
     add('meals', 'districts', B(r.fedMeals), 3, 'congress', 'Pays for free and reduced-price meals, per meal served.');
     add('fedOther', 'districts', fedOther, 3, 'congress', 'Other federal grants to districts, some formula-based and some won by application.');
-    const bought = B(r.current) - B(r.salaries) - B(r.benefits);
+    const bought = B(r.current) - B(r.salaries) - B(r.benefits) - B(r.toCharter) - B(r.toPrivate);
     add('districts', 'salaries', B(r.salaries), 4, 'district', 'Pay for teachers and other staff, set by salary schedules and staffing decisions.');
     add('districts', 'benefits', B(r.benefits), 4, 'district', 'Health insurance, pensions and other benefits, much of it fixed by state law and labor contracts.');
     add('districts', 'bought', bought, 4, 'district', 'Everything day-to-day that is not staff pay: curriculum, software, testing, transport and food contracts, utilities, contracted services and supplies.');
+    add('districts', 'toCharter', B(r.toCharter), 4, 'legislature', 'Tuition the home district must pay a charter for each resident student, at an amount set in state law. It continues in the Charter tab.');
+    add('districts', 'toPrivate', B(r.toPrivate), 4, 'district', 'Mostly special education placements decided by each student\'s IEP team. It continues in the Private tab.');
     add('districts', 'capital', B(r.capital), 4, 'district', 'Construction, land and equipment, often paid with bonds that voters approve.');
     add('districts', 'debt', B(r.interest) + B(r.toOtherGov), 4, 'district', 'Interest on borrowed money and payments to other governments.');
     const gap = B(r.rev) - B(r.exp);
@@ -273,7 +275,7 @@
       p.classList.toggle('est', l.conf === 'low');
       p.classList.toggle('new', fresh.has(l.id));
       els.glows[l.id].classList.toggle('new', fresh.has(l.id));
-      p.setAttribute('stroke-dasharray', l.conf === 'low' ? '2 2' : '');
+      p.removeAttribute('stroke-dasharray');
     });
     Object.keys(els.links).forEach((id) => { if (!ids.has(id)) next.L[id] = Object.assign({}, geom.L[id], { w: 0, gone: true }); });
     Object.keys(lay.N).forEach((id) => {
@@ -493,7 +495,7 @@
     $('#steptext').textContent = st.text;
     $('#prev').disabled = S.step === 0; $('#next').disabled = S.step === lastStep;
     $('#skip').hidden = S.step === lastStep;
-    $('#hidepubwrap').hidden = S.step !== lastStep;
+    $('#hidepubwrap').hidden = true;
     [...$('#dots').children].forEach((b, i) => { if (i === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current'); });
     syncLens();
     $('#detail').hidden = true;
@@ -527,8 +529,9 @@
   }
   function renderLegend() {
     let items;
-    if (S.lens === 'ctrl') items = Object.entries(CTRL).map(([k, m]) => `<button type="button" class="lg" data-ctrl="${k}" aria-pressed="${S.ctrlSel === k}" title="Show only what ${esc(m.label)} decide"><i style="background:var(--k-${k})"></i>${esc(m.label)}</button>`).join('');
-    else items = Object.entries(F.groups).map(([g, m]) => `<span><i style="background:var(--c-${g})"></i>${esc(m.label)}</span>`).join('');
+    const present = new Set(S.model.links.map((l) => l.ctrl)), groupsHere = new Set(S.model.links.map((l) => payerOf(l)));
+    if (S.lens === 'ctrl') items = Object.entries(CTRL).filter(([k]) => present.has(k)).map(([k, m]) => `<button type="button" class="lg" data-ctrl="${k}" aria-pressed="${S.ctrlSel === k}" title="Show only what ${esc(m.label)} decide"><i style="background:var(--k-${k})"></i>${esc(m.label)}</button>`).join('');
+    else items = Object.entries(F.groups).filter(([g]) => groupsHere.has(g)).map(([g, m]) => `<span><i style="background:var(--c-${g})"></i>${esc(m.label)}</span>`).join('');
     $('#legend').innerHTML = items + `<span><i class="est"></i>Estimate</span>`;
     $('#legend').querySelectorAll('button.lg').forEach((b) => b.addEventListener('click', () => selectCtrl(b.dataset.ctrl)));
   }
@@ -537,7 +540,7 @@
     if (S.area === 'US') { bar.hidden = true; return; }
     const c = CH.states && CH.states[S.area], b = ST.states[S.area].buyers;
     bar.hidden = false;
-    bar.innerHTML = `<span>Showing <b>${esc(STATE_NAMES[S.area])}</b>: public school money (Census ${ST.year})${c && c.choiceUSD ? ' and school choice programs' : ''}${b ? `, spent by <b>${b.systems.toLocaleString('en-US')}</b> school system${b.systems === 1 ? '' : 's'}` : ''}. Family spending, 529s and donations are measured only for the whole country.</span>
+    bar.innerHTML = `<span>Showing <b>${esc(STATE_NAMES[S.area])}</b>: public school money (Census ${ST.year})${c && c.choiceUSD ? ' and school choice programs' : ''}${b ? `, spent by <b>${b.systems.toLocaleString('en-US')}</b> school system${b.systems === 1 ? '' : 's'}` : ''}. ${esc(SEC.stateNote || '')}</span>
       <button type="button" class="btn" id="backus">Whole country</button>`;
     $('#backus').addEventListener('click', () => showArea('US'));
   }
@@ -571,7 +574,7 @@
     $('#dots').innerHTML = SEC.steps.map((st, i) => `<button type="button" title="${esc(st.title)}" aria-label="Step ${i + 1}: ${esc(st.title)}">${i + 1}</button>`).join('');
     [...$('#dots').children].forEach((b, i) => b.addEventListener('click', () => go(i)));
     $('#statesel').disabled = !SEC.census; if (!SEC.census) $('#statesel').value = 'US';
-    $('#hidepubwrap').style.visibility = SEC.census ? '' : 'hidden';
+
     $('#sectorlede').textContent = SEC.blurb || '';
     clearDrawing(); renderStocks(); renderBuyers(); wireBuyerTable();
     showArea(SEC.census ? S.area : 'US', opts);
@@ -619,7 +622,7 @@
   }
   function renderStocks() {
     $('#fold-stocks').hidden = !(SEC.stocks && SEC.stocks.length);
-    $('#stocks').innerHTML = (SEC.stocks || []).map((s, i) => `<div class="card stock"><div class="tank${i ? ' debt' : ''}" aria-hidden="true"><i></i></div>
+    $('#stocks').innerHTML = (SEC.stocks || []).map((s, i) => `<div class="card stock"><div class="tank${s.kind === 'debt' ? ' debt' : ''}" aria-hidden="true"><i></i></div>
       <div><div class="v">${fmt(s.v)}</div><b>${esc(s.label)}</b> <span class="note">${esc(s.date)}</span><p>${esc(s.note)} <a href="${esc(s.src)}" target="_blank" rel="noopener">Source</a></p></div></div>`).join('');
   }
 

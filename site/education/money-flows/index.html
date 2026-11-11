@@ -31,7 +31,7 @@
   /* data: who paid */
   --c-fed:#3987e5; --c-state:#d95926; --c-local:#199e70; --c-family:#c98500; --c-gift:#d55181;
   /* data: who decides (same hues where the payer and decider coincide) */
-  --k-congress:#3987e5; --k-legislature:#d95926; --k-localBoard:#199e70; --k-district:#9085e9; --k-parents:#c98500; --k-donors:#d55181;
+  --k-congress:#3987e5; --k-legislature:#d95926; --k-localBoard:#199e70; --k-district:#9085e9; --k-parents:#c98500; --k-donors:#d55181; --k-charterBoard:#9085e9; --k-authorizer:#199e70; --k-schoolLead:#199e70;
   --c-pub:#c9c2b8; --c-priv:#8a837a; --map-lo:#1d1b19; --link-op:.5;
   --display:'Michroma', 'Helvetica Neue', Arial, sans-serif;
   --serif:'Lora', Georgia, 'Times New Roman', serif;
@@ -100,12 +100,12 @@ select{font:400 .8rem var(--mono); color:var(--ink); background:hsl(0 0% 0% / .6
 .whobtn:hover{border-color:#fff}
 #buyertable .whobtn{font-size:.72rem; text-align:left}
 .chip.clear{color:var(--eb-hi)}
-.legend i.est{background:repeating-linear-gradient(135deg, var(--muted) 0 2px, transparent 2px 4px); border:1px solid var(--muted)}
+.legend i.est{background:hsl(0 0% 100% / .18); border:1px solid hsl(0 0% 100% / .35)}
 .plot{position:relative; flex:1 1 auto; min-height:0; margin:0 10px; overflow:hidden}
 #sankey{display:block; width:100%; height:100%; overflow:visible}
 #particles{position:absolute; left:0; top:0; pointer-events:none}
 #sankey .link{fill:none; stroke-opacity:var(--link-op); transition:stroke-opacity .35s}
-#sankey .link.est{stroke-opacity:calc(var(--link-op) * .7)}
+#sankey .link.est{stroke-opacity:calc(var(--link-op) * .55)}
 #sankey.stepping .link{stroke-opacity:.13}
 #sankey.stepping .link.new{stroke-opacity:.8}
 #sankey .glow{fill:none; stroke:#fff; stroke-opacity:0; pointer-events:none; transition:stroke-opacity .35s}
@@ -237,7 +237,7 @@ footer{margin:0 0 48px; padding-top:16px; border-top:1px solid hsl(26 40% 30% / 
       <a class="ed-back" href="/education/">← James' Education Dashboards</a>
       <span class="eyebrow">Dashboards · Money</span>
       <h1>Follow the Money</h1>
-      <p class="lede">About a trillion dollars a year pays for American pre-K and K-12. Follow it from the people who pay, through the people who decide, to what it buys. Band width is dollars per year; dashed bands are estimates.</p>
+      <p class="lede">About a trillion dollars a year pays for American pre-K and K-12. Follow it from the people who pay, through the people who decide, to what it buys. Band width is dollars per year; lighter bands are estimates.</p>
     </div>
     <div class="controls">
       <div class="seg" id="views" role="group" aria-label="View">
@@ -250,7 +250,7 @@ footer{margin:0 0 48px; padding-top:16px; border-top:1px solid hsl(26 40% 30% / 
       </div>
       <label class="hl" for="ctrlsel"><span>Highlight</span><select id="ctrlsel" aria-label="Highlight who decides"></select></label>
       <select id="statesel" aria-label="Choose an area"></select>
-      <label class="chk" id="hidepubwrap"><input type="checkbox" id="hidepub"> Hide public school money</label>
+      <label class="chk" id="hidepubwrap" hidden><input type="checkbox" id="hidepub"> Hide public school money</label>
     </div>
   </header>
 
