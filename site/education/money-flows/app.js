@@ -139,13 +139,25 @@
     const nodeT = vert ? 12 : 14;
     const gap = vert ? 8 : 12;
     const headRoom = vert ? 0 : 24;
-    const N = {};
+    // A band that skips a column gets an invisible waypoint in that column, stacked at the bottom,
+    // so it passes beneath the column's boxes and labels instead of through them.
+    const segs = [], via = {};
     links.forEach((l) => {
+      const c0 = NODES[l.s].col, c1 = NODES[l.t].col;
+      if (c1 - c0 === 2) {
+        const v = '~' + l.id; via[l.id] = v;
+        segs.push({ ref: l, s: l.s, t: v, v: l.v }, { ref: l, s: v, t: l.t, v: l.v, second: true });
+      } else segs.push({ ref: l, s: l.s, t: l.t, v: l.v });
+    });
+    const N = {};
+    const colOf = (id) => (id[0] === '~' ? NODES[via[id.slice(1)] ? segs.find((x) => x.t === id).s : id].col + 1 : NODES[id].col);
+    segs.forEach((l) => {
       (N[l.s] = N[l.s] || { id: l.s, in: 0, out: 0, ins: [], outs: [] }).out += l.v; N[l.s].outs.push(l);
       (N[l.t] = N[l.t] || { id: l.t, in: 0, out: 0, ins: [], outs: [] }).in += l.v; N[l.t].ins.push(l);
     });
-    const ids = Object.keys(N).sort((a, b) => NODE_ORDER.indexOf(a) - NODE_ORDER.indexOf(b));
-    ids.forEach((id) => { N[id].v = Math.max(N[id].in, N[id].out); N[id].col = NODES[id].col; });
+    const ord = (id) => (id[0] === '~' ? 1e4 + NODE_ORDER.indexOf(segs.find((x) => x.t === id).s) : NODE_ORDER.indexOf(id));
+    const ids = Object.keys(N).sort((a, b) => ord(a) - ord(b));
+    ids.forEach((id) => { N[id].v = Math.max(N[id].in, N[id].out); N[id].col = colOf(id); N[id].virtual = id[0] === '~'; });
     const cols = [...new Set(ids.map((id) => N[id].col))].sort();
     const alongLen = vert ? H - 40 : W;
     const acrossLen = vert ? W : H - headRoom - 6;
@@ -160,17 +172,18 @@
     // bottom of a column don't crowd. Band widths stay proportional to dollars; only spacing grows.
     const minSlot = vert ? 0 : 30;
     const colsIds = {}; cols.forEach((c) => { colsIds[c] = ids.filter((id) => N[id].col === c); });
-    const fits = (kk) => cols.every((c) => colsIds[c].reduce((s, id) => s + Math.max(N[id].v * kk, minSlot), 0) + gap * (colsIds[c].length - 1) <= acrossLen);
+    const slotOf = (id, kk) => Math.max(N[id].v * kk, N[id].virtual ? 0 : minSlot);
+    const fits = (kk) => cols.every((c) => colsIds[c].reduce((s, id) => s + slotOf(id, kk), 0) + gap * (colsIds[c].length - 1) <= acrossLen);
     let hiK = Infinity;
     cols.forEach((c) => { hiK = Math.min(hiK, (acrossLen - gap * (colsIds[c].length - 1)) / colsIds[c].reduce((s, id) => s + N[id].v, 0)); });
     let loK = 0, k = hiK;
     if (!fits(hiK)) { for (let i = 0; i < 40; i++) { const m = (loK + hiK) / 2; if (fits(m)) loK = m; else hiK = m; } k = loK; }
     cols.forEach((c) => {
       const inCol = colsIds[c];
-      const used = inCol.reduce((s, id) => s + Math.max(N[id].v * k, minSlot), 0) + gap * (inCol.length - 1);
+      const used = inCol.reduce((s, id) => s + slotOf(id, k), 0) + gap * (inCol.length - 1);
       let cpos = (vert ? 0 : headRoom) + (acrossLen - used) / 2;
       inCol.forEach((id) => {
-        const len = N[id].v * k, slot = Math.max(len, minSlot);
+        const len = N[id].v * k, slot = slotOf(id, k);
         N[id].a = colA[c]; N[id].c = cpos + (slot - len) / 2; N[id].len = len; cpos += slot + gap;
       });
     });
@@ -187,7 +200,7 @@
     if (!vert) {
       const top = headRoom + 2, bottom = H - 2;
       cols.forEach((c) => {
-        const inCol = ids.filter((id) => N[id].col === c).map((id) => ({ id, want: N[id].c + N[id].len / 2 }));
+        const inCol = ids.filter((id) => N[id].col === c && !N[id].virtual).map((id) => ({ id, want: N[id].c + N[id].len / 2 }));
         inCol.sort((a, b) => a.want - b.want);
         const one = inCol.length * 31 > bottom - top;
         const LH = one ? 17 : 31;
@@ -199,7 +212,13 @@
       });
     }
     const L = {};
-    links.forEach((l) => { L[l.id] = { a0: N[l.s].a + nodeT, c0: l._c0, a1: N[l.t].a, c1: l._c1, w: Math.max(l.v * k, 0.8) }; });
+    links.forEach((l) => {
+      const w = Math.max(l.v * k, 0.8);
+      if (!via[l.id]) { const g = segs.find((x) => x.ref === l); L[l.id] = { a0: N[l.s].a + nodeT, c0: g._c0, a1: N[l.t].a, c1: g._c1, w }; return; }
+      const g1 = segs.find((x) => x.ref === l && !x.second), g2 = segs.find((x) => x.ref === l && x.second), vn = N[via[l.id]];
+      L[l.id] = { a0: N[l.s].a + nodeT, c0: g1._c0, wa: vn.a, wb: vn.a + nodeT, wc: g1._c1, a1: N[l.t].a, c1: g2._c1, w };
+    });
+    ids.filter((id) => N[id].virtual).forEach((id) => { delete N[id]; });
     return { N, L, k, nodeT, cols, colA };
   }
 
@@ -228,6 +247,11 @@
     return S.colors[payerOf(l)] || S.colors.pub;
   }
   function pathD(g) {
+    if (g.wa != null) {
+      const m1 = (g.a0 + g.wa) / 2, m2 = (g.wb + g.a1) / 2;
+      if (S.orient === 'v') return `M${g.c0},${g.a0}C${g.c0},${m1} ${g.wc},${m1} ${g.wc},${g.wa}L${g.wc},${g.wb}C${g.wc},${m2} ${g.c1},${m2} ${g.c1},${g.a1}`;
+      return `M${g.a0},${g.c0}C${m1},${g.c0} ${m1},${g.wc} ${g.wa},${g.wc}L${g.wb},${g.wc}C${m2},${g.wc} ${m2},${g.c1} ${g.a1},${g.c1}`;
+    }
     const am = (g.a0 + g.a1) / 2;
     if (S.orient === 'v') return `M${g.c0},${g.a0}C${g.c0},${am} ${g.c1},${am} ${g.c1},${g.a1}`;
     return `M${g.a0},${g.c0}C${am},${g.c0} ${am},${g.c1} ${g.a1},${g.c1}`;
@@ -319,6 +343,7 @@
     Object.keys(to.L).forEach((id) => {
       const a = from.L[id] || to.L[id], b = to.L[id];
       const g = { a0: lerp(a.a0, b.a0, t), c0: lerp(a.c0, b.c0, t), a1: lerp(a.a1, b.a1, t), c1: lerp(a.c1, b.c1, t), w: lerp(a.w, b.w, t) };
+      if (b.wa != null) { const fa = a.wa != null ? a : b; g.wa = lerp(fa.wa, b.wa, t); g.wb = lerp(fa.wb, b.wb, t); g.wc = lerp(fa.wc, b.wc, t); }
       cur.L[id] = g;
       const d = pathD(g);
       els.links[id].setAttribute('d', d); els.links[id].setAttribute('stroke-width', Math.max(g.w, 0));
@@ -376,6 +401,10 @@
     return seeds[id];
   }
   function bez(g, t) {
+    if (g.wa != null) {
+      if (t < 0.5) return bez({ a0: g.a0, c0: g.c0, a1: g.wa, c1: g.wc }, t * 2);
+      return bez({ a0: g.wb, c0: g.wc, a1: g.a1, c1: g.c1 }, (t - 0.5) * 2);
+    }
     const am = (g.a0 + g.a1) / 2, u = 1 - t;
     return [u * u * u * g.a0 + 3 * u * u * t * am + 3 * u * t * t * am + t * t * t * g.a1,
             u * u * u * g.c0 + 3 * u * u * t * g.c0 + 3 * u * t * t * g.c1 + t * t * t * g.c1];
