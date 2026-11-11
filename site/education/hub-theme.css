@@ -58,53 +58,71 @@ html:root.hub-frontier {
   --brown: var(--eb-hi); --brown-15: hsl(30 38% 56% / .15);
 }
 
-/* ── ground: black, with the hub's green/brown glow and scanlines up top ─── */
+/* ── ground: black; the hub's glow lives behind the header only (see below) */
 html.hub-theme { background: #000; -webkit-font-smoothing: antialiased; }
-html.hub-theme body { background: transparent; color: var(--ink); }
+/* clip, not hidden: no scroll container, so School Outlook's sticky year bar still sticks */
+html.hub-theme body { background: transparent; color: var(--ink); overflow-x: clip; }
 html.hub-theme:not(.hub-frontier) body { font-size: 15px; line-height: 1.55; }
-html.hub-theme body::before {
-  content: ""; position: absolute; z-index: -1; left: 0; right: 0; top: 0; height: 720px; pointer-events: none;
-  background:
-    repeating-linear-gradient(to bottom, hsl(0 0% 0% / 0) 0 3px, hsl(0 0% 0% / .32) 3px 4px),
-    radial-gradient(70% 90% at 12% -10%, hsl(140 38% 9% / .9) 0%, transparent 62%),
-    radial-gradient(60% 80% at 92% -10%, hsl(24 45% 12% / .75) 0%, transparent 60%);
-  -webkit-mask-image: linear-gradient(#000 35%, transparent);
-          mask-image: linear-gradient(#000 35%, transparent);
-}
 html.hub-theme ::selection { background: var(--eg); color: #fff; }
 html.hub-theme :focus-visible { outline: 2px solid var(--eg-hi); outline-offset: 2px; }
 
-/* ── the top: back link, eyebrow, Michroma chrome title, Lora lede ───────── */
+/* ── one column, one header ──────────────────────────────────────────────────
+   Same as Follow the Money: 1440px column, clamp(16px,2.4vw,32px) gutter, then
+   back link · eyebrow · chrome title · one line of intro · "About this
+   dashboard" fold (hub-theme.js moves the rest of the intro into it). */
+html.hub-theme .app, html.hub-frontier main.shell {
+  max-width: 1440px; margin-inline: auto;
+  padding-left: max(clamp(16px, 2.4vw, 32px), env(safe-area-inset-left));
+  padding-right: max(clamp(16px, 2.4vw, 32px), env(safe-area-inset-right));
+}
+html.hub-frontier main.shell .app { padding-inline: 0; padding-top: 18px; }
 html.hub-theme .home-link {
-  display: inline-block; align-self: flex-start; margin: 14px 0 22px;
+  display: inline-block; align-self: flex-start; margin: 18px 0 12px;
   font-family: var(--hub-mono); font-size: .72rem; letter-spacing: .15em; text-transform: uppercase;
   color: var(--eb-hi); text-decoration: none;
 }
 html.hub-theme .home-link:hover, html.hub-theme .home-link:focus-visible { color: #fff; }
-
+html.hub-theme .app > header { position: relative; padding: 0; margin: 0; border: 0; display: block; }
+html.hub-frontier .app > header.mast { margin-bottom: 18px; }
 /* Two of the three builds have no eyebrow of their own. */
 html.hub-theme:not(.hub-frontier) .app > header::before {
-  content: "Education dashboard"; display: block; flex: 0 0 100%; margin: 0 0 14px;
-  font-family: var(--hub-mono); font-size: .74rem; letter-spacing: .3em; text-transform: uppercase; color: var(--eb-hi);
+  content: "Education dashboard"; display: block; margin: 0 0 8px;
+  font-family: var(--hub-mono); font-size: .7rem; letter-spacing: .3em; text-transform: uppercase; color: var(--eb-hi);
 }
 html.hub-theme .app > header .eyebrow {
-  font-size: .74rem; letter-spacing: .3em; color: var(--eb-hi);
+  display: block; margin: 0 0 8px; font-family: var(--hub-mono); font-size: .7rem; letter-spacing: .3em; color: var(--eb-hi);
 }
 html.hub-theme .app > header h1 {
-  font-family: var(--hub-display); font-weight: 400; text-transform: uppercase;
-  font-size: clamp(1.5rem, 4.4vw, 3.5rem); line-height: 1.04; letter-spacing: -.01em;
+  margin: 0; font-family: var(--hub-display); font-weight: 400; text-transform: uppercase;
+  font-size: clamp(1.5rem, 4.2vw, 3.1rem); line-height: 1; letter-spacing: -.01em; text-wrap: balance;
   background: var(--hub-chrome); -webkit-background-clip: text; background-clip: text; color: transparent;
-  filter: drop-shadow(0 2px 0 hsl(0 0% 0% / .6)) drop-shadow(0 0 24px hsl(28 45% 35% / .3));
+  filter: drop-shadow(0 2px 0 hsl(0 0% 0% / .6)) drop-shadow(0 0 20px hsl(28 45% 35% / .3));
 }
-html.hub-frontier .app > header h1 { margin: 14px 0 16px; }
 html.hub-theme .app > header .thesis {
-  margin-top: 16px; max-width: 62ch;
-  font-family: var(--hub-serif); font-size: 1.02rem; line-height: 1.7; color: hsl(0 0% 100% / .72);
+  margin: 10px 0 0; max-width: 62ch;
+  font-family: var(--hub-serif); font-size: 1rem; line-height: 1.6; color: hsl(0 0% 100% / .74);
 }
 html.hub-theme .app > header .note { font-family: var(--hub-mono); font-size: .7rem; letter-spacing: .04em; margin-top: 8px; }
-html.hub-frontier header.mast { border-bottom-color: var(--hub-rule); }
-html.hub-frontier .stats { color: hsl(0 0% 100% / .5); letter-spacing: .06em; }
+html.hub-frontier .stats { margin-top: 10px; color: hsl(0 0% 100% / .5); letter-spacing: .06em; }
 html.hub-frontier .stats b { color: var(--eg-hi); }
+/* the "About this dashboard" fold: a quiet line under the title, not a card */
+html.hub-theme details.hub-fold.hub-about { margin-top: 10px; max-width: 62ch; background: none; border: 0; box-shadow: none; }
+html.hub-theme details.hub-fold.hub-about > summary { display: inline-flex; gap: 10px; padding: 4px 0; font-size: .6rem; color: hsl(0 0% 100% / .72); }
+html.hub-theme details.hub-fold.hub-about > [data-hub-folded] { padding: 4px 0 0; }
+html.hub-theme details.hub-fold.hub-about .thesis { margin: 0; }
+
+/* the hub's atmosphere: radial green/brown glow + faint scanlines, quieter than
+   the hub, behind the header only. Full-bleed via the viewport, clipped above. */
+html.hub-theme .app > header::after {
+  content: ""; position: absolute; z-index: -1; pointer-events: none;
+  left: calc(50% - 50vw); right: calc(50% - 50vw); top: -110px; bottom: -24px;
+  background:
+    repeating-linear-gradient(to bottom, hsl(0 0% 0% / 0) 0 3px, hsl(0 0% 0% / .3) 3px 4px),
+    radial-gradient(55% 120% at 22% 0%, hsl(140 38% 8% / .8) 0%, transparent 70%),
+    radial-gradient(45% 110% at 88% 0%, hsl(24 45% 11% / .6) 0%, transparent 70%);
+  -webkit-mask-image: linear-gradient(#000 50%, transparent);
+          mask-image: linear-gradient(#000 50%, transparent);
+}
 
 /* ── headings ────────────────────────────────────────────────────────────── */
 html.hub-theme:not(.hub-frontier) .app h2 {
@@ -167,52 +185,86 @@ html.hub-theme .hbox .v { font-size: 22px; }
 @media (max-width: 720px) { html.hub-theme .hbox .v { font-size: 15px; letter-spacing: -.03em; } }
 html.hub-theme .yb-read b { font-size: 22px; }
 
-/* ── controls ────────────────────────────────────────────────────────────── */
-/* the view switch: the hub's CTA when on, a hub card when off */
-html.hub-theme .views button {
-  font-family: var(--hub-display); font-weight: 400; font-size: .72rem; letter-spacing: .1em; text-transform: uppercase;
-  padding: 12px 18px; border-radius: 6px; border: 1px solid var(--hub-hair-2);
-  background: var(--hub-card); color: hsl(0 0% 100% / .7);
+/* ── controls: one segmented style everywhere (Follow the Money's .seg) ──
+   Joined buttons, Michroma .62rem, pressed = hub green. A row that would wrap
+   stays one row and scrolls sideways inside its own frame. */
+html.hub-theme :is(.views, [id="ages"], [id="subjects"], .subjrow, .seg, .tabs, [id="layers"], .hub-seg) {
+  display: inline-flex; flex-wrap: nowrap; gap: 0; align-self: flex-start; max-width: 100%; min-width: 0;
+  margin: 0; padding: 0; overflow-x: auto; overscroll-behavior-x: contain; scrollbar-width: none;
+  border: 1px solid var(--hub-hair); border-radius: 6px; background: hsl(0 0% 0% / .5);
 }
-html.hub-theme .views button small {
-  font-family: var(--hub-mono); text-transform: none; letter-spacing: .04em; font-size: 10.5px; margin-top: 4px;
+html.hub-theme :is(.views, [id="ages"], [id="subjects"], .subjrow, .seg, .tabs, [id="layers"], .hub-seg)::-webkit-scrollbar { display: none; }
+html.hub-theme :is(.views, [id="ages"], [id="subjects"], .subjrow, .seg, .tabs, [id="layers"], .hub-seg)[hidden] { display: none; }
+html.hub-theme :is(.views button, [id="ages"] .age, .subj, .seg button, .tabs .tab, [id="layers"] .chip, .hub-seg .ctl) {
+  appearance: none; flex: none; min-width: 0; margin: 0; border: 0; border-radius: 0; box-shadow: none;
+  background: transparent; color: hsl(0 0% 100% / .62); cursor: pointer; white-space: nowrap; text-align: center;
+  font-family: var(--hub-display); font-weight: 400; font-size: .62rem; line-height: 1.25; letter-spacing: .1em; text-transform: uppercase;
+  padding: 10px 14px;
 }
-html.hub-theme .views button:hover { color: #fff; border-color: hsl(28 40% 40% / .7); }
-html.hub-theme :is(.views button, .age, .seg button, .goto)[aria-pressed="true"] {
-  background: var(--hub-cta); border-color: var(--hub-cta-edge); color: #f3ece2; box-shadow: var(--hub-cta-shadow);
+html.hub-theme :is(.views button, [id="ages"] .age, .subj, .seg button, .tabs .tab, [id="layers"] .chip, .hub-seg .ctl) + :is(button, .age, .subj, .tab, .chip, .ctl) {
+  border-left: 1px solid var(--hub-hair);
 }
-html.hub-theme :is(.views button, .age)[aria-pressed="true"] small { color: hsl(40 30% 90% / .75); }
+html.hub-theme :is(.views button, [id="ages"] .age, .subj, .seg button, .tabs .tab, [id="layers"] .chip, .hub-seg .ctl):hover { color: #fff; }
+html.hub-theme :is(.views button, [id="ages"] .age, .subj, .seg button, .tabs .tab, [id="layers"] .chip, .hub-seg .ctl):focus-visible { outline: 2px solid var(--eg-hi); outline-offset: -2px; }
+html.hub-theme :is(.views button, [id="ages"] .age, .subj, .seg button)[aria-pressed="true"],
+html.hub-frontier :is(.tabs .tab.on, [id="layers"] .chip.on) {
+  color: #f3ece2; background: linear-gradient(180deg, var(--eg-glow), var(--eg)); box-shadow: inset 0 1px 0 hsl(40 40% 90% / .15);
+}
+/* the second lines and counts inside the buttons: small DM Mono, never dropped */
+html.hub-theme :is(.views button small, [id="ages"] .age small) {
+  display: block; margin-top: 3px; font-family: var(--hub-mono); font-size: .62rem; font-weight: 400;
+  letter-spacing: .02em; text-transform: none; color: hsl(0 0% 100% / .5); opacity: 1;
+}
+html.hub-theme :is(.views button, [id="ages"] .age)[aria-pressed="true"] small { color: hsl(40 30% 90% / .75); }
+html.hub-theme [id="ages"] .age { display: flex; flex-direction: column; align-items: flex-start; gap: 0; text-align: left; }
+html.hub-theme .subj .kind, html.hub-frontier :is(.tab em, [id="layers"] .chip em) {
+  font-family: var(--hub-mono); font-size: .68rem; letter-spacing: .02em; text-transform: none; color: hsl(0 0% 100% / .5);
+}
+html.hub-theme .subj[aria-pressed="true"] .kind, html.hub-frontier :is(.tab.on em, [id="layers"] .chip.on em) { color: hsl(40 30% 90% / .75); }
+html.hub-frontier [id="layers"] .chip { display: inline-flex; align-items: center; gap: 7px; }
+html.hub-frontier [id="layers"] .chip i { opacity: .45; } html.hub-frontier [id="layers"] .chip.on i { opacity: 1; }
+html.hub-theme .goto[aria-pressed="true"] { background: var(--hub-cta); border-color: var(--hub-cta-edge); color: #f3ece2; }
+html.hub-theme .views { margin-bottom: 0; }
+html.hub-frontier .tabs { margin: 0 0 12px; }
+html.hub-us-vs-world .subjrow { margin: 0 0 10px; }
 
-/* US vs World: age cards and subject pills */
-html.hub-theme .age {
-  font-family: var(--hub-display); font-weight: 400; font-size: .74rem; letter-spacing: .06em; text-transform: uppercase;
-  border-radius: 6px; border-color: var(--hub-hair-2); background: var(--hub-card); color: hsl(0 0% 100% / .72); gap: 4px;
-}
-html.hub-theme .age small { font-family: var(--hub-mono); font-weight: 400; text-transform: none; letter-spacing: .04em; color: var(--muted); }
-html.hub-theme .age:hover { color: #fff; border-color: hsl(28 40% 40% / .7); }
-html.hub-theme .subj {
-  font-family: var(--hub-mono); font-weight: 400; font-size: .76rem; letter-spacing: .04em;
-  border-color: var(--hub-hair-2); color: hsl(0 0% 100% / .66);
-}
-html.hub-theme .subj:hover { color: #fff; border-color: hsl(0 0% 100% / .4); }
-html.hub-theme .subj[aria-pressed="true"] { background: hsl(140 40% 15% / .55); border-color: var(--eg-hi); color: #fff; }
-
-/* School Outlook: segmented buttons, labels, selects */
-html.hub-theme .seg { border-color: var(--hub-hair-2); border-radius: 6px; }
-html.hub-theme .seg button { font-family: var(--hub-mono); font-weight: 400; background: hsl(30 12% 6%); color: hsl(0 0% 100% / .7); }
-html.hub-theme .seg button + button { border-left-color: var(--hub-hair-2); }
-html.hub-theme .seg button:hover { color: #fff; }
+/* labels, dropdowns, search: DM Mono on black with the hairline */
 html.hub-theme :is(.ctl > label, .ctl > .lab, .yearbar .yb-lab, .yearbar .yb-geo > label) {
   font-family: var(--hub-mono); font-weight: 400; letter-spacing: .16em; color: var(--eb-hi);
 }
-html.hub-theme :is(select, input[type=search]) {
-  font-family: var(--hub-mono); font-weight: 400; font-size: 13px;
-  background: hsl(30 12% 5%); color: #fff; border: 1px solid var(--hub-hair-2); border-radius: 6px;
+html.hub-theme :is(select, input[type=search]),
+html.hub-frontier :is(#age, #cats, #q) {
+  font-family: var(--hub-mono); font-weight: 400; font-size: .8rem; letter-spacing: 0;
+  background: hsl(0 0% 0% / .6); color: #fff; border: 1px solid var(--hub-hair); border-radius: 6px; padding: 8px 10px;
 }
+html.hub-theme :is(select, input[type=search]):hover { border-color: hsl(28 40% 40% / .7); }
+html.hub-theme select option { background: #0b0a09; color: #fff; }
 html.hub-theme input[type=range] { accent-color: var(--eb-hi); }
 html.hub-theme .kr-proj { font-family: var(--hub-mono); color: var(--eb-hi); border-color: var(--eb-hi); }
 html.hub-theme .zoomers button { background: hsl(30 12% 6%); border-color: var(--hub-hair-2); }
 html.hub-theme .zoomers button:hover { border-color: var(--eb-hi); }
+
+/* ── the map fills the window (desktop); phones keep each map's own shape ──
+   The dashboards size their canvases from getBoundingClientRect on load and on
+   window resize; hub-theme.js re-fires a resize when a canvas's box changes. */
+html.hub-theme :is(.legend, .mapfoot) { font-family: var(--hub-mono); font-size: .7rem; letter-spacing: .02em; }
+html.hub-theme .legend { gap: 4px 12px; }
+html.hub-theme .legend .ttl { font-weight: 400; color: #fff; }
+@media (min-width: 721px) {
+  html.hub-us-vs-world .stage > .mapwrap { height: max(560px, calc(100svh - 24px)); }
+  html.hub-us-vs-world .stage > .mapwrap > #map { flex: 1 1 0; height: auto; min-height: 0; aspect-ratio: auto; }
+  html.hub-us-vs-world .stage > .panel { max-height: max(560px, calc(100svh - 24px)); overflow-y: auto; scrollbar-width: thin; }
+
+  html.hub-school-outlook .stage > .mapwrap,
+  html.hub-school-outlook .kr-stage > .mapwrap { height: max(560px, calc(100svh - 24px)); }
+  html.hub-school-outlook .stage .canvasbox { flex: 1 1 0; min-height: 0; display: flex; flex-direction: column; }
+  html.hub-school-outlook .stage #map,
+  html.hub-school-outlook .kr-stage #kr-map { flex: 1 1 0; height: auto; min-height: 0; }
+  html.hub-school-outlook .kr-stage > .panel { max-height: max(560px, calc(100svh - 24px)); overflow-y: auto; scrollbar-width: thin; }
+}
+@media (min-width: 641px) {
+  html.hub-frontier #mapwrap { height: max(560px, calc(100svh - 24px)); aspect-ratio: auto; max-height: none; min-height: 0; }
+}
 
 /* quiet buttons and folds */
 html.hub-theme .ghost {
@@ -268,15 +320,11 @@ html.hub-frontier details.hub-fold > [data-hub-folded] { margin: 0; font-size: .
   html.hub-theme :is(details.fold, details.more, details.hub-fold) > summary { font-size: .62rem; letter-spacing: .07em; padding: 13px 14px; }
 }
 
-/* Frontier: tabs and chips already speak DM Mono; bring the "on" states to hub green */
-html.hub-frontier .tab.on { border-bottom-color: var(--eg-hi); }
+/* Frontier: tags and zoom buttons */
 html.hub-frontier .tag.on { background: var(--eg); border-color: var(--eg-hi); color: #fff; }
-html.hub-frontier :is(#age, #cats, #q) { background: hsl(30 12% 5%); border-color: var(--hub-hair-2); border-radius: 6px; }
 html.hub-frontier .zoom button { background: hsl(30 12% 6%); border-color: var(--hub-hair-2); }
 
 /* ── small print: legends, tables, notes, footers ────────────────────────── */
-html.hub-theme :is(.legend, .mapfoot) { font-family: var(--hub-mono); font-size: 11.5px; letter-spacing: .02em; }
-html.hub-theme .legend .ttl { font-weight: 400; color: #fff; }
 html.hub-theme:not(.hub-frontier) th { font-family: var(--hub-mono); font-weight: 400; font-size: 10.5px; letter-spacing: .12em; }
 html.hub-theme:not(.hub-frontier) th[aria-sort] { color: var(--eg-hi); }
 /* figures in DM Mono so columns line up; the place names stay in Lora */
@@ -293,14 +341,13 @@ html.hub-frontier footer.foot { margin: 80px 0 60px; }
 html.hub-theme .app > footer a, html.hub-frontier footer.foot a { color: var(--eg-hi); text-decoration: none; }
 html.hub-theme .app > footer a:hover, html.hub-frontier footer.foot a:hover { color: #fff; }
 
-/* ── phones: keep the map near the top ───────────────────────────────────── */
+/* ── phones ─────────────────────────────────────────────────────────────── */
 @media (max-width: 720px) {
-  html.hub-theme .home-link { margin: 4px 0 14px; }
-  html.hub-theme:not(.hub-frontier) .app > header::before { margin-bottom: 10px; font-size: .68rem; letter-spacing: .24em; }
-  html.hub-theme .app > header .eyebrow { font-size: .68rem; letter-spacing: .2em; }
-  html.hub-theme .app > header .thesis { margin-top: 10px; font-size: .95rem; line-height: 1.6; }
-  html.hub-theme .views { flex-wrap: nowrap; }
-  html.hub-theme .views button { flex: 0 1 auto; min-width: 0; font-size: .6rem; letter-spacing: .05em; padding: 11px 12px; }
-  html.hub-theme .age { font-size: .66rem; padding: 8px 10px; }
-  html.hub-theme .views button small { font-size: 10px; }
+  html.hub-theme .home-link { margin: 14px 0 10px; }
+  html.hub-theme:not(.hub-frontier) .app > header::before, html.hub-theme .app > header .eyebrow { font-size: .66rem; letter-spacing: .22em; }
+  html.hub-theme .app > header .thesis { font-size: .95rem; }
+  html.hub-frontier .stats { flex-wrap: nowrap; overflow-x: auto; white-space: nowrap; scrollbar-width: none; }
+  html.hub-frontier .stats span { flex: none; }
+  html.hub-theme.hub-school-outlook .views button small { display: none; }  /* the build hides these on phones too */
+  html.hub-theme :is(.views button, [id="ages"] .age, .subj, .seg button, .tabs .tab, [id="layers"] .chip, .hub-seg .ctl) { padding: 10px 11px; letter-spacing: .07em; }
 }
