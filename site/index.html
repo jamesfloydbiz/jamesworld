@@ -210,10 +210,21 @@
     .home__letter .t.on { visibility: visible; }
     /* The caret is a box-shadow, so it has no width and shifts nothing. */
     .home__letter .t.at { box-shadow: 1px 0 0 hsl(0 0% 100% / 0.7); }
+
+    /* The page links start in a row along the bottom and fly up to their place
+       in the sentence as the typing reaches them. They keep their place in the
+       text the whole time — what moves is a transform, so nothing reflows and
+       the letter the reader ends up with is the letter that was always there.
+       Inline-block because an inline box cannot be transformed. */
+    .home__letter .prose-link { display: inline-block; }
+    .js-flight .home__letter .prose-link {
+      transition: transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+    }
     @media (prefers-reduced-motion: reduce) {
       .js-type .home__letter { opacity: 1; }
       .home__letter .t { visibility: visible; }
       .home__letter .t.at { box-shadow: none; }
+      .js-flight .home__letter .prose-link { transition: none; }
     }
   </style>
   <script>
@@ -337,6 +348,7 @@
     (function () {
       var letter = document.querySelector('.home__letter');
       if (!letter) return;
+      var wrap = letter.parentNode;
 
       // One span per character. Whitespace runs get a span too, so the browser
       // still collapses them the way it would in plain text, but they start
@@ -377,28 +389,100 @@
 
       letter.classList.add('is-typing');
 
+      // Each link, with the number of characters that have to be typed before
+      // it is let go. querySelectorAll returns document order, so counting the
+      // queued spans as they go past gives each link its moment in the letter.
+      var links = [], seen = 0;
+      [].forEach.call(letter.querySelectorAll('.t, .prose-link'), function (el) {
+        if (el.classList.contains('prose-link')) links.push({ el: el, at: seen, home: false });
+        else if (!/^\s+$/.test(el.textContent)) seen++;
+      });
+
       function finish() {
         for (var i = 0; i < queue.length; i++) queue[i].className = 't on';
+        links.forEach(function (l) { l.home = true; l.el.style.transform = ''; });
       }
       if (!queue.length || matchMedia('(prefers-reduced-motion: reduce)').matches) {
         finish();
         return;
       }
 
+      // The links wait in a row along the bottom of the window and fly up to
+      // their sentence as the typing reaches them. Only on the roomy layout:
+      // below it the letter is taller than the window and scrolls, and a row
+      // measured against the window would slide away under the reader.
+      //
+      // Each link is moved by the difference between where it is and where it
+      // waits, so it never leaves the text flow: nothing reflows, and a link
+      // released at any point lands exactly where the sentence left room for
+      // it. Rows wrap if the set is wider than the column.
+      var roomy = matchMedia('(min-width: 769px) and (min-height: 761px)');
+      var GAP = 18, LINE = 26, FLOOR = 96, EDGE = 24;
+
+      function park() {
+        links.forEach(function (l) {
+          l.el.style.transition = 'none';
+          l.el.style.transform = '';
+        });
+        // Measured against the window, not the letter column: the set is about
+        // 500px of links and the column is 512px, so centring them on the
+        // column is one bad break away from a second row. The window has room.
+        var full = document.documentElement.clientWidth - EDGE * 2;
+        var nat = links.map(function (l) { return l.el.getBoundingClientRect(); });
+
+        var rows = [], row = [], w = 0;
+        nat.forEach(function (r, i) {
+          var add = (row.length ? GAP : 0) + r.width;
+          if (row.length && w + add > full) { rows.push({ items: row, w: w }); row = []; w = 0; add = r.width; }
+          row.push(i); w += add;
+        });
+        if (row.length) rows.push({ items: row, w: w });
+
+        var top = window.innerHeight - FLOOR - (rows.length - 1) * LINE;
+        rows.forEach(function (rw, ri) {
+          var x = EDGE + (full - rw.w) / 2;
+          rw.items.forEach(function (i) {
+            if (!links[i].home) {
+              links[i].el.style.transform =
+                'translate(' + (x - nat[i].left) + 'px,' + (top + ri * LINE - nat[i].top) + 'px)';
+            }
+            x += nat[i].width + GAP;
+          });
+        });
+
+        // Transitions back on only once the parked position has been painted,
+        // or the first frame animates the links down from the text.
+        requestAnimationFrame(function () {
+          links.forEach(function (l) { l.el.style.transition = ''; });
+        });
+      }
+
+      if (roomy.matches) {
+        document.documentElement.classList.add('js-flight');
+        park();
+        addEventListener('resize', park);
+      } else {
+        links.forEach(function (l) { l.home = true; });
+      }
+
       // Driven off the clock rather than off frames, so a slow frame costs no
       // characters. The 636 characters left in the queue once the links and the
-      // names are taken out come in at about two and a quarter seconds at this
-      // rate: quick, but still slow enough to read as typing.
+      // names are taken out come in at about five and three quarter seconds at
+      // this rate: slow enough to read along with, and slow enough that the
+      // links arrive one at a time rather than all at once.
       // Time is accumulated frame to frame, with a cap, rather than measured
       // from a start stamp: a tab in the background gets no frames at all, and
       // the gap would otherwise cash in as the whole letter at once the moment
       // someone switched to it.
-      var CPS = 290, shown = 0, caret = null, last = null, run = 0;
+      var CPS = 110, shown = 0, caret = null, last = null, run = 0;
       function tick(now) {
         run += Math.min(now - (last === null ? now : last), 100);
         last = now;
         var want = Math.min(queue.length, Math.round(run / 1000 * CPS));
         while (shown < want) queue[shown++].className = 't on';
+        links.forEach(function (l) {
+          if (!l.home && shown >= l.at) { l.home = true; l.el.style.transform = 'translate(0px, 0px)'; }
+        });
         if (caret) caret.classList.remove('at');
         if (shown < queue.length) {
           caret = queue[shown - 1] || null;
