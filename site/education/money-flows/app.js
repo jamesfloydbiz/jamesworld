@@ -162,10 +162,12 @@
     const alongLen = vert ? H - 40 : W;
     const acrossLen = vert ? W : H - headRoom - 6;
     const rightPad = vert ? 0 : Math.min(240, Math.max(160, W * 0.15));
+    // columns spread over the deepest column in this tab, so smaller tabs use the full width
+    const maxCol = Math.max(1, ...S.model.links.map((l) => NODES[l.t].col));
     const colA = {};
     cols.forEach((c, i) => {
       // columns keep the same place in every step, so new bands grow into empty space instead of moving everything
-      const t = c / 3;
+      const t = c / maxCol;
       colA[c] = vert ? 20 + t * (alongLen - nodeT - 20) : t * (alongLen - nodeT - rightPad);
     });
     // Every box gets a slot at least as tall as its two-line label, so small boxes at the
@@ -178,7 +180,20 @@
     cols.forEach((c) => { hiK = Math.min(hiK, (acrossLen - gap * (colsIds[c].length - 1)) / colsIds[c].reduce((s, id) => s + N[id].v, 0)); });
     let loK = 0, k = hiK;
     if (!fits(hiK)) { for (let i = 0; i < 40; i++) { const m = (loK + hiK) / 2; if (fits(m)) loK = m; else hiK = m; } k = loK; }
-    cols.forEach((c) => {
+    // Order each column after the first by where its money comes from (weighted average of the
+    // sources' centers), so bands cross less. Ties keep the order in data_flows.js.
+    const center = (id) => N[id].c + N[id].len / 2;
+    cols.forEach((c, ci) => {
+      if (ci > 0) {
+        const bary = {};
+        colsIds[c].forEach((id, i) => {
+          const ins = N[id].ins.filter((g) => N[g.s].c != null);
+          const w = ins.reduce((s, g) => s + g.v, 0);
+          bary[id] = w ? Math.round(ins.reduce((s, g) => s + center(g.s) * g.v, 0) / w) : Infinity; // rounded so float noise can't reorder ties
+          bary[id + '#i'] = i;
+        });
+        colsIds[c].sort((a, b) => (bary[a] - bary[b]) || (bary[a + '#i'] - bary[b + '#i']));
+      }
       const inCol = colsIds[c];
       const used = inCol.reduce((s, id) => s + slotOf(id, k), 0) + gap * (inCol.length - 1);
       let cpos = (vert ? 0 : headRoom) + (acrossLen - used) / 2;
