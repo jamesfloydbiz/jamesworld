@@ -1,6 +1,51 @@
 [
  {
   "kind": "fact",
+  "name": "Anthropic",
+  "text": "Agreement: Signed the AFT and UFT's legally binding AI Safety and Privacy Standard for Schools, covering Claude for Teachers (Nov 2026)",
+  "date": "2026-11",
+  "self_reported": false,
+  "href": "/education/frontier/#claude-learning-mode",
+  "source": "https://k12dive.com/news/anthropic-enters-student-ai-privacy-agreement-with-teachers-unions/874193"
+ },
+ {
+  "kind": "fact",
+  "name": "Astral",
+  "text": "Funding: $5.5M raised to date, latest round led by MapleVC, for a K-8 AI math tutor (Nov 2026)",
+  "date": "2026-11",
+  "self_reported": true,
+  "href": "https://www.prnewswire.com/news-releases/astral-raises-5-5m-to-unlock-the-next-renaissance-through-hyper-personalized-education-302933044.html",
+  "source": "https://www.prnewswire.com/news-releases/astral-raises-5-5m-to-unlock-the-next-renaissance-through-hyper-personalized-education-302933044.html"
+ },
+ {
+  "kind": "study",
+  "name": "Study",
+  "text": "Walker, Fesler, Martinez Claeys, Agnew & Loeb (Stanford SCALE) (2026), The Evidence Base on AI in K-12: A November 2026 Review",
+  "date": "2026",
+  "self_reported": false,
+  "href": "https://scale.stanford.edu/ai/evidence-base-review/evidence-base-ai-k12-november-review",
+  "source": "https://scale.stanford.edu/ai/evidence-base-review/evidence-base-ai-k12-november-review"
+ },
+ {
+  "kind": "study",
+  "name": "Study",
+  "text": "Huffaker, Robinson, Bardelli, White & Loeb (2026), EdWorkingPaper 25-1295",
+  "date": "2026",
+  "self_reported": false,
+  "href": "https://edworkingpapers.com/ai25-1295",
+  "source": "https://edworkingpapers.com/ai25-1295"
+ },
+ {
+  "kind": "study",
+  "name": "Study",
+  "text": "Doss & Keskin (2026), EdWorkingPaper 26-1642",
+  "date": "2026",
+  "self_reported": false,
+  "href": "https://edworkingpapers.com/ai26-1642",
+  "source": "https://edworkingpapers.com/ai26-1642"
+ },
+ {
+  "kind": "fact",
   "name": "McGraw Hill",
   "text": "Partnership: K-12 core curriculum made available to districts inside Anthropic's Claude for Teachers via an MCP connector (Nov 2026)",
   "date": "2026-11",
