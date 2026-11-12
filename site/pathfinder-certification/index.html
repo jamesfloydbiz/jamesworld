@@ -29,6 +29,7 @@
   --muted: #5C6674;
   --line: #E6E0D7;
   --line-strong: #CFC7BB;
+  --field-border: #8C8478;   /* 3:1+ for form controls */
   --accent: #B04F29;         /* white text on this: 5.2:1 */
   --accent-hover: #963F1D;
   --accent-soft: #F7E6DC;
@@ -53,7 +54,7 @@
 }
 
 * { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; }
+html { -webkit-text-size-adjust: 100%; scroll-padding-top: calc(var(--banner-h) + 130px); }
 body {
   margin: 0;
   font-family: var(--sans);
@@ -65,6 +66,7 @@ body {
     radial-gradient(120% 60% at 50% -10%, var(--sky) 0%, rgba(231,238,244,0) 70%);
   background-repeat: no-repeat;
   min-height: 100vh;
+  overflow-x: clip;
   -webkit-font-smoothing: antialiased;
 }
 img, svg, video, canvas { max-width: 100%; display: block; }
@@ -115,18 +117,18 @@ a { color: var(--accent-ink); text-underline-offset: 3px; }
 .progress-segs { display: flex; gap: 4px; list-style: none; margin: 0; padding: 0; }
 .progress-segs li { flex: 1; min-width: 0; }
 .seg {
-  display: block; width: 100%; height: 22px; padding: 9px 0; border: 0; background: none;
+  display: block; width: 100%; height: 32px; padding: 14px 0; border: 0; background: none;
   cursor: pointer;
 }
 .seg::before {
-  content: ""; display: block; height: 4px; border-radius: 4px; background: var(--line);
+  content: ""; display: block; height: 4px; border-radius: 4px; background: #D8D0C4;
   transition: background .25s var(--ease), transform .25s var(--ease);
 }
 .seg[data-state="done"]::before { background: var(--accent); }
 .seg[data-state="current"]::before { background: linear-gradient(90deg, var(--accent) 0 50%, var(--line-strong) 50%); }
 .seg:disabled { cursor: default; }
 .seg:not(:disabled):hover::before { transform: scaleY(1.6); }
-.progress-label { display: flex; justify-content: space-between; gap: 8px; font-size: 13px; color: var(--muted); margin-top: 2px; }
+.progress-label { display: flex; justify-content: space-between; gap: 8px; font-size: 13px; color: var(--muted); margin-top: -4px; }
 .progress-label strong { color: var(--ink); font-weight: 600; }
 
 /* ---------- Layout ---------- */
@@ -188,7 +190,7 @@ p { margin: 0 0 12px; }
 .btn:active { transform: translateY(1px); }
 .btn-primary { background: var(--accent); color: #fff; box-shadow: 0 6px 18px rgba(176,79,41,.25); }
 .btn-primary:hover { background: var(--accent-hover); }
-.btn-primary:disabled { background: #D9D2C8; color: #5C6674; box-shadow: none; cursor: not-allowed; }
+.btn-primary:disabled { background: #D9D2C8; color: #44505E; box-shadow: none; cursor: not-allowed; }
 .btn-ghost { background: transparent; color: var(--ink); border-color: var(--line-strong); }
 .btn-ghost:hover { background: var(--surface); }
 .btn-quiet { background: none; border: 0; color: var(--ink-2); padding: 10px 8px; min-height: 44px; text-decoration: underline; text-underline-offset: 3px; font-weight: 500; }
@@ -205,7 +207,7 @@ label.field { display: block; }
 .field-label { display: block; font-weight: 600; font-size: 15.5px; margin-bottom: 6px; }
 .input, .textarea, .select {
   width: 100%; min-height: 50px; padding: 12px 14px;
-  background: var(--surface); border: 1.5px solid var(--line-strong); border-radius: 14px;
+  background: var(--surface); border: 1.5px solid var(--field-border); border-radius: 14px;
   transition: border-color .2s, box-shadow .2s;
 }
 .input:focus, .textarea:focus, .select:focus { outline: none; border-color: var(--focus); box-shadow: 0 0 0 4px rgba(42,99,168,.15); }
@@ -215,15 +217,15 @@ fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
 legend { font-weight: 600; font-size: 15.5px; margin-bottom: 8px; padding: 0; }
 .choice-grid { display: grid; gap: 10px; }
 @media (min-width: 560px) { .choice-grid.cols-3 { grid-template-columns: repeat(3, 1fr); } }
-.choice { position: relative; display: block; cursor: pointer; }
+.choice { position: relative; display: block; cursor: pointer; height: 100%; }
 .choice input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
 .choice-body {
   display: flex; gap: 12px; align-items: flex-start;
-  padding: 14px 16px; border: 1.5px solid var(--line-strong); border-radius: 14px; background: var(--surface);
+  padding: 14px 16px; border: 1.5px solid var(--field-border); border-radius: 14px; background: var(--surface); height: 100%;
   transition: border-color .2s, background .2s, box-shadow .2s;
 }
 .choice-body .radio {
-  flex: none; width: 20px; height: 20px; margin-top: 2px; border-radius: 50%; border: 2px solid var(--line-strong);
+  flex: none; width: 20px; height: 20px; margin-top: 2px; border-radius: 50%; border: 2px solid var(--field-border);
   display: grid; place-items: center; transition: border-color .2s;
 }
 .choice-body .radio::after { content: ""; width: 10px; height: 10px; border-radius: 50%; background: var(--accent); transform: scale(0); transition: transform .18s var(--ease); }
@@ -274,9 +276,11 @@ legend { font-weight: 600; font-size: 15.5px; margin-bottom: 8px; padding: 0; }
 /* ---------- Cinema ---------- */
 .cinema {
   width: 100vw; margin-left: calc(50% - 50vw); margin-top: 22px;
-  background: #0E1116; padding: 6vw 0;
+  background: #1E2833; padding: 24px 0;
 }
-.cinema-frame { position: relative; max-width: 1200px; margin: 0 auto; aspect-ratio: 2.39 / 1; background: #000; }
+.cinema-frame { position: relative; max-width: 1040px; margin: 0 auto; aspect-ratio: 2.39 / 1; background: #000; overflow: hidden; }
+@media (min-width: 1072px) { .cinema-frame { border-radius: var(--radius-lg); } }
+@media (max-width: 640px) { .cinema-frame { aspect-ratio: 16 / 9; } .cinema-frame video::cue { font-size: 15px; } }
 .cinema-frame video { width: 100%; height: 100%; object-fit: cover; }
 .cinema-frame video::cue { font-family: var(--sans); font-size: 18px; background: rgba(0,0,0,.6); }
 .wordcount {
@@ -295,9 +299,12 @@ legend { font-weight: 600; font-size: 15.5px; margin-bottom: 8px; padding: 0; }
 }
 .play-cover span { display: inline-flex; align-items: center; gap: 12px; background: rgba(255,255,255,.14); border: 1px solid rgba(255,255,255,.35); padding: 12px 22px; border-radius: 999px; font-weight: 600; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
 .play-cover[hidden] { display: none; }
-.cinema-caption { max-width: 1200px; margin: 12px auto 0; padding: 0 16px; color: #C9CED6; font-size: 13.5px; display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.cinema-caption { max-width: 1040px; margin: 12px auto 0; padding: 0 16px; color: #C9CED6; font-size: 13.5px; display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
 details.transcript { margin-top: 18px; }
-details.transcript summary { cursor: pointer; font-weight: 600; min-height: 44px; display: flex; align-items: center; }
+details.transcript summary { cursor: pointer; font-weight: 600; min-height: 44px; display: flex; align-items: center; list-style: none; }
+details.transcript summary::-webkit-details-marker { display: none; }
+details.transcript summary::before { content: ""; width: 8px; height: 8px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(-45deg); margin: 0 12px 0 4px; transition: transform .2s var(--ease); }
+details.transcript[open] summary::before { transform: rotate(45deg); }
 details.transcript p { font-family: var(--display); font-size: 18px; line-height: 1.6; color: var(--ink-2); }
 
 /* ---------- Retell ---------- */
@@ -319,8 +326,8 @@ details.transcript p { font-family: var(--display); font-size: 18px; line-height
 .part-row .part-status { font-size: 13.5px; color: var(--muted); display: block; }
 .sentences { display: flex; flex-wrap: wrap; gap: 6px; line-height: 1.5; }
 .sent {
-  border: 1.5px dashed var(--line-strong); background: var(--surface); border-radius: 10px;
-  padding: 6px 10px; text-align: left; cursor: pointer; font-size: 16px; transition: background .2s, border-color .2s;
+  border: 1.5px dashed var(--field-border); background: var(--surface); border-radius: 10px;
+  padding: 10px 12px; min-height: 44px; text-align: left; cursor: pointer; font-size: 16px; transition: background .2s, border-color .2s;
 }
 .sent:hover { border-color: var(--focus); }
 .sent.tagged { border-style: solid; }
@@ -368,7 +375,7 @@ details.transcript p { font-family: var(--display); font-size: 18px; line-height
 }
 .app-card .ac-label { font-size: 12px; opacity: .85; letter-spacing: .06em; text-transform: uppercase; }
 .app-card .ac-num { font-size: 15px; letter-spacing: .14em; margin-top: 18px; }
-.app-card .ac-name { font-size: 13px; opacity: .9; margin-top: 4px; }
+.app-card .ac-name { font-size: 13px; margin-top: 4px; }
 .app-card svg { position: absolute; right: 14px; top: 14px; width: 26px; height: 26px; opacity: .9; }
 .tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
 .tile {
@@ -418,7 +425,7 @@ details.transcript p { font-family: var(--display); font-size: 18px; line-height
 .app-btn.secondary { background: #fff; color: var(--ink); border: 1px solid var(--line-strong); }
 .app-field { margin-top: 12px; font-size: 14px; }
 .app-field label { display: block; font-weight: 600; margin-bottom: 6px; }
-.app-field select { width: 100%; min-height: 46px; border-radius: 12px; border: 1.5px solid var(--line-strong); padding: 8px 10px; background: #fff; }
+.app-field select { width: 100%; min-height: 46px; border-radius: 12px; border: 1.5px solid var(--field-border); padding: 8px 10px; background: #fff; }
 .receipt-thumb { display: flex; gap: 12px; align-items: center; }
 .receipt-thumb .paper { width: 44px; height: 56px; border-radius: 6px; background: repeating-linear-gradient(#fff 0 6px, #EEE9E1 6px 7px); border: 1px solid var(--line); flex: none; }
 .app-error { color: var(--bad); font-size: 13.5px; font-weight: 600; margin-top: 8px; }
@@ -456,7 +463,7 @@ details.transcript p { font-family: var(--display); font-size: 18px; line-height
 .round-dots i.on { background: var(--accent); }
 .rules { font-size: 15px; }
 .rules ul { margin: 6px 0 0; padding-left: 20px; }
-.money { display: flex; align-items: center; border: 1.5px solid var(--line-strong); border-radius: 14px; background: #fff; overflow: hidden; max-width: 220px; }
+.money { display: flex; align-items: center; border: 1.5px solid var(--field-border); border-radius: 14px; background: #fff; overflow: hidden; max-width: 220px; }
 .money span { padding: 0 4px 0 14px; font-weight: 600; color: var(--muted); }
 .money input { border: 0; min-height: 48px; padding: 10px 14px 10px 2px; width: 100%; background: transparent; }
 .money:focus-within { border-color: var(--focus); box-shadow: 0 0 0 4px rgba(42,99,168,.15); }
@@ -482,13 +489,13 @@ details.transcript p { font-family: var(--display); font-size: 18px; line-height
 .bin.use { background: var(--good-soft); }
 .bin.dont { background: var(--bad-soft); }
 .bin.check { background: var(--warn-soft); }
-.bin-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.bin-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
 .bin-title { font-weight: 700; font-size: 15.5px; display: flex; align-items: center; gap: 8px; }
 .bin.use .bin-title { color: var(--good); }
 .bin.dont .bin-title { color: var(--bad); }
 .bin.check .bin-title { color: var(--warn); }
-.bin-drop { border: 0; border-radius: 999px; padding: 6px 12px; min-height: 36px; background: #fff; font-weight: 600; font-size: 13.5px; cursor: pointer; }
-.bin-drop:disabled { opacity: 0; pointer-events: none; }
+.bin-drop { border: 0; border-radius: 999px; padding: 10px 16px; min-height: 44px; background: #fff; font-weight: 600; font-size: 13.5px; cursor: pointer; }
+.bin-drop:disabled { visibility: hidden; }
 .bin.over { border-color: var(--focus); box-shadow: 0 0 0 3px rgba(42,99,168,.15); }
 .bin-items { display: flex; flex-wrap: wrap; gap: 6px; }
 .card-reason { flex-basis: 100%; font-size: 13px; color: var(--ink-2); margin: -2px 0 2px 2px; }
@@ -525,7 +532,7 @@ details.transcript p { font-family: var(--display); font-size: 18px; line-height
 .cert-img { width: 100%; height: auto; border-radius: 14px; box-shadow: var(--shadow-lg); background: #fff; }
 .cert-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
 .confetti { position: fixed; inset: 0; pointer-events: none; z-index: 80; }
-.footer { max-width: 760px; margin: 0 auto; padding: 0 16px 40px; font-size: 13.5px; color: var(--muted); display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.footer { max-width: 760px; margin: 0 auto; padding: 0 16px 40px; font-size: 13.5px; color: var(--muted); display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
 
 @media (min-width: 640px) {
   main { padding-top: 40px; }
@@ -552,7 +559,7 @@ details.transcript p { font-family: var(--display); font-size: 18px; line-height
   <div class="top-inner">
     <div class="brand-row">
       <!-- [PATHFINDER_LOGO] placeholder: a generic flower emblem + wordmark. Replace with the approved logo. -->
-      <span class="brand" aria-label="Pathfinder Partner Certification">
+      <span class="brand">
         <svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true">
           <g transform="translate(20 20)">
             <g fill="#F0C2AD"><ellipse cx="0" cy="-10" rx="6" ry="10"/><ellipse cx="0" cy="-10" rx="6" ry="10" transform="rotate(72)"/><ellipse cx="0" cy="-10" rx="6" ry="10" transform="rotate(144)"/><ellipse cx="0" cy="-10" rx="6" ry="10" transform="rotate(216)"/><ellipse cx="0" cy="-10" rx="6" ry="10" transform="rotate(288)"/></g>
@@ -958,7 +965,7 @@ function navRow(container, { nextLabel = 'Continue', ready = false, note = '', o
   } }, nextLabel, h('span', { 'aria-hidden': 'true' }, '→'));
   container.append(h('div', { class: 'nav-row' }, back, gate, next));
   return {
-    setReady(ok, msg) { next.disabled = !ok; gate.textContent = msg || ''; if (ok) unlockNext(); },
+    setReady(ok, msg) { next.disabled = !ok; if (gate.textContent !== (msg || '')) gate.textContent = msg || ''; if (ok && state.unlocked <= state.step) unlockNext(); },
   };
 }
 
@@ -1057,7 +1064,7 @@ RENDER.story = (el) => {
   el.append(stepHead('Module 1 · The story', 'One parent, one card, 100 words', 'Watch closely. Right after this, you\'ll tell the story back in your own words. The counter shows each word as it\'s spoken.', 1));
 
   const total = CONFIG.story.targetWords;
-  const video = h('video', { playsinline: true, preload: 'metadata', controls: true, crossorigin: 'anonymous', 'aria-label': 'Pathfinder story video, with captions' },
+  const video = h('video', { tabindex: '-1', playsinline: true, preload: 'metadata', controls: true, crossorigin: 'anonymous', 'aria-label': 'Pathfinder story video, with captions' },
     h('source', { src: CONFIG.story.videoUrl, type: 'video/mp4' }),
     h('track', { kind: 'captions', src: CONFIG.story.captionsUrl, srclang: 'en', label: 'English', default: true }),
   );
@@ -1067,7 +1074,7 @@ RENDER.story = (el) => {
   const srStatus = h('p', { class: 'sr-only', 'aria-live': 'polite' });
 
   el.append(h('div', { class: 'cinema' },
-    h('div', { class: 'cinema-frame' }, video, counter, cover),
+    h('div', { class: 'cinema-frame' }, cover, video, counter),
     h('div', { class: 'cinema-caption' }, h('span', null, 'Captions on · Placeholder narration'), h('span', null, 'Replace with the real story film [VIDEO_URL]')),
   ), srStatus);
 
@@ -1112,7 +1119,7 @@ RENDER.story = (el) => {
     }
     if (!video.paused && !video.ended) raf = requestAnimationFrame(update);
   };
-  video.addEventListener('play', () => { cover.hidden = true; cancelAnimationFrame(raf); raf = requestAnimationFrame(update); });
+  video.addEventListener('play', () => { cover.hidden = true; video.removeAttribute('tabindex'); cancelAnimationFrame(raf); raf = requestAnimationFrame(update); });
   video.addEventListener('seeked', update);
   video.addEventListener('timeupdate', () => { if (video.paused) update(); });
   video.addEventListener('ended', () => { update(); done(); });
@@ -1144,7 +1151,8 @@ function retellModule(el, { key, gated }) {
     area.replaceChildren();
     const ta = h('textarea', { class: 'textarea', id: 'retell-ta', 'aria-describedby': 'retell-count', placeholder: 'Start with the parent…', spellcheck: 'true' });
     ta.value = state.retells[key] || '';
-    const count = h('span', { id: 'retell-count', 'aria-live': 'polite' });
+    const count = h('span', { id: 'retell-count' });
+    let wasIn = null;
     const fill = h('span', { class: 'fill' });
     const submit = h('button', { class: 'btn btn-primary', type: 'button' }, 'Check my retell');
     const upd = () => {
@@ -1152,6 +1160,9 @@ function retellModule(el, { key, gated }) {
       count.textContent = `${n} ${n === 1 ? 'word' : 'words'} · aim for ${lo}–${hi}`;
       fill.style.width = Math.min(100, n / 130 * 100) + '%';
       fill.classList.toggle('in', n >= lo && n <= hi);
+      const isIn = n >= lo && n <= hi;
+      if (wasIn !== null && isIn !== wasIn) announce(isIn ? `${n} words. In range.` : `${n} words. Outside the ${lo} to ${hi} range.`);
+      wasIn = isIn;
       submit.disabled = n < 10;
       state.retells[key] = ta.value; save();
     };
@@ -1193,10 +1204,12 @@ function retellModule(el, { key, gated }) {
     const instr = h('p', { class: 'small', 'aria-live': 'polite' });
 
     const draw = () => {
+      const ae = document.activeElement;
+      const refocus = ae && ae.dataset && ae.dataset.fk;
       partsBox.replaceChildren(...CONFIG.retell.parts.map(p => {
         const a = assign[p.id];
         const status = a === undefined ? 'Not tagged yet' : a === -1 ? 'You said it isn\'t covered' : `Sentence ${a + 1}`;
-        return h('button', { type: 'button', class: `part-row p-${p.id}`, 'aria-pressed': String(active === p.id), onclick: () => { active = p.id; draw(); } },
+        return h('button', { type: 'button', 'data-fk': 'part-' + p.id, class: `part-row p-${p.id}`, 'aria-pressed': String(active === p.id), onclick: () => { active = p.id; draw(); } },
           h('span', { class: 'swatch', style: 'background:var(--pc)' }),
           h('span', { class: 'part-text' }, h('span', { class: 'part-name' }, p.label), h('span', { class: 'part-status' }, status)),
           active === p.id ? h('span', { class: 'pill neutral' }, 'Tagging') : null,
@@ -1205,7 +1218,7 @@ function retellModule(el, { key, gated }) {
       sentBox.replaceChildren(...sentences.map((s, i) => {
         const tagged = CONFIG.retell.parts.filter(p => assign[p.id] === i);
         const style = tagged.length ? `background:var(--pc-soft);border-color:var(--pc)` : '';
-        return h('button', { type: 'button', class: 'sent' + (tagged.length ? ` tagged p-${tagged[0].id}` : ''), style,
+        return h('button', { type: 'button', 'data-fk': 'sent-' + i, class: 'sent' + (tagged.length ? ` tagged p-${tagged[0].id}` : ''), style,
           'aria-label': `Sentence ${i + 1}: ${s}${tagged.length ? '. Tagged as ' + tagged.map(t => t.label).join(' and ') : ''}`,
           onclick: () => { assign[active] = i; nextPart(); draw(); } },
           s, tagged.length ? h('span', { class: 'tags', 'aria-hidden': 'true' }, tagged.map(t => h('i', { class: `p-${t.id}`, style: 'background:var(--pc)' }))) : null);
@@ -1213,12 +1226,13 @@ function retellModule(el, { key, gated }) {
       const p = CONFIG.retell.parts.find(x => x.id === active);
       instr.replaceChildren(h('strong', null, `Tap the sentence that covers “${p.label}”`), ` (${p.description.toLowerCase()})`);
       doneBtn.disabled = CONFIG.retell.parts.some(x => assign[x.id] === undefined);
+      if (refocus) { const t = area.querySelector(`[data-fk="${refocus}"]`); if (t) t.focus({ preventScroll: true }); }
     };
     const nextPart = () => { const nxt = CONFIG.retell.parts.find(x => assign[x.id] === undefined); if (nxt) active = nxt.id; };
 
     area.append(
       h('div', { class: 'card soft stack' },
-        h('h2', { style: 'font-size:22px' }, 'Find each part in your retell'),
+        h('h2', { style: 'font-size:22px', tabindex: '-1', id: 'tag-head' }, 'Find each part in your retell'),
         h('p', { class: 'small muted', style: 'margin:0' }, 'Pick a part, then tap the sentence that covers it. One sentence can cover more than one part.'),
         partsBox, instr, sentBox,
         h('div', null, h('button', { class: 'btn-quiet', type: 'button', onclick: () => { assign[active] = -1; nextPart(); draw(); } }, 'None of my sentences cover this part')),
@@ -1236,6 +1250,7 @@ function retellModule(el, { key, gated }) {
       showResults(text, n, inBand, results, { sentences, assign });
     });
     draw();
+    const th = area.querySelector('#tag-head'); if (th) th.focus();
   };
 
   const showResults = (text, n, inBand, results, tagging) => {
@@ -1304,6 +1319,7 @@ function retellModule(el, { key, gated }) {
       nav.setReady(true, '');
     }
     area.append(h('div', { class: 'mt-m' }, h('button', { class: 'btn btn-ghost', type: 'button', onclick: writeView }, gated && !passed ? 'Revise my retell' : 'Edit my retell')));
+    const fbk = area.querySelector('.feedback'); if (fbk) { fbk.setAttribute('tabindex', '-1'); fbk.focus(); }
   };
 
   writeView();
@@ -1339,7 +1355,7 @@ function guide(target, text, above) {
 const appTop = (title, onBack) => h('div', { class: 'app-top' },
   onBack ? h('button', { class: 'app-back', type: 'button', onclick: onBack }, '‹ Back') : h('span', { style: 'font-size:13px;color:var(--muted)' }, 'Hi, Dana'),
   h('span', { class: 'app-title' }, title), h('span', { style: 'width:44px' }));
-const appCard = () => h('div', { class: 'app-card', 'aria-label': 'Pathfinder Visa charge card ending 4821' },
+const appCard = () => h('div', { class: 'app-card', role: 'img', 'aria-label': 'Pathfinder Visa charge card ending 4821' },
   svg(ICON.flower), h('div', { class: 'ac-label' }, 'Pathfinder · Visa'), h('div', { class: 'ac-num' }, '•••• 4821'), h('div', { class: 'ac-name' }, 'Dana R.'));
 
 /* ==========================================================================
@@ -1362,11 +1378,11 @@ RENDER.demo = (el) => {
       h('p', { class: 'small muted', style: 'margin:14px 0 8px' }, 'Results'),
       h('div', { class: 'app-row' }, h('span', { class: 'r-main' }, h('span', { class: 'r-title' }, 'Singapore Math 5A Workbook'), h('span', { class: 'r-sub' }, 'Desert Books · $38.50'))),
       h('div', { class: 'app-row' }, h('span', { class: 'r-main' }, h('span', { class: 'r-title' }, 'Singapore Math 5A Textbook'), h('span', { class: 'r-sub' }, 'Desert Books · $42.00'))),
-      h('button', { class: 'app-btn secondary', type: 'button', tabindex: '-1', style: 'margin-top:auto' }, 'Or scan with camera')],
+      h('div', { class: 'app-btn secondary', style: 'margin-top:auto;display:grid;place-items:center' }, 'Or scan with camera')],
     result: () => [appTop('Result'), h('div', { class: 'verdict ok' }, svg(ICON.ok, 'v-icon'), h('div', { class: 'v-title' }, 'Likely allowable'), h('div', { class: 'v-cat' }, 'Curriculum · Singapore Math 5A')),
       h('div', { class: 'app-note' }, h('strong', null, 'Pre-approved. '), `If the state rejects it later, Pathfinder covers it, up to ${fmtMoney(CONFIG.guarantee.perItemCap)} per item.`)],
     pay: () => [appTop('Pay'), appCard(), h('div', { class: 'app-note' }, 'Desert Books', h('br'), h('strong', { style: 'font-size:22px' }, '$38.50')),
-      h('button', { class: 'app-btn', type: 'button', tabindex: '-1', style: 'margin-top:auto' }, 'Pay with Pathfinder card')],
+      h('div', { class: 'app-btn', style: 'margin-top:auto;display:grid;place-items:center' }, 'Pay with Pathfinder card')],
     receipt: () => [appTop('Purchase'), h('div', { class: 'app-note receipt-thumb' }, h('span', { class: 'paper' }), h('span', null, h('strong', null, 'Receipt attached'), h('br'), h('span', { class: 'muted' }, 'Desert Books · $38.50 · auto-matched'))),
       h('span', { class: 'pill good', style: 'margin-top:12px;align-self:flex-start' }, 'Ready to submit')],
     submit: () => [appTop('Reimbursement'), h('span', { class: 'pill good', style: 'align-self:flex-start' }, 'Request submitted'),
@@ -1519,6 +1535,7 @@ RENDER.simA = (el) => simShell(el, {
           : h('span', null, h('strong', null, 'Not pre-approved. '), 'Purchases outside ESA rules won\'t be reimbursed or covered.')));
         if (mode === 'guided') guide(v, tips.result);
         adviceBox();
+        v.tabIndex = -1; v.focus({ preventScroll: true });
       }
       function adviceBox() {
         const opts = shuffle(round.advice.map((a, i) => ({ ...a, i })), r * 13 + 5);
@@ -1581,7 +1598,7 @@ RENDER.simB = (el) => simShell(el, {
       let answerEl;
       if (q.type === 'amount') {
         answerEl = h('div', null, h('label', { class: 'field-label', for: id + '-a' }, 'Pathfinder covers'),
-          h('div', { class: 'money' }, h('span', { 'aria-hidden': 'true' }, '$'), h('input', { id: id + '-a', inputmode: 'numeric', autocomplete: 'off', 'aria-label': 'Amount Pathfinder covers, in dollars' })));
+          h('div', { class: 'money' }, h('span', { 'aria-hidden': 'true' }, '$'), h('input', { id: id + '-a', inputmode: 'numeric', autocomplete: 'off', 'aria-describedby': id + '-u' })), h('span', { id: id + '-u', class: 'sr-only' }, 'in dollars'));
       } else {
         answerEl = h('fieldset', null, h('legend', null, 'Who owes it?'), h('div', { class: 'choice-grid cols-3' }, CONFIG.simB.whoOptions.map(o =>
           h('label', { class: 'choice' }, h('input', { type: 'radio', name: id + '-a', value: o.id }), h('span', { class: 'choice-body' }, h('span', { class: 'radio' }), h('span', { class: 'choice-title' }, o.label))))));
@@ -1633,12 +1650,12 @@ RENDER.simC = (el) => simShell(el, {
   run(stage, mode, done) {
     const C = CONFIG.simC;
     const where = {}; // itemId -> columnId
-    let selected = null;
+    let selected = null, selectFromKey = false;
     const items = shuffle(C.items, mode === 'guided' ? 3 : 11);
-    const pool = h('div', { class: 'pool', role: 'list', 'aria-label': 'Cards to sort' });
+    const pool = h('div', { class: 'pool', role: 'group', 'aria-label': 'Cards to sort' });
     const bins = {};
     const binsWrap = h('div', { class: 'bins' }, C.columns.map(col => {
-      const items = h('div', { class: 'bin-items', role: 'list', 'aria-label': col.label });
+      const items = h('div', { class: 'bin-items', role: 'group', 'aria-label': col.label });
       const drop = h('button', { class: 'bin-drop', type: 'button', disabled: true, 'aria-label': `Place selected card in ${col.label}`, onclick: () => selected && place(selected, col.id) }, 'Place here');
       const icon = svg(col.id === 'use' ? ICON.check : col.id === 'dont' ? ICON.x : ICON.q); icon.setAttribute('width', '18'); icon.setAttribute('height', '18');
       const bin = h('div', { class: `bin ${col.id}`, 'data-col': col.id }, h('div', { class: 'bin-head' }, h('span', { class: 'bin-title' }, icon, col.label), drop), items);
@@ -1653,10 +1670,10 @@ RENDER.simC = (el) => simShell(el, {
 
     const cardEls = {};
     items.forEach(it => {
-      const c = h('button', { class: 'sort-card', type: 'button', role: 'listitem', 'aria-pressed': 'false', 'data-id': it.id }, h('span', { class: 'grip', 'aria-hidden': 'true' }), it.label);
+      const c = h('button', { class: 'sort-card', type: 'button', 'aria-pressed': 'false', 'data-id': it.id }, h('span', { class: 'grip', 'aria-hidden': 'true' }), it.label);
       cardEls[it.id] = c;
       attachDrag(c, it.id);
-      c.addEventListener('click', () => { if (c.dataset.dragged) { delete c.dataset.dragged; return; } select(selected === it.id ? null : it.id); });
+      c.addEventListener('click', (e) => { if (c.dataset.dragged) { delete c.dataset.dragged; return; } selectFromKey = e.detail === 0; select(selected === it.id ? null : it.id); selectFromKey = false; });
     });
 
     function select(id) {
@@ -1665,6 +1682,7 @@ RENDER.simC = (el) => simShell(el, {
       Object.values(bins).forEach(b => { b.drop.disabled = !id; });
       if (id) live.textContent = `${C.items.find(x => x.id === id).label} selected. Choose a column.`;
       drawGuide();
+      if (id && selectFromKey) bins[C.columns[0].id].drop.focus({ preventScroll: true });
     }
     function place(id, col) {
       const it = C.items.find(x => x.id === id);
@@ -1673,6 +1691,7 @@ RENDER.simC = (el) => simShell(el, {
         live.textContent = `Not quite. ${it.reason} It goes in ${right}.`;
         showReason(id, `${it.reason} Try “${right}.”`, true);
         select(null);
+        cardEls[id].focus({ preventScroll: true });
         return;
       }
       where[id] = col;
@@ -1681,6 +1700,8 @@ RENDER.simC = (el) => simShell(el, {
       live.textContent = `${it.label} placed in ${C.columns.find(x => x.id === col).label}.`;
       if (mode === 'guided') showReason(id, it.reason, false);
       checkBtn.disabled = Object.keys(where).length < C.items.length;
+      const nxt = items.find(x => !where[x.id]);
+      if (nxt) cardEls[nxt.id].focus({ preventScroll: true }); else if (mode === 'solo') checkBtn.focus();
       if (mode === 'guided' && Object.keys(where).length === C.items.length) setTimeout(() => done({ score: C.items.length, max: C.items.length }), reduceMotion() ? 0 : 900);
     }
     function showReason(id, text, isWrong) {
@@ -1873,7 +1894,7 @@ RENDER.simE = (el) => simShell(el, {
       chat.append(h('div', { class: 'msg-who' + (who === 'you' ? ' you' : '') }, who === 'you' ? 'You' : E.parentName), h('div', { class: 'msg ' + who }, text));
       chat.lastElementChild.scrollIntoView({ block: 'nearest', behavior: reduceMotion() ? 'auto' : 'smooth' });
     };
-    const typing = async () => { const t = h('div', { class: 'typing', 'aria-label': `${E.parentName} is typing` }, h('i'), h('i'), h('i')); chat.append(t); await delay(650); t.remove(); };
+    const typing = async () => { const t = h('div', { class: 'typing', 'aria-hidden': 'true' }, h('i'), h('i'), h('i')); chat.append(t); await delay(650); t.remove(); };
 
     const turn = async (k) => {
       const T = E.turns[k];
@@ -1885,7 +1906,7 @@ RENDER.simE = (el) => simShell(el, {
         const best = [...replies.children][opts.findIndex(o => o.correct)];
         guide(best, T.guide, true);
       }
-      replies.firstElementChild.focus({ preventScroll: true });
+      replies.querySelector('.reply').focus({ preventScroll: true });
 
       async function pick(o) {
         if (mode === 'guided' && !o.correct) {
@@ -1895,6 +1916,7 @@ RENDER.simE = (el) => simShell(el, {
         }
         picks[k] = { turn: T, choice: o };
         replies.replaceChildren();
+        chat.tabIndex = -1; chat.focus({ preventScroll: true });
         say('you', o.text);
         await typing();
         say('parent', o.reaction);
