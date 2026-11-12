@@ -21,6 +21,8 @@ const MIME = {
   '.webp':  'image/webp',
   '.ico':   'image/x-icon',
   '.mp3':   'audio/mpeg',
+  '.mp4':   'video/mp4',
+  '.vtt':   'text/vtt; charset=utf-8',
   '.json':  'application/json',
   '.xml':   'application/xml; charset=utf-8',
   '.txt':   'text/plain; charset=utf-8',
