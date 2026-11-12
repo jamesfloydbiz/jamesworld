@@ -629,11 +629,10 @@ const CONFIG = {
     targetWords: 100,
     // [STORY_TEXT] The reference story. Each chunk is tagged with the story part it covers.
     reference: [
-      { part: 'person',     text: 'Maria homeschools three kids in Mesa with an Arizona ESA.' },
-      { part: 'problem',    text: 'Every month she fronts hundreds of dollars for books, tutoring and co-op fees, then waits weeks for the state to pay her back.' },
-      { part: 'person',     text: 'One night a reimbursement got rejected over a missing receipt, and she sat at the kitchen table wondering if the scholarship was worth the stress.' },
-      { part: 'pathfinder', text: 'Pathfinder gives families like hers a Visa charge card for education vendors. Before she buys, the app checks whether the item is ESA-allowable. She pays with the card, the receipt attaches itself, and Pathfinder handles the reimbursement.' },
-      { part: null,         text: 'Maria gets her evenings back.' },
+      { part: 'person',     text: 'Once upon a time, a mom decided to educate her kids at home.' },
+      { part: 'problem',    text: 'She tried to reimburse the table she bought from Ikea and curriculum, but it was a complicated process. "Why is this so difficult?" she wondered.' },
+      { part: 'pathfinder', text: 'She went looking for a better solution and found Pathfinder. A couple guys from London who were trying to make it easy to know what you can buy with ESA funds, and then get them reimbursed. They decided on a card' },
+      { part: null,         text: 'and she said, what if me and my mom friends deliver the cards to each new customer? Eureka! Pathfinder was born.' },
     ],
   },
 
@@ -641,11 +640,11 @@ const CONFIG = {
     band: [90, 110],
     parts: [
       { id: 'problem',    label: 'The problem',            description: 'ESA reimbursement is hard: fronting money, waiting, rejections.',
-        keywords: ['reimburs', 'front', 'wait', 'weeks', 'pay back', 'paid back', 'pay her back', 'pay them back', 'out of pocket', 'reject', 'receipt', 'slow', 'hard', 'stress', 'upfront', 'up front'] },
+        keywords: ['reimburs', 'front', 'wait', 'weeks', 'pay back', 'paid back', 'pay her back', 'pay them back', 'out of pocket', 'reject', 'receipt', 'slow', 'hard', 'stress', 'upfront', 'up front', 'complicated', 'difficult', 'confusing'] },
       { id: 'person',     label: 'The person and moment',  description: 'A parent struggling with it, at a specific moment.',
-        keywords: ['parent', 'mom', 'mother', 'dad', 'father', 'family', 'families', 'maria', 'she ', 'he ', 'kitchen', 'night', 'homeschool', 'kids', 'children'] },
-      { id: 'pathfinder', label: 'What Pathfinder does',   description: 'Card + pre-approval + handles reimbursement.',
-        keywords: ['card', 'pre-approv', 'preapprov', 'approv', 'app', 'check', 'allowable', 'scan', 'handles', 'reimburs'] },
+        keywords: ['parent', 'mom', 'mother', 'dad', 'father', 'family', 'families', 'maria', 'she ', 'he ', 'kitchen', 'night', 'homeschool', 'kids', 'children', 'home'] },
+      { id: 'pathfinder', label: 'What Pathfinder does',   description: 'Card + knowing what you can buy (pre-approval) + reimbursement.',
+        keywords: ['card', 'pre-approv', 'preapprov', 'approv', 'app', 'check', 'allowable', 'scan', 'handles', 'reimburs', 'know what', 'easy', 'pathfinder'] },
     ],
   },
 
@@ -1294,7 +1293,7 @@ function retellModule(el, { key, gated }) {
     // Task-focused feedback
     const tips = [];
     if (!inBand) tips.push(n < lo
-      ? `Add about ${lo - n} words. The reference spends its extra words on what Pathfinder does after the purchase.`
+      ? `Add about ${lo - n} words. The reference spends its extra words on how the mom found Pathfinder and what it does.`
       : `Trim about ${n - hi} words. Cut details that aren't part of the problem, the parent, or what Pathfinder does.`);
     CONFIG.retell.parts.forEach(p => {
       if (results[p.id].present) return;
