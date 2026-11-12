@@ -7,48 +7,50 @@
 <title>Pathfinder Partner Certification · Concept prototype</title>
 <meta name="description" content="A 13-minute interactive course for partners who serve Arizona ESA families. A concept prototype by James Floyd, not an official Pathfinder program.">
 <link rel="canonical" href="https://jamesfloyds.world/pathfinder-certification/">
-<meta name="theme-color" content="#F8F4EE">
+<meta name="theme-color" content="#F4F3F2">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<!-- [BRAND_FONTS] placeholder: swap these two families when Pathfinder's fonts are provided. -->
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400&display=swap">
+<!-- [BRAND_FONTS] Pathfinder headings use their licensed "Pathfinder NeuSans"; Poppins is the public fallback their own site names. Body is Inter, as on pathfindercard.com. -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap">
 <style>
 /* ==========================================================================
    [BRAND_COLORS] placeholder palette. Every color in the course comes from
    these tokens. Text pairs are checked at 4.5:1 or better.
    ========================================================================== */
 :root {
-  --bg: #F8F4EE;
-  --sky: #E7EEF4;
-  --sky-deep: #D6E3EC;
+  /* Pathfinder palette, from pathfindercard.com's stylesheet */
+  --bg: #F4F3F2;             /* sand */
+  --sky: #F1EBFD;            /* lavender tint */
+  --sky-deep: #E9E2F6;
   --surface: #FFFFFF;
-  --surface-2: #FBF9F6;
-  --ink: #1E2833;
-  --ink-2: #44505E;
-  --muted: #5C6674;
-  --line: #E6E0D7;
-  --line-strong: #CFC7BB;
-  --field-border: #8C8478;   /* 3:1+ for form controls */
-  --accent: #B04F29;         /* white text on this: 5.2:1 */
-  --accent-hover: #963F1D;
-  --accent-soft: #F7E6DC;
-  --accent-ink: #9A4422;     /* accent text on cream: 5.6:1 */
-  --good: #2D684C;
-  --good-soft: #E2F0E7;
-  --bad: #A0372A;
-  --bad-soft: #F8E2DD;
-  --warn: #7E5300;
-  --warn-soft: #FAEFD6;
-  --focus: #2A63A8;
-  --petal: #F1C9B8;
-  --radius-lg: 22px;
-  --radius: 16px;
-  --radius-sm: 10px;
-  --shadow: 0 1px 2px rgba(30,40,51,.05), 0 8px 28px rgba(30,40,51,.07);
-  --shadow-lg: 0 2px 6px rgba(30,40,51,.06), 0 22px 60px rgba(30,40,51,.12);
-  --sans: "Source Sans 3", "Gill Sans", "Segoe UI", system-ui, sans-serif;
-  --display: "Fraunces", Georgia, serif;
+  --surface-2: #F9F6FE;
+  --ink: #1F0151;            /* tolopea, headlines */
+  --ink-2: #3D2A66;
+  --muted: #5E5873;
+  --line: #E9E2F6;
+  --line-strong: #D9CFEF;
+  --field-border: #8E83A8;   /* 3:1+ for form controls */
+  --accent: #5411C1;         /* purple; white text 8.9:1 */
+  --accent-hover: #330080;
+  --accent-bright: #6918EB;  /* primary */
+  --accent-soft: #F1EBFD;
+  --accent-ink: #5411C1;
+  --good: #087250;
+  --good-soft: #E3F6EF;
+  --bad: #B42318;
+  --bad-soft: #FDECEA;
+  --warn: #8A5300;
+  --warn-soft: #FEF3DC;
+  --focus: #6918EB;
+  --petal: #C9B3F5;
+  --radius-lg: 28px;
+  --radius: 18px;
+  --radius-sm: 12px;
+  --shadow: 0 1px 2px rgba(31,1,81,.05), 0 8px 28px rgba(31,1,81,.07);
+  --shadow-lg: 0 2px 6px rgba(31,1,81,.06), 0 22px 60px rgba(31,1,81,.12);
+  --sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --display: "Poppins", "Inter", system-ui, sans-serif;
   --ease: cubic-bezier(.2,.7,.2,1);
   --banner-h: 30px;
 }
@@ -63,7 +65,7 @@ body {
   color: var(--ink);
   background: var(--bg);
   background-image:
-    radial-gradient(120% 60% at 50% -10%, var(--sky) 0%, rgba(231,238,244,0) 70%);
+    radial-gradient(120% 60% at 50% -10%, var(--sky) 0%, rgba(241,235,253,0) 70%);
   background-repeat: no-repeat;
   min-height: 100vh;
   overflow-x: clip;
@@ -90,7 +92,7 @@ a { color: var(--accent-ink); text-underline-offset: 3px; }
   display: flex; align-items: center; justify-content: center;
   padding: 0 12px;
   background: var(--ink);
-  color: #F3EEE7;
+  color: #F1EBFD;
   font-size: 12.5px;
   letter-spacing: .02em;
   text-align: center; line-height: 1.25;
@@ -100,16 +102,16 @@ a { color: var(--accent-ink); text-underline-offset: 3px; }
 /* ---------- Header + progress ---------- */
 .top {
   position: sticky; top: var(--banner-h); z-index: 40;
-  background: rgba(248,244,238,.86);
+  background: rgba(244,243,242,.86);
   -webkit-backdrop-filter: saturate(1.2) blur(12px);
   backdrop-filter: saturate(1.2) blur(12px);
-  border-bottom: 1px solid rgba(207,199,187,.5);
+  border-bottom: 1px solid rgba(217,207,239,.6);
 }
 .top-inner { max-width: 760px; margin: 0 auto; padding: 10px 16px 12px; }
 .brand-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .brand { display: flex; align-items: center; gap: 9px; text-decoration: none; color: var(--ink); }
 .brand-mark { width: 28px; height: 28px; flex: none; }
-.brand-word { font-family: var(--display); font-size: 19px; letter-spacing: -.01em; }
+.brand-word { font-family: var(--display); font-size: 20px; font-weight: 700; letter-spacing: -.02em; color: var(--accent); }
 .brand-sub { display: block; font-size: 12px; color: var(--muted); font-weight: 600; letter-spacing: .06em; text-transform: uppercase; line-height: 1.1; }
 .brand-word { display: block; line-height: 1.1; }
 .time-left { font-size: 13px; color: var(--muted); white-space: nowrap; }
@@ -121,7 +123,7 @@ a { color: var(--accent-ink); text-underline-offset: 3px; }
   cursor: pointer;
 }
 .seg::before {
-  content: ""; display: block; height: 4px; border-radius: 4px; background: #D8D0C4;
+  content: ""; display: block; height: 4px; border-radius: 4px; background: #DCD3EE;
   transition: background .25s var(--ease), transform .25s var(--ease);
 }
 .seg[data-state="done"]::before { background: var(--accent); }
@@ -141,7 +143,7 @@ main { max-width: 760px; margin: 0 auto; padding: 28px 16px 72px; }
   color: var(--accent-ink);
 }
 .kicker .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
-h1, h2, h3 { font-family: var(--display); font-weight: 400; letter-spacing: -.015em; line-height: 1.15; margin: 0; }
+h1, h2, h3 { font-family: var(--display); font-weight: 600; letter-spacing: -.025em; line-height: 1.15; margin: 0; }
 h1 { font-size: clamp(30px, 7vw, 44px); margin-top: 10px; }
 h2 { font-size: clamp(24px, 5.4vw, 30px); }
 h3 { font-size: 20px; }
@@ -166,7 +168,7 @@ p { margin: 0 0 12px; }
 }
 .card.cloud::before, .card.cloud::after {
   content: ""; position: absolute; z-index: -1; pointer-events: none;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 70'%3E%3Cpath fill='%23E7EEF4' d='M28 62c-14 0-24-9-24-21 0-11 9-20 21-21 4-11 15-19 28-19 11 0 21 6 26 15 3-1 6-2 10-2 13 0 24 9 26 21 1 0 2 0 3 0 12 0 21 8 21 18s-9 19-21 19z'/%3E%3C/svg%3E") no-repeat center / contain;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 70'%3E%3Cpath fill='%23ECE4FB' d='M28 62c-14 0-24-9-24-21 0-11 9-20 21-21 4-11 15-19 28-19 11 0 21 6 26 15 3-1 6-2 10-2 13 0 24 9 26 21 1 0 2 0 3 0 12 0 21 8 21 18s-9 19-21 19z'/%3E%3C/svg%3E") no-repeat center / contain;
 }
 .card.cloud::before { width: 150px; height: 66px; top: -30px; left: -26px; }
 .card.cloud::after { width: 110px; height: 48px; bottom: -20px; right: -18px; opacity: .85; }
@@ -182,15 +184,16 @@ p { margin: 0 0 12px; }
   -webkit-appearance: none; appearance: none;
   display: inline-flex; align-items: center; justify-content: center; gap: 8px;
   min-height: 48px; padding: 12px 22px;
-  border-radius: 999px; border: 1px solid transparent;
+  border-radius: 12px; border: 1px solid transparent;
   font-weight: 600; font-size: 16.5px; line-height: 1.2;
   cursor: pointer; text-decoration: none;
   transition: background .2s var(--ease), box-shadow .2s var(--ease), transform .15s var(--ease), color .2s;
 }
 .btn:active { transform: translateY(1px); }
-.btn-primary { background: var(--accent); color: #fff; box-shadow: 0 6px 18px rgba(176,79,41,.25); }
+.btn-primary { background: linear-gradient(180deg, var(--accent-bright), var(--accent)); color: #fff; box-shadow: 0 6px 18px rgba(84,17,193,.28); }
 .btn-primary:hover { background: var(--accent-hover); }
-.btn-primary:disabled { background: #D9D2C8; color: #44505E; box-shadow: none; cursor: not-allowed; }
+.btn-primary:disabled { background: #E3DDEE; }
+.btn-primary:disabled { background: #E3DDEE; color: #3D2A66; box-shadow: none; cursor: not-allowed; }
 .btn-ghost { background: transparent; color: var(--ink); border-color: var(--line-strong); }
 .btn-ghost:hover { background: var(--surface); }
 .btn-quiet { background: none; border: 0; color: var(--ink-2); padding: 10px 8px; min-height: 44px; text-decoration: underline; text-underline-offset: 3px; font-weight: 500; }
@@ -210,7 +213,7 @@ label.field { display: block; }
   background: var(--surface); border: 1.5px solid var(--field-border); border-radius: 14px;
   transition: border-color .2s, box-shadow .2s;
 }
-.input:focus, .textarea:focus, .select:focus { outline: none; border-color: var(--focus); box-shadow: 0 0 0 4px rgba(42,99,168,.15); }
+.input:focus, .textarea:focus, .select:focus { outline: none; border-color: var(--focus); box-shadow: 0 0 0 4px rgba(105,24,235,.15); }
 .textarea { min-height: 200px; resize: vertical; line-height: 1.6; }
 .hint { font-size: 14px; color: var(--muted); margin-top: 6px; }
 fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
@@ -229,7 +232,7 @@ legend { font-weight: 600; font-size: 15.5px; margin-bottom: 8px; padding: 0; }
   display: grid; place-items: center; transition: border-color .2s;
 }
 .choice-body .radio::after { content: ""; width: 10px; height: 10px; border-radius: 50%; background: var(--accent); transform: scale(0); transition: transform .18s var(--ease); }
-.choice input:checked + .choice-body { border-color: var(--accent); background: #FFFBF8; box-shadow: 0 0 0 3px var(--accent-soft); }
+.choice input:checked + .choice-body { border-color: var(--accent); background: #FBF8FF; box-shadow: 0 0 0 3px var(--accent-soft); }
 .choice input:checked + .choice-body .radio { border-color: var(--accent); }
 .choice input:checked + .choice-body .radio::after { transform: scale(1); }
 .choice input:focus-visible + .choice-body { outline: 3px solid var(--focus); outline-offset: 2px; }
@@ -241,7 +244,7 @@ legend { font-weight: 600; font-size: 15.5px; margin-bottom: 8px; padding: 0; }
 .feedback h3 { font-family: var(--sans); font-size: 17px; font-weight: 700; letter-spacing: 0; margin-bottom: 6px; }
 .feedback ul { margin: 8px 0 0; padding-left: 20px; }
 .feedback li + li { margin-top: 6px; }
-.feedback.good { background: var(--good-soft); color: #1F4A36; }
+.feedback.good { background: var(--good-soft); color: #0B4F3A; }
 .feedback.miss { background: var(--warn-soft); color: #4F3600; }
 .feedback.info { background: var(--sky); }
 .pill {
@@ -253,18 +256,18 @@ legend { font-weight: 600; font-size: 15.5px; margin-bottom: 8px; padding: 0; }
 .pill.warn { background: var(--warn-soft); color: var(--warn); }
 .pill.neutral { background: var(--sky); color: var(--ink-2); }
 .mode-pill { display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 999px; font-size: 13.5px; font-weight: 600; }
-.mode-pill.guided { background: var(--sky); color: #284A69; }
-.mode-pill.solo { background: var(--accent-soft); color: var(--accent-ink); }
+.mode-pill.guided { background: var(--sky); color: var(--accent); }
+.mode-pill.solo { background: var(--ink); color: #fff; }
 
 /* ---------- Welcome ---------- */
 .hero-emblem { width: 64px; height: 64px; margin-bottom: 6px; }
 .video-slot {
   aspect-ratio: 16 / 9; border-radius: var(--radius); overflow: hidden;
-  background: linear-gradient(135deg, #EAE2D7, var(--sky));
+  background: linear-gradient(135deg, #EDE5FB, var(--sky));
   display: grid; place-items: center; text-align: center; padding: 16px; color: var(--ink-2);
 }
 .video-slot .slot-label { font-size: 13px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
-.script-block { font-family: var(--display); font-size: 18px; line-height: 1.55; color: var(--ink-2); }
+.script-block { font-family: var(--sans); font-size: 17.5px; line-height: 1.55; color: var(--ink-2); }
 .outcomes { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; counter-reset: o; }
 .outcomes li { display: flex; gap: 12px; align-items: baseline; font-size: 16px; }
 .outcomes li::before {
@@ -276,7 +279,7 @@ legend { font-weight: 600; font-size: 15.5px; margin-bottom: 8px; padding: 0; }
 /* ---------- Cinema ---------- */
 .cinema {
   width: 100vw; margin-left: calc(50% - 50vw); margin-top: 22px;
-  background: #1E2833; padding: 24px 0;
+  background: var(--ink); padding: 24px 0;
 }
 .cinema-frame { position: relative; max-width: 1040px; margin: 0 auto; aspect-ratio: 2.39 / 1; background: #000; overflow: hidden; }
 @media (min-width: 1072px) { .cinema-frame { border-radius: var(--radius-lg); } }
@@ -289,9 +292,9 @@ legend { font-weight: 600; font-size: 15.5px; margin-bottom: 8px; padding: 0; }
   text-shadow: 0 1px 12px rgba(0,0,0,.45);
   font-variant-numeric: tabular-nums;
 }
-.wordcount .num { font-family: var(--display); font-style: italic; font-size: clamp(26px, 5vw, 46px); line-height: 1; transition: color .3s; }
+.wordcount .num { font-family: var(--display); font-weight: 600; font-size: clamp(26px, 5vw, 46px); line-height: 1; transition: color .3s; }
 .wordcount .of { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; opacity: .8; }
-.wordcount.complete .num { color: #FFD9C2; }
+.wordcount.complete .num { color: #D9C7FA; }
 .play-cover {
   position: absolute; inset: 0; display: grid; place-items: center; border: 0; padding: 0;
   background: radial-gradient(60% 80% at 50% 50%, rgba(0,0,0,.15), rgba(0,0,0,.5));
@@ -299,13 +302,13 @@ legend { font-weight: 600; font-size: 15.5px; margin-bottom: 8px; padding: 0; }
 }
 .play-cover span { display: inline-flex; align-items: center; gap: 12px; background: rgba(255,255,255,.14); border: 1px solid rgba(255,255,255,.35); padding: 12px 22px; border-radius: 999px; font-weight: 600; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
 .play-cover[hidden] { display: none; }
-.cinema-caption { max-width: 1040px; margin: 12px auto 0; padding: 0 16px; color: #C9CED6; font-size: 13.5px; display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.cinema-caption { max-width: 1040px; margin: 12px auto 0; padding: 0 16px; color: #D9CFEF; font-size: 13.5px; display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
 details.transcript { margin-top: 18px; }
 details.transcript summary { cursor: pointer; font-weight: 600; min-height: 44px; display: flex; align-items: center; list-style: none; }
 details.transcript summary::-webkit-details-marker { display: none; }
 details.transcript summary::before { content: ""; width: 8px; height: 8px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(-45deg); margin: 0 12px 0 4px; transition: transform .2s var(--ease); }
 details.transcript[open] summary::before { transform: rotate(45deg); }
-details.transcript p { font-family: var(--display); font-size: 18px; line-height: 1.6; color: var(--ink-2); }
+details.transcript p { font-family: var(--sans); font-size: 17px; line-height: 1.6; color: var(--ink-2); }
 
 /* ---------- Retell ---------- */
 .counter-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 8px; font-size: 14.5px; }
@@ -319,7 +322,7 @@ details.transcript p { font-family: var(--display); font-size: 18px; line-height
   border: 1.5px solid var(--line); background: var(--surface); text-align: left; width: 100%; cursor: pointer;
   transition: border-color .2s, box-shadow .2s, background .2s;
 }
-.part-row[aria-pressed="true"] { border-color: var(--focus); box-shadow: 0 0 0 3px rgba(42,99,168,.14); }
+.part-row[aria-pressed="true"] { border-color: var(--focus); box-shadow: 0 0 0 3px rgba(105,24,235,.14); }
 .swatch { flex: none; width: 14px; height: 14px; border-radius: 4px; }
 .part-row .part-text { flex: 1; min-width: 0; }
 .part-row .part-name { font-weight: 600; display: block; }
@@ -348,7 +351,7 @@ details.transcript p { font-family: var(--display); font-size: 18px; line-height
 @media (min-width: 560px) { .grade-grid { grid-template-columns: 1fr 1fr; } }
 .grade { padding: 14px 16px; border-radius: 14px; background: var(--surface-2); border: 1px solid var(--line); }
 .grade .g-label { font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
-.grade .g-value { font-family: var(--display); font-size: 28px; line-height: 1.2; margin-top: 4px; }
+.grade .g-value { font-family: var(--display); font-weight: 600; font-size: 28px; line-height: 1.2; margin-top: 4px; }
 .grade ul { list-style: none; padding: 0; margin: 6px 0 0; font-size: 15px; }
 .grade li { display: flex; gap: 8px; align-items: center; }
 
@@ -356,22 +359,22 @@ details.transcript p { font-family: var(--display); font-size: 18px; line-height
 .phone-wrap { display: flex; flex-direction: column; align-items: center; gap: 10px; }
 .illus-label { font-size: 12.5px; color: var(--muted); display: inline-flex; gap: 6px; align-items: center; text-align: center; }
 .phone {
-  width: 100%; max-width: 330px; border-radius: 40px; padding: 10px; background: #1F2731;
+  width: 100%; max-width: 330px; border-radius: 40px; padding: 10px; background: #1F0151;
   box-shadow: var(--shadow-lg);
 }
 .phone-screen {
-  position: relative; border-radius: 31px; overflow: hidden; background: #FCFAF7; min-height: 560px;
+  position: relative; border-radius: 31px; overflow: hidden; background: #FBFAFD; min-height: 560px;
   display: flex; flex-direction: column;
 }
 .phone-status { display: flex; justify-content: space-between; padding: 12px 22px 6px; font-size: 12px; font-weight: 600; color: var(--ink); }
-.phone-notch { position: absolute; top: 8px; left: 50%; width: 90px; height: 24px; margin-left: -45px; border-radius: 14px; background: #1F2731; }
+.phone-notch { position: absolute; top: 8px; left: 50%; width: 90px; height: 24px; margin-left: -45px; border-radius: 14px; background: #1F0151; }
 .app { flex: 1; display: flex; flex-direction: column; padding: 8px 16px 18px; animation: enter .22s var(--ease) both; }
 .app-top { display: flex; align-items: center; justify-content: space-between; margin: 6px 0 14px; }
 .app-title { font-weight: 700; font-size: 17px; }
 .app-back { border: 0; background: none; padding: 6px; min-width: 44px; min-height: 44px; font-size: 14px; color: var(--ink-2); cursor: pointer; text-align: left; }
 .app-card {
   border-radius: 18px; padding: 16px; color: #fff; position: relative; overflow: hidden;
-  background: linear-gradient(135deg, #2F4A62 0%, #3F6684 55%, #C27552 120%);
+  background: linear-gradient(135deg, #1F0151 0%, #3B0C8F 55%, #6918EB 115%);
 }
 .app-card .ac-label { font-size: 12px; opacity: .85; letter-spacing: .06em; text-transform: uppercase; }
 .app-card .ac-num { font-size: 15px; letter-spacing: .14em; margin-top: 18px; }
@@ -409,7 +412,7 @@ details.transcript p { font-family: var(--display); font-size: 18px; line-height
 .spinner { width: 36px; height: 36px; border-radius: 50%; border: 3px solid var(--line); border-top-color: var(--accent); animation: spin .8s linear infinite; margin: 0 auto 12px; }
 @keyframes spin { to { transform: rotate(360deg); } }
 .verdict { border-radius: 18px; padding: 18px 16px; text-align: center; }
-.verdict.ok { background: var(--good-soft); color: #1F4A36; }
+.verdict.ok { background: var(--good-soft); color: #0B4F3A; }
 .verdict.no { background: var(--bad-soft); color: #6E2419; }
 .verdict .v-icon { width: 44px; height: 44px; margin: 0 auto 8px; }
 .verdict .v-title { font-weight: 700; font-size: 20px; }
@@ -442,7 +445,7 @@ details.transcript p { font-family: var(--display); font-size: 18px; line-height
 
 /* ---------- Guided highlighting ---------- */
 .guide-ring { position: relative; z-index: 2; box-shadow: 0 0 0 3px #fff, 0 0 0 6px var(--focus) !important; animation: ring 1.6s var(--ease) infinite; }
-@keyframes ring { 0%,100% { box-shadow: 0 0 0 3px #fff, 0 0 0 6px var(--focus); } 50% { box-shadow: 0 0 0 3px #fff, 0 0 0 10px rgba(42,99,168,.35); } }
+@keyframes ring { 0%,100% { box-shadow: 0 0 0 3px #fff, 0 0 0 6px var(--focus); } 50% { box-shadow: 0 0 0 3px #fff, 0 0 0 10px rgba(105,24,235,.35); } }
 .tip {
   position: relative; margin: 12px 0 4px; padding: 9px 12px; border-radius: 12px;
   background: var(--focus); color: #fff; font-size: 14px; font-weight: 500; line-height: 1.35;
@@ -457,7 +460,7 @@ details.transcript p { font-family: var(--display); font-size: 18px; line-height
 @media (min-width: 720px) { .sim-grid { grid-template-columns: 330px 1fr; align-items: start; } }
 .scenario { border-left: 4px solid var(--accent); }
 .scenario .s-label { font-size: 13px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--accent-ink); }
-.scenario .s-text { font-family: var(--display); font-size: 21px; line-height: 1.35; margin-top: 4px; }
+.scenario .s-text { font-family: var(--display); font-size: 20px; font-weight: 500; line-height: 1.4; margin-top: 4px; }
 .round-dots { display: flex; gap: 6px; align-items: center; font-size: 13.5px; color: var(--muted); }
 .round-dots i { width: 8px; height: 8px; border-radius: 50%; background: var(--line-strong); }
 .round-dots i.on { background: var(--accent); }
@@ -466,7 +469,7 @@ details.transcript p { font-family: var(--display); font-size: 18px; line-height
 .money { display: flex; align-items: center; border: 1.5px solid var(--field-border); border-radius: 14px; background: #fff; overflow: hidden; max-width: 220px; }
 .money span { padding: 0 4px 0 14px; font-weight: 600; color: var(--muted); }
 .money input { border: 0; min-height: 48px; padding: 10px 14px 10px 2px; width: 100%; background: transparent; }
-.money:focus-within { border-color: var(--focus); box-shadow: 0 0 0 4px rgba(42,99,168,.15); }
+.money:focus-within { border-color: var(--focus); box-shadow: 0 0 0 4px rgba(105,24,235,.15); }
 
 /* Sort */
 .pool { display: flex; flex-wrap: wrap; gap: 8px; min-height: 54px; padding: 12px; border-radius: var(--radius); background: var(--surface-2); border: 1.5px dashed var(--line-strong); }
@@ -475,10 +478,10 @@ details.transcript p { font-family: var(--display); font-size: 18px; line-height
   touch-action: none; user-select: none; -webkit-user-select: none;
   display: inline-flex; align-items: center; gap: 8px; min-height: 44px;
   padding: 9px 14px; border-radius: 12px; background: #fff; border: 1.5px solid var(--line-strong);
-  font-weight: 600; font-size: 15px; cursor: grab; box-shadow: 0 1px 2px rgba(30,40,51,.06);
+  font-weight: 600; font-size: 15px; cursor: grab; box-shadow: 0 1px 2px rgba(31,1,81,.06);
   transition: border-color .2s, box-shadow .2s, transform .2s;
 }
-.sort-card[aria-pressed="true"] { border-color: var(--focus); box-shadow: 0 0 0 3px rgba(42,99,168,.2); transform: translateY(-1px); }
+.sort-card[aria-pressed="true"] { border-color: var(--focus); box-shadow: 0 0 0 3px rgba(105,24,235,.2); transform: translateY(-1px); }
 .sort-card .grip { width: 10px; height: 16px; opacity: .45; background: radial-gradient(circle, currentColor 1.4px, transparent 1.6px) 0 0 / 5px 5px; }
 .sort-card.right { border-color: var(--good); }
 .sort-card.wrong { border-color: var(--bad); background: #FFF7F5; }
@@ -496,8 +499,21 @@ details.transcript p { font-family: var(--display); font-size: 18px; line-height
 .bin.check .bin-title { color: var(--warn); }
 .bin-drop { border: 0; border-radius: 999px; padding: 10px 16px; min-height: 44px; background: #fff; font-weight: 600; font-size: 13.5px; cursor: pointer; }
 .bin-drop:disabled { visibility: hidden; }
-.bin.over { border-color: var(--focus); box-shadow: 0 0 0 3px rgba(42,99,168,.15); }
+.bin.over { border-color: var(--focus); box-shadow: 0 0 0 3px rgba(105,24,235,.15); }
 .bin-items { display: flex; flex-wrap: wrap; gap: 6px; }
+.deal { min-height: 72px; display: grid; place-items: center; }
+.deal-card {
+  font-weight: 600;
+  touch-action: none; user-select: none; -webkit-user-select: none; cursor: grab;
+  display: inline-flex; align-items: center; gap: 12px; padding: 18px 26px; border-radius: 18px;
+  background: #fff; border: 1.5px solid var(--field-border); box-shadow: var(--shadow);
+  font-family: var(--display); font-size: 22px; animation: enter .22s var(--ease) both;
+}
+.deal-card .grip { width: 10px; height: 18px; opacity: .45; background: radial-gradient(circle, currentColor 1.4px, transparent 1.6px) 0 0 / 5px 5px; }
+.bin-pick { display: flex; align-items: center; gap: 8px; width: 100%; min-height: 48px; padding: 10px 12px; border: 0; border-radius: 12px; background: rgba(255,255,255,.7); font-weight: 700; font-size: 15.5px; cursor: pointer; text-align: left; }
+.bin.use .bin-pick { color: var(--good); } .bin.dont .bin-pick { color: var(--bad); } .bin.check .bin-pick { color: var(--warn); }
+.bin-pick:hover { background: #fff; }
+.chip { display: inline-block; padding: 4px 10px; border-radius: 999px; background: rgba(255,255,255,.8); font-size: 13.5px; font-weight: 600; color: var(--ink-2); }
 .card-reason { flex-basis: 100%; font-size: 13px; color: var(--ink-2); margin: -2px 0 2px 2px; }
 
 /* Chat */
@@ -562,8 +578,8 @@ details.transcript p { font-family: var(--display); font-size: 18px; line-height
       <span class="brand">
         <svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true">
           <g transform="translate(20 20)">
-            <g fill="#F0C2AD"><ellipse cx="0" cy="-10" rx="6" ry="10"/><ellipse cx="0" cy="-10" rx="6" ry="10" transform="rotate(72)"/><ellipse cx="0" cy="-10" rx="6" ry="10" transform="rotate(144)"/><ellipse cx="0" cy="-10" rx="6" ry="10" transform="rotate(216)"/><ellipse cx="0" cy="-10" rx="6" ry="10" transform="rotate(288)"/></g>
-            <circle r="5" fill="#B04F29"/>
+            <g fill="#C9B3F5"><ellipse cx="0" cy="-10" rx="6" ry="10"/><ellipse cx="0" cy="-10" rx="6" ry="10" transform="rotate(72)"/><ellipse cx="0" cy="-10" rx="6" ry="10" transform="rotate(144)"/><ellipse cx="0" cy="-10" rx="6" ry="10" transform="rotate(216)"/><ellipse cx="0" cy="-10" rx="6" ry="10" transform="rotate(288)"/></g>
+            <circle r="5" fill="#5411C1"/>
           </g>
         </svg>
         <span>
@@ -614,7 +630,7 @@ const CONFIG = {
 
   welcome: {
     introVideoUrl: null,                 // optional short welcome video
-    introScript: '[JAMES INTRO SCRIPT] Hi, I\'m James. In the next 13 minutes you\'ll learn to tell Pathfinder\'s story, check an item before a family buys it, explain the guarantee honestly, and walk a parent through getting the card. You already know these families. This course gives you the words.',
+    introScript: 'Hi, I\'m James, head of special projects at Pathfinder, and today this is my special project. Welcome to the certification. I know you\'re busy running your business, so I\'ve used more than 50 years of learning science, plus my certifications with Google and in course design, to make this short, sweet and to the point. In as little as 13 minutes, you\'ll be able to tell the Pathfinder story in exactly 100 words, pre-approve purchases using Pathfinder\'s process, explain what the card is for, and reimburse purchases. Doing this shows your commitment to this partnership and to your customers. See you in the first video.',
   },
 
   partnerTypes: [
@@ -629,11 +645,10 @@ const CONFIG = {
     targetWords: 100,
     // [STORY_TEXT] The reference story. Each chunk is tagged with the story part it covers.
     reference: [
-      { part: 'person',     text: 'Maria homeschools three kids in Mesa with an Arizona ESA.' },
-      { part: 'problem',    text: 'Every month she fronts hundreds of dollars for books, tutoring and co-op fees, then waits weeks for the state to pay her back.' },
-      { part: 'person',     text: 'One night a reimbursement got rejected over a missing receipt, and she sat at the kitchen table wondering if the scholarship was worth the stress.' },
-      { part: 'pathfinder', text: 'Pathfinder gives families like hers a Visa charge card for education vendors. Before she buys, the app checks whether the item is ESA-allowable. She pays with the card, the receipt attaches itself, and Pathfinder handles the reimbursement.' },
-      { part: null,         text: 'Maria gets her evenings back.' },
+      { part: 'person',     text: 'Once upon a time, a mom decided to educate her kids at home.' },
+      { part: 'problem',    text: 'She tried to reimburse the table she bought from Ikea and curriculum, but it was a complicated process. "Why is this so difficult?" she wondered.' },
+      { part: 'pathfinder', text: 'She went looking for a better solution and found Pathfinder. A couple guys from London who were trying to make it easy to know what you can buy with ESA funds, and then get them reimbursed. They decided on a card' },
+      { part: null,         text: 'and she said, what if me and my mom friends deliver the cards to each new customer? Eureka! Pathfinder was born.' },
     ],
   },
 
@@ -641,11 +656,11 @@ const CONFIG = {
     band: [90, 110],
     parts: [
       { id: 'problem',    label: 'The problem',            description: 'ESA reimbursement is hard: fronting money, waiting, rejections.',
-        keywords: ['reimburs', 'front', 'wait', 'weeks', 'pay back', 'paid back', 'pay her back', 'pay them back', 'out of pocket', 'reject', 'receipt', 'slow', 'hard', 'stress', 'upfront', 'up front'] },
+        keywords: ['reimburs', 'front', 'wait', 'weeks', 'pay back', 'paid back', 'pay her back', 'pay them back', 'out of pocket', 'reject', 'receipt', 'slow', 'hard', 'stress', 'upfront', 'up front', 'complicated', 'difficult', 'confusing'] },
       { id: 'person',     label: 'The person and moment',  description: 'A parent struggling with it, at a specific moment.',
-        keywords: ['parent', 'mom', 'mother', 'dad', 'father', 'family', 'families', 'maria', 'she ', 'he ', 'kitchen', 'night', 'homeschool', 'kids', 'children'] },
-      { id: 'pathfinder', label: 'What Pathfinder does',   description: 'Card + pre-approval + handles reimbursement.',
-        keywords: ['card', 'pre-approv', 'preapprov', 'approv', 'app', 'check', 'allowable', 'scan', 'handles', 'reimburs'] },
+        keywords: ['parent', 'mom', 'mother', 'dad', 'father', 'family', 'families', 'maria', 'she ', 'he ', 'kitchen', 'night', 'homeschool', 'kids', 'children', 'home'] },
+      { id: 'pathfinder', label: 'What Pathfinder does',   description: 'Card + knowing what you can buy (pre-approval) + reimbursement.',
+        keywords: ['card', 'pre-approv', 'preapprov', 'approv', 'app', 'check', 'allowable', 'scan', 'handles', 'reimburs', 'know what', 'easy', 'pathfinder'] },
     ],
   },
 
@@ -658,18 +673,39 @@ const CONFIG = {
   ],
 
   // Simulation A — Pre-approval scan. Verdicts are editable here.
+  // Guided and scored runs use different items in the same format.
   simA: {
-    rounds: [
+    guided: [
+      { item: 'Handwriting practice workbook', verdict: 'allowable', verdictLabel: 'Likely allowable', category: 'Curriculum',
+        advice: [
+          { text: 'It came back likely allowable. You can pay with your Pathfinder card.', correct: true },
+          { text: 'Pay cash for now and ask the state to pay you back later.', correct: false, why: 'The app pre-approved it, so the card is the right tool. Paying cash brings back the fronting problem.' },
+          { text: 'Practice workbooks don\'t count. Leave it on the shelf.', correct: false, why: 'The result screen says likely allowable (curriculum).' },
+        ] },
+      { item: 'Video game console', verdict: 'not', verdictLabel: 'Not allowable', category: 'Entertainment hardware',
+        advice: [
+          { text: 'Go for it. The guarantee covers anything you buy with the card.', correct: false, why: 'The guarantee only covers items the app pre-approves. This one came back not allowable.' },
+          { text: 'Call it a coding tool and put it on the card.', correct: false, why: 'A new label doesn\'t change ESA rules, and it puts the family at risk.' },
+          { text: 'Don\'t use the Pathfinder card for this. The app says it isn\'t ESA-allowable.', correct: true },
+        ] },
+      { item: 'Restaurant gift card', verdict: 'not', verdictLabel: 'Not allowable', category: 'Gift cards',
+        advice: [
+          { text: 'Gift cards aren\'t ESA-allowable, so don\'t put this on the Pathfinder card.', correct: true },
+          { text: 'It\'s for a field-trip lunch, so it should be fine.', correct: false, why: 'The result screen says not allowable (gift cards).' },
+          { text: 'Buy two smaller ones so they slip through.', correct: false, why: 'That hides a non-allowable purchase. Advise paying another way.' },
+        ] },
+    ],
+    solo: [
       { item: 'Singapore Math workbook', verdict: 'allowable', verdictLabel: 'Likely allowable', category: 'Curriculum',
         advice: [
-          { text: 'It came back likely allowable. Go ahead and pay with your Pathfinder card.', correct: true },
+          { text: 'Good news, the app says likely allowable. Go ahead and pay with your Pathfinder card.', correct: true },
           { text: 'Pay with your own card first, then send the receipt to the state.', correct: false, why: 'The item is pre-approved, so the card is the right tool. Paying personally brings back the fronting problem.' },
           { text: 'Workbooks usually aren\'t allowed. I\'d skip it.', correct: false, why: 'The verdict on the result screen says likely allowable (curriculum).' },
         ] },
       { item: 'Television', verdict: 'not', verdictLabel: 'Not allowable', category: 'Entertainment hardware',
         advice: [
-          { text: 'Go ahead and buy it. If the state rejects it, the guarantee covers you.', correct: false, why: 'The guarantee only applies to items the app pre-approves. This one came back not allowable.' },
-          { text: 'Don\'t put this on the Pathfinder card. It isn\'t ESA-allowable, so it wouldn\'t be reimbursed.', correct: true },
+          { text: 'Buy it anyway. If the state rejects it, the guarantee covers you.', correct: false, why: 'The guarantee only applies to items the app pre-approves. This one came back not allowable.' },
+          { text: 'Skip the Pathfinder card for this one. It isn\'t ESA-allowable, so it wouldn\'t be reimbursed.', correct: true },
           { text: 'Put it on the card and describe it as a learning tool.', correct: false, why: 'Relabeling an item doesn\'t change ESA rules, and it puts the family at risk.' },
         ] },
       { item: 'Groceries', verdict: 'not', verdictLabel: 'Not allowable', category: 'Food',
@@ -691,21 +727,25 @@ const CONFIG = {
   guarantee: { perItemCap: 2500, perYearCap: 10000 },
   simB: {
     guided: [
-      { type: 'amount', prompt: 'A $3,200 laptop was pre-approved in the app. The state later rejects it. How much does Pathfinder cover?', answer: 2500,
-        whyPrompt: 'In one line, why that amount?', whyKeywords: ['cap', '2,500', '2500', 'per item', 'per-item', 'limit', 'max', 'up to'],
+      { type: 'amount', prompt: 'The app pre-approved a $3,200 laptop. A month later, the state denies the reimbursement. What does Pathfinder pay?', answer: 2500,
+        answerLabel: 'Pathfinder pays',
+        whyPrompt: 'Explain the amount in one line.', whyKeywords: ['cap', '2,500', '2500', 'per item', 'per-item', 'limit', 'max', 'up to'],
         tip: 'Pre-approved means the guarantee applies, but only up to the per-item cap.',
         whyTip: 'Name the per-item cap.', reviewWhere: 'the per-item cap in the guarantee rules' },
-      { type: 'who', prompt: 'A $150 purchase was never pre-approved. The state rejects it. Who owes the $150?', answer: 'family',
-        whyPrompt: 'In one line, why?', whyKeywords: ['pre-approv', 'preapprov', 'approv', 'guarantee', 'check', 'scan', 'never'],
+      { type: 'who', prompt: 'A family skipped the app and bought a $150 item. The state turns it down. Who is responsible for the $150?', answer: 'family',
+        answerLabel: 'Who is responsible?',
+        whyPrompt: 'Explain in one line.', whyKeywords: ['pre-approv', 'preapprov', 'approv', 'guarantee', 'check', 'scan', 'never', 'skip', 'app'],
         tip: 'No pre-approval means no guarantee.',
         whyTip: 'Say what was missing before the purchase.', reviewWhere: 'the rule about purchases without pre-approval' },
     ],
     solo: [
       { type: 'amount', prompt: 'A $4,000 purchase was pre-approved in the app. The state later rejects it. How much does Pathfinder cover?', answer: 2500,
+        answerLabel: 'Pathfinder covers',
         whyPrompt: 'In one line, why that amount?', whyKeywords: ['cap', '2,500', '2500', 'per item', 'per-item', 'limit', 'max', 'up to'],
         reviewWhere: 'the per-item cap: Pathfinder covers a rejected pre-approved item up to $2,500' },
       { type: 'who', prompt: 'A $300 purchase was never pre-approved. The state rejects it. Who owes the $300?', answer: 'family',
-        whyPrompt: 'In one line, why?', whyKeywords: ['pre-approv', 'preapprov', 'approv', 'guarantee', 'check', 'scan', 'never'],
+        answerLabel: 'Who owes it?',
+        whyPrompt: 'In one line, why?', whyKeywords: ['pre-approv', 'preapprov', 'approv', 'guarantee', 'check', 'scan', 'never', 'skip', 'app'],
         reviewWhere: 'the rule that only pre-approved purchases carry the guarantee' },
     ],
     whoOptions: [
@@ -715,94 +755,180 @@ const CONFIG = {
     ],
   },
 
-  // Simulation C — Use / Don't use / Check first.
+  // Simulation C — Use / Don't use / Check first. One card at a time.
   // VERIFY AGAINST PATHFINDER'S PRE-APPROVAL TOOL BEFORE LAUNCH.
   simC: {
     columns: [
-      { id: 'use',   label: 'Use the card',       short: 'Use' },
-      { id: 'dont',  label: 'Don\'t use the card', short: 'Don\'t use' },
-      { id: 'check', label: 'Check first',        short: 'Check first' },
+      { id: 'use',   label: 'Use the card' },
+      { id: 'dont',  label: 'Don\'t use the card' },
+      { id: 'check', label: 'Check first' },
     ],
-    items: [
-      { id: 'curric',   label: 'Math curriculum',        column: 'use',   reason: 'Curriculum is a core ESA expense.' },
-      { id: 'tutor',    label: 'Weekly tutoring',        column: 'use',   reason: 'Tutoring by a qualified provider is a core ESA expense.' },
-      { id: 'tuition',  label: 'Private school tuition', column: 'use',   reason: 'Tuition at a qualified school is a core ESA expense.' },
-      { id: 'tv',       label: 'Television',             column: 'dont',  reason: 'Entertainment hardware isn\'t allowable.' },
-      { id: 'food',     label: 'Groceries',              column: 'dont',  reason: 'Food isn\'t allowable.' },
-      { id: 'gift',     label: 'Gift cards',             column: 'dont',  reason: 'Gift cards can\'t be traced to an allowable item.' },
-      { id: 'furn',     label: 'Desk and chair',         column: 'check', reason: 'Furniture depends on the details. Scan it first.' },
-      { id: 'laptop',   label: 'Laptop',                 column: 'check', reason: 'Computers depend on the details and limits. Scan it first.' },
+    guided: [
+      { id: 'sci',      label: 'Science textbook',        column: 'use',   reason: 'Textbooks are a core ESA expense.' },
+      { id: 'algebra',  label: 'Online algebra course',   column: 'use',   reason: 'Courses from an education provider are a core ESA expense.' },
+      { id: 'speech',   label: 'Speech therapy sessions', column: 'use',   reason: 'Educational therapies from a licensed provider are allowable.' },
+      { id: 'console',  label: 'Video game console',      column: 'dont',  reason: 'Entertainment hardware isn\'t allowable.' },
+      { id: 'meals',    label: 'Restaurant meals',        column: 'dont',  reason: 'Food isn\'t allowable.' },
+      { id: 'movies',   label: 'Movie tickets',           column: 'dont',  reason: 'Entertainment isn\'t allowable.' },
+      { id: 'tablet',   label: 'Tablet',                  column: 'check', reason: 'Devices depend on the details and limits. Scan it first.' },
+      { id: 'shelf',    label: 'Bookshelf',               column: 'check', reason: 'Furniture depends on the details. Scan it first.' },
+    ],
+    solo: [
+      { id: 'curric',   label: 'Math curriculum',         column: 'use',   reason: 'Curriculum is a core ESA expense.' },
+      { id: 'tutor',    label: 'Weekly tutoring',         column: 'use',   reason: 'Tutoring by a qualified provider is a core ESA expense.' },
+      { id: 'tuition',  label: 'Private school tuition',  column: 'use',   reason: 'Tuition at a qualified school is a core ESA expense.' },
+      { id: 'tv',       label: 'Television',              column: 'dont',  reason: 'Entertainment hardware isn\'t allowable.' },
+      { id: 'food',     label: 'Groceries',               column: 'dont',  reason: 'Food isn\'t allowable.' },
+      { id: 'gift',     label: 'Gift cards',              column: 'dont',  reason: 'Gift cards can\'t be traced to an allowable item.' },
+      { id: 'furn',     label: 'Desk and chair',          column: 'check', reason: 'Furniture depends on the details. Scan it first.' },
+      { id: 'laptop',   label: 'Laptop',                  column: 'check', reason: 'Computers depend on the details and limits. Scan it first.' },
     ],
   },
 
   // Simulation D — Request a reimbursement.
   simD: {
-    purchases: [
-      { id: 'tutor',  title: 'Bright Path Tutoring', sub: 'Mar 4 · Needs details', amount: '$180.00', target: true },
-      { id: 'books',  title: 'Desert Books',         sub: 'Feb 27 · Submitted',    amount: '$64.20' },
-      { id: 'coop',   title: 'Sonoran Co-op',        sub: 'Feb 12 · Reimbursed',   amount: '$95.00' },
-    ],
-    courses: ['Math', 'Reading', 'Science', 'Other'],
-    correctCourse: 'Math',
+    courses: ['Math', 'Reading', 'Science', 'Art', 'Other'],
+    guided: {
+      scenario: 'Dana paid Bright Path Tutoring $180 for four math tutoring sessions. Get the reimbursement request submitted.',
+      purchases: [
+        { id: 'tutor',  title: 'Bright Path Tutoring', sub: 'Mar 4 · Needs details', amount: '$180.00', item: 'Math tutoring · 4 sessions', date: 'Mar 4', target: true },
+        { id: 'books',  title: 'Desert Books',         sub: 'Feb 27 · Submitted',    amount: '$64.20' },
+        { id: 'coop',   title: 'Sonoran Co-op',        sub: 'Feb 12 · Reimbursed',   amount: '$95.00' },
+      ],
+      correctCourse: 'Math',
+    },
+    solo: {
+      scenario: 'Dana\'s son started reading lessons with Desert Readers. She paid $210 with the card. Get the reimbursement request submitted.',
+      purchases: [
+        { id: 'lab',     title: 'Canyon Science Lab',  sub: 'Apr 2 · Reimbursed',    amount: '$75.00' },
+        { id: 'reading', title: 'Desert Readers',      sub: 'Apr 9 · Needs details', amount: '$210.00', item: 'Reading lessons · 6 sessions', date: 'Apr 9', target: true },
+        { id: 'art',     title: 'Saguaro Art Supply',  sub: 'Mar 28 · Submitted',    amount: '$42.00' },
+      ],
+      correctCourse: 'Reading',
+    },
     tips: {
       list: 'Open the purchase that needs details.',
       receipt: 'First, confirm the receipt is attached.',
-      course: 'Add the required detail: course of study.',
+      course: 'Add the required detail: match the course of study to what was bought.',
       submit: 'Everything\'s in. Submit the request.',
       status: 'Done. This is what the parent sees next.',
     },
   },
 
-  // Simulation E — The parent conversation.
+  // Simulation E — The parent conversation, following the 5-step framework:
+  // intro, qualifying question, short story, presentation and close, rehash.
+  // Guided and scored runs use different lines for the same five steps.
   simE: {
     parentName: 'Dana',
-    openings: {
-      coop:   'I keep fronting money for co-op fees and waiting weeks to get it back.',
-      school: 'Tuition is due before my ESA money comes through, and every semester I\'m scrambling.',
-      vendor: 'I want your curriculum, but I can\'t keep paying up front and waiting on the state.',
+    steps: ['Intro', 'Qualifying question', 'Short story', 'Presentation and close', 'Rehash'],
+    guided: {
+      openings: {
+        coop:   'I keep fronting money for co-op fees and waiting weeks to get it back.',
+        school: 'Tuition is due before my ESA money comes through, and every semester I\'m scrambling.',
+        vendor: 'I want your curriculum, but I can\'t keep paying up front and waiting on the state.',
+      },
+      turns: [
+        { skill: 'Intro', guide: 'Start warm. Thank them and make it about helping them.',
+          options: [
+            { text: 'Thanks so much for coming to me about this. My whole job is helping you, so I\'m glad you did.', correct: true,
+              reaction: 'Thank you. I just don\'t know what to do anymore.', debrief: 'Warm, and it puts their problem first.' },
+            { text: 'Yeah, ESA is a mess. Everyone complains about it.', correct: false,
+              reaction: 'So… there\'s nothing to do?', debrief: 'Agreeing with the frustration doesn\'t move them forward. Thank them and make it about helping them.' },
+            { text: 'You should get the Pathfinder card.', correct: false,
+              reaction: 'Um, what\'s that?', debrief: 'Too fast. Connect first, then ask your qualifying question.' },
+          ] },
+        { parent: 'Thank you. I just don\'t know what to do anymore.', skill: 'Qualifying question', guide: 'Ask the qualifying question before you pitch anything.',
+          options: [
+            { text: 'Let me tell you everything about Pathfinder.', correct: false,
+              reaction: 'Okay… is it for me, though?', debrief: 'You skipped the qualifying question, so you don\'t know yet if it fits them.' },
+            { text: 'Can I ask, are you already registered for ESA?', correct: true,
+              reaction: 'Yes, we\'ve been on it for two years.', debrief: 'One clear question that tells you whether Pathfinder fits.' },
+            { text: 'Have you thought about leaving ESA?', correct: false,
+              reaction: 'No, we need it.', debrief: 'Wrong direction. Ask whether they\'re registered for ESA.' },
+          ] },
+        { parent: 'Yes, we\'ve been on it for two years.', skill: 'Short story', guide: 'Tell the short story: what Pathfinder does for them.',
+          options: [
+            { text: 'The reason I ask: Pathfinder is a card for ESA families. Before you buy, it tells you if you\'ll get reimbursed, and then it handles the reimbursement for you. It makes the whole thing simple.', correct: true,
+              reaction: 'Wait, it does the reimbursement part too?', debrief: 'Short and about them: the card, knowing before you buy, and the reimbursement handled.' },
+            { text: 'Great. Pathfinder covers anything ESA won\'t.', correct: false,
+              reaction: 'Anything? That sounds too good to be true.', debrief: 'Overpromise. Pathfinder covers pre-approved items, up to the caps.' },
+            { text: 'Great. Pathfinder is a London-founded fintech company with a proprietary interchange model.', correct: false,
+              reaction: 'I\'m not sure what that means for me.', debrief: 'Too much about the company. The story is what it does for the parent.' },
+          ] },
+        { parent: 'That sounds amazing. How does it work, and what if the state says no?', skill: 'Presentation and close', guide: 'Present: check first, the guarantee with its cap, then ask for the close.',
+          options: [
+            { text: 'Everything is covered, no matter what. Want the link?', correct: false,
+              reaction: 'Everything? Even things I don\'t check?', debrief: 'Overpromise. Only pre-approved items are covered, up to $2,500 per item and $10,000 a year.' },
+            { text: 'It\'s pretty simple. Let me know if you ever want to try it.', correct: false,
+              reaction: 'Okay, maybe someday.', debrief: 'No close. Ask for their email so you can send the sign-up link.' },
+            { text: 'Scan or search an item in the app before you buy. If it\'s pre-approved and the state rejects it later, Pathfinder covers it, up to $2,500 per item. What\'s the best email to send you the sign-up link?', correct: true,
+              reaction: 'dana.r@example.com. Sending it now? I\'ll do it right here.', debrief: 'Pre-approval first, the guarantee with its cap, then a clear close.' },
+          ] },
+        { parent: 'Okay, I\'m filling it in now… done!', skill: 'Rehash', guide: 'Rehash: ask who else it could help.',
+          options: [
+            { text: 'Great, see you later!', correct: false,
+              reaction: 'Bye!', debrief: 'You missed the rehash. Ask who else it could help.' },
+            { text: 'You\'re all set. By the way, is there anyone else you think this could help? It makes ESA so much easier, and I want to spread it around.', correct: true,
+              reaction: 'Oh, my sister-in-law, for sure. I\'ll send her your way.', debrief: 'The rehash: you asked for a referral while they were happy.' },
+            { text: 'Try not to tell too many people about it.', correct: false,
+              reaction: 'Oh… okay?', debrief: 'The opposite of a rehash. Ask who else it could help.' },
+          ] },
+      ],
     },
-    turns: [
-      { skill: 'Tells the story\'s core',
-        options: [
-          { text: 'A lot of families feel that. Pathfinder is a Visa charge card for ESA families. You pay vendors with the card, the app checks items first, and Pathfinder handles the reimbursement.', correct: true,
-            reaction: 'Oh. So I\'m not fronting the money myself?', debrief: 'You named the problem and what Pathfinder does: card, pre-approval, reimbursement.' },
-          { text: 'Honestly, it gets easier once you keep better receipts.', correct: false,
-            reaction: 'I do keep receipts. It\'s still weeks of waiting.', debrief: 'Receipts help, but this skips what Pathfinder does. Tell the core of the story.' },
-          { text: 'Pathfinder pays for anything your ESA won\'t.', correct: false,
-            reaction: 'Anything? That sounds too good to be true.', debrief: 'That overpromises. Pathfinder is a card plus pre-approval, and it doesn\'t cover non-allowable items.' },
-        ],
-        guide: 'Pick the reply that tells the story\'s core: card, pre-approval, reimbursement.' },
-      { parent: 'So can I just buy whatever I need on it?', skill: 'Recommends pre-approval first',
-        options: [
-          { text: 'Yes, anything from an education store works.', correct: false,
-            reaction: 'Okay… even the TV I wanted for documentaries?', debrief: 'Store type doesn\'t decide it. Recommend checking each item in the app first.' },
-          { text: 'Buy it first and the app will sort it out later.', correct: false,
-            reaction: 'And if it doesn\'t sort it out?', debrief: 'This skips pre-approval, which is what turns on the guarantee.' },
-          { text: 'Check it in the app first. Scan or search the item and it tells you if it\'s likely allowable before you pay.', correct: true,
-            reaction: 'That would save me a lot of guessing.', debrief: 'Pre-approval first. That habit protects the family and turns on the guarantee.' },
-        ],
-        guide: 'Look for the reply that puts the check before the purchase.' },
-      { parent: 'What happens if the state says no after I buy something?', skill: 'Describes the guarantee accurately',
-        options: [
-          { text: 'Don\'t worry, everything is covered.', correct: false,
-            reaction: 'Everything? Even things I didn\'t check?', debrief: 'Overpromise. Only pre-approved items are covered, up to $2,500 per item and $10,000 a year.' },
-          { text: 'If the app pre-approved it, Pathfinder covers it, up to $2,500 per item and $10,000 a year. If you skipped the check, you\'d owe it.', correct: true,
-            reaction: 'Okay, that\'s clear. Check first, and I\'m protected.', debrief: 'Accurate: you named the condition (pre-approval) and both caps.' },
-          { text: 'Then you\'re on your own either way.', correct: false,
-            reaction: 'Then what\'s the point?', debrief: 'Underselling it. Pre-approved items are covered up to the caps.' },
-        ],
-        guide: 'Choose the reply with the condition and the caps. No overpromising.' },
-      { parent: 'Alright. How do I get started?', skill: 'Offers the sign-up link',
-        options: [
-          { text: 'Look it up online when you get a chance.', correct: false,
-            reaction: 'I\'ll try to remember…', debrief: 'Close the loop yourself. Offer the sign-up link while they\'re ready.' },
-          { text: 'Here\'s the sign-up link. It takes a few minutes. Want me to text it to you now?', correct: true,
-            reaction: 'Yes, please send it. Thank you!', debrief: 'You ended with a clear next step and offered the sign-up link.' },
-          { text: 'Probably best to wait until next school year.', correct: false,
-            reaction: 'Oh. I was hoping to fix this now.', debrief: 'No reason to wait. Offer the sign-up link.' },
-        ],
-        guide: 'End with a clear next step the parent can take today.' },
-    ],
+    solo: {
+      openings: {
+        coop:   'Honestly, ESA is wearing me out. I pay the co-op, then chase the state for my money for weeks.',
+        school: 'We love your school, but I can\'t cover tuition and then wait a month for the ESA money.',
+        vendor: 'Your program looks great. I just don\'t have the cash to wait on another reimbursement.',
+      },
+      turns: [
+        { skill: 'Intro',
+          options: [
+            { text: 'Have you heard of Pathfinder? You need it.', correct: false,
+              reaction: 'No… what is it?', debrief: 'Too fast. Connect first, then ask your qualifying question.' },
+            { text: 'Sorry, I can\'t really help with ESA stuff.', correct: false,
+              reaction: 'Oh. Okay.', debrief: 'This shuts the door. Thank them and make it about helping them.' },
+            { text: 'I\'m really glad you brought this to me. Helping families like yours is my whole job.', correct: true,
+              reaction: 'Thanks. I\'m just tired of waiting on the money.', debrief: 'Warm, and it puts their problem first.' },
+          ] },
+        { parent: 'Thanks. I\'m just tired of waiting on the money.', skill: 'Qualifying question',
+          options: [
+            { text: 'Quick question first: are you registered for ESA already?', correct: true,
+              reaction: 'We are. Since last fall.', debrief: 'One clear question that tells you whether Pathfinder fits.' },
+            { text: 'Have you tried calling the state every day?', correct: false,
+              reaction: 'I have. It doesn\'t help.', debrief: 'Not a qualifying question. Ask whether they\'re registered for ESA.' },
+            { text: 'Let me give you the full overview of Pathfinder.', correct: false,
+              reaction: 'Is this going to take long?', debrief: 'You skipped the qualifying question, so you don\'t know yet if it fits them.' },
+          ] },
+        { parent: 'We are. Since last fall.', skill: 'Short story',
+          options: [
+            { text: 'Pathfinder\'s mission is reducing friction in school choice with a modern fintech stack.', correct: false,
+              reaction: 'Okay… but what does it do?', debrief: 'Too much about the company. The story is what it does for the parent.' },
+            { text: 'Good. I ask because Pathfinder is a card made for ESA families. It shows you what will get reimbursed before you buy, then it takes care of the reimbursement. It\'s simple.', correct: true,
+              reaction: 'So I\'d stop guessing and stop chasing the state?', debrief: 'Short and about them: the card, knowing before you buy, and the reimbursement handled.' },
+            { text: 'Good. With Pathfinder you\'ll never get rejected again.', correct: false,
+              reaction: 'Never? How is that possible?', debrief: 'Overpromise. Rejections can still happen; pre-approved items are covered up to the caps.' },
+          ] },
+        { parent: 'Okay, how would I use it? And what if something gets rejected?', skill: 'Presentation and close',
+          options: [
+            { text: 'Check each item in the app before you pay. If it\'s pre-approved and later rejected, Pathfinder covers it, up to $2,500 per item and $10,000 a year. Can I get your email to send you the link to get set up?', correct: true,
+              reaction: 'Sure, it\'s dana.r@example.com. Opening it now.', debrief: 'Pre-approval first, the guarantee with its caps, then a clear close.' },
+            { text: 'Swipe it anywhere and you\'re covered. I\'ll send you the link.', correct: false,
+              reaction: 'Anywhere? Even for the TV?', debrief: 'Overpromise, and it skips pre-approval. Only pre-approved items are covered, up to the caps.' },
+            { text: 'I\'ll let you think it over.', correct: false,
+              reaction: 'Okay, I guess.', debrief: 'No close. Ask for their email so you can send the sign-up link.' },
+          ] },
+        { parent: 'Alright, signing up… okay, I\'m in!', skill: 'Rehash',
+          options: [
+            { text: 'Cool. That\'s it.', correct: false,
+              reaction: 'Okay, thanks.', debrief: 'You missed the rehash. Ask who else it could help.' },
+            { text: 'Don\'t forget to leave a review.', correct: false,
+              reaction: 'Sure, maybe.', debrief: 'A review isn\'t the rehash. Ask who else it could help.' },
+            { text: 'Welcome aboard. One more thing: who else do you know on ESA who could use this? It makes the whole process so much easier.', correct: true,
+              reaction: 'Two families from our co-op. I\'ll tell them today.', debrief: 'The rehash: you asked for a referral while they were happy.' },
+          ] },
+      ],
+    },
   },
 };
 
@@ -878,9 +1004,9 @@ const ICON = {
   search: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4-4"/></svg>',
   clock: '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
   play: '<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg>',
-  ok: '<svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="22" fill="#2D684C"/><path d="M14 25l7 7 13-15" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-  no: '<svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="22" fill="#A0372A"/><path d="M16 16l16 16M32 16L16 32" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round"/></svg>',
-  flower: '<svg viewBox="0 0 40 40"><g transform="translate(20 20)"><g fill="#F0C2AD"><ellipse cx="0" cy="-10" rx="6" ry="10"/><ellipse cx="0" cy="-10" rx="6" ry="10" transform="rotate(72)"/><ellipse cx="0" cy="-10" rx="6" ry="10" transform="rotate(144)"/><ellipse cx="0" cy="-10" rx="6" ry="10" transform="rotate(216)"/><ellipse cx="0" cy="-10" rx="6" ry="10" transform="rotate(288)"/></g><circle r="5" fill="#B04F29"/></g></svg>',
+  ok: '<svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="22" fill="#0A7F5A"/><path d="M14 25l7 7 13-15" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  no: '<svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="22" fill="#B42318"/><path d="M16 16l16 16M32 16L16 32" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round"/></svg>',
+  flower: '<svg viewBox="0 0 40 40"><g transform="translate(20 20)"><g fill="#C9B3F5"><ellipse cx="0" cy="-10" rx="6" ry="10"/><ellipse cx="0" cy="-10" rx="6" ry="10" transform="rotate(72)"/><ellipse cx="0" cy="-10" rx="6" ry="10" transform="rotate(144)"/><ellipse cx="0" cy="-10" rx="6" ry="10" transform="rotate(216)"/><ellipse cx="0" cy="-10" rx="6" ry="10" transform="rotate(288)"/></g><circle r="5" fill="#5411C1"/></g></svg>',
 };
 const wordCount = (t) => (t || '').trim().split(/\s+/).filter(Boolean).length;
 const splitSentences = (t) => ((t || '').replace(/\s+/g, ' ').match(/[^.!?]+[.!?]*["')\]]*/g) || []).map(s => s.trim()).filter(s => s.length > 1);
@@ -1294,7 +1420,7 @@ function retellModule(el, { key, gated }) {
     // Task-focused feedback
     const tips = [];
     if (!inBand) tips.push(n < lo
-      ? `Add about ${lo - n} words. The reference spends its extra words on what Pathfinder does after the purchase.`
+      ? `Add about ${lo - n} words. The reference spends its extra words on how the mom found Pathfinder and what it does.`
       : `Trim about ${n - hi} words. Cut details that aren't part of the problem, the parent, or what Pathfinder does.`);
     CONFIG.retell.parts.forEach(p => {
       if (results[p.id].present) return;
@@ -1476,14 +1602,14 @@ RENDER.simA = (el) => simShell(el, {
   key: 'simA', kicker: 'Simulation A · Pre-approval scan', title: 'Check it before they buy it',
   lede: 'A parent shows you something they want to buy. Run the check in the app, then tell them what to do.', min: 2,
   run(stage, mode, done) {
-    const rounds = CONFIG.simA.rounds;
+    const rounds = CONFIG.simA[mode];
     const tips = CONFIG.simA.tips;
     const results = [];
     let r = 0;
     const ph = phone();
-    const scen = h('div', { class: 'card scenario' });
-    const side = h('div', { class: 'stack' }, scen);
-    stage.append(h('div', { class: 'sim-grid' }, ph.wrap, side));
+    const scen = h('div', { class: 'card scenario mt-m' });
+    const side = h('div', { class: 'stack' });
+    stage.append(scen, h('div', { class: 'sim-grid' }, ph.wrap, side));
 
     const playRound = () => {
       const round = rounds[r];
@@ -1579,10 +1705,12 @@ RENDER.simA = (el) => simShell(el, {
    ========================================================================== */
 RENDER.simB = (el) => simShell(el, {
   key: 'simB', kicker: 'Simulation B · The guarantee', title: 'What\'s covered, and what isn\'t',
-  lede: 'Parents will ask. Give them the honest answer and the reason behind it.', min: 1,
+  lede: 'Parents will ask. Give them the honest answer and the reason behind it. One scenario at a time.', min: 1,
   run(stage, mode, done) {
     const g = CONFIG.guarantee;
-    const qs = mode === 'guided' ? CONFIG.simB.guided : CONFIG.simB.solo;
+    const qs = CONFIG.simB[mode];
+    let k = 0, s = 0;
+    const misses = [];
     if (mode === 'guided') {
       stage.append(h('div', { class: 'card cloud rules mt-m' },
         h('h2', { style: 'font-size:21px' }, 'The guarantee, in plain terms'),
@@ -1591,202 +1719,165 @@ RENDER.simB = (el) => simShell(el, {
           h('li', null, 'Up to ', h('strong', null, `${fmtMoney(g.perItemCap)} per item`), ' and ', h('strong', null, `${fmtMoney(g.perYearCap)} per cardholder per year`), '.'),
           h('li', null, 'No pre-approval, no guarantee. If it\'s rejected, ', h('strong', null, 'the family owes it'), '.'))));
     }
-    const form = h('form', { class: 'stack mt-m', novalidate: true });
-    stage.append(form);
-    const fields = qs.map((q, k) => {
+    const slot = h('div', { class: 'mt-m' });
+    stage.append(slot);
+
+    const show = () => {
+      const q = qs[k];
       const id = `b-${mode}-${k}`;
-      let answerEl;
+      let answerEl, getAnswer;
       if (q.type === 'amount') {
-        answerEl = h('div', null, h('label', { class: 'field-label', for: id + '-a' }, 'Pathfinder covers'),
-          h('div', { class: 'money' }, h('span', { 'aria-hidden': 'true' }, '$'), h('input', { id: id + '-a', inputmode: 'numeric', autocomplete: 'off', 'aria-describedby': id + '-u' })), h('span', { id: id + '-u', class: 'sr-only' }, 'in dollars'));
+        const inp = h('input', { id: id + '-a', inputmode: 'numeric', autocomplete: 'off', 'aria-describedby': id + '-u' });
+        answerEl = h('div', null, h('label', { class: 'field-label', for: id + '-a' }, q.answerLabel),
+          h('div', { class: 'money' }, h('span', { 'aria-hidden': 'true' }, '$'), inp), h('span', { id: id + '-u', class: 'sr-only' }, 'in dollars'));
+        getAnswer = () => { const v = inp.value.replace(/[^0-9.]/g, ''); return v ? Number(v) : null; };
       } else {
-        answerEl = h('fieldset', null, h('legend', null, 'Who owes it?'), h('div', { class: 'choice-grid cols-3' }, CONFIG.simB.whoOptions.map(o =>
+        answerEl = h('fieldset', null, h('legend', null, q.answerLabel), h('div', { class: 'choice-grid cols-3' }, CONFIG.simB.whoOptions.map(o =>
           h('label', { class: 'choice' }, h('input', { type: 'radio', name: id + '-a', value: o.id }), h('span', { class: 'choice-body' }, h('span', { class: 'radio' }), h('span', { class: 'choice-title' }, o.label))))));
+        getAnswer = () => { const c = answerEl.querySelector('input:checked'); return c ? c.value : null; };
       }
       const why = h('input', { class: 'input', id: id + '-w', autocomplete: 'off', placeholder: 'Because…' });
-      const card = h('div', { class: 'card stack' },
-        h('div', { class: 's-label', style: 'font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-ink)' }, `Scenario ${k + 1}`),
-        h('p', { style: 'font-family:var(--display);font-size:20px;line-height:1.4;margin:0' }, q.prompt),
-        answerEl,
-        h('label', { class: 'field', for: id + '-w' }, h('span', { class: 'field-label' }, q.whyPrompt), why));
+      const last = k === qs.length - 1;
+      const submit = h('button', { class: 'btn btn-primary', type: 'submit' }, mode === 'guided' ? 'Check my answer' : (last ? 'Finish' : 'Next scenario'));
+      const head = h('h2', { tabindex: '-1', style: 'font-family:var(--display);font-size:21px;line-height:1.4' }, q.prompt);
+      const form = h('form', { class: 'card stack', novalidate: true },
+        h('div', { class: 'round-dots' }, qs.map((_, i) => h('i', { class: i <= k ? 'on' : '' })), h('span', { style: 'margin-left:6px' }, `Scenario ${k + 1} of ${qs.length}`)),
+        head, answerEl,
+        h('label', { class: 'field', for: id + '-w' }, h('span', { class: 'field-label' }, q.whyPrompt), why),
+        submit);
       if (mode === 'guided') { guide(answerEl, q.tip); guide(why, q.whyTip); }
-      form.append(card);
-      return { q, card, why, get answer() {
-        if (q.type === 'amount') { const v = card.querySelector('input[inputmode]').value.replace(/[^0-9.]/g, ''); return v ? Number(v) : null; }
-        const c = card.querySelector('input[type=radio]:checked'); return c ? c.value : null;
-      } };
-    });
-    const submit = h('button', { class: 'btn btn-primary', type: 'submit' }, 'Check my answers');
-    form.append(submit);
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      submit.disabled = true;
-      let s = 0; const misses = [];
-      for (const [k, f] of fields.entries()) {
-        const ansOk = f.answer === f.q.answer;
-        let whyOk;
-        const llm = await callGrader({ kind: 'why', question: f.q.prompt, expected: f.q.reviewWhere, answer: f.why.value });
-        whyOk = llm && typeof llm.pass === 'boolean' ? llm.pass : hasKeyword(f.why.value, f.q.whyKeywords);
-        if (ansOk) s++; else misses.push(`Scenario ${k + 1}: ${f.q.type === 'amount' ? `the amount should reflect ${f.q.reviewWhere}.` : `check ${f.q.reviewWhere}.`}`);
-        if (whyOk) s++; else misses.push(`Scenario ${k + 1} “why”: name ${f.q.type === 'amount' ? 'the per-item cap' : 'the missing pre-approval'} in your reason.`);
-      }
-      if (mode === 'guided' && s < fields.length * 2) {
-        form.querySelectorAll('.feedback').forEach(x => x.remove());
-        submit.before(h('div', { class: 'feedback miss', role: 'status' }, h('ul', { style: 'margin:0' }, misses.map(m => h('li', null, m)))));
-        submit.disabled = false;
-        return;
-      }
-      done({ score: s, max: fields.length * 2, misses: misses.concat(s < fields.length * 2 ? ['Review: covered only if pre-approved, up to $2,500 per item and $10,000 per year.'] : []) });
-    });
+      slot.replaceChildren(form);
+      if (k > 0) head.focus();
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        submit.disabled = true;
+        const ansOk = getAnswer() === q.answer;
+        const llm = await callGrader({ kind: 'why', question: q.prompt, expected: q.reviewWhere, answer: why.value });
+        const whyOk = llm && typeof llm.pass === 'boolean' ? llm.pass : hasKeyword(why.value, q.whyKeywords);
+        const m = [];
+        if (!ansOk) m.push(`Scenario ${k + 1}: ${q.type === 'amount' ? `the amount should reflect ${q.reviewWhere}.` : `check ${q.reviewWhere}.`}`);
+        if (!whyOk) m.push(`Scenario ${k + 1} “why”: name ${q.type === 'amount' ? 'the per-item cap' : 'the missing pre-approval'} in your reason.`);
+        if (mode === 'guided') {
+          form.querySelectorAll('.feedback').forEach(x => x.remove());
+          if (m.length) {
+            submit.before(h('div', { class: 'feedback miss', role: 'status' }, h('ul', { style: 'margin:0' }, m.map(x => h('li', null, x)))));
+            submit.disabled = false; return;
+          }
+          submit.before(h('div', { class: 'feedback good', role: 'status' }, 'Right, and the reason is clear.'));
+          await delay(900);
+        } else {
+          s += (ansOk ? 1 : 0) + (whyOk ? 1 : 0); misses.push(...m);
+        }
+        k++;
+        if (k < qs.length) show();
+        else done(mode === 'guided' ? { score: qs.length * 2, max: qs.length * 2 }
+          : { score: s, max: qs.length * 2, misses: misses.concat(misses.length ? [`Review: covered only if pre-approved, up to ${fmtMoney(g.perItemCap)} per item and ${fmtMoney(g.perYearCap)} per year.`] : []) });
+      });
+    };
+    show();
   },
 });
 
 /* ==========================================================================
-   4C. USE / DON'T USE / CHECK FIRST (drag, tap or keyboard)
+   4C. USE / DON'T USE / CHECK FIRST — one card at a time (drag, tap or keyboard)
    ========================================================================== */
 RENDER.simC = (el) => simShell(el, {
   key: 'simC', kicker: 'Simulation C · Sort it', title: 'Use the card, don\'t, or check first',
-  lede: 'Drag each card into a column. On a phone or keyboard, tap a card, then tap “Place here.”', min: 1,
+  lede: 'One purchase at a time. Drag the card into a column, or tap the column it belongs in.', min: 1,
   run(stage, mode, done) {
     const C = CONFIG.simC;
-    const where = {}; // itemId -> columnId
-    let selected = null, selectFromKey = false;
-    const items = shuffle(C.items, mode === 'guided' ? 3 : 11);
-    const pool = h('div', { class: 'pool', role: 'group', 'aria-label': 'Cards to sort' });
+    const items = shuffle(C[mode], mode === 'guided' ? 3 : 11);
+    const where = {};
+    let k = 0;
+    const counter = h('div', { class: 'round-dots' });
+    const cardSlot = h('div', { class: 'deal' });
+    const note = h('div', { 'aria-live': 'polite' });
     const bins = {};
     const binsWrap = h('div', { class: 'bins' }, C.columns.map(col => {
-      const items = h('div', { class: 'bin-items', role: 'group', 'aria-label': col.label });
-      const drop = h('button', { class: 'bin-drop', type: 'button', disabled: true, 'aria-label': `Place selected card in ${col.label}`, onclick: () => selected && place(selected, col.id) }, 'Place here');
       const icon = svg(col.id === 'use' ? ICON.check : col.id === 'dont' ? ICON.x : ICON.q); icon.setAttribute('width', '18'); icon.setAttribute('height', '18');
-      const bin = h('div', { class: `bin ${col.id}`, 'data-col': col.id }, h('div', { class: 'bin-head' }, h('span', { class: 'bin-title' }, icon, col.label), drop), items);
-      bins[col.id] = { bin, items, drop };
+      const list = h('div', { class: 'bin-items', role: 'group', 'aria-label': `Placed in ${col.label}` });
+      const btn = h('button', { class: 'bin-pick', type: 'button', onclick: () => place(col.id) }, icon, col.label);
+      const bin = h('div', { class: `bin ${col.id}`, 'data-col': col.id }, btn, list);
+      bins[col.id] = { bin, list, btn };
       return bin;
     }));
-    const live = h('p', { class: 'sr-only', 'aria-live': 'polite' });
-    const checkBtn = h('button', { class: 'btn btn-primary', type: 'button', disabled: true }, 'Check my sort');
-    stage.append(h('div', { class: 'card mt-m' },
-      h('div', { class: 'small muted', style: 'margin-bottom:8px' }, mode === 'guided' ? 'Hints on: you\'ll see why as you place each card.' : 'Place all 8, then check.'),
-      pool, binsWrap, live, mode === 'solo' ? h('div', { class: 'mt-m' }, checkBtn) : null));
+    const undo = h('button', { class: 'btn-quiet', type: 'button', onclick: () => { if (k === 0) return; k--; delete where[items[k].id]; show(); } }, 'Undo last card');
+    stage.append(h('div', { class: 'card mt-m stack' }, counter, cardSlot, note, binsWrap, mode === 'solo' ? h('div', null, undo) : null));
 
-    const cardEls = {};
-    items.forEach(it => {
-      const c = h('button', { class: 'sort-card', type: 'button', 'aria-pressed': 'false', 'data-id': it.id }, h('span', { class: 'grip', 'aria-hidden': 'true' }), it.label);
-      cardEls[it.id] = c;
-      attachDrag(c, it.id);
-      c.addEventListener('click', (e) => { if (c.dataset.dragged) { delete c.dataset.dragged; return; } selectFromKey = e.detail === 0; select(selected === it.id ? null : it.id); selectFromKey = false; });
-    });
-
-    function select(id) {
-      selected = id;
-      Object.entries(cardEls).forEach(([k, c]) => c.setAttribute('aria-pressed', String(k === id)));
-      Object.values(bins).forEach(b => { b.drop.disabled = !id; });
-      if (id) live.textContent = `${C.items.find(x => x.id === id).label} selected. Choose a column.`;
-      drawGuide();
-      if (id && selectFromKey) bins[C.columns[0].id].drop.focus({ preventScroll: true });
-    }
-    function place(id, col) {
-      const it = C.items.find(x => x.id === id);
-      if (mode === 'guided' && it.column !== col) {
-        const right = C.columns.find(x => x.id === it.column).label;
-        live.textContent = `Not quite. ${it.reason} It goes in ${right}.`;
-        showReason(id, `${it.reason} Try “${right}.”`, true);
-        select(null);
-        cardEls[id].focus({ preventScroll: true });
-        return;
-      }
-      where[id] = col;
-      select(null);
-      draw();
-      live.textContent = `${it.label} placed in ${C.columns.find(x => x.id === col).label}.`;
-      if (mode === 'guided') showReason(id, it.reason, false);
-      checkBtn.disabled = Object.keys(where).length < C.items.length;
-      const nxt = items.find(x => !where[x.id]);
-      if (nxt) cardEls[nxt.id].focus({ preventScroll: true }); else if (mode === 'solo') checkBtn.focus();
-      if (mode === 'guided' && Object.keys(where).length === C.items.length) setTimeout(() => done({ score: C.items.length, max: C.items.length }), reduceMotion() ? 0 : 900);
-    }
-    function showReason(id, text, isWrong) {
-      stage.querySelectorAll(`.card-reason[data-for="${id}"]`).forEach(x => x.remove());
-      const c = cardEls[id];
-      c.classList.toggle('wrong', isWrong); c.classList.toggle('right', !isWrong);
-      c.after(h('div', { class: 'card-reason', 'data-for': id }, text));
-    }
-    function draw() {
-      stage.querySelectorAll('.card-reason').forEach(x => { if (where[x.dataset.for] === undefined && !cardEls[x.dataset.for].classList.contains('wrong')) x.remove(); });
-      items.forEach(it => {
-        const c = cardEls[it.id];
-        const reason = stage.querySelector(`.card-reason[data-for="${it.id}"]`);
-        const target = where[it.id] ? bins[where[it.id]].items : pool;
-        target.append(c); if (reason) target.append(reason);
-      });
-      drawGuide();
-    }
-    function drawGuide() {
-      if (mode !== 'guided') return;
+    function show() {
+      counter.replaceChildren(...items.map((_, i) => h('i', { class: i < k ? 'on' : '' })), h('span', { style: 'margin-left:6px' }, k < items.length ? `Card ${k + 1} of ${items.length}` : 'All sorted'));
+      Object.entries(bins).forEach(([cid, b]) => b.list.replaceChildren(...items.filter(it => where[it.id] === cid).map(it => h('span', { class: 'chip' }, it.label))));
+      undo.disabled = k === 0;
       stage.querySelectorAll('.tip').forEach(t => t.remove());
       stage.querySelectorAll('.guide-ring').forEach(t => t.classList.remove('guide-ring'));
-      const nextItem = items.find(it => where[it.id] === undefined);
-      if (!nextItem) return;
-      if (!selected) guide(pool, `Start with “${nextItem.label}.” Drag it, or tap it.`);
-      else guide(binsWrap, 'Now choose the column it belongs in.', true);
+      if (k >= items.length) { cardSlot.replaceChildren(); return; }
+      const it = items[k];
+      const card = h('div', { class: 'deal-card', tabindex: '-1', 'aria-label': `Purchase: ${it.label}. Choose a column below.` },
+        h('span', { class: 'grip', 'aria-hidden': 'true' }), h('span', null, it.label));
+      cardSlot.replaceChildren(card);
+      attachDrag(card);
+      if (mode === 'guided') guide(cardSlot, 'Drag this card into a column, or tap the column it belongs in.');
+      card.focus({ preventScroll: true });
     }
 
-    // Pointer drag (mouse + touch). Tap still works via click.
-    function attachDrag(card, id) {
-      let sx, sy, ghost = null, over = null, lastY = 0, scrollRaf = 0;
-      const edgeScroll = () => {
-        if (!ghost) return;
-        const zone = 90, top = 150;
-        if (lastY > innerHeight - zone) window.scrollBy(0, Math.ceil((lastY - (innerHeight - zone)) / 6));
-        else if (lastY < top) window.scrollBy(0, -Math.ceil((top - lastY) / 6));
-        scrollRaf = requestAnimationFrame(edgeScroll);
+    async function place(col) {
+      if (k >= items.length) return;
+      const it = items[k];
+      if (mode === 'guided') {
+        if (it.column !== col) {
+          const right = C.columns.find(x => x.id === it.column).label;
+          note.replaceChildren(h('div', { class: 'feedback miss' }, `${it.reason} Try “${right}.”`));
+          return;
+        }
+        note.replaceChildren(h('div', { class: 'feedback good' }, it.reason));
+      } else note.replaceChildren();
+      where[it.id] = col; k++;
+      if (mode === 'guided') await delay(700);
+      if (mode === 'guided') note.replaceChildren();
+      show();
+      if (k >= items.length) {
+        if (mode === 'guided') { setTimeout(() => done({ score: items.length, max: items.length }), reduceMotion() ? 0 : 400); return; }
+        let s = 0; const misses = [];
+        items.forEach(x => { if (where[x.id] === x.column) s++; else misses.push(`${x.label}: ${x.reason} It belongs in “${C.columns.find(c => c.id === x.column).label}.”`); });
+        done({ score: s, max: items.length, misses });
+      } else if (mode === 'solo') bins[C.columns[0].id].btn.focus({ preventScroll: true });
+    }
+
+    // Pointer drag with edge auto-scroll. Tapping a column also works.
+    function attachDrag(card) {
+      let sx, sy, ghost = null, over = null, lastX = 0, lastY = 0, raf = 0;
+      const hover = () => {
+        const under = document.elementFromPoint(lastX, lastY); const b = under && under.closest('.bin');
+        if (over && over !== b) over.classList.remove('over'); if (b) b.classList.add('over'); over = b;
       };
-      card.addEventListener('pointerdown', (e) => {
-        if (e.button !== 0) return;
-        sx = e.clientX; sy = e.clientY;
-        card.setPointerCapture(e.pointerId);
-      });
+      const edge = () => {
+        if (!ghost) return;
+        if (lastY > innerHeight - 90) scrollBy(0, Math.ceil((lastY - innerHeight + 90) / 6)); else if (lastY < 150) scrollBy(0, -Math.ceil((150 - lastY) / 6));
+        hover(); // the page moves under a still finger, so re-check the column
+        raf = requestAnimationFrame(edge);
+      };
+      card.addEventListener('pointerdown', (e) => { if (e.button !== 0) return; sx = e.clientX; sy = e.clientY; card.setPointerCapture(e.pointerId); });
       card.addEventListener('pointermove', (e) => {
         if (sx === undefined) return;
         if (!ghost && Math.hypot(e.clientX - sx, e.clientY - sy) > 6) {
-          ghost = card.cloneNode(true); ghost.classList.add('drag-ghost'); ghost.removeAttribute('aria-pressed');
-          ghost.style.width = card.offsetWidth + 'px';
-          document.body.append(ghost); card.style.opacity = '.35';
-          scrollRaf = requestAnimationFrame(edgeScroll);
+          ghost = card.cloneNode(true); ghost.classList.add('drag-ghost'); ghost.style.width = card.offsetWidth + 'px';
+          document.body.append(ghost); card.style.opacity = '.35'; raf = requestAnimationFrame(edge);
         }
-        lastY = e.clientY;
+        lastX = e.clientX; lastY = e.clientY;
         if (ghost) {
-          ghost.style.left = (e.clientX - card.offsetWidth / 2) + 'px'; ghost.style.top = (e.clientY - 22) + 'px';
-          const under = document.elementFromPoint(e.clientX, e.clientY);
-          const b = under && under.closest('.bin');
-          if (over && over !== b) over.classList.remove('over');
-          if (b) b.classList.add('over'); over = b;
+          ghost.style.left = (e.clientX - card.offsetWidth / 2) + 'px'; ghost.style.top = (e.clientY - 28) + 'px';
+          hover();
         }
       });
-      const end = (e) => {
-        cancelAnimationFrame(scrollRaf);
-        if (ghost) {
-          card.dataset.dragged = '1';
-          ghost.remove(); ghost = null; card.style.opacity = '';
-          if (over) { over.classList.remove('over'); place(id, over.dataset.col); }
-          else { const under = document.elementFromPoint(e.clientX, e.clientY); if (under && under.closest('.pool') && where[id]) { delete where[id]; draw(); } }
-          over = null;
-          setTimeout(() => delete card.dataset.dragged, 50);
-        }
+      const end = () => {
+        cancelAnimationFrame(raf);
+        if (ghost) { ghost.remove(); ghost = null; card.style.opacity = ''; if (over) { over.classList.remove('over'); place(over.dataset.col); } over = null; }
         sx = undefined;
       };
       card.addEventListener('pointerup', end);
-      card.addEventListener('pointercancel', (e) => { cancelAnimationFrame(scrollRaf); if (ghost) { ghost.remove(); ghost = null; card.style.opacity = ''; } sx = undefined; });
+      card.addEventListener('pointercancel', end);
     }
-
-    checkBtn.addEventListener('click', () => {
-      let s = 0; const misses = [];
-      C.items.forEach(it => {
-        if (where[it.id] === it.column) s++;
-        else misses.push(`${it.label}: ${it.reason} It belongs in “${C.columns.find(c => c.id === it.column).label}.”`);
-      });
-      done({ score: s, max: C.items.length, misses });
-    });
-    draw();
+    show();
   },
 });
 
@@ -1797,15 +1888,14 @@ RENDER.simD = (el) => simShell(el, {
   key: 'simD', kicker: 'Simulation D · Reimbursement', title: 'Request a reimbursement',
   lede: 'A parent bought tutoring with the card. Help them finish the reimbursement request in the app.', min: 1,
   run(stage, mode, done) {
-    const D = CONFIG.simD, T = D.tips;
+    const D = Object.assign({ courses: CONFIG.simD.courses }, CONFIG.simD[mode]), T = CONFIG.simD.tips;
     const ph = phone();
     const steps = []; // order log
     const errors = [];
     let receiptOk = false, course = '';
-    const side = h('div', { class: 'stack' },
-      h('div', { class: 'card scenario' }, h('div', { class: 's-label' }, 'Scenario'),
-        h('div', { class: 's-text' }, 'Dana paid Bright Path Tutoring $180 with the card. Get the reimbursement request submitted.')),
-      h('div', { class: 'card soft small' }, h('strong', null, 'The order: '), 'open the purchase → confirm the receipt → add the course of study → submit.'));
+    stage.append(h('div', { class: 'card scenario mt-m' }, h('div', { class: 's-label' }, 'Scenario'), h('div', { class: 's-text' }, D.scenario)));
+    if (mode === 'guided') stage.append(h('div', { class: 'card soft small mt-m' }, h('strong', null, 'The order: '), 'open the purchase → confirm the receipt → add the course of study → submit.'));
+    const side = h('div');
     stage.append(h('div', { class: 'sim-grid' }, ph.wrap, side));
 
     const list = () => {
@@ -1824,8 +1914,8 @@ RENDER.simD = (el) => simShell(el, {
       const err = h('div', { class: 'app-error', role: 'alert' });
       const submit = h('button', { class: 'app-btn', type: 'button', style: 'margin-top:18px' }, 'Submit request');
       const body = ph.set(appTop(p.title, () => list()),
-        h('div', { class: 'app-note', style: 'margin-top:0' }, h('strong', { style: 'font-size:22px' }, p.amount), h('br'), h('span', { class: 'muted' }, 'Paid with Pathfinder card · Mar 4')),
-        h('div', { class: 'app-note' }, h('div', { class: 'receipt-thumb' }, h('span', { class: 'paper' }), h('span', null, h('strong', null, 'Receipt'), h('br'), h('span', { class: 'muted' }, 'receipt_0304.jpg · attached automatically'))), confirm),
+        h('div', { class: 'app-note', style: 'margin-top:0' }, h('strong', { style: 'font-size:22px' }, p.amount), h('br'), h('strong', null, p.item), h('br'), h('span', { class: 'muted' }, `Paid with Pathfinder card · ${p.date}`)),
+        h('div', { class: 'app-note' }, h('div', { class: 'receipt-thumb' }, h('span', { class: 'paper' }), h('span', null, h('strong', null, 'Receipt'), h('br'), h('span', { class: 'muted' }, `receipt_${p.id}.jpg · attached automatically`))), confirm),
         h('div', { class: 'app-field' }, h('label', { for: 'd-course' }, 'Course of study (required)'), sel),
         err, submit);
       confirm.addEventListener('click', () => {
@@ -1847,7 +1937,7 @@ RENDER.simD = (el) => simShell(el, {
           err.textContent = !receiptOk ? 'Confirm the receipt first.' : 'Add a course of study first.';
           return;
         }
-        if (course !== D.correctCourse) errors.push(`You chose “${course}” for a math tutoring purchase. The course of study should match what was bought (${D.correctCourse}).`);
+        if (course !== D.correctCourse) errors.push(`You chose “${course}” for “${D.purchases.find(x => x.target).item}.” The course of study should match what was bought (${D.correctCourse}).`);
         steps.push('submit'); status();
       });
       const drawGuide = () => {
@@ -1883,12 +1973,16 @@ RENDER.simD = (el) => simShell(el, {
    ========================================================================== */
 RENDER.simE = (el) => simShell(el, {
   key: 'simE', kicker: 'Simulation E · The conversation', title: 'Talk with a parent',
-  lede: 'This is the real job. A parent comes to you frustrated. Pick your reply at each turn.', min: 2,
+  lede: 'This is the real job. A parent comes to you frustrated. Walk them through the five steps, one reply at a time.', min: 2,
   run(stage, mode, done) {
-    const E = CONFIG.simE;
+    const E = Object.assign({ parentName: CONFIG.simE.parentName }, CONFIG.simE[mode]);
+    const steps = CONFIG.simE.steps;
+    stage.append(h('div', { class: 'card soft mt-m small' }, h('strong', null, 'The five steps: '),
+      steps.map((x, i) => [i ? ' → ' : '', x])));
+    const stepLabel = h('p', { class: 'small', style: 'margin:14px 0 0;font-weight:600;color:var(--accent-ink)' });
     const chat = h('div', { class: 'chat', role: 'log', 'aria-live': 'polite', 'aria-label': `Conversation with ${E.parentName}` });
     const replies = h('div', { class: 'replies', role: 'group', 'aria-label': 'Your reply options' });
-    stage.append(h('div', { class: 'mt-m' }, chat, replies));
+    stage.append(h('div', { class: 'mt-m' }, chat, stepLabel, replies));
     const picks = [];
     const say = (who, text) => {
       chat.append(h('div', { class: 'msg-who' + (who === 'you' ? ' you' : '') }, who === 'you' ? 'You' : E.parentName), h('div', { class: 'msg ' + who }, text));
@@ -1900,7 +1994,8 @@ RENDER.simE = (el) => simShell(el, {
       const T = E.turns[k];
       if (k === 0) say('parent', E.openings[state.learner.type] || E.openings.coop);
       else { await typing(); say('parent', T.parent); }
-      const opts = shuffle(T.options.map((o, i) => ({ ...o, i })), k * 7 + (mode === 'guided' ? 1 : 4));
+      stepLabel.textContent = `Step ${k + 1} of ${E.turns.length}${mode === 'guided' ? ' · ' + T.skill : ''}`;
+      const opts = T.options.map((o, i) => ({ ...o, i }));
       replies.replaceChildren(...opts.map(o => h('button', { class: 'reply', type: 'button', onclick: () => pick(o) }, o.text)));
       if (mode === 'guided') {
         const best = [...replies.children][opts.findIndex(o => o.correct)];
@@ -1915,7 +2010,7 @@ RENDER.simE = (el) => simShell(el, {
           return;
         }
         picks[k] = { turn: T, choice: o };
-        replies.replaceChildren();
+        replies.replaceChildren(); stepLabel.textContent = '';
         chat.tabIndex = -1; chat.focus({ preventScroll: true });
         say('you', o.text);
         await typing();
@@ -1952,7 +2047,7 @@ function makeCertId() {
 }
 
 async function drawCertificate() {
-  try { await document.fonts.ready; await Promise.all([document.fonts.load('48px Fraunces'), document.fonts.load('italic 48px Fraunces'), document.fonts.load('600 20px "Source Sans 3"')]); } catch (e) {}
+  try { await document.fonts.ready; await Promise.all([document.fonts.load('600 48px Poppins'), document.fonts.load('400 48px Poppins'), document.fonts.load('600 20px Inter'), document.fonts.load('400 20px Inter')]); } catch (e) {}
   const W = 2000, H = 1414;
   const c = document.createElement('canvas'); c.width = W; c.height = H;
   const x = c.getContext('2d');
@@ -1960,7 +2055,7 @@ async function drawCertificate() {
   const ptype = (CONFIG.partnerTypes.find(t => t.id === L.type) || {}).label || '';
 
   // paper
-  const g = x.createLinearGradient(0, 0, 0, H); g.addColorStop(0, '#EEF3F7'); g.addColorStop(.45, '#FBF8F3'); g.addColorStop(1, '#F8F2EA');
+  const g = x.createLinearGradient(0, 0, 0, H); g.addColorStop(0, '#EFE8FC'); g.addColorStop(.45, '#FAF8FE'); g.addColorStop(1, '#F4F3F2');
   x.fillStyle = g; x.fillRect(0, 0, W, H);
   // clouds
   const cloud = (cx, cy, s, a) => { x.save(); x.globalAlpha = a; x.fillStyle = '#FFFFFF'; x.beginPath();
@@ -1968,42 +2063,42 @@ async function drawCertificate() {
     x.rect(cx - 50 * s, cy + 10 * s, 225 * s, 50 * s); x.fill(); x.restore(); };
   cloud(170, 170, 1.4, .95); cloud(1680, 1240, 1.6, .9); cloud(1700, 150, .8, .7); cloud(240, 1260, .9, .7);
   // border
-  x.strokeStyle = '#D9CFC2'; x.lineWidth = 3; roundRect(x, 60, 60, W - 120, H - 120, 36); x.stroke();
-  x.strokeStyle = '#E9E2D8'; x.lineWidth = 1.5; roundRect(x, 84, 84, W - 168, H - 168, 26); x.stroke();
+  x.strokeStyle = '#D9CFEF'; x.lineWidth = 3; roundRect(x, 60, 60, W - 120, H - 120, 36); x.stroke();
+  x.strokeStyle = '#E9E2F6'; x.lineWidth = 1.5; roundRect(x, 84, 84, W - 168, H - 168, 26); x.stroke();
 
   // emblem
   x.save(); x.translate(W / 2, 250);
-  x.fillStyle = '#F0C2AD';
+  x.fillStyle = '#C9B3F5';
   for (let i = 0; i < 5; i++) { x.save(); x.rotate(i * Math.PI * 2 / 5); x.beginPath(); x.ellipse(0, -30, 18, 30, 0, 0, Math.PI * 2); x.fill(); x.restore(); }
-  x.fillStyle = '#B04F29'; x.beginPath(); x.arc(0, 0, 15, 0, Math.PI * 2); x.fill(); x.restore();
+  x.fillStyle = '#5411C1'; x.beginPath(); x.arc(0, 0, 15, 0, Math.PI * 2); x.fill(); x.restore();
 
   x.textAlign = 'center'; x.textBaseline = 'alphabetic';
-  x.fillStyle = '#9A4422'; x.font = '600 26px "Source Sans 3", sans-serif';
+  x.fillStyle = '#5411C1'; x.font = '600 26px Inter, sans-serif';
   spaced(x, 'PATHFINDER PARTNER CERTIFICATION', W / 2, 360, 6);
-  x.fillStyle = '#1E2833'; x.font = '400 82px Fraunces, Georgia, serif';
+  x.fillStyle = '#1F0151'; x.font = '600 76px Poppins, sans-serif';
   x.fillText('Certificate of Completion', W / 2, 470);
-  x.fillStyle = '#5C6674'; x.font = 'italic 34px Fraunces, Georgia, serif';
+  x.fillStyle = '#5E5873'; x.font = '400 30px Poppins, sans-serif';
   x.fillText('This certifies that', W / 2, 560);
-  x.fillStyle = '#1E2833'; x.font = fitFont(x, L.name || 'Partner', 1300, 110, 'italic 400', 'Fraunces, Georgia, serif');
+  x.fillStyle = '#1F0151'; x.font = fitFont(x, L.name || 'Partner', 1300, 104, '600', 'Poppins, sans-serif');
   x.fillText(L.name || 'Partner', W / 2, 690);
-  x.strokeStyle = '#E2D8CB'; x.lineWidth = 2; x.beginPath(); x.moveTo(W / 2 - 420, 730); x.lineTo(W / 2 + 420, 730); x.stroke();
-  x.fillStyle = '#44505E'; x.font = '500 34px "Source Sans 3", sans-serif';
+  x.strokeStyle = '#E2D8F3'; x.lineWidth = 2; x.beginPath(); x.moveTo(W / 2 - 420, 730); x.lineTo(W / 2 + 420, 730); x.stroke();
+  x.fillStyle = '#3D2A66'; x.font = '500 34px Inter, sans-serif';
   x.fillText([L.org, ptype].filter(Boolean).join('  ·  '), W / 2, 795);
-  x.fillStyle = '#5C6674'; x.font = '400 30px "Source Sans 3", sans-serif';
+  x.fillStyle = '#5E5873'; x.font = '400 30px Inter, sans-serif';
   wrapText(x, 'has shown they can tell Pathfinder\'s story, run a pre-approval scan, explain the guarantee and its limits, sort purchases, request a reimbursement, and walk a parent through getting the card.', W / 2, 870, 1300, 44);
 
   // footer row
   const fy = 1150;
-  x.font = '600 20px "Source Sans 3", sans-serif'; x.fillStyle = '#5C6674';
+  x.font = '600 20px Inter, sans-serif'; x.fillStyle = '#5E5873';
   spaced(x, 'DATE', 520, fy, 4); spaced(x, 'CERTIFICATE ID', W - 520, fy, 4);
-  x.font = '400 36px Fraunces, Georgia, serif'; x.fillStyle = '#1E2833';
+  x.font = '400 36px Poppins, sans-serif'; x.fillStyle = '#1F0151';
   x.fillText(cert.date, 520, fy + 52); x.fillText(cert.id, W - 520, fy + 52);
-  x.font = '400 22px "Source Sans 3", sans-serif'; x.fillStyle = '#5C6674';
+  x.font = '400 22px Inter, sans-serif'; x.fillStyle = '#5E5873';
   x.fillText('Concept prototype by James Floyd · Not an official Pathfinder program.', W / 2, H - 110);
 
   // watermark
   x.save(); x.translate(W / 2, H / 2); x.rotate(-Math.atan2(H, W));
-  x.font = '600 230px "Source Sans 3", sans-serif'; x.fillStyle = 'rgba(176,79,41,0.075)';
+  x.font = '600 230px Inter, sans-serif'; x.fillStyle = 'rgba(84,17,193,0.07)';
   x.fillText('CONCEPT DEMO', 0, 80); x.restore();
   return c;
 }
@@ -2021,7 +2116,7 @@ function petals() {
   const resize = () => { c.width = innerWidth * dpr; c.height = innerHeight * dpr; };
   resize();
   const x = c.getContext('2d');
-  const colors = ['#F1C9B8', '#F6DCCF', '#EBB59E', '#FBE9E1', '#E9C7C0'];
+  const colors = ['#D9C7FA', '#E9DDFC', '#B79AF0', '#F3EEFE', '#CDB8F7'];
   const N = innerWidth < 500 ? 34 : 60;
   const ps = Array.from({ length: N }, () => ({
     x: Math.random() * innerWidth, y: -20 - Math.random() * innerHeight * .6,
