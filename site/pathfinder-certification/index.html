@@ -114,6 +114,9 @@ a { color: var(--accent-ink); text-underline-offset: 3px; }
 .brand-word { font-family: var(--display); font-size: 20px; font-weight: 700; letter-spacing: -.02em; color: var(--accent); }
 .brand-sub { display: block; font-size: 12px; color: var(--muted); font-weight: 600; letter-spacing: .06em; text-transform: uppercase; line-height: 1.1; }
 .brand-word { display: block; line-height: 1.1; }
+.top-right { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+.hub-link { font-size: 13px; font-weight: 600; color: var(--accent); text-decoration: none; white-space: nowrap; padding: 4px 0; }
+.hub-link:hover { text-decoration: underline; }
 .time-left { font-size: 13px; color: var(--muted); white-space: nowrap; }
 .progress { margin-top: 10px; }
 .progress-segs { display: flex; gap: 4px; list-style: none; margin: 0; padding: 0; }
@@ -587,7 +590,10 @@ details.transcript p { font-family: var(--sans); font-size: 17px; line-height: 1
           <span class="brand-sub">Partner Certification</span>
         </span>
       </span>
-      <span class="time-left" id="time-left"></span>
+      <span class="top-right">
+        <a class="hub-link" href="/pathfinder/" title="Your progress is saved on this device">&larr; Pathfinder hub</a>
+        <span class="time-left" id="time-left"></span>
+      </span>
     </div>
     <nav class="progress" aria-label="Course progress">
       <ol class="progress-segs" id="progress-segs"></ol>
