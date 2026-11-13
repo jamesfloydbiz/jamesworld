@@ -255,7 +255,7 @@ footer { font-size: 13.5px; color: var(--muted); padding: 0 0 40px; text-align: 
         <h2>Want to be one of the first 10?</h2>
         <p style="max-width:44ch;margin:14px auto 0">Start with the 13-minute certification. We'll reach out to set up your kit and pick a date for your family day.</p>
         <div class="ctas">
-          <a class="btn btn-primary" href="/pathfinder-certification/">Start the certification</a>
+          <a class="btn btn-primary" id="cert-btn" href="/pathfinder-certification/">Start the certification</a>
           <!-- [PARTNER_CONTACT] replace with Pathfinder's partner inbox or booking link -->
           <a class="btn btn-ghost" href="mailto:partners@example.com?subject=Pathfinder%20Partner%20Pilot">Ask a question first</a>
         </div>
@@ -287,6 +287,14 @@ try {
     document.getElementById('hero-lede').textContent = p.lede;
     document.querySelectorAll('.biz').forEach(el => { el.textContent = p.biz; });
     document.title = `Pathfinder Partner Pilot · ${p.name}`;
+  }
+} catch (e) {}
+
+/* The course saves progress in localStorage. Offer to pick up where they left off. */
+try {
+  const saved = JSON.parse(localStorage.getItem('pathfinder-cert-v1') || 'null');
+  if (saved && (saved.unlocked > 0 || saved.step > 0)) {
+    document.getElementById('cert-btn').textContent = saved.cert ? 'View your certificate' : 'Continue the certification';
   }
 } catch (e) {}
 </script>
