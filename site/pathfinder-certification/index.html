@@ -248,6 +248,14 @@ legend { font-weight: 600; font-size: 15.5px; margin-bottom: 8px; padding: 0; }
 .feedback ul { margin: 8px 0 0; padding-left: 20px; }
 .feedback li + li { margin-top: 6px; }
 .feedback.good { background: var(--good-soft); color: #0B4F3A; }
+.ps-list { list-style: none; margin: 18px 0 0; padding: 0; display: grid; gap: 14px; }
+.ps-item h3 { font-size: 18px; margin: 0 0 10px; }
+.ps-pair { display: grid; gap: 8px; }
+@media (min-width: 560px) { .ps-pair { grid-template-columns: 1fr 1fr; } }
+.ps-pair > div { border-radius: var(--radius); padding: 12px 14px; font-size: 15px; }
+.ps-pair .ps-label { display: block; font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; margin-bottom: 4px; }
+.ps-problem { background: var(--warn-soft); color: #4F3600; }
+.ps-fix { background: var(--good-soft); color: #0B4F3A; }
 .feedback.miss { background: var(--warn-soft); color: #4F3600; }
 .feedback.info { background: var(--sky); }
 .pill {
@@ -643,6 +651,23 @@ const CONFIG = {
     introScript: 'Hi, I\'m James Floyd. I\'m the head of special projects at Pathfinder, and today this is my special project. I\'m sure you\'re busy, so I\'ve taken the last 50 years of learning science and some insights from courses at Google to make this a short, sweet, and effective certification. In this certification we\'ll try and cover our story, Pathfinder\'s story, in 100 words. We\'ll try and cover how to pre-approve a reimbursement in our app, what the card is for, how to get a reimbursement through our app, and the best ways of adding our card or our lead magnets to your offer, so that this works smoothly and is great for your customers. Completing this course shows that you want to be a great partner, and you want to be great for your customers. I\'ll see you in the next video.',
   },
 
+  // ESA basics: what ESA is, where it gets hard for parents, and what Pathfinder does about it.
+  esa: {
+    what: 'ESA stands for Empowerment Scholarship Account. Arizona puts a child\'s share of state education money into an account the family controls. Families spend it on approved learning, like tuition, tutoring, curriculum, therapies and classes like yours.',
+    turn: 'The money is great. Spending it is the hard part.',
+    problems: [
+      { title: 'Knowing what\'s allowed',
+        problem: 'The rules are long, and the same class can be approved or denied depending on the details. Parents guess, and some guesses get denied.',
+        fix: 'Parents scan or search an item in the app before they buy. If Pathfinder pre-approves it, the guarantee covers it.' },
+      { title: 'Paying for it',
+        problem: 'Unless a business is set up as a ClassWallet vendor, parents pay out of pocket and wait to be paid back. Some skip the class because they can\'t front the money.',
+        fix: 'Parents tap the Pathfinder Visa card at your desk, so they don\'t front their own money.' },
+      { title: 'Getting reimbursed',
+        problem: 'Parents upload receipts and invoices, then wait weeks for a review. A missing receipt or detail sends the request back.',
+        fix: 'The receipt attaches to the purchase on its own, and Pathfinder submits the request to the state.' },
+    ],
+  },
+
   partnerTypes: [
     { id: 'activity', label: 'Sports or activity business', desc: 'You run a gym, studio, classes or camps.' },
     { id: 'coop',   label: 'Co-op leader',                 desc: 'You run or organize a homeschool co-op.' },
@@ -864,6 +889,7 @@ const CONFIG = {
    ========================================================================== */
 const STEPS = [
   { id: 'welcome', label: 'Welcome',      min: 1 },
+  { id: 'esa',     label: 'ESA basics',   min: 1 },
   { id: 'story',   label: 'The story',    min: 1 },
   { id: 'retell1', label: 'First retell', min: 2 },
   { id: 'demo',    label: 'App tour',     min: 1 },
@@ -871,12 +897,13 @@ const STEPS = [
   { id: 'simB',    label: 'Guarantee',    min: 1 },
   { id: 'simC',    label: 'Sort',         min: 1 },
   { id: 'simD',    label: 'Reimburse',    min: 1 },
-  { id: 'offer',   label: 'Your offer',   min: 2 },
+  { id: 'offer',   label: 'Your offer',   min: 1 },
   { id: 'retell2', label: 'Final retell', min: 1 },
   { id: 'cert',    label: 'Certificate',  min: 0 },
 ];
 
 const blankState = () => ({
+  v: 2,                // 2 = ESA basics step added at index 1
   step: 0, unlocked: 0,
   learner: { name: '', org: '', type: '' },
   passed: {},          // stepId -> true
@@ -892,7 +919,12 @@ function save() { try { localStorage.setItem(CONFIG.course.storageKey, JSON.stri
 function load() {
   try {
     const raw = localStorage.getItem(CONFIG.course.storageKey);
-    if (raw) state = Object.assign(blankState(), JSON.parse(raw));
+    if (raw) {
+      const saved = JSON.parse(raw);
+      // Progress saved before the ESA basics step existed: shift past the new step.
+      if (!saved.v) { if (saved.step >= 1) saved.step++; if (saved.unlocked >= 1) saved.unlocked++; saved.v = 2; }
+      state = Object.assign(blankState(), saved);
+    }
   } catch (e) {}
 }
 
@@ -1116,6 +1148,19 @@ function parseWordTimes(vttText) {
   });
   return times.sort((a, b) => a - b);
 }
+
+RENDER.esa = (el) => {
+  const C = CONFIG.esa;
+  el.append(stepHead('The basics', 'What ESA is, and where it gets hard', C.what, 1));
+  el.append(h('p', { style: 'font-weight:600;margin:18px 0 0' }, C.turn));
+  el.append(h('ol', { class: 'ps-list' }, C.problems.map(p => h('li', { class: 'card ps-item' },
+    h('h3', null, p.title),
+    h('div', { class: 'ps-pair' },
+      h('div', { class: 'ps-problem' }, h('span', { class: 'ps-label' }, 'The problem'), p.problem),
+      h('div', { class: 'ps-fix' }, h('span', { class: 'ps-label' }, 'With Pathfinder'), p.fix))))));
+  el.append(h('p', { class: 'muted', style: 'margin:18px 0 0' }, 'Next, the story of how Pathfinder started.'));
+  navRow(el, { ready: true });
+};
 
 RENDER.story = (el) => {
   el.append(stepHead('Module 1 · The story', 'How Pathfinder was born, in 100 words', 'Watch closely. Right after this, you\'ll tell the story back in your own words. The counter shows each word as it\'s spoken.', 1));
