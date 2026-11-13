@@ -1040,7 +1040,9 @@ function renderProgress() {
   const ol = document.getElementById('progress-segs');
   ol.innerHTML = '';
   STEPS.forEach((s, i) => {
-    const st = i < state.step || (i <= state.unlocked && i !== state.step && state.passed[s.id]) ? 'done' : i === state.step ? 'current' : i <= state.unlocked ? 'open' : 'locked';
+    // A step is done once the next one has been unlocked, which only happens when it's completed
+    // (gated steps unlock only on a pass). Going back to an earlier step keeps everything after it lit.
+    const st = i === state.step ? 'current' : i < state.unlocked ? 'done' : i === state.unlocked ? 'open' : 'locked';
     const b = h('button', {
       class: 'seg', type: 'button', 'data-state': st,
       'aria-label': `Step ${i + 1}: ${s.label}${st === 'current' ? ' (current)' : st === 'done' ? ' (done)' : st === 'locked' ? ' (locked)' : ''}`,
@@ -1194,7 +1196,7 @@ function parseWordTimes(vttText) {
 }
 
 RENDER.story = (el) => {
-  el.append(stepHead('Module 1 · The story', 'One parent, one card, 100 words', 'Watch closely. Right after this, you\'ll tell the story back in your own words. The counter shows each word as it\'s spoken.', 1));
+  el.append(stepHead('Module 1 · The story', 'How Pathfinder was born, in 100 words', 'Watch closely. Right after this, you\'ll tell the story back in your own words. The counter shows each word as it\'s spoken.', 1));
 
   const total = CONFIG.story.targetWords;
   const video = h('video', { tabindex: '-1', playsinline: true, preload: 'metadata', controls: true, crossorigin: 'anonymous', 'aria-label': 'Pathfinder story video, with captions' },
@@ -1427,7 +1429,7 @@ function retellModule(el, { key, gated }) {
     // Task-focused feedback
     const tips = [];
     if (!inBand) tips.push(n < lo
-      ? `Add about ${lo - n} words. The reference spends its extra words on the questions the parents raised and what Pathfinder does.`
+      ? `Add about ${lo - n} words. The reference spends its extra words on the questions the founders asked and what Pathfinder does.`
       : `Trim about ${n - hi} words. Cut details that aren't part of the problem, the parent, or what Pathfinder does.`);
     CONFIG.retell.parts.forEach(p => {
       if (results[p.id].present) return;
