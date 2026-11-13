@@ -629,8 +629,11 @@ const CONFIG = {
   signupLabel: 'Pathfinder sign-up link',
 
   welcome: {
-    introVideoUrl: null,                 // optional short welcome video
-    introScript: 'Hi, I\'m James, head of special projects at Pathfinder, and today this is my special project. Welcome to the certification. I know you\'re busy running your business, so I\'ve used more than 50 years of learning science, plus my certifications with Google and in course design, to make this short, sweet and to the point. In as little as 13 minutes, you\'ll be able to tell the Pathfinder story in exactly 100 words, pre-approve purchases using Pathfinder\'s process, explain what the card is for, and reimburse purchases. Doing this shows your commitment to this partnership and to your customers. See you in the first video.',
+    introVideoUrl: 'intro.mp4',          // 49-second welcome from James
+    introCaptionsUrl: 'intro.vtt',       // captions are required on all video
+    introPosterUrl: 'intro.jpg',         // the clip opens on a fade from black
+    // Shown under the video as its transcript, so keep it matching what James says in intro.mp4.
+    introScript: 'Hi, I\'m James Floyd. I\'m the head of special projects at Pathfinder, and today this is my special project. I\'m sure you\'re busy, so I\'ve taken the last 50 years of learning science and some insights from courses at Google to make this a short, sweet, and effective certification. In this certification we\'ll try and cover our story, Pathfinder\'s story, in 100 words. We\'ll try and cover how to pre-approve a reimbursement in our app, what the card is for, how to get a reimbursement through our app, and the best ways of adding our card or our lead magnets to your offer, so that this works smoothly and is great for your customers. Completing this course shows that you want to be a great partner, and you want to be great for your customers. I\'ll see you in the next video.',
   },
 
   partnerTypes: [
@@ -640,15 +643,17 @@ const CONFIG = {
   ],
 
   story: {
-    videoUrl: 'story.mp4',               // [VIDEO_URL] placeholder narration
-    captionsUrl: 'story.vtt',            // [CAPTIONS_URL] WebVTT with word-level <timestamps>
+    videoUrl: 'story.mp4',               // James telling the story
+    captionsUrl: 'story.vtt',            // WebVTT with word-level <timestamps>, aligned to the audio
     targetWords: 100,
-    // [STORY_TEXT] The reference story. Each chunk is tagged with the story part it covers.
+    // [STORY_TEXT] The reference story, word for word as James tells it in story.mp4 (story.vtt
+    // carries the same 100 words). Each chunk is tagged with the story part it covers.
     reference: [
-      { part: 'person',     text: 'Once upon a time, a mom decided to educate her kids at home.' },
-      { part: 'problem',    text: 'She tried to reimburse the table she bought from Ikea and curriculum, but it was a complicated process. "Why is this so difficult?" she wondered.' },
-      { part: 'pathfinder', text: 'She went looking for a better solution and found Pathfinder. A couple guys from London who were trying to make it easy to know what you can buy with ESA funds, and then get them reimbursed. They decided on a card' },
-      { part: null,         text: 'and she said, what if me and my mom friends deliver the cards to each new customer? Eureka! Pathfinder was born.' },
+      { part: null,         text: 'Once upon a time, two guys wanted to help kids learn, so they created a course company.' },
+      { part: 'problem',    text: 'But when they talked to the parents buying courses, they found the payment process with ESA sucked. They asked, why is it so hard to know what you can buy with ESA and how to get your purchases reimbursed without spending hours?' },
+      { part: 'person',     text: 'They flew to Arizona to meet with the parents' },
+      { part: 'pathfinder', text: 'and asked, what if we made a payment card? What if a mom delivered each card? What if we guaranteed that parents get a reimbursement using our process?' },
+      { part: null,         text: 'Eureka! Pathfinder was born.' },
     ],
   },
 
@@ -656,11 +661,11 @@ const CONFIG = {
     band: [90, 110],
     parts: [
       { id: 'problem',    label: 'The problem',            description: 'ESA reimbursement is hard: fronting money, waiting, rejections.',
-        keywords: ['reimburs', 'front', 'wait', 'weeks', 'pay back', 'paid back', 'pay her back', 'pay them back', 'out of pocket', 'reject', 'receipt', 'slow', 'hard', 'stress', 'upfront', 'up front', 'complicated', 'difficult', 'confusing'] },
+        keywords: ['reimburs', 'front', 'wait', 'weeks', 'pay back', 'paid back', 'pay her back', 'pay them back', 'out of pocket', 'reject', 'receipt', 'slow', 'hard', 'stress', 'upfront', 'up front', 'complicated', 'difficult', 'confusing', 'hours', 'sucked'] },
       { id: 'person',     label: 'The person and moment',  description: 'A parent struggling with it, at a specific moment.',
-        keywords: ['parent', 'mom', 'mother', 'dad', 'father', 'family', 'families', 'maria', 'she ', 'he ', 'kitchen', 'night', 'homeschool', 'kids', 'children', 'home'] },
+        keywords: ['parent', 'mom', 'mother', 'dad', 'father', 'family', 'families', 'maria', 'she ', 'he ', 'kitchen', 'night', 'homeschool', 'kids', 'children', 'home', 'arizona'] },
       { id: 'pathfinder', label: 'What Pathfinder does',   description: 'Card + knowing what you can buy (pre-approval) + reimbursement.',
-        keywords: ['card', 'pre-approv', 'preapprov', 'approv', 'app', 'check', 'allowable', 'scan', 'handles', 'reimburs', 'know what', 'easy', 'pathfinder'] },
+        keywords: ['card', 'pre-approv', 'preapprov', 'approv', 'app', 'check', 'allowable', 'scan', 'handles', 'reimburs', 'know what', 'easy', 'pathfinder', 'guarantee'] },
     ],
   },
 
@@ -1107,7 +1112,9 @@ RENDER.welcome = (el) => {
   );
 
   const slot = CONFIG.welcome.introVideoUrl
-    ? h('video', { src: CONFIG.welcome.introVideoUrl, controls: true, playsinline: true, preload: 'metadata', 'aria-label': 'Welcome video from James', style: 'width:100%;border-radius:16px' })
+    ? h('video', { controls: true, playsinline: true, preload: 'metadata', poster: CONFIG.welcome.introPosterUrl, 'aria-label': 'Welcome video from James, with captions', style: 'width:100%;border-radius:16px' },
+        h('source', { src: CONFIG.welcome.introVideoUrl, type: 'video/mp4' }),
+        h('track', { kind: 'captions', src: CONFIG.welcome.introCaptionsUrl, srclang: 'en', label: 'English', default: true }))
     : h('div', { class: 'video-slot', role: 'img', 'aria-label': 'Placeholder for an optional welcome video' },
         h('div', null, h('div', { class: 'slot-label' }, 'Optional welcome video'), h('div', { class: 'small', style: 'margin-top:6px' }, 'Slot for a 45-second intro from James')));
 
@@ -1201,7 +1208,7 @@ RENDER.story = (el) => {
 
   el.append(h('div', { class: 'cinema' },
     h('div', { class: 'cinema-frame' }, cover, video, counter),
-    h('div', { class: 'cinema-caption' }, h('span', null, 'Captions on · Placeholder narration'), h('span', null, 'Replace with the real story film [VIDEO_URL]')),
+    h('div', { class: 'cinema-caption' }, h('span', null, 'Captions on'), h('span', null, 'Told by James Floyd')),
   ), srStatus);
 
   const transcript = h('details', { class: 'transcript' },
@@ -1420,7 +1427,7 @@ function retellModule(el, { key, gated }) {
     // Task-focused feedback
     const tips = [];
     if (!inBand) tips.push(n < lo
-      ? `Add about ${lo - n} words. The reference spends its extra words on how the mom found Pathfinder and what it does.`
+      ? `Add about ${lo - n} words. The reference spends its extra words on the questions the parents raised and what Pathfinder does.`
       : `Trim about ${n - hi} words. Cut details that aren't part of the problem, the parent, or what Pathfinder does.`);
     CONFIG.retell.parts.forEach(p => {
       if (results[p.id].present) return;
