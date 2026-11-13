@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Pathfinder Partner Pilot · Concept prototype</title>
+<meta name="description" content="Get paid at the point of sale by ESA families, and get found by more of them. A concept prototype by James Floyd, not an official Pathfinder program.">
+<link rel="canonical" href="https://jamesfloyds.world/pathfinder-partners/">
+<meta name="theme-color" content="#F4F3F2">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap">
+<style>
+:root {
+  --bg: #F4F3F2; --sky: #F1EBFD; --line: #E9E2F6; --surface: #FFFFFF; --surface-2: #F9F6FE;
+  --ink: #1F0151; --ink-2: #3D2A66; --muted: #5E5873;
+  --accent: #5411C1; --accent-bright: #6918EB; --accent-hover: #330080;
+  --good: #087250; --good-soft: #E3F6EF;
+  --radius-lg: 28px; --radius: 18px;
+  --shadow: 0 1px 2px rgba(31,1,81,.05), 0 8px 28px rgba(31,1,81,.07);
+  --sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --display: "Poppins", "Inter", system-ui, sans-serif;
+  --ease: cubic-bezier(.2,.7,.2,1);
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { transition-duration: .001ms !important; animation-duration: .001ms !important; } }
+body { margin: 0; font-family: var(--sans); font-size: 17px; line-height: 1.6; color: var(--ink); background: var(--bg); overflow-x: clip; -webkit-font-smoothing: antialiased; }
+a { color: var(--accent); text-underline-offset: 3px; }
+:focus-visible { outline: 3px solid var(--accent-bright); outline-offset: 2px; border-radius: 6px; }
+img, svg { display: block; max-width: 100%; }
+h1, h2, h3 { font-family: var(--display); font-weight: 600; letter-spacing: -.025em; line-height: 1.12; margin: 0; }
+p { margin: 0 0 12px; }
+
+.proto-banner { position: sticky; top: 0; z-index: 50; background: var(--ink); color: #F1EBFD; font-size: 12.5px; text-align: center; padding: 7px 16px; line-height: 1.3; }
+.wrap { max-width: 1040px; margin: 0 auto; padding: 0 16px; }
+.nav { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 18px 0; }
+.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--accent); }
+.brand svg { width: 30px; height: 30px; }
+.brand b { font-family: var(--display); font-size: 21px; letter-spacing: -.02em; }
+.brand > span > span { display: block; font-size: 11.5px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); line-height: 1; }
+
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 50px; padding: 13px 22px; border-radius: 12px; font-weight: 600; font-size: 16.5px; text-decoration: none; border: 1px solid transparent; transition: background .2s var(--ease), transform .15s var(--ease); }
+.btn:active { transform: translateY(1px); }
+.btn-primary { background: linear-gradient(180deg, var(--accent-bright), var(--accent)); color: #fff; box-shadow: 0 8px 22px rgba(84,17,193,.28); }
+.btn-primary:hover { background: var(--accent-hover); }
+.btn-ghost { background: #fff; color: var(--ink); border-color: #D9CFEF; }
+.btn-ghost:hover { border-color: var(--accent); }
+.btn-small { min-height: 42px; padding: 9px 16px; font-size: 15px; }
+
+/* Hero */
+.hero { padding: 36px 0 56px; text-align: center; }
+.for-tag { display: inline-flex; gap: 8px; align-items: center; padding: 6px 14px; border-radius: 999px; background: #fff; border: 1px solid var(--line); font-size: 14px; font-weight: 600; color: var(--accent); }
+.for-tag[hidden] { display: none; }
+.hero h1 { font-size: clamp(38px, 8.4vw, 72px); margin: 18px auto 0; max-width: 14ch; }
+.hero .lede { font-size: clamp(18px, 2.6vw, 21px); color: var(--ink-2); max-width: 40ch; margin: 18px auto 0; }
+.hero .ctas { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 28px; }
+.hero .fine { font-size: 14px; color: var(--muted); margin-top: 14px; }
+
+/* Purple panel (their site's big rounded card) */
+.panel { background: var(--ink); color: #fff; border-radius: var(--radius-lg); padding: 34px 24px; position: relative; overflow: hidden; isolation: isolate; }
+.panel h2 { color: #fff; font-size: clamp(26px, 5vw, 40px); max-width: 18ch; }
+.panel p { color: #D9CFEF; }
+.panel::after { content: ""; position: absolute; z-index: -1; right: -60px; bottom: -70px; width: 320px; height: 140px; opacity: .14;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 70'%3E%3Cpath fill='%23F1EBFD' d='M28 62c-14 0-24-9-24-21 0-11 9-20 21-21 4-11 15-19 28-19 11 0 21 6 26 15 3-1 6-2 10-2 13 0 24 9 26 21 1 0 2 0 3 0 12 0 21 8 21 18s-9 19-21 19z'/%3E%3C/svg%3E") no-repeat center / contain; }
+.offer-line { font-family: var(--display); font-size: clamp(20px, 3.4vw, 27px); line-height: 1.4; font-weight: 500; color: #fff; max-width: 34ch; margin-top: 14px; }
+.offer-line em { font-style: normal; color: #C9B3F5; }
+
+section { padding: 56px 0 0; }
+.kicker { font-size: 13px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+.sec-h { font-size: clamp(28px, 5.4vw, 42px); margin-top: 8px; max-width: 20ch; }
+.sec-lede { color: var(--ink-2); max-width: 56ch; margin-top: 12px; font-size: 18px; }
+
+/* Compare: today vs Pathfinder */
+.compare { display: grid; gap: 14px; margin-top: 26px; }
+@media (min-width: 760px) { .compare { grid-template-columns: 1fr 1fr; } }
+.col { border-radius: var(--radius); padding: 22px; }
+.col.today { background: #fff; border: 1px solid var(--line); }
+.col.pf { background: var(--sky); }
+.col h3 { font-size: 19px; margin-bottom: 12px; }
+.col ol { margin: 0; padding-left: 20px; }
+.col li { margin: 6px 0; }
+.col .tally { margin-top: 14px; font-weight: 700; font-family: var(--display); }
+.col.today .tally { color: #B42318; }
+.col.pf .tally { color: var(--good); }
+.source { font-size: 13px; color: var(--muted); margin-top: 10px; }
+
+/* Stack */
+.stack { display: grid; gap: 14px; margin-top: 26px; }
+@media (min-width: 760px) { .stack { grid-template-columns: 1fr 1fr; } }
+.item { background: #fff; border-radius: var(--radius); box-shadow: var(--shadow); padding: 22px; display: flex; gap: 16px; }
+.item .num { flex: none; width: 40px; height: 40px; border-radius: 12px; background: var(--sky); color: var(--accent); display: grid; place-items: center; font-family: var(--display); font-weight: 700; }
+.item h3 { font-size: 18.5px; margin-bottom: 6px; }
+.item p { color: var(--ink-2); margin: 0; font-size: 16px; }
+
+/* Steps */
+.steps { display: grid; gap: 14px; margin-top: 26px; counter-reset: s; }
+@media (min-width: 760px) { .steps { grid-template-columns: repeat(3, 1fr); } }
+.step { background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 22px; }
+.step::before { counter-increment: s; content: "Step " counter(s); display: block; font-size: 13px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; }
+.step h3 { font-size: 19px; margin-bottom: 6px; }
+.step p { color: var(--ink-2); margin: 0; font-size: 16px; }
+.step .time { margin-top: 12px; font-size: 14px; color: var(--muted); }
+
+/* Tiers */
+.tiers { display: grid; gap: 14px; margin-top: 26px; }
+@media (min-width: 760px) { .tiers { grid-template-columns: repeat(3, 1fr); } }
+.tier { background: #fff; border-radius: var(--radius); padding: 22px; border: 1px solid var(--line); display: flex; flex-direction: column; }
+.tier.top { background: var(--ink); color: #fff; border-color: var(--ink); }
+.tier .t-name { font-size: 13px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.tier.top .t-name { color: #C9B3F5; }
+.tier .t-amt { font-family: var(--display); font-weight: 700; font-size: 40px; letter-spacing: -.03em; margin-top: 6px; }
+.tier .t-per { font-size: 14px; color: var(--muted); }
+.tier.top .t-per, .tier.top p { color: #D9CFEF; }
+.tier p { margin: 12px 0 0; font-size: 15.5px; color: var(--ink-2); }
+
+/* Scarcity */
+.pilot { display: flex; flex-wrap: wrap; gap: 18px; align-items: center; justify-content: space-between; margin-top: 26px; background: #fff; border-radius: var(--radius); padding: 22px; box-shadow: var(--shadow); }
+.seats { display: flex; gap: 6px; }
+.seats i { width: 22px; height: 22px; border-radius: 7px; background: var(--sky); border: 1px solid var(--line); }
+.seats i.taken { background: var(--accent); border-color: var(--accent); }
+
+/* FAQ */
+.faq { margin-top: 22px; display: grid; gap: 10px; }
+details { background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 0 18px; }
+summary { cursor: pointer; list-style: none; min-height: 56px; display: flex; align-items: center; justify-content: space-between; gap: 12px; font-weight: 600; font-size: 16.5px; }
+summary::-webkit-details-marker { display: none; }
+summary::after { content: ""; flex: none; width: 9px; height: 9px; border-right: 2px solid var(--accent); border-bottom: 2px solid var(--accent); transform: rotate(45deg); transition: transform .2s var(--ease); margin-right: 4px; }
+details[open] summary::after { transform: rotate(-135deg); }
+details > div { padding: 0 0 16px; color: var(--ink-2); font-size: 16px; }
+
+.final { margin: 64px 0 40px; text-align: center; }
+.final .panel { padding: 44px 24px; }
+.final h2 { margin: 0 auto; }
+.final .ctas { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 24px; }
+.final .btn-ghost { background: transparent; color: #fff; border-color: rgba(255,255,255,.4); }
+footer { font-size: 13.5px; color: var(--muted); padding: 0 0 40px; text-align: center; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+</style>
+</head>
+<body>
+<div class="proto-banner" role="note">Concept prototype by James Floyd · Not an official Pathfinder program.</div>
+
+<div class="wrap">
+  <header class="nav">
+    <!-- [PATHFINDER_LOGO] placeholder emblem; replace with the approved logo -->
+    <a class="brand" href="#top" aria-label="Pathfinder Partner Pilot">
+      <svg viewBox="0 0 40 40" aria-hidden="true"><g transform="translate(20 20)"><g fill="#C9B3F5"><ellipse cx="0" cy="-10" rx="6" ry="10"/><ellipse cx="0" cy="-10" rx="6" ry="10" transform="rotate(72)"/><ellipse cx="0" cy="-10" rx="6" ry="10" transform="rotate(144)"/><ellipse cx="0" cy="-10" rx="6" ry="10" transform="rotate(216)"/><ellipse cx="0" cy="-10" rx="6" ry="10" transform="rotate(288)"/></g><circle r="5" fill="#5411C1"/></g></svg>
+      <span><b>Pathfinder</b><span>Partner Pilot</span></span>
+    </a>
+    <a class="btn btn-primary btn-small" href="#join">Join the pilot</a>
+  </header>
+
+  <main id="top">
+    <div class="hero">
+      <span class="for-tag" id="for-tag" hidden></span>
+      <h1 id="hero-h">Get paid when they swipe.</h1>
+      <p class="lede" id="hero-lede">ESA families pay you with the Pathfinder card at your front desk. You're paid like any Visa sale, and we send more ESA families your way.</p>
+      <div class="ctas">
+        <a class="btn btn-primary" href="#join">Become a pilot partner</a>
+        <a class="btn btn-ghost" href="#how">See how it works</a>
+      </div>
+      <p class="fine">No sign-up fee · No new software · About 13 minutes to get certified</p>
+    </div>
+
+    <div class="panel">
+      <span class="kicker" style="color:#C9B3F5">The offer</span>
+      <h2 style="margin-top:8px">Make more from the ESA families you serve, and meet the ones you don't yet.</h2>
+      <p class="offer-line">Get paid <em>at the point of sale</em> instead of waiting weeks on reimbursements, from families who <em>already have ESA money to spend</em>, without new paperwork, software or support, so you can <em>start this week</em>. Sound good?</p>
+    </div>
+
+    <section aria-labelledby="h-today">
+      <span class="kicker">Why it matters</span>
+      <h2 class="sec-h" id="h-today">Your cash shouldn't wait on the state.</h2>
+      <div class="compare">
+        <div class="col today">
+          <h3>Today</h3>
+          <ol>
+            <li>A parent pays you out of pocket, or you set up as a ClassWallet vendor.</li>
+            <li>They upload an invoice and wait for review.</li>
+            <li>Money comes back weeks later, or the request bounces.</li>
+            <li>Some families skip the class because they can't front the money.</li>
+          </ol>
+          <p class="tally">Typical wait: 2 to 6 weeks</p>
+        </div>
+        <div class="col pf">
+          <h3>With Pathfinder</h3>
+          <ol>
+            <li>The parent checks your class in the Pathfinder app before buying.</li>
+            <li>They tap the Pathfinder Visa card on your existing reader.</li>
+            <li>You're paid like any other card sale.</li>
+            <li>Pathfinder handles the reimbursement with the state.</li>
+          </ol>
+          <p class="tally">Your wait: the length of a card swipe</p>
+        </div>
+      </div>
+      <p class="source">Reimbursement timing from reports by families, vendors and Arizona news outlets, 2024–2026. Card sales settle on your processor's normal schedule.</p>
+    </section>
+
+    <section aria-labelledby="h-stack">
+      <span class="kicker">What you get</span>
+      <h2 class="sec-h" id="h-stack">Everything in the pilot partner kit.</h2>
+      <div class="stack">
+        <div class="item"><span class="num" aria-hidden="true">1</span><div><h3>Paid at the point of sale</h3><p>Families pay with a Visa charge card on the reader you already have. No ClassWallet vendor setup, no invoices to chase.</p></div></div>
+        <div class="item"><span class="num" aria-hidden="true">2</span><div><h3>ESA families sent to you</h3><p>A listing as a Pathfinder Partner where families check what they can buy, a feature in Pathfinder's family emails, and a spot in our events calendar.</p></div></div>
+        <div class="item"><span class="num" aria-hidden="true">3</span><div><h3>A family day at your place</h3><p>We co-host a Pathfinder Family Day at your gym, like the one at Gold Medal Gymnastics in Chandler. You get ESA families through your door on one afternoon.</p></div></div>
+        <div class="item"><span class="num" aria-hidden="true">4</span><div><h3>Your own "Is it ESA-allowable?" check</h3><p>A QR code for your front desk and website. Parents scan your class and see the answer before they pay. Pre-approved purchases carry Pathfinder's guarantee.</p></div></div>
+        <div class="item"><span class="num" aria-hidden="true">5</span><div><h3>A homeschool PE guide with your logo</h3><p>A one-page guide, "Using ESA for homeschool PE at <span class="biz">your gym</span>," ready to print or send. We write it; you add your logo.</p></div></div>
+        <div class="item"><span class="num" aria-hidden="true">6</span><div><h3>Paid for every family you bring</h3><p>Earn a referral payout for each family approved for the card through your link, rising as you move up the tiers below.</p></div></div>
+      </div>
+    </section>
+
+    <section id="how" aria-labelledby="h-how">
+      <span class="kicker">How it works</span>
+      <h2 class="sec-h" id="h-how">Three steps. You can start this week.</h2>
+      <div class="steps">
+        <div class="step"><h3>Get certified</h3><p>A short course teaches you Pathfinder's 100-word story, the pre-approval scan and the guarantee, so you can answer parents' questions.</p><p class="time">About 13 minutes, on your phone</p></div>
+        <div class="step"><h3>Put up your kit</h3><p>QR code at the front desk, a line on your homeschool class page, and the guide in your welcome email. We send everything ready to use.</p><p class="time">About 20 minutes</p></div>
+        <div class="step"><h3>Get paid, twice</h3><p>Families swipe for classes, and you earn a payout when a family you referred is approved for the card.</p><p class="time">From your first family</p></div>
+      </div>
+    </section>
+
+    <section aria-labelledby="h-tiers">
+      <span class="kicker">Partner payouts</span>
+      <h2 class="sec-h" id="h-tiers">Bring more families, earn more per family.</h2>
+      <!-- [PAYOUTS] Starting values from the Partnerships Plan doc; confirm with Pathfinder before launch. -->
+      <div class="tiers">
+        <div class="tier"><span class="t-name">Partner</span><span class="t-amt" data-pay="t1">$15</span><span class="t-per">per approved family</span><p>Everyone who finishes the certification.</p></div>
+        <div class="tier"><span class="t-name">Pilot partner</span><span class="t-amt" data-pay="t2">$30</span><span class="t-per">per approved family</span><p>Once your kit is up and your first 3 families are approved.</p></div>
+        <div class="tier top"><span class="t-name">Pathfinder Champion</span><span class="t-amt" data-pay="t3">$45</span><span class="t-per">per approved family</span><p>Keep it up 3 months in a row. Comes with a Champion badge for your window and your marketing.</p></div>
+      </div>
+      <div class="pilot">
+        <div><h3 style="font-size:20px">The pilot is 10 partners in the Phoenix area.</h3><p style="margin:6px 0 0;color:var(--ink-2)">Sports and activity businesses first. We're keeping it small so every partner gets a family day.</p></div>
+        <div class="seats" role="img" aria-label="10 pilot seats"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      </div>
+    </section>
+
+    <section aria-labelledby="h-faq">
+      <span class="kicker">Questions owners ask</span>
+      <h2 class="sec-h" id="h-faq">The honest answers.</h2>
+      <div class="faq">
+        <details><summary>What does it cost me?</summary><div>No sign-up fee and no software. Families pay with a Visa card, so you pay your usual card processing fee on the sale, the same as any other card.</div></details>
+        <details><summary>Which of my classes can families pay for with ESA?</summary><div>Arizona's ESA handbook allows things like sports leagues, sports camps and a gym membership for the student. Structured instruction, such as a weekly homeschool PE class with a named coach, is the safest fit. Open gym and drop-in play are more often denied as recreation. Families can check any class in the Pathfinder app before they buy.</div></details>
+        <details><summary>We already take ClassWallet. Do we have to stop?</summary><div>No. Keep it. Pathfinder is one more way for families to pay you, and it's the fastest one for you.</div></details>
+        <details><summary>What if the state rejects a purchase later?</summary><div>That's between the family and Pathfinder, not you. If the app pre-approved the purchase, Pathfinder covers it up to its guarantee limits. You keep the sale either way.</div></details>
+        <details><summary>We're a franchise. Can we still join?</summary><div>Yes. Nothing changes in your point of sale. If your franchisor reviews local marketing, we'll send the kit for approval before anything goes up.</div></details>
+        <details><summary>How many ESA families are there?</summary><div>More than 100,000 Arizona students have an ESA this school year, and thousands of families already use the Pathfinder app.</div></details>
+      </div>
+    </section>
+
+    <div class="final" id="join">
+      <div class="panel">
+        <h2>Want to be one of the first 10?</h2>
+        <p style="max-width:44ch;margin:14px auto 0">Start with the 13-minute certification. We'll reach out to set up your kit and pick a date for your family day.</p>
+        <div class="ctas">
+          <a class="btn btn-primary" href="/pathfinder-certification/">Start the certification</a>
+          <!-- [PARTNER_CONTACT] replace with Pathfinder's partner inbox or booking link -->
+          <a class="btn btn-ghost" href="mailto:partners@example.com?subject=Pathfinder%20Partner%20Pilot">Ask a question first</a>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+<footer>Concept prototype by James Floyd · Not an official Pathfinder program. Figures and payouts are illustrative until confirmed.</footer>
+
+<script>
+/* Personalize with ?for=<key>, e.g. /pathfinder-partners/?for=conquer */
+const PARTNERS = {
+  conquer: {
+    name: 'Conquer Ninja Gyms',
+    where: 'Scottsdale & Chandler',
+    headline: 'Get paid when they swipe.',
+    lede: 'ESA families can pay for ninja classes at your front desk with the Pathfinder card. You\'re paid like any Visa sale, and we send more homeschool families to your weekday classes.',
+    biz: 'Conquer',
+  },
+};
+try {
+  const key = new URLSearchParams(location.search).get('for');
+  const p = key && PARTNERS[key.toLowerCase()];
+  if (p) {
+    const tag = document.getElementById('for-tag');
+    tag.textContent = `Prepared for ${p.name} · ${p.where}`;
+    tag.hidden = false;
+    document.getElementById('hero-h').textContent = p.headline;
+    document.getElementById('hero-lede').textContent = p.lede;
+    document.querySelectorAll('.biz').forEach(el => { el.textContent = p.biz; });
+    document.title = `Pathfinder Partner Pilot · ${p.name}`;
+  }
+} catch (e) {}
+</script>
+</body>
+</html>
