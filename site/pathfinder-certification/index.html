@@ -248,6 +248,14 @@ legend { font-weight: 600; font-size: 15.5px; margin-bottom: 8px; padding: 0; }
 .feedback ul { margin: 8px 0 0; padding-left: 20px; }
 .feedback li + li { margin-top: 6px; }
 .feedback.good { background: var(--good-soft); color: #0B4F3A; }
+.ps-list { list-style: none; margin: 18px 0 0; padding: 0; display: grid; gap: 14px; }
+.ps-item h3 { font-size: 18px; margin: 0 0 10px; }
+.ps-pair { display: grid; gap: 8px; }
+@media (min-width: 560px) { .ps-pair { grid-template-columns: 1fr 1fr; } }
+.ps-pair > div { border-radius: var(--radius); padding: 12px 14px; font-size: 15px; }
+.ps-pair .ps-label { display: block; font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; margin-bottom: 4px; }
+.ps-problem { background: var(--warn-soft); color: #4F3600; }
+.ps-fix { background: var(--good-soft); color: #0B4F3A; }
 .feedback.miss { background: var(--warn-soft); color: #4F3600; }
 .feedback.info { background: var(--sky); }
 .pill {
@@ -643,6 +651,23 @@ const CONFIG = {
     introScript: 'Hi, I\'m James Floyd. I\'m the head of special projects at Pathfinder, and today this is my special project. I\'m sure you\'re busy, so I\'ve taken the last 50 years of learning science and some insights from courses at Google to make this a short, sweet, and effective certification. In this certification we\'ll try and cover our story, Pathfinder\'s story, in 100 words. We\'ll try and cover how to pre-approve a reimbursement in our app, what the card is for, how to get a reimbursement through our app, and the best ways of adding our card or our lead magnets to your offer, so that this works smoothly and is great for your customers. Completing this course shows that you want to be a great partner, and you want to be great for your customers. I\'ll see you in the next video.',
   },
 
+  // ESA basics: what ESA is, where it gets hard for parents, and what Pathfinder does about it.
+  esa: {
+    what: 'ESA stands for Empowerment Scholarship Account. Arizona puts a child\'s share of state education money into an account the family controls. Families spend it on approved learning, like tuition, tutoring, curriculum, therapies and classes like yours.',
+    turn: 'The money is great. Spending it is the hard part.',
+    problems: [
+      { title: 'Knowing what\'s allowed',
+        problem: 'The rules are long, and the same class can be approved or denied depending on the details. Parents guess, and some guesses get denied.',
+        fix: 'Parents scan or search an item in the app before they buy. If Pathfinder pre-approves it, the guarantee covers it.' },
+      { title: 'Paying for it',
+        problem: 'Unless a business is set up as a ClassWallet vendor, parents pay out of pocket and wait to be paid back. Some skip the class because they can\'t front the money.',
+        fix: 'Parents tap the Pathfinder Visa card at your desk, so they don\'t front their own money.' },
+      { title: 'Getting reimbursed',
+        problem: 'Parents upload receipts and invoices, then wait weeks for a review. A missing receipt or detail sends the request back.',
+        fix: 'The receipt attaches to the purchase on its own, and Pathfinder submits the request to the state.' },
+    ],
+  },
+
   partnerTypes: [
     { id: 'activity', label: 'Sports or activity business', desc: 'You run a gym, studio, classes or camps.' },
     { id: 'coop',   label: 'Co-op leader',                 desc: 'You run or organize a homeschool co-op.' },
@@ -828,122 +853,34 @@ const CONFIG = {
     },
   },
 
-  // Simulation E — The parent conversation, following the 5-step framework:
-  // intro, qualifying question, short story, presentation and close, rehash.
-  // Guided and scored runs use different lines for the same five steps.
-  simE: {
-    parentName: 'Dana',
-    steps: ['Intro', 'Qualifying question', 'Short story', 'Presentation and close', 'Rehash'],
-    guided: {
-      openings: {
-        activity: 'I want to sign up for your homeschool PE class, but I can\'t keep paying up front and waiting weeks on the state.',
-        coop:   'I keep fronting money for co-op fees and waiting weeks to get it back.',
-        school: 'Tuition is due before my ESA money comes through, and every semester I\'m scrambling.',
-        vendor: 'I want your curriculum, but I can\'t keep paying up front and waiting on the state.',
-      },
-      turns: [
-        { skill: 'Intro', guide: 'Start warm. Show you get it, and that you can help.',
-          options: [
-            { text: 'Ugh, I hear that from a lot of our ESA families. I might be able to help with that.', correct: true,
-              reaction: 'Really? I don\'t know what else to do.', debrief: 'Warm, short, and it puts their problem first.' },
-            { text: 'Yeah, ESA is a mess. Everyone complains about it.', correct: false,
-              reaction: 'So… there\'s nothing to do?', debrief: 'Agreeing with the frustration doesn\'t move them forward. Show you get it, then offer to help.' },
-            { text: 'You should get the Pathfinder card.', correct: false,
-              reaction: 'Um, what\'s that?', debrief: 'Too fast. Connect first, then ask your qualifying question.' },
-          ] },
-        { parent: 'Really? I don\'t know what else to do.', skill: 'Qualifying question', guide: 'Ask the qualifying question before you pitch anything.',
-          options: [
-            { text: 'Let me tell you everything about Pathfinder.', correct: false,
-              reaction: 'Okay… is it for me, though?', debrief: 'You skipped the qualifying question, so you don\'t know yet if it fits them.' },
-            { text: 'Quick question. Are you already on ESA?', correct: true,
-              reaction: 'Yeah, two years now.', debrief: 'One clear question that tells you whether Pathfinder fits.' },
-            { text: 'Have you thought about leaving ESA?', correct: false,
-              reaction: 'No, we need it.', debrief: 'Wrong direction. Ask whether they\'re registered for ESA.' },
-          ] },
-        { parent: 'Yeah, two years now.', skill: 'Short story', guide: 'Tell the short story: what Pathfinder does for them.',
-          options: [
-            { text: 'Okay, so there\'s a card for ESA families called Pathfinder. You pay with it like any card. Their app tells you if ESA covers something before you buy, and they handle the reimbursement. No more fronting money.', correct: true,
-              reaction: 'Wait, they do the reimbursement part too?', debrief: 'Short and about them: the card, knowing before you buy, and the reimbursement handled.' },
-            { text: 'Great. Pathfinder covers anything ESA won\'t.', correct: false,
-              reaction: 'Anything? That sounds too good to be true.', debrief: 'Overpromise. Pathfinder covers pre-approved items, up to the caps.' },
-            { text: 'Great. Pathfinder is a fintech company with a proprietary interchange model.', correct: false,
-              reaction: 'I\'m not sure what that means for me.', debrief: 'Too much about the company. The story is what it does for the parent.' },
-          ] },
-        { parent: 'Okay, how does it work? And what if the state says no?', skill: 'Presentation and close', guide: 'Present: check first, the guarantee with its cap, then ask them to sign up.',
-          options: [
-            { text: 'Everything is covered, no matter what. Want the link?', correct: false,
-              reaction: 'Everything? Even things I don\'t check?', debrief: 'Overpromise. Only pre-approved items are covered, up to $2,500 per item and $10,000 a year.' },
-            { text: 'It\'s pretty simple. Let me know if you ever want to try it.', correct: false,
-              reaction: 'Okay, maybe someday.', debrief: 'No close. Offer to get them signed up right now.' },
-            { text: 'You scan the class in the app before you pay. If it\'s approved and the state says no later, Pathfinder covers it, up to $2,500. Want to sign up now? Our QR code is right here, and it takes a couple minutes.', correct: true,
-              reaction: 'Sure, let me grab my phone.', debrief: 'Pre-approval first, the guarantee with its cap, then a clear close.' },
-          ] },
-        { parent: 'Okay… done! That was easy.', skill: 'Rehash', guide: 'Rehash: ask who else it could help.',
-          options: [
-            { text: 'Great, see you later!', correct: false,
-              reaction: 'Bye!', debrief: 'You missed the rehash. Ask who else it could help.' },
-            { text: 'You\'re all set. Know any other ESA families who\'d want this? Send them our way.', correct: true,
-              reaction: 'Oh, my sister-in-law, for sure. I\'ll send her your way.', debrief: 'The rehash: you asked for a referral while they were happy.' },
-            { text: 'Try not to tell too many people about it.', correct: false,
-              reaction: 'Oh… okay?', debrief: 'The opposite of a rehash. Ask who else it could help.' },
-          ] },
-      ],
-    },
-    solo: {
-      openings: {
-        activity: 'My kids love your classes. I just can\'t front another month and wait weeks for the ESA money.',
-        coop:   'Honestly, ESA is wearing me out. I pay the co-op, then chase the state for my money for weeks.',
-        school: 'We love your school, but I can\'t cover tuition and then wait a month for the ESA money.',
-        vendor: 'Your program looks great. I just don\'t have the cash to wait on another reimbursement.',
-      },
-      turns: [
-        { skill: 'Intro',
-          options: [
-            { text: 'Have you heard of Pathfinder? You need it.', correct: false,
-              reaction: 'No… what is it?', debrief: 'Too fast. Connect first, then ask your qualifying question.' },
-            { text: 'Sorry, I can\'t really help with ESA stuff.', correct: false,
-              reaction: 'Oh. Okay.', debrief: 'This shuts the door. Show you get it, then offer to help.' },
-            { text: 'Oh no, that\'s rough. You\'re not the first family to tell me that. I think I can help.', correct: true,
-              reaction: 'Thanks. I\'m just tired of waiting on the money.', debrief: 'Warm, and it puts their problem first.' },
-          ] },
-        { parent: 'Thanks. I\'m just tired of waiting on the money.', skill: 'Qualifying question',
-          options: [
-            { text: 'First, are you on ESA already?', correct: true,
-              reaction: 'We are. Since last fall.', debrief: 'One clear question that tells you whether Pathfinder fits.' },
-            { text: 'Have you tried calling the state every day?', correct: false,
-              reaction: 'I have. It doesn\'t help.', debrief: 'Not a qualifying question. Ask whether they\'re registered for ESA.' },
-            { text: 'Let me give you the full overview of Pathfinder.', correct: false,
-              reaction: 'Is this going to take long?', debrief: 'You skipped the qualifying question, so you don\'t know yet if it fits them.' },
-          ] },
-        { parent: 'We are. Since last fall.', skill: 'Short story',
-          options: [
-            { text: 'Pathfinder\'s mission is reducing friction in school choice with a modern fintech stack.', correct: false,
-              reaction: 'Okay… but what does it do?', debrief: 'Too much about the company. The story is what it does for the parent.' },
-            { text: 'Good. So there\'s a card made for ESA families called Pathfinder. The app shows you what ESA covers before you buy, and they take care of the reimbursement. You stop fronting the money.', correct: true,
-              reaction: 'So I\'d stop guessing and stop chasing the state?', debrief: 'Short and about them: the card, knowing before you buy, and the reimbursement handled.' },
-            { text: 'Good. With Pathfinder you\'ll never get rejected again.', correct: false,
-              reaction: 'Never? How is that possible?', debrief: 'Overpromise. Rejections can still happen; pre-approved items are covered up to the caps.' },
-          ] },
-        { parent: 'Okay, how would I use it? And what if something gets rejected?', skill: 'Presentation and close',
-          options: [
-            { text: 'Check each class in the app before you pay. If it\'s approved and gets rejected later, Pathfinder covers it, up to $2,500 per item and $10,000 a year. Want to scan our QR code and sign up now?', correct: true,
-              reaction: 'Sure. Opening it now.', debrief: 'Pre-approval first, the guarantee with its caps, then a clear close.' },
-            { text: 'Swipe it anywhere and you\'re covered. Here\'s the QR code.', correct: false,
-              reaction: 'Anywhere? Even for groceries?', debrief: 'Overpromise, and it skips pre-approval. Only pre-approved items are covered, up to the caps.' },
-            { text: 'I\'ll let you think it over.', correct: false,
-              reaction: 'Okay, I guess.', debrief: 'No close. Offer to get them signed up right now.' },
-          ] },
-        { parent: 'Okay… I\'m in!', skill: 'Rehash',
-          options: [
-            { text: 'Cool. That\'s it.', correct: false,
-              reaction: 'Okay, thanks.', debrief: 'You missed the rehash. Ask who else it could help.' },
-            { text: 'Don\'t forget to leave a review.', correct: false,
-              reaction: 'Sure, maybe.', debrief: 'A review isn\'t the rehash. Ask who else it could help.' },
-            { text: 'Welcome aboard. Who else do you know on ESA who could use this?', correct: true,
-              reaction: 'Two families from my kid\'s class. I\'ll tell them today.', debrief: 'The rehash: you asked for a referral while they were happy.' },
-          ] },
-      ],
-    },
+  // Module 4 — Your offer. Every partner sells differently, so instead of a script
+  // the course checks three facts: who qualifies, what the offer is, how to set them up.
+  offer: {
+    lesson: [
+      { q: 'Who is qualified for Pathfinder?', a: 'Anyone trying to pay you with ESA funds.' },
+      { q: 'What is the offer to them?', a: 'Pathfinder helps them get purchases approved before they buy, pay you right away with the card, and submit their reimbursements for them.' },
+      { q: 'How do you get them set up?', a: 'Send them your Pathfinder link. It takes them through a 5-click setup.' },
+    ],
+    quiz: [
+      { prompt: 'A parent asks if they can pay for your classes with ESA. Are they a fit for Pathfinder?',
+        options: [
+          { text: 'Yes. Anyone paying you with ESA funds qualifies.', correct: true },
+          { text: 'Only if they homeschool.', why: 'Anyone paying with ESA funds qualifies, homeschool or not.' },
+          { text: 'Only if they already have the Pathfinder app.', why: 'They don\'t need the app yet. Your link sets them up.' },
+        ] },
+      { prompt: 'Which of these is the Pathfinder offer?',
+        options: [
+          { text: 'Pathfinder pays for anything ESA won\'t cover.', why: 'Pathfinder only covers purchases it approved first, up to its limits.' },
+          { text: 'Pathfinder gives ESA families a discount on your classes.', why: 'There\'s no discount. The offer is approval before they buy, paying right away and reimbursements handled.' },
+          { text: 'Pathfinder helps them get purchases approved, pay right away with the card, and submit their reimbursements.', correct: true },
+        ] },
+      { prompt: 'A parent wants to get set up. What do you do?',
+        options: [
+          { text: 'Fill out the application for them.', why: 'Let them do it with your link. It\'s 5 clicks, and their information stays theirs.' },
+          { text: 'Send them your Pathfinder link. Setup is 5 clicks.', correct: true },
+          { text: 'Tell them to search for Pathfinder online.', why: 'Send your link instead. It\'s faster, and the family counts toward your payouts.' },
+        ] },
+    ],
   },
 };
 
@@ -952,6 +889,7 @@ const CONFIG = {
    ========================================================================== */
 const STEPS = [
   { id: 'welcome', label: 'Welcome',      min: 1 },
+  { id: 'esa',     label: 'ESA basics',   min: 1 },
   { id: 'story',   label: 'The story',    min: 1 },
   { id: 'retell1', label: 'First retell', min: 2 },
   { id: 'demo',    label: 'App tour',     min: 1 },
@@ -959,12 +897,13 @@ const STEPS = [
   { id: 'simB',    label: 'Guarantee',    min: 1 },
   { id: 'simC',    label: 'Sort',         min: 1 },
   { id: 'simD',    label: 'Reimburse',    min: 1 },
-  { id: 'simE',    label: 'Conversation', min: 2 },
+  { id: 'offer',   label: 'Your offer',   min: 1 },
   { id: 'retell2', label: 'Final retell', min: 1 },
   { id: 'cert',    label: 'Certificate',  min: 0 },
 ];
 
 const blankState = () => ({
+  v: 2,                // 2 = ESA basics step added at index 1
   step: 0, unlocked: 0,
   learner: { name: '', org: '', type: '' },
   passed: {},          // stepId -> true
@@ -980,7 +919,12 @@ function save() { try { localStorage.setItem(CONFIG.course.storageKey, JSON.stri
 function load() {
   try {
     const raw = localStorage.getItem(CONFIG.course.storageKey);
-    if (raw) state = Object.assign(blankState(), JSON.parse(raw));
+    if (raw) {
+      const saved = JSON.parse(raw);
+      // Progress saved before the ESA basics step existed: shift past the new step.
+      if (!saved.v) { if (saved.step >= 1) saved.step++; if (saved.unlocked >= 1) saved.unlocked++; saved.v = 2; }
+      state = Object.assign(blankState(), saved);
+    }
   } catch (e) {}
 }
 
@@ -1204,6 +1148,19 @@ function parseWordTimes(vttText) {
   });
   return times.sort((a, b) => a - b);
 }
+
+RENDER.esa = (el) => {
+  const C = CONFIG.esa;
+  el.append(stepHead('The basics', 'What ESA is, and where it gets hard', C.what, 1));
+  el.append(h('p', { style: 'font-weight:600;margin:18px 0 0' }, C.turn));
+  el.append(h('ol', { class: 'ps-list' }, C.problems.map(p => h('li', { class: 'card ps-item' },
+    h('h3', null, p.title),
+    h('div', { class: 'ps-pair' },
+      h('div', { class: 'ps-problem' }, h('span', { class: 'ps-label' }, 'The problem'), p.problem),
+      h('div', { class: 'ps-fix' }, h('span', { class: 'ps-label' }, 'With Pathfinder'), p.fix))))));
+  el.append(h('p', { class: 'muted', style: 'margin:18px 0 0' }, 'Next, the story of how Pathfinder started.'));
+  navRow(el, { ready: true });
+};
 
 RENDER.story = (el) => {
   el.append(stepHead('Module 1 · The story', 'How Pathfinder was born, in 100 words', 'Watch closely. Right after this, you\'ll tell the story back in your own words. The counter shows each word as it\'s spoken.', 1));
@@ -1990,70 +1947,53 @@ RENDER.simD = (el) => simShell(el, {
 /* ==========================================================================
    4E. THE PARENT CONVERSATION
    ========================================================================== */
-RENDER.simE = (el) => simShell(el, {
-  key: 'simE', kicker: 'Simulation E · The conversation', title: 'Talk with a parent',
-  lede: 'This is the real job. A parent comes to you frustrated. Walk them through the five steps, one reply at a time.', min: 2,
-  run(stage, mode, done) {
-    const E = Object.assign({ parentName: CONFIG.simE.parentName }, CONFIG.simE[mode]);
-    const steps = CONFIG.simE.steps;
-    stage.append(h('div', { class: 'card soft mt-m small' }, h('strong', null, 'The five steps: '),
-      steps.map((x, i) => [i ? ' → ' : '', x])));
-    const stepLabel = h('p', { class: 'small', style: 'margin:14px 0 0;font-weight:600;color:var(--accent-ink)' });
-    const chat = h('div', { class: 'chat', role: 'log', 'aria-live': 'polite', 'aria-label': `Conversation with ${E.parentName}` });
-    const replies = h('div', { class: 'replies', role: 'group', 'aria-label': 'Your reply options' });
-    stage.append(h('div', { class: 'mt-m' }, chat, stepLabel, replies));
-    const picks = [];
-    const say = (who, text) => {
-      chat.append(h('div', { class: 'msg-who' + (who === 'you' ? ' you' : '') }, who === 'you' ? 'You' : E.parentName), h('div', { class: 'msg ' + who }, text));
-      chat.lastElementChild.scrollIntoView({ block: 'nearest', behavior: reduceMotion() ? 'auto' : 'smooth' });
-    };
-    const typing = async () => { const t = h('div', { class: 'typing', 'aria-hidden': 'true' }, h('i'), h('i'), h('i')); chat.append(t); await delay(650); t.remove(); };
+RENDER.offer = (el) => {
+  const C = CONFIG.offer;
+  el.append(stepHead('Module 4 · Your offer', 'Three things to know', 'This is the whole sales part. Every parent is different, so say it your way. Just get these three right.', 2));
+  el.append(h('div', { class: 'card mt-m stack' }, C.lesson.map(l =>
+    h('div', null, h('h3', { style: 'font-size:17px;margin:0' }, l.q), h('p', { style: 'margin:4px 0 0' }, l.a)))));
 
-    const turn = async (k) => {
-      const T = E.turns[k];
-      if (k === 0) say('parent', E.openings[state.learner.type] || E.openings.coop);
-      else { await typing(); say('parent', T.parent); }
-      stepLabel.textContent = `Step ${k + 1} of ${E.turns.length}${mode === 'guided' ? ' · ' + T.skill : ''}`;
-      const opts = T.options.map((o, i) => ({ ...o, i }));
-      replies.replaceChildren(...opts.map(o => h('button', { class: 'reply', type: 'button', onclick: () => pick(o) }, o.text)));
-      if (mode === 'guided') {
-        const best = [...replies.children][opts.findIndex(o => o.correct)];
-        guide(best, T.guide, true);
-      }
-      replies.querySelector('.reply').focus({ preventScroll: true });
+  const form = h('form', { class: 'mt-l stack', novalidate: true, 'aria-label': 'Check your offer' });
+  const groups = C.quiz.map((q, qi) => {
+    const fb = h('div', { 'aria-live': 'polite' });
+    const fs = h('fieldset', null,
+      h('legend', { style: 'font-weight:600;margin-bottom:10px' }, `${qi + 1}. ${q.prompt}`),
+      h('div', { class: 'choice-grid' }, q.options.map((o, oi) =>
+        h('label', { class: 'choice' },
+          h('input', { type: 'radio', name: 'offer-q' + qi, value: oi }),
+          h('span', { class: 'choice-body' }, h('span', { class: 'radio' }), h('span', null, h('span', { class: 'choice-title' }, o.text)))))),
+      fb);
+    form.append(fs);
+    return { q, fs, fb };
+  });
+  const result = h('div');
+  form.append(h('button', { class: 'btn btn-primary', type: 'submit' }, 'Check my answers'), result);
+  el.append(form);
+  const nav = navRow(el, { ready: !!state.passed.offer, note: state.passed.offer ? '' : 'Get all three right to continue.' });
 
-      async function pick(o) {
-        if (mode === 'guided' && !o.correct) {
-          replies.querySelectorAll('.feedback').forEach(x => x.remove());
-          replies.append(h('div', { class: 'feedback miss', role: 'status' }, o.debrief, ' Try the highlighted reply.'));
-          return;
-        }
-        picks[k] = { turn: T, choice: o };
-        replies.replaceChildren(); stepLabel.textContent = '';
-        chat.tabIndex = -1; chat.focus({ preventScroll: true });
-        say('you', o.text);
-        await typing();
-        say('parent', o.reaction);
-        if (k + 1 < E.turns.length) turn(k + 1);
-        else finish();
-      }
-    };
-    const finish = async () => {
-      await delay(500);
-      const s = picks.filter(p => p.choice.correct).length;
-      const debrief = h('div', { class: 'mt-l' },
-        h('h2', { style: 'font-size:22px;margin-bottom:12px' }, 'Debrief'),
-        h('ol', { class: 'debrief' }, picks.map(p => h('li', null,
-          h('div', { class: 'd-head' }, h('span', { class: 'd-skill' }, p.turn.skill), h('span', { class: 'pill ' + (p.choice.correct ? 'good' : 'warn') }, p.choice.correct ? 'Strong' : 'Revisit')),
-          h('p', { class: 'd-quote' }, `“${p.choice.text}”`),
-          h('p', { class: 'd-why' }, p.choice.debrief)))),
-        h('p', { class: 'small muted mt-m' }, 'Sign-up link to share: ', h('a', { href: CONFIG.signupUrl, target: '_blank', rel: 'noopener' }, CONFIG.signupLabel), ` (${CONFIG.signupUrl})`));
-      done({ score: s, max: E.turns.length, extra: debrief,
-        misses: picks.filter(p => !p.choice.correct).map(p => `${p.turn.skill}: ${p.choice.debrief}`) });
-    };
-    turn(0);
-  },
-});
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    let right = 0, missing = 0;
+    groups.forEach(({ q, fs, fb }) => {
+      const sel = fs.querySelector('input:checked');
+      if (!sel) { missing++; fb.replaceChildren(h('p', { class: 'small muted', style: 'margin:8px 0 0' }, 'Pick an answer.')); return; }
+      const o = q.options[+sel.value];
+      if (o.correct) right++;
+      fb.replaceChildren(h('div', { class: 'feedback small ' + (o.correct ? 'good' : 'miss'), style: 'margin-top:10px' }, o.correct ? 'Right.' : o.why));
+    });
+    const passed = !missing && right / groups.length >= CONFIG.course.passThreshold;
+    if (passed) {
+      state.passed.offer = true; save();
+      result.replaceChildren(h('div', { class: 'feedback good', role: 'status' },
+        h('h3', null, `${right} of ${groups.length} · Passed`), h('p', { style: 'margin:0' }, 'That\'s the whole pitch. Say it your way.')));
+      nav.setReady(true, '');
+    } else {
+      result.replaceChildren(h('div', { class: 'feedback miss', role: 'status' },
+        missing ? 'Answer every question first.' : `${right} of ${groups.length}. Fix the ones marked and check again.`));
+    }
+    const fb = result.querySelector('.feedback'); fb.setAttribute('tabindex', '-1'); fb.focus();
+  });
+};
 
 /* ==========================================================================
    6. CERTIFICATE + petal confetti
