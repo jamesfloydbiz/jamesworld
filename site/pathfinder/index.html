@@ -105,6 +105,8 @@ section { padding: 56px 0 0; }
 .step .time { margin-top: 12px; font-size: 14px; color: var(--muted); }
 
 /* Tiers */
+.tiers-sub { color: var(--ink-2); max-width: 52ch; margin: 10px 0 0; }
+.tiers-note { color: var(--ink-2); font-size: 15px; margin: 14px 0 0; }
 .tiers { display: grid; gap: 14px; margin-top: 26px; }
 @media (min-width: 760px) { .tiers { grid-template-columns: repeat(3, 1fr); } }
 .tier { background: #fff; border-radius: var(--radius); padding: 22px; border: 1px solid var(--line); display: flex; flex-direction: column; }
@@ -228,12 +230,16 @@ footer { font-size: 13.5px; color: var(--muted); padding: 0 0 40px; text-align: 
     <section aria-labelledby="h-tiers">
       <span class="kicker">Partner payouts</span>
       <h2 class="sec-h" id="h-tiers">Bring more families, earn more per family.</h2>
-      <!-- [PAYOUTS] Starting values from the Partnerships Plan doc; confirm with Pathfinder before launch. -->
+      <p class="tiers-sub">Families win first. Every family you refer stops fronting money for classes, yours included.</p>
+      <!-- [PAYOUTS] Partnerships Plan: Pathfinder pays $15 per card app today, and $45 per app on the current 30-day offer.
+           Three tiers per Hormozi's affiliate playbook: small for everyone, about half the max for an activation the partner
+           controls, the full max for sustained performance they have to keep. Confirm amounts and the 3-a-month bar before launch. -->
       <div class="tiers">
-        <div class="tier"><span class="t-name">Partner</span><span class="t-amt" data-pay="t1">$15</span><span class="t-per">per approved family</span><p>Everyone who finishes the certification.</p></div>
-        <div class="tier"><span class="t-name">Pilot partner</span><span class="t-amt" data-pay="t2">$30</span><span class="t-per">per approved family</span><p>Once your kit is up and your first 3 families are approved.</p></div>
-        <div class="tier top"><span class="t-name">Pathfinder Champion</span><span class="t-amt" data-pay="t3">$45</span><span class="t-per">per approved family</span><p>Keep it up 3 months in a row. Comes with a Champion badge for your window and your marketing.</p></div>
+        <div class="tier"><span class="t-name">Partner</span><span class="t-amt" data-pay="t1">$15</span><span class="t-per">per approved family</span><p>Everyone who finishes the 13-minute certification.</p></div>
+        <div class="tier"><span class="t-name">Pilot partner</span><span class="t-amt" data-pay="t2">$25</span><span class="t-per">per approved family</span><p>Once your kit is up: the QR code at your front desk and the line on your class page. That part is all you.</p></div>
+        <div class="tier top"><span class="t-name">Pathfinder Champion</span><span class="t-amt" data-pay="t3">$45</span><span class="t-per">per approved family</span><p>3 or more approved families a month, 3 months in a row. Stay at 3 a month to keep it. Comes with a Champion badge for your window and the top spot in the app's partner list.</p></div>
       </div>
+      <p class="tiers-note">Every week we email you the families you've referred and where you stand.</p>
       <div class="pilot">
         <div><h3 style="font-size:20px">The pilot is 10 partners in the Phoenix area.</h3><p style="margin:6px 0 0;color:var(--ink-2)">Sports and activity businesses first. We're keeping it small so every partner gets a family day.</p></div>
         <div class="seats" role="img" aria-label="10 pilot seats"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
