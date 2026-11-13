@@ -222,7 +222,7 @@ label.field { display: block; }
 fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
 legend { font-weight: 600; font-size: 15.5px; margin-bottom: 8px; padding: 0; }
 .choice-grid { display: grid; gap: 10px; }
-@media (min-width: 560px) { .choice-grid.cols-3 { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 560px) { .choice-grid.cols-3 { grid-template-columns: repeat(3, 1fr); } .choice-grid.cols-2 { grid-template-columns: repeat(2, 1fr); } }
 .choice { position: relative; display: block; cursor: pointer; height: 100%; }
 .choice input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
 .choice-body {
@@ -633,6 +633,7 @@ const CONFIG = {
 
   signupUrl: '[SIGNUP_URL]',            // e.g. https://pathfinder.example/signup
   signupLabel: 'Pathfinder sign-up link',
+  pilotUrl: 'https://jamesfloyds.world/pathfinder/',   // shared from the certificate screen
 
   welcome: {
     introVideoUrl: 'intro.mp4',          // 49-second welcome from James
@@ -643,6 +644,7 @@ const CONFIG = {
   },
 
   partnerTypes: [
+    { id: 'activity', label: 'Sports or activity business', desc: 'You run a gym, studio, classes or camps.' },
     { id: 'coop',   label: 'Co-op leader',                 desc: 'You run or organize a homeschool co-op.' },
     { id: 'school', label: 'School',                       desc: 'You work in admissions or the front office.' },
     { id: 'vendor', label: 'Curriculum or product vendor', desc: 'You sell learning materials or services.' },
@@ -666,12 +668,12 @@ const CONFIG = {
   retell: {
     band: [90, 110],
     parts: [
-      { id: 'problem',    label: 'The problem',            description: 'ESA reimbursement is hard: fronting money, waiting, rejections.',
-        keywords: ['reimburs', 'front', 'wait', 'weeks', 'pay back', 'paid back', 'pay her back', 'pay them back', 'out of pocket', 'reject', 'receipt', 'slow', 'hard', 'stress', 'upfront', 'up front', 'complicated', 'difficult', 'confusing', 'hours', 'sucked'] },
-      { id: 'person',     label: 'The person and moment',  description: 'A parent struggling with it, at a specific moment.',
-        keywords: ['parent', 'mom', 'mother', 'dad', 'father', 'family', 'families', 'maria', 'she ', 'he ', 'kitchen', 'night', 'homeschool', 'kids', 'children', 'home', 'arizona'] },
-      { id: 'pathfinder', label: 'What Pathfinder does',   description: 'Card + knowing what you can buy (pre-approval) + reimbursement.',
-        keywords: ['card', 'pre-approv', 'preapprov', 'approv', 'app', 'check', 'allowable', 'scan', 'handles', 'reimburs', 'know what', 'easy', 'pathfinder', 'guarantee'] },
+      { id: 'problem',    label: 'The problem',            description: 'Paying with ESA is hard: knowing what you can buy and the hours it takes to get reimbursed.',
+        keywords: ['know what', 'can buy', 'payment', 'reimburs', 'front', 'wait', 'weeks', 'pay back', 'paid back', 'pay her back', 'pay them back', 'out of pocket', 'reject', 'receipt', 'slow', 'hard', 'stress', 'upfront', 'up front', 'complicated', 'difficult', 'confusing', 'hours', 'sucked'] },
+      { id: 'person',     label: 'The people they met',    description: 'The founders flew to Arizona to meet the parents.',
+        keywords: ['parent', 'mom', 'mother', 'dad', 'father', 'family', 'families', 'homeschool', 'kids', 'children', 'arizona', 'flew', 'met ', 'meet'] },
+      { id: 'pathfinder', label: 'What Pathfinder does',   description: 'A payment card, delivered by a mom, with a reimbursement guarantee.',
+        keywords: ['card', 'deliver', 'pre-approv', 'preapprov', 'approv', 'app', 'check', 'allowable', 'scan', 'handles', 'reimburs', 'know what', 'easy', 'pathfinder', 'guarantee'] },
     ],
   },
 
@@ -776,22 +778,22 @@ const CONFIG = {
     ],
     guided: [
       { id: 'sci',      label: 'Science textbook',        column: 'use',   reason: 'Textbooks are a core ESA expense.' },
-      { id: 'algebra',  label: 'Online algebra course',   column: 'use',   reason: 'Courses from an education provider are a core ESA expense.' },
+      { id: 'pe',       label: 'Weekly homeschool PE class', column: 'use', reason: 'Structured instruction with a named coach is the safest fit.' },
       { id: 'speech',   label: 'Speech therapy sessions', column: 'use',   reason: 'Educational therapies from a licensed provider are allowable.' },
       { id: 'console',  label: 'Video game console',      column: 'dont',  reason: 'Entertainment hardware isn\'t allowable.' },
       { id: 'meals',    label: 'Restaurant meals',        column: 'dont',  reason: 'Food isn\'t allowable.' },
-      { id: 'movies',   label: 'Movie tickets',           column: 'dont',  reason: 'Entertainment isn\'t allowable.' },
+      { id: 'party',    label: 'Birthday party package',  column: 'dont',  reason: 'A party is recreation, not instruction.' },
       { id: 'tablet',   label: 'Tablet',                  column: 'check', reason: 'Devices depend on the details and limits. Scan it first.' },
-      { id: 'shelf',    label: 'Bookshelf',               column: 'check', reason: 'Furniture depends on the details. Scan it first.' },
+      { id: 'opengym',  label: 'Open gym pass',           column: 'check', reason: 'Drop-in play is often denied as recreation. Scan it first.' },
     ],
     solo: [
       { id: 'curric',   label: 'Math curriculum',         column: 'use',   reason: 'Curriculum is a core ESA expense.' },
       { id: 'tutor',    label: 'Weekly tutoring',         column: 'use',   reason: 'Tutoring by a qualified provider is a core ESA expense.' },
-      { id: 'tuition',  label: 'Private school tuition',  column: 'use',   reason: 'Tuition at a qualified school is a core ESA expense.' },
+      { id: 'gymmem',   label: 'Gym membership for the student', column: 'use', reason: 'Arizona\'s ESA handbook lists a gym membership for the student.' },
       { id: 'tv',       label: 'Television',              column: 'dont',  reason: 'Entertainment hardware isn\'t allowable.' },
       { id: 'food',     label: 'Groceries',               column: 'dont',  reason: 'Food isn\'t allowable.' },
       { id: 'gift',     label: 'Gift cards',              column: 'dont',  reason: 'Gift cards can\'t be traced to an allowable item.' },
-      { id: 'furn',     label: 'Desk and chair',          column: 'check', reason: 'Furniture depends on the details. Scan it first.' },
+      { id: 'gear',     label: 'Martial arts uniform and gear', column: 'check', reason: 'Equipment depends on the details. Scan it first.' },
       { id: 'laptop',   label: 'Laptop',                  column: 'check', reason: 'Computers depend on the details and limits. Scan it first.' },
     ],
   },
@@ -834,6 +836,7 @@ const CONFIG = {
     steps: ['Intro', 'Qualifying question', 'Short story', 'Presentation and close', 'Rehash'],
     guided: {
       openings: {
+        activity: 'I want to sign up for your homeschool PE class, but I can\'t keep paying up front and waiting weeks on the state.',
         coop:   'I keep fronting money for co-op fees and waiting weeks to get it back.',
         school: 'Tuition is due before my ESA money comes through, and every semester I\'m scrambling.',
         vendor: 'I want your curriculum, but I can\'t keep paying up front and waiting on the state.',
@@ -888,6 +891,7 @@ const CONFIG = {
     },
     solo: {
       openings: {
+        activity: 'My kids love your classes. I just can\'t front another month and wait weeks for the ESA money.',
         coop:   'Honestly, ESA is wearing me out. I pay the co-op, then chase the state for my money for weeks.',
         school: 'We love your school, but I can\'t cover tuition and then wait a month for the ESA money.',
         vendor: 'Your program looks great. I just don\'t have the cash to wait on another reimbursement.',
@@ -1145,7 +1149,7 @@ RENDER.welcome = (el) => {
 
   const name = h('input', { class: 'input', id: 'f-name', name: 'name', autocomplete: 'name', required: true, value: state.learner.name });
   const org = h('input', { class: 'input', id: 'f-org', name: 'org', autocomplete: 'organization', required: true, value: state.learner.org });
-  const types = h('div', { class: 'choice-grid cols-3' }, CONFIG.partnerTypes.map(t =>
+  const types = h('div', { class: 'choice-grid cols-2' }, CONFIG.partnerTypes.map(t =>
     h('label', { class: 'choice' },
       h('input', { type: 'radio', name: 'ptype', value: t.id, checked: state.learner.type === t.id, required: true }),
       h('span', { class: 'choice-body' }, h('span', { class: 'radio' }),
@@ -2153,6 +2157,26 @@ function petals() {
   requestAnimationFrame(frame);
 }
 
+// The course teaches the rehash, so it does one too: ask who else should join.
+function referralCard() {
+  const btn = h('button', { class: 'btn btn-primary mt-m', type: 'button' }, 'Share the pilot');
+  btn.addEventListener('click', async () => {
+    const data = { title: 'Pathfinder Partner Pilot', text: 'ESA families can pay you with the Pathfinder card. The pilot has 10 spots.', url: CONFIG.pilotUrl };
+    try {
+      if (navigator.share) { await navigator.share(data); return; }
+      await navigator.clipboard.writeText(CONFIG.pilotUrl);
+      btn.textContent = 'Link copied';
+    } catch (e) {
+      if (e && e.name === 'AbortError') return;
+      btn.replaceWith(h('a', { class: 'btn btn-primary mt-m', href: CONFIG.pilotUrl }, 'Open the pilot page'));
+    }
+  });
+  return h('div', { class: 'card soft mt-m' },
+    h('strong', null, 'Know another owner who takes ESA?'),
+    h('p', { class: 'small', style: 'margin:6px 0 0' }, 'The pilot has 10 spots in the Phoenix area. Send them the page while it\'s fresh.'),
+    btn);
+}
+
 RENDER.cert = (el) => {
   if (!state.cert) { state.cert = { id: makeCertId(), date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) }; save(); }
   el.append(stepHead('Complete', `Well done, ${firstName()}.`, 'You can now tell Pathfinder\'s story and walk a parent through it honestly. Here\'s your certificate.', null));
@@ -2161,7 +2185,8 @@ RENDER.cert = (el) => {
   el.append(wrap, actions,
     h('div', { class: 'card soft mt-l small' },
       h('strong', null, 'Next step with families: '), 'share the ', h('a', { href: CONFIG.signupUrl, target: '_blank', rel: 'noopener' }, CONFIG.signupLabel),
-      ' and remind them to check items in the app before they buy.'));
+      ' and remind them to check items in the app before they buy.'),
+    referralCard());
   const back = h('div', { class: 'nav-row' }, h('button', { class: 'btn btn-ghost', type: 'button', onclick: () => go(state.step - 1) }, 'Back'));
   el.append(back);
 
