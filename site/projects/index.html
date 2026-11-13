@@ -101,7 +101,12 @@
             <span class="tag">Active</span>
           </div>
           <p class="card-body" style="margin-bottom:1.5rem;">ESA families pay partners with the Pathfinder card at the front desk. Partners start with a 13-minute course that teaches Pathfinder&rsquo;s story in exactly 100 words.</p>
-          <a href="/pathfinder/" class="text-link" style="font-size:0.875rem;">See the pilot →</a>
+          <div class="btn-row" style="gap:12px;align-items:center;">
+            <a href="/pathfinder/" class="text-link" style="font-size:0.875rem;">See the pilot →</a>
+            <button type="button" class="btn btn-outline" data-modal-open="pathfinder-story-modal" style="font-size:11px;letter-spacing:0.15em;padding:6px 12px;">
+              Read the story
+            </button>
+          </div>
         </article>
 
       </div>
@@ -204,6 +209,22 @@
           <p style="font-family:var(--font-mono);font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--fg-50);margin-bottom:8px;">What it really did</p>
           <p style="margin-bottom:12px;">Most importantly, I brought my audience along with me as I shared stories from exploring in public.</p>
           <p style="color:var(--fg-70);font-style:italic;">I constantly had people I met comment they had seen me on LinkedIn or already heard a story from my life.</p>
+        </div>
+      </dialog>
+
+      <!-- Pathfinder story modal: why I built the partner pilot. -->
+      <dialog id="pathfinder-story-modal" aria-labelledby="pathfinder-story-title">
+        <div class="modal-header">
+          <p class="modal-title" id="pathfinder-story-title">Pathfinder Partner Pilot · How it started</p>
+          <button type="button" class="modal-close" data-modal-close>Close ×</button>
+        </div>
+        <div class="modal-body" style="padding:24px;">
+          <p style="margin-bottom:16px;">November 4th, I got an X DM from a guy I didn&rsquo;t know named Amaan.</p>
+          <p style="margin-bottom:16px;">He runs Pathfinder. They had just raised their Series A ($16 million total raised) to help parents spend and reimburse their ESA money with a card. Eventually, the goal is a marketplace, much like Bilt Card or Ramp Card.</p>
+          <p style="margin-bottom:16px;">We got on a call. Apparently, I had done executive security for a governor he was about to meet with.</p>
+          <p style="margin-bottom:16px;">This guy&rsquo;s a dog. He and his co-founder Sid started a micro school in Europe, then an AI course creator in SF. But parents were having such a hard time even paying them with their ESA money that they went and solved that problem.</p>
+          <p style="margin-bottom:16px;">Later I was FaceTiming them from a U-Haul, driving across Manhattan after an event, figuring out how I&rsquo;d fit. I pitched head of special projects.</p>
+          <p>This is a network effect business, so growth is everything. So I built them an affiliate program.</p>
         </div>
       </dialog>
 
