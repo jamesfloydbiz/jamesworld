@@ -1,6 +1,69 @@
 [
  {
   "kind": "fact",
+  "name": "Miami-Dade County Public Schools",
+  "text": "Policy: Invited independent microschools to lease empty district classroom space; proposals due Dec 1 (Nov 2026)",
+  "date": "2026-11",
+  "self_reported": false,
+  "href": "https://www.the74million.org/article/miami-dade-district-seeks-microschools-to-lease-empty-classroom-space/",
+  "source": "https://www.the74million.org/article/miami-dade-district-seeks-microschools-to-lease-empty-classroom-space/"
+ },
+ {
+  "kind": "fact",
+  "name": "St. Louis Public Schools",
+  "text": "Closures: Board voted 4-3 to close nine schools in 2027, cutting the district from 61 schools to 52 (Nov 2026)",
+  "date": "2026-11",
+  "self_reported": false,
+  "href": "https://www.stlpr.org/education/2026-11-11/st-louis-public-schools-will-close-nine-schools-next-year-despite-calls-to-delay-vote",
+  "source": "https://www.stlpr.org/education/2026-11-11/st-louis-public-schools-will-close-nine-schools-next-year-despite-calls-to-delay-vote"
+ },
+ {
+  "kind": "fact",
+  "name": "Education Cannot Wait",
+  "text": "Funding: $405.8M in new pledges at its Geneva replenishment conference, reaching $541.6M of a $600M goal (Nov 2026)",
+  "date": "2026-11",
+  "self_reported": true,
+  "href": "https://www.prnewswire.com/news-releases/global-solidarity-delivers-major-boost-to-education-cannot-wait-as-hope-starts-here-campaign-approaches-its-us600-million-goal-302931576.html",
+  "source": "https://www.prnewswire.com/news-releases/global-solidarity-delivers-major-boost-to-education-cannot-wait-as-hope-starts-here-campaign-approaches-its-us600-million-goal-302931576.html"
+ },
+ {
+  "kind": "study",
+  "name": "Study",
+  "text": "Zhang, Michaelson, Middlebrook, Sahni & Bills (2026), EdWorkingPaper 26-1646",
+  "date": "2026",
+  "self_reported": false,
+  "href": "https://edworkingpapers.com/ai26-1646",
+  "source": "https://edworkingpapers.com/ai26-1646"
+ },
+ {
+  "kind": "study",
+  "name": "Study",
+  "text": "Harris, Sanderson Edwards & Marsh (2026), EdWorkingPaper 26-1644",
+  "date": "2026",
+  "self_reported": false,
+  "href": "https://edworkingpapers.com/ai26-1644",
+  "source": "https://edworkingpapers.com/ai26-1644"
+ },
+ {
+  "kind": "study",
+  "name": "Study",
+  "text": "Lee, Scafidi, Tutterow & Kavanagh (2026), EdWorkingPaper 26-1645",
+  "date": "2026",
+  "self_reported": false,
+  "href": "https://edworkingpapers.com/ai26-1645",
+  "source": "https://edworkingpapers.com/ai26-1645"
+ },
+ {
+  "kind": "study",
+  "name": "Study",
+  "text": "Walker & Kilbride (2026), EdWorkingPaper 26-1640",
+  "date": "2026",
+  "self_reported": false,
+  "href": "https://edworkingpapers.com/ai26-1640",
+  "source": "https://edworkingpapers.com/ai26-1640"
+ },
+ {
+  "kind": "fact",
   "name": "Anthropic",
   "text": "Agreement: Signed the AFT and UFT's legally binding AI Safety and Privacy Standard for Schools, covering Claude for Teachers (Nov 2026)",
   "date": "2026-11",
