@@ -1,6 +1,78 @@
 [
  {
   "kind": "fact",
+  "name": "Virginia",
+  "text": "Policy: Gov. Spanberger withdrew Virginia from the federal scholarship tax credit before its Jan 1 launch, reversing Youngkin's opt-in (Nov 2026)",
+  "date": "2026-11",
+  "self_reported": false,
+  "href": "https://www.k12dive.com/news/virginia-is-opting-out-of-the-federal-scholarship-program-will-others-foll/874805",
+  "source": "https://www.k12dive.com/news/virginia-is-opting-out-of-the-federal-scholarship-program-will-others-foll/874805"
+ },
+ {
+  "kind": "study",
+  "name": "Study",
+  "text": "Sacerdote & Parris-Bacon (2026), NBER Working Paper 36021",
+  "date": "2026",
+  "self_reported": false,
+  "href": "https://www.nber.org/papers/w36021",
+  "source": "https://www.nber.org/papers/w36021"
+ },
+ {
+  "kind": "study",
+  "name": "Study",
+  "text": "Gallo, Wolf & Patrinos (2026), IZA Discussion Paper 19002",
+  "date": "2026",
+  "self_reported": false,
+  "href": "https://docs.iza.org/dp19002.pdf",
+  "source": "https://docs.iza.org/dp19002.pdf"
+ },
+ {
+  "kind": "fact",
+  "name": "North Dakota",
+  "text": "Policy: Released the application process for its first public charter schools; applications open Dec 2 to Mar 2, earliest openings fall 2027 (Nov 2026)",
+  "date": "2026-11",
+  "self_reported": false,
+  "href": "https://www.the74million.org/article/north-dakota-unveils-application-process-for-charter-schools/",
+  "source": "https://www.the74million.org/article/north-dakota-unveils-application-process-for-charter-schools/"
+ },
+ {
+  "kind": "fact",
+  "name": "England",
+  "text": "Policy: New DfE guidance says phones should be inaccessible throughout the school day, via pouches, collection or bans (Nov 2026)",
+  "date": "2026-11",
+  "self_reported": false,
+  "href": "https://gov.uk/government/news/strengthened-guidance-to-take-the-next-leap-to-phone-free-schools",
+  "source": "https://gov.uk/government/news/strengthened-guidance-to-take-the-next-leap-to-phone-free-schools"
+ },
+ {
+  "kind": "fact",
+  "name": "England",
+  "text": "Consultation: DfE proposed a safety certification scheme for edtech and AI products used in schools; closes Feb 4, 2027 (Nov 2026)",
+  "date": "2026-11",
+  "self_reported": false,
+  "href": "https://www.gov.uk/government/consultations/introducing-an-edtech-and-ai-product-safety-certification-scheme",
+  "source": "https://www.gov.uk/government/consultations/introducing-an-edtech-and-ai-product-safety-certification-scheme"
+ },
+ {
+  "kind": "fact",
+  "name": "Richardson ISD",
+  "text": "Expansion: Plans two district microschools for 2027-28, a hybrid grades 4-5 program and a screen-free classical K-1 program (Nov 2026)",
+  "date": "2026-11",
+  "self_reported": false,
+  "href": "https://communityimpact.com/richardson/education/richardson-isd-to-launch-two-microschool-models-in-2027-28/",
+  "source": "https://communityimpact.com/richardson/education/richardson-isd-to-launch-two-microschool-models-in-2027-28/"
+ },
+ {
+  "kind": "fact",
+  "name": "Lake Washington, Tacoma and Yakima districts",
+  "text": "Lawsuit: Three Washington districts serving 74,000+ students are preparing to sue the state for failing to fully fund basic education (Nov 2026)",
+  "date": "2026-11",
+  "self_reported": false,
+  "href": "https://www.opb.org/article/2026/11/09/washington-schools-education-funding-politics-tacoma-yakima/",
+  "source": "https://www.opb.org/article/2026/11/09/washington-schools-education-funding-politics-tacoma-yakima/"
+ },
+ {
+  "kind": "fact",
   "name": "Miami-Dade County Public Schools",
   "text": "Policy: Invited independent microschools to lease empty district classroom space; proposals due Dec 1 (Nov 2026)",
   "date": "2026-11",
