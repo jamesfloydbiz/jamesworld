@@ -233,9 +233,9 @@
       height: auto;
       flex-shrink: 0;
       opacity: 1;
-      /* multiply drops the white boxes some of these ship with straight into
-         the paper; the logos themselves keep their own colour. */
-      mix-blend-mode: multiply;
+      /* The logo files carry their own transparency. A blend mode cannot help
+         here anyway: .pf-logos-inner animates transform, which isolates the
+         blend group, so a white box in a source file would show regardless. */
       transition: transform 0.3s;
     }
     .pf-logos-inner img:hover { transform: scale(1.06); }
