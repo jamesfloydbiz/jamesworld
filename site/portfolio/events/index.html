@@ -140,15 +140,28 @@
       line-height: 1.25; color: var(--pf-fg); margin: 0;
     }
 
-    /* Reference cards — horizontal scroll rail, no JS. */
+    /* Reference cards — the same no-JS marquee as the skills, running the
+       other way. One set, duplicated, so the loop has nowhere to seam. The
+       skills slide left; these slide right, which is the contrast. */
     .ep-refs { margin-top: 44px; }
     .ep-refs__rail {
-      display: grid; grid-auto-flow: column; grid-auto-columns: minmax(260px, 300px);
-      gap: 1px; overflow-x: auto; padding-bottom: 10px;
-      scroll-snap-type: x mandatory; scrollbar-width: thin;
+      overflow: hidden;
+      -webkit-mask-image: linear-gradient(to right, transparent 0, #000 40px, #000 calc(100% - 40px), transparent 100%);
+      mask-image: linear-gradient(to right, transparent 0, #000 40px, #000 calc(100% - 40px), transparent 100%);
+    }
+    .ep-refs__track {
+      display: flex; align-items: stretch; width: max-content;
+      animation: epRefsScroll 95s linear infinite;
+    }
+    .ep-refs__rail:hover .ep-refs__track { animation-play-state: paused; }
+    /* Starting at -50% and running to 0 is what sends it rightward. */
+    @keyframes epRefsScroll { from { transform: translateX(-50%); } to { transform: translateX(0); } }
+    @media (prefers-reduced-motion: reduce) {
+      .ep-refs__track { animation: none; }
+      .ep-refs__rail { overflow-x: auto; scrollbar-width: thin; }
     }
     .ep-ref {
-      scroll-snap-align: start; background: var(--pf-bg);
+      flex: 0 0 300px; margin-right: 1px; background: var(--pf-bg);
       box-shadow: 0 0 0 1px var(--pf-border-med); padding: 20px 20px 18px;
       display: flex; flex-direction: column;
     }
@@ -543,56 +556,108 @@
     <section class="ep-refs" aria-label="References">
       <p class="ep-label" style="margin-bottom:16px;">&sect; My references</p>
       <div class="ep-refs__rail">
-        <blockquote class="ep-ref">
-          <p class="ep-ref__q">&ldquo;james &mdash; you were the mvp&rdquo;</p>
-          <p class="ep-ref__who">Andrew Yeung</p>
-          <p class="ep-ref__role">Gathering extraordinary people &amp; angel investing &middot; x-Google, Meta<br>SXSW Secret Garden Party</p>
-        </blockquote>
-        <blockquote class="ep-ref">
-          <p class="ep-ref__q">&ldquo;James killed it!! If anyone wants to learn how to stand out in a volunteer crowd, reach out to James Floyd.&rdquo;</p>
-          <p class="ep-ref__who">Vitoria Okuyama</p>
-          <p class="ep-ref__role">Ex pro tennis player &middot; Ex IB @ Citi<br>SXSW Secret Garden Party</p>
-        </blockquote>
-        <blockquote class="ep-ref">
-          <p class="ep-ref__q">&ldquo;James, you are a superstar. Your hard work and willingness to go above and beyond will take you a LONG WAY.&rdquo;</p>
-          <p class="ep-ref__who">Danielle Raskin</p>
-          <p class="ep-ref__role">Curating experiences, community &amp; connection<br>SXSW Secret Garden Party</p>
-        </blockquote>
-        <blockquote class="ep-ref">
-          <p class="ep-ref__q">&ldquo;James Floyd is your guy. The best by a wide margin at driving the intersection between function, execution, and relationship.&rdquo;</p>
-          <p class="ep-ref__who">Jarom Christensen</p>
-          <p class="ep-ref__role">Family Office Advisor &middot; Investor Relations at Jets &amp; Capital</p>
-        </blockquote>
-        <blockquote class="ep-ref">
-          <p class="ep-ref__q">&ldquo;I&rsquo;ve got to know James Floyd over the past year and can vouch for his talent, creativity, work ethic, and connecting skills plus many more.&rdquo;</p>
-          <p class="ep-ref__who">Austin Moss</p>
-          <p class="ep-ref__role">Met through Jets and Capital</p>
-        </blockquote>
-        <blockquote class="ep-ref">
-          <p class="ep-ref__q">&ldquo;James really is the best. He knows the space so well, always provides unique insights and perspectives, and knows how to curate advice based on the individuality of the project at hand.&rdquo;</p>
-          <p class="ep-ref__who">Vanessa Rothmeyer</p>
-          <p class="ep-ref__role">Yogi and Creator &middot; On an event James helped build</p>
-        </blockquote>
-        <blockquote class="ep-ref">
-          <p class="ep-ref__q">&ldquo;Thank you for being the person who says yes and figures it out.&rdquo;</p>
-          <p class="ep-ref__who">Lauren Sawyer</p>
-          <p class="ep-ref__role">Community Builder &middot; Events @ Duel<br>On a house show thrown on her rooftop</p>
-        </blockquote>
-        <blockquote class="ep-ref">
-          <p class="ep-ref__q">&ldquo;James you have been a major blessing to me and to the team and I know I&rsquo;m not the only one who shares that.&rdquo;</p>
-          <p class="ep-ref__who">Caleb Guilliams</p>
-          <p class="ep-ref__role">Founder, BetterWealth &middot; Dec 2025</p>
-        </blockquote>
-        <blockquote class="ep-ref">
-          <p class="ep-ref__q">&ldquo;I was like &mdash; this kid is different. This kid is special.&rdquo;</p>
-          <p class="ep-ref__who">Dom Rufran</p>
-          <p class="ep-ref__role">President of BetterWealth &middot; Ex-NFL Player</p>
-        </blockquote>
-        <blockquote class="ep-ref">
-          <p class="ep-ref__q">&ldquo;One of the coolest dudes in existence, cool to watch and learn from you and your pursuit of growth.&rdquo;</p>
-          <p class="ep-ref__who">Lauren Hansen</p>
-          <p class="ep-ref__role">Worked together at Jets and Capital</p>
-        </blockquote>
+        <div class="ep-refs__track">
+          <blockquote class="ep-ref">
+            <p class="ep-ref__q">&ldquo;james &mdash; you were the mvp&rdquo;</p>
+            <p class="ep-ref__who">Andrew Yeung</p>
+            <p class="ep-ref__role">Gathering extraordinary people &amp; angel investing &middot; x-Google, Meta<br>SXSW Secret Garden Party</p>
+          </blockquote>
+          <blockquote class="ep-ref">
+            <p class="ep-ref__q">&ldquo;James killed it!! If anyone wants to learn how to stand out in a volunteer crowd, reach out to James Floyd.&rdquo;</p>
+            <p class="ep-ref__who">Vitoria Okuyama</p>
+            <p class="ep-ref__role">Ex pro tennis player &middot; Ex IB @ Citi<br>SXSW Secret Garden Party</p>
+          </blockquote>
+          <blockquote class="ep-ref">
+            <p class="ep-ref__q">&ldquo;James, you are a superstar. Your hard work and willingness to go above and beyond will take you a LONG WAY.&rdquo;</p>
+            <p class="ep-ref__who">Danielle Raskin</p>
+            <p class="ep-ref__role">Curating experiences, community &amp; connection<br>SXSW Secret Garden Party</p>
+          </blockquote>
+          <blockquote class="ep-ref">
+            <p class="ep-ref__q">&ldquo;James Floyd is your guy. The best by a wide margin at driving the intersection between function, execution, and relationship.&rdquo;</p>
+            <p class="ep-ref__who">Jarom Christensen</p>
+            <p class="ep-ref__role">Family Office Advisor &middot; Investor Relations at Jets &amp; Capital</p>
+          </blockquote>
+          <blockquote class="ep-ref">
+            <p class="ep-ref__q">&ldquo;I&rsquo;ve got to know James Floyd over the past year and can vouch for his talent, creativity, work ethic, and connecting skills plus many more.&rdquo;</p>
+            <p class="ep-ref__who">Austin Moss</p>
+            <p class="ep-ref__role">Met through Jets and Capital</p>
+          </blockquote>
+          <blockquote class="ep-ref">
+            <p class="ep-ref__q">&ldquo;James really is the best. He knows the space so well, always provides unique insights and perspectives, and knows how to curate advice based on the individuality of the project at hand.&rdquo;</p>
+            <p class="ep-ref__who">Vanessa Rothmeyer</p>
+            <p class="ep-ref__role">Yogi and Creator &middot; On an event James helped build</p>
+          </blockquote>
+          <blockquote class="ep-ref">
+            <p class="ep-ref__q">&ldquo;Thank you for being the person who says yes and figures it out.&rdquo;</p>
+            <p class="ep-ref__who">Lauren Sawyer</p>
+            <p class="ep-ref__role">Community Builder &middot; Events @ Duel<br>On a house show thrown on her rooftop</p>
+          </blockquote>
+          <blockquote class="ep-ref">
+            <p class="ep-ref__q">&ldquo;James you have been a major blessing to me and to the team and I know I&rsquo;m not the only one who shares that.&rdquo;</p>
+            <p class="ep-ref__who">Caleb Guilliams</p>
+            <p class="ep-ref__role">Founder, BetterWealth &middot; Dec 2025</p>
+          </blockquote>
+          <blockquote class="ep-ref">
+            <p class="ep-ref__q">&ldquo;I was like &mdash; this kid is different. This kid is special.&rdquo;</p>
+            <p class="ep-ref__who">Dom Rufran</p>
+            <p class="ep-ref__role">President of BetterWealth &middot; Ex-NFL Player</p>
+          </blockquote>
+          <blockquote class="ep-ref">
+            <p class="ep-ref__q">&ldquo;One of the coolest dudes in existence, cool to watch and learn from you and your pursuit of growth.&rdquo;</p>
+            <p class="ep-ref__who">Lauren Hansen</p>
+            <p class="ep-ref__role">Worked together at Jets and Capital</p>
+          </blockquote>
+          <blockquote class="ep-ref" aria-hidden="true">
+            <p class="ep-ref__q">&ldquo;james &mdash; you were the mvp&rdquo;</p>
+            <p class="ep-ref__who">Andrew Yeung</p>
+            <p class="ep-ref__role">Gathering extraordinary people &amp; angel investing &middot; x-Google, Meta<br>SXSW Secret Garden Party</p>
+          </blockquote>
+          <blockquote class="ep-ref" aria-hidden="true">
+            <p class="ep-ref__q">&ldquo;James killed it!! If anyone wants to learn how to stand out in a volunteer crowd, reach out to James Floyd.&rdquo;</p>
+            <p class="ep-ref__who">Vitoria Okuyama</p>
+            <p class="ep-ref__role">Ex pro tennis player &middot; Ex IB @ Citi<br>SXSW Secret Garden Party</p>
+          </blockquote>
+          <blockquote class="ep-ref" aria-hidden="true">
+            <p class="ep-ref__q">&ldquo;James, you are a superstar. Your hard work and willingness to go above and beyond will take you a LONG WAY.&rdquo;</p>
+            <p class="ep-ref__who">Danielle Raskin</p>
+            <p class="ep-ref__role">Curating experiences, community &amp; connection<br>SXSW Secret Garden Party</p>
+          </blockquote>
+          <blockquote class="ep-ref" aria-hidden="true">
+            <p class="ep-ref__q">&ldquo;James Floyd is your guy. The best by a wide margin at driving the intersection between function, execution, and relationship.&rdquo;</p>
+            <p class="ep-ref__who">Jarom Christensen</p>
+            <p class="ep-ref__role">Family Office Advisor &middot; Investor Relations at Jets &amp; Capital</p>
+          </blockquote>
+          <blockquote class="ep-ref" aria-hidden="true">
+            <p class="ep-ref__q">&ldquo;I&rsquo;ve got to know James Floyd over the past year and can vouch for his talent, creativity, work ethic, and connecting skills plus many more.&rdquo;</p>
+            <p class="ep-ref__who">Austin Moss</p>
+            <p class="ep-ref__role">Met through Jets and Capital</p>
+          </blockquote>
+          <blockquote class="ep-ref" aria-hidden="true">
+            <p class="ep-ref__q">&ldquo;James really is the best. He knows the space so well, always provides unique insights and perspectives, and knows how to curate advice based on the individuality of the project at hand.&rdquo;</p>
+            <p class="ep-ref__who">Vanessa Rothmeyer</p>
+            <p class="ep-ref__role">Yogi and Creator &middot; On an event James helped build</p>
+          </blockquote>
+          <blockquote class="ep-ref" aria-hidden="true">
+            <p class="ep-ref__q">&ldquo;Thank you for being the person who says yes and figures it out.&rdquo;</p>
+            <p class="ep-ref__who">Lauren Sawyer</p>
+            <p class="ep-ref__role">Community Builder &middot; Events @ Duel<br>On a house show thrown on her rooftop</p>
+          </blockquote>
+          <blockquote class="ep-ref" aria-hidden="true">
+            <p class="ep-ref__q">&ldquo;James you have been a major blessing to me and to the team and I know I&rsquo;m not the only one who shares that.&rdquo;</p>
+            <p class="ep-ref__who">Caleb Guilliams</p>
+            <p class="ep-ref__role">Founder, BetterWealth &middot; Dec 2025</p>
+          </blockquote>
+          <blockquote class="ep-ref" aria-hidden="true">
+            <p class="ep-ref__q">&ldquo;I was like &mdash; this kid is different. This kid is special.&rdquo;</p>
+            <p class="ep-ref__who">Dom Rufran</p>
+            <p class="ep-ref__role">President of BetterWealth &middot; Ex-NFL Player</p>
+          </blockquote>
+          <blockquote class="ep-ref" aria-hidden="true">
+            <p class="ep-ref__q">&ldquo;One of the coolest dudes in existence, cool to watch and learn from you and your pursuit of growth.&rdquo;</p>
+            <p class="ep-ref__who">Lauren Hansen</p>
+            <p class="ep-ref__role">Worked together at Jets and Capital</p>
+          </blockquote>
+        </div>
       </div>
       <p class="ep-refs__hint">Scroll &rarr; &middot; <a href="/references/" style="color:var(--pf-brown);text-decoration:none;">All references</a></p>
     </section>
@@ -600,7 +665,7 @@
     <div class="ep-rule" style="margin:48px 0 0;"></div>
 
     <!-- ═══ TIMELINE ═══ -->
-    <p class="ep-label" style="margin:40px 0 0;">&sect; The Timeline</p>
+    <p class="ep-label" style="margin:40px 0 0;">&sect; My Timeline</p>
 
     <div class="ep-tl" id="ep-tl">
       <svg class="ep-tl__svg" id="ep-tl-svg" viewBox="0 0 1000 1000" preserveAspectRatio="none" aria-hidden="true" focusable="false">
