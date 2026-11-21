@@ -126,6 +126,12 @@
     }
     .cc-rsvp:hover { background: var(--cc-ink); color: var(--cc-bg); }
     .cc-rsvp__note { font-size: .92rem; color: var(--cc-mute); margin: 14px 0 0; font-style: italic; }
+    .cc-shots { display: grid; gap: 14px; grid-template-columns: 1fr; margin: 0; }
+    @media (min-width: 680px) { .cc-shots { grid-template-columns: 1fr 1fr; } }
+    .cc-shots figure { margin: 0; border: 1px solid var(--cc-line); border-radius: 4px; overflow: hidden; }
+    .cc-shots img { width: 100%; height: 100%; object-fit: cover; aspect-ratio: 4 / 3; display: block; }
+    .cc-shots .tall img { aspect-ratio: 3 / 4; }
+    @media (min-width: 680px) { .cc-shots .wide { grid-column: 1 / -1; } }
   </style>
 </head>
 <body>
@@ -176,6 +182,33 @@
         <li>The international theory of dapping</li>
         <li>Why (or why not) the moon landing was fake</li>
       </ol>
+    </section>
+
+
+    <section class="cc-talks">
+      <p class="cc-talks__h">The night</p>
+      <div class="cc-shots">
+        <figure class="wide">
+          <img src="/events/tin-foil-hats/photos/4812.jpg" loading="lazy" decoding="async" width="1600" height="1200"
+               alt="The living room before anyone arrives: a long sofa under a COHABS sign, and the title slide reading TED Talks &amp; Tin Foil Hats on the wall-mounted screen.">
+        </figure>
+        <figure class="wide">
+          <img src="/events/tin-foil-hats/photos/4814.jpg" loading="lazy" decoding="async" width="1600" height="1200"
+               alt="The room full, about a dozen people in foil hats spread across sofas and the floor, one speaker standing by the screen.">
+        </figure>
+        <figure class="tall">
+          <img src="/events/tin-foil-hats/photos/4815.jpg" loading="lazy" decoding="async" width="1200" height="1600"
+               alt="A speaker mid-sentence in a foil headband, hands raised, beside a slide reading BEFORE THE RUMOR, THERE WAS A LOSS.">
+        </figure>
+        <figure class="tall">
+          <img src="/events/tin-foil-hats/photos/4817.jpg" loading="lazy" decoding="async" width="1200" height="1600"
+               alt="A presenter in a foil hat and blazer giving a thumbs up, a plastic bag of props in his other hand.">
+        </figure>
+        <figure class="wide">
+          <img src="/events/tin-foil-hats/photos/4816.jpg" loading="lazy" decoding="async" width="1600" height="1200"
+               alt="A speaker gesturing at a slide that reads: every bird you see is a surveillance drone built and operated by the U.S. government.">
+        </figure>
+      </div>
     </section>
 
     <a class="cc-rsvp" href="https://partiful.com/e/2zk4CMK1Q4f6hZaHKAmt" style="margin-top:44px">The invite &rarr;</a>
