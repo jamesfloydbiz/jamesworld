@@ -409,6 +409,18 @@ function pageTemplate(slug, meta, timelineItems, articleHtml) {
   <title>${esc(meta.title)} — Rabbit Hole — James Floyd</title>
   <meta name="description" content="${esc(meta.subtitle)}">
   <link rel="canonical" href="https://jamesfloyds.world/writing/rabbit-holes/${slug}/">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "@id": "https://jamesfloyds.world/writing/rabbit-holes/${slug}/#article",
+    "headline": "${esc(meta.title)}",
+    "url": "https://jamesfloyds.world/writing/rabbit-holes/${slug}/",
+    "isPartOf": { "@id": "https://jamesfloyds.world/#website" },
+    "author": { "@id": "https://jamesfloyds.world/#james" },
+    "publisher": { "@id": "https://jamesfloyds.world/#james" }
+  }
+  </script>
 
   <meta property="og:type" content="article">
   <meta property="og:title" content="${esc(meta.title)}">

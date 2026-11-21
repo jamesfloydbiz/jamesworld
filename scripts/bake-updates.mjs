@@ -187,6 +187,18 @@ function pageTemplate(post, slug, body) {
   <title>${esc(title)} — The James Floyd Update</title>
   <meta name="description" content="${esc(desc)}">
   <link rel="canonical" href="${esc(url)}">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "@id": "${esc(url)}#article",
+    "headline": "${esc(title)}",
+    "url": "${esc(url)}",
+    "isPartOf": { "@id": "https://jamesfloyds.world/#website" },
+    "author": { "@id": "https://jamesfloyds.world/#james" },
+    "publisher": { "@id": "https://jamesfloyds.world/#james" }
+  }
+  </script>
 
   <meta property="og:type" content="article">
   <meta property="og:title" content="${esc(title)}">
