@@ -137,11 +137,7 @@
     }
     .ep-skill__n {
       font-family: 'Playfair Display', serif; font-weight: 700; font-size: .95rem;
-      line-height: 1.25; color: var(--pf-fg); margin: 0 0 6px;
-    }
-    .ep-skill__w {
-      font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: .1em;
-      text-transform: uppercase; color: var(--pf-muted); line-height: 1.65; margin: 0;
+      line-height: 1.25; color: var(--pf-fg); margin: 0;
     }
 
     /* Reference cards — horizontal scroll rail, no JS. */
@@ -253,7 +249,8 @@
       .ep-node[open] > .ep-node__body > .ep-lead,
       .ep-node[open] > .ep-node__body > .ep-stats,
       .ep-node[open] > .ep-node__body > .ep-p,
-      .ep-node[open] > .ep-node__body > .ep-gal { column-span: all; }
+      .ep-node[open] > .ep-node__body > .ep-gal,
+      .ep-node[open] > .ep-node__body > .ep-vid { column-span: all; }
       /* A field-note block may run across a column boundary -- some hold four
          stories and would otherwise claim a whole column to themselves. The
          individual story is the unit that must not be split. */
@@ -277,6 +274,32 @@
       font-family: 'DM Mono', monospace; font-size: 8px; letter-spacing: .12em;
       text-transform: uppercase; color: var(--pf-muted); padding: 5px 2px 0;
     }
+    /* Jets and Capital's strip runs larger -- that chapter is carried by its
+       pictures more than by its paragraphs. */
+    .ep-gal--lg { grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); }
+    .ep-gal--lg img { aspect-ratio: 3 / 2; }
+
+    /* Recap films. One cut is landscape and two are vertical, so the landscape
+       one takes the full width rather than being cropped to match a neighbour.
+       width/height on the <video> hand the browser the ratio up front, so the
+       page does not jump when a poster loads. */
+    .ep-vid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 10px 20px;
+      margin: 4px 0 18px; justify-items: center;
+    }
+    .ep-vid > .ep-vid--wide { grid-column: 1 / -1; justify-self: stretch; }
+    .ep-vid figure { margin: 0; background: #17130e; max-width: 100%; }
+    .ep-vid video { display: block; max-width: 100%; height: auto; }
+    .ep-vid--wide video { width: 100%; }
+    /* Left alone, a vertical cut runs taller than the window. Capped, the pair
+       sits beside each other at a height the page can hold. */
+    .ep-vid figure:not(.ep-vid--wide) video { max-height: 520px; width: auto; }
+    .ep-vid figcaption {
+      font-family: 'DM Mono', monospace; font-size: 8px; letter-spacing: .12em;
+      text-transform: uppercase; color: var(--pf-muted); padding: 5px 2px 0;
+    }
+    @media (max-width: 560px) { .ep-vid { grid-template-columns: 1fr; } }
+
     .ep-p { font-size: 15.5px; line-height: 1.78; color: var(--pf-body); margin-bottom: 14px; }
     .ep-p:last-child { margin-bottom: 0; }
     .ep-p strong, .ep-ul strong, .ep-ol strong { font-weight: 500; color: var(--pf-fg); }
@@ -334,6 +357,26 @@
     .ep-now__logos img {
       max-height: 34px; max-width: 150px; width: auto; height: auto;
     }
+
+    /* Worked-with marks. Every file here carries its own transparency -- no
+       blend mode is doing the work, because a mark only blends with the paper
+       when it shares a stacking context with it, and these do not. */
+    .ep-logos { margin-top: 38px; }
+    .ep-logos__row { display: flex; align-items: center; flex-wrap: wrap; gap: 26px 44px; }
+    .ep-logos__row img {
+      width: auto; max-width: 180px;
+      filter: grayscale(1); opacity: .72; transition: filter .25s, opacity .25s;
+    }
+    .ep-logos__row img:hover { filter: grayscale(0); opacity: 1; }
+    /* One height for all of them would be wrong: these marks run from a
+       stacked badge to a wordmark eleven times wider than it is tall. Each is
+       set to the height where it carries the same weight as its neighbours. */
+    .ep-logos__row .l-jets { height: 36px; }
+    .ep-logos__row .l-fibe { height: 31px; }
+    .ep-logos__row .l-keiretsu { height: 52px; }
+    .ep-logos__row .l-betterwealth { height: 16px; }
+    .ep-logos__row .l-jf { height: 29px; }
+    @media (prefers-reduced-motion: reduce) { .ep-logos__row img { transition: none; } }
 
     /* Growing-up chapter reads quieter than the working chapters. */
     .ep-chapter--soft .ep-node { border-style: dashed; }
@@ -394,121 +437,104 @@
       </div>
     </section>
 
+    <section class="ep-logos" aria-label="Worked with">
+      <p class="ep-label" style="margin-bottom:20px;">&sect; Worked with</p>
+      <div class="ep-logos__row">
+        <img class="l-jets" src="/logos/jets-trim.png" alt="Jets and Capital" loading="lazy" decoding="async">
+        <img class="l-fibe" src="/logos/fibe.svg" alt="fibe" loading="lazy" decoding="async">
+        <img class="l-keiretsu" src="/logos/keiretsu.png" alt="Keiretsu Forum" loading="lazy" decoding="async">
+        <img class="l-betterwealth" src="/logos/betterwealth-trim.png" alt="BetterWealth" loading="lazy" decoding="async">
+        <img class="l-jf" src="/brand/monogram-ink.svg" alt="James Floyd" loading="lazy" decoding="async">
+      </div>
+    </section>
+
     <section class="ep-skills" aria-label="Skills">
       <p class="ep-label" style="margin-bottom:16px;">&sect; Skills</p>
       <div class="ep-skills__rail">
         <div class="ep-skills__track">
           <div class="ep-skill">
             <p class="ep-skill__n">Event production</p>
-            <p class="ep-skill__w">Jets and Capital &middot; Montero</p>
           </div>
           <div class="ep-skill">
             <p class="ep-skill__n">Creative direction</p>
-            <p class="ep-skill__w">Andrew&rsquo;s Mixers &middot; Montero</p>
           </div>
           <div class="ep-skill">
             <p class="ep-skill__n">Design consulting</p>
-            <p class="ep-skill__w">Fibe &middot; Jets and Capital</p>
           </div>
           <div class="ep-skill">
             <p class="ep-skill__n">Vendor management</p>
-            <p class="ep-skill__w">Fibe &middot; Montero</p>
           </div>
           <div class="ep-skill">
             <p class="ep-skill__n">Procurement &amp; sourcing</p>
-            <p class="ep-skill__w">Fibe &middot; Extravaganza</p>
           </div>
           <div class="ep-skill">
             <p class="ep-skill__n">AV, stage &amp; mics</p>
-            <p class="ep-skill__w">Fibe &middot; QLC Summit</p>
           </div>
           <div class="ep-skill">
             <p class="ep-skill__n">Run of show</p>
-            <p class="ep-skill__w">Jets and Capital &middot; Keiretsu</p>
           </div>
           <div class="ep-skill">
             <p class="ep-skill__n">Volunteer &amp; staff management</p>
-            <p class="ep-skill__w">Andrew&rsquo;s Mixers &middot; Montero</p>
           </div>
           <div class="ep-skill">
             <p class="ep-skill__n">Site build &amp; safety</p>
-            <p class="ep-skill__w">Extravaganza &middot; Jets and Capital</p>
           </div>
           <div class="ep-skill">
             <p class="ep-skill__n">Event connectivity &amp; IT</p>
-            <p class="ep-skill__w">Fibe</p>
           </div>
           <div class="ep-skill">
             <p class="ep-skill__n">Executive protection</p>
-            <p class="ep-skill__w">Fibe</p>
           </div>
           <div class="ep-skill">
             <p class="ep-skill__n">Multi-city event travel</p>
-            <p class="ep-skill__w">Jets and Capital</p>
           </div>
           <div class="ep-skill">
             <p class="ep-skill__n">Gala &amp; paddle raise</p>
-            <p class="ep-skill__w">Montero Productions</p>
           </div>
           <div class="ep-skill">
             <p class="ep-skill__n">Guest &amp; staff hospitality</p>
-            <p class="ep-skill__w">Every room</p>
           </div>
           <div class="ep-skill" aria-hidden="true">
             <p class="ep-skill__n">Event production</p>
-            <p class="ep-skill__w">Jets and Capital &middot; Montero</p>
           </div>
           <div class="ep-skill" aria-hidden="true">
             <p class="ep-skill__n">Creative direction</p>
-            <p class="ep-skill__w">Andrew&rsquo;s Mixers &middot; Montero</p>
           </div>
           <div class="ep-skill" aria-hidden="true">
             <p class="ep-skill__n">Design consulting</p>
-            <p class="ep-skill__w">Fibe &middot; Jets and Capital</p>
           </div>
           <div class="ep-skill" aria-hidden="true">
             <p class="ep-skill__n">Vendor management</p>
-            <p class="ep-skill__w">Fibe &middot; Montero</p>
           </div>
           <div class="ep-skill" aria-hidden="true">
             <p class="ep-skill__n">Procurement &amp; sourcing</p>
-            <p class="ep-skill__w">Fibe &middot; Extravaganza</p>
           </div>
           <div class="ep-skill" aria-hidden="true">
             <p class="ep-skill__n">AV, stage &amp; mics</p>
-            <p class="ep-skill__w">Fibe &middot; QLC Summit</p>
           </div>
           <div class="ep-skill" aria-hidden="true">
             <p class="ep-skill__n">Run of show</p>
-            <p class="ep-skill__w">Jets and Capital &middot; Keiretsu</p>
           </div>
           <div class="ep-skill" aria-hidden="true">
             <p class="ep-skill__n">Volunteer &amp; staff management</p>
-            <p class="ep-skill__w">Andrew&rsquo;s Mixers &middot; Montero</p>
           </div>
           <div class="ep-skill" aria-hidden="true">
             <p class="ep-skill__n">Site build &amp; safety</p>
-            <p class="ep-skill__w">Extravaganza &middot; Jets and Capital</p>
           </div>
           <div class="ep-skill" aria-hidden="true">
             <p class="ep-skill__n">Event connectivity &amp; IT</p>
-            <p class="ep-skill__w">Fibe</p>
           </div>
           <div class="ep-skill" aria-hidden="true">
             <p class="ep-skill__n">Executive protection</p>
-            <p class="ep-skill__w">Fibe</p>
           </div>
           <div class="ep-skill" aria-hidden="true">
             <p class="ep-skill__n">Multi-city event travel</p>
-            <p class="ep-skill__w">Jets and Capital</p>
           </div>
           <div class="ep-skill" aria-hidden="true">
             <p class="ep-skill__n">Gala &amp; paddle raise</p>
-            <p class="ep-skill__w">Montero Productions</p>
           </div>
           <div class="ep-skill" aria-hidden="true">
             <p class="ep-skill__n">Guest &amp; staff hospitality</p>
-            <p class="ep-skill__w">Every room</p>
           </div>
         </div>
       </div>
@@ -834,13 +860,35 @@
 
               <p class="ep-p">Ran or supported event production at high-profile venues including Trump Doral Miami, Caesars Palace, The Intrepid Aircraft Carrier, and private jet hangars.</p>
 
-              <div class="ep-gal">
+              <div class="ep-gal ep-gal--lg">
                 <figure><img src="/pictures/IMG_2001_Original.jpg" alt="The team in the hangar before doors" loading="lazy" decoding="async"><figcaption>Miami &middot; 2 May 2025</figcaption></figure>
                 <figure><img src="/pictures/Jets_&amp;_Capital_Miami_BTS_Day_0-83.jpeg" alt="The ballroom laid out before guests arrive" loading="lazy" decoding="async"><figcaption>Miami &middot; 2 May 2025</figcaption></figure>
                 <figure><img src="/pictures/IMG_2158_Original.jpg" alt="Guests in the hangar beside a jet" loading="lazy" decoding="async"><figcaption>Miami &middot; 3 May 2025</figcaption></figure>
                 <figure><img src="/pictures/IMG_0647.jpg" alt="The room filled in front of the stage" loading="lazy" decoding="async"><figcaption>Miami &middot; 3 May 2025</figcaption></figure>
                 <figure><img src="/pictures/IMG_2488.jpeg" alt="Food trucks and guests outside" loading="lazy" decoding="async"><figcaption>Miami &middot; 4 May 2025</figcaption></figure>
               </div>
+
+              <div class="ep-vid">
+                <figure class="ep-vid--wide">
+                  <video controls preload="none" playsinline width="1276" height="720" poster="/video/jc-sf-recap-poster.jpg">
+                    <source src="/video/jc-sf-recap.mp4" type="video/mp4">
+                  </video>
+                  <figcaption>San Francisco &middot; recap</figcaption>
+                </figure>
+                <figure>
+                  <video controls preload="none" playsinline width="720" height="1280" poster="/video/jc-miami-recap-poster.jpg">
+                    <source src="/video/jc-miami-recap.mp4" type="video/mp4">
+                  </video>
+                  <figcaption>Miami &middot; recap</figcaption>
+                </figure>
+                <figure>
+                  <video controls preload="none" playsinline width="480" height="854" poster="/video/jc-provo-recap-poster.jpg">
+                    <source src="/video/jc-provo-recap.mp4" type="video/mp4">
+                  </video>
+                  <figcaption>Provo, Utah &middot; recap</figcaption>
+                </figure>
+              </div>
+
 
               <div class="ep-fn">
                 <p class="ep-fn__h">The run of show</p>
