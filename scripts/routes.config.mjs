@@ -63,7 +63,6 @@ export const ROUTES = [
   { path: '/network', priority: 0.7, changefreq: 'monthly' },
   { path: '/blueprints', priority: 0.7, changefreq: 'monthly' },
   { path: '/blueprints/mental-models', priority: 0.6, changefreq: 'monthly' },
-  { path: '/poems', priority: 0.6, changefreq: 'monthly' },
   { path: '/pictures', priority: 0.6, changefreq: 'monthly' },
   { path: '/photography', priority: 0.7, changefreq: 'monthly' },
   { path: '/resume', priority: 0.7, changefreq: 'monthly' },
