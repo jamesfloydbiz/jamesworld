@@ -406,7 +406,7 @@ function pageTemplate(slug, meta, timelineItems, articleHtml) {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>${esc(meta.title)} — Rabbit Hole — James Floyd</title>
+  <title>${esc(meta.title)}</title>
   <meta name="description" content="${esc(meta.subtitle)}">
   <link rel="canonical" href="https://jamesfloyds.world/writing/rabbit-holes/${slug}/">
   <script type="application/ld+json">
