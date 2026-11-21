@@ -137,6 +137,34 @@ function parseFeed(xml) {
   return items;
 }
 
+/**
+ * Substack's feed only carries the twenty most recent posts, so each time a
+ * new one goes up the oldest drops out of the window. A bake that trusted the
+ * feed alone would delete that post from /writing/ without saying so, which is
+ * how "The James Update #2" nearly went missing. The committed JSON is the
+ * archive instead: the feed is merged into it, keyed by post URL, and the
+ * feed's copy wins for anything it still carries.
+ */
+function mergeWithCache(fresh) {
+  let cached = [];
+  if (existsSync(OUT_PATH)) {
+    try {
+      cached = JSON.parse(readFileSync(OUT_PATH, 'utf8')).posts || [];
+    } catch (err) {
+      console.warn(`  ! could not read the archive (${err.message}). Using the feed alone.`);
+    }
+  }
+  const byLink = new Map();
+  for (const p of cached) byLink.set(p.link || p.title, p);
+  for (const p of fresh) byLink.set(p.link || p.title, p);
+  const merged = [...byLink.values()].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+  const rolledOff = merged.length - fresh.length;
+  if (rolledOff > 0) {
+    console.log(`  · kept ${rolledOff} post${rolledOff === 1 ? '' : 's'} the feed no longer carries`);
+  }
+  return merged;
+}
+
 async function main() {
   let xml;
   try {
@@ -157,7 +185,7 @@ async function main() {
     return;
   }
 
-  const posts = parseFeed(xml);
+  const posts = mergeWithCache(parseFeed(xml));
   const out = {
     fetchedAt: new Date().toISOString(),
     posts,
