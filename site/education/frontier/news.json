@@ -1,6 +1,105 @@
 [
  {
   "kind": "fact",
+  "name": "Tennessee State Board of Education",
+  "text": "Policy: Gave final approval to rules for closing failing public virtual schools and annual testing for ESA students (Nov 2026)",
+  "date": "2026-11",
+  "self_reported": false,
+  "href": "https://tnfirefly.com/news/state-board-wraps-2026-with-final-votes-on-school-choice-licensing-and-ai-standards",
+  "source": "https://tnfirefly.com/news/state-board-wraps-2026-with-final-votes-on-school-choice-licensing-and-ai-standards"
+ },
+ {
+  "kind": "fact",
+  "name": "Dallas ISD",
+  "text": "Closures: Board voted 6-3 to close six schools for 2027-28 amid a $128M deficit (Nov 2026)",
+  "date": "2026-11",
+  "self_reported": false,
+  "href": "https://www.k12dive.com/news/dallas-isd-to-close-6-schools-as-it-grapples-with-128m-deficit/875403/",
+  "source": "https://www.k12dive.com/news/dallas-isd-to-close-6-schools-as-it-grapples-with-128m-deficit/875403/"
+ },
+ {
+  "kind": "fact",
+  "name": "Philippines",
+  "text": "Policy: Republic Act 12327 signed, expanding education vouchers for low-income students at private basic education schools (Nov 2026)",
+  "date": "2026-11",
+  "self_reported": false,
+  "href": "https://tribune.net.ph/2026/11/20/marcos-signs-law-expanding-education-vouchers-for-private-school-students",
+  "source": "https://tribune.net.ph/2026/11/20/marcos-signs-law-expanding-education-vouchers-for-private-school-students"
+ },
+ {
+  "kind": "study",
+  "name": "Study",
+  "text": "Chung & Shirinli (2026), EdWorkingPaper 26-1650",
+  "date": "2026",
+  "self_reported": false,
+  "href": "https://edworkingpapers.com/ai26-1650",
+  "source": "https://edworkingpapers.com/ai26-1650"
+ },
+ {
+  "kind": "fact",
+  "name": "U.S. Senate Appropriations Committee",
+  "text": "Budget: FY27 bill funds the Education Department at $93.9B, up 19%; the House plan cuts it 10% to $71B (Nov 2026)",
+  "date": "2026-11",
+  "self_reported": false,
+  "href": "https://www.k12dive.com/news/senate-committees-fy27-plan-gives-education-department-19-boost/875240/",
+  "source": "https://www.k12dive.com/news/senate-committees-fy27-plan-gives-education-department-19-boost/875240/"
+ },
+ {
+  "kind": "fact",
+  "name": "Kansas State Board of Education",
+  "text": "Policy: All districts and accredited private schools must adopt technology policies covering AI, privacy and student devices by July 1, 2027 (Nov 2026)",
+  "date": "2026-11",
+  "self_reported": false,
+  "href": "https://www.sabethaherald.com/2026/11/17/all-school-districts-required-to-develop-instructional-technology-policies/",
+  "source": "https://www.sabethaherald.com/2026/11/17/all-school-districts-required-to-develop-instructional-technology-policies/"
+ },
+ {
+  "kind": "study",
+  "name": "Study",
+  "text": "Andrabi, Bau, Das, Khwaja & Michaud-Leclerc (2026), NBER Working Paper 36030",
+  "date": "2026",
+  "self_reported": false,
+  "href": "https://www.nber.org/papers/w36030",
+  "source": "https://www.nber.org/papers/w36030"
+ },
+ {
+  "kind": "study",
+  "name": "Study",
+  "text": "Agostinelli, Briscese & Topa (2026), NBER Working Paper 36023",
+  "date": "2026",
+  "self_reported": false,
+  "href": "https://www.nber.org/papers/w36023",
+  "source": "https://www.nber.org/papers/w36023"
+ },
+ {
+  "kind": "study",
+  "name": "Study",
+  "text": "Goulas (2026), EdWorkingPaper 26-1648",
+  "date": "2026",
+  "self_reported": false,
+  "href": "https://edworkingpapers.com/ai26-1648",
+  "source": "https://edworkingpapers.com/ai26-1648"
+ },
+ {
+  "kind": "study",
+  "name": "Study",
+  "text": "Morris, Montana, Dominguez-Mel & Blazar (2026), EdWorkingPaper 26-1649",
+  "date": "2026",
+  "self_reported": false,
+  "href": "https://edworkingpapers.com/ai26-1649",
+  "source": "https://edworkingpapers.com/ai26-1649"
+ },
+ {
+  "kind": "study",
+  "name": "Study",
+  "text": "Cumming, Qiu, Bettini, Huggins-Manley & O'Brien (2026), EdWorkingPaper 26-1647",
+  "date": "2026",
+  "self_reported": false,
+  "href": "https://edworkingpapers.com/ai26-1647",
+  "source": "https://edworkingpapers.com/ai26-1647"
+ },
+ {
+  "kind": "fact",
   "name": "Virginia",
   "text": "Policy: Gov. Spanberger withdrew Virginia from the federal scholarship tax credit before its Jan 1 launch, reversing Youngkin's opt-in (Nov 2026)",
   "date": "2026-11",
