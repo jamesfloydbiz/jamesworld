@@ -40,6 +40,32 @@
     "description": "Active and archived projects from James Floyd \u2014 Jets and Capital, AI builds, The Sonder Series, and more."
   }
   </script>
+  <style>
+    /* Sidequest proof. One row per story: James's line, then whatever backs
+       it up -- a reel, a photo, a link. */
+    .sq-proof { margin-top: 14px; display: grid; gap: 14px; }
+    .sq-item { display: grid; gap: 8px; }
+    .sq-item__line { font-size: .875rem; color: var(--fg-70); margin: 0; }
+    /* Instagram's embed loads Meta's script and tracks whoever sees it. This
+       holds the reel behind a click, so nothing third-party runs until
+       somebody asks for it, and the plain link works with no JS at all. */
+    .sq-embed { border: 1px solid var(--border); border-radius: 4px; max-width: 420px; }
+    .sq-embed__btn {
+      display: flex; align-items: center; gap: 10px; width: 100%;
+      background: none; border: 0; color: inherit; font: inherit;
+      padding: 13px 15px; cursor: pointer; text-align: left;
+    }
+    .sq-embed__btn:hover { background: var(--secondary-bg); }
+    .sq-embed__btn:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
+    .sq-embed__play {
+      flex: 0 0 auto; width: 26px; height: 26px; border: 1px solid var(--fg-35);
+      border-radius: 50%; display: grid; place-items: center; font-size: .6rem;
+    }
+    .sq-embed__t { font-size: .8rem; }
+    .sq-embed__t small { display: block; color: var(--fg-50); font-size: .72rem; margin-top: 2px; }
+    .sq-embed blockquote { margin: 0; }
+    .sq-embed__fallback { font-size: .8rem; padding: 13px 15px; display: block; }
+  </style>
 </head>
 <body>
 
@@ -267,6 +293,19 @@
           </div>
           <p style="font-size:0.875rem;color:var(--fg-60);margin-bottom:4px;">Optimizing for incredible stories</p>
           <p style="font-size:0.875rem;font-style:italic;">→ XP gained</p>
+
+          <div class="sq-proof">
+            <div class="sq-item">
+              <!-- James: the line that goes with this one -->
+              <div class="sq-embed" data-ig="https://www.instagram.com/reel/Df5Kv7WRubv/">
+                <button class="sq-embed__btn" type="button">
+                  <span class="sq-embed__play" aria-hidden="true">&#9654;</span>
+                  <span class="sq-embed__t">Play the reel<small>Instagram &middot; Hard Knocks Business</small></span>
+                </button>
+                <noscript><a class="sq-embed__fallback" href="https://www.instagram.com/reel/Df5Kv7WRubv/" target="_blank" rel="noopener noreferrer">Watch on Instagram &rarr;</a></noscript>
+              </div>
+            </div>
+          </div>
         </div>
 
       </div>
@@ -282,6 +321,25 @@
   </main>
 
   <script src="/js/site.js"></script>
+  <script>
+  // Swap the button for Instagram's own embed, and only then fetch their
+  // script. Nothing from Meta loads for anyone who does not press play.
+  (function () {
+    var loaded = false;
+    document.querySelectorAll('.sq-embed').forEach(function (box) {
+      box.querySelector('.sq-embed__btn').addEventListener('click', function () {
+        var url = box.dataset.ig;
+        box.innerHTML = '<blockquote class="instagram-media" data-instgrm-permalink="' + url +
+          '" data-instgrm-version="14" style="margin:0;width:100%"><a href="' + url + '">' + url + '</a></blockquote>';
+        if (loaded) { if (window.instgrm) window.instgrm.Embeds.process(); return; }
+        loaded = true;
+        var s = document.createElement('script');
+        s.async = true; s.src = 'https://www.instagram.com/embed.js';
+        document.body.appendChild(s);
+      });
+    });
+  })();
+  </script>
   <!-- GoatCounter: pageview counts only. No cookies, nothing stored per visitor.
        Guarded on the hostname so local previews and builds stay out of the stats. -->
   <script>
