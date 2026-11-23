@@ -114,14 +114,19 @@
 
     /* Skills — a scan-in-five-seconds rail, same no-JS pattern as the refs. */
     .ep-skills { margin-top: 40px; }
-    .ep-skills__rail {
-      overflow: hidden;
-      -webkit-mask-image: linear-gradient(to right, transparent 0, #000 40px, #000 calc(100% - 40px), transparent 100%);
-      mask-image: linear-gradient(to right, transparent 0, #000 40px, #000 calc(100% - 40px), transparent 100%);
+    .ep-skills__rail { position: relative; overflow: hidden; }
+    /* The fade used to be a mask. A mask over a composited, animating layer is
+       what made these rails blank out; two gradient overlays in the page's own
+       paper colour look identical and never touch the animated layer. */
+    .ep-skills__rail::before, .ep-skills__rail::after {
+      content: ""; position: absolute; top: 0; bottom: 0; width: 44px; z-index: 2; pointer-events: none;
     }
+    .ep-skills__rail::before { left: 0; background: linear-gradient(to right, var(--pf-bg), transparent); }
+    .ep-skills__rail::after { right: 0; background: linear-gradient(to left, var(--pf-bg), transparent); }
     /* One set of cards, duplicated, translated by exactly one set -- so the
        loop is seamless. The 1px margin stands in for a gap so the maths is exact. */
     .ep-skills__track {
+      will-change: transform; backface-visibility: hidden;
       display: flex; align-items: stretch; width: max-content;
       animation: epSkillsScroll 70s linear infinite;
     }
@@ -144,14 +149,19 @@
        other way. One set, duplicated, so the loop has nowhere to seam. The
        skills slide left; these slide right, which is the contrast. */
     .ep-refs { margin-top: 44px; }
-    .ep-refs__rail {
-      overflow: hidden;
-      -webkit-mask-image: linear-gradient(to right, transparent 0, #000 40px, #000 calc(100% - 40px), transparent 100%);
-      mask-image: linear-gradient(to right, transparent 0, #000 40px, #000 calc(100% - 40px), transparent 100%);
+    .ep-refs__rail { position: relative; overflow: hidden; }
+    /* The fade used to be a mask. A mask over a composited, animating layer is
+       what made these rails blank out; two gradient overlays in the page's own
+       paper colour look identical and never touch the animated layer. */
+    .ep-refs__rail::before, .ep-refs__rail::after {
+      content: ""; position: absolute; top: 0; bottom: 0; width: 44px; z-index: 2; pointer-events: none;
     }
+    .ep-refs__rail::before { left: 0; background: linear-gradient(to right, var(--pf-bg), transparent); }
+    .ep-refs__rail::after { right: 0; background: linear-gradient(to left, var(--pf-bg), transparent); }
     .ep-refs__track {
+      will-change: transform; backface-visibility: hidden;
       display: flex; align-items: stretch; width: max-content;
-      animation: epRefsScroll 95s linear infinite;
+      animation: epRefsScroll 89s linear infinite;
     }
     .ep-refs__rail:hover .ep-refs__track { animation-play-state: paused; }
     /* Starting at -50% and running to 0 is what sends it rightward. */
@@ -313,6 +323,7 @@
     }
     @media (max-width: 560px) { .ep-vid { grid-template-columns: 1fr; } }
 
+    .ep-playbook { display: grid; gap: 10px; }
     .ep-p { font-size: 15.5px; line-height: 1.78; color: var(--pf-body); margin-bottom: 14px; }
     .ep-p:last-child { margin-bottom: 0; }
     .ep-p strong, .ep-ul strong, .ep-ol strong { font-weight: 500; color: var(--pf-fg); }
@@ -375,7 +386,25 @@
        blend mode is doing the work, because a mark only blends with the paper
        when it shares a stacking context with it, and these do not. */
     .ep-logos { margin-top: 38px; }
-    .ep-logos__row { display: flex; align-items: center; flex-wrap: wrap; gap: 26px 44px; }
+    .ep-logos__row { display: flex; align-items: center; flex-wrap: wrap; gap: 30px 44px; }
+    .ep-logos__m { position: relative; display: inline-flex; align-items: center; text-decoration: none; }
+    /* The name on hover, so a mark nobody recognises still says who it is. */
+    .ep-logos__card {
+      position: absolute; bottom: calc(100% + 11px); left: 50%; transform: translateX(-50%) translateY(3px);
+      background: var(--pf-fg); color: var(--pf-bg); white-space: nowrap;
+      font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: .1em; text-transform: uppercase;
+      padding: 7px 10px 6px; border-radius: 3px; opacity: 0; visibility: hidden;
+      transition: opacity .18s, transform .18s, visibility .18s; z-index: 5;
+    }
+    .ep-logos__card small { display: block; opacity: .62; font-size: 9px; margin-top: 2px; letter-spacing: .08em; }
+    .ep-logos__card::after {
+      content: ""; position: absolute; top: 100%; left: 50%; margin-left: -4px;
+      border: 4px solid transparent; border-top-color: var(--pf-fg);
+    }
+    .ep-logos__m:hover .ep-logos__card,
+    .ep-logos__m:focus-visible .ep-logos__card { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+    .ep-logos__m:focus-visible { outline: 2px solid var(--pf-brown); outline-offset: 4px; }
+    @media (prefers-reduced-motion: reduce) { .ep-logos__card { transition: none; } }
     .ep-logos__row img {
       width: auto; max-width: 180px;
       filter: grayscale(1); opacity: .72; transition: filter .25s, opacity .25s;
@@ -392,7 +421,6 @@
     .ep-logos__row .l-nice { height: 38px; }
     .ep-logos__row .l-andrews { height: 17px; }
     .ep-logos__row .l-qlc { height: 42px; }
-    .ep-logos__row .l-jf { height: 29px; }
     @media (prefers-reduced-motion: reduce) { .ep-logos__row img { transition: none; } }
 
     /* Growing-up chapter reads quieter than the working chapters. */
@@ -469,22 +497,46 @@
         <p class="ep-about__lede">Your ideas, made tangible.</p>
         <p class="ep-about__p">Some people go to Stanford, work at Google, or go through the Navy Seals Hell week to be broken down and built up, I planned and produced parties.</p>
         <p class="ep-about__p">My finals were opening locks with scissors, my projects were managing teams of volunteers, and my fitness tests were sleepless stints thinking on my feet.</p>
-        <a class="ep-about__src" href="https://www.linkedin.com/in/jamesfloydl/" target="_blank" rel="noopener noreferrer">LinkedIn &rarr;</a>
+        <a class="ep-about__src" href="https://www.linkedin.com/in/jamesfloydl/" target="_blank" rel="noopener noreferrer" style="margin-right:22px;">LinkedIn &rarr;</a>
+        <a class="ep-about__src" href="mailto:jamesfloydbiz@gmail.com">Email &rarr;</a>
       </div>
     </section>
 
-    <section class="ep-logos" aria-label="Worked with">
-      <p class="ep-label" style="margin-bottom:20px;">&sect; Worked with</p>
+    <section class="ep-logos" aria-label="Worked for">
+      <p class="ep-label" style="margin-bottom:20px;">&sect; Worked for</p>
       <div class="ep-logos__row">
-        <img class="l-jets" src="/logos/jets-trim.png" alt="Jets and Capital" loading="lazy" decoding="async">
-        <img class="l-fibe" src="/logos/fibe.svg" alt="fibe" loading="lazy" decoding="async">
-        <img class="l-keiretsu" src="/logos/keiretsu.png" alt="Keiretsu Forum" loading="lazy" decoding="async">
-        <img class="l-betterwealth" src="/logos/betterwealth-trim.png" alt="BetterWealth" loading="lazy" decoding="async">
-        <img class="l-montero" src="/logos/montero.png" alt="Montero Productions" loading="lazy" decoding="async">
-        <img class="l-nice" src="/logos/nice-industries.png" alt="Nice Industries" loading="lazy" decoding="async">
-        <img class="l-andrews" src="/logos/andrews-mixers.png" alt="Andrew&rsquo;s Mixers" loading="lazy" decoding="async">
-        <img class="l-qlc" src="/logos/qlc.png" alt="QLC &mdash; Quarter Life Crisis" loading="lazy" decoding="async">
-        <img class="l-jf" src="/brand/monogram-ink.svg" alt="James Floyd" loading="lazy" decoding="async">
+        <a class="ep-logos__m" href="https://jetsandcapital.com" target="_blank" rel="noopener noreferrer">
+          <img class="l-jets" src="/logos/jets-trim.png" alt="Jets and Capital" loading="lazy" decoding="async">
+          <span class="ep-logos__card">Jets and Capital<small>Visit site &rarr;</small></span>
+        </a>
+        <a class="ep-logos__m" href="#now">
+          <img class="l-fibe" src="/logos/fibe.svg" alt="fibe" loading="lazy" decoding="async">
+          <span class="ep-logos__card">fibe<small>Where it sits now &rarr;</small></span>
+        </a>
+        <a class="ep-logos__m" href="https://www.keiretsuforum.com" target="_blank" rel="noopener noreferrer">
+          <img class="l-keiretsu" src="/logos/keiretsu.png" alt="Keiretsu Forum" loading="lazy" decoding="async">
+          <span class="ep-logos__card">Keiretsu Forum<small>Visit site &rarr;</small></span>
+        </a>
+        <a class="ep-logos__m" href="https://betterwealth.com" target="_blank" rel="noopener noreferrer">
+          <img class="l-betterwealth" src="/logos/betterwealth-trim.png" alt="BetterWealth" loading="lazy" decoding="async">
+          <span class="ep-logos__card">BetterWealth<small>Visit site &rarr;</small></span>
+        </a>
+        <a class="ep-logos__m" href="https://monteroproductions.net" target="_blank" rel="noopener noreferrer">
+          <img class="l-montero" src="/logos/montero.png" alt="Montero Productions" loading="lazy" decoding="async">
+          <span class="ep-logos__card">Montero Productions<small>Visit site &rarr;</small></span>
+        </a>
+        <a class="ep-logos__m" href="https://nice.industries" target="_blank" rel="noopener noreferrer">
+          <img class="l-nice" src="/logos/nice-industries.png" alt="Nice Industries" loading="lazy" decoding="async">
+          <span class="ep-logos__card">Nice Industries<small>Visit site &rarr;</small></span>
+        </a>
+        <a class="ep-logos__m" href="https://andrewsmixers.com" target="_blank" rel="noopener noreferrer">
+          <img class="l-andrews" src="/logos/andrews-mixers.png" alt="Andrew&rsquo;s Mixers" loading="lazy" decoding="async">
+          <span class="ep-logos__card">Andrew&rsquo;s Mixers<small>Visit site &rarr;</small></span>
+        </a>
+        <a class="ep-logos__m" href="https://the-quarter-life.mn.co" target="_blank" rel="noopener noreferrer">
+          <img class="l-qlc" src="/logos/qlc.png" alt="QLC &mdash; Quarter Life Crisis" loading="lazy" decoding="async">
+          <span class="ep-logos__card">QLC<small>Visit site &rarr;</small></span>
+        </a>
       </div>
     </section>
 
@@ -1228,6 +1280,7 @@
     <!-- ═══ THE PLAYBOOK ═══ -->
     <section style="padding:48px 0;">
       <p class="ep-label" style="margin-bottom:24px;">&sect; The Playbook</p>
+      <div class="ep-playbook">
       <details class="ep-node" style="max-width:720px;">
         <summary>
           <div class="ep-node__head">
@@ -1251,35 +1304,60 @@
             <li>Be a greeter, first impressions are important + you get to meet everyone</li>
           </ol>
           <a class="ep-src" href="https://www.linkedin.com/feed/update/urn%3Ali%3Ashare%3A7424586673394544640" target="_blank" rel="noopener noreferrer">Post &rarr;</a>
-
-          <div class="ep-fn">
-            <p class="ep-fn__h">Event marketing</p>
+        </div>
+      </details>
+      <details class="ep-node" style="max-width:720px;">
+        <summary>
+          <div class="ep-node__head">
+            <p class="ep-node__when">A way to think about it</p>
+            <h2 class="ep-node__title">Event marketing</h2>
+            <p class="ep-node__more"><span>Read</span></p>
+          </div>
+        </summary>
+        <div class="ep-node__body">
+          Event marketing</p>
             <ul class="ep-ul">
               <li><strong>Environment</strong> &mdash; venue (want to brag about)</li>
               <li><strong>Activity</strong> &mdash; engaging (5 senses)</li>
               <li><strong>People</strong> &mdash; relevant</li>
             </ul>
             <p class="ep-p">Adjust these for MICE / 7 deadly sins.</p>
-            <a class="ep-src" href="https://www.instagram.com/p/DSRlfWjDttO/" target="_blank" rel="noopener noreferrer">Notes &rarr;</a>
+          <a class="ep-src" href="https://www.instagram.com/p/DSRlfWjDttO/" target="_blank" rel="noopener noreferrer">Notes &rarr;</a>
+        </div>
+      </details>
+      <details class="ep-node" style="max-width:720px;">
+        <summary>
+          <div class="ep-node__head">
+            <p class="ep-node__when">Sponsors</p>
+            <h2 class="ep-node__title">Booths are boring</h2>
+            <p class="ep-node__more"><span>Read</span></p>
           </div>
-
-          <div class="ep-fn">
-            <p class="ep-fn__h">Booths are boring</p>
+        </summary>
+        <div class="ep-node__body">
+          Booths are boring</p>
             <p class="ep-p">The race is not over when sponsors have sent their money, in fact that shouldn&rsquo;t be what it&rsquo;s about at all. To me, it&rsquo;s about encouraging and building a culture of interactiveness and giving.</p>
             <p class="ep-p">Sponsors could provide headshots, podcasts, interactive booths like massages, IVs, haircuts. So force booths to be experiential.</p>
             <blockquote class="ep-pull">Change the rules, out with the tables in with the memories.</blockquote>
-            <a class="ep-src" href="https://www.linkedin.com/feed/update/urn%3Ali%3Ashare%3A7419781123657932800" target="_blank" rel="noopener noreferrer">Post &rarr;</a>
+          <a class="ep-src" href="https://www.linkedin.com/feed/update/urn%3Ali%3Ashare%3A7419781123657932800" target="_blank" rel="noopener noreferrer">Post &rarr;</a>
+        </div>
+      </details>
+      <details class="ep-node" style="max-width:720px;">
+        <summary>
+          <div class="ep-node__head">
+            <p class="ep-node__when">Where this goes</p>
+            <h2 class="ep-node__title">The infrastructure progression</h2>
+            <p class="ep-node__more"><span>Read</span></p>
           </div>
-
-          <div class="ep-fn">
-            <p class="ep-fn__h">The infrastructure progression</p>
+        </summary>
+        <div class="ep-node__body">
+          The infrastructure progression</p>
             <p class="ep-p">Over the last year I&rsquo;ve compulsively collected a list of 110 community businesses. I&rsquo;ve also been reading obsessively &mdash; Unreasonable Hospitality, The Art of Gathering, Make No Small Plans. I kept reading and I kept seeing the same pattern.</p>
             <blockquote class="ep-pull">Audience/Network &rarr; Community &rarr; Events &rarr; Physical Place &rarr; ?</blockquote>
             <p class="ep-p">What I don&rsquo;t know is what comes after physical place. There&rsquo;s a question mark there that keeps showing up for me. That&rsquo;s part of why I moved to NYC.</p>
-            <a class="ep-src" href="https://www.linkedin.com/feed/update/urn%3Ali%3AugcPost%3A7448869248736641024" target="_blank" rel="noopener noreferrer">Post &rarr;</a>
-          </div>
+          <a class="ep-src" href="https://www.linkedin.com/feed/update/urn%3Ali%3AugcPost%3A7448869248736641024" target="_blank" rel="noopener noreferrer">Post &rarr;</a>
         </div>
       </details>
+      </div>
     </section>
 
     <div class="ep-rule"></div>
