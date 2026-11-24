@@ -40,6 +40,23 @@
     "description": "Active and archived projects from James Floyd \u2014 Jets and Capital, AI builds, The Sonder Series, and more."
   }
   </script>
+  <style>
+    /* Sidequest proof. One row per story: James's line, then whatever backs
+       it up -- a reel, a photo, a link. */
+    .sq-proof { margin-top: 14px; display: grid; gap: 14px; }
+    .sq-item { display: grid; gap: 8px; }
+    .sq-item__line { font-size: .875rem; color: var(--fg-70); margin: 0; }
+    /* The clip is served from this site. Instagram's embed would have loaded
+       Meta's script for every visitor to this page; the file sits here
+       instead, credited to the account that made it. */
+    .sq-vid { margin: 0; max-width: 300px; }
+    .sq-vid video { display: block; width: 100%; height: auto; background: #111; border-radius: 4px; }
+    .sq-vid figcaption {
+      font-family: var(--font-mono); font-size: .66rem; letter-spacing: .08em;
+      text-transform: uppercase; color: var(--fg-50); margin-top: 7px; line-height: 1.7;
+    }
+    .sq-vid figcaption a { color: var(--fg-70); }
+  </style>
 </head>
 <body>
 
@@ -267,6 +284,19 @@
           </div>
           <p style="font-size:0.875rem;color:var(--fg-60);margin-bottom:4px;">Optimizing for incredible stories</p>
           <p style="font-size:0.875rem;font-style:italic;">→ XP gained</p>
+
+          <div class="sq-proof">
+            <div class="sq-item">
+              <!-- James: the line that goes with this one -->
+              <figure class="sq-vid">
+                <video controls preload="none" playsinline width="720" height="1280"
+                       poster="/video/sam-parr-street-interview-poster.jpg">
+                  <source src="/video/sam-parr-street-interview.mp4" type="video/mp4">
+                </video>
+                <figcaption>Sam Parr, street interview, New York &middot; filmed by <a href="https://www.instagram.com/hardknocksbusiness/" target="_blank" rel="noopener noreferrer">@hardknocksbusiness</a> &middot; <a href="https://www.instagram.com/reel/Df5Kv7WRubv/" target="_blank" rel="noopener noreferrer">original reel &rarr;</a></figcaption>
+              </figure>
+            </div>
+          </div>
         </div>
 
       </div>
