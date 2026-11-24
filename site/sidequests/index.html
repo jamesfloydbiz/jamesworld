@@ -53,6 +53,17 @@
       text-transform: uppercase; color: var(--fg-50);
     }
     .sq__body { font-size: .9rem; line-height: 1.75; color: var(--fg-70); margin: 0 0 14px; max-width: 46rem; }
+    /* Moved over from the events portfolio, so it keeps the pull quote it was
+       written with. Same treatment as .ep-pull over there. */
+    .sq__pull {
+      font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.05rem;
+      line-height: 1.55; color: var(--fg-85, var(--fg-70)); border-left: 2px solid var(--green, var(--fg-50));
+      padding-left: 18px; margin: 16px 0; max-width: 46rem;
+    }
+    .sq__src {
+      font-family: var(--font-mono); font-size: .66rem; letter-spacing: .08em;
+      text-transform: uppercase; color: var(--fg-50); display: inline-block; margin-bottom: 14px;
+    }
     .sq__media { display: flex; flex-wrap: wrap; gap: 14px; align-items: flex-start; }
     .sq__vid { margin: 0; max-width: 300px; }
     .sq__vid video { display: block; width: 100%; height: auto; background: #111; border-radius: 4px; }
@@ -144,6 +155,18 @@
               <img src="/pictures/sidequests/bowling.jpg" alt="James from behind at the line of a bowling alley, lanes lit blue ahead of him" loading="lazy" decoding="async" width="360" height="640">
             </figure>
           </div>
+        </article>
+
+        <article class="sq">
+          <div class="sq__head">
+            <h2 class="sq__title">Alicia Long sent me this picture. I went and found her.</h2>
+            <span class="sq__when">Nov 2025 &middot; Las Vegas</span>
+          </div>
+          <p class="sq__body">I flew to Vegas for F1 on a whim. No ticket to the race. But then Alicia texted me a photo from somewhere across the track, watching from a suite.</p>
+          <p class="sq__body">I power walked toward where the picture came from (cause angles), using Maps 3D to figure out which hotel. Found it. Walked up to the doorman. &ldquo;Hey, I&rsquo;ve got a handwritten note for a friend. She sent me this picture from a suite around here.&rdquo; He leaned in, working with me.</p>
+          <p class="sq__body">Back to the lobby. Checked my bag, and shared the quest. They pointed me to a special elevator with event staff. With my suit, the note, and a dream, I told them I was here to deliver something to an awesome human being. My energy was undeniable. Walked past private security. Found Alicia.</p>
+          <blockquote class="sq__pull">The idea was so crazy there was no downside. Anything going right was a win.</blockquote>
+          <a class="sq__src" href="https://www.linkedin.com/feed/update/urn%3Ali%3Ashare%3A7428942518987284480" target="_blank" rel="noopener noreferrer">Post &rarr;</a>
         </article>
 
         <!-- Copy this block for each new one. Drop the pieces you do not need.
