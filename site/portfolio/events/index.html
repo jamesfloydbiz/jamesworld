@@ -324,6 +324,13 @@
     @media (max-width: 560px) { .ep-vid { grid-template-columns: 1fr; } }
 
     .ep-playbook { display: grid; gap: 10px; }
+    /* A single frame sitting inside a story, not in a strip. */
+    .ep-inline { margin: 0 0 14px; max-width: 230px; }
+    .ep-inline img { display: block; width: 100%; height: auto; }
+    .ep-inline figcaption {
+      font-family: 'DM Mono', monospace; font-size: 8px; letter-spacing: .12em;
+      text-transform: uppercase; color: var(--pf-muted); padding: 5px 2px 0;
+    }
     .ep-p { font-size: 15.5px; line-height: 1.78; color: var(--pf-body); margin-bottom: 14px; }
     .ep-p:last-child { margin-bottom: 0; }
     .ep-p strong, .ep-ul strong, .ep-ol strong { font-weight: 500; color: var(--pf-fg); }
@@ -1095,6 +1102,10 @@
                   <p class="ep-p">(Cause it was in a hanger) 24 hours to pivot. 500 guests to call.</p>
                   <p class="ep-p">I wrote a cold calling script, shared it with the Jets and Capital Events team, and we started dialing. The pitch: Trump is coming, we&rsquo;re pushing the event back a day. Here&rsquo;s how this is good for you! Two events, one the day you expected and the hanger event a day later!</p>
                   <p class="ep-p">By noon I was picking people up from the airport, while making calls and logging them at stoplights. By 7pm that night we had booked two venues, and ordered the supplies we needed. By 8pm every guest had been contacted.</p>
+                  <figure class="ep-inline">
+                    <img src="/pictures/events/jc-vegas-cold-call.jpg" alt="James sitting on the floor against a wall under a NO SHOES sign, phone to his ear" loading="lazy" decoding="async" width="360" height="480">
+                    <figcaption>23 January 2025</figcaption>
+                  </figure>
                   <blockquote class="ep-pull">There is a way EVERYTHING can be spun into a positive. For this? &lsquo;Double the fun&rsquo; was my motto.</blockquote>
                   <a class="ep-src" href="https://www.linkedin.com/feed/update/urn%3Ali%3Ashare%3A7423131897448374273" target="_blank" rel="noopener noreferrer">Post &rarr;</a>
                 </div>
