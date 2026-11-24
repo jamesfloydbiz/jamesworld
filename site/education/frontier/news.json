@@ -415,15 +415,6 @@
  },
  {
   "kind": "fact",
-  "name": "Multiverse",
-  "text": "Funding: $70M at $2.1B valuation, led by Schroders Capital (May 2026)",
-  "date": "2026-05",
-  "self_reported": false,
-  "href": "/education/frontier/#multiverse",
-  "source": "https://dealroom.co/news/128958-multiverse-raises-70m-at-2-1b-valuation-to-build-europes-ai-adoption-lay/"
- },
- {
-  "kind": "fact",
   "name": "Pace AI",
   "text": "Federal grant: $1M IES SBIR Phase II (2025-2027) to Linguistic Inc. (Pace AI)",
   "date": "2025-09",
@@ -448,6 +439,15 @@
   "self_reported": false,
   "href": "/education/frontier/#forge-prep",
   "source": "https://forgeprep.org/"
+ },
+ {
+  "kind": "fact",
+  "name": "Multiverse",
+  "text": "Funding: $70M at $2.1B valuation, led by Schroders Capital (May 2026)",
+  "date": "2026-05",
+  "self_reported": false,
+  "href": "/education/frontier/#multiverse",
+  "source": "https://dealroom.co/news/128958-multiverse-raises-70m-at-2-1b-valuation-to-build-europes-ai-adoption-lay/"
  },
  {
   "kind": "fact",
