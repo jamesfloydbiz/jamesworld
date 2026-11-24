@@ -37,13 +37,18 @@ public/sonder/.png_originals/
 # Audio-gen cache metadata (regenerated locally by scripts/gen-audio.mjs)
 public/audio/*.sha1
 
-# iCloud makes "* 2" copies while a build is writing; they are never wanted.
-*\ 2.js
-*\ 2.html
-*\ 2.css
-*\ 2.json
-*\ 2.jpg
-*\ 2.jpeg
-*\ 2.png
-*\ 2.webp
-*\ 2.svg
+# iCloud sync conflict copies: "name 2.html", "name 3.js". One digit after a
+# space, scoped to the extensions the site actually builds — a broader
+# "* [0-9].*" would swallow real files whose names end in a number, like
+# "Ep. 082.jpeg" and "Poem 088 - Tomorrow I turn 24.pdf".
+*\ [0-9].js
+*\ [0-9].mjs
+*\ [0-9].html
+*\ [0-9].css
+*\ [0-9].json
+*\ [0-9].svg
+*\ [0-9].jpg
+*\ [0-9].jpeg
+*\ [0-9].png
+*\ [0-9].webp
+*\ [0-9].mp4
