@@ -243,6 +243,31 @@
   const TABS = { companies: ['school', 'tech'], studies: ['study'], voices: ['voice'], notes: [] };
   const tabOf = (layer) => Object.keys(TABS).find((t) => TABS[t].includes(layer)) || 'companies';
   S.tab = 'companies';
+  // ── matrix | map ────────────────────────────────────────────────────────────
+  // What a company does is the dashboard's frame; where it is HQ'd is a second
+  // view. Only the companies tab has a matrix, so the switch hides elsewhere and
+  // studies and voices stay on the map.
+  S.view = 'matrix';
+  function applyView() {
+    const companies = S.tab === 'companies', notes = S.tab === 'notes';
+    const v = companies ? S.view : 'map';
+    const showMatrix = companies && v === 'matrix', showMap = !notes && v === 'map';
+    $('#views').hidden = !companies;
+    $('#matrixblock').hidden = !showMatrix;
+    $('#mapblock').hidden = !showMap;
+    $('#controls').hidden = !showMap;
+    document.querySelectorAll('.view').forEach((b) => {
+      const on = b.dataset.view === S.view;
+      b.classList.toggle('on', on); b.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+    return showMap;
+  }
+  function setView(v, keepView) {
+    S.view = v;
+    if (applyView() && !keepView) { if (!W) onResize(); home(); draw(); }
+  }
+  document.querySelectorAll('.view').forEach((b) =>
+    b.addEventListener('click', () => setView(b.dataset.view)));
   const lf = $('#layers');
   function renderChips() {   // the layer chips only matter where a tab holds more than one layer
     const ls = LAYERS.filter((l) => TABS[S.tab].includes(l.key));
@@ -256,12 +281,11 @@
     S.tab = t; S.layers = new Set(TABS[t]); S.cat = 'all';
     document.querySelectorAll('.tab').forEach((b) => { const on = b.dataset.tab === t; b.classList.toggle('on', on); b.setAttribute('aria-selected', on ? 'true' : 'false'); });
     document.querySelectorAll('section[data-tab]').forEach((sec) => sec.classList.toggle('on', sec.dataset.tab === t));
-    const mapTab = t !== 'notes';
-    $('#controls').hidden = !mapTab; $('#mapblock').hidden = !mapTab;
+    const mapOn = applyView();
     $('#age').hidden = t !== 'companies';
     if (S.sel && tabOf(S.sel.layer) !== t) select(null);
     renderChips(); renderCats();
-    if (mapTab) { if (!W) onResize(); if (!keepView) { home(); } draw(); }
+    if (mapOn) { if (!W) onResize(); if (!keepView) { home(); } draw(); }
   }
   document.querySelectorAll('.tab').forEach((b) => b.addEventListener('click', () => {
     setTab(b.dataset.tab); if (history.replaceState) history.replaceState(null, '', '#' + b.dataset.tab);
@@ -311,6 +335,7 @@
   document.querySelectorAll('[data-show]').forEach((a) => a.addEventListener('click', (e) => {
     e.preventDefault(); const d = ITEMS.find((x) => x.id === a.dataset.show); if (!d) return;
     if (tabOf(d.layer) !== S.tab) setTab(tabOf(d.layer), true);
+    if (S.view !== 'map') setView('map', true);
     $('#mapwrap').scrollIntoView({ behavior: 'smooth', block: 'start' });
     k = Math.max(k, k0 * 4); select(d); focus(d);
   }));
@@ -326,7 +351,7 @@
   function boot() { fit(); home();
     const id = location.hash.slice(1), d = id && ITEMS.find((x) => x.id === id);
     setTab(d ? tabOf(d.layer) : (TABS[id] ? id : (document.getElementById(id) && document.getElementById(id).closest('[data-tab]') ? document.getElementById(id).closest('[data-tab]').dataset.tab : 'companies')));
-    if (d) { k = k0 * 4; select(d); focus(d); } }
+    if (d) { setView('map', true); k = k0 * 4; select(d); focus(d); } }
   // Watch the canvas itself, not the window: the page can load while its pane is hidden (0×0), and a zoom
   // computed then is 0. When the map first gets a real size, start from the home view.
   function onResize() {
@@ -342,6 +367,7 @@
     if (TABS[id]) { setTab(id); return; }
     const d = ITEMS.find((x) => x.id === id); if (!d || d === S.sel) return;
     if (tabOf(d.layer) !== S.tab) setTab(tabOf(d.layer), true);
+    if (S.view !== 'map') setView('map', true);
     $('#mapwrap').scrollIntoView({ behavior: 'smooth', block: 'start' }); k = Math.max(k, k0 * 4); select(d); focus(d); });
   window.__FM = { proj, ITEMS };
 })();
