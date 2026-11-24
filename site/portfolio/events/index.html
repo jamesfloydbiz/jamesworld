@@ -111,64 +111,40 @@
       letter-spacing: .18em; text-transform: uppercase; color: var(--pf-brown); text-decoration: none;
     }
     .ep-about__src:hover { text-decoration: underline; }
+    /* The one ask. The same button under the hero and at the foot, with
+       nothing competing with it in either place. */
+    .ep-ask {
+      display: inline-block; border: 1px solid var(--pf-fg); color: var(--pf-fg);
+      text-decoration: none; padding: 11px 20px;
+      font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: .18em;
+      text-transform: uppercase; transition: background .2s, color .2s;
+    }
+    .ep-ask:hover { background: var(--pf-fg); color: var(--pf-bg); }
+    .ep-ask:focus-visible { outline: 2px solid var(--pf-brown); outline-offset: 3px; }
+    @media (prefers-reduced-motion: reduce) { .ep-ask { transition: none; } }
 
-    /* Skills — a scan-in-five-seconds rail, same no-JS pattern as the refs. */
-    .ep-skills { margin-top: 40px; }
-    .ep-skills__rail { position: relative; overflow: hidden; }
-    /* The fade used to be a mask. A mask over a composited, animating layer is
-       what made these rails blank out; two gradient overlays in the page's own
-       paper colour look identical and never touch the animated layer. */
-    .ep-skills__rail::before, .ep-skills__rail::after {
-      content: ""; position: absolute; top: 0; bottom: 0; width: 44px; z-index: 2; pointer-events: none;
+    /* What I can do. This was a marquee; a moving list cannot be scanned, and
+       scanning is the one thing a list of skills is for. Fourteen short phrases
+       fit in three static rows. */
+    .ep-can { margin-top: 40px; }
+    .ep-can__list {
+      list-style: none; margin: 0; padding: 0;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(205px, 1fr));
+      gap: 1px; background: var(--pf-border-med); border: 1px solid var(--pf-border-med);
     }
-    .ep-skills__rail::before { left: 0; background: linear-gradient(to right, var(--pf-bg), transparent); }
-    .ep-skills__rail::after { right: 0; background: linear-gradient(to left, var(--pf-bg), transparent); }
-    /* One set of cards, duplicated, translated by exactly one set -- so the
-       loop is seamless. The 1px margin stands in for a gap so the maths is exact. */
-    .ep-skills__track {
-      will-change: transform; backface-visibility: hidden;
-      display: flex; align-items: stretch; width: max-content;
-      animation: epSkillsScroll 70s linear infinite;
-    }
-    .ep-skills__rail:hover .ep-skills__track { animation-play-state: paused; }
-    .ep-skill {
-      flex: 0 0 186px; margin-right: 1px; background: var(--pf-bg);
-      box-shadow: 0 0 0 1px var(--pf-border-med); padding: 14px 15px 13px;
-    }
-    @keyframes epSkillsScroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-    @media (prefers-reduced-motion: reduce) {
-      .ep-skills__track { animation: none; }
-      .ep-skills__rail { overflow-x: auto; scrollbar-width: thin; }
-    }
-    .ep-skill__n {
+    .ep-can__list li {
+      background: var(--pf-bg); padding: 13px 15px 12px;
       font-family: 'Playfair Display', serif; font-weight: 700; font-size: .95rem;
-      line-height: 1.25; color: var(--pf-fg); margin: 0;
+      line-height: 1.25; color: var(--pf-fg);
     }
 
-    /* Reference cards — the same no-JS marquee as the skills, running the
-       other way. One set, duplicated, so the loop has nowhere to seam. The
-       skills slide left; these slide right, which is the contrast. */
-    .ep-refs { margin-top: 44px; }
-    .ep-refs__rail { position: relative; overflow: hidden; }
-    /* The fade used to be a mask. A mask over a composited, animating layer is
-       what made these rails blank out; two gradient overlays in the page's own
-       paper colour look identical and never touch the animated layer. */
-    .ep-refs__rail::before, .ep-refs__rail::after {
-      content: ""; position: absolute; top: 0; bottom: 0; width: 44px; z-index: 2; pointer-events: none;
-    }
-    .ep-refs__rail::before { left: 0; background: linear-gradient(to right, var(--pf-bg), transparent); }
-    .ep-refs__rail::after { right: 0; background: linear-gradient(to left, var(--pf-bg), transparent); }
-    .ep-refs__track {
-      will-change: transform; backface-visibility: hidden;
-      display: flex; align-items: stretch; width: max-content;
-      animation: epRefsScroll 89s linear infinite;
-    }
-    .ep-refs__rail:hover .ep-refs__track { animation-play-state: paused; }
-    /* Starting at -50% and running to 0 is what sends it rightward. */
-    @keyframes epRefsScroll { from { transform: translateX(-50%); } to { transform: translateX(0); } }
-    @media (prefers-reduced-motion: reduce) {
-      .ep-refs__track { animation: none; }
-      .ep-refs__rail { overflow-x: auto; scrollbar-width: thin; }
+    /* Reference cards. These used to scroll. A quote you cannot finish reading
+       is worse than one you scroll past, so they sit still now, and they sit
+       below the timeline where a reader has already seen the work. */
+    .ep-refs { margin: 44px 0 8px; }
+    .ep-refs__grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1px; background: var(--pf-border-med); border: 1px solid var(--pf-border-med);
     }
     .ep-ref {
       flex: 0 0 300px; margin-right: 1px; background: var(--pf-bg);
@@ -205,8 +181,8 @@
     .ep-chapter__inner { width: 100%; }
     @media (max-width: 879px) { .ep-tl { padding-left: 30px; } }
     @media (min-width: 880px) {
-      .ep-chapter__inner { width: 42%; }
-      .ep-chapter--right .ep-chapter__inner { margin-left: 58%; }
+      .ep-chapter__inner { width: 47%; }
+      .ep-chapter--right .ep-chapter__inner { margin-left: 53%; }
     }
 
     .ep-node {
@@ -222,15 +198,13 @@
 
     .ep-covers { display: grid; gap: 2px; background: var(--pf-border-med); }
     .ep-covers--2 { grid-template-columns: 1fr 1fr; }
-    .ep-covers--3 { grid-template-columns: 1.6fr 1fr; grid-template-rows: 1fr 1fr; }
-    .ep-covers--3 > :first-child { grid-row: span 2; }
+    .ep-covers--3 { grid-template-columns: repeat(3, 1fr); }
     .ep-covers figure { margin: 0; overflow: hidden; background: #e7e0d5; }
     .ep-covers img {
       width: 100%; height: 100%; object-fit: cover; aspect-ratio: 4 / 3;
       filter: sepia(.08) contrast(1.02); transition: transform .5s ease, filter .4s;
     }
-    .ep-covers--3 > :first-child img { aspect-ratio: 4 / 5; }
-    .ep-covers--3 > :not(:first-child) img { aspect-ratio: 4 / 3; }
+    .ep-covers--3 img { aspect-ratio: 3 / 2; }
     .ep-node > summary:hover .ep-covers img { transform: scale(1.03); filter: sepia(0) contrast(1.04); }
 
     .ep-node__head { padding: 16px 18px 18px; }
@@ -501,11 +475,11 @@
         <img src="/pictures/james-events-portrait.jpg" alt="James Floyd in black, wearing an earpiece, working a room" width="994" height="1536" loading="eager" decoding="async">
       </figure>
       <div style="order:-1;">
-        <p class="ep-about__lede">Your ideas, made tangible.</p>
+        <p class="ep-about__lede">You host the event, I run it.</p>
         <p class="ep-about__p">Some people go to Stanford, work at Google, or go through the Navy Seals Hell week to be broken down and built up, I planned and produced parties.</p>
         <p class="ep-about__p">My finals were opening locks with scissors, my projects were managing teams of volunteers, and my fitness tests were sleepless stints thinking on my feet.</p>
-        <a class="ep-about__src" href="https://www.linkedin.com/in/jamesfloydl/" target="_blank" rel="noopener noreferrer" style="margin-right:22px;">LinkedIn &rarr;</a>
-        <a class="ep-about__src" href="mailto:jamesfloydbiz@gmail.com">Email &rarr;</a>
+        <a class="ep-ask" href="mailto:jamesfloydbiz@gmail.com?subject=Your%20event">Email me about your event</a>
+        <a class="ep-about__src" href="https://www.linkedin.com/in/jamesfloydl/" target="_blank" rel="noopener noreferrer" style="margin-left:22px;">LinkedIn &rarr;</a>
       </div>
     </section>
 
@@ -547,216 +521,27 @@
       </div>
     </section>
 
-    <section class="ep-skills" aria-label="Skills">
-      <p class="ep-label" style="margin-bottom:16px;">&sect; Skills</p>
-      <div class="ep-skills__rail">
-        <div class="ep-skills__track">
-          <div class="ep-skill">
-            <p class="ep-skill__n">Event production</p>
-          </div>
-          <div class="ep-skill">
-            <p class="ep-skill__n">Creative direction</p>
-          </div>
-          <div class="ep-skill">
-            <p class="ep-skill__n">Design consulting</p>
-          </div>
-          <div class="ep-skill">
-            <p class="ep-skill__n">Vendor management</p>
-          </div>
-          <div class="ep-skill">
-            <p class="ep-skill__n">Procurement &amp; sourcing</p>
-          </div>
-          <div class="ep-skill">
-            <p class="ep-skill__n">AV, stage &amp; mics</p>
-          </div>
-          <div class="ep-skill">
-            <p class="ep-skill__n">Run of show</p>
-          </div>
-          <div class="ep-skill">
-            <p class="ep-skill__n">Volunteer &amp; staff management</p>
-          </div>
-          <div class="ep-skill">
-            <p class="ep-skill__n">Site build &amp; safety</p>
-          </div>
-          <div class="ep-skill">
-            <p class="ep-skill__n">Event connectivity &amp; IT</p>
-          </div>
-          <div class="ep-skill">
-            <p class="ep-skill__n">Executive protection</p>
-          </div>
-          <div class="ep-skill">
-            <p class="ep-skill__n">Multi-city event travel</p>
-          </div>
-          <div class="ep-skill">
-            <p class="ep-skill__n">Gala &amp; paddle raise</p>
-          </div>
-          <div class="ep-skill">
-            <p class="ep-skill__n">Guest &amp; staff hospitality</p>
-          </div>
-          <div class="ep-skill" aria-hidden="true">
-            <p class="ep-skill__n">Event production</p>
-          </div>
-          <div class="ep-skill" aria-hidden="true">
-            <p class="ep-skill__n">Creative direction</p>
-          </div>
-          <div class="ep-skill" aria-hidden="true">
-            <p class="ep-skill__n">Design consulting</p>
-          </div>
-          <div class="ep-skill" aria-hidden="true">
-            <p class="ep-skill__n">Vendor management</p>
-          </div>
-          <div class="ep-skill" aria-hidden="true">
-            <p class="ep-skill__n">Procurement &amp; sourcing</p>
-          </div>
-          <div class="ep-skill" aria-hidden="true">
-            <p class="ep-skill__n">AV, stage &amp; mics</p>
-          </div>
-          <div class="ep-skill" aria-hidden="true">
-            <p class="ep-skill__n">Run of show</p>
-          </div>
-          <div class="ep-skill" aria-hidden="true">
-            <p class="ep-skill__n">Volunteer &amp; staff management</p>
-          </div>
-          <div class="ep-skill" aria-hidden="true">
-            <p class="ep-skill__n">Site build &amp; safety</p>
-          </div>
-          <div class="ep-skill" aria-hidden="true">
-            <p class="ep-skill__n">Event connectivity &amp; IT</p>
-          </div>
-          <div class="ep-skill" aria-hidden="true">
-            <p class="ep-skill__n">Executive protection</p>
-          </div>
-          <div class="ep-skill" aria-hidden="true">
-            <p class="ep-skill__n">Multi-city event travel</p>
-          </div>
-          <div class="ep-skill" aria-hidden="true">
-            <p class="ep-skill__n">Gala &amp; paddle raise</p>
-          </div>
-          <div class="ep-skill" aria-hidden="true">
-            <p class="ep-skill__n">Guest &amp; staff hospitality</p>
-          </div>
-        </div>
-      </div>
+    <section class="ep-can" aria-label="What I can do">
+      <p class="ep-label" style="margin-bottom:18px;">&sect; What I can do</p>
+      <ul class="ep-can__list">
+        <li>Event production</li>
+        <li>Creative direction</li>
+        <li>Design consulting</li>
+        <li>Vendor management</li>
+        <li>Procurement &amp; sourcing</li>
+        <li>AV, stage &amp; mics</li>
+        <li>Run of show</li>
+        <li>Volunteer &amp; staff management</li>
+        <li>Site build &amp; safety</li>
+        <li>Event connectivity &amp; IT</li>
+        <li>Executive protection</li>
+        <li>Multi-city event travel</li>
+        <li>Gala &amp; paddle raise</li>
+        <li>Guest &amp; staff hospitality</li>
+      </ul>
     </section>
 
-    <section class="ep-refs" aria-label="References">
-      <p class="ep-label" style="margin-bottom:16px;">&sect; My references</p>
-      <div class="ep-refs__rail">
-        <div class="ep-refs__track">
-          <blockquote class="ep-ref">
-            <p class="ep-ref__q">&ldquo;james &mdash; you were the mvp&rdquo;</p>
-            <p class="ep-ref__who">Andrew Yeung</p>
-            <p class="ep-ref__role">Gathering extraordinary people &amp; angel investing &middot; x-Google, Meta<br>SXSW Secret Garden Party</p>
-          </blockquote>
-          <blockquote class="ep-ref">
-            <p class="ep-ref__q">&ldquo;James killed it!! If anyone wants to learn how to stand out in a volunteer crowd, reach out to James Floyd.&rdquo;</p>
-            <p class="ep-ref__who">Vitoria Okuyama</p>
-            <p class="ep-ref__role">Ex pro tennis player &middot; Ex IB @ Citi<br>SXSW Secret Garden Party</p>
-          </blockquote>
-          <blockquote class="ep-ref">
-            <p class="ep-ref__q">&ldquo;James, you are a superstar. Your hard work and willingness to go above and beyond will take you a LONG WAY.&rdquo;</p>
-            <p class="ep-ref__who">Danielle Raskin</p>
-            <p class="ep-ref__role">Curating experiences, community &amp; connection<br>SXSW Secret Garden Party</p>
-          </blockquote>
-          <blockquote class="ep-ref">
-            <p class="ep-ref__q">&ldquo;James Floyd is your guy. The best by a wide margin at driving the intersection between function, execution, and relationship.&rdquo;</p>
-            <p class="ep-ref__who">Jarom Christensen</p>
-            <p class="ep-ref__role">Family Office Advisor &middot; Investor Relations at Jets &amp; Capital</p>
-          </blockquote>
-          <blockquote class="ep-ref">
-            <p class="ep-ref__q">&ldquo;I&rsquo;ve got to know James Floyd over the past year and can vouch for his talent, creativity, work ethic, and connecting skills plus many more.&rdquo;</p>
-            <p class="ep-ref__who">Austin Moss</p>
-            <p class="ep-ref__role">Met through Jets and Capital</p>
-          </blockquote>
-          <blockquote class="ep-ref">
-            <p class="ep-ref__q">&ldquo;James really is the best. He knows the space so well, always provides unique insights and perspectives, and knows how to curate advice based on the individuality of the project at hand.&rdquo;</p>
-            <p class="ep-ref__who">Vanessa Rothmeyer</p>
-            <p class="ep-ref__role">Yogi and Creator &middot; On an event James helped build</p>
-          </blockquote>
-          <blockquote class="ep-ref">
-            <p class="ep-ref__q">&ldquo;Thank you for being the person who says yes and figures it out.&rdquo;</p>
-            <p class="ep-ref__who">Lauren Sawyer</p>
-            <p class="ep-ref__role">Community Builder &middot; Events @ Duel<br>On a house show thrown on her rooftop</p>
-          </blockquote>
-          <blockquote class="ep-ref">
-            <p class="ep-ref__q">&ldquo;James you have been a major blessing to me and to the team and I know I&rsquo;m not the only one who shares that.&rdquo;</p>
-            <p class="ep-ref__who">Caleb Guilliams</p>
-            <p class="ep-ref__role">Founder, BetterWealth &middot; Dec 2025</p>
-          </blockquote>
-          <blockquote class="ep-ref">
-            <p class="ep-ref__q">&ldquo;I was like &mdash; this kid is different. This kid is special.&rdquo;</p>
-            <p class="ep-ref__who">Dom Rufran</p>
-            <p class="ep-ref__role">President of BetterWealth &middot; Ex-NFL Player</p>
-          </blockquote>
-          <blockquote class="ep-ref">
-            <p class="ep-ref__q">&ldquo;One of the coolest dudes in existence, cool to watch and learn from you and your pursuit of growth.&rdquo;</p>
-            <p class="ep-ref__who">Lauren Hansen</p>
-            <p class="ep-ref__role">Worked together at Jets and Capital</p>
-          </blockquote>
-        <blockquote class="ep-ref">
-          <p class="ep-ref__q">&ldquo;Always impressed with you&rdquo;</p>
-          <p class="ep-ref__who">Courtney Kreitzer</p>
-          <p class="ep-ref__role">Product @ Guardian Life &middot; Community Builder<br>Jets and Capital hangar party</p>
-        </blockquote>
-          <blockquote class="ep-ref" aria-hidden="true">
-            <p class="ep-ref__q">&ldquo;james &mdash; you were the mvp&rdquo;</p>
-            <p class="ep-ref__who">Andrew Yeung</p>
-            <p class="ep-ref__role">Gathering extraordinary people &amp; angel investing &middot; x-Google, Meta<br>SXSW Secret Garden Party</p>
-          </blockquote>
-          <blockquote class="ep-ref" aria-hidden="true">
-            <p class="ep-ref__q">&ldquo;James killed it!! If anyone wants to learn how to stand out in a volunteer crowd, reach out to James Floyd.&rdquo;</p>
-            <p class="ep-ref__who">Vitoria Okuyama</p>
-            <p class="ep-ref__role">Ex pro tennis player &middot; Ex IB @ Citi<br>SXSW Secret Garden Party</p>
-          </blockquote>
-          <blockquote class="ep-ref" aria-hidden="true">
-            <p class="ep-ref__q">&ldquo;James, you are a superstar. Your hard work and willingness to go above and beyond will take you a LONG WAY.&rdquo;</p>
-            <p class="ep-ref__who">Danielle Raskin</p>
-            <p class="ep-ref__role">Curating experiences, community &amp; connection<br>SXSW Secret Garden Party</p>
-          </blockquote>
-          <blockquote class="ep-ref" aria-hidden="true">
-            <p class="ep-ref__q">&ldquo;James Floyd is your guy. The best by a wide margin at driving the intersection between function, execution, and relationship.&rdquo;</p>
-            <p class="ep-ref__who">Jarom Christensen</p>
-            <p class="ep-ref__role">Family Office Advisor &middot; Investor Relations at Jets &amp; Capital</p>
-          </blockquote>
-          <blockquote class="ep-ref" aria-hidden="true">
-            <p class="ep-ref__q">&ldquo;I&rsquo;ve got to know James Floyd over the past year and can vouch for his talent, creativity, work ethic, and connecting skills plus many more.&rdquo;</p>
-            <p class="ep-ref__who">Austin Moss</p>
-            <p class="ep-ref__role">Met through Jets and Capital</p>
-          </blockquote>
-          <blockquote class="ep-ref" aria-hidden="true">
-            <p class="ep-ref__q">&ldquo;James really is the best. He knows the space so well, always provides unique insights and perspectives, and knows how to curate advice based on the individuality of the project at hand.&rdquo;</p>
-            <p class="ep-ref__who">Vanessa Rothmeyer</p>
-            <p class="ep-ref__role">Yogi and Creator &middot; On an event James helped build</p>
-          </blockquote>
-          <blockquote class="ep-ref" aria-hidden="true">
-            <p class="ep-ref__q">&ldquo;Thank you for being the person who says yes and figures it out.&rdquo;</p>
-            <p class="ep-ref__who">Lauren Sawyer</p>
-            <p class="ep-ref__role">Community Builder &middot; Events @ Duel<br>On a house show thrown on her rooftop</p>
-          </blockquote>
-          <blockquote class="ep-ref" aria-hidden="true">
-            <p class="ep-ref__q">&ldquo;James you have been a major blessing to me and to the team and I know I&rsquo;m not the only one who shares that.&rdquo;</p>
-            <p class="ep-ref__who">Caleb Guilliams</p>
-            <p class="ep-ref__role">Founder, BetterWealth &middot; Dec 2025</p>
-          </blockquote>
-          <blockquote class="ep-ref" aria-hidden="true">
-            <p class="ep-ref__q">&ldquo;I was like &mdash; this kid is different. This kid is special.&rdquo;</p>
-            <p class="ep-ref__who">Dom Rufran</p>
-            <p class="ep-ref__role">President of BetterWealth &middot; Ex-NFL Player</p>
-          </blockquote>
-          <blockquote class="ep-ref" aria-hidden="true">
-            <p class="ep-ref__q">&ldquo;One of the coolest dudes in existence, cool to watch and learn from you and your pursuit of growth.&rdquo;</p>
-            <p class="ep-ref__who">Lauren Hansen</p>
-            <p class="ep-ref__role">Worked together at Jets and Capital</p>
-          </blockquote>
-        <blockquote class="ep-ref" aria-hidden="true">
-          <p class="ep-ref__q">&ldquo;Always impressed with you&rdquo;</p>
-          <p class="ep-ref__who">Courtney Kreitzer</p>
-          <p class="ep-ref__role">Product @ Guardian Life &middot; Community Builder<br>Jets and Capital hangar party</p>
-        </blockquote>
-        </div>
-      </div>
-      <p class="ep-refs__hint">Scroll &rarr; &middot; <a href="/references/" style="color:var(--pf-brown);text-decoration:none;">All references</a></p>
-    </section>
+
 
     <div class="ep-rule" style="margin:48px 0 0;"></div>
 
@@ -1356,6 +1141,68 @@
 
     <div class="ep-rule" style="margin:20px 0 0;"></div>
 
+    <section class="ep-refs" aria-label="References">
+      <p class="ep-label" style="margin-bottom:16px;">&sect; My references</p>
+      <div class="ep-refs__grid">
+          <blockquote class="ep-ref">
+            <p class="ep-ref__q">&ldquo;james &mdash; you were the mvp&rdquo;</p>
+            <p class="ep-ref__who">Andrew Yeung</p>
+            <p class="ep-ref__role">Gathering extraordinary people &amp; angel investing &middot; x-Google, Meta<br>SXSW Secret Garden Party</p>
+          </blockquote>
+          <blockquote class="ep-ref">
+            <p class="ep-ref__q">&ldquo;James killed it!! If anyone wants to learn how to stand out in a volunteer crowd, reach out to James Floyd.&rdquo;</p>
+            <p class="ep-ref__who">Vitoria Okuyama</p>
+            <p class="ep-ref__role">Ex pro tennis player &middot; Ex IB @ Citi<br>SXSW Secret Garden Party</p>
+          </blockquote>
+          <blockquote class="ep-ref">
+            <p class="ep-ref__q">&ldquo;James, you are a superstar. Your hard work and willingness to go above and beyond will take you a LONG WAY.&rdquo;</p>
+            <p class="ep-ref__who">Danielle Raskin</p>
+            <p class="ep-ref__role">Curating experiences, community &amp; connection<br>SXSW Secret Garden Party</p>
+          </blockquote>
+          <blockquote class="ep-ref">
+            <p class="ep-ref__q">&ldquo;James Floyd is your guy. The best by a wide margin at driving the intersection between function, execution, and relationship.&rdquo;</p>
+            <p class="ep-ref__who">Jarom Christensen</p>
+            <p class="ep-ref__role">Family Office Advisor &middot; Investor Relations at Jets &amp; Capital</p>
+          </blockquote>
+          <blockquote class="ep-ref">
+            <p class="ep-ref__q">&ldquo;I&rsquo;ve got to know James Floyd over the past year and can vouch for his talent, creativity, work ethic, and connecting skills plus many more.&rdquo;</p>
+            <p class="ep-ref__who">Austin Moss</p>
+            <p class="ep-ref__role">Met through Jets and Capital</p>
+          </blockquote>
+          <blockquote class="ep-ref">
+            <p class="ep-ref__q">&ldquo;James really is the best. He knows the space so well, always provides unique insights and perspectives, and knows how to curate advice based on the individuality of the project at hand.&rdquo;</p>
+            <p class="ep-ref__who">Vanessa Rothmeyer</p>
+            <p class="ep-ref__role">Yogi and Creator &middot; On an event James helped build</p>
+          </blockquote>
+          <blockquote class="ep-ref">
+            <p class="ep-ref__q">&ldquo;Thank you for being the person who says yes and figures it out.&rdquo;</p>
+            <p class="ep-ref__who">Lauren Sawyer</p>
+            <p class="ep-ref__role">Community Builder &middot; Events @ Duel<br>On a house show thrown on her rooftop</p>
+          </blockquote>
+          <blockquote class="ep-ref">
+            <p class="ep-ref__q">&ldquo;James you have been a major blessing to me and to the team and I know I&rsquo;m not the only one who shares that.&rdquo;</p>
+            <p class="ep-ref__who">Caleb Guilliams</p>
+            <p class="ep-ref__role">Founder, BetterWealth &middot; Dec 2025</p>
+          </blockquote>
+          <blockquote class="ep-ref">
+            <p class="ep-ref__q">&ldquo;I was like &mdash; this kid is different. This kid is special.&rdquo;</p>
+            <p class="ep-ref__who">Dom Rufran</p>
+            <p class="ep-ref__role">President of BetterWealth &middot; Ex-NFL Player</p>
+          </blockquote>
+          <blockquote class="ep-ref">
+            <p class="ep-ref__q">&ldquo;One of the coolest dudes in existence, cool to watch and learn from you and your pursuit of growth.&rdquo;</p>
+            <p class="ep-ref__who">Lauren Hansen</p>
+            <p class="ep-ref__role">Worked together at Jets and Capital</p>
+          </blockquote>
+        <blockquote class="ep-ref">
+          <p class="ep-ref__q">&ldquo;Always impressed with you&rdquo;</p>
+          <p class="ep-ref__who">Courtney Kreitzer</p>
+          <p class="ep-ref__role">Product @ Guardian Life &middot; Community Builder<br>Jets and Capital hangar party</p>
+        </blockquote>
+      </div>
+      <p class="ep-refs__hint">Scroll &rarr; &middot; <a href="/references/" style="color:var(--pf-brown);text-decoration:none;">All references</a></p>
+    </section>
+
     <!-- ═══ THE PLAYBOOK ═══ -->
     <section style="padding:48px 0;">
       <p class="ep-label" style="margin-bottom:24px;">&sect; The Playbook</p>
@@ -1440,6 +1287,11 @@
     </section>
 
     <div class="ep-rule"></div>
+
+    <!-- ═══ THE ASK ═══ -->
+    <section style="padding:44px 0 4px;">
+      <a class="ep-ask" href="mailto:jamesfloydbiz@gmail.com?subject=Your%20event">Email me about your event</a>
+    </section>
 
     <!-- ═══ EXPLORE ═══ -->
     <section style="padding:48px 0 0;">
