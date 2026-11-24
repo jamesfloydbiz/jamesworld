@@ -247,12 +247,15 @@
   // What a company does is the dashboard's frame; where it is HQ'd is a second
   // view. Only the companies tab has a matrix, so the switch hides elsewhere and
   // studies and voices stay on the map.
-  S.view = 'matrix';
+  S.view = 'graph';
   function applyView() {
     const companies = S.tab === 'companies', notes = S.tab === 'notes';
     const v = companies ? S.view : 'map';
+    const showGraph = companies && v === 'graph';
     const showMatrix = companies && v === 'matrix', showMap = !notes && v === 'map';
     $('#views').hidden = !companies;
+    const gb = $('#graphblock'); if (gb) gb.hidden = !showGraph;
+    if (showGraph && window.__graphResize) requestAnimationFrame(window.__graphResize);
     $('#matrixblock').hidden = !showMatrix;
     $('#mapblock').hidden = !showMap;
     $('#controls').hidden = !showMap;
@@ -346,6 +349,155 @@
   }));
   // a card opened from the map lives inside a category: make sure that category is open when we jump to it
   document.addEventListener('click', (e) => { const a = e.target.closest('a[href^="#c-"]'); if (!a) return; const el = document.getElementById(a.getAttribute('href').slice(1)); const g = el && el.closest('details'); if (g) g.open = true; });
+
+  // ── the graph ───────────────────────────────────────────────────────────────
+  // Coordinates come baked from tools/graph.py, so there is no simulation here:
+  // pan, zoom, pick the node under the cursor, draw. 541 nodes and 751 edges
+  // redraw well inside a frame even on a phone.
+  (function network() {
+    const cv = $('#graph'); if (!cv || !window.FMG) return;
+    const G = window.FMG, ctx = cv.getContext('2d'), tip = $('#gtip'), panel = $('#gpanel');
+    const LBL = { school: 'New schools', tech: 'Tools', study: 'Studies', media: 'Media',
+                  voice: 'Voices', hub: 'What they build' };
+    $('#glegend').innerHTML = Object.keys(LBL).map((k) =>
+      `<span><i style="background:${G.colors[k]}"></i>${LBL[k]}</span>`).join('');
+
+    let W = 0, H = 0, z = 1, ox = 0, oy = 0, hot = null, sel = null, dpr = 1;
+    function fit() {
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      W = cv.clientWidth; H = cv.clientHeight;
+      cv.width = W * dpr; cv.height = H * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+    function home() { z = Math.min(W, H) / 1900; ox = W / 2; oy = H / 2; }
+    const sx = (x) => x * z + ox, sy = (y) => y * z + oy;
+
+    function draw() {
+      ctx.clearRect(0, 0, W, H);
+      // Spokes carry their hub's hue, so each cluster reads as its own bundle
+      // of filaments. Additive blending lets dense bundles glow where they
+      // overlap, which is where the structure actually is.
+      ctx.globalCompositeOperation = 'lighter';
+      ctx.lineWidth = Math.max(0.45, 0.7 * Math.sqrt(z) * 2);
+      for (const [a, b, t, hue] of G.edges) {
+        if (t === 1) continue;
+        const A = G.nodes[a], B = G.nodes[b];
+        ctx.strokeStyle = `hsl(${hue} 85% 60% / .42)`;
+        ctx.beginPath(); ctx.moveTo(sx(A.x), sy(A.y)); ctx.lineTo(sx(B.x), sy(B.y)); ctx.stroke();
+      }
+      ctx.globalCompositeOperation = 'source-over';
+      // the 23 person links sit on top in white, because they are the only
+      // edges here that are a relationship rather than an attribute
+      ctx.lineWidth = 1.3; ctx.strokeStyle = 'hsl(0 0% 100% / .85)';
+      ctx.beginPath();
+      for (const [a, b, t] of G.edges) {
+        if (t !== 1) continue;
+        const A = G.nodes[a], B = G.nodes[b];
+        ctx.moveTo(sx(A.x), sy(A.y)); ctx.lineTo(sx(B.x), sy(B.y));
+      }
+      ctx.stroke();
+
+      ctx.globalCompositeOperation = 'lighter';
+      for (const n of G.nodes) {
+        const r = Math.max(1.3, n.r * Math.sqrt(z) * 2.1);
+        ctx.beginPath(); ctx.arc(sx(n.x), sy(n.y), r, 0, 7);
+        ctx.fillStyle = n.kind === 'hub' ? `hsl(${n.hue} 85% 68%)` : (G.colors[n.layer] || '#999');
+        ctx.globalAlpha = n.kind === 'hub' ? 1 : 0.85;
+        ctx.fill();
+      }
+      ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = 1;
+      for (const n of [hot, sel]) {
+        if (!n) continue;
+        const r = Math.max(2, n.r * Math.sqrt(z) * 1.5);
+        ctx.beginPath(); ctx.arc(sx(n.x), sy(n.y), r + 2, 0, 7);
+        ctx.lineWidth = 1.4; ctx.strokeStyle = '#fff'; ctx.stroke();
+      }
+      // Hub names only once they can be read without colliding: the biggest
+      // hubs first, and every hub only when the view is right in.
+      const labelAll = z > 0.5;
+      if (z > 0.2) {
+        ctx.font = '10px ui-monospace, monospace'; ctx.textAlign = 'center';
+        ctx.fillStyle = 'hsl(0 0% 100% / .72)';
+        ctx.shadowColor = '#000'; ctx.shadowBlur = 4;
+        for (const n of G.nodes) {
+          if (n.kind !== 'hub' || (!labelAll && n.r < 10.5)) continue;
+          ctx.fillText(n.name, sx(n.x), sy(n.y) - n.r * Math.sqrt(z) * 1.5 - 6);
+        }
+        ctx.shadowBlur = 0;
+      }
+    }
+    function pick(mx, my) {
+      let best = null, bd = 14 * 14;
+      for (const n of G.nodes) {
+        const dx = sx(n.x) - mx, dy = sy(n.y) - my, d = dx * dx + dy * dy;
+        if (d < bd) { bd = d; best = n; }
+      }
+      return best;
+    }
+    function open(n) {
+      sel = n;
+      const d = ITEMS.find((x) => x.id === n.id);
+      const links = G.edges.filter(([a, b]) => G.nodes[a] === n || G.nodes[b] === n)
+        .map(([a, b, t]) => [G.nodes[a] === n ? G.nodes[b] : G.nodes[a], t]);
+      const hubs = links.filter(([o]) => o.kind === 'hub').map(([o]) => o.name);
+      const ppl  = links.filter(([, t]) => t === 1).map(([o]) => o);
+      const kin  = links.filter(([o, t]) => o.kind !== 'hub' && t === 0).map(([o]) => o);
+      panel.innerHTML = `<button class="x" aria-label="Close">close &times;</button>`
+        + `<h3>${esc(n.name)}</h3>`
+        + `<p class="meta">${esc(LBL[n.layer] || n.layer)}${n.cat ? ' &middot; ' + esc(n.cat) : ''}`
+        + `${n.city ? ' &middot; ' + esc(n.city) : ''}</p>`
+        + (d && d.what ? `<p style="font-size:.86rem;line-height:1.7;color:var(--fg-70)">${esc(d.what)}</p>` : '')
+        + (hubs.length ? `<p class="lbl">Builds</p><ul>${hubs.map((h) => `<li>${esc(h)}</li>`).join('')}</ul>` : '')
+        + (ppl.length ? `<p class="lbl">Same person</p><ul>${ppl.map((o) => `<li><a href="#" data-go="${esc(o.id)}">${esc(o.name)}</a></li>`).join('')}</ul>` : '')
+        + (n.kind === 'hub' && kin.length ? `<p class="lbl">${kin.length} here</p><ul>${kin.slice(0, 60).map((o) => `<li><a href="#" data-go="${esc(o.id)}">${esc(o.name)}</a></li>`).join('')}</ul>` : '')
+        + (d && d.website ? `<p class="lbl">Link</p><ul><li><a href="${esc(d.website)}" target="_blank" rel="noopener">${esc(d.website.replace(/^https?:\/\//, '').replace(/\/$/, ''))}</a></li></ul>` : '');
+      panel.hidden = false;
+      panel.querySelector('.x').onclick = () => { panel.hidden = true; sel = null; draw(); };
+      panel.querySelectorAll('[data-go]').forEach((a) => a.addEventListener('click', (e) => {
+        e.preventDefault();
+        const t = G.nodes.find((x) => x.id === a.dataset.go); if (!t) return;
+        z = Math.max(z, 0.22); ox = W / 2 - t.x * z; oy = H / 2 - t.y * z; open(t); draw();
+      }));
+      draw();
+    }
+    cv.addEventListener('mousemove', (e) => {
+      const r = cv.getBoundingClientRect(), mx = e.clientX - r.left, my = e.clientY - r.top;
+      const n = pick(mx, my);
+      if (n !== hot) { hot = n; draw(); }
+      if (n) {
+        tip.hidden = false; tip.textContent = n.name + (n.kind === 'hub' ? '' : n.cat ? ' · ' + n.cat : '');
+        tip.style.left = Math.min(mx + 14, W - 250) + 'px'; tip.style.top = (my + 14) + 'px';
+      } else tip.hidden = true;
+    });
+    cv.addEventListener('mouseleave', () => { tip.hidden = true; hot = null; draw(); });
+    let dragging = false, px = 0, py = 0, moved = 0;
+    cv.addEventListener('pointerdown', (e) => { dragging = true; moved = 0; px = e.clientX; py = e.clientY; cv.classList.add('drag'); cv.setPointerCapture(e.pointerId); });
+    cv.addEventListener('pointermove', (e) => {
+      if (!dragging) return;
+      ox += e.clientX - px; oy += e.clientY - py; moved += Math.abs(e.clientX - px) + Math.abs(e.clientY - py);
+      px = e.clientX; py = e.clientY; draw();
+    });
+    cv.addEventListener('pointerup', (e) => {
+      dragging = false; cv.classList.remove('drag');
+      if (moved < 4) {
+        const r = cv.getBoundingClientRect(), n = pick(e.clientX - r.left, e.clientY - r.top);
+        if (n) open(n); else { panel.hidden = true; sel = null; draw(); }
+      }
+    });
+    cv.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      const r = cv.getBoundingClientRect(), mx = e.clientX - r.left, my = e.clientY - r.top;
+      const f = Math.exp(-e.deltaY * 0.0014), nz = Math.min(2.5, Math.max(0.03, z * f));
+      ox = mx - (mx - ox) * (nz / z); oy = my - (my - oy) * (nz / z); z = nz; draw();
+    }, { passive: false });
+    const bump = (f) => { const nz = Math.min(2.5, Math.max(0.03, z * f));
+      ox = W / 2 - (W / 2 - ox) * (nz / z); oy = H / 2 - (H / 2 - oy) * (nz / z); z = nz; draw(); };
+    $('#gin').onclick = () => bump(1.4); $('#gout').onclick = () => bump(1 / 1.4);
+    $('#ghome').onclick = () => { home(); panel.hidden = true; sel = null; draw(); };
+    window.__graphResize = () => { fit(); if (!z || !isFinite(z)) home(); draw(); };
+    fit(); home(); draw();
+    if (window.ResizeObserver) new ResizeObserver(() => { fit(); draw(); }).observe(cv);
+  })();
 
   // ── the matrix grid ─────────────────────────────────────────────────────────
   // Each cell is a button; clicking one lists the companies behind the number.
