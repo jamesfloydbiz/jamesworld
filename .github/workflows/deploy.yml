@@ -17,8 +17,20 @@ concurrency:
   group: pages
   cancel-in-progress: false
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Build and deploy are two jobs, not two steps, and that is the whole point.
+# As consecutive steps, deploy-pages asked the API for the artifact ~300ms
+# after upload-pages-artifact finished writing it, and GitHub had not indexed
+# it yet — "Found 0 artifact(s)", deploy fails, main stays live on the old
+# build. It killed three of six deploys on 2026-11-24 and this site hands
+# Pages a ~380MB artifact, which makes that indexing lag far more likely.
+# A job boundary puts a runner handoff in the gap.
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
     # Force any action that still ships a Node 20 entrypoint onto Node 24.
     # GitHub flips the default on 2026-06-16; this env var lets the deploy
@@ -36,8 +48,15 @@ jobs:
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
-      - uses: actions/deploy-pages@v4
 
-permissions:
-  pages: write
-  id-token: write
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
