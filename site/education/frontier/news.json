@@ -406,15 +406,6 @@
  },
  {
   "kind": "fact",
-  "name": "Forge Prep",
-  "text": "Opened: Fall 2026 with grades 5-8; 9th grade added 2027",
-  "date": "2026-10",
-  "self_reported": false,
-  "href": "/education/frontier/#forge-prep",
-  "source": "https://forgeprep.org/"
- },
- {
-  "kind": "fact",
   "name": "Masters' Union",
   "text": "Status: Haryana assembly passed bill for Masters' Union University (Sep 2026)",
   "date": "2026-09",
@@ -430,6 +421,33 @@
   "self_reported": false,
   "href": "/education/frontier/#multiverse",
   "source": "https://dealroom.co/news/128958-multiverse-raises-70m-at-2-1b-valuation-to-build-europes-ai-adoption-lay/"
+ },
+ {
+  "kind": "fact",
+  "name": "Pace AI",
+  "text": "Federal grant: $1M IES SBIR Phase II (2025-2027) to Linguistic Inc. (Pace AI)",
+  "date": "2025-09",
+  "self_reported": false,
+  "href": "/education/frontier/#pace-ai",
+  "source": "https://ies.ed.gov/use-work/awards/personalized-and-context-relevant-english-lessons-ai-pace-ai-advance-adult-learners-integrated"
+ },
+ {
+  "kind": "fact",
+  "name": "Pathfinder",
+  "text": "Funding: $12M Series A led by Portage Ventures, 2 Nov 2026; $16M total including a $4M seed co-led by Reach Capital and Gradient",
+  "date": "2026-11",
+  "self_reported": false,
+  "href": "/education/frontier/#pathfinder-card",
+  "source": "https://finance.yahoo.com/small-business/articles/pathfinder-raises-12-million-series-062000290.html"
+ },
+ {
+  "kind": "fact",
+  "name": "Forge Prep",
+  "text": "Opened: Fall 2026 with grades 5-8; 9th grade added 2027",
+  "date": "2026-10",
+  "self_reported": false,
+  "href": "/education/frontier/#forge-prep",
+  "source": "https://forgeprep.org/"
  },
  {
   "kind": "fact",
@@ -493,15 +511,6 @@
   "self_reported": false,
   "href": "/education/frontier/#paloma-learning",
   "source": "https://www.innolope.com/pulse/funding/6a21e4e1ad395cc135adc283"
- },
- {
-  "kind": "fact",
-  "name": "Pace AI",
-  "text": "Federal grant: $1M IES SBIR Phase II (2025-2027) to Linguistic Inc. (Pace AI)",
-  "date": "2025-09",
-  "self_reported": false,
-  "href": "/education/frontier/#pace-ai",
-  "source": "https://ies.ed.gov/use-work/awards/personalized-and-context-relevant-english-lessons-ai-pace-ai-advance-adult-learners-integrated"
  },
  {
   "kind": "fact",
