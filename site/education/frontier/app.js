@@ -347,6 +347,48 @@
   // a card opened from the map lives inside a category: make sure that category is open when we jump to it
   document.addEventListener('click', (e) => { const a = e.target.closest('a[href^="#c-"]'); if (!a) return; const el = document.getElementById(a.getAttribute('href').slice(1)); const g = el && el.closest('details'); if (g) g.open = true; });
 
+  // ── the matrix grid ─────────────────────────────────────────────────────────
+  // Each cell is a button; clicking one lists the companies behind the number.
+  // That is the drill-down, and it keeps the grid itself readable.
+  (function matrix() {
+    const tbl = document.querySelector('table.mx'), panel = $('#mxpanel'), raw = $('#mxdata');
+    if (!tbl || !panel || !raw) return;
+    let DATA = {};
+    try { DATA = JSON.parse(raw.textContent); } catch (e) { return; }
+    let cur = null;
+    function close() {
+      panel.hidden = true; panel.innerHTML = '';
+      tbl.querySelectorAll('td.on').forEach((td) => td.classList.remove('on'));
+      cur = null;
+    }
+    tbl.addEventListener('click', (ev) => {
+      const b = ev.target.closest('button[data-fn]'); if (!b) return;
+      const fn = b.dataset.fn, sj = b.dataset.sj || '';
+      const list = (DATA[fn] || {})[sj]; if (!list) return;
+      const key = fn + '\u0000' + sj;
+      if (cur === key) { close(); return; }
+      close(); cur = key;
+      b.closest('td').classList.add('on');
+      const where = sj ? `${esc(fn)} &middot; ${esc(sj)}` : `${esc(fn)} &middot; not subject-specific`;
+      panel.innerHTML = `<button class="x" aria-label="Close">close &times;</button>`
+        + `<h3>${where}<em>${list.length}</em></h3><ul class="mx-list">`
+        + list.map(([name, id, product]) =>
+            `<li><a href="#${esc(id)}" data-show="${esc(id)}">${esc(name)}</a>`
+            + (product ? `<em>${esc(product)}</em>` : '') + `</li>`).join('')
+        + `</ul>`;
+      panel.hidden = false;
+      panel.querySelector('.x').onclick = close;
+      panel.querySelectorAll('[data-show]').forEach((a) => a.addEventListener('click', (e2) => {
+        e2.preventDefault(); const d = ITEMS.find((x) => x.id === a.dataset.show); if (!d) return;
+        if (tabOf(d.layer) !== S.tab) setTab(tabOf(d.layer), true);
+        setView('map', true);
+        $('#mapwrap').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        k = Math.max(k, k0 * 4); select(d); focus(d);
+      }));
+    });
+    document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape' && cur) close(); });
+  })();
+
   // ── boot ────────────────────────────────────────────────────────────────────
   function boot() { fit(); home();
     const id = location.hash.slice(1), d = id && ITEMS.find((x) => x.id === id);
