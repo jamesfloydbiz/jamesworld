@@ -23,6 +23,7 @@ export const ROUTES = [
   { path: '/sonder', priority: 0.9, changefreq: 'weekly' },
   { path: '/sonder/report', priority: 0.7, changefreq: 'monthly' },
   { path: '/projects', priority: 0.9, changefreq: 'weekly' },
+  { path: '/sidequests', priority: 0.5, changefreq: 'monthly' },
   { path: '/portfolio', priority: 0.8, changefreq: 'monthly' },
   { path: '/portfolio/events', priority: 0.8, changefreq: 'monthly' },
   { path: '/projects/tech-builds', priority: 0.8, changefreq: 'weekly' },

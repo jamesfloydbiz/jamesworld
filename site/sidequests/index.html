@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sidequests — James Floyd</title>
+  <meta name="description" content="Things James Floyd has done that do not fit anywhere else. Stories, detours and whatever came of them.">
+  <link rel="canonical" href="https://jamesfloyds.world/sidequests/">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://jamesfloyds.world/sidequests/">
+  <meta property="og:title" content="Sidequests — James Floyd">
+  <meta property="og:description" content="Things James Floyd has done that do not fit anywhere else. Stories, detours and whatever came of them.">
+  <meta property="og:image" content="https://jamesfloyds.world/images/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Sidequests — James Floyd">
+  <meta name="twitter:description" content="Things James Floyd has done that do not fit anywhere else. Stories, detours and whatever came of them.">
+  <meta name="twitter:image" content="https://jamesfloyds.world/images/og-image.png">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=DM+Mono:wght@300;400&family=Lora:ital,wght@0,400;0,500;1,400&family=Space+Mono:wght@400;700&display=swap">
+  <link rel="stylesheet" href="/css/site.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "@id": "https://jamesfloyds.world/sidequests/#webpage",
+    "url": "https://jamesfloyds.world/sidequests/",
+    "name": "Memories \u2014 James Floyd",
+    "isPartOf": {
+      "@id": "https://jamesfloyds.world/#website"
+    },
+    "author": {
+      "@id": "https://jamesfloyds.world/#james"
+    },
+    "creator": {
+      "@id": "https://jamesfloyds.world/#james"
+    },
+    "description": "A photographic memoir of James Floyd"
+  }
+  </script>
+  <style>
+    /* One entry per sidequest. The head is a title and a when; the story is
+       James's; the media underneath is whatever backs it up. */
+    .sq-list { display: grid; gap: 0; }
+    .sq { border-top: 1px solid var(--fg-15); padding: 26px 0; }
+    .sq:last-child { border-bottom: 1px solid var(--fg-15); }
+    .sq__head { display: flex; align-items: baseline; gap: .75rem; flex-wrap: wrap; margin-bottom: .5rem; }
+    .sq__title { font-size: 1.05rem; margin: 0; }
+    .sq__when {
+      font-family: var(--font-mono); font-size: .7rem; letter-spacing: .12em;
+      text-transform: uppercase; color: var(--fg-50);
+    }
+    .sq__body { font-size: .9rem; line-height: 1.75; color: var(--fg-70); margin: 0 0 14px; max-width: 46rem; }
+    .sq__media { display: flex; flex-wrap: wrap; gap: 14px; align-items: flex-start; }
+    .sq__vid { margin: 0; max-width: 300px; }
+    .sq__vid video { display: block; width: 100%; height: auto; background: #111; border-radius: 4px; }
+    .sq__shot { margin: 0; max-width: 300px; }
+    .sq__shot img { display: block; width: 100%; height: auto; border-radius: 4px; }
+    .sq__cap, .sq__vid figcaption, .sq__shot figcaption {
+      font-family: var(--font-mono); font-size: .66rem; letter-spacing: .08em;
+      text-transform: uppercase; color: var(--fg-50); margin-top: 7px; line-height: 1.7;
+    }
+    .sq__vid figcaption a, .sq__shot figcaption a { color: var(--fg-70); }
+  </style>
+</head>
+<body>
+
+  <header class="site-header anim-slide-dn">
+    <a href="/" class="site-header__logo" aria-label="Return to home"><img src="/logo.svg" alt="JF"></a>
+    <button class="site-header__menu-btn" id="menu-btn" aria-expanded="false" aria-controls="site-nav">Menu</button>
+  </header>
+
+  <nav class="site-nav" id="site-nav" aria-label="Main navigation">
+    <ul class="site-nav__list">
+      <li class="site-nav__item"><a href="/sonder/" class="site-nav__link">Sonder Series</a></li>
+      <li class="site-nav__item"><a href="/portfolio/" class="site-nav__link">Portfolio</a></li>
+      <li class="site-nav__item" data-has-sub>
+        <a href="/projects/" class="site-nav__link">Projects</a>
+        <div class="site-nav__sub">
+          <a href="/portfolio/" class="site-nav__sub-link">Portfolio</a>
+          <a href="/resume/" class="site-nav__sub-link">Resume</a>
+          <a href="/references/" class="site-nav__sub-link">References</a>
+          <a href="/projects/tech-builds/" class="site-nav__sub-link">Tech Builds</a>
+          <a href="/education/" class="site-nav__sub-link">Education Dashboards</a>
+        </div>
+      </li>
+      <li class="site-nav__item" data-has-sub>
+        <a href="/content/" class="site-nav__link">Content</a>
+        <div class="site-nav__sub">
+          <a href="/writing/" class="site-nav__sub-link">Writing</a>
+          <a href="/writing/#poems" class="site-nav__sub-link">Poems</a>
+          <a href="/photography/" class="site-nav__sub-link">Photography</a>
+          <a href="/pictures/" class="site-nav__sub-link">Memories</a>
+        </div>
+      </li>
+      <li class="site-nav__item"><a href="/network/" class="site-nav__link">Network</a></li>
+      <li class="site-nav__item"><a href="/blueprints/" class="site-nav__link">Blueprints</a></li>
+      <li class="site-nav__item" style="margin-top:24px;"><a href="/" class="site-nav__back">Back to Gallery</a></li>
+    </ul>
+    <button class="site-nav__close" id="nav-close">Close</button>
+  </nav>
+
+    <main class="page">
+    <div class="page-content anim-fade-up" style="animation-delay:0.4s; max-width:64rem;">
+
+      <div style="display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap; margin-bottom:1rem;">
+        <h1 class="page-title" style="margin-bottom:0;">SIDEQUESTS</h1>
+        <span class="tag">2002&ndash;Present</span>
+      </div>
+
+      <!-- James: one line under the title -->
+
+      <div class="divider"></div>
+
+      <div class="sq-list">
+
+        <article class="sq">
+          <div class="sq__head">
+            <h2 class="sq__title">Street interview with Sam Parr</h2>
+            <span class="sq__when">Nov 2026 &middot; New York</span>
+          </div>
+          <!-- James: the story -->
+          <div class="sq__media">
+            <figure class="sq__vid">
+              <video controls preload="none" playsinline width="720" height="1280"
+                     poster="/video/sam-parr-street-interview-poster.jpg">
+                <source src="/video/sam-parr-street-interview.mp4" type="video/mp4">
+              </video>
+              <figcaption>Filmed by <a href="https://www.instagram.com/hardknocksbusiness/" target="_blank" rel="noopener noreferrer">@hardknocksbusiness</a> &middot; <a href="https://www.instagram.com/reel/Df5Kv7WRubv/" target="_blank" rel="noopener noreferrer">original reel &rarr;</a></figcaption>
+            </figure>
+          </div>
+        </article>
+
+        <!-- Copy this block for each new one. Drop the pieces you do not need.
+        <article class="sq">
+          <div class="sq__head">
+            <h2 class="sq__title">Title</h2>
+            <span class="sq__when">Year &middot; Place</span>
+          </div>
+          <p class="sq__body">The story, in James's words.</p>
+          <div class="sq__media">
+            <figure class="sq__shot">
+              <img src="/pictures/FILE.jpg" alt="What is in the picture." loading="lazy" decoding="async">
+              <figcaption>Where and when</figcaption>
+            </figure>
+            <figure class="sq__vid">
+              <video controls preload="none" playsinline width="720" height="1280" poster="/video/FILE-poster.jpg">
+                <source src="/video/FILE.mp4" type="video/mp4">
+              </video>
+              <figcaption>Credit &middot; <a href="">source &rarr;</a></figcaption>
+            </figure>
+            <p class="sq__cap"><a href="">A link &rarr;</a></p>
+          </div>
+        </article>
+        -->
+
+      </div>
+
+      <div class="btn-row" style="margin-top:40px;">
+        <a href="/projects/" class="btn btn-outline">Projects</a>
+        <a href="/portfolio/" class="btn btn-outline">Portfolio</a>
+      </div>
+
+    </div>
+  </main>
+
+  <script src="/js/site.js"></script>
+  <!-- GoatCounter: pageview counts only. No cookies, nothing stored per visitor.
+       Guarded on the hostname so local previews and builds stay out of the stats. -->
+  <script>
+    if (location.hostname === 'jamesfloyds.world') {
+      var gc = document.createElement('script');
+      gc.async = true;
+      gc.src = 'https://gc.zgo.at/count.js';
+      gc.setAttribute('data-goatcounter', 'https://jamesfloyd.goatcounter.com/count');
+      document.head.appendChild(gc);
+    }
+  </script>
+</body>
+</html>
