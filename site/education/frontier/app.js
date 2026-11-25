@@ -357,10 +357,11 @@
   (function network() {
     const cv = $('#graph'); if (!cv || !window.FMG) return;
     const G = window.FMG, ctx = cv.getContext('2d'), tip = $('#gtip'), panel = $('#gpanel');
-    const LBL = { school: 'New schools', tech: 'Tools', study: 'Studies', media: 'Media',
-                  voice: 'Voices', hub: 'What they build' };
-    $('#glegend').innerHTML = Object.keys(LBL).map((k) =>
-      `<span><i style="background:${G.colors[k]}"></i>${LBL[k]}</span>`).join('');
+    const LBL = { school: 'New school', tech: 'Tool', study: 'Study', media: 'Media',
+                  voice: 'Voice', hub: 'Capability' };
+    // colour means cluster, so the legend has to be the clusters
+    $('#glegend').innerHTML = Object.entries(G.groups || {})
+      .map(([g, h]) => `<span><i style="background:hsl(${h} 85% 66%)"></i>${esc(g)}</span>`).join('');
 
     let W = 0, H = 0, z = 1, ox = 0, oy = 0, hot = null, sel = null, dpr = 1;
     function fit() {
@@ -369,10 +370,18 @@
       cv.width = W * dpr; cv.height = H * dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
-    function home() { z = Math.min(W, H) / 1900; ox = W / 2; oy = H / 2; }
+    // Fit the real extent of the layout, not a magic number, and keep fitting
+    // until the reader takes over. The pane gets resized a lot in this app.
+    let touched = false;
+    const EX = G.nodes.reduce((m, n) => Math.max(m, Math.abs(n.x), Math.abs(n.y)), 1);
+    function home() {
+      z = Math.min(W, H) / (EX * 2.18);
+      ox = W / 2; oy = H / 2;
+    }
     const sx = (x) => x * z + ox, sy = (y) => y * z + oy;
 
     function draw() {
+      if (!(W > 0 && H > 0)) return;
       ctx.clearRect(0, 0, W, H);
       // Spokes carry their hub's hue, so each cluster reads as its own bundle
       // of filaments. Additive blending lets dense bundles glow where they
@@ -401,7 +410,7 @@
       for (const n of G.nodes) {
         const r = Math.max(1.3, n.r * Math.sqrt(z) * 2.1);
         ctx.beginPath(); ctx.arc(sx(n.x), sy(n.y), r, 0, 7);
-        ctx.fillStyle = n.kind === 'hub' ? `hsl(${n.hue} 85% 68%)` : (G.colors[n.layer] || '#999');
+        ctx.fillStyle = `hsl(${n.hue} ${n.kind === 'hub' ? 88 : 72}% ${n.kind === 'hub' ? 70 : 58}%)`;
         ctx.globalAlpha = n.kind === 'hub' ? 1 : 0.85;
         ctx.fill();
       }
@@ -412,19 +421,24 @@
         ctx.beginPath(); ctx.arc(sx(n.x), sy(n.y), r + 2, 0, 7);
         ctx.lineWidth = 1.4; ctx.strokeStyle = '#fff'; ctx.stroke();
       }
-      // Hub names only once they can be read without colliding: the biggest
-      // hubs first, and every hub only when the view is right in.
-      const labelAll = z > 0.5;
-      if (z > 0.2) {
-        ctx.font = '10px ui-monospace, monospace'; ctx.textAlign = 'center';
-        ctx.fillStyle = 'hsl(0 0% 100% / .72)';
-        ctx.shadowColor = '#000'; ctx.shadowBlur = 4;
-        for (const n of G.nodes) {
-          if (n.kind !== 'hub' || (!labelAll && n.r < 10.5)) continue;
-          ctx.fillText(n.name, sx(n.x), sy(n.y) - n.r * Math.sqrt(z) * 1.5 - 6);
-        }
-        ctx.shadowBlur = 0;
+      // Labels, biggest hub first, and a label is dropped if its box would
+      // land on one already drawn. Overlapping text is worse than no text.
+      ctx.font = '600 11px ui-monospace, monospace';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      const placed = [];
+      const cands = G.nodes.filter((n) => n.kind === 'hub').sort((a, b) => b.r - a.r);
+      for (const n of cands) {
+        const x = sx(n.x), y = sy(n.y) - n.r * Math.sqrt(z) * 2.1 - 9;
+        if (x < -60 || x > W + 60 || y < -20 || y > H + 20) continue;
+        const w = ctx.measureText(n.name).width + 10, h = 15;
+        if (placed.some((b) => Math.abs(b.x - x) < (b.w + w) / 2 && Math.abs(b.y - y) < h)) continue;
+        placed.push({ x, y, w, h });
+        ctx.fillStyle = 'rgba(0,0,0,.72)';
+        ctx.fillRect(x - w / 2, y - h / 2, w, h);
+        ctx.fillStyle = `hsl(${n.hue} 60% 86%)`;
+        ctx.fillText(n.name, x, y + 0.5);
       }
+      ctx.textBaseline = 'alphabetic';
     }
     function pick(mx, my) {
       let best = null, bd = 14 * 14;
@@ -471,11 +485,11 @@
     });
     cv.addEventListener('mouseleave', () => { tip.hidden = true; hot = null; draw(); });
     let dragging = false, px = 0, py = 0, moved = 0;
-    cv.addEventListener('pointerdown', (e) => { dragging = true; moved = 0; px = e.clientX; py = e.clientY; cv.classList.add('drag'); cv.setPointerCapture(e.pointerId); });
+    cv.addEventListener('pointerdown', (e) => { setActive(true); dragging = true; moved = 0; px = e.clientX; py = e.clientY; cv.classList.add('drag'); try { cv.setPointerCapture(e.pointerId); } catch (_) {} });
     cv.addEventListener('pointermove', (e) => {
       if (!dragging) return;
       ox += e.clientX - px; oy += e.clientY - py; moved += Math.abs(e.clientX - px) + Math.abs(e.clientY - py);
-      px = e.clientX; py = e.clientY; draw();
+      px = e.clientX; py = e.clientY; touched = true; draw();
     });
     cv.addEventListener('pointerup', (e) => {
       dragging = false; cv.classList.remove('drag');
@@ -484,19 +498,46 @@
         if (n) open(n); else { panel.hidden = true; sel = null; draw(); }
       }
     });
+    // A canvas that swallows every scroll makes the page feel broken, which is
+    // what this did. Now: a trackpad pinch (which arrives as ctrl+wheel) always
+    // zooms; a plain two-finger scroll moves the page until you click the graph,
+    // and pans it after that. Click away and the page gets its scroll back.
+    let active = false;
+    const hint = $('#ghint');
+    function setActive(v) {
+      if (active === v) return;
+      active = v; if (hint) hint.classList.toggle('off', v);
+    }
     cv.addEventListener('wheel', (e) => {
-      e.preventDefault();
       const r = cv.getBoundingClientRect(), mx = e.clientX - r.left, my = e.clientY - r.top;
-      const f = Math.exp(-e.deltaY * 0.0014), nz = Math.min(2.5, Math.max(0.03, z * f));
-      ox = mx - (mx - ox) * (nz / z); oy = my - (my - oy) * (nz / z); z = nz; draw();
+      if (e.ctrlKey || e.metaKey) {
+        e.preventDefault();
+        const f = Math.exp(-e.deltaY * 0.012), nz = Math.min(2.5, Math.max(0.03, z * f));
+        ox = mx - (mx - ox) * (nz / z); oy = my - (my - oy) * (nz / z); z = nz; touched = true; draw();
+        return;
+      }
+      if (!active) return;                       // let the page scroll
+      e.preventDefault();
+      ox -= e.deltaX; oy -= e.deltaY; touched = true; draw();
     }, { passive: false });
-    const bump = (f) => { const nz = Math.min(2.5, Math.max(0.03, z * f));
+    document.addEventListener('pointerdown', (e) => {
+      if (!cv.contains(e.target)) setActive(false);
+    });
+    const bump = (f) => { touched = true; const nz = Math.min(2.5, Math.max(0.03, z * f));
       ox = W / 2 - (W / 2 - ox) * (nz / z); oy = H / 2 - (H / 2 - oy) * (nz / z); z = nz; draw(); };
     $('#gin').onclick = () => bump(1.4); $('#gout').onclick = () => bump(1 / 1.4);
-    $('#ghome').onclick = () => { home(); panel.hidden = true; sel = null; draw(); };
-    window.__graphResize = () => { fit(); if (!z || !isFinite(z)) home(); draw(); };
-    fit(); home(); draw();
-    if (window.ResizeObserver) new ResizeObserver(() => { fit(); draw(); }).observe(cv);
+    $('#ghome').onclick = () => { touched = false; home(); panel.hidden = true; sel = null; draw(); };
+    // The block starts hidden, so the first fit() measures a 0x0 canvas and
+    // home() computes a zoom of zero — which painted an empty graph until
+    // something else forced a redraw. Re-home whenever the zoom is not usable.
+    window.__graphResize = () => {
+      fit();
+      if (!(W > 0 && H > 0)) return;
+      if (!touched || !z || !isFinite(z) || z <= 0) home();
+      draw();
+    };
+    window.__graphResize();
+    if (window.ResizeObserver) new ResizeObserver(window.__graphResize).observe(cv);
   })();
 
   // ── the matrix grid ─────────────────────────────────────────────────────────
