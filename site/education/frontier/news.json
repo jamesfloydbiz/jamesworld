@@ -1,5 +1,77 @@
 [
  {
+  "kind": "study",
+  "name": "Study",
+  "text": "Gupta (2026), EdWorkingPaper 26-1660",
+  "date": "2026",
+  "self_reported": false,
+  "href": "https://edworkingpapers.com/ai26-1660",
+  "source": "https://edworkingpapers.com/ai26-1660"
+ },
+ {
+  "kind": "study",
+  "name": "Study",
+  "text": "Ganimian, Page, Childs, Mesalles & Bartoli (2026), EdWorkingPaper 26-1658",
+  "date": "2026",
+  "self_reported": false,
+  "href": "https://edworkingpapers.com/ai26-1658",
+  "source": "https://edworkingpapers.com/ai26-1658"
+ },
+ {
+  "kind": "study",
+  "name": "Study",
+  "text": "Funk, Koedel & Nguyen (2026), EdWorkingPaper 26-1657",
+  "date": "2026",
+  "self_reported": false,
+  "href": "https://edworkingpapers.com/ai26-1657",
+  "source": "https://edworkingpapers.com/ai26-1657"
+ },
+ {
+  "kind": "study",
+  "name": "Study",
+  "text": "Liu & Uncapher (2026), EdWorkingPaper 26-1655",
+  "date": "2026",
+  "self_reported": false,
+  "href": "https://edworkingpapers.com/ai26-1655",
+  "source": "https://edworkingpapers.com/ai26-1655"
+ },
+ {
+  "kind": "study",
+  "name": "Study",
+  "text": "Kim (2026), EdWorkingPaper 26-1654",
+  "date": "2026",
+  "self_reported": false,
+  "href": "https://edworkingpapers.com/ai26-1654",
+  "source": "https://edworkingpapers.com/ai26-1654"
+ },
+ {
+  "kind": "study",
+  "name": "Study",
+  "text": "Caron, Eriksen & Johansen (2026), EdWorkingPaper 26-1653",
+  "date": "2026",
+  "self_reported": false,
+  "href": "https://edworkingpapers.com/ai26-1653",
+  "source": "https://edworkingpapers.com/ai26-1653"
+ },
+ {
+  "kind": "fact",
+  "name": "New York City Public Schools",
+  "text": "Enrollment: Lost about 23,000 K-12 students (nearly 3%) this fall, leaving about 766,900, per preliminary city data (Nov 2026)",
+  "date": "2026-11",
+  "self_reported": false,
+  "href": "https://www.chalkbeat.org/newyork/2026/11/16/nyc-2026-27-public-school-student-enrollment-drop-pressures-budget-closures/",
+  "source": "https://www.chalkbeat.org/newyork/2026/11/16/nyc-2026-27-public-school-student-enrollment-drop-pressures-budget-closures/"
+ },
+ {
+  "kind": "fact",
+  "name": "Head Start",
+  "text": "Policy: Trump administration finalized repeal of the 2024 rule requiring large programs to raise teacher pay toward public preschool parity; takes effect January (Nov 2026)",
+  "date": "2026-11",
+  "self_reported": false,
+  "href": "https://www.ajc.com/news/2026/11/trump-administration-cancels-mandatory-pay-hike-for-head-start-teachers/",
+  "source": "https://www.ajc.com/news/2026/11/trump-administration-cancels-mandatory-pay-hike-for-head-start-teachers/"
+ },
+ {
   "kind": "fact",
   "name": "Tennessee State Board of Education",
   "text": "Policy: Gave final approval to rules for closing failing public virtual schools and annual testing for ESA students (Nov 2026)",
