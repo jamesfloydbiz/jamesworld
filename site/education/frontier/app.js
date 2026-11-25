@@ -250,10 +250,14 @@
   S.view = 'graph';
   function applyView() {
     const companies = S.tab === 'companies', notes = S.tab === 'notes';
-    const v = companies ? S.view : 'map';
-    const showGraph = companies && v === 'graph';
+    const v = (window.FMG && window.FMG[S.tab]) || S.view !== 'graph' ? S.view : 'map';
+    // The graph follows the tab now instead of ignoring it, which is why
+    // voices were turning up under Companies.
+    const graphable = window.FMG && window.FMG[S.tab];
+    const showGraph = v === 'graph' && !!graphable;
+    if (showGraph && window.__graphTab) window.__graphTab(S.tab);
     const showMatrix = companies && v === 'matrix', showMap = !notes && v === 'map';
-    $('#views').hidden = !companies;
+    $('#views').hidden = notes;
     const gb = $('#graphblock'); if (gb) gb.hidden = !showGraph;
     if (showGraph && window.__graphResize) requestAnimationFrame(window.__graphResize);
     $('#matrixblock').hidden = !showMatrix;
@@ -356,12 +360,19 @@
   // redraw well inside a frame even on a phone.
   (function network() {
     const cv = $('#graph'); if (!cv || !window.FMG) return;
-    const G = window.FMG, ctx = cv.getContext('2d'), tip = $('#gtip'), panel = $('#gpanel');
+    const VIEWS = window.FMG;
+    // One baked layout per tab. Filtering a single shared layout left sixty
+    // nodes rattling around a frame sized for five hundred.
+    let G = VIEWS.companies;
+    const ctx = cv.getContext('2d'), tip = $('#gtip'), panel = $('#gpanel');
     const LBL = { school: 'New school', tech: 'Tool', study: 'Study', media: 'Media',
                   voice: 'Voice', hub: 'Capability' };
     // colour means cluster, so the legend has to be the clusters
-    $('#glegend').innerHTML = Object.entries(G.groups || {})
-      .map(([g, h]) => `<span><i style="background:hsl(${h} 85% 66%)"></i>${esc(g)}</span>`).join('');
+    function legend() {
+      $('#glegend').innerHTML = Object.entries(G.groups || {})
+        .map(([g, h]) => `<span><i style="background:hsl(${h} 85% 66%)"></i>${esc(g)}</span>`).join('');
+    }
+    legend();
 
     let W = 0, H = 0, z = 1, ox = 0, oy = 0, hot = null, sel = null, dpr = 1;
     function fit() {
@@ -372,12 +383,20 @@
     }
     // Fit the real extent of the layout, not a magic number, and keep fitting
     // until the reader takes over. The pane gets resized a lot in this app.
-    let touched = false;
-    const EX = G.nodes.reduce((m, n) => Math.max(m, Math.abs(n.x), Math.abs(n.y)), 1);
+    let touched = false, EX = 1000;
+    function extent() { EX = G.nodes.reduce((m, n) => Math.max(m, Math.abs(n.x), Math.abs(n.y)), 1); }
+    extent();
     function home() {
       z = Math.min(W, H) / (EX * 2.18);
       ox = W / 2; oy = H / 2;
     }
+    // the tab bar owns which graph is on screen
+    window.__graphTab = (key) => {
+      const v = VIEWS[key]; if (!v || v === G) return;
+      G = v; hot = null; sel = null; panel.hidden = true;
+      legend(); extent(); touched = false;
+      if (W > 0) { home(); draw(); }
+    };
     const sx = (x) => x * z + ox, sy = (y) => y * z + oy;
 
     function draw() {
