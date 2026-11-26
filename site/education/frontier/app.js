@@ -38,7 +38,18 @@
   const ITEMS = FM.items.filter((d) => d.lat != null && d.lon != null);
   for (const d of ITEMS) {
     const p = proj(d.lon, d.lat); d.mx = p[0]; d.my = p[1];
-    if (d.logo) { d.img = new Image(); d.img.onload = () => draw(); d.img.src = d.logo; }
+  }
+  // The pins carry logos, and loading 235 of them at startup is 235 requests
+  // for a view that stays hidden until someone asks for it. Load them the
+  // first time the map is actually shown.
+  let pinsLoaded = false;
+  function loadPinImages() {
+    if (pinsLoaded) return; pinsLoaded = true;
+    for (const d of ITEMS) {
+      if (!d.logo) continue;
+      d.img = new Image(); d.img.decoding = 'async';
+      d.img.onload = () => draw(); d.img.src = d.logo;
+    }
   }
   const LAYERS = FM.layers; // [{key,label,color}]
   const layerOf = Object.fromEntries(LAYERS.map((l) => [l.key, l]));
@@ -263,6 +274,7 @@
     $('#matrixblock').hidden = !showMatrix;
     $('#mapblock').hidden = !showMap;
     $('#controls').hidden = !showMap;
+    if (showMap) loadPinImages();   // every path into the map view, not just setTab
     document.querySelectorAll('.view').forEach((b) => {
       const on = b.dataset.view === S.view;
       b.classList.toggle('on', on); b.setAttribute('aria-pressed', on ? 'true' : 'false');
@@ -347,12 +359,25 @@
     k = Math.max(k, k0 * 4); select(d); focus(d);
   }));
 
+  // Logos load when their group is opened, not before. Closed <details> still
+  // lets the browser fetch images inside it, which was 239 requests nobody had
+  // asked for on a page whose landing view is the graph.
+  function hydrate(root) {
+    root.querySelectorAll('img[data-src]').forEach((im) => {
+      im.src = im.dataset.src; im.removeAttribute('data-src');
+    });
+  }
+  document.addEventListener('toggle', (e) => {
+    const d = e.target;
+    if (d instanceof HTMLDetailsElement && d.open) hydrate(d);
+  }, true);
+
   // collapse / expand every category in one section
   document.querySelectorAll('[data-fold]').forEach((b) => b.addEventListener('click', () => {
     b.closest('section').querySelectorAll('details.group').forEach((g) => { g.open = b.dataset.fold === 'open'; });
   }));
   // a card opened from the map lives inside a category: make sure that category is open when we jump to it
-  document.addEventListener('click', (e) => { const a = e.target.closest('a[href^="#c-"]'); if (!a) return; const el = document.getElementById(a.getAttribute('href').slice(1)); const g = el && el.closest('details'); if (g) g.open = true; });
+  document.addEventListener('click', (e) => { const a = e.target.closest('a[href^="#c-"]'); if (!a) return; const el = document.getElementById(a.getAttribute('href').slice(1)); const g = el && el.closest('details'); if (g) { g.open = true; hydrate(g); } });
 
   // ── the graph ───────────────────────────────────────────────────────────────
   // Coordinates come baked from tools/graph.py, so there is no simulation here:
