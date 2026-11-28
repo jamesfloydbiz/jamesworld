@@ -389,6 +389,7 @@
     // One baked layout per tab. Filtering a single shared layout left sixty
     // nodes rattling around a frame sized for five hundred.
     let G = VIEWS.companies;
+    const DETAIL = VIEWS.detail || {};
     const ctx = cv.getContext('2d'), tip = $('#gtip'), panel = $('#gpanel');
     const LBL = { school: 'New school', tech: 'Tool', study: 'Study', media: 'Media',
                   voice: 'Voice', hub: 'Capability' };
@@ -431,17 +432,17 @@
       // of filaments. Additive blending lets dense bundles glow where they
       // overlap, which is where the structure actually is.
       ctx.globalCompositeOperation = 'lighter';
-      ctx.lineWidth = Math.max(0.45, 0.7 * Math.sqrt(z) * 2);
+      ctx.lineWidth = Math.min(1.1, Math.max(0.4, 0.55 * Math.sqrt(z) * 2));
       for (const [a, b, t, hue] of G.edges) {
         if (t === 1) continue;
         const A = G.nodes[a], B = G.nodes[b];
-        ctx.strokeStyle = `hsl(${hue} 85% 60% / .42)`;
+        ctx.strokeStyle = `hsl(${hue} 90% 58% / .20)`;
         ctx.beginPath(); ctx.moveTo(sx(A.x), sy(A.y)); ctx.lineTo(sx(B.x), sy(B.y)); ctx.stroke();
       }
       ctx.globalCompositeOperation = 'source-over';
       // the 23 person links sit on top in white, because they are the only
       // edges here that are a relationship rather than an attribute
-      ctx.lineWidth = 1.3; ctx.strokeStyle = 'hsl(0 0% 100% / .85)';
+      ctx.lineWidth = 1.2; ctx.strokeStyle = 'hsl(48 90% 76% / .9)';
       ctx.beginPath();
       for (const [a, b, t] of G.edges) {
         if (t !== 1) continue;
@@ -467,7 +468,7 @@
       }
       // Labels, biggest hub first, and a label is dropped if its box would
       // land on one already drawn. Overlapping text is worse than no text.
-      ctx.font = '600 11px ui-monospace, monospace';
+      ctx.font = '600 12px ui-monospace, monospace';
       ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
       const placed = [];
       const cands = G.nodes.filter((n) => n.kind === 'hub').sort((a, b) => b.r - a.r);
@@ -505,9 +506,20 @@
         + `<p class="meta">${esc(LBL[n.layer] || n.layer)}${n.cat ? ' &middot; ' + esc(n.cat) : ''}`
         + `${n.city ? ' &middot; ' + esc(n.city) : ''}</p>`
         + (d && d.what ? `<p style="font-size:.86rem;line-height:1.7;color:var(--fg-70)">${esc(d.what)}</p>` : '')
-        + (hubs.length ? `<p class="lbl">Builds</p><ul>${hubs.map((h) => `<li>${esc(h)}</li>`).join('')}</ul>` : '')
+        + (DETAIL[n.id] ? `<p class="lbl">Builds</p><ul>${DETAIL[n.id].map(([fn, sj, pr]) =>
+              `<li>${esc(fn)} <em style="color:var(--fg-46)">&middot; ${esc(sj)}</em>`
+              + (pr ? ` <em style="color:var(--fg-46)">&middot; ${esc(pr)}</em>` : '') + `</li>`).join('')}</ul>`
+           : hubs.length ? `<p class="lbl">Builds</p><ul>${hubs.map((h) => `<li>${esc(h)}</li>`).join('')}</ul>` : '')
         + (ppl.length ? `<p class="lbl">Same person</p><ul>${ppl.map((o) => `<li><a href="#" data-go="${esc(o.id)}">${esc(o.name)}</a></li>`).join('')}</ul>` : '')
-        + (n.kind === 'hub' && kin.length ? `<p class="lbl">${kin.length} here</p><ul>${kin.slice(0, 60).map((o) => `<li><a href="#" data-go="${esc(o.id)}">${esc(o.name)}</a></li>`).join('')}</ul>` : '')
+        + (n.kind === 'hub' ? (() => {
+              const by = {};
+              for (const [id, cells] of Object.entries(DETAIL))
+                for (const [fn, sj] of cells) if (fn === n.name) (by[sj] = by[sj] || new Set()).add(id);
+              const rows = Object.entries(by).sort((a, b) => b[1].size - a[1].size);
+              return rows.length ? `<p class="lbl">By subject</p><ul>${rows.map(([sj, s]) =>
+                `<li>${esc(sj)} <em style="color:var(--fg-46)">&middot; ${s.size}</em></li>`).join('')}</ul>` : '';
+            })() : '')
+        + (n.kind === 'hub' && kin.length ? `<p class="lbl">${kin.length} here</p><ul>${kin.slice(0, 80).map((o) => `<li><a href="#" data-go="${esc(o.id)}">${esc(o.name)}</a></li>`).join('')}</ul>` : '')
         + (d && d.website ? `<p class="lbl">Link</p><ul><li><a href="${esc(d.website)}" target="_blank" rel="noopener">${esc(d.website.replace(/^https?:\/\//, '').replace(/\/$/, ''))}</a></li></ul>` : '');
       panel.hidden = false;
       panel.querySelector('.x').onclick = () => { panel.hidden = true; sel = null; draw(); };
