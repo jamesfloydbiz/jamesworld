@@ -501,6 +501,12 @@
       const hubs = links.filter(([o]) => o.kind === 'hub').map(([o]) => o.name);
       const ppl  = links.filter(([, t]) => t === 1).map(([o]) => o);
       const kin  = links.filter(([o, t]) => o.kind !== 'hub' && t === 0).map(([o]) => o);
+      const siteOf = (id) => {
+        const r = ITEMS.find((x) => x.id === id);
+        return r && r.website
+          ? ` <a class="out" href="${esc(r.website)}" target="_blank" rel="noopener" title="${esc(r.website)}">&#8599;</a>`
+          : '';
+      };
       panel.innerHTML = `<button class="x" aria-label="Close">close &times;</button>`
         + `<h3>${esc(n.name)}</h3>`
         + `<p class="meta">${esc(LBL[n.layer] || n.layer)}${n.cat ? ' &middot; ' + esc(n.cat) : ''}`
@@ -510,7 +516,7 @@
               `<li>${esc(fn)} <em style="color:var(--fg-46)">&middot; ${esc(sj)}</em>`
               + (pr ? ` <em style="color:var(--fg-46)">&middot; ${esc(pr)}</em>` : '') + `</li>`).join('')}</ul>`
            : hubs.length ? `<p class="lbl">Builds</p><ul>${hubs.map((h) => `<li>${esc(h)}</li>`).join('')}</ul>` : '')
-        + (ppl.length ? `<p class="lbl">Same person</p><ul>${ppl.map((o) => `<li><a href="#" data-go="${esc(o.id)}">${esc(o.name)}</a></li>`).join('')}</ul>` : '')
+        + (ppl.length ? `<p class="lbl">Same person</p><ul>${ppl.map((o) => `<li><a href="#" data-go="${esc(o.id)}">${esc(o.name)}</a>${siteOf(o.id)}</li>`).join('')}</ul>` : '')
         + (n.kind === 'hub' ? (() => {
               const by = {};
               for (const [id, cells] of Object.entries(DETAIL))
@@ -519,7 +525,7 @@
               return rows.length ? `<p class="lbl">By subject</p><ul>${rows.map(([sj, s]) =>
                 `<li>${esc(sj)} <em style="color:var(--fg-46)">&middot; ${s.size}</em></li>`).join('')}</ul>` : '';
             })() : '')
-        + (n.kind === 'hub' && kin.length ? `<p class="lbl">${kin.length} here</p><ul>${kin.slice(0, 80).map((o) => `<li><a href="#" data-go="${esc(o.id)}">${esc(o.name)}</a></li>`).join('')}</ul>` : '')
+        + (n.kind === 'hub' && kin.length ? `<p class="lbl">${kin.length} here</p><ul>${kin.slice(0, 80).map((o) => `<li><a href="#" data-go="${esc(o.id)}">${esc(o.name)}</a>${siteOf(o.id)}</li>`).join('')}</ul>` : '')
         + (d && d.website ? `<p class="lbl">Link</p><ul><li><a href="${esc(d.website)}" target="_blank" rel="noopener">${esc(d.website.replace(/^https?:\/\//, '').replace(/\/$/, ''))}</a></li></ul>` : '');
       panel.hidden = false;
       panel.querySelector('.x').onclick = () => { panel.hidden = true; sel = null; draw(); };
